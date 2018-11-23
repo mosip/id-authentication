@@ -1,19 +1,15 @@
 package io.mosip.registration.util.biometric;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import com.machinezoo.sourceafis.FingerprintTemplate;
-
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
+/**
+ * Mantra finger print device specific functionality implemented. 
+ * 
+ * @author M1046564
+ *
+ */
 public class MantraFingerprintProvider extends FingerprintProviderNew implements MFS100Event {
 
 	/** The fp device. */
@@ -21,55 +17,58 @@ public class MantraFingerprintProvider extends FingerprintProviderNew implements
 
 	private String fingerPrintType = "";
 
-	public void captureFingerprint(int qualityScore, int captureTimeOut, String outputType) {
+	/**
+	 * This method initialize the device and capture the image from device. it waits for the given time and quality to meet.
+	 * if not met in the given time then throw the error code and messages. 
+	 * outputType - minutia or ISOTemplate
+	 */
+	public int captureFingerprint(int qualityScore, int captureTimeOut, String outputType) {
 		fingerPrintType = outputType;
-		if (fpDevice.Init() == 0 && fpDevice.IsConnected()) {
+		if (fpDevice.Init() == 0) {
 			minutia = "";
 			errorMessage = "";
+			fingerDataInByte = null;
+			isoTemplate = null;
+			
 			fpDevice.StartCapture(qualityScore, captureTimeOut, false);
+			return 0;
+		} else {
+			return -1;
 		}
+		
 	}
-	
+
+	/**
+	 * Stop and uninitialize the FP device.  
+	 */
 	public void uninitFingerPrintDevice() {
 		fpDevice.StopCapture();
 		fpDevice.Uninit();
 	}
 
+	/**
+	 * Once the image captured then the respective Minutia and the ISO template would be extracted. 
+	 */
 	@Override
 	public void OnCaptureCompleted(boolean status, int erroeCode, String errorMsg, FingerData fingerData) {
 		fingerData.Quality();
+		fingerDataInByte =fingerData.FingerImage();
 		errorMessage = errorMsg;
+		
 		if (fingerPrintType.equals("minutia")) {
-			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerData.ISOTemplate());
-			minutia = fingerprintTemplate.serialize();
+			prepareMinutia(fingerData.ISOTemplate());
 		} else {
-			byte[] isoTemplate=fingerData.ISOTemplate();
+			isoTemplate = fingerData.ISOTemplate();
 		}
-		OnPreview(fingerData);
+		
 	}
 
 	@Override
-	public void OnPreview(FingerData fingerData) {
-		if (null != fingerData.FingerImage()) {
-			BufferedImage l_objBufferImg = null;
-			try {
-				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerData.FingerImage()));
-			} catch (IOException ex) {
-			}
-
-			WritableImage writableImage = null;
-			if (l_objBufferImg != null) {
-				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
-				PixelWriter pw = writableImage.getPixelWriter();
-				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
-					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
-						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
-					}
-				}
-			}
-			fingerPrintImage = writableImage;
-		}
-
+	public void OnPreview(FingerData arg0) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	
 
 }

@@ -22,7 +22,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the list of entity id's
 	 * @return the list of {@link Registration}
 	 */
-	List<Registration> findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(String clientstatusCode,String serverStatusCode, String fileUploadStatus);
+	List<Registration> findByClientStatusCodeAndServerStatusCodeOrServerStatusCodeIsNullOrFileUploadStatusOrderByCrDtimeAsc(String clientstatusCode, String serverStatusCode, String fileUploadStatus);
 
 	/**
 	 * This method returns the list of {@link Registration} based on status code

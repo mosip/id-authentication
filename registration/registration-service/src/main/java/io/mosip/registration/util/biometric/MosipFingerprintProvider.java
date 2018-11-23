@@ -1,7 +1,16 @@
 package io.mosip.registration.util.biometric;
 
+import java.io.IOException;
+
 import javafx.scene.image.WritableImage;
 
+/**
+ * This interface will have the list of FP related functions which needs to implemented in the device specific class.
+ * The client class will invoke this interface to communicate with the respective provider based class.
+ * 
+ * @author M1046564
+ *
+ */
 public interface MosipFingerprintProvider {
 
 	/*
@@ -22,7 +31,7 @@ public interface MosipFingerprintProvider {
 	 */
 	double scoreCalculator(String fingerImage1, String fingerImage2);
 
-	void captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	int captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
 
 	void uninitFingerPrintDevice();
 
@@ -32,6 +41,6 @@ public interface MosipFingerprintProvider {
 
 	String getErrorMessage();
 
-	WritableImage getFingerPrintImage();
+	WritableImage getFingerPrintImage()throws IOException;
 
 }

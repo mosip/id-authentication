@@ -3,12 +3,19 @@ package io.mosip.registration.util.biometric;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 public abstract class FingerprintProviderNew implements MosipFingerprintProvider {
@@ -17,7 +24,8 @@ public abstract class FingerprintProviderNew implements MosipFingerprintProvider
 	protected byte isoTemplate[] = null;
 	protected String errorMessage = null;
 	protected WritableImage fingerPrintImage = null;
-
+	protected byte fingerDataInByte[] =null;
+	
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -77,13 +85,18 @@ public abstract class FingerprintProviderNew implements MosipFingerprintProvider
 	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#captureFingerprint(int, int, java.lang.String)
 	 */
 	@Override
-	public abstract void captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	public abstract int captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#uninitFingerPrintDevice()
 	 */
 	@Override
 	public abstract void uninitFingerPrintDevice();
 
+	protected void prepareMinutia(byte rawImage[]) {
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(rawImage);
+		this.minutia = fingerprintTemplate.serialize();
+	}
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getMinutia()
 	 */
@@ -109,11 +122,33 @@ public abstract class FingerprintProviderNew implements MosipFingerprintProvider
 	}
 
 	/* (non-Javadoc)
+	 * To display image in the screen.
 	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getFingerPrintImage()
 	 */
 	@Override
-	public WritableImage getFingerPrintImage() {
-		return fingerPrintImage;
+	public WritableImage getFingerPrintImage() throws IOException{
+		WritableImage writableImage = null;
+		
+		if (null != fingerDataInByte) {
+			BufferedImage l_objBufferImg = null;
+			try {
+				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerDataInByte));
+			} catch (IOException ex) {
+				throw ex;
+			}
+
+			if (l_objBufferImg != null) {
+				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
+				PixelWriter pw = writableImage.getPixelWriter();
+				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
+					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
+						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
+					}
+				}
+			}
+		}
+		return writableImage;
 	}
+
 	
 }

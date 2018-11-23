@@ -182,7 +182,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
 
-		return registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(
+		return registrationRepository.findByClientStatusCodeAndServerStatusCodeOrServerStatusCodeIsNullOrFileUploadStatusOrderByCrDtimeAsc(
 				packetStatus.get(0), packetStatus.get(1), packetStatus.get(2));
 	}
 

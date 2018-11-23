@@ -1,5 +1,7 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
@@ -10,7 +12,9 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.ApplicationContext;
@@ -21,6 +25,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.GlobalParamService;
 import io.mosip.registration.service.SyncStatusValidatorService;
+import io.mosip.registration.util.biometric.FingerprintFacade;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -53,6 +58,11 @@ public class BaseController {
 	private GlobalParamService globalParamService;
 
 	protected static Stage stage;
+	
+	/**
+	 * Instance of {@link MosipLogger}
+	 */
+	protected Logger LOGGER = AppConfig.getLogger(this.getClass());
 
 	/**
 	 * Adding events to the stage
@@ -256,6 +266,30 @@ public class BaseController {
 		if (SessionContext.getInstance().getMapObject() != null) {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+		}
+	}
+
+	/**
+	 * it will wait for the mentioned time to get the capture image from Bio Device.
+	 * @param count
+	 * @param waitTimeInSec
+	 * @param fingerprintFacade
+	 */
+	protected void waitToCaptureBioImage(int count, int waitTimeInSec, FingerprintFacade fingerprintFacade ) {
+		int counter = 0;
+		while (counter < 5) {
+			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())
+					|| !RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
+				break;
+			} else {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
+							APPLICATION_ID, e.getMessage());
+				}
+			}
+			counter++;
 		}
 	}
 
