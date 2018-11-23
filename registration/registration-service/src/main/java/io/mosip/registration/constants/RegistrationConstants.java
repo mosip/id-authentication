@@ -352,11 +352,16 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_INITIAL_VAL = "1";
 	public static final String HH_MM_SS = "HH:mm:ss";
-	// Login FingerPrint
+	
+	// FingerPrint
 	public static final String DEVICE_FP_NOT_FOUND = "Fingerprint device not found.";
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
 	public static final String FINGER_PRINT_MATCH = "Fingerprint match not found.";
 	public static final String DEVICE_INFO_MESSAGE = "Device Information";
+	public static final String FP_DEVICE = "Mantra";
+	public static final String FINGER_TYPE_MINUTIA = "minutia";
+	public static final String FP_DEVICE_TIMEOUT = "Please place your finger on the device.";
+	public static final String FP_DEVICE_ERROR = "Error occured while scanning the finger.";
 
 	// Authorization Info
 	public static final String AUTHORIZATION_ALERT_TITLE = "Authorization Alert";
@@ -516,17 +521,15 @@ public class RegistrationConstants {
 	public static final String NOTIFICATION_SERVICE="REGISTRATION - NOTIFICATION SERVICE ";
 	public static final String MODE_OF_COMMUNICATION="MODE_OF_COMMUNICATION";
 	public static final String NOTIFICATION_CODE = "NOTIFICATION ALERT";
-	
-	// Packet Reregister
-		public static final String FINGER_TYPE_MINUTIA = "minutia";
-
 
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
 
 	// Lock User account
-	public static final String USER_ACCOUNT_LOCK_MESSAGE = "Your account has been temporarily locked as you have made 5 unsuccessful login attempts. Please try logging in after 30 minutes.";
+	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = "Your account has been temporarily locked as you have made ";
+	public static final String USER_ACCOUNT_LOCK_MESSAGE =	" unsuccessful login attempts. Please try logging in after ";
+	public static final String USER_ACCOUNT_LOCK_MESSAGE_MINUTES = " minutes.";
 	public static final int INVALID_LOGIN_COUNT_RESET = 0;
 	public static final int INVALID_LOGIN_COUNT_INCREMENT = 1;
 

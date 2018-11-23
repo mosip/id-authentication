@@ -10,7 +10,7 @@ import MFS100.MFS100Event;
  * @author M1046564
  *
  */
-public class MantraFingerprintProvider extends FingerprintProviderNew implements MFS100Event {
+public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
 	/** The fp device. */
 	private MFS100 fpDevice = new MFS100(this);

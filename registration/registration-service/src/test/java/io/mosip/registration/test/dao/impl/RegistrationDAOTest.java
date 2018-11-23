@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -92,7 +91,7 @@ public class RegistrationDAOTest {
 		Registration reg=new Registration();
 		packetLists.add(reg);
 		List<String> packetNames=Arrays.asList("P","resend","E");
-		Mockito.when(registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc("P","resend","E")).thenReturn(packetLists);
+		Mockito.when(registrationRepository.findByClientStatusCodeAndServerStatusCodeOrServerStatusCodeIsNullOrFileUploadStatusOrderByCrDtimeAsc("P","resend","E")).thenReturn(packetLists);
 		assertEquals(packetLists,registrationDAOImpl.getRegistrationByStatus(packetNames));  
 	}
 	

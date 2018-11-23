@@ -245,9 +245,6 @@ public class LoginServiceImpl implements LoginService {
           SuccessResponseDTO successResponse;
           OtpValidatorResponseDto otpValidatorResponseDto = null;
 
-          // Validator response service api creation
-          final String SERVICE_NAME = RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME;
-
           // prepare request params to pass through URI
           Map<String, String> requestParamMap = new HashMap<String, String>();
           requestParamMap.put(RegistrationConstants.USERNAME_KEY, key);
@@ -255,14 +252,14 @@ public class LoginServiceImpl implements LoginService {
 
           try {
                  // Obtain otpValidatorResponseDto from service delegate util
-                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap);
+                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
                  if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
                               && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
 
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-                 successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
+                        successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
                         response.setSuccessResponseDTO(successResponse);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Success Response Created");
@@ -270,7 +267,7 @@ public class LoginServiceImpl implements LoginService {
                  } else {
 
                        // Create Error response
-                       response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                       getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                     APPLICATION_ID, "Error Response Created");
 
@@ -278,7 +275,7 @@ public class LoginServiceImpl implements LoginService {
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // Create Error response
-                 response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                 getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response Created");
 
