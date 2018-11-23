@@ -47,8 +47,8 @@ public interface DeviceSpecificationService {
 	 * 
 	 * @param deviceTypes
 	 * 
-	 * @return {@link DeviceSpecificationDto}
+	 * @return {@link DeviceSpecPostResponseDto}
 	 */
-	public DeviceSpecPostResponseDto addDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecification);
+	public DeviceSpecPostResponseDto saveDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecification);
 
 }

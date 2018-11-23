@@ -750,9 +750,9 @@ public class MasterdataControllerTest {
 	public void testAddDeviceTypes() throws Exception {
 	
 		String inputJson = this.maptoJson(reqTypeDto);
-		Mockito.when(deviceTypeService.addDeviceTypes(reqTypeDto)).thenReturn(resDto);
+		Mockito.when(deviceTypeService.saveDeviceTypes(reqTypeDto)).thenReturn(resDto);
 		
-		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/")
+		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes")
 				.accept(MediaType.APPLICATION_JSON).content(inputJson)
 				.contentType(MediaType.APPLICATION_JSON)).andReturn();
 		
@@ -772,9 +772,9 @@ public class MasterdataControllerTest {
 
 		String inputJson = this.maptoJson(requestDto);
 		Mockito.when(
-				deviceSpecificationService.addDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
+				deviceSpecificationService.saveDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
 				.thenReturn(responseDto);
-		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications/")
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications")
 				.accept(MediaType.APPLICATION_JSON).content(inputJson).contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 

@@ -12,7 +12,7 @@ public enum DeviceSpecificationErrorCode {
 	DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION("KER-MSD-000",
 			"No device specification found for specified  language code"), DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION(
 					"KER-MSD-001", "Exception during fatching data from db"), DEVICE_SPECIFICATION_INSERT_EXCEPTION(
-							"KER-MSD-000", "Exception while inserting data to the db");
+							"KER-MSD-000", "Exception while inserting data to the Databse table");
 
 	private final String errorCode;
 	private final String errorMessage;
