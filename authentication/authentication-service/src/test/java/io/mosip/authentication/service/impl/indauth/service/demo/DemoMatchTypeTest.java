@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -168,7 +167,6 @@ public class DemoMatchTypeTest {
 		Function<LanguageType, String> languageCodeFetcher = obj -> "FR";
 		Function<String, Optional<String>> languageNameFetcher = obj -> Optional.of("french");
 
-		LocationInfoFetcher locationInfoFetcher = null;
 		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
 		List<String> fullAddress = new ArrayList<>();
 		fullAddress.add(tmpAddress);
