@@ -32,25 +32,19 @@ Table : prid
 ####Sample####
    
    _usage1_
-     
-     STEP-1
-     
-      Referring value of the prid length from the properties files.
-      [@Value("${mosip.kernel.prid.length}")
-	   private int pridLength;]
+    
 	
-	  Step-2
+	  
 	 
-	  Instantiating the class which needs to be called for generating the id  
-	  [@Autowired
-	  private PridGenerator<String> mosipPridGenerator;]
+	  //Instantiating the class which needs to be called for generating the id  
+	  @Autowired
+	  private PridGenerator<String> mosipPridGenerator;
 	
-	 Step-3
-	 
-	  [mosipPridGenerator.generateId());]
+
+	  mosipPridGenerator.generateId());
 	  
 	 Sample Output
-	  [generatedPrid: 58361782748604]
+	  generatedPrid: 58361782748604
 	
    
    
