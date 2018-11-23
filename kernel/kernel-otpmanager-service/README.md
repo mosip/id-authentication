@@ -17,20 +17,24 @@
  `OTP Generation Request:`
  ```
  {
-     "key":"testkey"
+     "key":"M85301Z"
  }
  ```
 `OTP Generation Responses :`
 ##### Successful Generation :
-
+```
+HttpStatus : 201 Created
+```
 ```
 {
     "status": "true",
-    "message": "VALIDATION_SUCCESSFUL"
+    "message": "GENERATION_SUCCESSFUL"
 }
 ```
 ##### UnSuccessful Generation, Key Freezed :
-
+  ```
+ HttpStatus : 201 Created
+ ```
 ```
 {
     "otp": "null",
@@ -46,6 +50,9 @@ http://localhost:8085/otp/validate?key=testkey&otp=614491
   `OTP Validation Responses:`
   ##### Case : Validation Successful
  ```
+ HttpStatus : 200 OK
+ ``` 
+ ```
  {
     "status": "success",
     "message": "VALIDATION_SUCCESSFUL"
@@ -53,12 +60,18 @@ http://localhost:8085/otp/validate?key=testkey&otp=614491
  ```
  ##### Case : Validation UnSuccessful, Wrong OTP
  ```
+ HttpStatus : 406 Not Acceptable
+ ```
+ ```
  {
     "status": "failure",
     "message": "VALIDATION_UNSUCCESSFUL"
 }
  ```
   ##### Case : Validation UnSuccessful, OTP Expired
+  ```
+ HttpStatus : 406 Not Acceptable
+ ``` 
  ```
  {
     "status": "failure",
@@ -66,6 +79,9 @@ http://localhost:8085/otp/validate?key=testkey&otp=614491
 }
  ```
    ##### Case : Validation UnSuccessful, user Blocked
+ ```
+ HttpStatus : 406 Not Acceptable
+ ```
  ```
  {
     "status": "failure",
