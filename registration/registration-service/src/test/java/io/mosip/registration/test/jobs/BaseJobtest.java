@@ -97,7 +97,15 @@ public class BaseJobtest {
 		
 		jobMap.put(syncJob.getId(), syncJob);
 		
+		syncJob.setId("2");
+		syncJob.setParentSyncJobId("1");
+		
+		
+		jobMap.put("2", syncJob);
+		
 		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(context.getJobDetail()).thenReturn(jobDetail);
 		Mockito.when(jobDetail.getJobDataMap()).thenReturn(jobDataMap);
@@ -174,9 +182,35 @@ public class BaseJobtest {
 	packetSyncStatusJob.executeInternal(context);
 	}
 	
-	@Test
-	public void executeChildJobsTest() {
+	@Test(expected = RegBaseUncheckedException.class)
+	public void executeChildJobsTest() throws JobExecutionException {
+		SyncJobDef syncJob = new SyncJobDef();
+		syncJob.setId("1");
 		
+		Map<String, SyncJobDef> jobMap=new HashMap<>();
+		
+		jobMap.put(syncJob.getId(), syncJob);
+		
+		syncJob.setId("2");
+		syncJob.setParentSyncJobId("1");
+		
+		
+		jobMap.put("2", syncJob);
+		
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		
+		
+		
+		
+		
+	
+	
+		packetSyncStatusJob.executeChildJob("1", jobMap);
+
 	}
 
 

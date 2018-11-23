@@ -86,12 +86,12 @@ public class PacketSyncStatusJob extends BaseJob {
 				executeChildJob(syncJobId, jobMap);
 			}
 
-		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 			
 			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					noSuchBeanDefinitionException.getMessage());
+					exception.getMessage());
 		} catch (NullPointerException nullPointerException) {
 			
 			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
