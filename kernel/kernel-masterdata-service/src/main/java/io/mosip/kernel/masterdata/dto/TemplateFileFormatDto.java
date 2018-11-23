@@ -14,5 +14,7 @@ public class TemplateFileFormatDto {
 	private String description;
 
 	private String langCode;
+	private Boolean isActive;
+	
 
 }

@@ -34,4 +34,6 @@ public class TemplateDto {
 	private String templateTypeCode;
 
 	private String languageCode;
+	
+	private Boolean isActive;
 }

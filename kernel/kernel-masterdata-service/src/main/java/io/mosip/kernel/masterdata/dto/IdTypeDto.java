@@ -27,4 +27,6 @@ public class IdTypeDto {
 	 * The language code.
 	 */
 	private String langCode;
+	
+	private Boolean isActive;
 }

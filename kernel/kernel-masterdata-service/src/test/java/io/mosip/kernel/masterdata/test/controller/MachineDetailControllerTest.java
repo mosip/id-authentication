@@ -36,7 +36,7 @@ public class MachineDetailControllerTest {
 	}
 
 	@Test
-	public void testGetMachineDetailIdLang() {
+	public void getMachineDetailIdLangTest() {
 		MachineDetailResponseIdDto machineDetailResponseIdDto =  new MachineDetailResponseIdDto();
 		MachineDetailDto machineDetailDto = new MachineDetailDto();
 		machineDetailDto.setId("1000");
@@ -58,7 +58,7 @@ public class MachineDetailControllerTest {
 	}
 
 	@Test
-	public void testGetMachineDetailAll() {
+	public void getMachineDetailAllTest() {
 		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
 		MachineDetailDto machineDetailDto = new MachineDetailDto();
 		machineDetailDto.setId("1000");
@@ -78,7 +78,7 @@ public class MachineDetailControllerTest {
 	}
 	
 	@Test
-	public void testGetMachineDetailLang() {
+	public void getMachineDetailLangTest() {
 		MachineDetailResponseDto machineDetailResponseDto =  new MachineDetailResponseDto();
 		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
 		MachineDetailDto machineDetailDto = new MachineDetailDto();

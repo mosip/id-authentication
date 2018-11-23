@@ -50,7 +50,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
-	RegistrationCenter findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String id, String languageCode);
+	RegistrationCenter findByIdAndLanguageCodeAndIsDeletedFalse(String id, String languageCode);
 
 	String findRegistrationCenterHolidayLocationCodeByIdAndLanguageCode(String id, String languageCode);
 
@@ -64,7 +64,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return List<RegistrationCenter> fetched from database
 	 */
-	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locationCode,
+	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsDeletedFalse(String locationCode,
 			String languageCode);
 
 	/**

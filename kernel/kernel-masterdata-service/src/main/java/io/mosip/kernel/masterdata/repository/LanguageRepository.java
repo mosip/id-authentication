@@ -26,6 +26,6 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	 * @see Language
 	 * @return List<Language>
 	 */
-	public List<Language> findAllByIsActiveTrueAndIsDeletedFalse();
+	public List<Language> findAllByIsDeletedFalse();
 
 }

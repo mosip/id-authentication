@@ -22,7 +22,7 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
-	List<MachineDetail> findAllByIsActiveTrueAndIsDeletedFalse();
+	List<MachineDetail> findAllByIsDeletedFalse();
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given machine
@@ -34,7 +34,7 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 *            languageCode provided by user
 	 * @return MachineDetail fetched from database
 	 */
-	MachineDetail findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String id, String langCode);
+	MachineDetail findAllByIdAndLangCodeAndIsDeletedFalse(String id, String langCode);
 	
 	/**
 	 * This method trigger query to fetch the Machine detail for the given language code.
@@ -45,7 +45,7 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 * @return MachineDetail fetched from database
 	 */
 	
-	List<MachineDetail> findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(String langCode);
+	List<MachineDetail> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
 }
 

@@ -28,4 +28,6 @@ public class RegistrationCenterType {
 	 * the description.
 	 */
 	private String descr;
+	
+	private Boolean isActive;
 }

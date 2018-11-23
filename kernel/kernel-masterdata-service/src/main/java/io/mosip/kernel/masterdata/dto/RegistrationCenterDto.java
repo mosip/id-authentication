@@ -42,5 +42,6 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	private String languageCode;
+	private Boolean isActive;
 
 }

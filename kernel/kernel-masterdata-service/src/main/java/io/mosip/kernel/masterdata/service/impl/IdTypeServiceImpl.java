@@ -64,7 +64,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	public IdTypeResponseDto getIdTypeByLanguageCode(String languageCode) {
 		List<IdType> idList = null;
 		try {
-			idList = idRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+			idList = idRepository.findByLangCodeAndIsDeletedFalse(languageCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),

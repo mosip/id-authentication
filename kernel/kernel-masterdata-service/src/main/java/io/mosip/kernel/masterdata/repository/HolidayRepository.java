@@ -32,7 +32,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @return List<Holiday>
 	 */
 
-	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3", nativeQuery = true)
+	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3 and is_deleted = false", nativeQuery = true)
 	List<Holiday> findAllByLocationCodeYearAndLangCode(String locationCode, String langCode, int year);
 
 	/**

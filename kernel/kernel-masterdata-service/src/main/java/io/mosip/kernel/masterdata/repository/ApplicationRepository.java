@@ -21,7 +21,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * 
 	 * @return {@link List<Application>}
 	 */
-	public List<Application> findAllByIsActiveTrueAndIsDeletedFalse(Class<Application> entityClass);
+	public List<Application> findAllByIsDeletedFalse(Class<Application> entityClass);
 	
 	/**
 	 * Get all Application types of a specific language
@@ -30,7 +30,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * @param langCode
 	 * @return {@link List<Application>}
 	 */
-	public List<Application> findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
+	public List<Application> findAllByLangCodeAndIsDeletedFalse(String languageCode);
 	
 	/**
 	 * Get Application type by specific id and language code
@@ -39,6 +39,6 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * @param langCode
 	 * @return {@linkplain Application}
 	 */
-	public Application findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String code, String languageCode);
+	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
 	
 }

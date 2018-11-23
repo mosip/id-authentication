@@ -69,7 +69,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		MachineDetailDto machineDetailDto = null;
 		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
 		try {
-			machineDetail = machineDetailRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(id,
+			machineDetail = machineDetailRepository.findAllByIdAndLangCodeAndIsDeletedFalse(id,
 					langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
@@ -111,7 +111,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		List<MachineDetailDto> machineDetailDtoList = null;
 		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
 		try {
-			machineDetailList = machineDetailRepository.findAllByIsActiveTrueAndIsDeletedFalse();
+			machineDetailList = machineDetailRepository.findAllByIsDeletedFalse();
 
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
@@ -155,7 +155,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		List<MachineDetail> machineDetailList = null;
 		List<MachineDetailDto> machineDetailDtoList = null;
 		try {
-			machineDetailList = machineDetailRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(langCode);
+			machineDetailList = machineDetailRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());

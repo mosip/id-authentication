@@ -24,4 +24,5 @@ public class DeviceTypeDto {
 	private String name;
 
 	private String description;
+	private Boolean isActive;
 }

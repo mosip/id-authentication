@@ -43,19 +43,22 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
 		List<BlacklistedWordsDto> wordsDto = null;
 		List<BlacklistedWords> words = null;
-		try {
-			words = blacklistedWordsRepository.findAllByLangCode(langCode);
-		} catch (DataAccessException accessException) {
-			throw new MasterDataServiceException(
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
-		}
-		if (words != null && !words.isEmpty()) {
-			wordsDto = mapperUtil.mapAll(words, BlacklistedWordsDto.class);
-		} else {
-			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
-					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
-		}
+			try {
+				words = blacklistedWordsRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
+			} catch (DataAccessException accessException) {
+				throw new MasterDataServiceException(
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
+			}
+			if (words != null && !words.isEmpty()) {
+				wordsDto = mapperUtil.mapAll(words, BlacklistedWordsDto.class);
+			} else {
+				throw new DataNotFoundException(
+						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
+			}
+		
+
 		return new BlacklistedWordsResponseDto(wordsDto);
 	}
 

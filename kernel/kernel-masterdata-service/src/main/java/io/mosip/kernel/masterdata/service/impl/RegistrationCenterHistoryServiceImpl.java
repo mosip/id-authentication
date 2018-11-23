@@ -56,8 +56,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		}
 		try {
 			registrationCenter = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(
-							registrationCenterId, langCode, localDateTime);
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId, langCode,
+							localDateTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -67,8 +67,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto
-					.setRegistrationCenters(objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
+			registrationCenterDto.setRegistrationCenters(
+					objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
 		}
 		return registrationCenterDto;
 	}

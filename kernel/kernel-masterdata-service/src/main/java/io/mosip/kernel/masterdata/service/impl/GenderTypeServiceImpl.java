@@ -76,7 +76,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		List<GenderType> gender = new ArrayList<>();
 
 		try {
-			gender = genderTypeRepository.findGenderByLanguageCode(languageCode);
+			gender = genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());

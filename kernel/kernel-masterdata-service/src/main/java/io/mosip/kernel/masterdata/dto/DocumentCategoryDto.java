@@ -23,5 +23,6 @@ public class DocumentCategoryDto {
 	private String description;
 
 	private String langCode;
+	private Boolean isActive;
 
 }
