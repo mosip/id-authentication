@@ -9,8 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum TitleErrorCode {
 
-	TITLE_FETCH_EXCEPTION("KER-MSD-033", "Error occured while fetching title"), TITLE_MAPPING_EXCEPTION("KER-MSD-034",
-			"Error occured while mapping title"), TITLE_NOT_FOUND("KER-MSD-035", "No title found");
+	TITLE_FETCH_EXCEPTION("KER-MSD-047", "Error occured while fetching Titles"), TITLE_NOT_FOUND("KER-MSD-048",
+			"Title not found");
 
 	private final String errorCode;
 	private final String errorMessage;

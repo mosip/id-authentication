@@ -57,8 +57,8 @@ public class LocationServiceImpl implements LocationService {
 			locations = locationRepository.findLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
 
 		}catch (DataAccessException e) {
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (locations != null && !locations.isEmpty()) {
 			
@@ -68,8 +68,8 @@ public class LocationServiceImpl implements LocationService {
 			locationResponseDto.setLocations(responseList);
 			
 		} else {
-			throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-					LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 
 		return locationResponseDto;
@@ -107,15 +107,15 @@ public class LocationServiceImpl implements LocationService {
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
-				throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-						LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		}
 
 		catch (DataAccessException e) {
 
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 
 		}
 		return locationHierarchyResponseDto;

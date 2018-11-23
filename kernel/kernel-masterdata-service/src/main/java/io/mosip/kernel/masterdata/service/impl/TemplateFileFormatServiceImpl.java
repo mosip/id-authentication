@@ -45,12 +45,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		templateFileFormats.forEach(templateFileFormat -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-			}
+			dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();

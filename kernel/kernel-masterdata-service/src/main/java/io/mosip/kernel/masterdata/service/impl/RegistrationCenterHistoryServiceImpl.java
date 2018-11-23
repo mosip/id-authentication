@@ -46,11 +46,18 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		List<RegistrationCenterHistory> registrationCenter = null;
 		RegistrationCenterResponseDto registrationCenterDto = new RegistrationCenterResponseDto();
 
-		LocalDateTime localDateTime = LocalDateTime.parse(effectiveDate);
+		LocalDateTime localDateTime = null;
+		try {
+			localDateTime = LocalDateTime.parse(effectiveDate);
+		} catch (Exception e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
+		}
 		try {
 			registrationCenter = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode,
-							localDateTime);
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(
+							registrationCenterId, langCode, localDateTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -60,8 +67,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto.setRegistrationCenters(
-					objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
+			registrationCenterDto
+					.setRegistrationCenters(objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
 		}
 		return registrationCenterDto;
 	}
