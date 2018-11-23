@@ -125,7 +125,7 @@ public class OSIValidator {
 
 		}
 
-		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+		registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
 		return false;
 	}
 
