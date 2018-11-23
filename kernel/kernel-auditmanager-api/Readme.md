@@ -48,7 +48,7 @@ mvn javadoc:javadoc
  
  ```
 @Autowired
-	private AuditHandlerImpl auditHandlerImpl;
+	private AuditHandler auditHandlerImpl;
 	
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 
