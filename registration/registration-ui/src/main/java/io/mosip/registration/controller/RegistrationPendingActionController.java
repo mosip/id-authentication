@@ -39,6 +39,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -287,8 +288,12 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.controller.BaseController#getFingerPrintStatus(javafx.stage.Stage)
+	 */
 	@Override
-	public void getFingerPrintStatus() {
+	public void getFingerPrintStatus(Stage primaryStage) {
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been started");
 
@@ -296,6 +301,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
+		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
+		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been ended");

@@ -3,6 +3,7 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,6 +30,7 @@ import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.RegistrationApprovalServiceImpl;
 
 public class RegistrationApprovalServiceTest {
@@ -120,5 +122,12 @@ public class RegistrationApprovalServiceTest {
 		assertTrue(updateStatus.getApproverRoleCode().equals("SUPERADMIN"));
 		assertTrue(updateStatus.getAckFilename().equals("file1"));
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testValidateException() throws RegBaseCheckedException {
+		when( registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
+		registrationApprovalServiceImpl.getEnrollmentByStatus("ON_HOLD");
 	}
 }

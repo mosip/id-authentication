@@ -188,4 +188,11 @@ public class RegistrationDAOTest {
 		assertEquals("RegistrationOfficer",enrollmentsByStatus.get(0).getUserdetail().getName());
 		assertEquals("file1",enrollmentsByStatus.get(0).getAckFilename());
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testValidateException() throws RegBaseCheckedException {
+		when(registrationRepository.update(Mockito.anyObject())).thenThrow(RegBaseUncheckedException.class);
+		registrationDAOImpl.updateRegistration(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+	}
 }

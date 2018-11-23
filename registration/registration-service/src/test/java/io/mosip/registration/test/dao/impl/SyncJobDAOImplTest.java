@@ -2,6 +2,7 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
 import io.mosip.registration.dao.impl.SyncJobDAOImpl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.repositories.SyncJobRepository;
 
@@ -88,5 +91,12 @@ public class SyncJobDAOImplTest {
 		{
 			assertTrue(true);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testValidateException() throws RegBaseCheckedException {
+		when(registrationRepository.findByClientStatusCodeIn(Mockito.anyList())).thenThrow(RegBaseUncheckedException.class);
+		syncJobDAOImpl.getSyncStatus();
 	}
 }

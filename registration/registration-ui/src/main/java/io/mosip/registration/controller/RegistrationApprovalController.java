@@ -41,6 +41,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -340,6 +341,11 @@ public class RegistrationApprovalController extends BaseController implements In
 				"OnHold of Registration has been ended");
 	}
 
+	/**
+	 * method for Authentication 
+	 * 
+	 * @throws RegBaseCheckedException
+	 */
 	public void submit() throws RegBaseCheckedException {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Supervisor Authentication has been started");
@@ -371,6 +377,13 @@ public class RegistrationApprovalController extends BaseController implements In
 				"Supervisor Authentication has been ended");
 	}
 
+	/**
+	 * Loading stage
+	 * @param primarystage
+	 * @param fxmlPath
+	 * @return
+	 * @throws RegBaseCheckedException
+	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
 		try {
@@ -394,13 +407,15 @@ public class RegistrationApprovalController extends BaseController implements In
 	}
 
 	@Override
-	public void getFingerPrintStatus() {
+	public void getFingerPrintStatus(Stage primaryStage) {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status started");
 		for (Map<String, String> map : approvalmapList) {
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
+		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,RegistrationConstants.AUTH_APPROVAL_SUCCESS_MSG);
+		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

@@ -128,16 +128,13 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 					.anyMatch(bio -> fingerprintProviderNew.scoreCalculator(fingerprintFactory.getMinutia(),
 							bio.getBioMinutia()) > fingerPrintScore);
 			if (isValidFingerPrint) {
-				generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
-				primaryStage.close();
-				baseController.getFingerPrintStatus();
+				baseController.getFingerPrintStatus(primaryStage);
 			} else {
-				generateAlert("Info", AlertType.INFORMATION, "Fingerprint Mismatch");
-				primaryStage.close();
+				generateAlert("Info", AlertType.INFORMATION, RegistrationConstants.AUTH_FAILURE_MSG);
 			}
 		} else if (!RegistrationConstants.EMPTY.equals(fingerprintFactory.getErrorMessage())) {
 			if (fingerprintFactory.getErrorMessage().equals("Timeout")) {
-				generateAlert("Info", AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
+				generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
 			} else {
 				generateAlert("Info", AlertType.INFORMATION, "Error in fingerprint scan");
 			}

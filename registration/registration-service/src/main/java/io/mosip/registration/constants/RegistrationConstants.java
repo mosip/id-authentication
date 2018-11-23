@@ -439,7 +439,11 @@ public class RegistrationConstants {
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
 	public static final String ONHOLD_COMMENTS = "ONHOLD_COMMENTS";
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
-	
+	public static final String AUTH_APPROVAL_SUCCESS_MSG = "Authentication successful. The selected registrations have been marked as Approved, Rejected or On hold.";
+	public static final String AUTH_PENDING_ACTION_SUCCESS_MSG = "Authentication successful. The selected registrations have been marked as Approved or Rejected.";
+	public static final String AUTH_FAILURE_MSG = "Authentication failure. Please try again.";
+	public static final String AUTH_INFO = "INFO";
+
 
 	// Upload Packet
 

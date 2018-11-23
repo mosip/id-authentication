@@ -32,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -215,10 +216,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 
 	@Override
-	public void getFingerPrintStatus() {
+	public void getFingerPrintStatus(Stage primaryStage) {
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
+		generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
+		primaryStage.close();
 		reloadTableView();
 	}
 

@@ -201,7 +201,8 @@ public class BaseController {
 	/**
 	 * 
 	 * Opens the home page screen
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 * 
 	 */
 	public void goToHomePage() throws RegBaseCheckedException {
@@ -221,8 +222,14 @@ public class BaseController {
 		return loader;
 	}
 
-	public void getFingerPrintStatus() {
-
+	/**
+	 * Gets the finger print status.
+	 *
+	 * @param PrimaryStage the primary stage
+	 * @return the finger print status
+	 */
+	public void getFingerPrintStatus(Stage primaryStage) {
+	
 	}
 
 	/**
@@ -244,7 +251,7 @@ public class BaseController {
 	protected void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
 	}
-	
+
 	private static void clearDeviceOnboardingContext() {
 		if (SessionContext.getInstance().getMapObject() != null) {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
