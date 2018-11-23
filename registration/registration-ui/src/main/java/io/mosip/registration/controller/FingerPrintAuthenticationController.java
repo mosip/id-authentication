@@ -114,42 +114,42 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.DEVICE_INFO_MESSAGE,
 						RegistrationConstants.DEVICE_FP_NOT_FOUND);
 
-			}
+			} else {
 
-			// Thread to wait until capture the bio image/ minutia from FP. based on the
-			// error code or success code the respective action will be taken care.
-			waitToCaptureBioImage(5, 2000, fingerprintFacade);
+				// Thread to wait until capture the bio image/ minutia from FP. based on the
+				// error code or success code the respective action will be taken care.
+				waitToCaptureBioImage(5, 2000, fingerprintFacade);
 
-			LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
-					"Fingerprint scan done");
-			fingerPrintConnector.uninitFingerPrintDevice();
-			fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
+				LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
+						"Fingerprint scan done");
+				fingerPrintConnector.uninitFingerPrintDevice();
+				fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
 
-			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
-				// if FP data fetched then retrieve the user specific detail from db.
-				RegistrationUserDetail registrationUserDetail = userDataService
-						.getUserDetail(SessionContext.getInstance().getUserContext().getUserId());
+				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+					// if FP data fetched then retrieve the user specific detail from db.
+					RegistrationUserDetail registrationUserDetail = userDataService
+							.getUserDetail(SessionContext.getInstance().getUserContext().getUserId());
 
-				boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
-						.anyMatch(bio -> fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
-								bio.getBioMinutia()) > fingerPrintScore);
+					boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
+							.anyMatch(bio -> fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
+									bio.getBioMinutia()) > fingerPrintScore);
 
-				if (isValidFingerPrint) {
-					generateAlert("Info", AlertType.INFORMATION, "Authentication Successful");
-					baseController.getFingerPrintStatus(primaryStage);
-				} else {
-					generateAlert("Info", AlertType.INFORMATION, "Authentication Failure");
-					primaryStage.close();
+					if (isValidFingerPrint) {
+						baseController.getFingerPrintStatus(primaryStage);
+					} else {
+						generateAlert("Info", AlertType.INFORMATION, "Authentication Failure");
+						primaryStage.close();
+					}
+				} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
+					if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
+						generateAlert("Info", AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
+					} else {
+						generateAlert("Info", AlertType.INFORMATION, "Error in fingerprint scan");
+					}
 				}
-			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
-					generateAlert("Info", AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
-				} else {
-					generateAlert("Info", AlertType.INFORMATION, "Error in fingerprint scan");
-				}
+				LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+						"Fingerprint validation done");
 			}
-			LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
-					"Fingerprint validation done");
 		} catch (IOException e) {
 			LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION_ERROR", APPLICATION_NAME, APPLICATION_ID,
 					e.getMessage());
