@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.integration;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -30,6 +35,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class OTPManager {
+
+	private static final String ERR_CODE_OTP_NOT_GENERATED = "KER-OTV-005";
 
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
@@ -119,6 +126,11 @@ public class OTPManager {
 						}
 					}
 				} else {
+					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
+					// Do not throw server error for OTP not generated, throw invalid OTP error instead
+					if(errorCode.filter(code -> code.equals(ERR_CODE_OTP_NOT_GENERATED)).isPresent()) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+					}
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				}
 			}
@@ -129,5 +141,28 @@ public class OTPManager {
 		}
 		return isValidOtp;
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Optional<String> getErrorCode(String resBody) {
+		return Optional.of(resBody).map(str -> {
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Object> res = null;
+			try {
+				res = mapper.readValue(str, Map.class);
+			} catch (IOException e) {
+				logger.error("NA", "NA", "Error parsing response body", null);
+			}
+			return res;
+		})
+		.map(map -> map.get("errors"))
+		.filter(obj -> obj instanceof List)
+		.flatMap(obj -> ((List) obj)
+				.stream()
+				.filter(obj1 -> obj1 instanceof Map)
+				.map(map1 -> (((Map) map1).get("errorCode")))
+				.findAny())
+		.map(String::valueOf);
+	}
+	
 
 }
