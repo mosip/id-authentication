@@ -17,11 +17,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 public class IDDataValidationException extends IdAuthenticationBusinessException {
 
     /** The Constant args. */
-    private static transient List<Object[]> args;
-
-    static {
-	args = new ArrayList<>();
-    }
+    final private transient List<Object[]> args = new ArrayList<>();
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7248433575478299970L;
@@ -44,9 +40,9 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
     public IDDataValidationException(IdAuthenticationErrorConstants exceptionConstant, Object... args) {
 	super(exceptionConstant);
 	if (args.length != 0) {
-	    IDDataValidationException.args.add(args);
+	    this.args.add(args);
 	} else {
-	    IDDataValidationException.args.add(null);
+		this.args.add(null);
 	}
     }
 
@@ -64,9 +60,9 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	    Object... args) {
 	super(exceptionConstant, rootCause);
 	if (args.length != 0) {
-	    IDDataValidationException.args.add(args);
+		this.args.add(args);
 	} else {
-	    IDDataValidationException.args.add(null);
+		this.args.add(null);
 	}
     }
 
@@ -83,9 +79,9 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
     public IDDataValidationException(String errorCode, String errorMessage, Object... args) {
 	super(errorCode, errorMessage);
 	if (args.length != 0) {
-	    IDDataValidationException.args.add(args);
+		this.args.add(args);
 	} else {
-	    IDDataValidationException.args.add(null);
+		this.args.add(null);
 	}
     }
 
@@ -106,9 +102,9 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
     public IDDataValidationException(String errorCode, String errorMessage, Throwable cause, Object... args) {
 	super(errorCode, errorMessage, cause);
 	if (args.length != 0) {
-	    IDDataValidationException.args.add(args);
+		this.args.add(args);
 	} else {
-	    IDDataValidationException.args.add(null);
+		this.args.add(null);
 	}
     }
 
@@ -124,14 +120,14 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
      */
     public void addInfo(String errorCode, String errorMessage, Object... args) {
 	super.addInfo(errorCode, String.format(Optional.ofNullable(errorMessage).orElseGet(() -> ""), args));
-	IDDataValidationException.args.add(args);
+	this.args.add(args);
     }
 
     /**
      * Clear agrs.
      */
     public void clearArgs() {
-	IDDataValidationException.args.clear();
+    	this.args.clear();
     }
 
     /**
