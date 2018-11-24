@@ -102,17 +102,19 @@ public class KycServiceImpl implements KycService {
 	Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
 		isSecLangInfoRequired);
 	kycInfo.setIdentity(filteredIdentityInfo);
-	String uin = idAuthService.getUIN(refId).get();
-	Object maskedUin = uin;
-	if (ePrintReq) {
+	Optional<String> uinOpt = idAuthService.getUIN(refId);
+	
+	if (uinOpt.isPresent() && ePrintReq) {
+		String uin = uinOpt.get();
+		Object maskedUin = uin;
 	    if (env.getProperty("uin.masking.required", Boolean.class)) {
 		maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
 	    }
 	    Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
 	    String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
 	    kycInfo.setEPrint(ePrintInfo);
+	    kycInfo.setIdvId(maskedUin.toString());
 	}
-	kycInfo.setIdvId(maskedUin.toString());
 	return kycInfo;
     }
 
