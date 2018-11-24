@@ -114,15 +114,15 @@ Out of Scope
 
 **Class Diagram**
 
-![pre-registartion demographic update class diagram](_images/_class_diagram/pre-registartion-application-update-classDiagram.png)
+![pre-registration demographic update class diagram](_images/_class_diagram/pre-registartion-application-update-classDiagram.png)
 
-![pre-registartion document update class diagram](_images/_class_diagram/pre-registartion-document-update-classDiagram.png)
+![pre-registration document update class diagram](_images/_class_diagram/pre-registartion-document-update-classDiagram.png)
 
 **Sequence Diagram**
 
-![pre-registartion demographic update sequence diagram](_images/_sequence_diagram/pre-registration-demographic-update.png)
+![pre-registration demographic update sequence diagram](_images/_sequence_diagram/pre-registration-demographic-update.png)
 
-![pre-registartion document update sequence diagram](_images/_sequence_diagram/pre-registration-document-update.png)
+![pre-registration document update sequence diagram](_images/_sequence_diagram/pre-registration-document-update.png)
 
 **Success / Error Code**
 - While processing the Pre-Registration update if there is any error or successfully then send the respective success or error code to the UI from API layer as  Response object.

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationDataFatchException;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -24,20 +24,20 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
-		List<DeviceSpecification> deviceSpecificationsEntitys = null;
-		List<DeviceSpecificationDto> deviceSpecificationDtos = null;
+		List<DeviceSpecification> deviceSpecificationList = null;
+		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationsEntitys = deviceSpecificationRepository.findByLangCode(languageCode);
+			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
-			throw new DeviceSpecificationDataFatchException(
+			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (deviceSpecificationsEntitys != null && !deviceSpecificationsEntitys.isEmpty()) {
-			deviceSpecificationDtos = objMapper.mapAll(deviceSpecificationsEntitys, DeviceSpecificationDto.class);
-			return deviceSpecificationDtos;
+		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
+			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
+			return deviceSpecificationDtoList;
 		} else {
-			throw new DeviceSpecificationNotFoundException(
+			throw new DataNotFoundException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
@@ -46,25 +46,24 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(String languageCode,
 			String deviceTypeCode) {
-		List<DeviceSpecification> deviceSpecificationsEntitys = null;
-		List<DeviceSpecificationDto> deviceSpecificationDtos = null;
+		List<DeviceSpecification> deviceSpecificationList = null;
+		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationsEntitys = deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode,
+			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode,
 					deviceTypeCode);
 		} catch (DataAccessException e) {
-			throw new DeviceSpecificationDataFatchException(
+			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (deviceSpecificationsEntitys != null && !deviceSpecificationsEntitys.isEmpty()) {
-			deviceSpecificationDtos = objMapper.mapAll(deviceSpecificationsEntitys, DeviceSpecificationDto.class);
-			return deviceSpecificationDtos;
+		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
+			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
+			return deviceSpecificationDtoList;
 		} else {
-			throw new DeviceSpecificationNotFoundException(
+			throw new DataNotFoundException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-
 	}
 
 }

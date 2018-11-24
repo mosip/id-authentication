@@ -16,11 +16,11 @@ public class RegistrationAppLoginMethodId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "app_id", length = 64, nullable = false, updatable = false)
+	@Column(name = "app_id")
 	private String appId;
-	@Column(name = "login_method", length = 64, nullable = false, updatable = false)
+	@Column(name = "login_method_code")
 	private String loginMethod;
-	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
+	@Column(name = "lang_code")
 	private String langCode;
 
 	/**
