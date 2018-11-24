@@ -493,7 +493,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	boolean anyOtherLang = langCount.keySet().stream()
 		.anyMatch(lang -> lang != null && !lang.equals(priLangCode) && !lang.equals(secLangCode));
 
-	if (primaryLangCount == null || primaryLangCount > 1 || anyOtherLang) {
+	if (primaryLangCount != null && primaryLangCount > 1 || anyOtherLang) {
 	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 		    "Invalid or Multiple Primary language code");
 	    errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
