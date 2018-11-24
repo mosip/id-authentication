@@ -36,6 +36,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RestRequestFactory {
 
+    private static final String REST_TIMEOUT = ".rest.timeout";
+
+    private static final String REST_HTTP_METHOD = ".rest.httpMethod";
+
+    private static final String REST_URI = ".rest.uri";
+
+    private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
+
     /** The Constant DEFAULT_SESSION_ID. */
     private static final String DEFAULT_SESSION_ID = "sessionId";
 
@@ -70,9 +78,9 @@ public class RestRequestFactory {
 
 	String serviceName = restService.getServiceName();
 
-	String uri = env.getProperty(serviceName.concat(".rest.uri"));
-	String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
-	String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
+	String uri = env.getProperty(serviceName.concat(REST_URI));
+	String httpMethod = env.getProperty(serviceName.concat(REST_HTTP_METHOD));
+	String timeout = env.getProperty(serviceName.concat(REST_TIMEOUT));
 
 	HttpHeaders headers = constructHttpHeaders(serviceName);
 
@@ -119,15 +127,15 @@ public class RestRequestFactory {
     private HttpHeaders constructHttpHeaders(String serviceName) throws IDDataValidationException {
 	try {
 	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(".rest.headers.mediaType"))));
+	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE))));
 	    return headers;
 	} catch (InvalidMediaTypeException e) {
 	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 		    "throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
-			    + env.getProperty(serviceName.concat(".rest.headers.mediaType")));
+			    + env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-			    serviceName.concat(".rest.headers.mediaType")));
+			    serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 	}
     }
 
