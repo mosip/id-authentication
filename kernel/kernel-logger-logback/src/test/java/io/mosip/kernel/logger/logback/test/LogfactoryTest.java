@@ -60,6 +60,7 @@ public class LogfactoryTest {
 	}
 	@AfterClass
 	public static void cleanUp() throws IOException {
+		Logfactory.stopAll();
 		Files.walk(new File("src/test/resources/test").toPath())
 	    .sorted(Comparator.reverseOrder())
 	    .map(Path::toFile)
@@ -86,6 +87,7 @@ public class LogfactoryTest {
 				Logfactory.getDefaultConsoleLogger(
 						mosipConsoleAppender, "LogfactoryTest"),
 				isA(Logger.class));
+
 	}
 
 	@Test

@@ -370,5 +370,19 @@ public class LoggerImpl implements Logger {
 		ple.start();
 		return ple;
 	}
-
+	
+	public static void stop(String appenderName) {
+		if(fileAppenders.containsKey(appenderName)) {
+		    fileAppenders.get(appenderName).stop();
+		    fileAppenders.remove(appenderName);
+		}else if (rollingFileAppenders.containsKey(appenderName)) {
+			rollingFileAppenders.get(appenderName).stop();
+			rollingFileAppenders.remove(appenderName);
+		}
+	}
+	
+	public static void stopAll() {
+		rollingFileAppenders.values().forEach(x -> x.stop());
+		fileAppenders.values().forEach(x -> x.stop());
+	}
 }
