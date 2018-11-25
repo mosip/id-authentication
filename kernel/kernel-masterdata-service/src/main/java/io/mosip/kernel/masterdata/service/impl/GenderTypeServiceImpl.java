@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class contains service methods to fetch gender type data from DB
@@ -31,7 +31,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	GenderTypeRepository genderTypeRepository;
 	
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 
 	/*

@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineDetailRepository;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class have methods to fetch a Machine Details
@@ -37,7 +37,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 * Field to hold ObjectMapperUtil object
 	 */
 	@Autowired
-	ObjectMapperUtil objectMapperUtil;
+	MapperUtils objectMapperUtil;
 
 	/**
 	 * Method used for retrieving Machine details based on given Machine ID and

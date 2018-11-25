@@ -24,6 +24,7 @@
 
 [kernel-idgenerator-tokenid-dev.properties](../../config/kernel-idgenerator-tokenid-dev.properties)
 
+
 **Database properties**
 schema:ids
 
@@ -45,13 +46,13 @@ table:tokenId
   ```
 //Autowire the interface class tokenIdGenerator
   @Autowired
-  private TokenIdGenerator<String> tokenIdGenerator;
+  private TokenIdGenerator<String> tokenIdGeneratorImpl;
 
  //Call generateId from autowired tokenIdGenerator instance to generateId.
-  String tokenId=tokenIdGenerator.generateId());
+  String tokenId = tokenIdGeneratorImpl.generateId());
   
 ```
-**Sample output**
+**Sample TokenID**
 
 _Generated tokenId_ : 526900409300563849276960763148952762
 

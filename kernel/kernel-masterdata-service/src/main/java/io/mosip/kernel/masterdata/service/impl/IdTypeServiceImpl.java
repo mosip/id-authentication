@@ -22,7 +22,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.service.IdTypeService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Implementation class for {@link IdTypeService}.
@@ -41,7 +41,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	private DataMapper dataMapper;
 
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	/**
 	 * Reference to {@link ModelMapper}

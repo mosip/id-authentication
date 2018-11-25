@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * blacklisted words service implementation
@@ -31,7 +31,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/*
 	 * (non-Javadoc)

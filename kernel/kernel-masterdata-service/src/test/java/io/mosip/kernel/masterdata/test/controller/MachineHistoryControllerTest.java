@@ -23,8 +23,8 @@ import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
-import io.mosip.kernel.masterdata.utils.StringToLocalDateTimeConverter;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class MachineHistoryControllerTest {
@@ -41,11 +41,9 @@ public class MachineHistoryControllerTest {
 	@Mock
 	private MachineHistoryRepository machineHistoryRepository;
 	
-	@Mock
-	private StringToLocalDateTimeConverter stringToLocalDateTimeConverter;
 	
 	@Mock
-	private ObjectMapperUtil objMapper;
+	private MapperUtils objMapper;
 	
 	@Before
 	public void setUp() {

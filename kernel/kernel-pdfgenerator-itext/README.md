@@ -1,11 +1,9 @@
 ## kernel-pdfgenerator-itext
-This application can be used to convert plain/html template to PDF. It contains several methods that accept template as Input Stream,File and String.
 
-[Background & Design](../../design/kernel/kernel-pdfgenerator.md)
+1- [Background & Design](../../design/kernel/kernel-pdfgenerator.md)
  
-### Api Documentation
 
- [API Documentation <TBA>](TBA)
+2- [API Documentation <TBA>](TBA)
  
  ```
  mvn javadoc:javadoc
@@ -19,17 +17,17 @@ This application can be used to convert plain/html template to PDF. It contains 
 3. File
 
 
-
-**The response will be generated PDF file as OutputStream or generated PDF file as given output file path and and file name.**
+The response will be generated PDF file as OutputStream or generated PDF file as given output file path and and file name.
  
-**If there is any error which occurs while generate pdf, it will be thrown as Exception.**
+If there is any error which occurs while generate pdf, it will be thrown as Exception.
 
-######Exceptions to be handled while using this functionality:
+Exceptions to be handled while using this functionality:
 
 1. PDFGeneratorException
 2. IOException 
 
-#####Maven Dependency 
+**Maven Dependency**
+ 
  ```
  <dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -37,11 +35,12 @@ This application can be used to convert plain/html template to PDF. It contains 
 			<version>${project.version}</version>
  </dependency>
  ```
-##### Usage Sample
+ 
+**Usage Sample:**
  
  Usage1:
  
-##### Input processed Template as inputStream and generate OutputStream containing the resulting PDF;
+Input processed Template as inputStream and generate OutputStream containing the resulting PDF
  
  ```
 @Autowired
@@ -54,9 +53,9 @@ This application can be used to convert plain/html template to PDF. It contains 
   
  ```
 
- Usage2:
+Usage2:
  
-##### Input processed Template as String and generate OutputStream containing the resulting PDF;
+Input processed Template as String and generate OutputStream containing the resulting PDF
  
  ```
 @Autowired
@@ -73,9 +72,9 @@ This application can be used to convert plain/html template to PDF. It contains 
        OutputStream os = pdfGenerator.generate(template); 
  ```
  
- Usage3:
+Usage3:
  
-##### Generate PDF take processed template as file, output file path and output file name and generate the resulting PDF in given output path with the given output file name.
+Generate PDF take processed template as file, output file path and output file name and generate the resulting PDF in given output path with the given output file name
  
  
  ```

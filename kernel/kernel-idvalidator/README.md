@@ -8,6 +8,12 @@
 
  ```
  
+**Properties to be added in Spring application environment using this component**
+
+[kernel-idvalidator-dev.properties](../../config/kernel-idvalidator-dev.properties)
+
+ 
+ 
  **Maven Dependency**
  
  ```
@@ -19,10 +25,8 @@
 
  ```
  
- 
-### The inputs which have to be provided are:
 
-**Input Format for UIN, VID and PRID**
+**UIN, VID and PRID validation**
 
 1. Input String should be numeric string
 
@@ -39,7 +43,7 @@
 7. The last digit of the generated token id should have checksum.
 
 
-**Input Format for RID**
+**RID validation**
 
 1. Input String should be Numeric String
 
@@ -55,18 +59,16 @@
 
 
 
-**Properties to be added in Spring application environment using this component**
 
-[kernel-idvalidator-dev.properties](../../config/kernel-idvalidator-dev.properties)
 
 **The response will be true is case if it pass the all validation condition otherwise it will throw respective error message**
 
  
 
-####Usage Sample
+**Usage Sample:**
+
 Autowired interface IdValidator and call the method validateId(Id)
 
-Usage Sample
  
 Valid UIN  Example:
  

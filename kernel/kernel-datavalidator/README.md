@@ -1,12 +1,26 @@
 ## kernel-datavalidator
 
 
- [API Documentation ]
+ 1- [Background & Design](../../design/kernel/kernel-datavalidator.md)
+ 
+
+
+
+ 2- [API Documentation ]
+ 
  
  ```
  mvn javadoc:javadoc
 
  ```
+ 
+ 
+ **Properties to be added in Spring application environment using this component**
+
+[kernel-datavalidator-dev.properties](../../config/kernel-datavalidator-dev.properties)
+ 
+ 
+ 
  
   **Maven Dependency**
  
@@ -19,9 +33,9 @@
 
  ```
  
-### The inputs which have to be provided are:
 
-**Input Format for Phone**
+
+**Phone**
 
 1. Maximum and minimum length of the phone number is as mentioned in the property file
 
@@ -30,7 +44,7 @@
 
 
 
-**Input Format for Email**
+**Email**
 
 1. Maximum and minimum length of the email id is as mentioned in the property file
 
@@ -47,14 +61,13 @@
 7. Domain extension should have only alphabets(a-zA-Z)
 
 
-**Properties to be added in Spring application environment using this component**
 
-[kernel-datavalidator-dev.properties](../../config/kernel-datavalidator-dev.properties)
+
 
 **The response will be true is case if it pass the all validation condition otherwise it will throw respective error message**
 
  
-Usage Sample
+Usage Sample:
  
  Valid Phone Number Example 
  
@@ -95,11 +108,5 @@ Invalid Email Id Example
 	boolean isValid = emailvalidatorImpl.validatePhone("mosip@@gmail.com"); //Throws Exception "Invalid Email Id"
 	
  ```
-
-
-
-
-
-
 
 

@@ -26,7 +26,7 @@ import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
 import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 @Service
 public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonService {
@@ -38,7 +38,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	ReasonListRepository reasonListRepository;
 
 	@Autowired
-	ObjectMapperUtil objectMapperUtil;
+	MapperUtils objectMapperUtil;
 
 	@Autowired
 	MetaDataUtils metaDataUtils;

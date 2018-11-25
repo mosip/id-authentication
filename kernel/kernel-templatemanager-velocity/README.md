@@ -11,6 +11,18 @@
 
  ```
  
+ 
+ **Maven Dependency**
+ 
+ ```
+ <dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>${project.version}</version>
+ </dependency>
+ ```
+ 
+ 
  3- Usage Sample
  
  
