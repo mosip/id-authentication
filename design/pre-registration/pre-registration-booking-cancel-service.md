@@ -60,11 +60,11 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration cancel booking service](_class_diagram/pre-registration-cancel-booking-service-classDiagram.png)
+![pre-registration cancel booking service](_images/_class_diagram/pre-registration-cancel-booking.png)
 
 **Sequence Diagram**
 
-![pre-registration cancel booking service](_sequence_diagram/pre-registration-cancel-booking.png)
+![pre-registration cancel booking service](_images/_sequence_diagram/pre-registration-cancel-booking.png)
 
 **Success / Error Code** 
 

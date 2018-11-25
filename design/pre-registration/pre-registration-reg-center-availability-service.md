@@ -66,11 +66,11 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration, registration center availability sevice ](_class_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration, registration center availability sevice ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
 
 **Sequence Diagram**
 
-![pre-registration, registration center availability sevice](_sequence_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration, registration center availability sevice](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
 
 **Success / Error Code** 
 

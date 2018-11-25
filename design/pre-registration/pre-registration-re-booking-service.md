@@ -70,11 +70,11 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration re-booking service](_class_diagram/pre-registration-re-booking-service-classDiagram.png)
+![pre-registration re-booking service](_images/_class_diagram/pre-registration-re-booking.png)
 
 **Sequence Diagram**
 
-![pre-registration re-booking service](_sequence_diagram/pre-registration-re-booking.png)
+![pre-registration re-booking service](_images/_sequence_diagram/pre-registration-re-booking.png)
 
 **Success / Error Code** 
 
