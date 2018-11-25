@@ -51,8 +51,9 @@ Response response = client.newCall(request).execute();
 
   *Response*
   
+  Status: 200
+  
 ```
-Status: 200
 {
     "uin": "742192367293"
 }
