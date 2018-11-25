@@ -1,5 +1,5 @@
 
-# Approach for Booking Registration client
+# Approach for Booking Registration center
 
 **Background**
 - Exposing the REST API to book a registration center with availability time slot for a citizen.
@@ -62,15 +62,15 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration booking service ](_images/_class_diagram/_class_diagram/pre-registration-booking-service-classDiagram.png)
+![pre-registration booking service ](_images/_class_diagram/pre-registration-booking.png)
 
 **Sequence Diagram**
 
-![pre-registration booking service](_sequence_diagram/pre-registration-booking.png)
+![pre-registration booking service](_images/_sequence_diagram/pre-registration-booking.png)
 
 **Success / Error Code** 
 
- While processing the Registration client booking if there is any error or successfully then send the respective success or error code to the UI from API layer as  Response object.
+ While processing the Registration center booking if there is any error or successfully then send the respective success or error code to the UI from API layer as  Response object.
 
   Code   |       Type  | Message|
 -----|----------|-------------|
