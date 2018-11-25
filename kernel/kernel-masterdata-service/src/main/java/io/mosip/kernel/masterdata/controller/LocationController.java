@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -37,8 +38,8 @@ public class LocationController {
 	 * @return List<LocationHierarchyDto>
 	 */
 	@GetMapping
-	public LocationHierarchyResponseDto getLocationHierarchyDetails() {
-		return locationHierarchyService.getLocationDetails();
+	public LocationHierarchyResponseDto getLocationHierarchyDetails(@RequestParam(value = "langcode",required = false,defaultValue = "ENG")String langCode) {
+		return locationHierarchyService.getLocationDetails(langCode);
 
 	}
     /**

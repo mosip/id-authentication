@@ -17,7 +17,7 @@ public interface LocationService {
 	 * @param locationHierarchyDTO
 	 * @return
 	 */
-	public LocationHierarchyResponseDto getLocationDetails();
+	public LocationHierarchyResponseDto getLocationDetails(String langCode);
 	
 	/**
 	 * 

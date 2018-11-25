@@ -50,13 +50,13 @@ public class LocationServiceImpl implements LocationService {
 	 * {@link LocationRepository} for fetching location hierarchy
 	 */
 	@Override
-	public LocationHierarchyResponseDto getLocationDetails() {
+	public LocationHierarchyResponseDto getLocationDetails(String langCode) {
 		List<LocationHierarchyDto> responseList = null;
 		LocationHierarchyResponseDto locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		List<Object[]> locations = null;
 		try {
 
-			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse();
+			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
