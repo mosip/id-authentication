@@ -1,7 +1,7 @@
 **Design - User to Machine Mapping **
 
-**[Background]{.underline}**
-============================
+**Background**
+==============
 
 After successful login by the Admin person, user can onboard the new
 users along with their bio-metric to the machine, which is tagged to a
@@ -61,8 +61,8 @@ The key **non-functional requirements** are
     -   Connectivity should happen through SSL mode. The respective key
         to be loaded during the call.
 
-**[Solution]{.underline}**
-==========================
+**Solution**
+============
 
 The key solution considerations are --
 

@@ -1,7 +1,7 @@
 Design for the Device Integration
 
-**Functional Background **
-======================
+**Functional Background**
+
 The functional scope of device integration is to detect the device and get the details of the same corresponding to particular registration center. This can be invoked at any point of time through an integrator which in turns connect to the device to get its details. Any type of device is pluggable to the application.
 GPS - We are bound to get the data like the device’s latitude, longitude and distance from the registration center.
 Camera – it will be used to capture the applicant’s photo along with the exception detail. 
@@ -12,10 +12,12 @@ This includes following devices:
 -	Scanner
 -	Printer
 -	Camera
+
 The target users are
 -	Super Admin
 -	Registration Supervisor
 -	Registration officer
+
 The key requirements are
 GPS
 -	Use GPS to capture the Registration client machine longitude and latitude.
@@ -39,7 +41,7 @@ o	Device related code shouldn’t be implemented inside the functional specific co
 
 
  **Solution - GPS**
-===================
+
 The integration with the GPS device happening through the respective serial port [Com1..N]. Based on the user connected port the serial port number will vary. During runtime the program will scan across the port and identify the GPS related port and communicate with the same.
 -	Create IGPSIntegrator, IGPSConnector, GPSUtil classes.
 o	GPSIntegrator – 
@@ -71,7 +73,7 @@ o	GPSUtil –
 
 ** Sequence and Class Diagram **
 
-** Solution - Finger Print **
+**Solution - Finger Print**
 	BIOAuthentication.FXML – where ever authentication required, this component should be rendered to capture the user authentication by passing the required BIO type as input.
 	BIOAuthenticationController – 
 		It captures the data from UI object and render value to the UI object and invoke the FP façade and validator classes to complete the FP related action triggered from UI component.
