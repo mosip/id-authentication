@@ -6,6 +6,7 @@ The functional scope of device integration is to detect the device and get the d
 GPS - We are bound to get the data like the device’s latitude, longitude and distance from the registration center.
 Camera – it will be used to capture the applicant’s photo along with the exception detail. 
 This includes following devices:
+
 -	GPS
 -	Biometric devices (Fingerprint and Iris capture)
 -	Scanner
