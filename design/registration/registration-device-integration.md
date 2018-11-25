@@ -73,7 +73,7 @@ During runtime the program will scan across the port and identify the GPS relate
       
      Handle exceptions in using custom Exception handler and send correct response to client.
 
-          Classes:           
+          Classes:
                Integrator: GPSIntegrator.java
                API Interface: IGPSConnector.java
                API Implementation: GPSBU343Connector.java
@@ -93,10 +93,10 @@ During runtime the program will scan across the port and identify the GPS relate
 -   This functionality can be used for both capture applicant and exception photo.
 -   If any error occurred, the same to be notified to the user.
 
-    Classes:           
-        Controller: WebCameraController.java
-        Service: PhotoCaptureService.java
-        API Integration: WebCamDeviceImpl.java
+          Classes:           
+               Controller: WebCameraController.java
+               Service: PhotoCaptureService.java
+               API Integration: WebCamDeviceImpl.java
 
 **Sequence and Class Diagram **
 ![Umc class diagram](_images/webcam-device-integration.png)
