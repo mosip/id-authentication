@@ -11,17 +11,23 @@ import org.springframework.stereotype.Component;
 import io.kernel.core.idrepo.shard.ShardResolver;
 
 /**
- * @author Manoj SP
+ * The Class DefaultShardResolver.
  *
+ * @author Manoj SP
  */
 @Component
 public class DefaultShardResolver implements ShardResolver {
 
+	/** The Constant pattern. */
 	private static final Pattern pattern = Pattern.compile("[0-4].*");
 
+	/** The data sources. */
 	@Resource
 	private Map<String, DataSource> dataSources;
 
+	/* (non-Javadoc)
+	 * @see io.kernel.core.idrepo.shard.ShardResolver#getShrad(java.lang.String)
+	 */
 	@Override
 	public DataSource getShrad(String id) {
 		if (pattern.matcher(id).matches()) {

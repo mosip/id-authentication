@@ -30,57 +30,99 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * @author Manoj SP
+ * The Class IdRepoController.
  *
+ * @author Manoj SP
  */
 @RestController
 public class IdRepoController {
 
-    @Autowired
-    private IdRepoService idRepoService;
+	/** The id repo service. */
+	@Autowired
+	private IdRepoService idRepoService;
 
-    @Autowired
-    private IdRequestValidator validator;
+	/** The validator. */
+	@Autowired
+	private IdRequestValidator validator;
 
-    @Autowired
-    private UinValidatorImpl uinValidator;
+	/** The uin validator. */
+	@Autowired
+	private UinValidatorImpl uinValidator;
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-	binder.addValidators(validator);
-    }
-
-    @PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors)
-	    throws IdRepoAppException {
-	try {
-	    DataValidationUtil.validate(errors);
-	    return new ResponseEntity<>(idRepoService.addIdentity(request), HttpStatus.CREATED);
-	} catch (IdRepoDataValidationException e) {
-	    throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder
+	 *            the binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(validator);
 	}
-    }
 
-    @GetMapping(path = "/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IdResponseDTO> retrieveEntity(@PathVariable String uin) throws IdRepoAppException {
-	try {
-	    if (!Objects.isNull(uin) && uinValidator.validateId(uin)) {
-		return new ResponseEntity<>(idRepoService.retrieveIdentity(uin), HttpStatus.OK);
-	    } else {
-		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
-	    }
-	} catch (InvalidIDException | IdRepoAppException e) {
-	    throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, "mosip.id.read");
+	/**
+	 * Adds the identity.
+	 *
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
+	 * @return the response entity
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
+			@ApiIgnore Errors errors) throws IdRepoAppException {
+		try {
+			DataValidationUtil.validate(errors);
+			return new ResponseEntity<>(idRepoService.addIdentity(request), HttpStatus.CREATED);
+		} catch (IdRepoDataValidationException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+		}
 	}
-    }
 
-    @PatchMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IdResponseDTO> updateEntity(@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
-	try {
-	    DataValidationUtil.validate(errors);
-	    return new ResponseEntity<>(idRepoService.updateIdentity(request), HttpStatus.OK);
-	} catch (IdRepoDataValidationException e) {
-	    throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, "mosip.id.update");
+	/**
+	 * Retrieve identity.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the response entity
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@GetMapping(path = "/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin) throws IdRepoAppException {
+		try {
+			if (!Objects.isNull(uin) && uinValidator.validateId(uin)) {
+				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin), HttpStatus.OK);
+			} else {
+				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
+			}
+		} catch (InvalidIDException | IdRepoAppException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, "mosip.id.read");
+		}
 	}
-    }
+
+	/**
+	 * Update identity.
+	 *
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
+	 * @return the response entity
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@PatchMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
+			@ApiIgnore Errors errors) throws IdRepoAppException {
+		try {
+			DataValidationUtil.validate(errors);
+			return new ResponseEntity<>(idRepoService.updateIdentity(request), HttpStatus.OK);
+		} catch (IdRepoDataValidationException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, "mosip.id.update");
+		}
+	}
 }

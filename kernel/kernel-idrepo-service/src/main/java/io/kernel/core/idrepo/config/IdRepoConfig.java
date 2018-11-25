@@ -19,82 +19,151 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Manoj SP
+ * The Class IdRepoConfig.
  *
+ * @author Manoj SP
  */
 @Configuration
 @ConfigurationProperties("mosip.idrepo")
 public class IdRepoConfig {
-    
-    @Autowired
-    private ObjectMapper mapper;
-    
-    @Autowired
-    private Environment env;
 
-    private Map<String, Map<String, String>> db;
-    
-    private Map<String, String> status;
-    
-    private Map<String, String> id;
+	/** The mapper. */
+	@Autowired
+	private ObjectMapper mapper;
 
-    public Map<String, Map<String, String>> getDb() {
-	return db;
-    }
+	/** The env. */
+	@Autowired
+	private Environment env;
 
-    public void setDb(Map<String, Map<String, String>> db) {
-	this.db = db;
-    }
-    
-    public Map<String, String> getStatus() {
-        return status;
-    }
+	/** The db. */
+	private Map<String, Map<String, String>> db;
 
-    public void setStatus(Map<String, String> status) {
-        this.status = status;
-    }
+	/** The status. */
+	private Map<String, String> status;
 
-    public Map<String, String> getId() {
-        return id;
-    }
+	/** The id. */
+	private Map<String, String> id;
 
-    public void setId(Map<String, String> id) {
-        this.id = id;
-    }
+	/**
+	 * Gets the db.
+	 *
+	 * @return the db
+	 */
+	public Map<String, Map<String, String>> getDb() {
+		return db;
+	}
 
-    @PostConstruct
-    public void setup() {
-	mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
-    }
-    
-    @Bean
-    public Map<String, String> id() {
-	return Collections.unmodifiableMap(id);
-    }
-    
-    @Bean 
-    public Map<String, String> status() {
-	return Collections.unmodifiableMap(status);
-    }
-    
-    @Bean
-    public RestTemplate restTemplate() {
-	return new RestTemplate();
-    }
+	/**
+	 * Sets the db.
+	 *
+	 * @param db
+	 *            the db
+	 */
+	public void setDb(Map<String, Map<String, String>> db) {
+		this.db = db;
+	}
 
-    @Bean
-    public Map<String, DataSource> dataSources() {
-	Map<String, DataSource> dataSourceMap = db.entrySet().parallelStream()
-		.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue())));
-	return Collections.unmodifiableMap(dataSourceMap);
-    }
+	/**
+	 * Gets the status.
+	 *
+	 * @return the status
+	 */
+	public Map<String, String> getStatus() {
+		return status;
+	}
 
-    private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-	DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-	driverManagerDataSource.setUrl(dataSourceValues.get("url"));
-	driverManagerDataSource.setUsername(dataSourceValues.get("username"));
-	driverManagerDataSource.setPassword(dataSourceValues.get("password"));
-	driverManagerDataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
-	return driverManagerDataSource;
-    }
+	/**
+	 * Sets the status.
+	 *
+	 * @param status
+	 *            the status
+	 */
+	public void setStatus(Map<String, String> status) {
+		this.status = status;
+	}
+
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public Map<String, String> getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the id.
+	 *
+	 * @param id
+	 *            the id
+	 */
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+
+	/**
+	 * Setup.
+	 */
+	@PostConstruct
+	public void setup() {
+		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
+	}
+
+	/**
+	 * Id.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public Map<String, String> id() {
+		return Collections.unmodifiableMap(id);
+	}
+
+	/**
+	 * Status.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public Map<String, String> status() {
+		return Collections.unmodifiableMap(status);
+	}
+
+	/**
+	 * Rest template.
+	 *
+	 * @return the rest template
+	 */
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	/**
+	 * Data sources.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public Map<String, DataSource> dataSources() {
+		Map<String, DataSource> dataSourceMap = db.entrySet().parallelStream()
+				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue())));
+		return Collections.unmodifiableMap(dataSourceMap);
+	}
+
+	/**
+	 * Builds the data source.
+	 *
+	 * @param dataSourceValues
+	 *            the data source values
+	 * @return the data source
+	 */
+	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
+		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+		driverManagerDataSource.setUrl(dataSourceValues.get("url"));
+		driverManagerDataSource.setUsername(dataSourceValues.get("username"));
+		driverManagerDataSource.setPassword(dataSourceValues.get("password"));
+		driverManagerDataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
+		return driverManagerDataSource;
+	}
 }

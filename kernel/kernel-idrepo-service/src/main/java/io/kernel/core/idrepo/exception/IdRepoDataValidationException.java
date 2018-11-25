@@ -3,34 +3,60 @@ package io.kernel.core.idrepo.exception;
 import io.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
- * @author Manoj SP
+ * The Class IdRepoDataValidationException.
  *
+ * @author Manoj SP
  */
 public class IdRepoDataValidationException extends IdRepoAppException {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -637919650941847283L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -637919650941847283L;
 
-    public IdRepoDataValidationException() {
-	super();
-    }
+	/**
+	 * Instantiates a new id repo data validation exception.
+	 */
+	public IdRepoDataValidationException() {
+		super();
+	}
 
-    public IdRepoDataValidationException(String errorCode, String errorMessage) {
-	super(errorCode, errorMessage);
-    }
+	/**
+	 * Instantiates a new id repo data validation exception.
+	 *
+	 * @param errorCode the error code
+	 * @param errorMessage the error message
+	 */
+	public IdRepoDataValidationException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage);
+	}
 
-    public IdRepoDataValidationException(String errorCode, String errorMessage, Throwable rootCause) {
-	super(errorCode, errorMessage, rootCause);
-    }
+	/**
+	 * Instantiates a new id repo data validation exception.
+	 *
+	 * @param errorCode the error code
+	 * @param errorMessage the error message
+	 * @param rootCause the root cause
+	 */
+	public IdRepoDataValidationException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
 
-    public IdRepoDataValidationException(IdRepoErrorConstants exceptionConstant) {
-	super(exceptionConstant);
-    }
+	/**
+	 * Instantiates a new id repo data validation exception.
+	 *
+	 * @param exceptionConstant the exception constant
+	 */
+	public IdRepoDataValidationException(IdRepoErrorConstants exceptionConstant) {
+		super(exceptionConstant);
+	}
 
-    public IdRepoDataValidationException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
-	super(exceptionConstant, rootCause);
-    }
+	/**
+	 * Instantiates a new id repo data validation exception.
+	 *
+	 * @param exceptionConstant the exception constant
+	 * @param rootCause the root cause
+	 */
+	public IdRepoDataValidationException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
+		super(exceptionConstant, rootCause);
+	}
 
 }

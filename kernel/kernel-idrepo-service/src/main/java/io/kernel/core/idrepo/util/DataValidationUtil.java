@@ -16,20 +16,22 @@ public final class DataValidationUtil {
 	 */
 	private DataValidationUtil() {
 	}
-	
+
 	/**
-	 * Get list of errors from error object and throws {@link IDDataValidationException}, if any error is present.
+	 * Get list of errors from error object and throws
+	 * {@link IDDataValidationException}, if any error is present.
 	 *
-	 * @param exceptionConstant the exception constant
-	 * @param errors the errors
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @param exceptionConstant
+	 *            the exception constant
+	 * @param errors
+	 *            the errors
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
 	public static void validate(Errors errors) throws IdRepoDataValidationException {
 		if (errors.hasErrors()) {
-		    IdRepoDataValidationException exception = new IdRepoDataValidationException();
-			errors.getAllErrors()
-			.forEach(error -> exception.addInfo(error.getCode(),
-					error.getDefaultMessage()));
+			IdRepoDataValidationException exception = new IdRepoDataValidationException();
+			errors.getAllErrors().forEach(error -> exception.addInfo(error.getCode(), error.getDefaultMessage()));
 			throw exception;
 		}
 	}
