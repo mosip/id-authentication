@@ -1,10 +1,17 @@
-**Design - Device Integration **
+**Design - Device Integration**
 
 **Functional Background**
 
-The functional scope of device integration is to detect the device and get the details of the same corresponding to particular registration center. This can be invoked at any point of time through an integrator which in turns connect to the device to get its details. Any type of device is pluggable to the application.
-GPS - We are bound to get the data like the device’s latitude, longitude and distance from the registration center.
-Camera – it will be used to capture the applicant’s photo along with the exception detail. 
+The functional scope of device integration is to detect the device and get the 
+details of the same corresponding to particular registration center. 
+This can be invoked at any point of time through an integrator 
+which in turns connect to the device to get its details. 
+Any type of device is pluggable to the application.
+GPS - We are bound to get the data like the device’s latitude, 
+	longitude and distance from the registration center.
+Camera – it will be used to capture the applicant’s 
+	photo along with the exception detail.
+
 This includes following devices:
 
 -	GPS
@@ -19,50 +26,63 @@ The target users are
 -	Registration officer
 
 The key requirements are
-GPS
--	Use GPS to capture the Registration client machine longitude and latitude.
--	Based on the longitude and latitude calculate the distance from the Registration center.
-Photo
--	During new registration process, as part of demographic detail capture the applicant’s photo.
--	Allow exception photo capture only if an exception has been marked.
--	Captured image should be displayed for preview.
--	Calculate the quality of image and match it against the pre-defined threshold value.
--	Allow user to capture the images multiple time and display the highest quality of image.
-Finger Print
--	Allow the user to login to the application using any one of their finger print.
--	Authenticate the registration process by capturing the Registration officer finger print.
--	EOD Process – before approve/ reject the registration packet, capture the officer authentication.
--	Capture the applicant fingerprint image.
--	De-duplicate validation against the list of users or supervisor enrolled in the machine.
+	GPS
+		-	Use GPS to capture the Registration client machine longitude and latitude.
+		-	Based on the longitude and latitude calculate the distance from the Registration center.
+	Photo
+		-	During new registration process, as part of demographic detail capture the applicant’s photo.
+		-	Allow exception photo capture only if an exception has been marked.
+		-	Captured image should be displayed for preview.
+		-	Calculate the quality of image and match it against the pre-defined threshold value.
+		-	Allow user to capture the images multiple time and display the highest quality of image.
+	Finger Print
+		-	Allow the user to login to the application using any one of their finger print.
+		-	Authenticate the registration process by capturing the Registration officer finger print.
+		-	EOD Process – before approve/ reject the registration packet, capture the officer authentication.
+		-	Capture the applicant fingerprint image.
+		-	De-duplicate validation against the list of users or supervisor enrolled in the machine.
+	
 The key non-functional requirements are
--	Modularity: 
-o	Separate Api and the respective façade should be provide to the client application to interact with the devices.
-o	Device related code shouldn’t be implemented inside the functional specific controller or service class.
+	-	Modularity: 
+		o	Separate Api and the respective façade should be provide to the client application to interact with the devices.
+		o	Device related code shouldn’t be implemented inside the functional specific controller or service class.
 
 
  **Solution - GPS**
 
-The integration with the GPS device happening through the respective serial port [Com1..N]. Based on the user connected port the serial port number will vary. During runtime the program will scan across the port and identify the GPS related port and communicate with the same.
+The integration with the GPS device happening through the respective serial port [Com1..N].
+Based on the user connected port the serial port number will vary.
+During runtime the program will scan across the port and identify the GPS related port and communicate with the same.
 -	Create IGPSIntegrator, IGPSConnector, GPSUtil classes.
-GPSIntegrator – 
-	It communicates between the client class and GPSConnector class. 
-	Based on the input it identifies the required Device specific connector class
-	and invoke getGPSData() to receive the data from GPS.
-IGPSConnector – [GPSBU353S4Connector]
-	This interface should be implemented by the device specific implementation class.
-	The device specific implementation class should connects to the GPS device through 
-	Serial com port and wait for some specified interval to receive the data.
-	The received will contain the raw GPS data [NEMA – standard format], 
-	which will contain the required information. The same will be sent to the invoking class.
-GPSUtil –
-	This will have method to parse the GPS standard format [NEMA] data and provide 
-	the required longitude and latitude as a String object if we get the good signal from GPS device.
-	If the signal is week, then the message [GPRMC] will have the respective indication [V].
-	Based on the signal the data will be provided to the application.
- 
--	Handle exceptions in using custom Exception handler and send correct response to client.
 
-**Class and Sequence Diagram **
+	GPSIntegrator – 
+		It communicates between the client class and GPSConnector class.
+		Based on the input it identifies the required Device specific connector class
+		and invoke getGPSData() to receive the data from GPS.
+	
+	IGPSConnector – [GPSBU353S4Connector]
+		This interface should be implemented by the device specific implementation class.
+		The device specific implementation class should connects to the GPS device through
+		Serial com port and wait for some specified interval to receive the data.
+		The received will contain the raw GPS data [NEMA – standard format],
+		which will contain the required information. The same will be sent to the invoking class.
+	
+	GPSUtil –
+		This will have method to parse the GPS standard format [NEMA] data and provide
+		the required longitude and latitude as a String object if we get the good signal from GPS device.
+		If the signal is week, then the message [GPRMC] will have the respective indication [V].
+		Based on the signal the data will be provided to the application.
+	 
+	-	Handle exceptions in using custom Exception handler and send correct response to client.
+
+		Classes: 		
+			Integrator: GPSIntegrator.java
+			API Interface: IGPSConnector.java
+			API Implementation: GPSBU343Connector.java
+			Utility: GPSUtil.java
+
+**Sequence and Class Diagram**
+![GPS class diagram](_images/gps-device-integration.png)
 
  **Solution - Photo Capture**
 •	Webcam-capture –> open source library should be used to capture the data from webcam device.
@@ -80,6 +100,7 @@ GPSUtil –
 		API Integration: WebCamDeviceImpl.java
 
 **Sequence and Class Diagram **
+![Umc class diagram](_images/webcam-device-integration.png)
 
  **Solution - Finger Print**
 	BIOAuthentication.FXML – where ever authentication required, this component 
@@ -122,5 +143,6 @@ GPSUtil –
 		It interface between client application and device.
 	 
 **Sequence and Class Diagram**
+![Umc class diagram](_images/fingerprint-device-integration.png)
 
 
