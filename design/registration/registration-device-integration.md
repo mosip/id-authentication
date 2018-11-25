@@ -115,39 +115,40 @@ None of the client classes should invoke the device specific classes directly.
           object and invoke the FP façade and validator classes to complete
           the FP related action triggered from UI component.
 
--    FingerprintValidator
+-    FingerprintValidator –
 		  It does validation of finger print minutia.
-      boolean validateOneToManyFP(String userId, String userInputMinutia)
-               o     Fetch user id specific minutia alone for all FPs from db table.
-               o     Then compare against the user input single FP minutia with minutia 
+		  
+         boolean validateOneToManyFP(String userId, String userInputMinutia)
+               Fetch user id specific minutia alone for all FPs from db table.
+               Then compare against the user input single FP minutia with minutia 
                     fetched from db using façade and FP api.
-               o     return true – when match found.
-               o     return false – when match not found.
+               return true – when match found.
+               return false – when match not found.
 
-      boolean validateManyToManyFP(String userId, DTO <UserFingerPrintDTO>)
-               o     Fetch all the active user id for a particular machine id from db table.
-               o     Fetch user id specific minutia alone for all FPs from db table.
-               o     Run through all the FP of an userInputDTO and match against
+         boolean validateManyToManyFP(String userId, DTO <UserFingerPrintDTO>)
+               Fetch all the active user id for a particular machine id from db table.
+               Fetch user id specific minutia alone for all FPs from db table.
+               Run through all the FP of an userInputDTO and match against
                     all FPs of a particular user id fetched from DB. Validate one to one 
                     FP mapping like: input thumb FP to db thumb fb. 
-               o     The above step should be completed for all the fetched user id from db.
-               o     Invoke the façade to match the minutia between two FPs.
-               o     return true – when match found break the loop.
-               o     return false – when match not found.
+               The above step should be completed for all the fetched user id from db.
+               Invoke the façade to match the minutia between two FPs.
+               return true – when match found break the loop.
+               return false – when match not found.
      
--    FingerprintFacade
+-    FingerprintFacade –
 		      It acts between client and FP interface to invoke the
           right vendor specific class and perform the client required operation in
           vendor specific class. Client doesn’t aware of which vendor specific method to be invoked. 
           That will be taken care in this Façade class.
 
--    FingerprintProvider
+-    FingerprintProvider –
 		      Interface which contains all the required 
           functionality that needs to be implemented by the vendor specific classes. 
           The client classes will work on this interface rather using the 
           implementation [vendor specific] classes directly. 
 					
--    MantraFingerprintProvider
+-    MantraFingerprintProvider –
           Vendor specific class to interact with their specific
           SDK classes to communicate with the device drivers and does the required functionality.
           FP Device Driver     - which is provided by the third party device specific vendor 
