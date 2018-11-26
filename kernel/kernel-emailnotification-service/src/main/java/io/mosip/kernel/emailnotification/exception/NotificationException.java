@@ -16,9 +16,12 @@ public class NotificationException extends BaseUncheckedException {
 	private static final long serialVersionUID = 3949838534862481500L;
 
 	/**
-	 * Constructor for AsyncCaughtExceptionHandler.
+	 * Constructor for NotificationException.
+	 * 
+	 * @param notificationException
+	 *            the exception argument.
 	 */
-	public NotificationException(Throwable e) {
-		super(e.getLocalizedMessage(),e.getMessage());
+	public NotificationException(Throwable notificationException) {
+		super(notificationException.getLocalizedMessage(), notificationException.getMessage());
 	}
 }
