@@ -19,5 +19,7 @@ public class LocationHierarchyDto implements Serializable {
 	private Short locationHierarchylevel;
 	
 	private String locationHierarchyName;
+	
+	private Boolean isActive;
 
 }
