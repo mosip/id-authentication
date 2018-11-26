@@ -48,7 +48,7 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 		Error error = new Error(RegistrationCenterUserMappingHistoryErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + MasterDataConstant.DATETIMEFORMAT);
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrorList().add(error);
+		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
@@ -62,10 +62,10 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 		ErrorResponse<String> errorResponse = new ErrorResponse<>();
 		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-			errorResponse.getErrorList().add(error.getField() + ": " + error.getDefaultMessage());
+			errorResponse.getErrors().add(error.getField() + ": " + error.getDefaultMessage());
 		}
 		for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-			errorResponse.getErrorList().add(error.getObjectName() + ": " + error.getDefaultMessage());
+			errorResponse.getErrors().add(error.getObjectName() + ": " + error.getDefaultMessage());
 		}
 		return errorResponse;
 	}
@@ -73,7 +73,7 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
 		Error error = new Error(e.getErrorCode(), e.getMessage());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrorList().add(error);
+		errorResponse.getErrors().add(error);
 		return errorResponse;
 	}
 

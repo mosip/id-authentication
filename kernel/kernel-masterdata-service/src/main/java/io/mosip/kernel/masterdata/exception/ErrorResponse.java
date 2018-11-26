@@ -13,6 +13,6 @@ import lombok.Data;
 @Data
 public class ErrorResponse<T> {
 
-	private List<T> errorList = new ArrayList<>();
+	private List<T> errors = new ArrayList<>();
 
 }
