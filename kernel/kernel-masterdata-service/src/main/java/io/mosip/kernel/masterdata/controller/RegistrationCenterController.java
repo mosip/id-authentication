@@ -126,9 +126,9 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
 	 */
-	@GetMapping("/registrationcenters/{lang_code}/{hierarchy_level_name}/{name}")
+	@GetMapping("/registrationcenters/{langcode}/{hierarchylevelname}/{name}")
 	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
-			@PathVariable("lang_code") String langCode, @PathVariable("hierarchy_level_name") String hierarchyLevel,
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevelname") String hierarchyLevel,
 			@PathVariable("name") String text) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
 				hierarchyLevel, text);
