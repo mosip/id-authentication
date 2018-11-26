@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.dto;
+package io.mosip.kernel.crypto.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KeyManagerResponseDto {
+public class CryptoResponseDto {
 /**
  * 
  */
-private byte[] key;
+private byte[] data;
 }

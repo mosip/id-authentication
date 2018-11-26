@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.dto;
+package io.mosip.kernel.crypto.dto;
 
 import java.time.LocalDateTime;
 

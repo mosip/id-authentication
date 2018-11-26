@@ -4,11 +4,9 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.dto;
+package io.mosip.kernel.crypto.dto;
 
 import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,11 +20,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CryptographyRequestDto {
+public class KeyManagerSymmetricKeyRequestDto {
 /**
  * 
  */
-//@NotBlank
 private String applicationId;
 /**
  * 
@@ -35,11 +32,9 @@ private String machineId;
 /**
  * 
  */
-@NotNull
 private LocalDateTime timeStamp;
 /**
  * 
  */
-@NotNull
-private byte[] data;
+private byte[] encryptedSymmetricKey;
 }

@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.utils;
+package io.mosip.kernel.crypto.utils;
 
 import static java.util.Arrays.copyOfRange;
 
@@ -25,11 +25,11 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
-import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
-import io.mosip.kernel.cryptography.dto.KeyManagerPublicKeyRequestDto;
-import io.mosip.kernel.cryptography.dto.KeyManagerResponseDto;
-import io.mosip.kernel.cryptography.dto.KeyManagerSymmetricKeyRequestDto;
+import io.mosip.kernel.crypto.constant.CryptoErrorCode;
+import io.mosip.kernel.crypto.dto.CryptoRequestDto;
+import io.mosip.kernel.crypto.dto.KeyManagerPublicKeyRequestDto;
+import io.mosip.kernel.crypto.dto.KeyManagerResponseDto;
+import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyRequestDto;
 
 /**
  * @author Urvil Joshi
@@ -37,7 +37,7 @@ import io.mosip.kernel.cryptography.dto.KeyManagerSymmetricKeyRequestDto;
  * @since 1.0.0
  */
 @Component
-public class CryptographyUtil {
+public class CryptoUtil {
 
 	/**
 	 * 
@@ -84,44 +84,44 @@ public class CryptographyUtil {
 	 * @param builder
 	 */
 	@Autowired
-	public CryptographyUtil(RestTemplateBuilder builder) {
+	public CryptoUtil(RestTemplateBuilder builder) {
 		this.restTemplate = builder.build();
 	}
 	
 	
 	/**
-	 * @param cryptographyRequestDto
+	 * @param cryptoRequestDto
 	 * @return
 	 */
 	public PublicKey getPublicKey(
-			CryptographyRequestDto cryptographyRequestDto) {
+			CryptoRequestDto cryptoRequestDto) {
 		PublicKey key = null;
 		KeyManagerPublicKeyRequestDto keyManagerPublicKeyRequestDto = new KeyManagerPublicKeyRequestDto();
-	    dataMapper.map(cryptographyRequestDto,keyManagerPublicKeyRequestDto, new KeyManagerPublicKeyConverter());
+	    dataMapper.map(cryptoRequestDto,keyManagerPublicKeyRequestDto, new KeyManagerPublicKeyConverter());
         KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(getPublicKeyUrl, keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getKey()));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
-					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
-					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
+					CryptoErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
+					CryptoErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
 		} catch (NoSuchAlgorithmException e) {
 			throw new io.mosip.kernel.core.exception.NoSuchAlgorithmException(
-					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+					CryptoErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					CryptoErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
 		return key;
 	}
 
 	
 	/**
-	 * @param cryptographyRequestDto
+	 * @param cryptoRequestDto
 	 * @return
 	 */
-	public SecretKey getDecryptedSymmetricKey(CryptographyRequestDto cryptographyRequestDto) {
+	public SecretKey getDecryptedSymmetricKey(CryptoRequestDto cryptoRequestDto) {
 		
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
-		dataMapper.map(cryptographyRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
+		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
 		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerResponseDto.class);
 		return new SecretKeySpec(keyManagerResponseDto.getKey(), 0,
 				keyManagerResponseDto.getKey().length, symmetricAlgorithmName);
@@ -142,19 +142,19 @@ public class CryptographyUtil {
 	}
 	
 	/**
-	 * @param cryptographyRequestDto
+	 * @param cryptoRequestDto
 	 * @param keyDemiliterIndex
 	 * @param cipherKeyandDataLength
 	 * @param keySplitterLength
 	 * @param keySplitterFirstByte
 	 * @return
 	 */
-	public int getSplitterIndex(CryptographyRequestDto cryptographyRequestDto, int keyDemiliterIndex,
+	public int getSplitterIndex(CryptoRequestDto cryptoRequestDto, int keyDemiliterIndex,
 			 final int keySplitterLength, final byte keySplitterFirstByte) {
 		
-		for (byte data:cryptographyRequestDto.getData()) {
+		for (byte data:cryptoRequestDto.getData()) {
 			if (data == keySplitterFirstByte) {
-				final String keySplit = new String(copyOfRange(cryptographyRequestDto.getData(), keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
+				final String keySplit = new String(copyOfRange(cryptoRequestDto.getData(), keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
 				if (keySplitter.equals(keySplit)) {
 					break;
 				}

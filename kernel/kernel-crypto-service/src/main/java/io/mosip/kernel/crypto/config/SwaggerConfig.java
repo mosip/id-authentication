@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.config;
+package io.mosip.kernel.crypto.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

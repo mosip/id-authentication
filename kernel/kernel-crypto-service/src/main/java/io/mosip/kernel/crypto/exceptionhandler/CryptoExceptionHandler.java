@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.exceptionhandler;
+package io.mosip.kernel.crypto.exceptionhandler;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
+import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 
 /**
  * Rest Controller Advice for Cryptographic Service
@@ -34,7 +34,7 @@ import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
-public class CryptographyExceptionHandler {
+public class CryptoExceptionHandler {
 
 	private static final String ERR = "error";
 	private static final String WHITESPACE = " ";
@@ -72,8 +72,8 @@ public class CryptographyExceptionHandler {
 	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> arrayIndexOutOfBoundsException(
 			final ArrayIndexOutOfBoundsException e) {
-		ErrorBean error = new ErrorBean(CryptographyErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
-				CryptographyErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage());
+		ErrorBean error = new ErrorBean(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
+				CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 	}
@@ -87,7 +87,7 @@ public class CryptographyExceptionHandler {
 	
 	@ExceptionHandler(ConnectException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> connectException(final ConnectException e) {
-		ErrorBean error = new ErrorBean(CryptographyErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptographyErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
+		ErrorBean error = new ErrorBean(CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -101,7 +101,7 @@ public class CryptographyExceptionHandler {
 		BindingResult bindingResult = e.getBindingResult();
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ErrorBean error = new ErrorBean(CryptographyErrorCode.INVALID_REQUEST.getErrorCode(),
+			ErrorBean error = new ErrorBean(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),
 					x.getField() + WHITESPACE + x.getDefaultMessage());
 			errorList.add(error);
 		});

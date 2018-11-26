@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography.constant;
+package io.mosip.kernel.crypto.constant;
 
 /**
  * Error Constants for Cryptographic Service
@@ -13,7 +13,7 @@ package io.mosip.kernel.cryptography.constant;
  * @since 1.0.0
  *
  */
-public enum CryptographyErrorCode {
+public enum CryptoErrorCode {
 	/**
 	 * 
 	 */
@@ -49,7 +49,7 @@ public enum CryptographyErrorCode {
 	 * @param errorCode
 	 * @param errorMessage
 	 */
-	private CryptographyErrorCode(final String errorCode, final String errorMessage) {
+	private CryptoErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

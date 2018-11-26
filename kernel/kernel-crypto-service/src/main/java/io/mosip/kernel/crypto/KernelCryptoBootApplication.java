@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.cryptography;
+package io.mosip.kernel.crypto;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,12 +15,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  */
 @SpringBootApplication
-public class KernelCryptographyApplication {
+public class KernelCryptoBootApplication {
 
 	/** Main method for this application 
 	 * @param args 
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(KernelCryptographyApplication.class, args);
+		SpringApplication.run(KernelCryptoBootApplication.class, args);
 	}
 }
