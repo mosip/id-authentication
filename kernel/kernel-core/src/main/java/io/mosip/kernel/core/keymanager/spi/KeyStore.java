@@ -17,7 +17,7 @@ import javax.crypto.SecretKey;
  * @since 1.0.0
  *
  */
-public interface KeymanagerInterface {
+public interface KeyStore {
 
 	/**
 	 * Get private key from keystore

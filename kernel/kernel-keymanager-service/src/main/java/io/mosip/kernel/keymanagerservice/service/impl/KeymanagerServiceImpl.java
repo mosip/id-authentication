@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
+import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.AliasMap;
@@ -51,7 +51,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Keystore to handles and store cryptographic keys.
 	 */
 	@Autowired
-	KeymanagerInterface keymanagerInterface;
+	KeyStore keymanagerInterface;
 
 	/**
 	 * KeyGenerator instance to generate asymmetric key pairs

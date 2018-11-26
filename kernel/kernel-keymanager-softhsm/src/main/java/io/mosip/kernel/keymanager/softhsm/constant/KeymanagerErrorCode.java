@@ -7,7 +7,7 @@ package io.mosip.kernel.keymanager.softhsm.constant;
  * @since 1.0.0
  *
  */
-public enum SofthsmKeymanagerErrorCode {
+public enum KeymanagerErrorCode {
 	INVALID_CONFIG_FILE("KER-KMA-001", "Config file invalid"),
 	
 	NO_SUCH_SECURITY_PROVIDER("KER-KMA-002", "No such security provider"),
@@ -35,7 +35,7 @@ public enum SofthsmKeymanagerErrorCode {
 	 * @param errorMessage
 	 *            the error message
 	 */
-	private SofthsmKeymanagerErrorCode(final String errorCode, final String errorMessage) {
+	private KeymanagerErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
