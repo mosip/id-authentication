@@ -1,7 +1,5 @@
 package io.mosip.kernel.idgenerator.uin.exception;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,17 +14,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorItem {
+public class ErrorBean {
 
 	/**
 	 * The error code field
 	 */
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String code;
+	private String errorCode;
 
 	/**
 	 * The error message field
 	 */
-	private String message;
+	private String errorMessage;
 
 }
