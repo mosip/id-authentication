@@ -29,33 +29,45 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OSIValidatorStage.
+ */
 @RefreshScope
 @Service
 public class OSIValidatorStage extends MosipVerticleManager {
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(OSIValidatorStage.class);
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The adapter. */
 	@Autowired
 	FilesystemCephAdapterImpl adapter;
 
+	/** The rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The packet info manager. */
 	@Autowired
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
@@ -67,6 +79,13 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 

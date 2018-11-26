@@ -41,20 +41,28 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OSIValidatorStageTest.
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class OSIValidatorStageTest {
 
+	/** The input stream. */
 	@Mock
 	private InputStream inputStream;
 
+	/** The adapter. */
 	@Mock
 	FilesystemCephAdapterImpl adapter;
 
+	/** The rest client service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The osi validator stage. */
 	@InjectMocks
 	private OSIValidatorStage osiValidatorStage = new OSIValidatorStage() {
 		@Override
@@ -68,32 +76,52 @@ public class OSIValidatorStageTest {
 		}
 	};
 
+	/**
+	 * Test deploy verticle.
+	 */
 	@Test
 	public void testDeployVerticle() {
 		osiValidatorStage.deployVerticle();
 	}
 
+	/** The registration status service. */
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The packet info manager. */
 	@Mock
 	PacketInfoManager<Identity, RegOsiDto> packetInfoManager;
 
+	/** The auth response DTO. */
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+
+	/** The data. */
 	byte[] data = "1234567890".getBytes();
 
+	/** The o SI validator. */
 	@InjectMocks
 	private OSIValidator oSIValidator;
 
+	/** The reg osi dto. */
 	private RegOsiDto regOsiDto = new RegOsiDto();
 
+	/** The dto. */
 	MessageDTO dto = new MessageDTO();
+
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -146,6 +174,12 @@ public class OSIValidatorStageTest {
 
 	}
 
+	/**
+	 * Testis valid OSI success.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidOSISuccess() throws Exception {
 
@@ -157,6 +191,12 @@ public class OSIValidatorStageTest {
 
 	}
 
+	/**
+	 * Test office intro id null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testOfficeIntroIdNull() throws Exception {
 		regOsiDto.setOfficerId(null);
@@ -169,6 +209,12 @@ public class OSIValidatorStageTest {
 		assertTrue(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test supervisor id null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testSupervisorIdNull() throws Exception {
 		regOsiDto.setOfficerfingerType("LEFTTHUMB");
@@ -180,6 +226,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test supervisor details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testSupervisorDetailsNull() throws Exception {
 		regOsiDto.setOfficerfingerType("RIGHTTHUMB");
@@ -195,6 +247,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test officer details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testOfficerDetailsNull() throws Exception {
 		regOsiDto.setOfficerFingerpImageName(null);
@@ -208,6 +266,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test introducer details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testIntroducerDetailsNull() throws Exception {
 		regOsiDto.setOfficerfingerType("LEFTMIDDLE");
@@ -221,6 +285,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test invalid iris.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testInvalidIris() throws Exception {
 		authResponseDTO.setStatus(false);
@@ -234,6 +304,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test invalid face.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testInvalidFace() throws Exception {
 		authResponseDTO.setStatus(false);
@@ -248,6 +324,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Testis valid OSI failure.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidOSIFailure() throws Exception {
 		authResponseDTO.setStatus(false);
@@ -260,6 +342,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * IO exception test.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void IOExceptionTest() throws Exception {
 
@@ -272,6 +360,12 @@ public class OSIValidatorStageTest {
 
 	}
 
+	/**
+	 * Testis valid supervisor failure.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidSupervisorFailure() throws Exception {
 		regOsiDto.setOfficerId(null);
@@ -285,6 +379,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Testis valid OSI failurewith retry.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidOSIFailurewithRetry() throws Exception {
 		authResponseDTO.setStatus(false);
@@ -301,6 +401,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testException() throws Exception {
 

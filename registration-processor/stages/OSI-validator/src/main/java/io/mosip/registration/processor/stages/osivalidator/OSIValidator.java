@@ -26,8 +26,13 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OSIValidator.
+ */
 public class OSIValidator {
 
+	/** The packet info manager. */
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The Constant FILE_SEPARATOR. */
@@ -36,20 +41,46 @@ public class OSIValidator {
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The rest client service. */
 	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	/** The message. */
 	private String message = null;
 
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
 
+	/** The auth request DTO. */
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+
+	/** The auth type DTO. */
 	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+
+	/** The identity DTO. */
 	IdentityDTO identityDTO = new IdentityDTO();
+
+	/** The identity info DTO. */
 	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+
+	/** The request. */
 	RequestDTO request = new RequestDTO();
+
+	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
 
+	/**
+	 * Instantiates a new OSI validator.
+	 *
+	 * @param adapter
+	 *            the adapter
+	 * @param restClientService
+	 *            the rest client service
+	 * @param packetInfoManager
+	 *            the packet info manager
+	 */
 	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
 			RegistrationProcessorRestClientService<Object> restClientService,
 			PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager) {
@@ -58,6 +89,17 @@ public class OSIValidator {
 		this.restClientService = restClientService;
 	}
 
+	/**
+	 * Checks if is valid OSI.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if is valid OSI
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 
 		boolean isValidOsi = false;
@@ -71,6 +113,19 @@ public class OSIValidator {
 
 	}
 
+	/**
+	 * Checks if is valid operator.
+	 *
+	 * @param regOsi
+	 *            the reg osi
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if is valid operator
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 
@@ -101,6 +156,19 @@ public class OSIValidator {
 		return false;
 	}
 
+	/**
+	 * Checks if is valid supervisor.
+	 *
+	 * @param regOsi
+	 *            the reg osi
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if is valid supervisor
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		String uin = regOsi.getSupervisorId();
@@ -129,6 +197,19 @@ public class OSIValidator {
 		return false;
 	}
 
+	/**
+	 * Checks if is valid introducer.
+	 *
+	 * @param regOsi
+	 *            the reg osi
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if is valid introducer
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		String uin = regOsi.getIntroducerUin();
@@ -158,6 +239,23 @@ public class OSIValidator {
 		return false;
 	}
 
+	/**
+	 * Validate fingerprint.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param fingerprint
+	 *            the fingerprint
+	 * @param type
+	 *            the type
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if successful
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateFingerprint(String uin, String fingerprint, String type, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		if (fingerprint == null)
@@ -176,6 +274,23 @@ public class OSIValidator {
 
 	}
 
+	/**
+	 * Validate iris.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param iris
+	 *            the iris
+	 * @param type
+	 *            the type
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if successful
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateIris(String uin, String iris, String type, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		if (iris == null)
@@ -193,6 +308,21 @@ public class OSIValidator {
 
 	}
 
+	/**
+	 * Validate face.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param face
+	 *            the face
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if successful
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateFace(String uin, String face, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		if (face == null)
@@ -211,12 +341,30 @@ public class OSIValidator {
 
 	}
 
+	/**
+	 * Validate UIN.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return true, if successful
+	 */
 	private boolean validateUIN(String uin) {
 		// todo To call IAM rest API for UNI validation
 		return true;
 
 	}
 
+	/**
+	 * Validate pin.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param pin
+	 *            the pin
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
 		if (pin == null)
 			return true;
@@ -249,6 +397,21 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
+	/**
+	 * Validate biometric.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param biometricType
+	 *            the biometric type
+	 * @param identity
+	 *            the identity
+	 * @param biometricFileHashByte
+	 *            the biometric file hash byte
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte)
 			throws ApisResourceAccessException {
 
