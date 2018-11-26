@@ -1085,22 +1085,22 @@ public class MasterDataServiceTest {
 
 	@Test()
 	public void getLocationHierarchyTest() {
-		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenReturn(locObjList);
-		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse(Mockito.anyString())).thenReturn(locObjList);
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails(Mockito.anyString());
 		Assert.assertEquals("COUNTRY",locationHierarchyResponseDto.getLocations().get(0).getLocationHierarchyName());
 	}
 	
 	@Test(expected=DataNotFoundException.class)
 	public void getLocationHierarchyNoDataFoundExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenReturn(new ArrayList<Object[]>());
-		locationHierarchyService.getLocationDetails();
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse(Mockito.anyString())).thenReturn(new ArrayList<Object[]>());
+		locationHierarchyService.getLocationDetails(Mockito.anyString());
 		
 	}
 	
 	@Test(expected=MasterDataServiceException.class)
 	public void getLocationHierarchyFetchExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
-		locationHierarchyService.getLocationDetails();
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getLocationDetails(Mockito.anyString());
 		
 	}
 	@Test()

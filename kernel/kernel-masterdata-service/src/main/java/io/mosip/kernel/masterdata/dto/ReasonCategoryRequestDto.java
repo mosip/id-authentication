@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,11 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReasonCategoryRequestDto implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7207202901342908222L;
+public class ReasonCategoryRequestDto {
+	
 	
 	private List<PostReasonCategoryDto> reasonCategories;
 }

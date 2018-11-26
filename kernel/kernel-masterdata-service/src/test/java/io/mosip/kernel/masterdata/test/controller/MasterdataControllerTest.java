@@ -37,6 +37,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
@@ -130,8 +132,9 @@ public class MasterdataControllerTest {
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-
+	private static final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+    private LocationHierarchyResponseDto locationHierarchyResponseDto=null;
+    LocationHierarchyDto locationHierarchyDto=null;
 	@MockBean
 	private LocationService locationService;
 
@@ -237,6 +240,7 @@ public class MasterdataControllerTest {
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
+		List<LocationHierarchyDto> locationHierarchyDtos=new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -260,6 +264,13 @@ public class MasterdataControllerTest {
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
+		LocationHierarchyDto locationHierarchyDto=new LocationHierarchyDto();
+		locationHierarchyDto.setLocationHierarchylevel((short)1);
+		locationHierarchyDto.setLocationHierarchyName("COUNTRY");
+		locationHierarchyDtos.add(locationHierarchyDto);
+		locationHierarchyResponseDto =new LocationHierarchyResponseDto();
+		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
+		
 	}
 
 	private void idTypeSetup() {
@@ -573,15 +584,14 @@ public class MasterdataControllerTest {
 
 	// -------------------------------LocationControllerTest--------------------------
 
-//	@Test
-//	public void testGetAllLocationHierarchy() throws Exception {
-//
-//		Mockito.when(locationService.getLocationDetails()).thenReturn(locationResponseDto);
-//		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
-//				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED))
-//				.andExpect(MockMvcResultMatchers.status().isOk());
-//
-//	}
+	@Test
+	public void testGetAllLocationHierarchy() throws Exception {
+
+		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations").param("langcode","ENG"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
 
 	@Test
 	public void testGetLocatonHierarchyByLocCodeAndLangCode() throws Exception {
@@ -596,7 +606,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetAllLocationsNoRecordsFoundException() throws Exception {
-		Mockito.when(locationService.getLocationDetails())
+		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
@@ -604,7 +614,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetAllLocationsDataBaseException() throws Exception {
-		Mockito.when(locationService.getLocationDetails())
+		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
 				.andExpect(MockMvcResultMatchers.status().isNotFound());

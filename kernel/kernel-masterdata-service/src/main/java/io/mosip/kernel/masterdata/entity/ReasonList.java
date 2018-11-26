@@ -53,22 +53,6 @@ public class ReasonList extends BaseEntity implements Serializable {
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private ReasonCategory reasonCategory;
 
-	public ReasonList(String code,String rsnCatCode,String langCode,String name,String description,Boolean isActive,Boolean isDeleted,String createdBy, String updatedBy, LocalDateTime createdTime,
-			LocalDateTime updatedTime, LocalDateTime deletedTime) {
-		
-		setCode(code);
-		setLangCode(langCode);
-		setRsnCatCode(rsnCatCode);
-		this.name=name;
-		this.description=description;
-		setIsActive(true);
-		setIsDeleted(false);
-		setCreatedBy(createdBy);
-		setUpdatedBy(updatedBy);
-		setCreatedtimes(createdTime);
-		setUpdatedtimes(updatedTime);
-		setDeletedtimes(deletedTime);
-		
-	}
+	
 
 }

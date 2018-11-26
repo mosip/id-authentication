@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,24 +55,6 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 		this.reasonList.add(list);
 	}
 
-	public ReasonCategory(String code, String name, String description, String langCode, List<ReasonList> reasons,
-			Boolean isActive, Boolean isDeleted, String createdBy, String updatedBy, LocalDateTime createdTime,
-			LocalDateTime updatedTime, LocalDateTime deletedTime) {
-		
-
-		this.name = name;
-		this.description = description;
-	    setCode(code);
-		setLangCode(langCode);
-		this.reasonList.addAll(reasons);
-		setIsActive(isActive);
-		setIsDeleted(isDeleted);
-		setCreatedBy(createdBy);
-		setUpdatedBy(updatedBy);
-		setCreatedtimes(createdTime);
-		setUpdatedtimes(updatedTime);
-		setDeletedtimes(deletedTime);
-
-	}
+	
 
 }

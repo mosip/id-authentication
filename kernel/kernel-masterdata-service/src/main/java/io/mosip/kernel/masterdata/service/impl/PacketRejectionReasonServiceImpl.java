@@ -178,7 +178,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
-		reasonResponseDto.setSuccessfully_created(reasonListIds);
+		reasonResponseDto.setReasonList(reasonListIds);
 		return reasonResponseDto;
 
 	}

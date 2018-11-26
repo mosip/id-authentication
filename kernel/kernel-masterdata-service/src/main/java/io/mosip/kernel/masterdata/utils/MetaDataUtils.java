@@ -11,11 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 @Component
 public class MetaDataUtils {
