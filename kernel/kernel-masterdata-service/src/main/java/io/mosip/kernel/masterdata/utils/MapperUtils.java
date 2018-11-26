@@ -84,6 +84,7 @@ public class MapperUtils {
 			LocationHierarchyDto locationHierarchyDto = new LocationHierarchyDto();
 			locationHierarchyDto.setLocationHierarchylevel((Short) object[0]);
 			locationHierarchyDto.setLocationHierarchyName((String) object[1]);
+			locationHierarchyDto.setIsActive((Boolean) object[2]);
 			locationHierarchyDtos.add(locationHierarchyDto);
 		}
 		return locationHierarchyDtos;

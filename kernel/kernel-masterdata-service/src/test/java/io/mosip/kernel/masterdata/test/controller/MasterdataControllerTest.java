@@ -588,7 +588,7 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationHierarchy() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations").param("langcode","ENG"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
@@ -608,7 +608,7 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationsNoRecordsFoundException() throws Exception {
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 

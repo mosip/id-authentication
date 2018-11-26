@@ -321,9 +321,10 @@ public class MasterDataServiceTest {
 		locationHierarchy1.setUpdatedBy("sdfsd");
 		locationHierarchy1.setIsActive(true);
 		locationHierarchies.add(locationHierarchy1);
-		Object[] objectArray=new Object[2];
+		Object[] objectArray=new Object[3];
 		objectArray[0]=(short)0;
 		objectArray[1]="COUNTRY";
+		objectArray[2]=true;
 	    locObjList=new ArrayList<>();
 		locObjList.add(objectArray);
 	}
