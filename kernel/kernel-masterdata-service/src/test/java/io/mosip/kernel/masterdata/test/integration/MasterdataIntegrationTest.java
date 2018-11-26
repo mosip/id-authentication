@@ -1009,7 +1009,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRegistrationCentersMachineUserMappingNotFoundExceptionTest() throws Exception {
-		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqual(
+		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 				registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
 						.thenReturn(registrationCenterUserMachineHistories);
 		mockMvc.perform(get("/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
@@ -1018,7 +1018,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRegistrationCentersMachineUserMappingFetchExceptionTest() throws Exception {
-		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqual(
+		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 				registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
 						.thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
@@ -1034,7 +1034,7 @@ public class MasterdataIntegrationTest {
 	//@Test
 	public void getRegistrationCentersMachineUserMappingTest() throws Exception {
 		registrationCenterUserMachineHistories.add(registrationCenterUserMachineHistory);
-		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqual(
+		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 				registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
 						.thenReturn(registrationCenterUserMachineHistories);
 		MvcResult result = mockMvc.perform(get("/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")

@@ -54,7 +54,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByIdAndEffectivetimesLessThanEqual(
+					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 							new RegistrationCenterUserMachineHistoryId(registrationCenterId, userId, machineId),
 							LocalDateTime.parse(effectiveTimestamp));
 		} catch (DataAccessLayerException dataAccessLayerException) {
