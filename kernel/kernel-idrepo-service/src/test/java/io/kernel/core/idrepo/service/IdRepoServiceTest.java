@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -44,6 +45,7 @@ import io.kernel.core.idrepo.service.impl.IdRepoServiceImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
+@ConfigurationProperties("mosip.idrepo")
 public class IdRepoServiceTest {
 
 	/** The service. */
@@ -63,7 +65,7 @@ public class IdRepoServiceTest {
 	private RestTemplate restTemplate;
 
 	/** The id. */
-	private Map<String, String> id = new HashMap<>();
+	private Map<String, String> id;
 
 	/** The id repo. */
 	@Mock
@@ -75,6 +77,14 @@ public class IdRepoServiceTest {
 	/** The request. */
 	IdRequestDTO request = new IdRequestDTO();
 
+	public Map<String, String> getId() {
+		return id;
+	}
+
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+
 	/**
 	 * Setup.
 	 *
@@ -85,9 +95,6 @@ public class IdRepoServiceTest {
 		ReflectionTestUtils.setField(service, "mapper", mapper);
 		ReflectionTestUtils.setField(service, "env", env);
 		ReflectionTestUtils.setField(service, "id", id);
-		id.put("create", "mosip.id.create");
-		id.put("update", "mosip.id.update");
-		id.put("read", "mosip.id.read");
 		request.setRegistrationId("registrationId");
 		request.setRequest(null);
 		uin.setUin("1234");
@@ -134,5 +141,17 @@ public class IdRepoServiceTest {
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
 				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
 		service.retrieveIdentity("1234");
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityNullUinOject() throws IdRepoAppException {
+		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(null);
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
+				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
+		service.retrieveIdentity("1234");
+	}
+	
+	public void testUpdateIdentity() {
+		
 	}
 }

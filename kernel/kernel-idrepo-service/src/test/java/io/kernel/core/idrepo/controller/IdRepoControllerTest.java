@@ -100,6 +100,22 @@ public class IdRepoControllerTest {
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
+	
+	/**
+	 * Test retrieve identity.
+	 *
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityInvalidUin() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		when(uinValidator.validateId(anyString())).thenReturn(false);
+		when(idRepoService.retrieveIdentity(any())).thenReturn(response);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234");
+		assertEquals(response, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
 
 	/**
 	 * Test retrieve identity null id.
