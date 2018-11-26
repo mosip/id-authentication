@@ -18,11 +18,11 @@ This folder has batch server module based on spring cloud local dataflow server 
 
 ###Uses-
 
-Batch jobs can be register and launched using UI interface or by using batch framework module of kernel,the jobs will start apperaing on UI dashboard.Uri of batch job executing jars need to be provided to register a job on server.
+Batch jobs can be register and launched using UI interface or by using batch framework module of kernel,the jobs will start apperaing on UI dashboard.Uri of batch job executable jars need to be provided to register a job on server.
 For example-
 
 ```
-maven://groupId:artifactId:jar:1.0.0-SNAPSHOT
+maven://groupId:artifactId:jar:exec:1.0.0-SNAPSHOT
 
 ```
 The batch jobs must contain **@EnableTask** annotation so that it can be executed by server.
