@@ -1,6 +1,6 @@
-## kernel-json-validator
+## kernel-jsonvalidator
 
- 1- [Background & Design](../../design/kernel/kernel-datamapper.md)
+ 1- [Background & Design](../../design/kernel/kernel-jsonvalidator.md)
  
 
 
