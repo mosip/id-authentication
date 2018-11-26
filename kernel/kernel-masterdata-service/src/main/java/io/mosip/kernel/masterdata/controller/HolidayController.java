@@ -26,9 +26,9 @@ public class HolidayController {
 		return holidayService.getHolidayById(holidayId);
 	}
 
-	@GetMapping("/{holidayid}/{langCode}")
+	@GetMapping("/{holidayid}/{langcode}")
 	public HolidayResponseDto getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
-			@PathVariable("langCode") String langCode) {
+			@PathVariable("langcode") String langCode) {
 		return holidayService.getHolidayByIdAndLanguageCode(holidayId, langCode);
 	}
 }

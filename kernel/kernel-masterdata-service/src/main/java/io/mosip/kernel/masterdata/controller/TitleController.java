@@ -39,7 +39,7 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/title/{langCode}")
+	@GetMapping(value = "/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable String langCode) {
 		return titleService.getByLanguageCode(langCode);
 	}

@@ -46,7 +46,7 @@ public class MachineHistoryController {
 	 * @return returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
-	@GetMapping(value = "/{code}/{langCode}/{effdatetimes}")
+	@GetMapping(value = "/{code}/{langcode}/{effdatetimes}")
 	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("code") String machineId,
 			@PathVariable("langCode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
