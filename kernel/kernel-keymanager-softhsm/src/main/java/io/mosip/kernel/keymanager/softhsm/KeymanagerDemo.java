@@ -26,7 +26,7 @@ import io.mosip.kernel.core.keymanager.spi.KeyStore;
 public class KeymanagerDemo {
 
 	@Autowired
-	private KeyStore softhsmKeystore;
+	private KeyStore keyStoreImpl;
 
 	public static void main(String[] args) {
 		SpringApplication.run(KeymanagerDemo.class, args);
@@ -35,12 +35,12 @@ public class KeymanagerDemo {
 	@PostConstruct
 	public void demo() {
 
-		List<String> allAlias = softhsmKeystore.getAllAlias();
+		List<String> allAlias = keyStoreImpl.getAllAlias();
 
 		allAlias.forEach(alias -> {
-			Key key = softhsmKeystore.getKey(alias);
+			Key key = keyStoreImpl.getKey(alias);
 			System.out.println(alias + "," + key);
-			softhsmKeystore.deleteKey(alias);
+			keyStoreImpl.deleteKey(alias);
 		});
 
 		secretkeyDemo();
@@ -63,9 +63,9 @@ public class KeymanagerDemo {
 		keyGenerator.init(keyBitSize, secureRandom);
 		SecretKey secretKey = keyGenerator.generateKey();
 
-		softhsmKeystore.storeSymmetricKey(secretKey, "test-alias-secret");
+		keyStoreImpl.storeSymmetricKey(secretKey, "test-alias-secret");
 
-		SecretKey fetchedSecretKey = softhsmKeystore.getSymmetricKey("test-alias-secret");
+		SecretKey fetchedSecretKey = keyStoreImpl.getSymmetricKey("test-alias-secret");
 		System.out.println(fetchedSecretKey.toString());
 	}
 
@@ -82,18 +82,18 @@ public class KeymanagerDemo {
 		keyPairGenerator.initialize(2048);
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-		softhsmKeystore.storeAsymmetricKey(keyPair, "test-alias-private", 365);
+		keyStoreImpl.storeAsymmetricKey(keyPair, "test-alias-private", 365);
 
-		PrivateKey privateKey = softhsmKeystore.getPrivateKey("test-alias-private");
+		PrivateKey privateKey = keyStoreImpl.getPrivateKey("test-alias-private");
 
 		System.out.println(privateKey.toString());
 		System.out.println(privateKey.getEncoded());
 
-		PublicKey publicKey = softhsmKeystore.getPublicKey("test-alias-private");
+		PublicKey publicKey = keyStoreImpl.getPublicKey("test-alias-private");
 		System.out.println(publicKey.toString());
 		System.out.println(publicKey.getEncoded());
 		
-		X509Certificate certificate = (X509Certificate) softhsmKeystore.getCertificate("test-alias-private");
+		X509Certificate certificate = (X509Certificate) keyStoreImpl.getCertificate("test-alias-private");
 		try {
 			System.out.println(certificate.toString());
 			System.out.println("!!!!!!!!!!!!!!"+certificate.getSubjectX500Principal());
