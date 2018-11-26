@@ -18,13 +18,14 @@ import io.mosip.kernel.emailnotification.exception.NotificationException;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 /**
- * Service implementation class for {@link MailNotifier}.
+ * Service implementation class for {@link EmailNotification}.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
  */
 @Service
-public class EmailNotificationServiceImpl implements EmailNotification<MultipartFile[],CompletableFuture<ResponseDto>>{
+public class EmailNotificationServiceImpl
+		implements EmailNotification<MultipartFile[], CompletableFuture<ResponseDto>> {
 	/**
 	 * Autowired reference for {@link JavaMailSender}
 	 */
@@ -41,11 +42,16 @@ public class EmailNotificationServiceImpl implements EmailNotification<Multipart
 	 * SendEmail
 	 * 
 	 * @param mailTo
+	 *            email address to which mail will be sent.
 	 * @param mailCc
+	 *            email addresses to be cc'ed.
 	 * @param mailSubject
+	 *            the subject.
 	 * @param mailContent
+	 *            the content.
 	 * @param attachments
-	 * @return
+	 *            the attachments.
+	 * @return the response dto.
 	 */
 	@Override
 	public CompletableFuture<ResponseDto> sendEmail(String[] mailTo, String[] mailCc, String mailSubject,

@@ -15,6 +15,8 @@ import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
+ * Controller class to fetch or create document categories.
+ * 
  * @author Neha
  * @author Ritesh Sinha
  * @since 1.0.0
@@ -58,6 +60,13 @@ public class DocumentCategoryController {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
 	}
 
+	/**
+	 * This method creates document categories based on list provided.
+	 * 
+	 * @param category
+	 *            the request dto.
+	 * @return {@link PostResponseDto}
+	 */
 	@PostMapping("/documentcategories")
 	public ResponseEntity<PostResponseDto> addDocumentCategories(@RequestBody DocumentCategoryRequestDto category) {
 		return new ResponseEntity<>(documentCategoryService.addDocumentCategoriesData(category), HttpStatus.CREATED);

@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
+import java.time.LocalTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +44,15 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	private String languageCode;
+	
+	private Short numberOfKiosks;
+	
+	private LocalTime perKioskProcessTime;
+	
+	private LocalTime processStartTime;
+	
+	private LocalTime processEndTime;
+	
 	private Boolean isActive;
 
 }

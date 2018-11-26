@@ -21,7 +21,7 @@
 
  The batch jobs uri must be in the format of **task.JOBNAME:maven://groupId:artifactId:jar:exec:1.0.0-SNAPSHOT**
  and separated by "," in the property file.
- Once executed it will register all the jobs in batch server where jobs can be monitor.
+ Once executed it will register all the jobs in batch server where jobs can be monitored.
 
 
 
