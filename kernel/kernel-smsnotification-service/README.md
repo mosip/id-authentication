@@ -6,7 +6,7 @@
  2- [API Documentation <TBA>](TBA)
  
  ```
- mvn javadoc:javadoc
+ localhost:8084/swagger-ui.html
 
  ```
  
@@ -19,7 +19,7 @@ OkHttpClient client = new OkHttpClient();
 
 MediaType mediaType = MediaType.parse("application/json");
 
-RequestBody body = RequestBody.create(mediaType, "{\n\"message\": \"OTP-432467\",\n\"number\": \"98*****897\"\n}");
+RequestBody body = RequestBody.create(mediaType, "{\"message\": \"OTP-432467\",\"number\": \"98*****897\"}");
 
 Request request = new Request.Builder()
   .url("http://104.211.214.143:8084/notifier/sms")
@@ -33,7 +33,8 @@ Response response = client.newCall(request).execute();
 
 
 Response body model for POST **/notifier/sms**
-Status: 202
+
+HttpStatus: 202 Accepted
   
  ```
 {
@@ -45,6 +46,8 @@ Status: 202
 Exception Scenario-
 
 1.Null or empty inputs provided-
+
+HttpStatus : 406 Not Acceptable
 
 ```
 {
@@ -59,6 +62,9 @@ Exception Scenario-
 ```
 
 2.Invalid number present-
+
+HttpStatus : 406 Not Acceptable
+
 
 ```
 {
