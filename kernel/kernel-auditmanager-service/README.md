@@ -1,13 +1,13 @@
 ## kernel-auditmanager-service
 This service can be used to audit events and operations. Service has REST API exposed to save event details as audit in database.
 
-[Background & Design](../../design/kernel/kernel-auditmanager.md)
+1. [Background & Design](../../design/kernel/kernel-auditmanager.md)
 
-**Api Documentation**
+2. Api Documentation
 
 
 ```
-mvn javadoc:javadoc
+http://localhost:8081/swagger-ui.html
 ```
 
 **Properties to be added in parent Spring Application environment**
@@ -43,9 +43,6 @@ mvn javadoc:javadoc
 2. InvalidFormatException ("KER-AUD-002", "Audit Request format is invalid");
 
 **Usage Sample**
-
-
-  *Usage 1:*
   
   *Request*
   
@@ -65,7 +62,7 @@ Response response = client.newCall(request).execute();
   
   *Response*
   
-  Status: 200
+ HTTP Status: 200 OK
   
   ```
 {
@@ -77,6 +74,8 @@ Response response = client.newCall(request).execute();
 
 
  *Invalid Audit Request*
+ 
+ HTTP Status: 400 Bad Request
 
 ```
 {
@@ -87,6 +86,8 @@ Response response = client.newCall(request).execute();
  
 
  *Invalid Audit Format*
+ 
+  HTTP Status: 400 Bad Request
 
 ```
 {
