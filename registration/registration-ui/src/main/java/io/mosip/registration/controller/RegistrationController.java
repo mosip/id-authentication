@@ -59,9 +59,9 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
- * The enums for introducer types
+ * Class for Registration Page Controller
  * 
- * @author Taleev Aalam
+ * @author Taleev.Aalam
  * @since 1.0.0
  *
  */
