@@ -24,7 +24,7 @@ import io.mosip.kernel.smsnotification.exception.InvalidNumberException;
  *
  */
 @Service
-public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDto>{
+public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDto> {
 
 	/**
 	 * The reference that autowired rest template builder.
@@ -50,20 +50,21 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 	@Value("${mosip.kernel.sms.number.length}")
 	String length;
 
-	/**
-	 * SendSmsNotification
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param contactNumber
-	 * @param contentMessage
-	 * @return
+	 * @see
+	 * io.mosip.kernel.core.notification.spi.SmsNotification#sendSmsNotification(
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage)  {
+	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage) {
 
 		if (!StringUtils.isNumeric(contactNumber) || contactNumber.length() < Integer.parseInt(length)
 				|| contactNumber.length() > Integer.parseInt(length)) {
 			throw new InvalidNumberException(SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorCode(),
-					SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorMessage());
+					SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorMessage() + length
+							+ SmsPropertyConstant.SUFFIX_MESSAGE.getProperty());
 		}
 
 		RestTemplate restTemplate = restTemplateBuilder.build();

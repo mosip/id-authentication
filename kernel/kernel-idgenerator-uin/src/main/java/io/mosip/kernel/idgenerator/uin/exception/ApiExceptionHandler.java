@@ -2,7 +2,6 @@ package io.mosip.kernel.idgenerator.uin.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,14 +25,14 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(UinNotFoundException.class)
-	public ResponseEntity<ErrorItem> handle(MethodArgumentNotValidException e) {
+	public ResponseEntity<ErrorResponse<Error>> uinNotFoundHandler(UinNotFoundException e) {
 
-		ErrorItem error = new ErrorItem();
-		error.setMessage(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-		error.setCode(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
+		Error error = new Error(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+				UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
 
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
-
 }

@@ -1,10 +1,9 @@
 package io.mosip.kernel.masterdata.constant;
 
 public enum HolidayErrorCode {
-	HOLIDAY_INVALID_ID_EXCEPTION("KER-MSD-045", "No Holiday found for specified holiday id"), HOLIDAY_FETCH_EXCEPTION(
-			"KER-MSD-046", "Error occured while fetching holidays"), HOLIDAY_MAPPING_EXCEPTION("KER-MSD-047",
-					"Error occured while mapping Holiday"), ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION("KER-MSD-048",
-							"No Holiday found for specified id and language code");
+	HOLIDAY_FETCH_EXCEPTION("KER-MSD-019",
+			"Error occured while fetching Holidays"), ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION("KER-MSD-020",
+					"Holiday not found");
 
 	private final String errorCode;
 	private final String errorMessage;

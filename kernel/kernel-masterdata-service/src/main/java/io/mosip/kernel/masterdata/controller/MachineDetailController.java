@@ -1,18 +1,18 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 /**
- * Controller with api to get Machine Details
+
+ * This controller class provides Machine details based on user provided data.
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -23,32 +23,49 @@ import io.mosip.kernel.masterdata.service.MachineDetailService;
 @RequestMapping(value = "/machines")
 public class MachineDetailController {
 
+	/**
+	 * Reference to MachineDetailService.
+	 */
 	@Autowired
 	private MachineDetailService macService;
 
 	/**
-	 * Get api to fetch a machine details based on given Machine ID and Language
-	 * code
+	 * 
+	 * Function to fetch machine detail based on given Machine ID and Language code.
 	 * 
 	 * @param machineId
 	 * @param langcode
 	 * @return machine detail based on given Machine ID and Language code
 	 */
-	@GetMapping(value = "/{langcode}/{machineid}")
-	public MachineDetailDto getMachineDetailIdLang(@PathVariable("machineid") String machineId,
+	@GetMapping(value = "/{id}/{langcode}")
+	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
 		return macService.getMachineDetailIdLang(machineId, langCode);
 
 	}
 
 	/**
-	 * Get api to fetch a all machines details
+	 * 
+	 * Function to fetch machine detail based on given Language code
+	 * 
+	 * @param langcode
+	 * @return machine detail based on given Language code
+	 */
+
+	@GetMapping(value = "/{langcode}")
+	public MachineDetailResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
+		return macService.getMachineDetailLang(langCode);
+
+	}
+
+	/**
+	 * Function to fetch a all machines details
 	 * 
 	 * @return all machines details
 	 */
 
 	@GetMapping
-	public List<MachineDetailDto> getMachineDetailAll() {
+	public MachineDetailResponseDto getMachineDetailAll() {
 		return macService.getMachineDetailAll();
 
 	}

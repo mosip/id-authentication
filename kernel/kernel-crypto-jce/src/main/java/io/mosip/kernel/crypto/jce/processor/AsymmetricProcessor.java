@@ -43,7 +43,7 @@ public class AsymmetricProcessor {
 	 *            process mode for operation either Encrypt or Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(SecurityMethod method, Key key, byte[] data, int mode) {
+	public static byte[] process(SecurityMethod method, Key key, byte[] data, int mode) {
 		Cipher cipher = init(key, mode, method);
 		CryptoUtils.verifyData(data);
 		return processData(cipher, data, 0, data.length);

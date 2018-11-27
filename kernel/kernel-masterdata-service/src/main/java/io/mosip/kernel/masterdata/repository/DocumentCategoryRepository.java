@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 
 /**
  * @author Neha
@@ -13,7 +14,14 @@ import io.mosip.kernel.masterdata.entity.DocumentCategory;
  *
  */
 @Repository
-public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, String> {
+public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeAndLanguageCodeId> {
+
+	/**
+	 * Get all DocumentCategory types
+	 *
+	 * @return {@link List<DocumentCategory>}
+	 */
+	public List<DocumentCategory> findAllByIsDeletedFalse(Class<DocumentCategory> entityClass);
 
 	/**
 	 * Get all Document category of a specific language using language code
@@ -21,7 +29,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 * @param langCode
 	 * @return {@link List<DocumentCategory>}
 	 */
-	List<DocumentCategory> findAllByLangCode(String langCode);
+	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
 	/**
 	 * Get Document Category by specific id and language code
@@ -30,6 +38,6 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 * @param langCode
 	 * @return {@linkplain DocumentCategory}
 	 */
-	DocumentCategory findByCodeAndLangCode(String code, String langCode);
+	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 
 }

@@ -1,7 +1,11 @@
 package io.mosip.kernel.auditmanager.exception;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,6 +24,8 @@ import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+	private static final String WHITESPACE = " ";
+
 	/**
 	 * This method handle MethodArgumentNotValidException.
 	 * 
@@ -28,16 +34,23 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Error> handle(MethodArgumentNotValidException e) {
+	public ResponseEntity<ErrorResponse<Error>> methodArgumentNotValidException(
+			final MethodArgumentNotValidException e) {
 
-		Error error = new Error();
-		error.setMessage(AuditErrorCode.HANDLEREXCEPTION.getErrorMessage());
-		error.setCode(AuditErrorCode.HANDLEREXCEPTION.getErrorCode());
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		BindingResult bindingResult = e.getBindingResult();
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		fieldErrors.forEach(x -> {
+			Error error = new Error(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
+					Character.toUpperCase(x.getField().charAt(0)) + x.getField().substring(1) + WHITESPACE
+							+ x.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
 
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 	/**
 	 * This method handle InvalidFormatException.
 	 * 
@@ -46,13 +59,14 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<Error> handle(InvalidFormatException e) {
+	public ResponseEntity<ErrorResponse<Error>> methodArgumentFormatException(InvalidFormatException e) {
 
-		Error error = new Error();
-		error.setMessage(AuditErrorCode.INVALIDFORMAT.getErrorMessage());
-		error.setCode(AuditErrorCode.INVALIDFORMAT.getErrorCode());
+		Error error = new Error(AuditErrorCode.INVALIDFORMAT.getErrorCode(),
+				AuditErrorCode.INVALIDFORMAT.getErrorMessage());
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
 
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
 

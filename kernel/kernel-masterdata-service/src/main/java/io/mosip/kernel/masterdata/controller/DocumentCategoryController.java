@@ -1,23 +1,28 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
+ * Controller class to fetch or create document categories.
+ * 
  * @author Neha
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
 @RestController
-@RequestMapping("/documentcategories")
 public class DocumentCategoryController {
 
 	@Autowired
@@ -28,8 +33,8 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping("/all")
-	public List<DocumentCategoryDto> fetchAllDocumentCategory() {
+	@GetMapping("/documentcategories")
+	public DocumentCategoryResponseDto fetchAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
 
@@ -38,9 +43,9 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("/all/{languagecode}")
-	public List<DocumentCategoryDto> fetchAllDocumentCategoryUsingLangCode(
-			@PathVariable("languagecode") String langCode) {
+	@GetMapping("/documentcategories/{langcode}")
+	public DocumentCategoryResponseDto fetchAllDocumentCategoryUsingLangCode(
+			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
 
@@ -49,9 +54,22 @@ public class DocumentCategoryController {
 	 * 
 	 * @return A Document category
 	 */
-	@GetMapping("/{id}/{languagecode}")
-	public DocumentCategoryDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("id") String code,
-			@PathVariable("languagecode") String langCode) {
+	@GetMapping("/documentcategories/{code}/{langcode}")
+	public DocumentCategoryResponseDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("code") String code,
+			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
+	}
+
+	/**
+	 * This method creates document categories based on list provided.
+	 * 
+	 * @param category
+	 *            the request dto.
+	 * @return {@link PostResponseDto}
+	 */
+	@PostMapping("/documentcategories")
+	public ResponseEntity<PostResponseDto> addDocumentCategories(@RequestBody DocumentCategoryRequestDto category) {
+		return new ResponseEntity<>(documentCategoryService.addDocumentCategoriesData(category), HttpStatus.CREATED);
+
 	}
 }

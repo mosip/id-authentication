@@ -35,11 +35,12 @@ public class RegistrationCenterHistoryController {
 	 *            The effective date
 	 * @return {@link RegistrationCenterResponseDto} instance
 	 */
-	@GetMapping("/registrationcentershistory/{id}/{languagecode}/{eff_dtimes}")
-	public RegistrationCenterResponseDto getRegistrationCentersHistory(@PathVariable("id") String registrationCenterId,
-			@PathVariable("languagecode") String languageCode, @PathVariable("eff_dtimes") String effectiveDate) {
+	@GetMapping("/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
+	public RegistrationCenterResponseDto getRegistrationCentersHistory(
+			@PathVariable("registrationCenterId") String registrationCenterId, @PathVariable("langcode") String langCode,
+			@PathVariable("effectiveDate") String effectiveDate) {
 
-		return registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId, languageCode,
+		return registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId, langCode,
 				effectiveDate);
 	}
 

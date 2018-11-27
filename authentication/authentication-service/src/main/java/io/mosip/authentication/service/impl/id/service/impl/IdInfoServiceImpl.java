@@ -11,21 +11,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
 
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
+
 @PropertySource("classpath:sample-output.properties")
 @Service
 public class IdInfoServiceImpl implements IdInfoService {
 
 	@Value("${sample.demo.entity}")
-	String value;
+	private String value;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -57,7 +60,6 @@ public class IdInfoServiceImpl implements IdInfoService {
 					}));
 		} catch (IOException e) {
 			throw new IdAuthenticationDaoException();
-			// FIXME throw specific exception
 		}
 
 	}

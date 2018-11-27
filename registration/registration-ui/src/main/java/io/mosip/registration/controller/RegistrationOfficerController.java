@@ -63,7 +63,7 @@ public class RegistrationOfficerController extends BaseController implements Ini
 		} catch (IOException | RuntimeException exception) {
 			
 			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+					APPLICATION_ID, exception.getMessage());
 			
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());

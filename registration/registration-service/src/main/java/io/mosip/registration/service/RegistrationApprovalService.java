@@ -2,7 +2,7 @@ package io.mosip.registration.service;
 
 import java.util.List;
 
-import io.mosip.registration.dto.RegistrationApprovalUiDto;
+import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
 
 /**
@@ -13,32 +13,22 @@ import io.mosip.registration.entity.Registration;
 public interface RegistrationApprovalService {
 
 	/**
-	 * {@code getAllEnrollments} method to get the created registration packets for approval
-	 * 
-	 * @return list of packets
-	 */
-	public List<RegistrationApprovalUiDto> getAllEnrollments();
-	
-	/**
 	 * {@code getEnrollmentByStatus} method to fetch registration packets on status
 	 * basis
 	 * 
 	 * @param status
 	 * @return list of packets
 	 */
-	public List<Registration> getEnrollmentByStatus(String status);
+	public List<RegistrationApprovalDTO> getEnrollmentByStatus(String status);
 	
 	/**
-	 * {@code packetUpdateStatus} method to update the status of the packet
-	 * 
-	 * @param id
-	 * @param clientStatusCode
-	 * @param approverUserId
-	 * @param statusComments
-	 * @param approverRoleCode
-	 * @return Boolean
+	 * {@code packetUpdateStatus} method to update the status of the packet.
+	 *
+	 * @param registrationID 
+	 * @param statusComments 
+	 * @param clientStatusCode 
+	 * @return {@link Registration} entity
 	 */
-	public Boolean packetUpdateStatus(String id, String clientStatusCode, String approverUserId, String statusComments,String approverRoleCode);
-	
+	public Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode);
 
 }

@@ -10,8 +10,6 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.stereotype.Component;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -26,45 +24,24 @@ import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExcept
  * Implementation of {@link TemplateManager} which uses Velocity Template
  * Engine, TemplateManagerImpl will merge the template with values.
  * 
- * <pre>
- * // set up and initialize MosipTemplateManager using TemplateConfigureBuilder
- * // before this code block
- *
- * TemplateManager templateManager = new TemplateConfigureBuilder().build();
- * templateManager.merge(template, values);
- * </pre>
- * 
  * @author Abhishek Kumar
  * @version 1.0.0
- * @since 2018-10-01
+ * @since 01-10-2018
  */
-@Component
+/**
+ * @author Abhishek Kumar
+ *
+ */
 public class TemplateManagerImpl implements TemplateManager {
 	private Configuration configuration;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param configuration
-	 *            template configuration
-	 * 
-	 */
 	public TemplateManagerImpl(Configuration configuration) {
 		this.configuration = configuration;
 	}
 
-	/**
-	 * Method to merge template , where template content will be pass as inputSteam
-	 * 
-	 * @param is
-	 *            the {@link InputStream} is template content .
-	 * @param values
-	 *            as Map&lt;String,Object &gt; where key will be placeholder name
-	 *            and Object is the actual value for the placeholder
-	 * @return template merged template content as {@link InputStream}
-	 * @throws IOException
-	 *             if an I/O exception occurs during writing to the writer
-	 * 
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManager#merge(java.io.InputStream, java.util.Map)
 	 */
 	@Override
 	public InputStream merge(InputStream is, Map<String, Object> values) throws IOException {
@@ -85,41 +62,18 @@ public class TemplateManagerImpl implements TemplateManager {
 		}
 	}
 
-	/**
-	 * Merges a template and puts the rendered stream into the writer. The default
-	 * encoding that template manager uses to read template files is UTF-8
-	 * 
-	 * @param templateName
-	 *            name of template to be used in merge
-	 * @param writer
-	 *            output writer for rendered template
-	 * @param values
-	 *            as Map&lt;String,Object &gt; where key is placeholder name and
-	 *            Object is Placeholder value
-	 * @return boolean true if successfully, false otherwise.
-	 * @throws IOException
-	 *             if an I/O exception occurs during writing to the writer
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManager#merge(java.lang.String, java.io.Writer, java.util.Map)
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException {
 		return merge(templateName, writer, values, configuration.getDefaultEncoding());
 	}
 
-	/**
-	 * Method to merge template using provided encoding type
-	 * 
-	 * @param templateName
-	 *            name of the template to be used in merge
-	 * @param writer
-	 *            output writer for render template
-	 * @param values
-	 *            as Map&lt;String,Object &gt; where key is placeholder name and
-	 *            Object is value for the placeholder
-	 * @param encodingType
-	 *            as String like UTF-8,UTF-16 etc.
-	 * @return boolean true if successfully, false otherwise
-	 * @throws IOException
-	 *             if an I/O exception occurs during writing to the writer
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManager#merge(java.lang.String, java.io.Writer, java.util.Map, java.lang.String)
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, String encodingType)

@@ -3,7 +3,7 @@ package io.mosip.registration.processor.camel.bridge;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
-import io.mosip.registration.processor.camel.bridge.processor.StructureValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.ValidationProcessor;
 import io.mosip.registration.processor.camel.bridge.statuscode.MessageEnum;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
  */
 public class MosipBridgeRoutes extends RouteBuilder {
 
-	private static Processor validateStructure = new StructureValidationProcessor();
+	private static Processor validateStructure = new ValidationProcessor();
 
 	/*
 	 * (non-Javadoc)
@@ -35,6 +35,15 @@ public class MosipBridgeRoutes extends RouteBuilder {
 
 		// Structure Validation to Demographic Validation routing
 		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(validateStructure).choice()
+				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+
+		// OSI validation to quality check
+		from(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)).process(validateStructure).choice()
 				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))

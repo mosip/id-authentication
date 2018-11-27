@@ -2,7 +2,6 @@ package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +32,10 @@ public class CreateDto implements Serializable {
 
 	/** The update date time. */
 	private Timestamp updateDateTime;
+	 
+	/**
+	 * 
+	 */
+	private String demographicDetails;
 
 }

@@ -2,22 +2,21 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
-import io.mosip.kernel.masterdata.exception.LanguageFetchException;
-import io.mosip.kernel.masterdata.exception.LanguageMappingException;
-import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  *
@@ -37,45 +36,58 @@ public class LanguageServiceImpl implements LanguageService {
 	 * Helper class to map objects.
 	 */
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/**
-	 * This method fetch all Languages present in database.
+	 * Helper class to map dto to entity.
+	 */
+	@Autowired
+	private MetaDataUtils metaDataUtils;
+
+	/**
+	 * (non-Javadoc)
 	 * 
-	 * @throws LanguageFetchException
-	 *             when exception raise during fetch of Language details.
-	 * @throws LanguageNotFoundException
-	 *             when no records found for given parameter(langCode).
-	 * @throws LanguageMappingException
-	 *             when error occurs while mapping.
+	 * @see LanguageService#getAllLaguages()
 	 */
 	@Override
-	public LanguageResponseDto getAllLaguages() {
-		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
+	public LanguageRequestResponseDto getAllLaguages() {
+		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
 		List<LanguageDto> languageDtos = null;
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAll(Language.class);
+			languages = languageRepository.findAllByIsDeletedFalse();
 		} catch (DataAccessException dataAccessException) {
-			throw new LanguageFetchException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage(), dataAccessException);
 		}
 
 		if (languages != null && !languages.isEmpty()) {
-			try {
-				languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
-			} catch (MappingException | ConfigurationException | IllegalArgumentException e) {
-				throw new LanguageMappingException(LanguageErrorCode.LANGUAGE_MAPPING_EXCEPTION.getErrorCode(),
-						LanguageErrorCode.LANGUAGE_MAPPING_EXCEPTION.getErrorCode());
-			}
+			languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
 		} else {
-			throw new LanguageNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 
-		languageResponseDto.setLanguages(languageDtos);
-		return languageResponseDto;
+		languageRequestResponseDto.setLanguages(languageDtos);
+		return languageRequestResponseDto;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see LanguageService#saveLanguage(LanguageDto)
+	 */
+	@Override
+	public String saveLanguage(LanguageDto dto) {
+
+		try {
+			Language languages = metaDataUtils.mapDtoToEntity(dto, Language.class);
+			return languageRepository.create(languages).getCode();
+		} catch (HibernateException e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage(), e);
+		}
 	}
 
 }

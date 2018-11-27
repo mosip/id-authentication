@@ -3,10 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +12,15 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistor
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingFetchHistoryException;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingHistoryException;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingNotFoundHistoryException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
-/** Implementation class for user machine mapping service 
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+
+/**
+ * Implementation class for user machine mapping service
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -33,15 +32,21 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	ModelMapper modelMapper;
+	private MapperUtils objectMapperUtil;
+
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
 	 */
 	@Autowired
 	RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService#getRegistrationCentersMachineUserMapping(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.
+	 * RegistrationCenterMachineUserHistoryService#
+	 * getRegistrationCentersMachineUserMapping(java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
@@ -49,18 +54,18 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByIdAndEffectivetimesLessThanEqual(
+					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 							new RegistrationCenterUserMachineHistoryId(registrationCenterId, userId, machineId),
 							LocalDateTime.parse(effectiveTimestamp));
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterUserMachineMappingFetchHistoryException(
+			throw new MasterDataServiceException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorMessage());
 		}
-		if (registrationCenterUserMachines.isEmpty()) {
-			throw new RegistrationCenterUserMachineMappingNotFoundHistoryException(
+		if (registrationCenterUserMachines != null && registrationCenterUserMachines.isEmpty()) {
+			throw new DataNotFoundException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND
@@ -68,17 +73,8 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		try {
-			registrationCenters = modelMapper.map(registrationCenterUserMachines,
-					new TypeToken<List<RegistrationCenterUserMachineMappingHistoryDto>>() {
-					}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new RegistrationCenterUserMachineMappingHistoryException(
-					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_EXCEPTION
-							.getErrorCode(),
-					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_EXCEPTION
-							.getErrorMessage());
-		}
+		registrationCenters = objectMapperUtil.mapAll(registrationCenterUserMachines,
+				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);
 		return centerUserMachineMappingResponseDto;

@@ -1,0 +1,45 @@
+.expansionPanelPlacer{
+    margin: 30px 30px;
+    padding: 15px 15px;
+}
+
+.spacer{
+    margin: 15px 0 0 0;
+}
+
+.inlineSpacer{
+    margin: 0 35px 0 0;
+}
+
+.right-align{
+    text-align: right;
+}
+
+.img-spacer{
+    margin: 0 0 0 -6px;
+    cursor: pointer;
+}
+
+.hyperlink{
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media(max-width: 500px) {
+    .expansionPanelPlacer{
+        padding: 0;
+        margin: 5px;
+    }
+}
+
+@media(max-width: 765px) {
+    
+    .mat-table {
+        overflow: auto;
+      }
+      
+    .mat-header-row, .mat-row {
+        min-width: 1000px;
+      }
+}

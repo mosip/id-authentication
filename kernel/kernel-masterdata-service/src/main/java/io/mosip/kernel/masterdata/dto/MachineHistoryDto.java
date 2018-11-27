@@ -7,7 +7,9 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Machine History Detail
@@ -18,6 +20,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MachineHistoryDto {
 
 	/**
@@ -51,7 +55,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 	/**
 	 * Field to hold creator name

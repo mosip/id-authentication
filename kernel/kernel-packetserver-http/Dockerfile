@@ -1,12 +1,11 @@
-FROM java:8
+FROM openjdk:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+COPY ./target/kernel-packetserver-http-1.0.0-SNAPSHOT.jar kernel-packetserver-http-1.0.0-SNAPSHOT.jar
 
-ADD target/kernel-packetserver-http-1.0.0-SNAPSHOT.jar /KernelHttpPacketServer.jar
+RUN mkdir /packet-dir
 
-RUN bash -c 'touch /KernelHttpPacketServer.jar'
+VOLUME /packet-dir
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","/KernelHttpPacketServer.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=int","kernel-packetserver-http-1.0.0-SNAPSHOT.jar"]

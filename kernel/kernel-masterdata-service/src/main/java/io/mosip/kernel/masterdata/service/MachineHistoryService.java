@@ -1,13 +1,6 @@
-/**
- * 
- *
- */
-
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Machine History Details
@@ -32,6 +25,7 @@ public interface MachineHistoryService {
 	 *         machine id and language code
 	 *
 	 */
-	List<MachineHistoryDto> getMachineHistroyIdLangEffDTime(String id, String langCode, String effDateTime);
+	MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDateTime);
 
 }
+

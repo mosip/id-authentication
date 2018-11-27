@@ -23,13 +23,7 @@ public class BiometricTypeDto {
 	private String description;
 
 	private String langCode;
-
-	private boolean isActive;
-
-	private String createdBy;
-
-	private String updatedBy;
-
-	private boolean isDeleted;
+	
+	private Boolean isActive;
 
 }

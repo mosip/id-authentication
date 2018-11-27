@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.util.dto;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -38,7 +37,7 @@ public class RestRequestDTO {
 	private Class<?> responseType;
 
 	@NotNull
-	private Consumer<HttpHeaders> headers;
+	private HttpHeaders headers;
 
 	@Pattern(regexp = "^[0-9]*$", message="{mosip.rest.request.timeout.message}")
 	private Integer timeout;

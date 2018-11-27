@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +19,7 @@ public class TemplateDto {
 
 	private String name;
 
-	private String descr;
+	private String description;
 
 	private String fileFormatCode;
 
@@ -36,18 +34,6 @@ public class TemplateDto {
 	private String templateTypeCode;
 
 	private String languageCode;
-
-	private boolean isActive;
-
-	private String createdBy;
-
-	private LocalDateTime createdTimestamp;
-
-	private String updatedBy;
-
-	private LocalDateTime updatedTimestamp;
-
-	private boolean isDeleted;
-
-	private LocalDateTime deletedTimestamp;
+	
+	private Boolean isActive;
 }

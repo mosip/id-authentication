@@ -11,7 +11,7 @@
 	<groupId>io.mosip.kernel</groupId>
 	<artifactId>kernel-parent</artifactId>
 	<packaging>pom</packaging>
-
+	<name>kernel</name>
 	<description>Parent project of MOSIP Kernel</description>
 
 	<properties>
@@ -41,7 +41,6 @@
 		<modelmapper.version>2.1.1</modelmapper.version>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
-
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -83,7 +82,7 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -100,21 +99,24 @@
 		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
-		<module>kernel-json-validator</module>
+		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
-		<module>kernel-crypto-bouncycastle</module>
-		<!-- <module>kernel-crypto-jce</module> -->
+		<!--<module>kernel-crypto-bouncycastle</module> -->
+		<module>kernel-crypto-jce</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
+		<module>kernel-keymanager-softhsm</module>
 
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
+		<module>kernel-keymanager-service</module>
+		<module>kernel-crypto-service</module>
 
 		<module>kernel-batch-framework</module>
 		<module>kernel-batch-server</module>
@@ -204,9 +206,6 @@
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
-						<excludes>
-							<exclude>**/*IntegrationTest.java</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -260,97 +259,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>http://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>http://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-snapshots2</id>
-			<name>Spring Snapshots</name>
-			<url>http://repo.spring.io/libs-snapshot-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones2</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/libs-milestone-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-releases2</id>
-			<name>Spring Releases</name>
-			<url>http://repo.spring.io/libs-release-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>http://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>http://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-snapshots2</id>
-			<name>Spring Snapshots</name>
-			<url>http://repo.spring.io/libs-snapshot-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones2</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/libs-milestone-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
 </project>
+

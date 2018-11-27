@@ -2,7 +2,6 @@ package io.mosip.kernel.idgenerator.uin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Main class of Uin Generator Application. This will run batch job to generate
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
  *
  */
 @SpringBootApplication
-@ComponentScan(basePackages = "io.mosip.*")
 public class UinGeneratorBootApplication {
 	/**
 	 * Function to run the Uin generator application

@@ -70,7 +70,7 @@ The key non-functional requirements are
 
 **Reterive all pre-registration Ids :**
 
--   Create a REST API as '/reteriveAllPreRegistrationIds' accept the Data Sync JSON object  from the registration-client application portal.
+-   Create a REST API as '/datasync' GET Method, accept the Data Sync JSON object  from the registration-client application portal.
 
 - The JSON object contains Registration Center ID, Date Range(Start Date, End Date) for the List of Pre-Registrations, User ID( Registration Officer/Supervisor). 
 
@@ -84,11 +84,11 @@ The key non-functional requirements are
 
 **Reterive Pre-Registartions:**
 
--   Create a REST Service as '/reterivePreRegistrations' accept the list of pre-registartion ids from the registration-client application portal.
+-   Create a REST Service as '/datasync' GET Method, accept the pre-registartion id from the registration-client application portal.
 
-- The System will generate a Transaction ID and do the following operation need to be happen for each pre-registartion ids:
+- The System will generate a Transaction ID and do the following operation need to be happens:
 
-	 Step1: fetch all the demographic JSON object and appointment date time and decrypt JSON object , if successful go to next step otherwise throw an exception.
+	 Step1: fetch the demographic JSON object and appointment date time and decrypt JSON object , if successful go to next step otherwise throw an exception.
 
 	 Step2: fetch all the document and decrypt it, if successful go to next step otherwise throw an exception.
 

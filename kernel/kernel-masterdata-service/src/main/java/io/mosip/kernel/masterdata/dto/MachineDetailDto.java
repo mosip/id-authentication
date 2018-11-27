@@ -1,10 +1,9 @@
-/**
- * 
- *
- */
+
 package io.mosip.kernel.masterdata.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Machine Detail
@@ -15,6 +14,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MachineDetailDto {
 
 	/**
@@ -34,12 +35,20 @@ public class MachineDetailDto {
 	 */
 	private String macAddress;
 	/**
+	 * Field for machine IP address
+	 */
+	private String ipAddress;
+	/**
+	 * Field for machine specification Id
+	 */
+	private String machineSpecId;
+	/**
 	 * Field for language code
 	 */
 	private String langCode;
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 }

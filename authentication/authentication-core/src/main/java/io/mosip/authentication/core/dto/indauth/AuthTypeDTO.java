@@ -7,6 +7,7 @@ import lombok.Data;
  * then <b>otp</b> attribute set as <b>true</b>
  * 
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @Data
 public class AuthTypeDTO {
@@ -30,7 +31,7 @@ public class AuthTypeDTO {
 	private boolean pin;
 	
 	/** For FingerPrint Authentication */
-	private boolean fingerprint;
+	private boolean fingerPrint;
 	
 	/** For Iris Authentication */
 	private boolean iris;

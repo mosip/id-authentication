@@ -14,7 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
  *
  */
 @Entity
-@Table(name = "role_list", schema = "regprc")
+@Table(name = "role_list", schema = "master")
 public class RoleListEntity extends BaseQcuserEntity<RoleListPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

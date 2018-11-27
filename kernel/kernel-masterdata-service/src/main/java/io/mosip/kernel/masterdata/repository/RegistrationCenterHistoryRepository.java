@@ -29,7 +29,7 @@ public interface RegistrationCenterHistoryRepository extends BaseRepository<Regi
 	 *            The effective time
 	 * @return Registration center history
 	 */
-	List<RegistrationCenterHistory> findByIdAndLanguageCodeAndEffectivetimesLessThanEqual(String id,
+	List<RegistrationCenterHistory> findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(String id,
 			String languageCode, LocalDateTime effectivetimes);
 
 }

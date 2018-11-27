@@ -45,8 +45,8 @@ public class PridCacheManagerImpl implements PridCacheManager {
 
 
 	/**
-	 * @param PRID
-	 * @return Set of PRID
+	 * @param prid-input parameter PRID
+	 * @return true or false
 	 */
 	@Override
 	public boolean add(String prid) {
@@ -58,8 +58,8 @@ public class PridCacheManagerImpl implements PridCacheManager {
 
 
 	/**
-	 * @param PRID
-	 * @return true if PRID is present in the set 
+	 * @param prid - input parameter PRID
+	 * @return true or false
 	 */
 	@Override
 	public boolean contains(String prid) {

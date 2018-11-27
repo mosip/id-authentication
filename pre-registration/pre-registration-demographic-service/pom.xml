@@ -55,7 +55,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-json-validator</artifactId>
+			<artifactId>kernel-jsonvalidator</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

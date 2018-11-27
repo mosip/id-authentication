@@ -1,11 +1,4 @@
-/**
- * 
- *
- */
-
 package io.mosip.kernel.masterdata.controller;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 
 /**
@@ -28,6 +21,9 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 @RequestMapping(value = "/machineshistory")
 public class MachineHistoryController {
 
+	/**
+	 * Reference to MachineHistroyService.
+	 */
 	@Autowired
 	private MachineHistoryService macHistoryService;
 
@@ -37,18 +33,18 @@ public class MachineHistoryController {
 	 * 
 	 * @param id
 	 *            machine Id
-	 * @param languagecode
+	 * @param langCode
 	 *            Language Code
+	 * @param effdatetimes
+	 *            effective date and time
 	 * 
 	 * @return returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
-	@GetMapping(value = "/{id}/{languagecode}/{effdatetimes}")
-	public List<MachineHistoryDto> getMachineHistoryIdLangEff(@PathVariable("id") String machineId,
-			@PathVariable("languagecode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
+	@GetMapping(value = "/{code}/{langcode}/{effdatetimes}")
+	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("code") String machineId,
+			@PathVariable("langCode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
 		return macHistoryService.getMachineHistroyIdLangEffDTime(machineId, langCode, dateAndTime);
-
 	}
-
 }
