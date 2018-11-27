@@ -32,7 +32,7 @@ import io.mosip.registration.manager.SyncManager;
 import io.mosip.registration.service.RegPacketStatusService;
 import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
-public class BaseJobtest {
+public class BaseJobTest {
 
 	@Mock
 	private ApplicationContext applicationContext;
