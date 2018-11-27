@@ -78,7 +78,7 @@ public class BiometricPreviewController extends BaseController {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
 
-		RegistrationDTO registrationDTOContent = RegistrationController.registrationDTOContent;
+		RegistrationDTO registrationDTOContent = RegistrationController.getRegistrationDTOContent();
 		registrationDTOContent.getBiometricDTO();
 		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
 
@@ -112,7 +112,7 @@ public class BiometricPreviewController extends BaseController {
 	 * screen
 	 */
 	public void handleNextBtnAction() {
-		registrationOfficerPacketController.showReciept(RegistrationController.registrationDTOContent,
+		registrationOfficerPacketController.showReciept(RegistrationController.getRegistrationDTOContent(),
 				capturePhotoUsingDevice);
 	}
 
