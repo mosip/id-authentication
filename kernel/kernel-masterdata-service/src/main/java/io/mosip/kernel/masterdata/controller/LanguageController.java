@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguageResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.swagger.annotations.Api;
@@ -48,12 +49,14 @@ public class LanguageController {
 	}
 
 	@PostMapping
-	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = String.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = "When Language successfully created", response = String.class),
+	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = LanguageResponseCodeDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Language successfully created", response = LanguageResponseCodeDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
-	public ResponseEntity<String> saveLanguage(@Valid @RequestBody LanguageDto dto) {
-		return new ResponseEntity<>(languageService.saveLanguage(dto), HttpStatus.CREATED);
+	public ResponseEntity<LanguageResponseCodeDto> saveLanguage(@Valid @RequestBody LanguageDto language) {
+		return new ResponseEntity<>(new LanguageResponseCodeDto(languageService.saveLanguage(language)),
+				HttpStatus.CREATED);
 	}
 
 }
