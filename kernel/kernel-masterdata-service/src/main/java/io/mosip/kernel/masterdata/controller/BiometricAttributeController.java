@@ -28,12 +28,12 @@ public class BiometricAttributeController {
 	BiometricAttributeService biometricAttributeService;
 
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
-	@GetMapping("/getbiometricattributesbyauthtype/{languagecode}/{biometrictypecode}")
+	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public BiometricTypeResponseDto getBiometricAttributesByBiometricType(
-			@PathVariable("languagecode") String languageCode,
+			@PathVariable("langcode") String langCode,
 			@PathVariable("biometrictypecode") String biometricTypeCode) {
 		List<BiometricAttributeDto> biomentricAttributes = biometricAttributeService
-				.getBiometricAttribute(biometricTypeCode, languageCode);
+				.getBiometricAttribute(biometricTypeCode, langCode);
 		return new BiometricTypeResponseDto(biomentricAttributes);
 	}
 }

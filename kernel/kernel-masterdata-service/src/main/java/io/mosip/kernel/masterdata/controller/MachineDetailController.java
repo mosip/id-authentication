@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +11,8 @@ import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 /**
- * This controller class provides Machine  details based on user
- * provided data.
+
+ * This controller class provides Machine details based on user provided data.
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -32,8 +31,7 @@ public class MachineDetailController {
 
 	/**
 	 * 
-	 * Function to fetch machine detail  based on given Machine ID and Language
-	 * code.
+	 * Function to fetch machine detail based on given Machine ID and Language code.
 	 * 
 	 * @param machineId
 	 * @param langcode
@@ -43,6 +41,20 @@ public class MachineDetailController {
 	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
 		return macService.getMachineDetailIdLang(machineId, langCode);
+
+	}
+
+	/**
+	 * 
+	 * Function to fetch machine detail based on given Language code
+	 * 
+	 * @param langcode
+	 * @return machine detail based on given Language code
+	 */
+
+	@GetMapping(value = "/{langcode}")
+	public MachineDetailResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
+		return macService.getMachineDetailLang(langCode);
 
 	}
 

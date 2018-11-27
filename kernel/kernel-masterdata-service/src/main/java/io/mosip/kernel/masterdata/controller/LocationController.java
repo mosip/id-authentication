@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 
@@ -35,9 +36,9 @@ public class LocationController {
 	 * 
 	 * @return List<LocationHierarchyDto>
 	 */
-	@GetMapping
-	public LocationResponseDto getLocationHierarchyDetails() {
-		return locationHierarchyService.getLocationDetails();
+	@GetMapping(value="/{langcode}")
+	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable("langcode") String langCode) {
+		return locationHierarchyService.getLocationDetails(langCode);
 
 	}
     /**
@@ -47,11 +48,11 @@ public class LocationController {
      * @param langCode
      * @return List<LocationHierarchyDto>
      */
-	@GetMapping(value = "/{locCode}/{langCode}")
-	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable String locCode,
-			@PathVariable String langCode) {
+	@GetMapping(value = "/{locationcode}/{langcode}")
+	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
+			@PathVariable("langcode") String langCode) {
 
-		return locationHierarchyService.getLocationHierarchyByLangCode(locCode, langCode);
+		return locationHierarchyService.getLocationHierarchyByLangCode(locationCode, langCode);
 
 	}
 }

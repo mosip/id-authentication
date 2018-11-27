@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -35,10 +37,10 @@ public class LocationServiceImpl implements LocationService {
 	LocationRepository locationRepository;
 
 	/**
-	 * creates an instance of repository class {@link ObjectMapperUtil}}
+	 * creates an instance of repository class {@link MapperUtils}}
 	 */
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> parentHierarchyList = null;
@@ -48,31 +50,25 @@ public class LocationServiceImpl implements LocationService {
 	 * {@link LocationRepository} for fetching location hierarchy
 	 */
 	@Override
-	public LocationResponseDto getLocationDetails() {
-		List<LocationDto> responseList = null;
-		LocationResponseDto locationResponseDto = null;
-		List<Location> locations = null;
+	public LocationHierarchyResponseDto getLocationDetails(String langCode) {
+		List<LocationHierarchyDto> responseList = null;
+		LocationHierarchyResponseDto locationHierarchyResponseDto = new LocationHierarchyResponseDto();
+		List<Object[]> locations = null;
 		try {
 
-			locations = locationRepository.findAll();
-
-		}catch (DataAccessException e) {
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (locations != null && !locations.isEmpty()) {
-			
-			responseList = objectMapperUtil.mapAll(locations, LocationDto.class);
-			
-			locationResponseDto = new LocationResponseDto();
-			locationResponseDto.setLocations(responseList);
-			
+		if (!locations.isEmpty()) {
+			responseList = objectMapperUtil.objectToDtoConverter(locations);
 		} else {
-			throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-					LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-
-		return locationResponseDto;
+		locationHierarchyResponseDto.setLocations(responseList);
+		return locationHierarchyResponseDto;
 	}
 
 	/**
@@ -107,15 +103,15 @@ public class LocationServiceImpl implements LocationService {
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
-				throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-						LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		}
 
 		catch (DataAccessException e) {
 
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 
 		}
 		return locationHierarchyResponseDto;
@@ -130,7 +126,8 @@ public class LocationServiceImpl implements LocationService {
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
-		return locationRepository.findLocationHierarchyByCodeAndLanguageCode(locCode, langCode);
+
+		return locationRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse(locCode, langCode);
 	}
 
 	/**
@@ -142,7 +139,9 @@ public class LocationServiceImpl implements LocationService {
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
-		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(locCode, langCode);
+
+		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsDeletedFalse(locCode, langCode);
+
 	}
 
 	/**

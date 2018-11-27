@@ -11,7 +11,7 @@
 	<groupId>io.mosip.kernel</groupId>
 	<artifactId>kernel-parent</artifactId>
 	<packaging>pom</packaging>
-
+	<name>kernel</name>
 	<description>Parent project of MOSIP Kernel</description>
 
 	<properties>
@@ -82,7 +82,7 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -99,11 +99,11 @@
 		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
-		<module>kernel-json-validator</module>
+		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
-		<module>kernel-crypto-bouncycastle</module>
-		<!-- <module>kernel-crypto-jce</module> -->
+		<!--<module>kernel-crypto-bouncycastle</module> -->
+		<module>kernel-crypto-jce</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
@@ -200,9 +200,6 @@
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
-						<excludes>
-							<exclude>**/*IntegrationTest.java</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 				<plugin>

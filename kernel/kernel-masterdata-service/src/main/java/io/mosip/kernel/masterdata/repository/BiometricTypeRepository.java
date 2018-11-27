@@ -21,7 +21,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *
 	 * @return {@link List<BiometricType>}
 	 */
-	public List<BiometricType> findAllByIsActiveTrueAndIsDeletedFalse(Class<BiometricType> entityClass);
+	public List<BiometricType> findAllByIsDeletedFalse(Class<BiometricType> entityClass);
 
 	/**
 	 * Get all Biometric types of a specific language using language code
@@ -29,7 +29,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * @param langCode
 	 * @return {@link List<BiometricType>}
 	 */
-	List<BiometricType> findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(String langCode);
+	List<BiometricType> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
 	/**
 	 * Get Biometric type by specific id and language code
@@ -38,6 +38,6 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * @param langCode
 	 * @return {@linkplain BiometricType}
 	 */
-	BiometricType findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String code, String langCode);
+	BiometricType findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 
 }

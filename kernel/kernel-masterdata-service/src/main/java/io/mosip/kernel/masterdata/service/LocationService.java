@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 
 /**
@@ -16,7 +17,7 @@ public interface LocationService {
 	 * @param locationHierarchyDTO
 	 * @return
 	 */
-	public LocationResponseDto getLocationDetails();
+	public LocationHierarchyResponseDto getLocationDetails(String langCode);
 	
 	/**
 	 * 

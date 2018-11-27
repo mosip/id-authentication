@@ -1,15 +1,18 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -22,43 +25,39 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "id_type", schema = "master")
+@IdClass(CodeAndLanguageCodeId.class)
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdType implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+public class IdType extends BaseEntity implements Serializable {
 
+	/**
+	 * Serializable version id.
+	 */
 	private static final long serialVersionUID = -97767928612692201L;
 
 	@Id
-	@Column(name = "code", length = 36)
+	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	/**
+	 * The idtype code.
+	 */
 	private String code;
 
+	/**
+	 * The idtype language code.
+	 */
+	private String langCode;
+
+	/**
+	 * The idtype name.
+	 */
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
 
+	/**
+	 * The idtype description.
+	 */
 	@Column(name = "descr", length = 128)
 	private String descr;
-
-	@Column(name = "lang_code", unique = true, nullable = false, length = 3)
-	private String langCode;
-
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 32)
-	private String crBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private String crDtimes;
-
-	@Column(name = "upd_by", length = 32)
-	private String updBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updDtimes;
-
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime delDtimes;
 }

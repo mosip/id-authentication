@@ -22,7 +22,7 @@ public class NotificationEmailBootApplication {
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(NotificationEmailBootApplication.class, args);

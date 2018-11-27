@@ -14,16 +14,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "location", schema = "master")
-public class LocationHierarcyLevel extends BaseEntity implements Serializable  {
-	
+public class LocationHierarcyLevel extends BaseEntity implements Serializable {
+
 	private static final long serialVersionUID = -5585825455521742941L;
-    
+
 	@Id
 	@OneToOne
 	@JoinColumn(name = "code")
@@ -45,3 +50,4 @@ public class LocationHierarcyLevel extends BaseEntity implements Serializable  {
 	private String languageCode;
 
 }
+

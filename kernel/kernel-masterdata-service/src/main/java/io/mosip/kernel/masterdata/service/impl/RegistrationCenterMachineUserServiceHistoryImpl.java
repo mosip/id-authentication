@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Implementation class for user machine mapping service
@@ -33,7 +32,8 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	ModelMapper modelMapper;
+	private MapperUtils objectMapperUtil;
+
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
 	 */
@@ -54,7 +54,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByIdAndEffectivetimesLessThanEqual(
+					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 							new RegistrationCenterUserMachineHistoryId(registrationCenterId, userId, machineId),
 							LocalDateTime.parse(effectiveTimestamp));
 		} catch (DataAccessLayerException dataAccessLayerException) {
@@ -73,9 +73,8 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = modelMapper.map(registrationCenterUserMachines,
-				new TypeToken<List<RegistrationCenterUserMachineMappingHistoryDto>>() {
-				}.getType());
+		registrationCenters = objectMapperUtil.mapAll(registrationCenterUserMachines,
+				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);
 		return centerUserMachineMappingResponseDto;

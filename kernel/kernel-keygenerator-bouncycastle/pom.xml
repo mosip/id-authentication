@@ -11,6 +11,9 @@
 	<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 	<packaging>jar</packaging>
 	<name>kernel-keygenerator-bouncycastle</name>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

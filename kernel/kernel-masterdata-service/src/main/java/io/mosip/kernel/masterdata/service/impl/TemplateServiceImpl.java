@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class TemplateServiceImpl implements TemplateService {
 	private TemplateRepository templateRepository;
 
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	private List<Template> templateList;
 
@@ -42,7 +42,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplate() {
 		try {
-			templateList = templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class);
+			templateList = templateRepository.findAllByIsDeletedFalse(Template.class);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -65,7 +65,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+			templateList = templateRepository.findAllByLanguageCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -91,7 +91,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, templateTypeCode);
+			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());

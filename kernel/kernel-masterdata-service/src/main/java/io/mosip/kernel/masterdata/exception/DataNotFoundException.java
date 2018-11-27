@@ -1,11 +1,16 @@
+
 package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Customized exception for template not found
+ * Thrown while performing operation return of the operation assume some data
+ * but got no data.
+ * 
+ * @see io.mosip.kernel.core.exception.BaseUncheckedException
  * 
  * @author Bal Vikash Sharma
+ * 
  * @since 1.0.0
  *
  */

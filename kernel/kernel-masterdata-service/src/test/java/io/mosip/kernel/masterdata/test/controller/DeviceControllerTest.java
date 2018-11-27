@@ -1,4 +1,5 @@
 
+
 package io.mosip.kernel.masterdata.test.controller;
 
 import static org.junit.Assert.assertTrue;
@@ -45,7 +46,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	public void testGetDeviceLang() {
+	public void getDeviceLangTest() {
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
 		DeviceDto deviceDto = new DeviceDto();
 		deviceDto.setId("1001");
@@ -69,7 +70,7 @@ public class DeviceControllerTest {
 
 	
 	@Test
-	public void testGetDeviceLangCodeAndDeviceType() {
+	public void getDeviceLangCodeAndDeviceTypeTest() {
 		DeviceLangCodeDtypeDto deviceLangCodeDtypeDto = new DeviceLangCodeDtypeDto();
 		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = new ArrayList<>();
 		deviceLangCodeDtypeDto.setId("1001");
@@ -85,7 +86,5 @@ public class DeviceControllerTest {
 		Assert.assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);
 	}
-	
-	
 
 }

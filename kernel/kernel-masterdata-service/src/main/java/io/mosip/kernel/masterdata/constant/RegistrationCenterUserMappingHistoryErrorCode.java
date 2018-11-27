@@ -10,13 +10,10 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum RegistrationCenterUserMappingHistoryErrorCode {
 
-	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION("KER-MSD-013",
-			"Error occured while fetching registration centers  user mappings"),
-	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_EXCEPTION("KER-MSD-014",
-			"Error occured while mapping registration centers  user mappings"),
-	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND("KER-MSD-015", "No Registration center user mappings found"),
-	NUMBER_FORMAT_EXCEPTION("KER-MSD-017", "Number Format Exception"),
-	DATE_TIME_PARSE_EXCEPTION("KER-MSD-016", "cannot parse date time");
+	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION("KER-MSD-037",
+			"Error occured while fetching Registration Center, Machine, User mappings"), REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND(
+					"KER-MSD-038", "Registration Center, Machine, User not found"), DATE_TIME_PARSE_EXCEPTION(
+							"KER-MSD-039", "Invalid date format");
 
 	/**
 	 * The error code

@@ -23,11 +23,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "location", schema = "master")
+
 public class Location extends BaseEntity implements Serializable {
 
 	/**
 	 * 
 	 */
+	
+	
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
