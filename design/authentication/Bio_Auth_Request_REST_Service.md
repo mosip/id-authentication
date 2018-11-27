@@ -5,7 +5,7 @@
 
 
 Biometric Auth REST service can be used to authenticate an Individual using below types of Biometrics - 
-1.	Fingerprint
+1.	Fingerprint - 
 2.	Iris
 3.	Face
 
@@ -46,7 +46,10 @@ TSP can use Auth service to authenticate an Individual by using one or more type
 2.	Authenticate and Authorize TSP <<TBD>>
 3.	Validate “reqTime” for incoming Auth Requests for valid format and timestamp < 24 hours (configurable value) from current time
 4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
-5.	Once the above validations are successful, Auth request is then validated based on biometric - Fingerprint/IRIS/Face - authentications present in input request
+5.	Once the above validations are successful, Auth request is then validated based on biometric - Fingerprint/IRIS/Face - authentications present in input request. For these types of authentications, below are types of inputs supported –     
+a.	Fingerprint – Image and Minutiae based    
+b.	Iris – Image based    
+c.	Face – Image based    
 6.	Retrieve Identity details of the Individual based on UIN from ID Repository
 7.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 8.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel’s SmsNotifier and EmailNotifier to their stored phone/email respectively.
