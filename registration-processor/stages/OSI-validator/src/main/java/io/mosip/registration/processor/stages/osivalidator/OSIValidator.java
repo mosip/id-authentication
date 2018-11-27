@@ -2,7 +2,9 @@ package io.mosip.registration.processor.stages.osivalidator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -368,21 +370,28 @@ public class OSIValidator {
 	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
 		if (pin == null)
 			return true;
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
+		String date = simpleDateFormat.format(new Date());
 		Boolean isValidPin = false;
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
 		authTypeDTO.setFace(false);
-		authTypeDTO.setFingerprint(false);
+		authTypeDTO.setFingerPrint(false);
 		authTypeDTO.setFullAddress(false);
 		authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(true);
-
+		authRequestDTO.setVer("1.0");
+		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
 
 		pinInfo.setValue(pin);
+		pinInfo.setType("SPIN");
+
+		authRequestDTO.setReqTime(date);
 
 		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
@@ -391,7 +400,7 @@ public class OSIValidator {
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 
-		if (authResponseDTO.isStatus())
+		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
 			isValidPin = true;
 
 		return isValidPin;
@@ -415,13 +424,22 @@ public class OSIValidator {
 	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte)
 			throws ApisResourceAccessException {
 
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+		String date = simpleDateFormat.format(new Date());
 		Boolean isValidBiometric = false;
 
+		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setVer("1.0");
+		authRequestDTO.setReqTime(date);
+
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
 		authTypeDTO.setFace(false);
-		authTypeDTO.setFingerprint(false);
+		authTypeDTO.setFingerPrint(false);
 		authTypeDTO.setFullAddress(false);
 		authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
@@ -443,7 +461,7 @@ public class OSIValidator {
 				identityDTO.setRightEye(biometricData);
 			}
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.FINGER.name())) {
-			authTypeDTO.setFingerprint(true);
+			authTypeDTO.setFingerPrint(true);
 			if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(identity)) {
 
 				identityDTO.setLeftThumb(biometricData);
@@ -472,7 +490,7 @@ public class OSIValidator {
 
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-		if (authResponseDTO.isStatus())
+		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
 			isValidBiometric = true;
 
 		return isValidBiometric;
