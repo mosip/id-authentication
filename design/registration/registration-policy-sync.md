@@ -1,0 +1,77 @@
+Design -- Policy Sync Service
+
+
+**Background**
+
+The policy file generated for each client at server needs to be refreshed with 
+client system at particular time frame and that will be used for further
+data encryption. The decryption [private key] won't be provided from 
+server to client application. It will be used directly at server end.
+
+
+The **target users** are
+
+-   Supervisor
+-   Officer
+
+
+The key **requirements** are
+
+-   Design -- Login
+
+\[Username-Password / OTP/ Bio\]
+
+Background
+
+The Registration Officer/Supervisor can be used the provided ways to
+login to the registration client. The provided ways are
+Username/Password, OTP and Bio \[Fingerprint/Iris/Face\]. The login will
+be maintained by the configurable un-successful login attempts. If the
+RO/RS crossed the limit the same should be locked and release after the
+configurable login period.
+
+The **target users** are
+
+-   Supervisor
+
+-   Officer
+
+The key **requirements** are
+
+-   The public key generated against each station or machine id should be provided 
+	to the client application before expiring of the key.
+-   The key should be used to encrypt the packet before sending to the server.
+
+The key **non-functional requirements** are
+
+-   The private key shouldn't be sent to the client application.
+-   The received public key should be maintained in the local db along with validity start and end date.
+-   The client application should pull the next key before expiring of previous key by passing the 
+    required date information to the server.
+	
+**Solution**
+
+1.	Key sync from server.
+a.	Frequency of execution – once in a day. 
+
+b.	Automatic
+2.	Key pull from db based on date and unique id.
+
+1.	Global PARAM table: Holds the key refresh threshold period with respect to client environment.
+a.	Threshold period - How many days before the key file to be pulled from server?
+2.	Get the key for current date from the table. [key_manage_tbl]
+a.	If not available, make the online call to REST service to download the key along with the expiry date.
+b.	If available but within threshold period [current key expiry date – today date] then download the new key and store it with new start date and end date.
+
+3.	Invoke the key sync rest service call.
+a.	This service would provide the key valid as on that date [either existing key or new key will be generated and share the same]
+b.	Pass the required input parameter 
+	   MachineId and current date / future date
+5.	Parse the response :-
+a.	This would provide us either existing key or new key file.
+b.	Expiry date.
+6.	Store the received key file into the database table along with other detail.
+
+
+**Class and Sequence Diagram**
+    
