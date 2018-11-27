@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.keymanager.softhsm.impl.SofthsmKeymanagerImpl
+io.mosip.kernel.keymanager.softhsm.impl.KeyStoreImpl
