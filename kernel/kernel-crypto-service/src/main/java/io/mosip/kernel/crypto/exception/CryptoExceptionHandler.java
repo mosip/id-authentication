@@ -26,7 +26,7 @@ import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 
 /**
- * Rest Controller Advice for Cryptographic Service
+ * Rest Controller Advice for Crypto Service
  * 
  * @author Urvil Joshi
  *
@@ -99,8 +99,7 @@ public class CryptoExceptionHandler {
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			Error error = new Error(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),
-					x.getField() + WHITESPACE + x.getDefaultMessage());
+			Error error = new Error(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),x.getField() + WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
