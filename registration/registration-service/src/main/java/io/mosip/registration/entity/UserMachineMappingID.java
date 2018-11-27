@@ -9,11 +9,11 @@ public class UserMachineMappingID implements Serializable {
 
 	private static final long serialVersionUID = -1883492292190913762L;
 
-	@Column(name = "usr_id", length = 32, nullable = false)
+	@Column(name = "usr_id")
 	private String userID;
-	@Column(name = "cntr_id", length = 64, nullable = false)
+	@Column(name = "regcntr_id")
 	private String centreID;
-	@Column(name = "machm_id", length = 64, nullable = false)
+	@Column(name = "machine_id")
 	private String machineID;
 
 	/**

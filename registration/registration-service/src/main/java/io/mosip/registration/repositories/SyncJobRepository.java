@@ -17,4 +17,6 @@ public interface SyncJobRepository extends BaseRepository<SyncControl, String>{
 	 */
 	@Override
 	List<SyncControl> findAll();
+	
+	SyncControl findBySyncJobId(String syncJobId);
 }

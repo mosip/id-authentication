@@ -1,10 +1,11 @@
 package io.mosip.registration.test.login;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
@@ -27,7 +30,6 @@ import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
-import io.mosip.registration.dao.RegistrationUserPasswordDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
 import io.mosip.registration.dto.OtpGeneratorResponseDto;
@@ -39,13 +41,11 @@ import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationScreenAuthorization;
 import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
 import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.entity.RegistrationUserPassword;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.RegistrationAppLoginRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
-import io.mosip.registration.repositories.RegistrationUserPasswordRepository;
 import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -68,12 +68,6 @@ public class LoginServiceTest {
 
 	@Mock
 	private RegistrationAppLoginDAO registrationAppLoginDAO;
-
-	@Mock
-	private RegistrationUserPasswordRepository registrationUserPasswordRepository;
-
-	@Mock
-	private RegistrationUserPasswordDAO registrationUserPasswordDAO;
 
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
@@ -115,22 +109,6 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void validateUserPasswordTest() {
-
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
-		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
-		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();
-		registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(Mockito.anyString()))
-				.thenReturn(registrationUserPasswordList);
-		
-		assertFalse(loginServiceImpl.validateUserPassword("mosip",
-				"E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262"));
-	}
-
-	@Test
 	public void getUserDetailTest() {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
@@ -157,7 +135,7 @@ public class LoginServiceTest {
 
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		Optional<RegistrationCenter> registrationCenterList = Optional.of(registrationCenter);
-		Mockito.when(registrationCenterRepository.findByRegistrationCenterIdCenterIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationCenterRepository.findByCenterIdAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(registrationCenterList);
 		
 		Mockito.when(registrationCenterDAO.getRegistrationCenterDetails(Mockito.anyString())).thenReturn(centerDetailDTO);
@@ -175,7 +153,6 @@ public class LoginServiceTest {
 		RegistrationScreenAuthorizationId registrationScreenAuthorizationId = new RegistrationScreenAuthorizationId();
 
 		registrationScreenAuthorizationId.setRoleCode("OFFICER");
-		registrationScreenAuthorizationId.setAppId("REGISTRATION");
 		registrationScreenAuthorization.setRegistrationScreenAuthorizationId(registrationScreenAuthorizationId);
 		registrationScreenAuthorization.setPermitted(true);
 
@@ -194,7 +171,7 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException {
+	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey("yash");
 		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
@@ -207,7 +184,7 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void getOTPFailureResponseTest() throws RegBaseCheckedException {
+	public void getOTPFailureResponseTest() throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey("ya");
 		OtpGeneratorResponseDto otpGeneratorResponseDto = null;
@@ -220,7 +197,7 @@ public class LoginServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validateOTPSuccessTest() throws RegBaseCheckedException {
+	public void validateOTPSuccessTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("true");
@@ -231,7 +208,7 @@ public class LoginServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validateOTPFailureTest() throws RegBaseCheckedException {
+	public void validateOTPFailureTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("false");
@@ -241,4 +218,18 @@ public class LoginServiceTest {
 
 	}
 
+	@Test
+	public void updateLoginParamsTest() {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
+		
+		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		registrationUserDetail.setId("mosip");
+		registrationUserDetail.setUnsuccessfulLoginCount(0);
+		registrationUserDetail.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
+		registrationUserDetail.setLastLoginMethod("PWD");
+		
+		loginServiceImpl.updateLoginParams(registrationUserDetail);
+	}
 }

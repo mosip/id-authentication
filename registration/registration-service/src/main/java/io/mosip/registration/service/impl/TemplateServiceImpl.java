@@ -24,7 +24,18 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateDao templateDao;
 
-	public Template getTemplate() {
+	/**
+	 * This method takes the list of templates, template file formats and template
+	 * types from database and chooses the required template for creation of
+	 * acknowledgement
+	 * 
+	 * * @param templateName 
+	 *            to define the template name
+	 * 
+	 * @return single template
+	 */
+
+	public Template getTemplate(String templateName) {
 		Template ackTemplate = new Template();
 
 		List<Template> templates = templateDao.getAllTemplates();
@@ -36,21 +47,23 @@ public class TemplateServiceImpl implements TemplateService {
 		 * template_file_format_code
 		 */
 		for (Template template : templates) {
+			if (template.getName().equals(templateName)) {
 			for (TemplateType type : templateTypes) {
-				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())) {
+				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode()) && template.getTemplateTypCode().equals(type.getPkTmpltCode().getCode())) {
 					for (TemplateFileFormat fileFormat : templateFileFormats) {
-						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())) {
+						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode()) && template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
 							ackTemplate = template;
 						}
 					}
 				}
 			}
 		}
+		}
 		return ackTemplate;
 	}
 	
 
-	public String createReceipt() throws RegBaseCheckedException {
-		return getTemplate().getFileTxt();
+	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException {
+		return getTemplate(templateName).getFileTxt();
 	}
 }

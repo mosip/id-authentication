@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_APPROVE_SCREEN_EXCEPTION;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -28,12 +30,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * Class for Registration Packet operations
@@ -66,11 +66,10 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 * acknowledgement form
 	 */
 
-	public void createPacket(ActionEvent event) {
+	public void createPacket() {
 
 		try {
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE));
-
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), ApplicationContext.getInstance().getApplicationLanguageBundle());
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Create Packet screen for specific role");
@@ -109,23 +108,19 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
-	public void showReciept(RegistrationDTO registrationDTO) {
+	public void showReciept(RegistrationDTO registrationDTO, String capturePhotoUsingDevice) {
 
 		try {
-			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
+			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
-			String ackTemplateText = templateService.createReceipt();
+			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO);
 			ackReceiptController.setStringWriter(writer);
 
-			Stage primaryStage = new Stage();
-			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			primaryStage.setResizable(false);
-			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
-			Scene scene = new Scene(ackRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
+			LoginController.getScene().setRoot(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME,
 					APPLICATION_ID, regBaseCheckedException.getMessage());
@@ -164,6 +159,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 				nodes.add(root);
 			}
 		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+		
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_APPROVE_SCREEN_EXCEPTION.getErrorMessage());
 		}

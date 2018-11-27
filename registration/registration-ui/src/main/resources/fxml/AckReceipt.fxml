@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.web.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="664.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.AckReceiptController">
-	<children>
-		<WebView fx:id="webView" layoutX="4.0" layoutY="5.0" prefHeight="610.0" />
-		<Button layoutX="379.0" layoutY="617.0" mnemonicParsing="false" onAction="#saveReceipt" text="Save" />
-	</children>
-</AnchorPane>
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="937.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.AckReceiptController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="937.0">
+         <children>
+            <WebView fx:id="webView" layoutX="79.0" layoutY="28.0" prefHeight="571.0" prefWidth="810.0" />
+            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="34.0" layoutY="4.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/Home.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="60.0" layoutY="21.0" onMouseClicked="#goToNewRegistrationPage" strokeType="OUTSIDE" strokeWidth="0.0" text="/ New Registration" wrappingWidth="154.2451171875" />
+            <AnchorPane layoutX="9.0" layoutY="607.0" prefHeight="37.0" prefWidth="920.0">
+               <children>
+                  <Button layoutX="430.0" layoutY="3.0" mnemonicParsing="false" onAction="#saveReceipt" prefWidth="60.8" text="Save" />
+               </children>
+            </AnchorPane>
+         </children></AnchorPane>
+  </content>
+</ScrollPane>

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Rule;
@@ -35,7 +37,6 @@ public class RegistrationUserDetailDAOTest {
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		registrationUserDetail.setName("Sravya");
-		registrationUserDetail.setCntrId("000567");
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 
@@ -56,6 +57,16 @@ public class RegistrationUserDetailDAOTest {
 				.thenReturn(registrationUserDetailList);
 		assertFalse(registrationUserDetailList.isEmpty());
 		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
+	}
+	
+	@Test
+	public void testUpdateLoginParams() {
+		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		registrationUserDetail.setId("mosip");
+		registrationUserDetail.setUnsuccessfulLoginCount(0);
+		registrationUserDetail.setUserlockTillDtimes(new Timestamp(new Date().getTime()));
+		Mockito.when(registrationUserDetailRepository.save(registrationUserDetail)).thenReturn(registrationUserDetail);
+		registrationUserDetailDAOImpl.updateLoginParams(registrationUserDetail);
 	}
 
 }

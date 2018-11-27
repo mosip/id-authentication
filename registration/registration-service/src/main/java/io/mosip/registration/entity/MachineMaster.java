@@ -18,105 +18,127 @@ import javax.persistence.Table;
 public class MachineMaster extends RegistrationCommonFields {
 
 	@Id
-	@Column(name = "id", length = 64, nullable = false, updatable = false)
+	@Column(name = "id")
 	private String id;
-	@Column(name = "name", length = 64, nullable = false)
+	@Column(name = "name")
 	private String name;
-	@Column(name = "mac_address", length = 17, nullable = false)
+	@Column(name = "mac_address")
 	private String macAddress;
-	@Column(name = "ip_address", length = 16, nullable = false)
-	private String ipAddress;
-	@Column(name = "serial_num", length = 64, nullable = false)
+	@Column(name = "serial_num")
 	private String serialNum;
-	@Column(name = "typ", length = 64)
-	private String typ;
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "ip_address")
+	private String ipAddress;
+	@Column(name = "mspec_id")
+	private String mspecId;
+	@Column(name = "lang_code")
 	private String langCode;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 	
-	
-	
-
+	/**
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
-
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
-
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * @return the macAddress
+	 */
 	public String getMacAddress() {
 		return macAddress;
 	}
-
+	/**
+	 * @param macAddress the macAddress to set
+	 */
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
 	}
-
-	public String getIpAddress() {
-		return ipAddress;
-	}
-
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
-
+	/**
+	 * @return the serialNum
+	 */
 	public String getSerialNum() {
 		return serialNum;
 	}
-
+	/**
+	 * @param serialNum the serialNum to set
+	 */
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
 	}
-
-	public String getTyp() {
-		return typ;
+	/**
+	 * @return the ipAddress
+	 */
+	public String getIpAddress() {
+		return ipAddress;
 	}
-
-	public void setTyp(String typ) {
-		this.typ = typ;
+	/**
+	 * @param ipAddress the ipAddress to set
+	 */
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
-
+	/**
+	 * @return the mspecId
+	 */
+	public String getMspecId() {
+		return mspecId;
+	}
+	/**
+	 * @param mspecId the mspecId to set
+	 */
+	public void setMspecId(String mspecId) {
+		this.mspecId = mspecId;
+	}
+	/**
+	 * @return the langCode
+	 */
 	public String getLangCode() {
 		return langCode;
 	}
-
+	/**
+	 * @param langCode the langCode to set
+	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
-
 	/**
 	 * @param isDeleted the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
 	/**
 	 * @return the deletedDateTime
 	 */
 	public Timestamp getDeletedDateTime() {
 		return deletedDateTime;
 	}
-
 	/**
 	 * @param deletedDateTime the deletedDateTime to set
 	 */
@@ -124,4 +146,5 @@ public class MachineMaster extends RegistrationCommonFields {
 		this.deletedDateTime = deletedDateTime;
 	}
 	
+		
 }

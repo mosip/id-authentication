@@ -39,7 +39,23 @@ public enum AuditEvent {
 	SYNC_PKT_COUNT_VALIDATE("SYNC_PKT_CNT", "Sync Packet Count validation", "Validating yet to export packets frequency with the configured limit count"),
 	PACKET_RETRIVE("PKT_RETRIVE", "Retiving created packets", "Packets which are in created state for approval are retrived"),
 	PACKET_UPDATE("PKT_UPDATE", "Updating created packets status", "Packets which are in created state are updated"),
-	SYNC_GEO_VALIDATE("SYNC_INFO", "Geo Information validation", "Validating the geo information ended successfully");
+	SYNC_GEO_VALIDATE("SYNC_INFO", "Geo Information validation", "Validating the geo information ended successfully"),
+	DEVICE_MAPPING_SUCCESS("CMD_MAP","Success","device mapped successfully"),
+	DEVICE_UN_MAPPING("CMD_UMAP","Success","device is unmapped "),
+	
+	//Sync Packets
+	SYNC_SERVER("SYNC_INFO", "User", "Synchronize the packet status to the server"),
+	
+	//Packet Upload
+	PACKET_UPLOAD("PKT_UPLD", "User", "Upload the local packets to the server"),
+	
+	// Device Onboarding
+	GET_ONBOARDING_DEVICES_TYPES("DVC_TYP", "Get Devices Types", "Get the types of devices for device onboarding"),
+	GET_ONBOARDING_DEVICES("GET_DVC", "Get Devices", "Get the available and mapped devices for the requested device type"),
+	UPDATE_DEVICES_ONBOARDING("UPD_DVC", "Update Devices", "Devices onboarding updated for the registration client"),
+	// Notification Service
+	// Notification Service
+	NOTIFICATION_STATUS("NOT_SER", "Notification SERVICE", "Notification request status");
 	
 	/**
 	 * The constructor

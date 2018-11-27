@@ -12,7 +12,6 @@ import java.util.List;
 public class AuthorizationDTO {
 
 	private List<String> authorizationScreenId;
-	private String authorizationAppId;
 	private String authorizationRoleCode;
 	private boolean authorizationIsPermitted;
 
@@ -29,21 +28,6 @@ public class AuthorizationDTO {
 	 */
 	public void setAuthorizationScreenId(List<String> authorizationScreenId) {
 		this.authorizationScreenId = authorizationScreenId;
-	}
-
-	/**
-	 * @return the authorizationAppId
-	 */
-	public String getAuthorizationAppId() {
-		return authorizationAppId;
-	}
-
-	/**
-	 * @param authorizationAppId
-	 *            the authorizationAppId to set
-	 */
-	public void setAuthorizationAppId(String authorizationAppId) {
-		this.authorizationAppId = authorizationAppId;
 	}
 
 	/**

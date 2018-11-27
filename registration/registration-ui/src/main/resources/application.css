@@ -8,12 +8,74 @@
 	-fx-background-color: #f8f9fa;
 }
 
+#demographicPane{
+ 	-fx-padding: 10;
+	-fx-border-color: black;
+    -fx-background-color : white;
+    -fx-border-width: 0 0 0 0;
+	-fx-font-size : 12px;   
+    
+}
+
+#virtualKeyboard {
+	-fx-background-color: white;
+	-fx-border-width:1 1 1 1;
+	-fx-border-color: black;
+	-fx-background-radius: 6,5;
+}
+
+#registrationAccordian.accordion .title > .arrow-button .arrow{
+    -fx-translate-x: 750;
+	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
+}
+
+#registrationAccordian.accordion > .titled-pane {
+    -fx-padding: 0 0 0.5em 0;
+}
+
+#registrationAccordian.accordion > .titled-pane > .title{
+    -fx-background-color : white;
+    -fx-font-size:15px;
+    -fx-font-weight:bold;
+    -fx-border-color: #D3D3D3;
+    -fx-border-width : 1 1 0 1;
+}
+
+#registrationAccordian.accordion >.titled-pane:collapsed > .title
+{
+	
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color: black;
+    
+
+}
+
+#doc_label{
+	-fx-font-size:10px;
+}
+
+#toggleLabel1{
+	-fx-background-color: grey;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+
+#toggleLabel2{
+	-fx-background-color: white;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+
 #anchor-pane-registration .text-field {		
-	-fx-background-color: -fx-text-box-border, -fx-background;
+	-fx-background-color: white;
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
 }	
+
+#anchor-pane-registration{
+	-fx-background-color: white;
+}
 
 #anchor-pane-registration .text-field:focused{
 	-fx-border-color: red;
@@ -28,15 +90,6 @@
 
 #homeReg{
 	-fx-font-size:15px;
-}
-
-#Detail{
- 	-fx-padding: 10;
-	-fx-border-color:black;
-    -fx-border-width: 1;
-    -fx-border-style : solid inside;
-    -fx-border-insets: 5;
-    
 }
 
 #hbox {
@@ -109,23 +162,48 @@
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane{
+
+/* Device Onboarding */
+.inputFields {
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+}
+
+.inputFieldNoBorder {
+  	-fx-border-width: 0 0 0 0;
+}
+
+.inputFieldBottomBorder {
+  	-fx-border-width: 0 0 1 0;
+}
+#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane{
+	-fx-background-color:#ffffff;
+	 -fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+#onHoldPane, #rejectionPane,#authenticationRoot{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-#onHoldLabelAnchorPane, #rejectionLabelPane{
+#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
 	-fx-background-color:#808080;
 }
-#onHoldAnchorPane, #rejectionAnchorPane{
+#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane{
 	-fx-background-color:#ffffff;
 }
-#onHoldComboBox, #rejectionComboBox{
+#pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
+	-fx-background-color:#ffffff;
+	-fx-alignment: center ;
+	-fx-padding: 0 0 0 0;
+}
+#onHoldComboBox, #rejectionComboBox, #deviceCmbBox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit, #approvalBtn ,#rejectionBtn ,#onHoldBtn{
+#submit, #rejectionSubmit,#submitBtn,#scanBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -133,12 +211,76 @@
     -fx-font-size: 10px;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
-#exitButton, #rejectionExit{
+#exitButton, #rejectionExit, #authExit,#authenticationExit{
 	 -fx-border-color: transparent;
      -fx-padding: 4 0 4 0;
      -fx-text-fill: black;
 }
-#table{
+#table,#pendingActionTable{
 	-fx-text-fill: black;
     -fx-font-size: 14px;
+}
+#approvalAccordion .title > .arrow-button .arrow{
+    -fx-translate-x: 870;
+}
+.titled-pane > .title 
+{
+  -fx-background-color: white;
+  -fx-border-width: 1 1 1 1;
+  -fx-border-color: #dcdcdc;
+  -fx-font-weight: bold;
+}
+#pendingApprovalTitledPane,#pendingActionTitledPane,#approvalReportTitledPane,#reRegisterTitledPane{
+	 -fx-background-color:#ffffff; 
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0 0 0.5em 0;
+}
+#table .scroll-bar:vertical > .increment-button,
+#table .scroll-bar:vertical > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#table .scroll-bar:horizontal > .increment-button,
+#table .scroll-bar:horizontal > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#pendingActionTable .scroll-bar:vertical > .increment-button,
+#pendingActionTable .scroll-bar:vertical > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#pendingActionTable .scroll-bar:horizontal > .increment-button,
+#pendingActionTable .scroll-bar:horizontal > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 } 
+.toggle-button{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 6,5;
+    -fx-background-insets: 0,1; 
+    -fx-text-fill: black;
+    -fx-font-size: 10px;   
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.toggle-button:selected{
+    -fx-background-color: #a9a9a9;
+     -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+#applicantImageHBox, #exceptionImageHBox {
+	-fx-border-color: black;
+	-fx-border-width: 2;
+}
