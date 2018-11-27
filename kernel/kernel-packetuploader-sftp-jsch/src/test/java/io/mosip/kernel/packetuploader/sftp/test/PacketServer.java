@@ -26,37 +26,26 @@ import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 import org.springframework.core.io.ClassPathResource;
 
-/**
- * @author Urvil Joshi
- * @since 1.0.0
- */
 
-public class PacketServer {
+public class PacketServer{
 
-	/**
-	 * 
-	 */
+
 	private SshServer server;
-
-	private final String host = "127.0.0.1";
-
-	private final int port = 10022;
-
-	private final String publicKey = "/id_rsa.pub";
+    
+	private String host="127.0.0.1";
+    
+	private int port=10022; 
+    
+	private String publicKey="/id_rsa.pub";
+    
+	private String username="testUser";
+	
+	private String password="testpassword";
+	
+	private boolean running;
 
 	private String keyPairGenerator;
-
-	private final String username = "testUser";
-
-	private final String password = "testpassword";
-	private volatile boolean running;
-
-	/**
-	 * @throws IOException
-	 * @throws InvalidKeySpecException
-	 * @throws NoSuchAlgorithmException
-	 * 
-	 */
+	
 	public void afterPropertiesSet() throws InvalidKeySpecException, IOException, NoSuchAlgorithmException {
 		this.server = SshServer.setUpDefaultServer();
 		keyPairGenerator = Files.createTempDirectory("hostkey.ser").toString();
@@ -76,19 +65,11 @@ public class PacketServer {
 		this.start();
 	}
 
-	/**
-	 * @param path
-	 */
+	
 	public void setHomeFolder(Path path) {
 		server.setFileSystemFactory(new VirtualFileSystemFactory(path));
 	}
 
-	/**
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws IOException
-	 */
 	private PublicKey loadAllowedKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] keyBytes = Files.readAllBytes(new ClassPathResource(publicKey).getFile().toPath());
 		X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decodeBase64(keyBytes));
@@ -97,9 +78,6 @@ public class PacketServer {
 
 	}
 
-	/**
-	 * 
-	 */
 	public void start() {
 		try {
 			this.server.start();
@@ -108,10 +86,6 @@ public class PacketServer {
 			throw new IllegalStateException();
 		}
 	}
-
-	/**
-	 * 
-	 */
 
 	public void stop() {
 		if (this.running) {
@@ -125,9 +99,6 @@ public class PacketServer {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isRunning() {
 		return this.running;
 	}
