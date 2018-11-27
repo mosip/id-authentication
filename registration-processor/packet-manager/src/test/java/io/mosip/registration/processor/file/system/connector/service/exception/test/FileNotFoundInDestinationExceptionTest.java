@@ -10,10 +10,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
  * @author M1022006
@@ -22,8 +22,6 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
 @RunWith(SpringRunner.class)
 public class FileNotFoundInDestinationExceptionTest {
 
-	private static final String FILE_NOT_FOUND_IN_DESTINATION = "The File is not present in Destination Folder";
-
 	@MockBean
 	private FileManager<DirectoryPathDto, ?> fileManager;
 
@@ -31,16 +29,16 @@ public class FileNotFoundInDestinationExceptionTest {
 	public void TestFileNotFoundInDestinationException() {
 		String fileName = "sample.zip";
 
-		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(FILE_NOT_FOUND_IN_DESTINATION);
+		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 		try {
 			fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 			fail();
 		} catch (FileNotFoundInDestinationException e) {
 			assertThat("Should throw File Not Found In Destination Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_FSS_FILE_NOT_FOUND_IN_DESTINATION));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getCode()));
 			assertThat("Should throw File Not Found In Destination Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(FILE_NOT_FOUND_IN_DESTINATION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage()));
 
 		}
 

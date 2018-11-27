@@ -27,9 +27,4 @@ public class LanguageRequestResponseDto {
 	 */
 	private List<LanguageDto> languages;
 
-	/**
-	 * List of successfully language created.
-	 */
-	private List<String> successfullyCreatedLanguages;
-
 }

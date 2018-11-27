@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @param <Q> the generic type
  */
 @Service
-public interface QualityCheckManager<U,T,Q>{
+public interface QualityCheckManager<U,Q>{
 	
 	
 	/**
@@ -32,13 +32,7 @@ public interface QualityCheckManager<U,T,Q>{
 	 */
 	public List<Q> updateQCUserStatus(List<Q> qcUserDtos);
 
-	/**
-	 * Gets the packetsfor QC user.
-	 *
-	 * @param qcuserId the qcuser id
-	 * @return the packetsfor QC user
-	 */
-	public List<T> getPacketsforQCUser(U qcuserId);
+
 	
 
 }

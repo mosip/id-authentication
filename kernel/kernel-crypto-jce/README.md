@@ -42,7 +42,7 @@ mvn javadoc:javadoc
 
 
   
-*Usage Encryption:*
+*Usage Symmetric Encryption:*
  
  ```
 @Autowired
@@ -57,10 +57,13 @@ mvn javadoc:javadoc
 8��ޡ����'��P�ր��|sN#�lY;����4(\M�M9�c�J
  ```
  
+ *Usage Asymmetric Encryption:*
+ 
  ```
  @Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 	
+	encryptor.asymmetricPublicEncrypt(keyPair.getPublic(),dataToEncrypt));
 	
  ```
  
@@ -72,7 +75,7 @@ S݄=Җ[<C&!r��˅Б�ɦ-�	�T��	�$0�P����e�T7�
 )&�������Ϩ8�H���=a�l�Fʷ���'d��؆x��K���0�x�ۦ.m��Պd"Q��C�����c��hvϟi�S��q�Q��
  ```
 
- *Usage Decryption:*
+ *Usage Symmetric Decryption:*
  
  ```
  @Autowired 
@@ -87,6 +90,8 @@ S݄=Җ[<C&!r��˅Б�ɦ-�	�T��	�$0�P����e�T7�
 ```
 This is Plain Text
 ```
+
+*Usage Asymmetric Decryption:*
 
 ```
 @Autowired 

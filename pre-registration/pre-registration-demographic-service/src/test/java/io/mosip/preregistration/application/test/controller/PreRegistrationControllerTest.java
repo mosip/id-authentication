@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.preregistration.application.controller.PreRegistrationController;
 import io.mosip.preregistration.application.dto.CreateDto;
 import io.mosip.preregistration.application.dto.DeleteDto;
@@ -58,7 +58,7 @@ public class PreRegistrationControllerTest {
 
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
-		JsonValidatorResponseDto dto = new JsonValidatorResponseDto();
+		ValidationReport dto = new ValidationReport();
 		ClassLoader classLoader = getClass().getClassLoader();
 		JSONParser parser = new JSONParser();
 		File file = new File(classLoader.getResource("pre-registration.json").getFile());
