@@ -28,16 +28,13 @@ public class KeymanagerController {
 	@PostMapping(value = "/publickey")
 	public ResponseEntity<KeyResponseDto> getPublicKey(@RequestBody PublicKeyRequestDto publicKeyRequestDto) {
 
-		return new ResponseEntity<>(keymanagerService.getPublicKey(publicKeyRequestDto.getApplicationId(),
-				publicKeyRequestDto.getTimeStamp(), publicKeyRequestDto.getMachineId()), HttpStatus.CREATED);
+		return new ResponseEntity<>(keymanagerService.getPublicKey(publicKeyRequestDto), HttpStatus.CREATED);
 	}
 
 	@PostMapping(value = "/symmetricKey")
 	public ResponseEntity<KeyResponseDto> decryptSymmetricKey(
 			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
-		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto.getApplicationId(),
-				symmetricKeyRequestDto.getTimeStamp(), symmetricKeyRequestDto.getMachineId(),
-				symmetricKeyRequestDto.getEncryptedSymmetricKey()), HttpStatus.CREATED);
+		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.CREATED);
 	}
 }
