@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
- * This DTO class handles 
+ * 
  * @author Srinivasan
  * @since 1.0.0
  *
@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LocationDto {
 
-	private String locationCode;
+	private String code;
 
-	private String locationName;
+	private String name;
 
 	private int hierarchyLevel;
 
 	private String hierarchyName;
 
-	private String parentLocationCode;
+	private String parentLocCode;
 
 	private String languageCode;
 

@@ -16,18 +16,27 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
+
+@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
 @RunWith(SpringRunner.class)
 public class TemplatemanagerTest {
 
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+	
 	private TemplateManager templateManager;
+	
 	Map<String, Object> valueMap;
 	private static final String expected = "<head></head><body>"
 			+ "<h1>Welcome to Cafe Coffee Day Store</h1><p>6 Coffee on Sale!"
@@ -39,7 +48,7 @@ public class TemplatemanagerTest {
 
 	@Before
 	public void setup() {
-		templateManager = new TemplateConfigureBuilder().enableCache(false).resourceLoader("classpath").build();
+		templateManager = templateManagerBuilder.enableCache(false).resourceLoader("classpath").build();
 	}
 
 	@Before
@@ -80,7 +89,6 @@ public class TemplatemanagerTest {
 	}
 
 	@Test(expected = TemplateMethodInvocationException.class)
-
 	public void testEvaluateMethodInvocationException() throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("methodInvocation_template.vm");
 		Map<String, Object> values = new HashMap<>();
@@ -186,7 +194,7 @@ public class TemplatemanagerTest {
 	@Test
 
 	public void testMergeEncodingFileResource() throws IOException {
-		templateManager = new TemplateConfigureBuilder().build();
+		templateManager = new TemplateManagerBuilderImpl().build();
 		String template = "/test.vm";
 		StringWriter writer = new StringWriter();
 

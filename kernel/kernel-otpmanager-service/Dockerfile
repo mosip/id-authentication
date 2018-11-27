@@ -1,10 +1,7 @@
-FROM java:8
+FROM openjdk:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
-
-ADD target/kernel-otpmanager-service-1.0.0-SNAPSHOT.jar /KernelOtpManagerService.jar
+COPY ./target/kernel-otpmanager-service-1.0.0-SNAPSHOT.jar kernel-otpmanager-service-1.0.0-SNAPSHOT.jar
 
 EXPOSE 8085
 
-ENTRYPOINT ["java","-jar","/KernelOtpManagerService.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=int","kernel-otpmanager-service-1.0.0-SNAPSHOT.jar"]

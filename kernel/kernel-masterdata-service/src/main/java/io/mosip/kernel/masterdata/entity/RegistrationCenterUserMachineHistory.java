@@ -40,7 +40,7 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 	 */
 	@EmbeddedId
 	@AttributeOverrides({
-			@AttributeOverride(name = "cntrId", column = @Column(name = "cntr_id", nullable = false, length = 36)),
+			@AttributeOverride(name = "cntrId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)) })
 	private RegistrationCenterUserMachineHistoryId id;

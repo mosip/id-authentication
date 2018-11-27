@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <fileAppender appenderName="fileappender">
 	<append>true</append>
-	<fileName>src/test/resources/test.txt</fileName>
+	<fileName>src/test/resources/test/test.txt</fileName>
 	<immediateFlush>true</immediateFlush>
 	<prudent>false</prudent>
 </fileAppender>

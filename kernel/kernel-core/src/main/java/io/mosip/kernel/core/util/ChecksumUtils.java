@@ -39,12 +39,11 @@ public final class ChecksumUtils {
 	/**
 	 * Generates the Verhoeff checksum digit for the provided numeric string.
 	 * 
-	 *  * @param num 
-	 *               Number input
+	 * @param num
+	 *            Number input
 	 * @return The generated Verhoeff checksum digit for the provided numeric
 	 *         string.
 	 */
-	
 	public static String generateChecksumDigit(String num) {
 		int c = 0;
 		int[] myArray = stringToReversedIntArray(num);

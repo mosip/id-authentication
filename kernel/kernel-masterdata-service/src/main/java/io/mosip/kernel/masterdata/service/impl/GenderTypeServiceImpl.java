@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class contains service methods to fetch gender type data from DB
@@ -30,9 +29,10 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	@Autowired
 	GenderTypeRepository genderTypeRepository;
-
+	
 	@Autowired
-	private ModelMapper mapper;
+	private MapperUtils objectMapperUtil;
+
 
 	/*
 	 * (non-Javadoc)
@@ -52,8 +52,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (!(genderType.isEmpty())) {
-			genderDto = mapper.map(genderType, new TypeToken<List<GenderTypeDto>>() {
-			}.getType());
+			genderDto = objectMapperUtil.mapAll(genderType, GenderTypeDto.class);
 		} else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
@@ -77,7 +76,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		List<GenderType> gender = new ArrayList<>();
 
 		try {
-			gender = genderTypeRepository.findGenderByLanguageCode(languageCode);
+			gender = genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
@@ -86,8 +85,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		genderListDto = mapper.map(gender, new TypeToken<List<GenderTypeDto>>() {
-		}.getType());
+		genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
 
 		genderResponseDto = new GenderTypeResponseDto();
 		genderResponseDto.setGenderType(genderListDto);

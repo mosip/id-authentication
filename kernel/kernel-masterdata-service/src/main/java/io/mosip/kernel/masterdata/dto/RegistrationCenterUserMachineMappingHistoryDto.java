@@ -28,5 +28,7 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	 * User Id for response
 	 */
 	private String usrId;
+	
+	private Boolean isActive;
 
 }

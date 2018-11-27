@@ -18,8 +18,8 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
 
 /**
- * Class generates TokenId based on {@link RandomStringUtils}} and implements
- * {@link TokenIdGenerator<T>}}
+ * Class generates TokenId 
+ * 
  * 
  * @author Srinivasan
  *
@@ -49,7 +49,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	}
 
 	/**
-	 * Method is implementation method of{@link TokenIdGenerator<T>}}
+	 * Method is implementation method of
 	 * 
 	 * @return tokenId
 	 */
@@ -74,7 +74,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Method will save tokenId to the database and it will add tokenId to the list.
 	 * 
-	 * @param generatedTokenId
+	 * @param generatedTokenId- token id generated from the method
 	 * @return string
 	 */
 	private void saveGeneratedTokenId(String generatedTokenId) {
@@ -92,7 +92,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 
 	/**
 	 * Method generates RandomId. It also validates that the token is generated
-	 * based on the rules {@link TokenIdFilterUtils}}.If it is not validated then
+	 * based on the rules {@link TokenIdFilterUtils}.If it is not validated then
 	 * again another token is generated.
 	 * 
 	 * @return
@@ -110,7 +110,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Generates a id and then generate checksum
 	 * 
-	 * @param generatedIdLength
+	 * @param generatedIdLength -
 	 *            The length of id to generate
 	 * 
 	 * @return the tokenId
@@ -126,7 +126,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Method will append checksum to the generated tokenId.
 	 * 
-	 * @param generatedIdLength
+	 * @param generatedIdLength 
 	 * @param generatedVId
 	 * @param verhoeffDigit
 	 * @return generatedTokenId

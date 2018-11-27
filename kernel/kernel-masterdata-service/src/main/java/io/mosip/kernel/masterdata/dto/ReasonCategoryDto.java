@@ -17,7 +17,11 @@ public class ReasonCategoryDto {
 
 	private String description;
 
-	private String languageCode;
+	private String langCode;
+	
+	private Boolean isActive;
+	
+	private Boolean isDeleted;
 
-	private List<ReasonListDto> reasonList = new ArrayList<ReasonListDto>();
+	private List<ReasonListDto> reasonList = new ArrayList<>();
 }

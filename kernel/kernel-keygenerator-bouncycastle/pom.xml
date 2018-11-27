@@ -11,6 +11,9 @@
 	<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 	<packaging>jar</packaging>
 	<name>kernel-keygenerator-bouncycastle</name>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -40,8 +43,10 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
 	</dependencies>
 </project>

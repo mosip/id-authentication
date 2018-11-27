@@ -28,7 +28,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+
 
 /**
  * This class tests the IdAuthServiceImpl.java
@@ -213,7 +214,7 @@ public class TemplatesTest {
 
 	@BeforeClass
 	public static void before() {
-		templateManager = new TemplateConfigureBuilder()
+		templateManager = new TemplateManagerBuilderImpl()
 				.enableCache(false)
 				.resourceLoader("classpath")
 				.build();

@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * blacklisted words service implementation
@@ -31,7 +31,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -43,9 +43,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
 		List<BlacklistedWordsDto> wordsDto = null;
 		List<BlacklistedWords> words = null;
-		if (langCode != null && !langCode.isEmpty()) {
 			try {
-				words = blacklistedWordsRepository.findAllByLangCode(langCode);
+				words = blacklistedWordsRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 			} catch (DataAccessException accessException) {
 				throw new MasterDataServiceException(
 						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
@@ -58,11 +57,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
 						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
 			}
-		} else {
-			throw new RequestException(
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_LANG_CODE_ARG_MISSING.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_LANG_CODE_ARG_MISSING.getErrorMessage());
-		}
+		
 
 		return new BlacklistedWordsResponseDto(wordsDto);
 	}

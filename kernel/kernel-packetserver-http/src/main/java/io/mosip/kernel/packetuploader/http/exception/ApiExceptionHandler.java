@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
@@ -28,29 +29,25 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(DirectoryNotEmptyException.class)
-	public ResponseEntity<Error> handle(DirectoryNotEmptyException e) {
-		Error error = new Error();
-		error.setMessage(
-				PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage());
-		error.setCode(
-				PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ErrorResponse<Error>> handle(DirectoryNotEmptyException e) {
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
-	 * This method handle MosipIOException.
+	 * This method handle IOException.
 	 * 
 	 * @param e
 	 *            the exception
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(IOException.class)
-	public ResponseEntity<Error> handle(IOException e) {
-
+	public ResponseEntity<ErrorResponse<Error>> handle(IOException e) {
+		 ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		Error error = new Error();
-		error.setMessage(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION.getErrorMessage());
-		error.setCode(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+		error.setMessage(e.getErrorText());
+		error.setCode(e.getErrorCode());
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -61,26 +58,8 @@ public class ApiExceptionHandler {
 	 * @return The Response entity with error response
 	 */
 	@ExceptionHandler(PacketLocationSecurityException.class)
-	public ResponseEntity<Error> handle(PacketLocationSecurityException e) {
-		Error error = new Error();
-		error.setMessage(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorMessage());
-		error.setCode(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	/**
-	 * Exception handler to handle MosipInvalidFileName
-	 * 
-	 * @param e
-	 *            The InvalidRequestException
-	 * @return The Response entity with error response
-	 */
-	@ExceptionHandler(InvalidFileNameException.class)
-	public ResponseEntity<Error> handle(InvalidFileNameException e) {
-		Error error = new Error();
-		error.setMessage(e.getErrorText());
-		error.setCode(e.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<ErrorResponse<Error>> handle(PacketLocationSecurityException e) {
+		return new ResponseEntity<>(getErrorResponse(e) , HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -91,11 +70,22 @@ public class ApiExceptionHandler {
 	 * @return The Response entity with error response
 	 */
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<Error> handle(MultipartException e) {
-		Error error = new Error();
-		error.setMessage(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION.getErrorMessage());
-		error.setCode(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<ErrorResponse<Error>> handle(MultipartException e) {
+       ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+	    Error error = new Error();
+		error.setMessage(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION
+						.getErrorMessage());
+		error.setCode(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION
+						.getErrorCode());
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
+		return errorResponse;
 	}
 
 }

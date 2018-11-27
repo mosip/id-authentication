@@ -17,7 +17,7 @@ This service can be used to send email through configured SMTP server. Service h
 - REST service can be used by any MOSIP module to send email through HTTP client.
 
 
-- Request body model for POST **/notification/email**
+- Request body model for POST **/notifier/email**
 
 (curl sample)
 
@@ -32,7 +32,10 @@ This service can be used to send email through configured SMTP server. Service h
 
 
 
-- Response body model for POST **/notification/email**
+- Response body model for POST **/notifier/email**
+
+HttpStatus: 202 Accepted
+
 
 ```
 {

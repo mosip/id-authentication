@@ -9,6 +9,9 @@
 	</parent>
 	<artifactId>kernel-templatemanager-freemarker</artifactId>
 	<description>Template Manager using Freemarker Template Manager</description>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

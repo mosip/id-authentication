@@ -84,9 +84,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 			List<Error> validationErrorsList = new ArrayList<>();
 			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
-
 			throw new RequiredKeyNotFoundException(validationErrorsList);
-
 		}
 		// This variable holds the update query to be performed.
 		String updateString;

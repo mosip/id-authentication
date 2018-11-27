@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +12,21 @@ import io.mosip.kernel.masterdata.dto.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 @Service
 public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private HolidayRepository holidayRepository;
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	@Override
 	public HolidayResponseDto getAllHolidays() {
 		HolidayResponseDto holidayResponseDto = null;
-		List<HolidayDto> holidayDto = new ArrayList<>();
+		List<HolidayDto> holidayDto = null;
 		List<Holiday> holidays = null;
 		try {
 			holidays = holidayRepository.findAll(Holiday.class);
@@ -53,7 +51,7 @@ public class HolidayServiceImpl implements HolidayService {
 	public HolidayResponseDto getHolidayById(int id) {
 
 		HolidayResponseDto holidayResponseDto = null;
-		List<HolidayDto> holidayDto = new ArrayList<>();
+		List<HolidayDto> holidayDto = null;
 		List<Holiday> holidays = null;
 		try {
 			holidays = holidayRepository.findAllByHolidayIdId(id);

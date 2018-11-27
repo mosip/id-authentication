@@ -1,4 +1,3 @@
-
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class have methods to fetch a Device Details
@@ -39,7 +38,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 * Field to hold ObjectMapperUtil object
 	 */
 	@Autowired
-	ObjectMapperUtil objectMapperUtil;
+	MapperUtils objectMapperUtil;
 
 	/**
 	 * Method used for fetch all Device details based on given language code
@@ -67,7 +66,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<DeviceDto> deviceDtoList = null;
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
-			deviceList = deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(langCode);
+			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
