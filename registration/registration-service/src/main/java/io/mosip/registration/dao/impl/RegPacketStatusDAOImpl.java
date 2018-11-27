@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -72,7 +73,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 				registrationTxn.setRegId(registration.getId());
 				registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-				registrationTxn.setLangCode("EN");
+				registrationTxn.setLangCode("ENG");
 				registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 				registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
@@ -93,13 +94,13 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 				registration.setRegistrationTransaction(transactionList);
 				Registration updatedRegistration = registrationRepository.update(registration);
 				if (ackFile != null && updatedRegistration != null) {
-					ackFile.delete();
-					zipFile.delete();
+					Files.delete(ackFile);
+					Files.delete(zipFile);
 				}
 			}
 			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 					"packets status sync from server has been ended");
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException runtimeException) {			
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
 					runtimeException.toString());
 		}

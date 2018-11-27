@@ -23,6 +23,7 @@ import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.RegPacketStatusService;
 
@@ -58,7 +59,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 *            LinkedHashMap which maps the attributes of registration entity to
 	 *            their respective values that are obtained after sync with server
 	 */
-	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrations) {
+	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrations)
+			throws RegBaseUncheckedException {
 		List<RegPacketStatusDTO> packetStatusDTO = new ArrayList<>();
 		for (Map<String, String> registration : registrations) {
 			packetStatusDTO.add(
@@ -95,38 +97,39 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			/** Obtain RegistrationStatusDto from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME,
 					requestParamMap);
-		} catch (RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException | SocketTimeoutException exception) {
+			if (!registrations.isEmpty()) {
+				/** update the status of packets after sync with server */
+				try {
+					updatePacketIdsByServerStatus(registrations);
+				} catch (RegBaseUncheckedException regBaseUncheckedException) {
+					getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+				}
+				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+						"packet status has been synced with server");
+				/** Create Success response */
+				successResponse = new SuccessResponseDTO();
+				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
+				successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
+				Map<String, Object> otherAttributes = new HashMap<>();
+				otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
+				successResponse.setOtherAttributes(otherAttributes);
+				response.setSuccessResponseDTO(successResponse);
+				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+						"Success Response Created");
+			} else {
+				/** Create Error response */
+				getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+						"Error Response Created");
+			}
+
+		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException
+				| HttpClientErrorException exception) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					"Error Response Created");
 		}
-
-		if (!registrations.isEmpty()) {
-			/** update the status of packets after sync with server */
-			updatePacketIdsByServerStatus(registrations);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"packet status has been synced with server");
-			/** Create Success response */
-			successResponse = new SuccessResponseDTO();
-			successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-			successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
-			Map<String, Object> otherAttributes = new HashMap<>();
-			otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
-			successResponse.setOtherAttributes(otherAttributes);
-			response.setSuccessResponseDTO(successResponse);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Success Response Created");
-
-		} else {
-
-			/** Create Error response */
-			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Error Response Created");
-
-		}
-
 		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"Packet Status Sync ended");
 
