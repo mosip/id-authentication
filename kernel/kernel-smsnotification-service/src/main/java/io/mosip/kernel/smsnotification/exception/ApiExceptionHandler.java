@@ -1,15 +1,19 @@
 package io.mosip.kernel.smsnotification.exception;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 
 /**
@@ -20,12 +24,13 @@ import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
  *
  */
 @RestControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
 	 * This variable represents the errors.
 	 */
 	String err = "errors";
+	private static final String WHITESPACE = " ";
 
 	/**
 	 * This method handles MethodArgumentNotValidException type of exceptions.
@@ -33,19 +38,13 @@ public class ApiExceptionHandler {
 	 * @param exception
 	 *            The exception
 	 * @return The response entity.
+	 * 
 	 */
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> smsNotificationValidation(
-			final MethodArgumentNotValidException exception) {
-		Error error = new Error(SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorCode(),
-				SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorMessage());
-		ArrayList<Error> errorList = new ArrayList<>();
-		errorList.add(error);
 
-		Map<String, ArrayList<Error>> map = new HashMap<>();
-		map.put(err, errorList);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException exception,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return new ResponseEntity<>(getErrorResponse(exception, headers, status, request), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -56,16 +55,31 @@ public class ApiExceptionHandler {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(InvalidNumberException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> smsNotificationInvalidNumber(
-			final InvalidNumberException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		ArrayList<Error> errorList = new ArrayList<>();
-		errorList.add(error);
+	public ResponseEntity<ErrorResponse<Error>> smsNotificationInvalidNumber(final InvalidNumberException e) {
 
-		Map<String, ArrayList<Error>> map = new HashMap<>();
-		map.put(err, errorList);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.NOT_ACCEPTABLE);
 
 	}
 
+	private ErrorResponse<Error> getErrorResponse(MethodArgumentNotValidException ex, HttpHeaders headers,
+			HttpStatus status, WebRequest request) {
+
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		BindingResult bindingResult = ex.getBindingResult();
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		fieldErrors.forEach(x -> {
+			Error error = new Error(SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorCode(),
+					x.getField() + WHITESPACE + x.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
+
+		return errorResponse;
+	}
+
+	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
+		return errorResponse;
+	}
 }

@@ -1,7 +1,6 @@
 package io.mosip.kernel.smsnotification.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 
@@ -18,15 +17,15 @@ public class SmsRequestDto {
 	/**
 	 * Contact number of recipient.
 	 */
-	@NotNull
-	@NotEmpty
+	
+	@NotBlank
 	private String number;
 	
 	/**
 	 * Message need to send.
 	 */
-	@NotNull
-	@NotEmpty
+	
+	@NotBlank
 	private String message;
 
 }
