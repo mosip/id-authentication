@@ -23,6 +23,6 @@ public class PublicKeyRequestDto {
 
 	private LocalDateTime timeStamp;
 
-	private String machineId;
+	private String referenceId;
 
 }

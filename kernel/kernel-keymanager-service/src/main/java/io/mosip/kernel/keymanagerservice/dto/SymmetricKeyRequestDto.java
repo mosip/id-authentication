@@ -23,7 +23,7 @@ public class SymmetricKeyRequestDto {
 
 	private LocalDateTime timeStamp;
 
-	private String machineId;
+	private String referenceId;
 
 	private byte[] encryptedSymmetricKey;
 
