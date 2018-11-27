@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl,\
+ io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl
