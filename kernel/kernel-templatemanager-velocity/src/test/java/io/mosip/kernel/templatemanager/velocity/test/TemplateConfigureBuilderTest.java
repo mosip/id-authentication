@@ -20,7 +20,7 @@ public class TemplateConfigureBuilderTest {
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 
-	@Test
+	//@Test
 	public void buildDefaultConfiguration() {
 		TemplateManagerBuilderImpl builder=(TemplateManagerBuilderImpl) templateManagerBuilder;
 		builder.build();
@@ -31,7 +31,7 @@ public class TemplateConfigureBuilderTest {
 
 	}
 
-	@Test
+	//@Test
 	public void buildWithCustomConfiguration() {
 		TemplateManagerBuilderImpl builder = (TemplateManagerBuilderImpl) new TemplateManagerBuilderImpl().encodingType("UTF-16").enableCache(false)
 				.resourcePath("/templates").resourceLoader("classpath");
