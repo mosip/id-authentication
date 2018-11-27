@@ -14,8 +14,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
-import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeymanagerConstant;
-import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeymanagerErrorCode;
+import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerConstant;
+import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
 import sun.security.x509.AlgorithmId;
 import sun.security.x509.CertificateAlgorithmId;
 import sun.security.x509.CertificateSerialNumber;
@@ -78,13 +78,13 @@ public class CertificateUtility {
 			info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algo));
 			cert = signCertificate(privkey, info);
 			algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
-			info.set(CertificateAlgorithmId.NAME + SofthsmKeymanagerConstant.DOT + CertificateAlgorithmId.ALGORITHM,
+			info.set(CertificateAlgorithmId.NAME + KeymanagerConstant.DOT + CertificateAlgorithmId.ALGORITHM,
 					algo);
 			cert = signCertificate(privkey, info);
 		} catch (IOException | CertificateException e) {
 			throw new KeystoreProcessingException(
-					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
 	}
@@ -102,12 +102,12 @@ public class CertificateUtility {
 		X509CertImpl cert;
 		cert = new X509CertImpl(info);
 		try {
-			cert.sign(privkey, SofthsmKeymanagerConstant.SIGNATURE_ALGORITHM);
+			cert.sign(privkey, KeymanagerConstant.SIGNATURE_ALGORITHM);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
 			throw new KeystoreProcessingException(
-					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
 	}
