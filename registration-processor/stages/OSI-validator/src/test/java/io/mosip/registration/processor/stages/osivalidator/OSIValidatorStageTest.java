@@ -152,7 +152,7 @@ public class OSIValidatorStageTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
-		authResponseDTO.setStatus(true);
+		authResponseDTO.setStatus("y");
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(authResponseDTO);
 
@@ -293,7 +293,7 @@ public class OSIValidatorStageTest {
 	 */
 	@Test
 	public void testInvalidIris() throws Exception {
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerId(null);
 		regOsiDto.setSupervisorFingerpImageName(null);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
@@ -312,7 +312,7 @@ public class OSIValidatorStageTest {
 	 */
 	@Test
 	public void testInvalidFace() throws Exception {
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerId(null);
 		regOsiDto.setSupervisorFingerpImageName(null);
 		regOsiDto.setSupervisorIrisImageName(null);
@@ -332,7 +332,7 @@ public class OSIValidatorStageTest {
 	 */
 	@Test
 	public void testisValidOSIFailure() throws Exception {
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerfingerType("LEFTLITTLE");
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -369,7 +369,7 @@ public class OSIValidatorStageTest {
 	@Test
 	public void testisValidSupervisorFailure() throws Exception {
 		regOsiDto.setOfficerId(null);
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("N");
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -387,7 +387,7 @@ public class OSIValidatorStageTest {
 	 */
 	@Test
 	public void testisValidOSIFailurewithRetry() throws Exception {
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
