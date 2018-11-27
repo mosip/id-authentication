@@ -122,17 +122,17 @@
                                     <Label fx:id="addressLine3LocalLanguagelabel" layoutX="410.0" layoutY="110.0" text="" />
                                     <TextField fx:id="addressLine3LocalLanguage" layoutX="410.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Button fx:id="nextBtn" layoutX="639.0" layoutY="435.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" prefHeight="20.0" prefWidth="70.0" text="%next" />
-                                    <ImageView fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#adressLine1Focus" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                     	<image>
                   						<Image url="@../images/keyboard.png" />
                			 			</image>
                                     </ImageView>
-                                    <ImageView fitHeight="21.0" fitWidth="34.0" layoutX="738.0" layoutY="86.0" onMouseClicked="#adressLine2Focus" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutX="738.0" layoutY="86.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                     	<image>
               							<Image url="@../images/keyboard.png" />
             			 					</image>
                                     </ImageView>
-                                    <ImageView fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="142.0" onMouseClicked="#adressLine3Focus" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView id="addressLine3" fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="142.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                	     <image>
               							<Image url="@../images/keyboard.png" />
             			 					</image>
@@ -141,7 +141,7 @@
                               </AnchorPane>
                               <Label fx:id="fullNameLocalLanguageLabel" layoutX="435.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
                               <TextField id="fullName_lc" fx:id="fullNameLocalLanguage" layoutX="435.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
-                              <ImageView fitHeight="20.0" fitWidth="27.0" layoutX="768.0" layoutY="100.0" onMouseClicked="#fullNameFocus" pickOnBounds="true" preserveRatio="true">
+                              <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="768.0" layoutY="100.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                               <image>
               					<Image url="@../images/keyboard.png" />
             			 			</image>

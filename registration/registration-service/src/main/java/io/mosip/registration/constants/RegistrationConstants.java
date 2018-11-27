@@ -411,6 +411,7 @@ public class RegistrationConstants {
 	public static final String TEN_LETTER_INPUT_LIMT="Please provide in the range of 6 to 10 letters";
 	public static final String SIX_DIGIT_INPUT_LIMT="Please provide 5 digit detail";
 	public static final String THIRTY_DIGIT_INPUT_LIMT="Please provide 30 digit detail";
+	public static final String ADDRESS_KEY="PrevAddress";
 
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";

@@ -52,6 +52,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -96,7 +97,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label bioExceptionToggleLabel2;
-	
+
 	@FXML
 	private Label toggleLabel1;
 
@@ -107,7 +108,7 @@ public class RegistrationController extends BaseController {
 	private AnchorPane childSpecificFields;
 
 	private SimpleBooleanProperty switchedOn;
-	
+
 	private SimpleBooleanProperty switchedOnForBiometricException;
 
 	@FXML
@@ -220,7 +221,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane anchorPaneRegistration;
-	
+
 	@FXML
 	private Button prevAddressButton;
 
@@ -233,7 +234,7 @@ public class RegistrationController extends BaseController {
 	private static DatePicker ageDatePickerContent;
 
 	private boolean toggleAgeOrDobField;
-	
+
 	private boolean toggleBiometricException;
 
 	private boolean isChild;
@@ -260,22 +261,22 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button captureExceptionImage;
 	@FXML
-	protected Button saveBiometricDetailsBtn;	
+	protected Button saveBiometricDetailsBtn;
 	@FXML
-	protected Button biometricPrevBtn;	
+	protected Button biometricPrevBtn;
 	@FXML
-	protected Button pane2PrevBtn;		
+	protected Button pane2PrevBtn;
 	@FXML
 	protected Button autoFillBtn;
 	@FXML
 	protected Button fetchBtn;
 	@FXML
-	protected Button poaScanBtn;		
+	protected Button poaScanBtn;
 	@FXML
 	protected Button poiScanBtn;
 	@FXML
 	protected Button porScanBtn;
-	
+
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
@@ -287,24 +288,29 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Entering the LOGIN_CONTROLLER");
-			
+
 			if (capturePhotoUsingDevice.equals("Y")) {
 				defaultImage = applicantImage.getImage();
 				biometrics.setVisible(false);
 				biometricsNext.setVisible(false);
 				biometricsPane.setVisible(true);
+				if (!isEditPage) {
+					applicantImageCaptured = false;
+					exceptionBufferedImage = null;
+				}
 			} else if (capturePhotoUsingDevice.equals("N")) {
+
 				biometrics.setVisible(true);
 				biometricsNext.setVisible(true);
 				biometricsPane.setVisible(false);
 				biometricsNext.setDisable(false);
 			}
-			
+
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
-			toggleAgeOrDobField=false;
-			toggleBiometricException=false;
-			isChild=true;
+			toggleAgeOrDobField = false;
+			toggleBiometricException = false;
+			isChild = true;
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
 			keyboardNode = new VirtualKeyboard().view();
@@ -321,7 +327,7 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
-			if(SessionContext.getInstance().getMapObject().get("PrevAddress")==null) {
+			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
 			if (isEditPage && registrationDTOContent != null) {
@@ -403,16 +409,17 @@ public class RegistrationController extends BaseController {
 	 * Loading the address detail from previous entry
 	 * 
 	 */
-	
+
 	@FXML
 	private void loadAddressFromPreviousEntry() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading address from previous entry");
-			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject().get("PrevAddress")).getLocationDTO();
-			region.setText(locationDto.getRegion());
-			city.setText(locationDto.getCity());
-			province.setText(locationDto.getProvince());
-			postalCode.setText(locationDto.getPostalCode());
+		LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
+		region.setText(locationDto.getRegion());
+		city.setText(locationDto.getCity());
+		province.setText(locationDto.getProvince());
+		postalCode.setText(locationDto.getPostalCode());
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
 	}
@@ -438,50 +445,37 @@ public class RegistrationController extends BaseController {
 
 	/**
 	 * 
-	 * Setting the focus to address line 1 local
+	 * Setting the focus to specific fields when keyboard loads
 	 * 
 	 */
-	public void adressLine1Focus() {
-		addressLine1LocalLanguage.requestFocus();
+	@FXML
+	private void setFocusonLocalField(MouseEvent event) {
+
 		keyboardNode.setLayoutX(300.00);
-		keyboardNode.setLayoutY(270.00);
-		keyboardNode.setVisible(true);
-	}
+		Node node = (Node) event.getSource();
 
-	/**
-	 * 
-	 * Setting the focus to address line 2 local
-	 * 
-	 */
-	public void adressLine2Focus() {
-		addressLine2LocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(320);
-		keyboardNode.setVisible(true);
-	}
+		if (node.getId().equals("addressLine1")) {
+			addressLine1LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(270.00);
+		}
 
-	/**
-	 * 
-	 * Setting the focus to address line 3 local
-	 * 
-	 */
-	public void adressLine3Focus() {
-		addressLine3LocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(375);
-		keyboardNode.setVisible(true);
-	}
+		if (node.getId().equals("addressLine2")) {
+			addressLine2LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(320.00);
+		}
 
-	/**
-	 * 
-	 * Setting the focus to full name local
-	 * 
-	 */
-	public void fullNameFocus() {
-		fullNameLocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(120);
+		if (node.getId().equals("addressLine3")) {
+			addressLine3LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(375.00);
+		}
+
+		if (node.getId().equals("fullName")) {
+			fullNameLocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(120.00);
+		}
+
 		keyboardNode.setVisible(true);
+
 	}
 
 	/**
@@ -522,7 +516,7 @@ public class RegistrationController extends BaseController {
 			demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
 			demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
 			if (isChild) {
-				if (uinId.getText().length() == 28) {
+				if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
 					demographicDTO.setIntroducerRID(uinId.getText());
 				} else {
 					demographicDTO.setIntroducerUIN(uinId.getText());
@@ -560,7 +554,7 @@ public class RegistrationController extends BaseController {
 			}
 
 			biometricTitlePane.setExpanded(true);
-			
+
 			if (capturePhotoUsingDevice.equals("N")) {
 				biometricsNext.setDisable(false);
 			}
@@ -683,7 +677,7 @@ public class RegistrationController extends BaseController {
 					registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
 					LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-					
+
 					setPreviewContent();
 					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} catch (IOException ioException) {
@@ -1346,13 +1340,13 @@ public class RegistrationController extends BaseController {
 		demoGraphicTitlePane.setExpanded(true);
 		anchorPaneRegistration.setMaxHeight(900);
 	}
+
 	/**
 	 * Toggle functionality for biometric exception
 	 */
 	private void toggleFunctionForBiometricException() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Entering into toggle function for Biometric exception");
+				RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 		bioExceptionToggleLabel1.setId("toggleLabel1");
 		bioExceptionToggleLabel2.setId("toggleLabel2");
 		switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
@@ -1361,12 +1355,12 @@ public class RegistrationController extends BaseController {
 				if (newValue) {
 					bioExceptionToggleLabel1.setId("toggleLabel2");
 					bioExceptionToggleLabel2.setId("toggleLabel1");
-					toggleBiometricException=true;
+					toggleBiometricException = true;
 					captureExceptionImage.setDisable(false);
 				} else {
 					bioExceptionToggleLabel1.setId("toggleLabel1");
 					bioExceptionToggleLabel2.setId("toggleLabel2");
-					toggleBiometricException=false;
+					toggleBiometricException = false;
 					captureExceptionImage.setDisable(true);
 				}
 			}
@@ -1379,9 +1373,7 @@ public class RegistrationController extends BaseController {
 			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 		});
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Exiting the toggle function for Biometric exception");
+				RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
 	}
-
 
 }
