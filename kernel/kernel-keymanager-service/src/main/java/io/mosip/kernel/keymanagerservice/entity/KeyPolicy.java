@@ -1,7 +1,5 @@
 package io.mosip.kernel.keymanagerservice.entity;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,30 +16,21 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity
-@Table(name = "key_alias", schema = "keymanager")
+@Table(name = "key_policy_def", schema = "keymanager")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeyAlias extends BaseEntity {
+public class KeyPolicy extends BaseEntity {
 
 	@Id
-	@Column(name = "id", nullable = false, length = 36)
-	private String alias;
-
 	@Column(name = "app_id", nullable = false, length = 36)
 	private String applicationId;
 
-	@Column(name = "ref_id", nullable = false, length = 36)
-	private String referenceId;
+	@Column(name = "key_validity_duration")
+	private String validityInDays;
 
-	@Column(name = "key_gen_dtimes")
-	private LocalDateTime keyGenerationTime;
-
-	@Column(name = "key_expire_dtimes")
-	private LocalDateTime keyExpiryTime;
-
-	@Column(name = "status_code", length = 36)
-	private String status;
+	@Column(name = "is_active")
+	private Boolean isActive;
 
 }
