@@ -5,8 +5,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DialougComponent } from '../dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
-import { RegistrationService } from '../registration.service';
+
 import { Applicant } from './dashboard.modal';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 @Component({
   selector: 'app-registration',
@@ -33,7 +34,7 @@ export class DashBoardComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private regService: RegistrationService
+    private dataStorageService: DataStorageService
   ) {}
 
   ngOnInit() {
@@ -44,7 +45,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
-    this.regService.getUsers(this.loginId).subscribe(
+    this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log(applicants);
         if (applicants['response'] !== null) {
@@ -126,26 +127,29 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             console.log(confirm);
-            this.regService.deleteRegistration(element.applicationID).subscribe(response => {
-              console.log(response);
-              const message = {
-                case: 'MESSAGE',
-                title: 'Success',
-                message: 'Action was completed successfully'
-              };
-              dialogRef = this.openDialog(message, '250px');
-              const index = this.users.indexOf(element);
-              this.users.splice(index, 1);
-              this.dataSource._updateChangeSubscription();
-            }, error => {
-              console.log(error);
-              const message = {
-                case: 'MESSAGE',
-                title: 'Error',
-                message: 'Action could not be completed'
-              };
-              dialogRef = this.openDialog(message, '250px');
-            });
+            this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
+              response => {
+                console.log(response);
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Success',
+                  message: 'Action was completed successfully'
+                };
+                dialogRef = this.openDialog(message, '250px');
+                const index = this.users.indexOf(element);
+                this.users.splice(index, 1);
+                this.dataSource._updateChangeSubscription();
+              },
+              error => {
+                console.log(error);
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Error',
+                  message: 'Action could not be completed'
+                };
+                dialogRef = this.openDialog(message, '250px');
+              }
+            );
           } else {
             const message = {
               case: 'MESSAGE',

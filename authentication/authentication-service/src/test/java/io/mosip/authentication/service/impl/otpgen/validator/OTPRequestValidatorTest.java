@@ -103,7 +103,6 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
 		OtpRequestDTO.setIdvId("426789089018");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
-		errors.getAllErrors().forEach(System.err::println);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -169,7 +168,6 @@ public class OTPRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIdvId("5371843613598211");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
-		errors.getAllErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -220,7 +218,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvId(null);
 		otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		errors.getAllErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -233,7 +230,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvId("5371843613598211");
 		otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		errors.getAllErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 }

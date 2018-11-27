@@ -1,5 +1,3 @@
-import { RequestModel } from './request.model';
-
 export class UserModel {
-  constructor(public preRegId: string, public request: RequestModel) {}
+  constructor(public preRegId: string, public request: JSON) {}
 }

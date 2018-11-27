@@ -4,7 +4,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
 
 /**
- * RecordNotFoundException
+ * DataSyncRecordNotFoundException
  * 
  * @author M1046129
  *
@@ -12,16 +12,12 @@ import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
 public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
-//
-//	public RecordNotFoundException(String errorCodes) {
-//		super(errorCodes, errorCodes);
-//	}
 	
 	public DataSyncRecordNotFoundException(String message) {
 		super(ErrorCodes.PRG_DATA_SYNC_004.toString(), message);
 	}
 
-	public DataSyncRecordNotFoundException(String message, Throwable cause) {
+/*	public DataSyncRecordNotFoundException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_DATA_SYNC_004.toString(),message, cause);
-	}
+	}*/
 }

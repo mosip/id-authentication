@@ -8,8 +8,7 @@ RUN npm install
 RUN npm install -g @angular/cli@6.1.4 --unsafe
 COPY . /usr/src/app
 RUN ng build --prod
-
-## Stage:2 ##
+ ## Stage:2 ##
 FROM nginx:1.13.9-alpine
 COPY --from=builder /usr/src/app/dist/pre-registration /usr/share/nginx/html
 EXPOSE 80

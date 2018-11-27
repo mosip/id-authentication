@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.codec.EncoderException;
 
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -19,6 +22,9 @@ public final class MatcherUtil {
 
 	private static final String SPLIT_REGEX = "\\s+";
 	private static final Integer EXACT_MATCH_VALUE = 100;
+
+	private static Logger mosipLogger = IdaLogger.getLogger(MatcherUtil.class);
+	private static final String SESSION_ID = "sessionId";
 
 	private MatcherUtil() {
 
@@ -56,7 +62,6 @@ public final class MatcherUtil {
 		List<String> entityInfoList = Collections.synchronizedList(new ArrayList<>(originalEntityInfoList));
 		List<String> matchedList = new ArrayList<>();
 		List<String> unmatchedList = new ArrayList<>();
-
 		refInfoList.forEach((String refInfo) -> {
 			if (entityInfoList.contains(refInfo)) {
 				matchedList.add(refInfo);
@@ -65,7 +70,6 @@ public final class MatcherUtil {
 				unmatchedList.add(refInfo);
 			}
 		});
-
 		new ArrayList<>(unmatchedList).stream().filter(str -> str.length() == 1).forEach((String s) -> {
 			Optional<String> matchingWord = entityInfoList.stream().filter(str -> str.startsWith(s)).findAny();
 			if (matchingWord.isPresent()) {
@@ -73,9 +77,7 @@ public final class MatcherUtil {
 				unmatchedList.remove(s);
 			}
 		});
-
 		matchvalue = matchedList.size() * EXACT_MATCH_VALUE / (originalEntityInfoList.size() + unmatchedList.size());
-
 		return matchvalue;
 	}
 
@@ -135,21 +137,16 @@ public final class MatcherUtil {
 
 	/**
 	 * 
-	 * @param refInfoName
-	 * @param entityInfoName
-	 * @return
-	 * @throws  
+	 * @param refInfoName @param entityInfoName @return @throws
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
-		//TODO
 		int value = 0;
 		try {
 			value = TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
 		} catch (EncoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mosipLogger.error(SESSION_ID, "doPhoneticsMatch", "EncoderException", e.getMessage());
 		}
-		
+
 		return value;
 	}
 

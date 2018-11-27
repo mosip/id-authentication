@@ -52,12 +52,10 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 			int captureStatus = fpDevice.AutoCapture(fingerData, timeout, false, true); 
 																						
 			if (captureStatus == 0 && fpDevice.GetLastError().isEmpty()) {
-				// TODO Check for Quality and Nfiq
 				fpDevice.StopCapture();
 				fpDevice.Uninit();
 				return Optional.ofNullable(fingerData.WSQImage());
 			} else {
-				// TODO log "Capture failed : " + fpDevice.GetLastError());
 				fpDevice.StopCapture();
 				fpDevice.Uninit();
 			}
@@ -85,7 +83,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 */
 	@Override
 	public void OnCaptureCompleted(boolean status, int arg1, String arg2, FingerData fingerData) {
-		// TODO need to be implemented
+		// need to be implemented
 	}
 
 	/*
@@ -95,6 +93,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 */
 	@Override
 	public void OnPreview(FingerData arg0) {
-		// TODO need to be implemented
+		// need to be implemented
 	}
 }

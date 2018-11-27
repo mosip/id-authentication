@@ -9,18 +9,18 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 
 /**
  * Repository to find the UinEntity
+ * 
  * @author Arun Bose
  */
 @Repository
-public interface UinRepository extends BaseRepository<UinEntity, String>{
-	
-	
+public interface UinRepository extends BaseRepository<UinEntity, String> {
+
 	/**
 	 * 
 	 * this method checks for uin
 	 * 
 	 * @return UinEntity
-	 * @param uin 
+	 * @param uin
 	 */
 	Optional<UinEntity> findByUinRefId(String uinRefId);
 }

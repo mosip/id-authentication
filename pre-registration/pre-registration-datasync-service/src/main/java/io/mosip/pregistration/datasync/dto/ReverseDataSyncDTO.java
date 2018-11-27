@@ -20,14 +20,16 @@ import lombok.ToString;
  * @author M1046129 - Jagadishwari
  *
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class ReverseDataSyncDTO implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3615477037570600620L;
-	
+
 	private String id;
 	private String ver;
 	private Timestamp reqTime;

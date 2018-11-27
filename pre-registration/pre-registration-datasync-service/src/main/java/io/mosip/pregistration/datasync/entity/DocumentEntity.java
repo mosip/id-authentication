@@ -30,7 +30,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "applicant_document", schema = "prereg")
-@ToString
 public class DocumentEntity implements Serializable {
 	private static final long serialVersionUID = 1692781286748263575L;
 

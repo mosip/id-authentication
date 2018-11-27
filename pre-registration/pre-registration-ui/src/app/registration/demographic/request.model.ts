@@ -1,4 +1,4 @@
-import { DemoIdentityModel } from './Demo.Identity.model';
+import { DemoIdentityModel } from './demo.identity.model';
 
 export class RequestModel {
   constructor(

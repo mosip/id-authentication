@@ -9,6 +9,8 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
+  applicantName;
+  uploadedFile;
   numberOfApplicants = 0;
   fileType;
   fileName = [];
@@ -90,20 +92,6 @@ export class FileUploadComponent implements OnInit {
   browseDisabled = true;
 
   // disabled = true;
-  POADocuments = [
-    {
-      name: 'Passport',
-      value: 'passport'
-    },
-    {
-      name: 'Driving License',
-      value: 'DL'
-    },
-    {
-      name: 'Electricity Bill',
-      value: 'EB'
-    }
-  ];
 
   documents = ['Document type POA', 'Document type POI', 'Document type POB', 'Document type POR'];
 
@@ -111,20 +99,24 @@ export class FileUploadComponent implements OnInit {
   DataSent = false;
   applicants: any[] = [
     {
-      name: 'name1',
-      seq: 1
+      name: 'Ravi Balaji',
+      seq: 1,
+      files: ['f1', 'f2', 'f3', 'f1']
     },
     {
-      name: 'name2',
-      seq: 2
+      name: 'Shashank Agrawal',
+      seq: 2,
+      files: ['f4', 'f5', 'f6', 'f1']
     },
     {
-      name: 'name3',
-      seq: 3
+      name: 'Agnitra Banerjee',
+      seq: 3,
+      files: ['f7', 'f8', 'f9', 'f1']
     },
     {
-      name: 'name4',
-      seq: 4
+      name: 'Chacha Kumar',
+      seq: 4,
+      files: ['f10', 'f11', 'f12', 'f1']
     }
   ];
 
@@ -132,8 +124,9 @@ export class FileUploadComponent implements OnInit {
 
   constructor(private registration: RegistrationService, private router: Router, private route: ActivatedRoute) {}
 
-  setStep(index: number) {
-    this.step = index;
+  setStep(applicant) {
+    this.step = applicant.seq;
+    this.applicantName = applicant.name;
   }
 
   nextStep() {
@@ -151,14 +144,13 @@ export class FileUploadComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.numberOfApplicants = +params['id'];
     });
-
-    for (const i of this.LOD) {
-      this.fileName.push('');
-    }
   }
 
-  handleFileInput(files: FileList) {
-    console.log('files', files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
+  handleFileInput(event) {
+    const files = event.target.files;
+    console.log(event.target.value);
+    this.uploadedFile = event.target.value;
+    console.log('files', event.target.files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
     const formData = new FormData();
     formData.append('documentString', JSON.stringify(this.documentString));
     formData.append('file', files.item(0));
@@ -166,8 +158,11 @@ export class FileUploadComponent implements OnInit {
     //   console.log(response);
     // });
     this.browseDisabled = false;
-    // this.fileName.push(files.item(0).name);
-    this.fileName[this.documentIndex] = files.item(0).name;
+    for (const app of this.applicants) {
+      if (app.name === this.applicantName) {
+        app.files[this.documentIndex] = files.item(0);
+      }
+    }
   }
 
   selectChange(event, index: number) {
@@ -179,12 +174,15 @@ export class FileUploadComponent implements OnInit {
 
   openedChange(event, index: number) {
     console.log('event from select :', event);
-    this.fileType = event.source._id;
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
   onFilesChange(fileList: FileList) {
     console.log(fileList);
+  }
+
+  removeFile(applicantIndex, fileIndex) {
+    this.applicants[applicantIndex].files[fileIndex] = '';
   }
 }

@@ -28,7 +28,7 @@ The key solution considerations are -
 - Use existing vertical "OSI-validator" to validate user, machine and center details.
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
 - Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
-- Create rest client using RestTemplate to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
+- Use Registration-Processor-rest-client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
     1. Verify CENTER was active on packet creation date/time.
     ### Resource URL
     ### `GET /registrationcentershistory/{id}/{languagecode}/{eff_dtimes}`
@@ -94,7 +94,7 @@ The key solution considerations are -
       ]
     }
     ```
-- On successful validation send request to umc_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
+- On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
 **Class Diagram**

@@ -2,7 +2,7 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = 'DEV_SPRINT5_OMSAI_REG_CLIENT_IMPL'
+ def branch = 'DEV'
  projectToBuild = 'registration'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'

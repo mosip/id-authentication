@@ -14,6 +14,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  * @author Sanjay Murali
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
+	
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
@@ -31,9 +32,6 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-	
 	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	/** The match strategy type. */
@@ -75,7 +73,7 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 	}
 	
 	public static SimpleDateFormat getDateFormat() {
-		return DATE_FORMAT;
+		return new SimpleDateFormat("yyyy-MM-dd");
 	}
 
 }

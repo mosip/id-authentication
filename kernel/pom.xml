@@ -42,7 +42,6 @@
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
 
-
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
 
@@ -121,7 +120,6 @@
 		<module>kernel-config-server</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
-
 	</modules>
 
 	<dependencies>
@@ -258,5 +256,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
+

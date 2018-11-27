@@ -110,8 +110,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 										- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class)));
 				errors.rejectValue(REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
-						new Object[] { Duration.between(reqTimeInstance, now).toMinutes()
-								- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class) },
+						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | IDDataValidationException e) {

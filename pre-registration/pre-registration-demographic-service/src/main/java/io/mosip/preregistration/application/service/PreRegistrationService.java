@@ -36,7 +36,6 @@ import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
 import io.mosip.preregistration.application.dto.CreateDto;
 import io.mosip.preregistration.application.dto.DeleteDto;
-import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
@@ -125,6 +124,7 @@ public class PreRegistrationService {
 			entity.setGroupId("1234567890");
 			entity.setCr_appuser_id((String) (applicantDetailJson.get("id")));
 			entity.setCreatedBy((String) (reqObject.get("createdBy")));
+			createDto.setDemographicDetails(demoObj.toJSONString());
 
 			if (prid == null || prid.equals("")) {
 				prid = pridGenerator.generateId();
@@ -139,9 +139,15 @@ public class PreRegistrationService {
 
 				createDto.setCreatedBy((String) (reqObject.get("createdBy")));
 			} else {
-				PreRegistrationEntity createTime = preRegistrationRepository.findById(PreRegistrationEntity.class,
+				PreRegistrationEntity entityDetail = preRegistrationRepository.findById(PreRegistrationEntity.class,
 						prid);
-				Timestamp crTime = createTime.getCreateDateTime();
+
+				Timestamp crTime = null;
+				if (entityDetail == null)
+					throw new RecordNotFoundException(PreRegistrationErrorMessages.RECORD_NOT_FOUND);
+
+				else
+					crTime = entityDetail.getCreateDateTime();
 
 				preRegistrationRepository.deleteByPreRegistrationId(prid);
 				entity.setStatusCode((String) (reqObject.get("statusCode")));
@@ -153,9 +159,11 @@ public class PreRegistrationService {
 				entity.setPreRegistrationId(prid);
 
 				preRegistrationDao.save(entity);
-
+				createDto.setCreatedBy(entity.getCreatedBy());
 				createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
 				createDto.setUpdatedBy((String) (reqObject.get("updatedBy")));
+
+				createDto.setCreateDateTime(crTime);
 
 			}
 		} catch (HttpRequestException e) {
@@ -168,27 +176,30 @@ public class PreRegistrationService {
 		}
 
 		catch (JsonValidationProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JsonValidationException("Json validation processing exception", e.getCause());
 		} catch (JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			throw new JsonValidationException("Json IO exception", e.getCause());
+
 		} catch (JsonSchemaIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			throw new JsonValidationException("Json IO schema  exception", e.getCause());
+
 		} catch (FileIOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
+
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
+
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
 		createDto.setPrId(prid);
-		createDto.setJson(jsonObject);
+
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus("true");
 		saveList.add(createDto);
@@ -359,14 +370,14 @@ public class PreRegistrationService {
 		} catch (DataAccessLayerException e) {
 			throw new DatabaseOperationException("Failed to delete the appliation", e);
 		} catch (HttpClientErrorException e) {
-			System.out.println("Error " + e.getResponseBodyAsString());
+	
 			List<ExceptionJSONInfo> excepList = new ArrayList<>();
 			try {
 				org.json.JSONObject json = new org.json.JSONObject(e.getResponseBodyAsString());
 				org.json.JSONObject expJson = (org.json.JSONObject) json.getJSONArray("err").get(0);
 				ExceptionJSONInfo expInfo = new ExceptionJSONInfo(expJson.get("errorCode").toString(),
 						expJson.get("message").toString());
-				System.out.println("exp  " + expJson.get("message").toString());
+
 				if (expJson.get("errorCode").toString().equalsIgnoreCase("PRG_PAM_006")) {
 					preRegistrationRepository.deleteByPreRegistrationId(preregId);
 					deleteDto.setPrId(preregId);

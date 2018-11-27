@@ -2,14 +2,13 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,256 +18,363 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
 
-import org.springframework.http.HttpStatus;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Base Auth Filter that does all necessary authentication/authorization
- * before allowing the request to the respective controllers.
- *
- * @author Loganathan Sekar
- * @param <REQUEST_DTO> the generic type
- * @param <RESPONSE_DTO> the generic type
- * @param <AUTH_INFO> the generic type
+ * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
+ * authentication/authorization before allowing the request to the respective
+ * controllers.
+ * 
+ * @author Manoj SP
  */
-public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> implements Filter {
+@Component
+public abstract class BaseAuthFilter implements Filter {
+
+	/** The env. */
+	@Autowired
+	private Environment env;
 
 	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
-	
+
 	/** The Constant EVENT_FILTER. */
 	private static final String EVENT_FILTER = "Event_filter";
-	
+
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionId";
 
-	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
-
-	/** The request time. */
-	private Instant requestTime;
+	/** The mapper. */
+	@Autowired
+	protected ObjectMapper mapper;
 
 	/** The Constant EMPTY_JSON_OBJ_STRING. */
-	private static final String EMPTY_JSON_OBJ_STRING = "{}";
-	
-	/** The Constant javaxValidator. */
-	private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
-	
-	/** The mapper. */
-	ObjectMapper mapper = new ObjectMapper();
+	private static final String EMPTY_JSON_OBJ_STRING = "{";
 
-	/* (non-Javadoc)
+	/** The mosip logger. */
+	private static Logger mosipLogger =
+			IdaLogger.getLogger(BaseAuthFilter.class);
+
+	/** The request time. */
+	private String requestTime;
+
+	/** The time formatter. */
+	private DateTimeFormatter timeFormatter;
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-
+		WebApplicationContext context =
+				WebApplicationContextUtils.getRequiredWebApplicationContext(
+						filterConfig.getServletContext());
+		env = context.getBean(Environment.class);
+		mapper = context.getBean(ObjectMapper.class);
+		timeFormatter = DateTimeFormatter
+				.ofPattern(env.getProperty("datetime.pattern"));
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		requestTime = Instant.now();
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
-		
-		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
-				(HttpServletRequest) request);
-		
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		requestTime = mapper.convertValue(new Date(), String.class);
+
+		ResettableStreamHttpServletRequest requestWrapper =
+				new ResettableStreamHttpServletRequest(
+						(HttpServletRequest) request);
+
+		CharResponseWrapper responseWrapper =
+				new CharResponseWrapper((HttpServletResponse) response);
+
+		double requestSize = ((double) IOUtils.toString(requestWrapper.getInputStream(),
+				Charset.defaultCharset()).length()) / 1024;
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+				"Request received at : " + requestTime + " with Request size : "
+						+ ((requestSize > 0) ? requestSize : 1) + " kb");
+		requestWrapper.resetInputStream();
+
 		try {
-			authenticateRequest(requestWrapper);
+			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
+
+			Map<String, Object> decodedRequest = decodedRequest(
+					getRequestBody(requestWrapper.getInputStream()));
+
+			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"Input Request: \n"
+							+ objectWriter.writeValueAsString(decodedRequest));
 			requestWrapper.resetInputStream();
 
-			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+			requestWrapper.replaceData(
+					objectWriter.writeValueAsString(decodedRequest).getBytes());
+			requestWrapper.resetInputStream();
+
+			responseWrapper =
+					new CharResponseWrapper((HttpServletResponse) response);
+
 			chain.doFilter(requestWrapper, responseWrapper);
 
 			requestWrapper.resetInputStream();
-			AuthResponseDTO wrappedResponse = mapper.readValue(responseWrapper.toString(), AuthResponseDTO.class);
-			wrappedResponse.setTxnID(((AuthRequestDTO) getRequestBody(requestWrapper.getInputStream())).getTxnID());
-			response.getWriter().write(mapper.writeValueAsString(wrappedResponse));
-			
-			logResponseTime(wrappedResponse.getResTime());
 
+			response.getWriter()
+					.write(mapper.writeValueAsString(encodedResponse(setTxnId(
+							getRequestBody(requestWrapper.getInputStream()),
+							getResponseBody(responseWrapper.toString())))));
+
+			logResponseTime((String) getResponseBody(responseWrapper.toString())
+					.get("resTime"));
 		} catch (IdAuthenticationAppException e) {
-			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
-			chain.doFilter(requestWrapper, responseWrapper);
-			AuthResponseDTO wrappedResponse = mapper.readValue(responseWrapper.toString(), AuthResponseDTO.class);
-			sendAuthErrorResponse((HttpServletResponse) response, e, request.getContentType());
-			logResponseTime(wrappedResponse.getResTime());
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Error : " + e);
+			responseWrapper =
+					sendErrorResponse(response, chain, requestWrapper);
+		} finally {
+			double responseSize = ((double) responseWrapper.toString().length()) / 1024;
+			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"Response sent with Request size : "
+							+ ((responseSize > 0) ? responseSize : 1) + " kb");
 		}
-
-	}
-
-	/**
-	 * Log response time.
-	 *
-	 * @param responseTime the response time
-	 */
-	private void logResponseTime(String responseTime) {
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
-		TemporalAccessor accessor = timeFormatter.parse(responseTime);
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Time difference between request and response in millis: "
-				+ Duration.between(requestTime, Instant.from(accessor)).toMillis());
-	}
-
-	/**
-	 * Send auth error response.
-	 *
-	 * @param response the response
-	 * @param e the e
-	 * @param contentType the content type
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void sendAuthErrorResponse(HttpServletResponse response, IdAuthenticationAppException e, String contentType)
-			throws IOException {
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		PrintWriter writer = response.getWriter();
-		String errorMessageBody = getErrorMessageBody(e);
-		response.setContentLength(errorMessageBody.length());
-		response.setContentType(contentType);
-		writer.write(errorMessageBody); // Here you can change the response
-	}
-
-	/**
-	 * Gets the error message body.
-	 *
-	 * @param e the e
-	 * @return the error message body
-	 */
-	private String getErrorMessageBody(IdAuthenticationAppException e) {
-		try {
-			return mapper.writeValueAsString(createResponseDTO(e));
-		} catch (JsonProcessingException e1) {
-			return EMPTY_JSON_OBJ_STRING;
-		}
-	}
-
-	/**
-	 * Creates the response DTO.
-	 *
-	 * @param e the e
-	 * @return the response dto
-	 */
-	protected RESPONSE_DTO createResponseDTO(IdAuthenticationAppException e) {
-		AuthResponseDTO authResp = new AuthResponseDTO();
-
-		authResp.setStatus(false);
-
-		List<String> errorMessages = e.getErrorTexts();
-
-		List<AuthError> errors = errorMessages.parallelStream()
-				.map(message -> new AuthError(e.getErrorCode(), (String) message)).collect(Collectors.toList());
-
-		authResp.setErr(errors);
-
-		authResp.setResTime(Instant.now().toString());
-
-		mosipLogger.error("sessionId", "Response", e.getClass().getName(), authResp.toString());
-		return (RESPONSE_DTO) authResp;
-	}
-
-	/**
-	 * Authenticate request.
-	 *
-	 * @param servletRequest the servlet request
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void authenticateRequest(HttpServletRequest servletRequest)
-			throws IOException, IdAuthenticationAppException {
-		REQUEST_DTO requestDTO = getRequestBody(servletRequest.getInputStream());
-		AUTH_INFO authInfo = getAuthInfo(requestDTO);
-		// validateForRequiredfields(authInfo);
-		authenticateRequest(authInfo);
 	}
 
 	/**
 	 * Gets the request body.
 	 *
-	 * @param inputStream the input stream
+	 * @param inputStream
+	 *            the input stream
 	 * @return the request body
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
-	private REQUEST_DTO getRequestBody(InputStream inputStream) throws IOException, IdAuthenticationAppException {
+	private Map<String, Object> getRequestBody(InputStream inputStream)
+			throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(inputStream, getRequestDTOClass());
-		} catch (JsonParseException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			return mapper.readValue(
+					IOUtils.toString(inputStream, Charset.defaultCharset()),
+					new TypeReference<Map<String, Object>>() {
+					});
+		} catch (IOException | ClassCastException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
 		}
 	}
 
 	/**
-	 * Validate for requiredfields.
+	 * Gets the response body.
 	 *
-	 * @param tspInfo the tsp info
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param output
+	 *            the output
+	 * @return the response body
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
-	private void validateForRequiredfields(AUTH_INFO tspInfo) throws IdAuthenticationAppException {
-		Set<ConstraintViolation<AUTH_INFO>> violations = javaxValidator.validate(tspInfo, Default.class);
-		if (!violations.isEmpty()) {
-			String message = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("\n"));
-			// FIXME check this exception type is correct
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), new Exception(message));
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getResponseBody(String output)
+			throws IdAuthenticationAppException {
+		try {
+			return mapper.readValue(output, Map.class);
+		} catch (IOException | ClassCastException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
 		}
 	}
 
 	/**
-	 * Gets the auth info.
+	 * Encode.
 	 *
-	 * @param requestDTO the request DTO
-	 * @return the auth info
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param stringToEncode
+	 *            the string to encode
+	 * @return the string
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
-	protected abstract AUTH_INFO getAuthInfo(REQUEST_DTO requestDTO) throws IdAuthenticationAppException;
-
-	/**
-	 * Authenticate request.
-	 *
-	 * @param requestDTO the request DTO
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void authenticateRequest(AUTH_INFO requestDTO) throws IdAuthenticationAppException {
-		// TODO authenticate/authorize TSP, validate UIN and VID. Throw exception upon
-		// any validation failure
+	protected String encode(String stringToEncode)
+			throws IdAuthenticationAppException {
+		try {
+			if (stringToEncode != null) {
+				return Base64.getEncoder()
+						.encodeToString(stringToEncode.getBytes());
+			} else {
+				return stringToEncode;
+			}
+		} catch (IllegalArgumentException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
+		}
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Decode.
+	 *
+	 * @param stringToDecode
+	 *            the string to decode
+	 * @return the object
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 */
+	protected Object decode(String stringToDecode)
+			throws IdAuthenticationAppException {
+		try {
+			if (stringToDecode != null) {
+				return mapper.readValue(
+						Base64.getDecoder().decode(stringToDecode),
+						new TypeReference<Map<String, Object>>() {
+						});
+			} else {
+				return stringToDecode;
+			}
+		} catch (IllegalArgumentException | IOException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
+		}
+	}
+
+	/**
+	 * Log response time.
+	 *
+	 * @param responseTime
+	 *            the response time
+	 */
+	private void logResponseTime(String responseTime) {
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+				"Response sent at : " + responseTime);
+		long duration = Duration
+				.between(Instant.from(timeFormatter.parse(requestTime)),
+						Instant.from(timeFormatter.parse(responseTime)))
+				.toMillis();
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+				"Time difference between request and response in millis:"
+						+ duration
+						+ ".  Time difference between request and response in Seconds: "
+						+ ((duration / 1000) % 60));
+	}
+
+	/**
+	 * Send error response.
+	 *
+	 * @param response
+	 *            the response
+	 * @param chain
+	 *            the chain
+	 * @param requestWrapper
+	 *            the request wrapper
+	 * @return the char response wrapper
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ServletException
+	 *             the servlet exception
+	 */
+	private CharResponseWrapper sendErrorResponse(ServletResponse response,
+			FilterChain chain,
+			ResettableStreamHttpServletRequest requestWrapper)
+			throws IOException, ServletException {
+		CharResponseWrapper responseWrapper;
+		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
+		responseWrapper =
+				new CharResponseWrapper((HttpServletResponse) response);
+		chain.doFilter(requestWrapper, responseWrapper);
+		try {
+			response.getWriter().write(responseWrapper.toString());
+			logResponseTime((String) getResponseBody(responseWrapper.toString())
+					.get("resTime"));
+		} catch (IdAuthenticationAppException e1) {
+			String responseTime = mapper.convertValue(new Date(), String.class);
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"Cannot log time \n" + ExceptionUtils.getStackTrace(e1));
+			long duration = Duration
+					.between(Instant.from(timeFormatter.parse(requestTime)),
+							Instant.from(timeFormatter.parse(responseTime)))
+					.toMillis();
+			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"Cannot log time. Response sent at : " + responseTime
+							+ ". Time taken in millis: " + duration
+							+ ". Time taken in seconds: "
+							+ ((duration / 1000) % 60));
+		}
+		return responseWrapper;
+	}
+
+	/**
+	 * Decoded request.
+	 *
+	 * @param requestBody
+	 *            the request body
+	 * @return the map
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 */
+	protected abstract Map<String, Object> decodedRequest(
+			Map<String, Object> requestBody)
+			throws IdAuthenticationAppException;
+
+	/**
+	 * Encoded response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return the map
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 */
+	protected abstract Map<String, Object> encodedResponse(
+			Map<String, Object> responseBody)
+			throws IdAuthenticationAppException;
+
+	/**
+	 * Sets the txn id.
+	 *
+	 * @param requestBody
+	 *            the request body
+	 * @param responseBody
+	 *            the response body
+	 * @return the map
+	 */
+	protected abstract Map<String, Object> setTxnId(
+			Map<String, Object> requestBody, Map<String, Object> responseBody);
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.Filter#destroy()
 	 */
 	@Override
 	public void destroy() {
 
 	}
-
-	/**
-	 * Gets the request DTO class.
-	 *
-	 * @return the request DTO class
-	 */
-	protected abstract Class<REQUEST_DTO> getRequestDTOClass();
 
 }

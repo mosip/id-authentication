@@ -20,6 +20,15 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
+				<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
+		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -63,10 +72,9 @@
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-demographic-service</module>
         <module>pre-registration-auth-service</module>
-        
- 		<!-- <module>pre-registration-booking</module>
+    		<!-- <module>pre-registration-booking</module> -->
  		<module>pre-registration-datasync-service</module>
-		 -->
+		 
 		
 	</modules>
 
@@ -101,8 +109,7 @@
 		</profile>
 	</profiles>
 
-
-	<build>
+<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -117,7 +124,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>${maven.jar.plugin.version}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -133,9 +140,6 @@
 								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 								<Build-Date>${env.BUILD_ID}</Build-Date>
 								<Build-URL>${env.BUILD_URL}</Build-URL>
-								<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-								<SCM-Path>${scm.path}</SCM-Path>
-								<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 							</manifestEntries>
 						</archive>
 					</configuration>
@@ -143,7 +147,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>${maven.war.plugin.version}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -159,9 +163,6 @@
 								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 								<Build-Date>${env.BUILD_ID}</Build-Date>
 								<Build-URL>${env.BUILD_URL}</Build-URL>
-								<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-								<SCM-Path>${scm.path}</SCM-Path>
-								<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 							</manifestEntries>
 						</archive>
 					</configuration>
@@ -169,7 +170,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.9</version>
+					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
@@ -178,8 +179,55 @@
 						</excludes>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${maven.jacoco.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>agent-for-ut</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>agent-for-it</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
-
 </project>

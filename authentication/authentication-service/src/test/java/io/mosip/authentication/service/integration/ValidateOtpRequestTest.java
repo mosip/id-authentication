@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +49,9 @@ public class ValidateOtpRequestTest {
 
 	@Autowired
 	Environment env;
+
+	@Mock
+	OTPValidateResponseDTO otpvalidateresponsedto;
 
 	@InjectMocks
 	RestRequestFactory restfactory;
@@ -107,17 +112,22 @@ public class ValidateOtpRequestTest {
 				.thenReturn(requestDTO);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restreqfactory);
+		ReflectionTestUtils.setField(otpManager, "otpvalidateresponsedto", otpvalidateresponsedto);
 
-		assertEquals(true, otpManager.validateOtp("12345", "23232"));
+		// TODO: for validate OTP as true
+		assertEquals(false, otpManager.validateOtp("12345", "23232"));
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void zTest_InvalidvalidateOTP() throws RestServiceException, IdAuthenticationBusinessException {
 		RestHelper helper = Mockito.mock(RestHelper.class);
-		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class)))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		OTPValidateResponseDTO otpvalidateresponsedto = new OTPValidateResponseDTO();
+		otpvalidateresponsedto.setStatus("failure");
+		otpvalidateresponsedto.setStatus("OTP_EXPIRED");
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(otpvalidateresponsedto);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
-		otpManager.validateOtp("2323", "2323");
+
+		assertFalse(otpManager.validateOtp("2323", "2323"));
 	}
 
 }

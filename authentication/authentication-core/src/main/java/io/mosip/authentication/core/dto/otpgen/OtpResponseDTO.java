@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.dto.otpgen;
 
-import java.util.Date;
 import java.util.List;
 
 import io.mosip.authentication.core.dto.indauth.AuthError;
@@ -17,9 +16,9 @@ import lombok.Data;
 public class OtpResponseDTO {
 
 	private String status;
-	private List<AuthError> errorCode;
-	private String txnID;
-	private Date responseTime;
+	private List<AuthError> err;
+	private String txnId;
+	private String resTime;
 	
 	/**
 	 * masked mobile(i.e XXXXXXX123) number where send OTP
