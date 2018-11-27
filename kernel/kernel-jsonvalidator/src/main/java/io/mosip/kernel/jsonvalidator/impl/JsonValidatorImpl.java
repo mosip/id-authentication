@@ -1,7 +1,8 @@
-package io.mosip.kernel.jsonvalidator.validator;
+package io.mosip.kernel.jsonvalidator.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
@@ -16,19 +18,21 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+
+import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorPropertySourceConstant;
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorReportConstant;
-import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
-import io.mosip.kernel.jsonvalidator.exception.ConfigServerConnectionException;
-import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.jsonvalidator.exception.NullJsonSchemaException;
-import io.mosip.kernel.jsonvalidator.exception.UnidentifiedJsonException;
 
 /**
  * This class provides the implementation for JSON validation against the
@@ -39,26 +43,7 @@ import io.mosip.kernel.jsonvalidator.exception.UnidentifiedJsonException;
  * 
  */
 @Component
-public class JsonValidator {
-	/**
-	 * Validates a JSON object passed as string with the schema provided
-	 * 
-	 * @param jsonString
-	 *            JSON as string that has to be Validated against the schema.
-	 * @param schemaName
-	 *            name of the schema file against which JSON needs to be validated,
-	 *            the schema file should be present in your config server storage or
-	 *            local storage, which ever option is selected in properties file.
-	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
-	 *         'warnings' arraylist
-	 * @throws HttpRequestException
-	 * @throws JsonValidationProcessingException
-	 * @throws JsonIOException
-	 * @throws NullJsonNodeException
-	 * @throws UnidentifiedJsonException
-	 * @throws JsonSchemaIOException
-	 * @throws ConfigServerConnectionException
-	 */
+public class JsonValidatorImpl implements JsonValidator{
 
 	/*
 	 * Address of Spring cloud config server for getting the schema file
@@ -73,7 +58,27 @@ public class JsonValidator {
 	@Value("${mosip.kernel.jsonvalidator.property-source}")
 	private String propertySource;
 
-	public JsonValidatorResponseDto validateJson(String jsonString, String schemaName)
+	/**
+	 * Validates a JSON object passed as string with the schema provided
+	 * 
+	 * @param jsonString
+	 *            JSON as string that has to be Validated against the schema.
+	 * @param schemaName
+	 *            name of the schema file against which JSON needs to be validated,
+	 *            the schema file should be present in your config server storage or
+	 *            local storage, which ever option is selected in properties file.
+	 * @return ValidationReport containing 'valid' variable as boolean and
+	 *         'warnings' arraylist
+	 * @throws HttpRequestException
+	 * @throws JsonValidationProcessingException
+	 * @throws JsonIOException
+	 * @throws NullJsonNodeException
+	 * @throws UnidentifiedJsonException
+	 * @throws JsonSchemaIOException
+	 * @throws ConfigServerConnectionException
+	 */
+
+	public ValidationReport validateJson(String jsonString, String schemaName)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonObjectNode = null;
@@ -154,7 +159,7 @@ public class JsonValidator {
 			}
 		});
 
-		JsonValidatorResponseDto validationResponse = new JsonValidatorResponseDto();
+		ValidationReport validationResponse = new ValidationReport();
 		validationResponse.setValid(report.isSuccess());
 		validationResponse.setWarnings(reportWarnings);
 		return validationResponse;

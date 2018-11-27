@@ -1,4 +1,4 @@
-package io.mosip.kernel.jsonvalidator.dto;
+package io.mosip.kernel.core.jsonvalidator.model;
 
 import java.util.ArrayList;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JsonValidatorResponseDto {
+public class ValidationReport {
 	
 	/**
 	 * Status of the JSON Validation

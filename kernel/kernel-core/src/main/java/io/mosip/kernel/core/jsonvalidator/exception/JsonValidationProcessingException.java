@@ -1,4 +1,4 @@
-package io.mosip.kernel.jsonvalidator.exception;
+package io.mosip.kernel.core.jsonvalidator.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
