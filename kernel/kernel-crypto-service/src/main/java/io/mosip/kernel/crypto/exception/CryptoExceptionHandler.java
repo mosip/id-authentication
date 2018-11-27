@@ -7,10 +7,7 @@
 package io.mosip.kernel.crypto.exception;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 
@@ -35,60 +33,48 @@ import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 @RestControllerAdvice
 public class CryptoExceptionHandler {
 
-	private static final String ERR = "error";
+	
 	private static final String WHITESPACE = " ";
 
-	private Map<String, ArrayList<Error>> setError(Error error) {
-		ArrayList<Error> errorList = new ArrayList<>();
-		errorList.add(error);
-		Map<String, ArrayList<Error>> map = new HashMap<>();
-		map.put(ERR, errorList);
-		return map;
-	}
+	
 
 	@ExceptionHandler(NullDataException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> nullDataException(final NullDataException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	public ResponseEntity<ErrorResponse<Error>> nullDataException(final NullDataException e) {
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> invalidKeyException(final InvalidKeyException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ErrorResponse<Error>> invalidKeyException(final InvalidKeyException e) {
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> noSuchAlgorithmException(
+	public ResponseEntity<ErrorResponse<Error>>  noSuchAlgorithmException(
 			final NoSuchAlgorithmException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> arrayIndexOutOfBoundsException(
+	public ResponseEntity<ErrorResponse<Error>> arrayIndexOutOfBoundsException(
 			final ArrayIndexOutOfBoundsException e) {
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		Error error = new Error(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
 				CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(InvalidDataException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> invalidDataException(final InvalidDataException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<ErrorResponse<Error>> invalidDataException(final InvalidDataException e) {
+		return new ResponseEntity<>(getErrorResponse(e) ,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(ConnectException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> connectException(final ConnectException e) {
+	public ResponseEntity<ErrorResponse<Error>> connectException(final ConnectException e) {
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		Error error = new Error(CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
-		Map<String, ArrayList<Error>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 
@@ -103,5 +89,12 @@ public class CryptoExceptionHandler {
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+    
+    private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
+		return errorResponse;
 	}
 }
