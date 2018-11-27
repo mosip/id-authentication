@@ -39,8 +39,8 @@ public class LocationController {
 	 * @return List<LocationHierarchyDto>
 	 */
 	@GetMapping(value = "/{langcode}")
-	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langCode) {
-		return locationHierarchyService.getLocationDetails(langCode);
+	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
+		return locationHierarchyService.getLocationDetails(langcode);
 
 	}
 
