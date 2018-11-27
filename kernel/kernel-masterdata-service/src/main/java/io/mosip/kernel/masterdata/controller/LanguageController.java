@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
 
@@ -48,9 +49,8 @@ public class LanguageController {
 	 * @return ResponseEntity
 	 */
 	@PostMapping
-	public ResponseEntity<?> saveAllLaguages(
-			@Valid @RequestBody LanguageRequestResponseDto languageRequestResponseDto) {
-		return new ResponseEntity<>(languageService.saveAllLanguages(languageRequestResponseDto), HttpStatus.CREATED);
+	public ResponseEntity<?> saveAllLaguages(@Valid @RequestBody LanguageDto dto) {
+		return new ResponseEntity<>(languageService.saveLanguage(dto), HttpStatus.CREATED);
 	}
 
 }

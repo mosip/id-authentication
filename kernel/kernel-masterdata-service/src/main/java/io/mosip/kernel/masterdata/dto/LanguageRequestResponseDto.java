@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class LanguageRequestResponseDto {
 
 	/**
-	 * List of Languages used for Create or Updated for languages.
+	 * List of Languages.
 	 */
 	private List<LanguageDto> languages;
 
