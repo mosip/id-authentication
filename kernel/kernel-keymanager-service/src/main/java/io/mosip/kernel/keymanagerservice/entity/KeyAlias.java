@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.kernel.keymanagerservice.entity;
 
 import java.time.LocalDateTime;
@@ -42,7 +39,7 @@ public class KeyAlias extends BaseEntity {
 	private LocalDateTime keyGenerationTime;
 
 	@Column(name = "key_expire_dtimes")
-	private LocalDateTime keyExpiringTime;
+	private LocalDateTime keyExpiryTime;
 
 	@Column(name = "status_code", length = 36)
 	private String status;
