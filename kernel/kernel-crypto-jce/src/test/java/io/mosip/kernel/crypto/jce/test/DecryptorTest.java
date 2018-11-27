@@ -5,32 +5,41 @@ import static org.junit.Assert.assertThat;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
-import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
+import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class DecryptorTest {
 
+	@Autowired
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptorImpl;
+
+	@Autowired
+	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptorImpl;
+	
 	private KeyPair rsaPair;
 
 	private byte[] data;
 
-	private EncryptorImpl MOSIPENCRYPTOR;
-
-	private DecryptorImpl MOSIPDECRYPTOR;
+	
 
 	@Before
 	public void setRSAUp() throws java.security.NoSuchAlgorithmException {
@@ -39,8 +48,6 @@ public class DecryptorTest {
 		generator.initialize(2048, random);
 		rsaPair = generator.generateKeyPair();
 		data = "abc".getBytes();
-		MOSIPENCRYPTOR = new EncryptorImpl();
-		MOSIPDECRYPTOR = new DecryptorImpl();
 	}
 
 	public SecretKeySpec setSymmetricUp(int length, String algo) throws java.security.NoSuchAlgorithmException {
@@ -52,10 +59,8 @@ public class DecryptorTest {
 
 	@Test
 	public void testRSAPKS1AsymmetricPrivateDecrypt(){
-		byte[] encryptedData = MOSIPENCRYPTOR.asymmetricPublicEncrypt(rsaPair.getPublic(), data,
-				SecurityMethod.RSA_WITH_PKCS1PADDING);
-		assertThat(MOSIPDECRYPTOR.asymmetricPrivateDecrypt(rsaPair.getPrivate(), encryptedData,
-				SecurityMethod.RSA_WITH_PKCS1PADDING), isA(byte[].class));
+		byte[] encryptedData = encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(), data);
+		assertThat(decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), encryptedData), isA(byte[].class));
 	}
 
 	
@@ -63,84 +68,55 @@ public class DecryptorTest {
 	@Test
 	public void testRSAPKS1AsymmetricPublicDecrypt()
 			{
-		byte[] encryptedData = MOSIPENCRYPTOR.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data,
-				SecurityMethod.RSA_WITH_PKCS1PADDING);
-		assertThat(MOSIPDECRYPTOR.asymmetricPublicDecrypt(rsaPair.getPublic(), encryptedData,
-				SecurityMethod.RSA_WITH_PKCS1PADDING), isA(byte[].class));
+		byte[] encryptedData = encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data);
+		assertThat(decryptorImpl.asymmetricPublicDecrypt(rsaPair.getPublic(), encryptedData), isA(byte[].class));
 	}
  
 	@Test
 	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException
 			{
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
-		byte[] encryptedData = MOSIPENCRYPTOR.symmetricEncrypt(secretKeySpec, data,
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
-		assertThat(MOSIPDECRYPTOR.symmetricDecrypt(secretKeySpec, encryptedData,
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING), isA(byte[].class));
+		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
+		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData), isA(byte[].class));
 	}
 	
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testRSAPKS1AsymmetricPrivateDecryptNoSuchMethod(){
-	  MOSIPDECRYPTOR.asymmetricPrivateDecrypt(rsaPair.getPrivate(), "aa".getBytes(),
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
-	}
-
 	
 
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testRSAPKS1AsymmetricPublicDecryptNoSuchMethod()
-			{
-		MOSIPDECRYPTOR.asymmetricPublicDecrypt(rsaPair.getPublic(), "aa".getBytes(),
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
-	}
-	
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testAESSymmetricDecryptNoSuchMethod() throws java.security.NoSuchAlgorithmException
-			{
-		MOSIPDECRYPTOR.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes(),
-				SecurityMethod.RSA_WITH_PKCS1PADDING);
-	}
+
  
 	@Test(expected=InvalidKeyException.class)
 	public void testAESSymmetricDecryptInvalidKey() throws java.security.NoSuchAlgorithmException
 			{
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
-		byte[] encryptedData = MOSIPENCRYPTOR.symmetricEncrypt(secretKeySpec, data,
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
-		MOSIPDECRYPTOR.symmetricDecrypt(null, encryptedData,
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
+		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
+		decryptorImpl.symmetricDecrypt(null, encryptedData);
 	}
 	
 	@Test(expected=InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataArrayIndexOutOfBounds() throws java.security.NoSuchAlgorithmException
 			{
-		MOSIPDECRYPTOR.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes(),
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
+		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes());
 	}
 
 	@Test(expected=InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataIllegalBlockSize() throws java.security.NoSuchAlgorithmException
 			{
-		MOSIPDECRYPTOR.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[121],
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
+		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[121]);
 	}
 	
 	@Test(expected=InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataBadPadding() throws java.security.NoSuchAlgorithmException
 			{
-		MOSIPDECRYPTOR.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[32],
-				SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING);
+		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[32]);
 	}
 	
 	@Test(expected=InvalidDataException.class)
 	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataIllegalBlockSize(){
-		MOSIPDECRYPTOR.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[121],
-				SecurityMethod.RSA_WITH_PKCS1PADDING);
+		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[121]);
 	}
 	
 	@Test(expected=InvalidDataException.class)
 	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataBadPadding(){
-		MOSIPDECRYPTOR.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[32],
-				SecurityMethod.RSA_WITH_PKCS1PADDING);
+		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[32]);
 	}
 }

@@ -1,7 +1,5 @@
 package io.mosip.kernel.auditmanager.exception;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,12 +19,11 @@ public class Error {
 	/**
 	 * The error code field
 	 */
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String code;
+	private String errorCode;
 
 	/**
 	 * The error message field
 	 */
-	private String message;
+	private String errorMessage;
 
 }

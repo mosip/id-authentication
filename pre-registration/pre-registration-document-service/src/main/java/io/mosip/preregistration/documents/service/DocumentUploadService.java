@@ -1,11 +1,10 @@
+
 package io.mosip.preregistration.documents.service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.dto.DocResponseDto;
 import io.mosip.preregistration.documents.dto.DocumentDto;
+import io.mosip.preregistration.documents.dto.DocumentGetAllDto;
 import io.mosip.preregistration.documents.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.documents.dto.ResponseDto;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -48,84 +50,32 @@ public class DocumentUploadService {
 	@Value("${file.extension}")
 	private String fileExtension;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.DocumentUploadService#uploadDoucment(org.
-	 * springframework.web.multipart.MultipartFile,
-	 * io.mosip.registration.dto.DocumentDto)
-	 */
-	// public Map<String, String> uploadDoucment(MultipartFile file, DocumentDto
-	// documentDto) {
-	//
-	// if (file.getSize() > getMaxFileSize()) {
-	// throw new
-	// DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-	// }
-	//
-	// if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
-	// throw new
-	// DocumentNotValidException(StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
-	// }
-	//
-	// DocumentEntity documentEntity = new DocumentEntity();
-	//
-	// documentEntity.setPreregId(documentDto.getPrereg_id());
-	// documentEntity.setDoc_name(file.getOriginalFilename());
-	// documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
-	// documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
-	// documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
-	// try {
-	// documentEntity.setDoc_store(file.getBytes());
-	// } catch (IOException e) {
-	// logger.error(e.getMessage());
-	// }
-	// documentEntity.setStatus_code(documentDto.getStatus_code());
-	// documentEntity.setLang_code(documentDto.getLang_code());
-	// documentEntity.setCr_by(documentDto.getCr_by());
-	// documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
-	// documentEntity.setUpd_by(documentDto.getUpd_by());
-	// documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
-	//
-	// DocumentEntity returnentity = documentRepository.save(documentEntity);
-	//
-	// Map<String, String> response = new HashMap<String, String>();
-	// response.put("DocumentId", Integer.toString(returnentity.getDocumentId()));
-	// response.put("Status", returnentity.getStatus_code());
-	//
-	// return response;
-	// }
+	
 
-	public ResponseDto<DocumentDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
-		ResponseDto<DocumentDto> responseDto = new ResponseDto();
-		List uploadList = new ArrayList();
+	public ResponseDto<DocResponseDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
+		ResponseDto<DocResponseDto> responseDto = new ResponseDto<DocResponseDto>();
+		List<DocResponseDto> uploadList = new ArrayList<>();
+		DocResponseDto uploadDcoRes= new DocResponseDto();
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo DocumentErr = null;
-		String status = "true";
 
 		if (file.getSize() > getMaxFileSize()) {
-
-			status = "false";
 			DocumentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
 					StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 
 			throw new DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 
 		} else if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
-
-			status = "false";
 			DocumentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_004.toString(),
 					StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
 
 			throw new DocumentNotValidException(StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
 
 		} else {
-
-			status = "true";
 			DocumentErr = new ExceptionJSONInfo("", "");
-			uploadList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+			uploadDcoRes.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+			uploadList.add(uploadDcoRes);
 			responseDto.setResponse(uploadList);
-
 		}
 
 		DocumentEntity documentEntity = new DocumentEntity();
@@ -141,15 +91,13 @@ public class DocumentUploadService {
 			logger.error(e.getMessage());
 		}
 		documentEntity.setStatus_code(documentDto.getStatus_code());
-		documentEntity.setLang_code(documentDto.getLang_code());
-		documentEntity.setCr_by(documentDto.getCr_by());
 		documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 		documentEntity.setUpd_by(documentDto.getUpd_by());
 		documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 
 		DocumentEntity returnentity = documentRepository.save(documentEntity);
 
-		responseDto.setStatus(status);
+		responseDto.setStatus("true");
 		err.add(DocumentErr);
 		responseDto.setErr(err);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -164,28 +112,23 @@ public class DocumentUploadService {
 	 * org.springframework.web.multipart.MultipartFile)
 	 */
 
-	public ResponseDto<DocumentEntity> copyDoucment(String cat_type, String source_preId, String destination_preId) {
+	public ResponseDto<DocResponseDto> copyDoucment(String cat_code, String source_preId, String destination_preId) {
 
-		DocumentEntity preIdList = documentRepository.findSingleDocument(source_preId, cat_type);
+		DocumentEntity preIdList = documentRepository.findSingleDocument(source_preId, cat_code);
 
-		ResponseDto<DocumentEntity> responseDto = new ResponseDto<>();
-		String status = "true";
-		List copyList = new ArrayList();
+		ResponseDto<DocResponseDto> responseDto = new ResponseDto<>();
+		List<DocResponseDto> copyList = new ArrayList<>();
+		DocResponseDto copyDcoRes= new DocResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 
 		ExceptionJSONInfo documentErr = null;
 		if (preIdList == null) {
-
-			status = "false";
-			documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_006.toString(), "Document failed to copy");
-			err.add(documentErr);
-
 			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 		} else {
-			status = "true";
 			documentErr = new ExceptionJSONInfo("", "");
-			copyList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+			copyDcoRes.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+			copyList.add(copyDcoRes);
 			responseDto.setResponse(copyList);
 		}
 
@@ -202,17 +145,9 @@ public class DocumentUploadService {
 		documentEntity.setLang_code(preIdList.getLang_code());
 		documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 		documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
-		documentEntity.setStatus_code("Draft"); // ?
-
-		DocumentEntity returnEntity = documentRepository.save(documentEntity);
-
-		Map<String, String> response = new HashMap<String, String>();
-
-		response.put("DocumentId", String.valueOf(returnEntity.getDocumentId()));
-		response.put("Destination Prid", destination_preId);
-		response.put("Status", returnEntity.getStatus_code());
-
-		responseDto.setStatus(status);
+		documentEntity.setStatus_code("Pending_Appointment"); 
+		documentRepository.save(documentEntity);
+		responseDto.setStatus("true");
 		err.add(documentErr);
 		responseDto.setErr(err);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -221,176 +156,113 @@ public class DocumentUploadService {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.DocumentUploadService#getAllDocumentForPreId(
-	 * java.lang.String)
-	 */
-
-	// public List<DocumentEntity> getAllDocumentForPreId(String preId) {
-	//
-	// List<DocumentEntity> documentEntities =
-	// documentRepository.findBypreregId(preId);
-	//
-	// if (documentEntities == null) {
-	//
-	// throw new
-	// DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
-	// }
-	//
-	// return documentEntities;
-	// }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ResponseDto getAllDocumentForPreId(String preId) {
-
-		ResponseDto responseDto = new ResponseDto<>();
-		String status = "true";
+	public ResponseDto<DocumentGetAllDto> getAllDocumentForPreId(String preId) {
+		DocumentGetAllDto allDocDto= new DocumentGetAllDto();
+		ResponseDto<DocumentGetAllDto> responseDto = new ResponseDto<DocumentGetAllDto>();
+		List<DocumentGetAllDto> allDocRes= new ArrayList<>();
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo DocumentMissingErr = null;
+		try {
 		List<DocumentEntity> documentEntities = documentRepository.findBypreregId(preId);
-
 		if (documentEntities == null) {
-			status = "false";
-			DocumentMissingErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_001.toString(),
-					StatusCodes.DOCUMENT_IS_MISSING.toString());
-			err.add(DocumentMissingErr);
-			responseDto.setErr(err);
 			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 		} else {
-			status = "true";
 			DocumentMissingErr = new ExceptionJSONInfo("", "");
 			err.add(DocumentMissingErr);
 			responseDto.setErr(err);
-			responseDto.setResponse(documentEntities);
+			for(DocumentEntity doc:documentEntities) {
+				allDocDto.setDoc_cat_code(doc.getDoc_cat_code());
+				allDocDto.setDoc_file_format(doc.getDoc_file_format());
+				allDocDto.setDoc_id(Integer.toString(doc.getDocumentId()));
+				allDocDto.setDoc_typ_code(doc.getDoc_typ_code());
+				allDocDto.setMultipartFile(doc.getDoc_store());
+				allDocDto.setPrereg_id(doc.getPreregId());
+				allDocRes.add(allDocDto);
+			}
+			responseDto.setResponse(allDocRes);
 		}
-		responseDto.setStatus(status);
+		}catch (DataAccessLayerException e) {
+            //log here
+			throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), e);
+
+			}
+
+		
+		responseDto.setStatus("true");
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return responseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.DocumentUploadService#deleteDocument(java.lang.
-	 * String)
-	 */
 
-	// public Boolean deleteDocument(String doctId) {
-	// Integer documnetId = Integer.parseInt(doctId.trim());
-	//
-	// boolean deleteFlag = false;
-	//
-	// DocumentEntity documentEntity =
-	// documentRepository.findBydocumentId(documnetId);
-	//
-	// if (documentEntity == null) {
-	// throw new
-	// DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
-	// }
-	//
-	// else {
-	//
-	// if (documentRepository.deleteAllBydocumentId(documnetId) > 0) {
-	//
-	// deleteFlag = true;
-	//
-	// } else {
-	// throw new
-	// TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
-	// }
-	//
-	// }
-	//
-	// return deleteFlag;
-	// }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ResponseDto deleteDocument(String doctId) {
+	public ResponseDto<DocResponseDto> deleteDocument(String doctId) {
 		Integer documnetId = Integer.parseInt(doctId.toString().trim());
-		String status = "true";
 
 		DocumentEntity documentEntity = documentRepository.findBydocumentId(documnetId);
-
-		ResponseDto responseDto = new ResponseDto();
-		List deleteList = new ArrayList<>();
+		DocResponseDto deletedocRes= new DocResponseDto();
+		List<DocResponseDto> deleteDocList= new ArrayList<>();
+		ResponseDto<DocResponseDto> responseDto = new ResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo documentErr = null;
 		if (documentEntity == null) {
-
-			documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_001.toString(),
-					StatusCodes.DOCUMENT_IS_MISSING.toString());
-			err.add(documentErr);
-
 			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 		}
 
 		else {
 
 			if (documentRepository.deleteAllBydocumentId(documnetId) > 0) {
-				status = "true";
+
 				documentErr = new ExceptionJSONInfo("", "");
 				err.add(documentErr);
-				deleteList.add(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
-				responseDto.setResponse(deleteList);
+				deletedocRes.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDocList.add(deletedocRes);
+				responseDto.setResponse(deleteDocList);
 
 			} else {
-				status = "false";
-				documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_001.toString(),
-						StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
-				err.add(documentErr);
+			
 				throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
 			}
 
 		}
 
-		responseDto.setStatus(status);
+		responseDto.setStatus("true");
 		responseDto.setErr(err);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return responseDto;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ResponseDto deleteAllByPreId(String preregId) {
-		// TODO Auto-generated method stub
-
-		String status = "true";
-
-		ResponseDto responseDto = new ResponseDto();
-		List deleteAllList = new ArrayList<>();
+	public ResponseDto<DocResponseDto> deleteAllByPreId(String preregId) {
+		DocResponseDto deleteAllDto=new DocResponseDto();
+		List<DocResponseDto> deleteAllList= new ArrayList<>();
+		ResponseDto<DocResponseDto> responseDto = new ResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo documentErr = null;
 
 		List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 		if (documentEntityList == null || documentEntityList.size() == 0) {
-			status = "false";
-			documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_001.toString(),
-					StatusCodes.DOCUMENT_IS_MISSING.toString());
-			err.add(documentErr);
-
+			
 			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 		} else {
 			if (documentRepository.deleteAllBypreregId(preregId).size() > 0) {
-				status = "true";
+
 				documentErr = new ExceptionJSONInfo("", "");
 				err.add(documentErr);
-				deleteAllList.add(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
+				deleteAllDto.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteAllList.add(deleteAllDto);
 				responseDto.setResponse(deleteAllList);
 
 			} else {
-				status = "false";
-				documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_001.toString(),
-						StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
-				err.add(documentErr);
+				
 				throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
 			}
 		}
-		responseDto.setStatus(status);
+		responseDto.setStatus("true");
 		responseDto.setErr(err);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return responseDto;

@@ -35,10 +35,10 @@ public class DocumentTypeController {
 	DocumentTypeService documentTypeService;
 
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
-	@GetMapping("/documenttypes/{documentcategoryCode}/{langCode}")
+	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
-			@PathVariable("langCode") String langCode,
-			@PathVariable("documentcategoryCode") String documentcategoryCode) {
+			@PathVariable("langcode") String langCode,
+			@PathVariable("documentcategorycode") String documentcategoryCode) {
 		List<DocumentTypeDto> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentcategoryCode,
 				langCode);
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);

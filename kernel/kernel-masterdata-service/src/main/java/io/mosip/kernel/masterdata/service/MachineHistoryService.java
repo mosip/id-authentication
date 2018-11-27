@@ -1,8 +1,3 @@
-/**
- * 
- *
- */
-
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
@@ -33,3 +28,4 @@ public interface MachineHistoryService {
 	MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDateTime);
 
 }
+

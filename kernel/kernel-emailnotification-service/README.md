@@ -6,7 +6,7 @@
 2- [API Documentation <TBA>](TBA)
  
  ```
- mvn javadoc:javadoc
+localhost:8083/swagger-ui.html
 
  ```
  
@@ -32,7 +32,7 @@ OkHttpClient client = new OkHttpClient();
 
 MediaType mediaType = MediaType.parse("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 
-RequestBody body = RequestBody.create(mediaType, "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"mailTo\"\r\n\r\ntmail@testmail.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"mailSubject\"\r\n\r\n test subject\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"mailContent\"\r\n\r\ntest content\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"mailCc\"\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"attachments\"\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--");
+RequestBody body = RequestBody.create(mediaType, "------WebKitFormBoundary7MA4YWxkTrZu0gWContent-Disposition: form-data; name=\"mailTo\"tmail@testmail.com------WebKitFormBoundary7MA4YWxkTrZu0gWContent-Disposition: form-data; name=\"mailSubject\" test subject------WebKitFormBoundary7MA4YWxkTrZu0gWContent-Disposition: form-data; name=\"mailContent\"test content------WebKitFormBoundary7MA4YWxkTrZu0gWContent-Disposition: form-data; name=\"mailCc\"------WebKitFormBoundary7MA4YWxkTrZu0gWContent-Disposition: form-data; name=\"attachments\"------WebKitFormBoundary7MA4YWxkTrZu0gW--");
 
 Request request = new Request.Builder()
   .url("http://localhost:8083/notifier/email")

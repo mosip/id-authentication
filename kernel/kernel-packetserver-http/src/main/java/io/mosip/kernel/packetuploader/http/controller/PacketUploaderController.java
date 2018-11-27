@@ -33,10 +33,14 @@ public class PacketUploaderController {
 	 * @param packet
 	 *            packet to upload
 	 * @return {@link ResponseEntity} with File properties
-	 * @throws IOException 
+	 * @throws IOException
+	 *             signals that an I/O exception of some sort has occurred. This
+	 *             class is the general class of exceptions produced by failed
+	 *             or interrupted I/O operations.
 	 */
 	@PostMapping("/uploads")
-	public ResponseEntity<PacketUploaderResponceDTO> upload(MultipartFile packet) throws IOException {
+	public ResponseEntity<PacketUploaderResponceDTO> upload(
+			MultipartFile packet) throws IOException {
 		return new ResponseEntity<>(service.upload(packet), HttpStatus.CREATED);
 	}
 

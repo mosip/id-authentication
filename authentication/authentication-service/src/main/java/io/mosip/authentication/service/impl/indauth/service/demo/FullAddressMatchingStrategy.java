@@ -2,8 +2,6 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
-import org.hibernate.boot.jaxb.hbm.spi.EntityInfo;
-
 import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 

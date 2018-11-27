@@ -22,6 +22,8 @@ import io.mosip.preregistration.application.dto.CreateDto;
 import io.mosip.preregistration.application.dto.DeleteDto;
 import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
+import io.mosip.preregistration.application.dto.StatusDto;
+import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,11 +59,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration Entity") })
-	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject json,
-			@RequestParam(value = "pre-id", required = false) String prid) {
+	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject jsonObject
+			) {
 		ResponseDto<CreateDto> response = new ResponseDto<CreateDto>();
 
-		response = preRegistrationService.addRegistration(json, prid);
+		response = preRegistrationService.addRegistration(jsonObject.toJSONString());
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -75,11 +77,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<List<ExceptionInfoDto>> getAllApplications(
+	public ResponseEntity<ResponseDto<ViewDto>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId)
 
 	{
-		List<ExceptionInfoDto> response = preRegistrationService.getApplicationDetails(userId);
+		ResponseDto<ViewDto> response = preRegistrationService.getApplicationDetails(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
@@ -93,11 +95,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Fetch the status of a application")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch application status ") })
-	public ResponseEntity<Map<String, String>> getApplicationStatus(
-			@RequestParam(value = "groupId", required = true) String groupId)
+	public ResponseEntity<ResponseDto<StatusDto>> getApplicationStatus(
+			@RequestParam(value = "preId", required = true) String preId)
 
 	{
-		Map<String, String> response = preRegistrationService.getApplicationStatus(groupId);
+		ResponseDto<StatusDto> response = preRegistrationService.getApplicationStatus(preId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}

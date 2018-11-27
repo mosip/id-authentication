@@ -40,5 +40,3 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 */
 	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(String languageCode, String deviceTypeCode);
 }
-
-

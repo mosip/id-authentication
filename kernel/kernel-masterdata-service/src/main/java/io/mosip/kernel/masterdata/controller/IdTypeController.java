@@ -37,8 +37,8 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
-	@GetMapping("/idtypes/{langCode}")
-	public IdTypeResponseDto getIdTypeDetailsBylangCode(@PathVariable("langCode") String langCode) {
+	@GetMapping("/idtypes/{langcode}")
+	public IdTypeResponseDto getIdTypeDetailsBylangCode(@PathVariable("langcode") String langCode) {
 		return idService.getIdTypeByLanguageCode(langCode);
 	}
 

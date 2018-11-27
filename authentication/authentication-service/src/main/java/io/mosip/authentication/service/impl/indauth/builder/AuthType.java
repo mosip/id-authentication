@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -18,56 +17,44 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 
 /**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
+
+/**
  * The Enum AuthType.
  */
 public enum AuthType {
 
 	// @formatter:off
 
-//
-//	/** The pi */
-//	AD("ad", setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
-//			DemoMatchType.CITY_PRI, DemoMatchType.STATE_PRI, DemoMatchType.COUNTRY_PRI, DemoMatchType.PINCODE_PRI),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isAd).orElse(false),
-//			authReq -> Optional.of(MatchingStrategyType.EXACT.getType()),
-//			authReq -> Optional.of(getDefaultExactMatchValue())),
 
 	AD_PRI("address",
 			setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
 					DemoMatchType.LOCATION1_PRI, DemoMatchType.LOCATION2_PRI, DemoMatchType.LOCATION3_PRI,
 					DemoMatchType.PINCODE_PRI),
-			LanguageType.PRIMARY_LANG, AuthTypeDTO::isAddress),
+			LanguageType.PRIMARY_LANG, AuthTypeDTO::isAddress,"Address"),
 	AD_SEC("address",
 			setOf(DemoMatchType.ADDR_LINE1_SEC, DemoMatchType.ADDR_LINE2_SEC, DemoMatchType.ADDR_LINE3_SEC,
 					DemoMatchType.LOCATION1_SEC, DemoMatchType.LOCATION2_SEC, DemoMatchType.LOCATION3_SEC,
 					DemoMatchType.PINCODE_SEC),
-			LanguageType.SECONDARY_LANG, AuthTypeDTO::isAddress),
+			LanguageType.SECONDARY_LANG, AuthTypeDTO::isAddress,"Address"),
 
 	/** The pi pri. */
 	PI_PRI("personalIdentity",
 			setOf(DemoMatchType.NAME_PRI, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
 					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
-			LanguageType.PRIMARY_LANG, AuthTypeDTO::isPersonalIdentity),
+			LanguageType.PRIMARY_LANG, AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
 
 	PI_SEC("personalIdentity", setOf(DemoMatchType.NAME_SEC), LanguageType.SECONDARY_LANG,
-			AuthTypeDTO::isPersonalIdentity),
+			AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
 
-	FAD_PRI("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.PRIMARY_LANG, AuthTypeDTO::isFullAddress),
+	FAD_PRI("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.PRIMARY_LANG, AuthTypeDTO::isFullAddress,"Full Address"),
 
-	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress),
+	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress,"Full Address"),
 
-//	
+	OTP("otp", Collections.emptySet(), LanguageType.PRIMARY_LANG, AuthTypeDTO::isOtp, "OTP") 
 
-//	/** The fad pri. *
-//	FAD_PRI("fadPri", setOf(DemoMatchType.ADDR_PRI),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isFad).orElse(false),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getPii).map(PersonalIdentityDataDTO::getDemo)
-//					.map(DemoDTO::getFad).map(PersonalFullAddressDTO::getMsPri),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getPii).map(PersonalIdentityDataDTO::getDemo)
-//					.map(DemoDTO::getFad).map(PersonalFullAddressDTO::getMtPri)),
-
-	// /** The bio. */
-	// BIO("bio", Collections.emptySet())
 
 	/**  */
 	// @formatter:on
@@ -85,6 +72,8 @@ public enum AuthType {
 
 	private LanguageType langType;
 
+	private String displayName;
+
 	/**
 	 * 
 	 *
@@ -95,11 +84,16 @@ public enum AuthType {
 	 * @param mtInfoFetcher
 	 */
 	private AuthType(String type, Set<MatchType> associatedMatchTypes, LanguageType langType,
-			Predicate<? super AuthTypeDTO> authTypePredicate) {
+			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
 		this.type = type;
 		this.langType = langType;
 		this.authTypePredicate = authTypePredicate;
+		this.displayName = displayName;
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
+	}
+	
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**
@@ -184,7 +178,7 @@ public enum AuthType {
 	}
 	
 	public Set<MatchType> getAssociatedMatchTypes() {
-		return associatedMatchTypes;
+		return Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
 }

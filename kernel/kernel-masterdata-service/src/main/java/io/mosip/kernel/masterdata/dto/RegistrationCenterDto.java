@@ -44,15 +44,23 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	private String languageCode;
-	
+
 	private Short numberOfKiosks;
-	
+
 	private LocalTime perKioskProcessTime;
-	
-	private LocalTime processStartTime;
-	
-	private LocalTime processEndTime;
-	
+
+	private LocalTime centerStartTime;
+
+	private LocalTime centerEndTime;
+
+	private String timeZone;
+
+	private String contactPerson;
+
+	private LocalTime lunchStartTime;
+
+	private LocalTime lunchEndTime;
+
 	private Boolean isActive;
 
 }

@@ -1,0 +1,58 @@
+.expansion .mat-expansion-panel-header-title,
+.expansion .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.expansion .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-container {
+  /* display: flex;
+  flex-direction: column; */
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+/* 
+.user-container > * {
+  width: 100%;
+} */
+
+.wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+}
+
+.mat-form-field {
+  width: 80%;
+}
+
+.highlight {
+  border: 1px solid red;
+}
+
+mat-form-field {
+  margin-top: 7px;
+}
+
+.age {
+  width: 3em;
+  margin-left: 15%;
+}
+
+.gender {
+  text-align: left;
+  width: 100%;
+}
+
+.img {
+  margin: 2px 0 0 10px;
+}
+
+.ageOrDobPref {
+  width: 150px;
+}

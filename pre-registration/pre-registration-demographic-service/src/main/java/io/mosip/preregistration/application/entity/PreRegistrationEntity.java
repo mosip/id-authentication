@@ -44,14 +44,14 @@ public class PreRegistrationEntity implements Serializable {
 	@Column(name = "prereg_id", nullable = false)
 	@Id
 	private String preRegistrationId;
-//	private String userId;
+
 
 	/** The group id. */
 	@Column(name = "group_id", nullable = false)
 	private String groupId;
 	
 	/** The JSON */
-//	@Type( type = "jsonb-node" )
+
 	@Column(name = "demog_detail")
 	private byte[] applicantDetailJson;
 	
@@ -74,7 +74,7 @@ public class PreRegistrationEntity implements Serializable {
 	
 	/** The create date time. */
 	@Column(name = "cr_dtimes")
-	@CreationTimestamp
+
 	private Timestamp createDateTime;
 
 	/** The updated by. */
@@ -83,7 +83,6 @@ public class PreRegistrationEntity implements Serializable {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private Timestamp updateDateTime;
 
 	/** The is deleted. */
@@ -92,7 +91,6 @@ public class PreRegistrationEntity implements Serializable {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private Timestamp deletedDateTime;
 	
 	

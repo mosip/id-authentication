@@ -14,10 +14,12 @@ public class RestServiceException extends IdAuthenticationAppException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 372518972095526748L;
-	
+
 	/** The response body. */
+	private transient String responseBodyAsString;
+
 	private transient Object responseBody;
-	
+
 	/**
 	 * Instantiates a new rest service exception.
 	 */
@@ -38,23 +40,25 @@ public class RestServiceException extends IdAuthenticationAppException {
 	 * Instantiates a new rest client exception.
 	 *
 	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
+	 * @param rootCause         the root cause
 	 */
 	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);
 	}
-	
+
 	/**
 	 * Instantiates a new rest service exception.
 	 *
 	 * @param exceptionConstant the exception constant
-	 * @param responseBody the response body
+	 * @param responseBody      the response body
 	 */
-	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, Object responseBody) {
+	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, String responseBodyAsString,
+			Object responseBody) {
 		super(exceptionConstant);
 		this.responseBody = responseBody;
+		this.responseBodyAsString = responseBodyAsString;
 	}
-	
+
 	/**
 	 * Gets the response body.
 	 *
@@ -62,6 +66,10 @@ public class RestServiceException extends IdAuthenticationAppException {
 	 */
 	public Optional<Object> getResponseBody() {
 		return Optional.of(responseBody);
+	}
+	
+	public Optional<String> getResponseBodyAsString() {
+		return Optional.of(responseBodyAsString);
 	}
 
 }

@@ -43,9 +43,9 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("/documentcategories/{langCode}")
+	@GetMapping("/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto fetchAllDocumentCategoryUsingLangCode(
-			@PathVariable("langCode") String langCode) {
+			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
 
@@ -54,9 +54,9 @@ public class DocumentCategoryController {
 	 * 
 	 * @return A Document category
 	 */
-	@GetMapping("/documentcategories/{code}/{langCode}")
+	@GetMapping("/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("code") String code,
-			@PathVariable("langCode") String langCode) {
+			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
 	}
 

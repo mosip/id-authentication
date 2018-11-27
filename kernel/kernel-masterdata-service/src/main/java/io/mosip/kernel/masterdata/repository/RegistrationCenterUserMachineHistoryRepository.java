@@ -30,6 +30,6 @@ public interface RegistrationCenterUserMachineHistoryRepository
 	 *            effective time as provided by user
 	 * @return List of {@link RegistrationCenterUserMachineHistory} fetched by query
 	 */
-	List<RegistrationCenterUserMachineHistory> findByIdAndEffectivetimesLessThanEqual(
+	List<RegistrationCenterUserMachineHistory> findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
 			RegistrationCenterUserMachineHistoryId id, LocalDateTime effectivetimes);
 }

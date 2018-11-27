@@ -3,6 +3,7 @@ package io.mosip.authentication.core.dto.indauth;
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * General-purpose of {@code AuthRequestDTO} class used to communicate with
@@ -12,11 +13,8 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthRequestDTO {
-
-	private String id;
-	
-	private String ver;
+@EqualsAndHashCode(callSuper = true)
+public class AuthRequestDTO extends BaseAuthRequestDTO {
 
 	private String idvId;
 

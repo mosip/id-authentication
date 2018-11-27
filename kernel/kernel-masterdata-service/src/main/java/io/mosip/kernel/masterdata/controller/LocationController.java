@@ -38,7 +38,7 @@ public class LocationController {
 	 * 
 	 * @return List<LocationHierarchyDto>
 	 */
-	@GetMapping(value = "/{langCode}")
+	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langCode) {
 		return locationHierarchyService.getLocationDetails(langCode);
 
@@ -57,11 +57,11 @@ public class LocationController {
 	 * @param langCode
 	 * @return List<LocationHierarchyDto>
 	 */
-	@GetMapping(value = "/{locCode}/{langCode}")
-	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable String locCode,
-			@PathVariable String langCode) {
+	@GetMapping(value = "/{locationcode}/{langcode}")
+	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
+			@PathVariable("langcode") String langCode) {
 
-		return locationHierarchyService.getLocationHierarchyByLangCode(locCode, langCode);
+		return locationHierarchyService.getLocationHierarchyByLangCode(locationCode, langCode);
 
 	}
 }

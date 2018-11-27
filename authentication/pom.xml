@@ -31,7 +31,8 @@
 		<!-- Kernel components -->
 		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
 		<kernel.hibernate.version>1.0.0-SNAPSHOT</kernel.hibernate.version>
-		
+		<kernel.template.version>1.0.0-SNAPSHOT</kernel.template.version>
+		<kernel.pdfgenerate.version>1.0.0-SNAPSHOT</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
@@ -147,7 +148,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
+	<!--<profiles>
 		<profile>
 			<id>DEV</id>
 			<properties>
@@ -178,6 +179,6 @@
 				</sonar.jacoco.reportPaths>
 			</properties>
 		</profile>
-	</profiles>
+	</profiles>-->
 
 </project>

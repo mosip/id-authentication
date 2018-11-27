@@ -40,8 +40,8 @@ public class TemplateController {
 	 * 
 	 * @return All TemplateDto of specific language
 	 */
-	@GetMapping("/{langCode}")
-	public List<TemplateDto> getAllTemplateBylangCode(@PathVariable("langCode") String langCode) {
+	@GetMapping("/{langcode}")
+	public List<TemplateDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
 	}
 
@@ -50,10 +50,10 @@ public class TemplateController {
 	 * 
 	 * @return Template Details
 	 */
-	@GetMapping("/{langCode}/{templateTypeCode}")
+	@GetMapping("/{langcode}/{templatetypecode}")
 	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(
-			@PathVariable("langCode") String langCode,
-			@PathVariable("templateTypeCode") String templateTypeCode) {
+			@PathVariable("langcode") String langCode,
+			@PathVariable("templatetypecode") String templateTypeCode) {
 		return templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode);
 	}
 }

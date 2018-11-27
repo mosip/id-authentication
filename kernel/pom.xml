@@ -42,7 +42,6 @@
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
 
-
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
 
@@ -100,21 +99,24 @@
 		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
-		<module>kernel-json-validator</module>
+		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<!--<module>kernel-crypto-bouncycastle</module> -->
-		<!-- <module>kernel-crypto-jce</module> -->
+		<module>kernel-crypto-jce</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
+		<module>kernel-keymanager-softhsm</module>
 
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
+		<module>kernel-keymanager-service</module>
+		<module>kernel-crypto-service</module>
 
 		<module>kernel-batch-framework</module>
 		<module>kernel-batch-server</module>
@@ -255,5 +257,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
+
