@@ -17,7 +17,7 @@ To use this api, add this to dependency list:
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-softhsm</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 ```
 
@@ -47,7 +47,7 @@ Usage1: Get All Alias
  
  ```
  
- Output:
+ Output: allAlias
  
  ```
 test-alias-private,SunPKCS11-SoftHSM2 RSA private key, 2048 bits (id 2, token object, not sensitive, unextractable)
@@ -75,10 +75,10 @@ test-alias-secret,SunPKCS11-SoftHSM2 AES secret key, 32 bits (id 4, token object
 		keystoreImpl.storeSymmetricKey(secretKey, "test-alias-secret");
 
 		SecretKey fetchedSecretKey = keystoreImpl.getSymmetricKey("test-alias-secret");
-		System.out.println(fetchedSecretKey.toString());
+		
 ```
 
-Output:
+Output: SecretKey
 
 ```
 SunPKCS11-SoftHSM2 AES secret key, 32 bits (id 6, token object, not sensitive, unextractable)
@@ -103,13 +103,13 @@ Usage:3 KeyPair
 
 		PrivateKey privateKey = keystoreImpl.getPrivateKey("test-alias-private");
 
-		System.out.println(privateKey.toString());
 
 		PublicKey publicKey = keystoreImpl.getPublicKey("test-alias-private");
-		System.out.println(publicKey.toString());
+		
+		
 ```
 
-Output:
+Output: privateKey , publicKey
 
 ```
 SunPKCS11-SoftHSM2 RSA private key, 2048 bits (id 7, token object, not sensitive, unextractable)
@@ -128,10 +128,11 @@ private KeyStore keystoreImpl;
 
 X509Certificate certificate = (X509Certificate) keystoreImpl.getCertificate("test-alias-private");
 
-System.out.println(certificate.toString());
+
+
 ```
 
-Output
+Output: certificate
 
 ```
 [
