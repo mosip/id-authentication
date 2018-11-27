@@ -1,4 +1,3 @@
-
 package io.mosip.kernel.masterdata.constant;
 
 /**
@@ -29,3 +28,4 @@ public enum DeviceErrorCode {
 	}
 
 }
+

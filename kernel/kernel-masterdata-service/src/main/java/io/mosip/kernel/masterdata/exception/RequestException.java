@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;

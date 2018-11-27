@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;

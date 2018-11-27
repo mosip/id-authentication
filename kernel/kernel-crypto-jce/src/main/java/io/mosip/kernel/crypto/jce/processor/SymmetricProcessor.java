@@ -54,7 +54,7 @@ public class SymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode) {
 
 		if (mode == Cipher.ENCRYPT_MODE) {
 			return encrypt(method, key, data, mode);

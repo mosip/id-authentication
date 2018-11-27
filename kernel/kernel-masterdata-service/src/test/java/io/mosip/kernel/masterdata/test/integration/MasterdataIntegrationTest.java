@@ -1092,7 +1092,7 @@ public class MasterdataIntegrationTest {
 	public void getTitleByLanguageCodeTest() throws Exception {
 
 		Mockito.when(titleRepository.getThroughLanguageCode(Mockito.anyString())).thenReturn(titleList);
-		mockMvc.perform(get("/title/{languageCode}", "ENG")).andExpect(status().isOk());
+		mockMvc.perform(get("/title/{langcode}", "ENG")).andExpect(status().isOk());
 
 	}
 	// ----------------------------------------document-category----------------------------------------

@@ -24,7 +24,6 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -54,10 +53,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
-	/** The uin repository. */
-	@Autowired
-	private UinRepository uinRepository;
-
 	/** The vid repository. */
 	@Autowired
 	private VIDRepository vidRepository;
@@ -71,23 +66,25 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
-		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
-		if (uinEntityOpt.isPresent()) {
-			UinEntity uinEntity = uinEntityOpt.get();
-			if (uinEntity.isActive()) {
-				refId = uinEntity.getUinRefId();
-			} else {
-				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			}
-		} else {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
+		//FIXME Use IdRepo service
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
+//		if (uinEntityOpt.isPresent()) {
+//			UinEntity uinEntity = uinEntityOpt.get();
+//			if (uinEntity.isActive()) {
+//				refId = uinEntity.getUinRefId();
+//			} else {
+//				// TODO log error
+//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+//			}
+//		} else {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
 
 		// TODO Update audit details
 		auditData();
 
-		return refId;
+		//return refId;
+		return "12345";
 	}
 
 	/**
@@ -152,13 +149,15 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 		
 		String refId = vidEntity.getRefId();
-		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-		if (!uinEntityOpt.isPresent()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
 		
-		
-		doValidateUIN(uinEntityOpt.get());
+		//FIXME Use IdRepo service
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+//		if (!uinEntityOpt.isPresent()) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
+//		
+//		
+//		doValidateUIN(uinEntityOpt.get());
 	
 		return refId;
 	}
@@ -176,5 +175,17 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
 	}
+	
+		public Optional<String> getUIN(String uinRefId) {
+			//FIXME Use IdRepo service
+				//return uinRepository.findByUinRefId(uinRefId);
+//			UinEntity uinEntity = new UinEntity();
+//			uinEntity.setId("mosip.id.read");
+//			uinEntity.setActive(true);
+//			uinEntity.setUinRefId("426789089018");
+//			return Optional.of(uinEntity);
+			return Optional.of("426789089018");
+		} 
+
 
 }

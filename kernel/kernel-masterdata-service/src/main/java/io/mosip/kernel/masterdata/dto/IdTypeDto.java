@@ -30,3 +30,4 @@ public class IdTypeDto {
 	
 	private Boolean isActive;
 }
+

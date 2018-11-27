@@ -1,4 +1,3 @@
-
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;

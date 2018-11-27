@@ -1,0 +1,17 @@
+{
+              "identity": {
+                             "firstName": "firstName",
+                             "middleName": "middleName",
+                             "lastName": "lastName",
+                             "fullName" : "fullName",
+                             "dob": "dateOfBirth",
+                             "gender": "gender",
+                             "addressLine1": "addressLine1",
+                             "addressLine2": "addressLine2",
+                             "addressLine3": "addressLine3",
+                             "addressLine4": "region",
+                             "addressLine5": "province",
+                             "addressLine6": "city",
+							 "pincode":"CNEOrPINNumber"
+              }
+}

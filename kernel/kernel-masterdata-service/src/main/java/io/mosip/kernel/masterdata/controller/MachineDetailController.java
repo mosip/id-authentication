@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 /**
+
  * This controller class provides Machine details based on user provided data.
  * 
  * @author Megha Tanga

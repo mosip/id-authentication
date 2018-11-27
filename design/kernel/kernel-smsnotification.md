@@ -17,7 +17,7 @@ This service can be used to send sms through configured SMS gateway. Service has
 - REST service can be used by any MOSIP module to send SMS through HTTP client.
 
 
-- Request body model for POST **/notification/sms**
+- Request body model for POST **/notifier/sms**
 
 ```
 {
@@ -27,7 +27,9 @@ This service can be used to send sms through configured SMS gateway. Service has
 ```
 
 
-- Response body model for POST **/notification/sms**
+- Response body model for POST **/notifier/sms**
+
+HttpStatus: 202 Accepted
 
 ```
 {

@@ -1,6 +1,8 @@
 package io.mosip.kernel.packetuploader.http.exception;
 
-import net.bytebuddy.dynamic.scaffold.MethodRegistry.Handler.ForAbstractMethod;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Error item bean class having error code and error message
@@ -9,7 +11,9 @@ import net.bytebuddy.dynamic.scaffold.MethodRegistry.Handler.ForAbstractMethod;
  * @since 1.0.0
  *
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Error {
 
 	/**
@@ -22,61 +26,5 @@ public class Error {
 	 * The error message field
 	 */
 	private String message;
-
-	/**
-	 * Getter for {@link #code}s
-	 * 
-	 * @return {@link #code}
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/** Setter for {@link #code}
-	 * @param code
-	 *            {@link #code}
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	/**
-	 * Getter for {@link #message}
-	 * 
-	 * @return {@link #message}
-	 */
-	public String getMessage() {
-		return message;
-	}
-
-	/**
-	 * Setter {@link ForAbstractMethod} {@link #message}
-	 * 
-	 * @param message
-	 *            {@link #message}
-	 */
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	/**
-	 * Constructor for this class
-	 * 
-	 * @param code
-	 *            {@link #code}
-	 * @param message
-	 *            {@link #message}
-	 */
-	public Error(String code, String message) {
-		this.code = code;
-		this.message = message;
-	}
-
-	/**
-	 * Constructor for this class
-	 */
-	public Error() {
-
-	}
 
 }

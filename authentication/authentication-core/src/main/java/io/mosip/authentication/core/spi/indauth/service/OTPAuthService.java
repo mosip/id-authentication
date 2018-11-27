@@ -21,7 +21,5 @@ public interface OTPAuthService {
 	 * @param UIN      - Unique Number
 	 * @return
 	 */
-
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
-
+	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
 }

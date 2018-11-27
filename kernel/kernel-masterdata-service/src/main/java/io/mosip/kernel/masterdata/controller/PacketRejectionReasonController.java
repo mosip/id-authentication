@@ -48,9 +48,9 @@ public class PacketRejectionReasonController {
 		return reasonService.getAllReasons();
 	}
 
-	@GetMapping(value = "/{reasonCategoryCode}/{langCode}")
-	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable String reasonCategoryCode,
-			@PathVariable String langCode) {
+	@GetMapping(value = "/{reasoncategorycode}/{langcode}")
+	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable("reasoncategorycode") String reasonCategoryCode,
+			@PathVariable("langcode") String langCode) {
 		
 		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,langCode );
 

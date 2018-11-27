@@ -25,56 +25,61 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 public class AuditRequestFactory {
-	
-	/** The mosipLogger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
-	/** The env. */
-	@Autowired
-	private Environment env;
-	
-	/**
-	 * Builds the request.
-	 *
-	 * @param module the module
-	 * @param event the event
-	 * @param id the id
-	 * @param idType the id type
-	 * @param desc the desc
-	 * @return the audit request dto
-	 */
-	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
-		AuditRequestDto request = new AuditRequestDto();
-		String hostName;
-		String hostAddress;
+    /** The mosipLogger. */
+    private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
-		try {
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			hostName = inetAddress.getHostName();
-			hostAddress = inetAddress.getHostAddress();
-		} catch (UnknownHostException ex) {
-			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
-			hostName = env.getProperty("audit.defaultHostName");
-			hostAddress = env.getProperty("audit.defaultHostAddress");
-		}
+    /** The env. */
+    @Autowired
+    private Environment env;
 
-		request.setEventId(event.getEventId());
-		request.setEventName(event.getEventName());
-		request.setEventType(event.getEventType());
-		request.setActionTimeStamp(OffsetDateTime.now());
-		request.setHostName(hostName);
-		request.setHostIp(hostAddress);
-		request.setApplicationId(env.getProperty("application.id"));
-		request.setApplicationName(env.getProperty("application.name"));
-		request.setSessionUserId("sessionUserId");
-		request.setSessionUserName("sessionUserName");
-		request.setId(id);
-		request.setIdType(idType.name());
-		request.setCreatedBy(env.getProperty("user.name"));
-		request.setModuleName(module.getModuleName());
-		request.setModuleId(module.getModuleId());
-		request.setDescription(desc);
+    /**
+     * Builds the request.
+     *
+     * @param module
+     *            the module
+     * @param event
+     *            the event
+     * @param id
+     *            the id
+     * @param idType
+     *            the id type
+     * @param desc
+     *            the desc
+     * @return the audit request dto
+     */
+    public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
+	AuditRequestDto request = new AuditRequestDto();
+	String hostName;
+	String hostAddress;
 
-		return request;
+	try {
+	    InetAddress inetAddress = InetAddress.getLocalHost();
+	    hostName = inetAddress.getHostName();
+	    hostAddress = inetAddress.getHostAddress();
+	} catch (UnknownHostException ex) {
+	    mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
+	    hostName = env.getProperty("audit.defaultHostName");
+	    hostAddress = env.getProperty("audit.defaultHostAddress");
 	}
+
+	request.setEventId(event.getEventId());
+	request.setEventName(event.getEventName());
+	request.setEventType(event.getEventType());
+	request.setActionTimeStamp(OffsetDateTime.now());
+	request.setHostName(hostName);
+	request.setHostIp(hostAddress);
+	request.setApplicationId(env.getProperty("application.id"));
+	request.setApplicationName(env.getProperty("application.name"));
+	request.setSessionUserId("sessionUserId");
+	request.setSessionUserName("sessionUserName");
+	request.setId(id);
+	request.setIdType(idType.name());
+	request.setCreatedBy(env.getProperty("user.name"));
+	request.setModuleName(module.getModuleName());
+	request.setModuleId(module.getModuleId());
+	request.setDescription(desc);
+
+	return request;
+    }
 }

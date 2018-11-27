@@ -1,6 +1,6 @@
 package io.mosip.kernel.core.packetuploader.exception;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
  * Exception to be thrown when Connection is not made with server
@@ -8,7 +8,7 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class ConnectionException extends BaseCheckedException {
+public class ConnectionException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 3585613514626311385L;
 

@@ -35,8 +35,8 @@ public class AutnTxn {
 	private Date responseDTimes;
 
 	@NotNull
-	@Column(name = "request_txn_id")
-	private String requestTxnId;
+	@Column(name = "request_trn_id")
+	private String requestTrnId;
 
 	@NotNull
 	@Column(name = "auth_type_code")
@@ -51,19 +51,22 @@ public class AutnTxn {
 	@Size(max = 256)
 	@Column(name = "status_comment")
 	private String statusComment;
+	
+	@NotNull
+	@Size(max = 3)
+	@Column(name = "lang_code")
+	private String langCode;
+
+
+	@Column(name = "ref_id_type")
+	private String refIdType;
+
+	@Column(name = "ref_id")
+	private String refId;
+	
 
 	@Column(name = "static_tkn_id")
 	private String staticTknId;
-
-	@Column(name = "uin")
-	private String uin;
-
-	@Column(name = "vid")
-	private String vid;
-
-	@NotNull
-	@Column(name = "is_active")
-	private String isActive;
 
 	@NotNull
 	@Column(name = "cr_by")
@@ -79,4 +82,9 @@ public class AutnTxn {
 	@Column(name = "upd_dtimes")
 	private Date updDTimes;
 
+	@Column(name = "is_deleted")
+	private boolean isDeleted;
+	
+	@Column(name = "del_dtimes")
+	private Date delDTimes;
 }

@@ -42,4 +42,5 @@ public interface MachineDetailService {
 	 *
 	 */
 	MachineDetailResponseDto getMachineDetailLang(String langCode);
+
 }

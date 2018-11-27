@@ -16,8 +16,11 @@ public enum RestServicesConstants {
 	/** The otp validate service. */
 	OTP_VALIDATE_SERVICE("otp-validate"),
 	
-	/** The notification service. */
-	NOTIFICATION_SERVICE("notification");
+	/** Mail notification service. */
+	MAIL_NOTIFICATION_SERVICE("mail-notification"),
+	
+	/** SMS notification service. */
+	SMS_NOTIFICATION_SERVICE("sms-notification");
 
 	/** The service name. */
 	private final String serviceName;

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,7 +20,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -29,16 +27,12 @@ import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
-import io.mosip.authentication.service.impl.indauth.service.demo.LocationInfoFetcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchOutput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
-import io.mosip.authentication.service.repository.DemoRepository;
-import io.mosip.authentication.service.repository.LocationRepository;
 
 /**
  * The implementation of Demographic Authentication service.
@@ -49,8 +43,6 @@ import io.mosip.authentication.service.repository.LocationRepository;
 public class DemoAuthServiceImpl implements DemoAuthService {
 
 	private static final String DEMO_DEFAULT_MATCH_VALUE = "demo.default.match.value";
-	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
 
 	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
 	private static final int DEFAULT_EXACT_MATCH_VALUE = AuthType.DEFAULT_EXACT_MATCH_VALUE;
@@ -64,13 +56,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private DemoMatcher demoMatcher;
 
 	@Autowired
-	private DemoRepository demoRepository;
-
-	@Autowired
-	private LocationRepository locationRepository;
-
-	@Autowired
 	private IdInfoService idInfoService;
+
+	@Autowired
+	private DemoHelper demoHelper;
 
 	/**
 	 * Construct match input.
@@ -82,7 +71,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
 				.map((IdentityDTO identity) -> Stream.of(DemoMatchType.values()).map((DemoMatchType demoMatchType) -> {
 					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(demoMatchType);
-					Optional<Object> infoOpt = demoMatchType.getIdentityInfo(identity, this::getLanguageCode);
+					Optional<Object> infoOpt = demoHelper.getIdentityInfo(demoMatchType, identity);
 					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
 						AuthType authType = authTypeOpt.get();
 						if (authType.isAuthTypeEnabled(authRequestDTO)) {
@@ -94,24 +83,18 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 	}
 
-	private String getLanguageCode(LanguageType langType) {
-		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(PRIMARY_LANG_CODE);
-		} else {
-			return environment.getProperty(SECONDARY_LANG_CODE);
-		}
-	}
-
 	private MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
 			AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, this::getLanguageCode);
+		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO,
+				demoHelper::getLanguageCode);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
-			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())) {
+			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
+					|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
-						this::getLanguageCode);
+						demoHelper::getLanguageCode);
 				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
 			}
@@ -129,11 +112,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the match output
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
-			Map<String, List<IdentityInfoDTO>> demoEntity, LocationInfoFetcher locationInfoFetcher,
-			Function<LanguageType, String> languageCodeFetcher,
-			Function<String, Optional<String>> languageNameFetcher) {
-		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs, locationInfoFetcher,
-				languageCodeFetcher, languageNameFetcher);
+			Map<String, List<IdentityInfoDTO>> demoEntity) {
+		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs);
 	}
 
 	/*
@@ -154,7 +134,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getRequest().getIdentity(),
-				demoEntity, this::getLocation, this::getLanguageCode, this::getLanguageName);
+				demoEntity);
 		boolean demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 
 		return buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs);
@@ -200,7 +180,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 						.orElse("");
 
 				statusInfoBuilder.addMessageInfo(authType, ms, mt,
-						getLanguageCode(matchInput.getDemoMatchType().getLanguageType()));
+						demoHelper.getLanguageCode(matchInput.getDemoMatchType().getLanguageType()));
 			}
 
 			statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
@@ -223,41 +203,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		try {
 			return idInfoService.getIdInfo(refId);
 		} catch (IdAuthenticationDaoException e) {
-			// FIXME wrap business exception
-			throw new IdAuthenticationBusinessException();
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 
-	}
-
-	private Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
-		Optional<LocationEntity> locationEntity = locationRepository.findByCodeAndIsActive(locationCode, true);
-		if (locationEntity.isPresent()) {
-			LocationEntity entity = locationEntity.get();
-			String entitylocname = entity.getName();
-			String entityparentcode = entity.getParentloccode();
-			String entityloclevel = entity.getHierarchylevelname();
-			if (targetLocationLevel.getName().equalsIgnoreCase(entityloclevel)) {
-				return Optional.of(entitylocname);
-			} else {
-				return getLocation(targetLocationLevel, entityparentcode);
-			}
-		}
-		return Optional.empty();
-
-	}
-
-	public Optional<String> getLanguageName(String languageCode) {
-		String languagName = null;
-		String key = null;
-		if (languageCode != null) {
-			key = "mosip.primary.lang.".concat(languageCode.toLowerCase());
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				String[] split = property.split("-");
-				languagName = split[0];
-			}
-		}
-		return Optional.ofNullable(languagName);
 	}
 
 }

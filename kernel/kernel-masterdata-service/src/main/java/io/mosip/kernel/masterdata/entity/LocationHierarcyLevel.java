@@ -50,3 +50,4 @@ public class LocationHierarcyLevel extends BaseEntity implements Serializable {
 	private String languageCode;
 
 }
+

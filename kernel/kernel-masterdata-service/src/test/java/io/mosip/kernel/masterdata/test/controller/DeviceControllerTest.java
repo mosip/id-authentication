@@ -1,4 +1,5 @@
 
+
 package io.mosip.kernel.masterdata.test.controller;
 
 import static org.junit.Assert.assertTrue;
@@ -85,7 +86,5 @@ public class DeviceControllerTest {
 		Assert.assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);
 	}
-	
-	
 
 }

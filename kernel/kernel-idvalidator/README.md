@@ -1,7 +1,10 @@
 ## kernel-idvalidator
 
+ 1- [Background & Design](../../design/kernel/kernel-idvalidator.md)
  
- [API Documentation ]
+
+ 
+ 2- [API Documentation ]
  
  ```
  mvn javadoc:javadoc
@@ -95,9 +98,9 @@ Valid VID Example:
  
  ```
 	@Autowired
-	private IdValidator<String> vinValidatorImpl;
+	private IdValidator<String> vidValidatorImpl;
 	
-	boolean return = vinValidatorImpl.validateId("537184361359820"); //return true
+	boolean return = vidValidatorImpl.validateId("537184361359820"); //return true
 
 ```
 	
@@ -105,31 +108,13 @@ Invalid VID Example:
 	
 ```
 	@Autowired
-	private IdValidator<String> vinValidatorImpl;
+	private IdValidator<String> vidValidatorImpl;
 	
-	boolean isValid = vinValidatorImpl.validateId("037184361359820"); //Throws Exception "VID should not contain Zero or One as first digit."
+	boolean isValid = vidValidatorImpl.validateId("037184361359820"); //Throws Exception "VID should not contain Zero or One as first digit."
  
 ```
 
-Valid RID Example:
 
-```
-	@Autowired
-	private RidValidator<String> rinValidatorImpl;
-	
-	boolean return = ridValidatorImpl.validateId("27847657360002520181208183050"); //return true
-
- 
- ```
- Invalid RID Example:
- 
- ```
-	@Autowired
-	private RidValidator<String> rinValidatorImpl;
-	
-	boolean return = ridValidatorImpl.validateId("27847657360002520181208183070"); //Throws Exception "Invalid Time Stamp Found"
-	
- ```
  
  Valid PRID Example:
  
@@ -152,6 +137,26 @@ Valid RID Example:
 ```
 
 
+
+Valid RID Example:
+
+```
+	@Autowired
+	private RidValidator<String> ridValidatorImpl;
+	
+	boolean return = ridValidatorImpl.validateId("27847657360002520181208183050"); //return true
+
+ 
+ ```
+ Invalid RID Example:
+ 
+ ```
+	@Autowired
+	private RidValidator<String> ridValidatorImpl;
+	
+	boolean return = ridValidatorImpl.validateId("27847657360002520181208183070"); //Throws Exception "Invalid Time Stamp Found"
+	
+ ```
 
 
 
