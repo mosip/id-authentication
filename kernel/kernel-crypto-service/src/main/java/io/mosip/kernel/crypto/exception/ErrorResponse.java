@@ -1,4 +1,4 @@
-package io.mosip.kernel.packetuploader.http.exception;
+package io.mosip.kernel.crypto.exception;
 
 import java.util.ArrayList;
 import java.util.List;
