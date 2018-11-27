@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -50,8 +50,8 @@ public class LanguageServiceImpl implements LanguageService {
 	 * @see LanguageService#getAllLaguages()
 	 */
 	@Override
-	public LanguageRequestResponseDto getAllLaguages() {
-		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
+	public LanguageResponseDto getAllLaguages() {
+		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
 		List<LanguageDto> languageDtos = null;
 		List<Language> languages = null;
 
@@ -69,8 +69,8 @@ public class LanguageServiceImpl implements LanguageService {
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 
-		languageRequestResponseDto.setLanguages(languageDtos);
-		return languageRequestResponseDto;
+		languageResponseDto.setLanguages(languageDtos);
+		return languageResponseDto;
 	}
 
 	/**
