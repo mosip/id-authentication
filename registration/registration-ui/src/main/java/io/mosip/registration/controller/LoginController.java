@@ -297,7 +297,7 @@ public class LoginController extends BaseController implements Initializable {
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
-									APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+									APPLICATION_ID, exception.getMessage());
 
 							generateAlert(RegistrationConstants.ALERT_ERROR,
 									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
@@ -398,7 +398,7 @@ public class LoginController extends BaseController implements Initializable {
 							} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 								LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
-										APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+										APPLICATION_ID, exception.getMessage());
 
 								generateAlert(RegistrationConstants.ALERT_ERROR,
 										AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
@@ -464,7 +464,7 @@ public class LoginController extends BaseController implements Initializable {
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
-									APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+									APPLICATION_ID, exception.getMessage());
 
 							generateAlert(RegistrationConstants.ALERT_ERROR,
 									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),

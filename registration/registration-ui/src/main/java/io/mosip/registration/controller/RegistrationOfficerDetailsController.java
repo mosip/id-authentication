@@ -117,7 +117,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, REG_UI_LOGOUT_IO_EXCEPTION.getErrorMessage());
+					APPLICATION_ID, ioException.getMessage());
 		}
 	}
 
@@ -136,7 +136,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		} catch (IOException | RuntimeException exception) {
 
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+					APPLICATION_ID, exception.getMessage());
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());

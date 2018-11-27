@@ -122,11 +122,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
 			LoginController.getScene().setRoot(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			regBaseCheckedException.printStackTrace();
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME,
 					APPLICATION_ID, regBaseCheckedException.getMessage());
 		} catch (IOException ioException) {
-			ioException.printStackTrace();
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
@@ -161,6 +159,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 				nodes.add(root);
 			}
 		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+		
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_APPROVE_SCREEN_EXCEPTION.getErrorMessage());
 		}
