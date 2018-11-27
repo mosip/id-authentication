@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -20,6 +23,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
+import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
+import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.exception.RequiredKeyNotFoundException;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
@@ -48,14 +53,20 @@ public class OtpExceptionTest {
 
 	@Test
 	public void testForExceptionWhenKeyNotFound() throws Exception {
-		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(RequiredKeyNotFoundException.class);
-		mockMvc.perform(get("/otp/validate?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
+		List<Error> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
+		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/otp/validate?key=test&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
-		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(OtpInvalidArgumentException.class);
+		List<Error> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
+		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/otp/validate?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
