@@ -81,10 +81,10 @@ public class RegistrationController extends BaseController {
 	private TextField fullName;
 
 	@FXML
-	private TextField fullName_lc;
+	private TextField fullNameLocalLanguage;
 
 	@FXML
-	private Label fullName_lc_label;
+	private Label fullNameLocalLanguageLabel;
 
 	@FXML
 	private DatePicker ageDatePicker;
@@ -93,10 +93,10 @@ public class RegistrationController extends BaseController {
 	private TextField ageField;
 
 	@FXML
-	private Label bio_exception_toggleLabel1;
+	private Label bioExceptionToggleLabel1;
 
 	@FXML
-	private Label bio_exception_toggleLabel2;
+	private Label bioExceptionToggleLabel2;
 	
 	@FXML
 	private Label toggleLabel1;
@@ -118,28 +118,28 @@ public class RegistrationController extends BaseController {
 	private TextField addressLine1;
 
 	@FXML
-	private TextField addressLine1_lc;
+	private TextField addressLine1LocalLanguage;
 
 	@FXML
-	private Label addressLine1_lc_label;
+	private Label addressLine1LocalLanguagelabel;
 
 	@FXML
 	private TextField addressLine2;
 
 	@FXML
-	private TextField addressLine2_lc;
+	private TextField addressLine2LocalLanguage;
 
 	@FXML
-	private Label addressLine2_lc_label;
+	private Label addressLine2LocalLanguagelabel;
 
 	@FXML
 	private TextField addressLine3;
 
 	@FXML
-	private TextField addressLine3_lc;
+	private TextField addressLine3LocalLanguage;
 
 	@FXML
-	private Label addressLine3_lc_label;
+	private Label addressLine3LocalLanguagelabel;
 
 	@FXML
 	private TextField emailId;
@@ -163,7 +163,7 @@ public class RegistrationController extends BaseController {
 	private TextField localAdminAuthority;
 
 	@FXML
-	private TextField cni_or_pin_number;
+	private TextField cniOrPinNumber;
 
 	@FXML
 	private TextField parentName;
@@ -187,13 +187,13 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> poaDocuments;
 
 	@FXML
-	private Label poa_label;
+	private Label poaLabel;
 
 	@FXML
 	private ComboBox<String> poiDocuments;
 
 	@FXML
-	private Label poi_label;
+	private Label poiLabel;
 
 	@FXML
 	private ImageView headerImage;
@@ -202,7 +202,7 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> porDocuments;
 
 	@FXML
-	private Label por_label;
+	private Label porLabel;
 
 	@FXML
 	private AnchorPane documentFields;
@@ -220,7 +220,7 @@ public class RegistrationController extends BaseController {
 	private AnchorPane demoGraphicPane2;
 
 	@FXML
-	private AnchorPane anchor_pane_registration;
+	private AnchorPane anchorPaneRegistration;
 	
 	@FXML
 	private Button prevAddressButton;
@@ -273,19 +273,16 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button fetchBtn;
 	@FXML
-	protected Button scanBtn1;		
+	protected Button poaScanBtn;		
 	@FXML
-	protected Button scanBtn2;
+	protected Button poiScanBtn;
 	@FXML
-	protected Button scanBtn3;
+	protected Button porScanBtn;
 	
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
 	private Image defaultImage;
-	private Map<String, Object> sessionMapObject;
-	private AddressDTO addressDto;
-	
 
 	@FXML
 	private void initialize() {
@@ -322,10 +319,8 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
-			sessionMapObject = SessionContext.getInstance().getMapObject();
-			addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
-			if(addressDto!=null) {
-				prevAddressButton.setVisible(true);
+			if(SessionContext.getInstance().getMapObject().get("PrevAddress")==null) {
+				prevAddressButton.setVisible(false);
 			}
 			if (isEditPage && registrationDTOContent != null) {
 				prepareEditPageContent();
@@ -368,7 +363,7 @@ public class RegistrationController extends BaseController {
 		postalCode.setText(locationDTO.getPostalCode());
 		mobileNo.setText(demographicInfoDTO.getMobile());
 		emailId.setText(demographicInfoDTO.getEmailId());
-		cni_or_pin_number.setText(demographicInfoDTO.getCneOrPINNumber());
+		cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
 		localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
 		if (demographicDTO.getIntroducerRID() != null) {
 			uinId.setText(demographicDTO.getIntroducerRID());
@@ -410,7 +405,7 @@ public class RegistrationController extends BaseController {
 	public void loadAddressFromPreviousEntry() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading address from previous entry");
-			LocationDTO locationDto = addressDto.getLocationDTO();
+			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject().get("PrevAddress")).getLocationDTO();
 			region.setText(locationDto.getRegion());
 			city.setText(locationDto.getCity());
 			province.setText(locationDto.getProvince());
@@ -432,7 +427,7 @@ public class RegistrationController extends BaseController {
 			demoGraphicTitlePane.setExpanded(false);
 			demoGraphicTitlePane.setContent(demoGraphicPane2);
 			demoGraphicTitlePane.setExpanded(true);
-			anchor_pane_registration.setMaxHeight(700);
+			anchorPaneRegistration.setMaxHeight(700);
 		}
 
 	}
@@ -443,7 +438,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void adressLine1Focus() {
-		addressLine1_lc.requestFocus();
+		addressLine1LocalLanguage.requestFocus();
 		keyboardNode.setLayoutX(300.00);
 		keyboardNode.setLayoutY(270.00);
 		keyboardNode.setVisible(true);
@@ -455,7 +450,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void adressLine2Focus() {
-		addressLine2_lc.requestFocus();
+		addressLine2LocalLanguage.requestFocus();
 		keyboardNode.setLayoutX(300);
 		keyboardNode.setLayoutY(320);
 		keyboardNode.setVisible(true);
@@ -467,7 +462,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void adressLine3Focus() {
-		addressLine3_lc.requestFocus();
+		addressLine3LocalLanguage.requestFocus();
 		keyboardNode.setLayoutX(300);
 		keyboardNode.setLayoutY(375);
 		keyboardNode.setVisible(true);
@@ -479,7 +474,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void fullNameFocus() {
-		fullName_lc.requestFocus();
+		fullNameLocalLanguage.requestFocus();
 		keyboardNode.setLayoutX(300);
 		keyboardNode.setLayoutY(120);
 		keyboardNode.setVisible(true);
@@ -519,7 +514,7 @@ public class RegistrationController extends BaseController {
 			demographicInfoDTO.setMobile(mobileNo.getText());
 			demographicInfoDTO.setEmailId(emailId.getText());
 			demographicInfoDTO.setChild(isChild);
-			demographicInfoDTO.setCneOrPINNumber(cni_or_pin_number.getText());
+			demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
 			demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
 			if (isChild) {
 				if (uinId.getText().length() == 28) {
@@ -539,10 +534,10 @@ public class RegistrationController extends BaseController {
 			addressDto = new AddressDTO();
 			addressDto.setLocationDTO(locationDto);
 			demographicInfoDTO.setAddressDTO(addressDto);
-			demographicInfoDTO.setFullName(fullName_lc.getText());
-			addressDto.setAddressLine1(addressLine1_lc.getText());
-			addressDto.setAddressLine2(addressLine2_lc.getText());
-			addressDto.setLine3(addressLine3_lc.getText());
+			demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
+			addressDto.setAddressLine1(addressLine1LocalLanguage.getText());
+			addressDto.setAddressLine2(addressLine2LocalLanguage.getText());
+			addressDto.setLine3(addressLine3LocalLanguage.getText());
 
 			demographicDTO.setDemoInLocalLang(demographicInfoDTO);
 
@@ -708,9 +703,9 @@ public class RegistrationController extends BaseController {
 		pane2PrevBtn.setVisible(false);
 		autoFillBtn.setVisible(false);
 		fetchBtn.setVisible(false);
-		scanBtn1.setVisible(false);
-		scanBtn2.setVisible(false);
-		scanBtn3.setVisible(false);
+		poaScanBtn.setVisible(false);
+		poiScanBtn.setVisible(false);
+		porScanBtn.setVisible(false);
 		prevAddressButton.setVisible(false);
 		demoGraphicPane1Content = demoGraphicPane1;
 		demoGraphicPane2Content = demoGraphicPane2;
@@ -805,7 +800,7 @@ public class RegistrationController extends BaseController {
 					fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 					fullName.requestFocus();
 				} else {
-					fullName_lc.setText(fullName.getText());
+					fullNameLocalLanguage.setText(fullName.getText());
 				}
 			}
 		});
@@ -814,7 +809,7 @@ public class RegistrationController extends BaseController {
 			@Override
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 					final String newValue) {
-				addressLine1_lc.setText(addressLine1.getText());
+				addressLine1LocalLanguage.setText(addressLine1.getText());
 			}
 		});
 
@@ -822,7 +817,7 @@ public class RegistrationController extends BaseController {
 			@Override
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 					final String newValue) {
-				addressLine2_lc.setText(addressLine2.getText());
+				addressLine2LocalLanguage.setText(addressLine2.getText());
 			}
 		});
 
@@ -830,7 +825,7 @@ public class RegistrationController extends BaseController {
 			@Override
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 					final String newValue) {
-				addressLine3_lc.setText(addressLine3.getText());
+				addressLine3LocalLanguage.setText(addressLine3.getText());
 			}
 		});
 	}
@@ -841,7 +836,7 @@ public class RegistrationController extends BaseController {
 	private void loadLanguageSpecificKeyboard() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading the local language keyboard");
-		addressLine1_lc.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -853,7 +848,7 @@ public class RegistrationController extends BaseController {
 			}
 		});
 
-		addressLine2_lc.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -865,7 +860,7 @@ public class RegistrationController extends BaseController {
 			}
 		});
 
-		addressLine3_lc.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -877,7 +872,7 @@ public class RegistrationController extends BaseController {
 			}
 		});
 
-		fullName_lc.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -1108,12 +1103,12 @@ public class RegistrationController extends BaseController {
 															RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
-													if (validateRegex(cni_or_pin_number, "\\d{30}")) {
+													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
 														generateAlert("Error",
 																AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
 																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
-														cni_or_pin_number.requestFocus();
+														cniOrPinNumber.requestFocus();
 													} else {
 														gotoNext = true;
 													}
@@ -1190,10 +1185,10 @@ public class RegistrationController extends BaseController {
 	 */
 	private void loadLocalLanguageFields() throws IOException {
 		ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
-		fullName_lc_label.setText(properties.getString("full_name"));
-		addressLine1_lc_label.setText(properties.getString("address_line1"));
-		addressLine2_lc_label.setText(properties.getString("address_line2"));
-		addressLine3_lc_label.setText(properties.getString("address_line3"));
+		fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
+		addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
+		addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
+		addressLine3LocalLanguagelabel.setText(properties.getString("address_line3"));
 		String userlangTitle = demoGraphicTitlePane.getText();
 		demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -1256,8 +1251,8 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.POA_DOCUMENT_EMPTY, "Numbers are not allowed");
 			poaDocuments.requestFocus();
 		} else {
-			poa_label.setId("doc_label");
-			poa_label.setText(poaDocuments.getValue());
+			poaLabel.setId("doc_label");
+			poaLabel.setText(poaDocuments.getValue());
 			;
 		}
 	}
@@ -1268,8 +1263,8 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.POI_DOCUMENT_EMPTY, "Numbers are not allowed");
 			poiDocuments.requestFocus();
 		} else {
-			poi_label.setId("doc_label");
-			poi_label.setText(poiDocuments.getValue());
+			poiLabel.setId("doc_label");
+			poiLabel.setText(poiDocuments.getValue());
 			;
 		}
 	}
@@ -1280,8 +1275,8 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.POR_DOCUMENT_EMPTY, "Numbers are not allowed");
 			porDocuments.requestFocus();
 		} else {
-			por_label.setId("doc_label");
-			por_label.setText(porDocuments.getValue());
+			porLabel.setId("doc_label");
+			porLabel.setText(porDocuments.getValue());
 			;
 		}
 	}
@@ -1326,7 +1321,7 @@ public class RegistrationController extends BaseController {
 		localAdminAuthority.setText("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
-		cni_or_pin_number.setText("012345678901234567890123456789");
+		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 	}
@@ -1336,7 +1331,7 @@ public class RegistrationController extends BaseController {
 		demoGraphicTitlePane.setExpanded(false);
 		demoGraphicTitlePane.setContent(demoGraphicPane1);
 		demoGraphicTitlePane.setExpanded(true);
-		anchor_pane_registration.setMaxHeight(900);
+		anchorPaneRegistration.setMaxHeight(900);
 	}
 	/**
 	 * Toggle functionality for biometric exception
@@ -1345,29 +1340,29 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Entering into toggle function for Biometric exception");
-		bio_exception_toggleLabel1.setId("toggleLabel1");
-		bio_exception_toggleLabel2.setId("toggleLabel2");
+		bioExceptionToggleLabel1.setId("toggleLabel1");
+		bioExceptionToggleLabel2.setId("toggleLabel2");
 		switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					bio_exception_toggleLabel1.setId("toggleLabel2");
-					bio_exception_toggleLabel2.setId("toggleLabel1");
+					bioExceptionToggleLabel1.setId("toggleLabel2");
+					bioExceptionToggleLabel2.setId("toggleLabel1");
 					toggleBiometricException=true;
 					captureExceptionImage.setDisable(false);
 				} else {
-					bio_exception_toggleLabel1.setId("toggleLabel1");
-					bio_exception_toggleLabel2.setId("toggleLabel2");
+					bioExceptionToggleLabel1.setId("toggleLabel1");
+					bioExceptionToggleLabel2.setId("toggleLabel2");
 					toggleBiometricException=false;
 					captureExceptionImage.setDisable(true);
 				}
 			}
 		});
 
-		bio_exception_toggleLabel1.setOnMouseClicked((event) -> {
+		bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
 			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 		});
-		bio_exception_toggleLabel2.setOnMouseClicked((event) -> {
+		bioExceptionToggleLabel2.setOnMouseClicked((event) -> {
 			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 		});
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
