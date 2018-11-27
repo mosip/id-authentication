@@ -36,7 +36,7 @@ The key **non-functional requirements** are
 
 1.	Global PARAM table: Holds the key refresh threshold period with respect to client environment.
 -	Threshold period - How many days before the key file to be pulled from server?
-2.	Get the key for current date from the table. [key_manage_tbl]
+2.	Get the key for current date from the local db table. 
 -	If not available, make the online call to REST service to download the key along with the expiry date.
 -	If available but within threshold period [current key expiry date – today date] then download the new key and store it with new start date and end date.
 
@@ -48,7 +48,8 @@ The key **non-functional requirements** are
 -	This would provide us either existing key or new key file.
 -	Expiry date.
 6.	Store the received key file into the database table along with other detail.
-
+7.  While creating the packet the public key should fetched from this table based on the current date and center id.
+ 
 
 **Class and Sequence Diagram**
     
