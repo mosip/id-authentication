@@ -1,4 +1,4 @@
-Design -- Policy Sync Service
+Design - Policy Sync Service
 
 
 **Background**
@@ -51,5 +51,6 @@ The key **non-functional requirements** are
 7.  While creating the packet the public key should fetched from this table based on the current date and center id.
  
 
-**Class and Sequence Diagram**
+**Sequence and Class Diagram**
+![Policy class diagram](_images/registration-policy-sync.png)
     
