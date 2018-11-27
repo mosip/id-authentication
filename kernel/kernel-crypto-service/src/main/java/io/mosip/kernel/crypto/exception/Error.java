@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.crypto.exceptionhandler;
+package io.mosip.kernel.crypto.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorBean {
+public class Error {
 
 	/**
 	 * The error code.
