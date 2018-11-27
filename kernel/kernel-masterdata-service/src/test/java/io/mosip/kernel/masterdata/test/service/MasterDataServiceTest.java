@@ -41,7 +41,7 @@ import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
@@ -167,7 +167,7 @@ public class MasterDataServiceTest {
 	private LanguageRepository languageRepository;
 
 	private List<Language> languages;
-	private LanguageRequestResponseDto resp;
+	private LanguageResponseDto resp;
 	private List<LanguageDto> languageDtos;
 	private Language hin;
 	private Language eng;
@@ -367,7 +367,7 @@ public class MasterDataServiceTest {
 		languageDtos.add(hinDto);
 		languageDtos.add(engDto);
 
-		resp = new LanguageRequestResponseDto();
+		resp = new LanguageResponseDto();
 		resp.setLanguages(languageDtos);
 	}
 
@@ -1049,7 +1049,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void testSucessGetAllLaguages() {
 		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(languages);
-		LanguageRequestResponseDto dto = languageService.getAllLaguages();
+		LanguageResponseDto dto = languageService.getAllLaguages();
 		assertNotNull(dto);
 		assertEquals(2, dto.getLanguages().size());
 	}
