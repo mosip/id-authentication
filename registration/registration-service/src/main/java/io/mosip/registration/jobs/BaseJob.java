@@ -47,7 +47,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(SyncTransaction.class);
+	private static final Logger LOGGER = AppConfig.getLogger(BaseJob.class);
 
 	/**
 	 * To get current job class
