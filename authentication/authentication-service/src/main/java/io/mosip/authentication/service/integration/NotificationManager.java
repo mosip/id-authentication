@@ -90,6 +90,14 @@ public class NotificationManager {
 		String subjectTemplate = null;
 		Set<NotificationType> notificationtype = new HashSet<>();
 		String notificationtypeconfig = environment.getProperty(NOTIFICATION_TYPE);
+		
+		
+		
+		String notificationMobileNo = phoneNumber;
+		//FIXME Taking from configuration for testing purpose.
+		if(!isNotNullorEmpty(phoneNumber)) {
+			notificationMobileNo = environment.getProperty("test.notification.mobile.no");
+		}
 
 		if (isNotNullorEmpty(notificationtypeconfig)) {
 			if (notificationtypeconfig.contains(",")) {
@@ -97,10 +105,10 @@ public class NotificationManager {
 				for (int i = 0; i < 2; i++) {
 					String nvalue = "";
 					nvalue = value[i];
-					processNotification(emailId, phoneNumber, notificationtype, nvalue);
+					processNotification(emailId, notificationMobileNo, notificationtype, nvalue);
 				}
 			} else {
-				processNotification(emailId, phoneNumber, notificationtype, notificationtypeconfig);
+				processNotification(emailId, notificationMobileNo, notificationtype, notificationtypeconfig);
 			}
 
 		}
@@ -119,7 +127,7 @@ public class NotificationManager {
 				String smsTemplate = applyTemplate(values, contentTemplate);
 				SmsRequestDto smsRequestDto = new SmsRequestDto();
 				smsRequestDto.setMessage(smsTemplate);
-				smsRequestDto.setNumber(phoneNumber);
+				smsRequestDto.setNumber(notificationMobileNo);
 				RestRequestDTO restRequestDTO = null;
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
 						smsRequestDto, String.class);
