@@ -11,21 +11,9 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class NullJsonSchemaException extends BaseUncheckedException {
 
-	/**
-	 * Generated serialization ID.
-	 */
 	private static final long serialVersionUID = -821123709407658107L;
 
-	/**
-	 * Constructor for NullJsonSchemaException class.
-	 * 
-	 * @param errorCode
-	 *            the error code of the exception.
-	 * @param errorMessage
-	 *            the error message associated with the exception.
-	 * @param cause
-	 * 	          cause of the error
-	 */
+
 	public NullJsonSchemaException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}

@@ -39,7 +39,7 @@ import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -133,7 +133,7 @@ public class MasterdataControllerTest {
 
 	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
-	private LanguageRequestResponseDto respDto;
+	private LanguageResponseDto respDto;
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
@@ -575,7 +575,7 @@ public class MasterdataControllerTest {
 	}
 
 	private void loadSuccessData() {
-		respDto = new LanguageRequestResponseDto();
+		respDto = new LanguageResponseDto();
 		languages = new ArrayList<>();
 
 		// creating language
