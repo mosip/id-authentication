@@ -1,12 +1,7 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
-
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +13,35 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.CenterMachine;
+import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
+import io.mosip.registration.entity.RegCenterDevice;
+import io.mosip.registration.entity.RegCentreMachineDevice;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
+import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
+import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
+
 /**
- * The implementation class of {@link MachineMappingDAO}.
+ * This DAO implementation of {@link MachineMappingDAO}
  * 
- * @author Yaswanth S
+ * @author YASWANTH S
+ * @author Brahmananda Reddy
  * @since 1.0.0
  *
  */
@@ -43,6 +52,19 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * logger for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(MachineMappingDAOImpl.class);
+	@Autowired
+	private DeviceTypeRepository deviceTypeRepository;
+	/**
+	 * registrationCenterDeviceRepository instance creation using autowired
+	 * annotation
+	 */
+	@Autowired
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+	/**
+	 * 
+	 */
+	@Autowired
+	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	/**
 	 * centerMachineRepository instance creation using autowired annotation
@@ -132,8 +154,8 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"getUsers() ceneterID -> " + ceneterID);
 		try {
 			List<RegistrationUserDetail> registrationUserDetail = userDetailRepository
-					.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(ceneterID,
-							RegistrationConstants.BLACKLISTED,
+					.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
+							ceneterID, RegistrationConstants.BLACKLISTED,
 							SessionContext.getInstance().getUserContext().getUserId());
 			if (!registrationUserDetail.isEmpty()) {
 				return registrationUserDetail;
@@ -156,15 +178,14 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String save(UserMachineMapping user) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"DAO save method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO save method called");
 
 		try {
 			// create new mapping
 			machineMappingRepository.save(user);
 			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
 					"DAO save method ended");
-			
+
 			return RegistrationConstants.MACHINE_MAPPING_CREATED;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
@@ -181,8 +202,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String update(UserMachineMapping user) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"DAO update method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO update method called");
 
 		try {
 			// update user details in user mapping
@@ -206,10 +226,10 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public UserMachineMapping findByID(UserMachineMappingID userID) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"DAO findByID method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method called");
 
 		UserMachineMapping machineMapping = null;
+
 		try {
 			// find the user
 			machineMapping = machineMappingRepository.findById(UserMachineMapping.class, userID);
@@ -217,10 +237,85 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"DAO findByID method ended");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method ended");
 
 		return machineMapping;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.MachineMappingDAO#getAllDeviceTypes()
+	 */
+	@Override
+	public List<DeviceType> getAllDeviceTypes() {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				" getAllDeviceTypes() method is started");
+
+		return deviceTypeRepository.findByIsActiveTrue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#getAllValidDevicesByCenterId(java
+	 * .lang.String)
+	 */
+	@Override
+	public List<RegCenterDevice> getAllValidDevicesByCenterId(String centerId) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"  getAllDeviceBasedOnCenterId method has started");
+
+		return registrationCenterDeviceRepository
+				.findByRegCenterDeviceIdRegCenterIdAndIsActiveTrueAndRegDeviceMasterValidityEndDtimesGreaterThanEqual(
+						centerId, Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#getAllMappedDevices(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public List<RegCentreMachineDevice> getAllMappedDevices(String centerId, String machineId) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"  getAllMappedDevices method excecution has started");
+
+		return registrationCenterMachineDeviceRepository
+				.findByRegCentreMachineDeviceIdRegCentreIdAndRegCentreMachineDeviceIdMachineId(centerId, machineId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#deleteUnMappedDevice(java.util.
+	 * List)
+	 */
+	@Override
+	public void deleteUnMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"  deleteUnMappedDevice method excecution has started");
+
+		registrationCenterMachineDeviceRepository.deleteAll(regCentreMachineDevices);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#addedMappedDevice(java.util.List)
+	 */
+	@Override
+	public void addedMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"  addedMappedDevice method excecution has started");
+
+		registrationCenterMachineDeviceRepository.saveAll(regCentreMachineDevices);
 	}
 
 }

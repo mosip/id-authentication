@@ -37,7 +37,6 @@ public class RegistrationScreenAuthorizationDAOTest {
 		RegistrationScreenAuthorizationId registrationScreenAuthorizationId = new RegistrationScreenAuthorizationId();
 
 		registrationScreenAuthorizationId.setRoleCode("OFFICER");
-		registrationScreenAuthorizationId.setAppId("REGISTRATION");
 		registrationScreenAuthorization.setRegistrationScreenAuthorizationId(registrationScreenAuthorizationId);
 		registrationScreenAuthorization.setPermitted(true);
 

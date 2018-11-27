@@ -1,4 +1,4 @@
-package io.mosip.registration.test.template;
+ package io.mosip.registration.test.template;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +38,9 @@ public class TemplateServiceTest {
 	public List<Template> getAllDummyTemplates(){
 		List<Template> templates = new ArrayList<>();
 		Template template = new Template();
+		template.setName("AckTemplate");
+		template.setTemplateTypCode("vel");
+		template.setFileFormatCode("vel");
 		template.setId("T01");
 		template.setFileTxt("sample text");
 		template.setLangCode("en");
@@ -78,7 +81,7 @@ public class TemplateServiceTest {
 		when(templateDao.getAllTemplateTypes()).thenReturn(templateTypes);
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
-		assertThat(templateService.getTemplate(), is(templates.get(0)));
+		assertThat(templateService.getTemplate("AckTemplate"), is(templates.get(0)));
 	}
 	
 	@Test
@@ -96,7 +99,7 @@ public class TemplateServiceTest {
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
 		Template templ = new Template();
-		assertThat(templateService.getTemplate(), is(templ));
+		assertThat(templateService.getTemplate("AckTemplate"), is(templ));
 	}
 	
 	@Test
@@ -106,12 +109,13 @@ public class TemplateServiceTest {
 		template.setFileTxt("sample text");
 		template.setLangCode("en");
 		template.setActive(true);
+		template.setName("AckTemplate");
 		
 		TemplateServiceImpl temp = new TemplateServiceImpl();
 		TemplateServiceImpl spyTemp = Mockito.spy(temp);
 
-	    Mockito.doReturn(template).when(spyTemp).getTemplate(); 
-	    String ack = spyTemp.createReceipt();
+	    Mockito.doReturn(template).when(spyTemp).getTemplate("AckTemplate"); 
+	    String ack = spyTemp.getHtmlTemplate("AckTemplate");
 	    
 		assertNotNull(ack);
 	}

@@ -15,7 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 /**
- * Class for Sync Data
+ * Class for Registration Officer Update
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

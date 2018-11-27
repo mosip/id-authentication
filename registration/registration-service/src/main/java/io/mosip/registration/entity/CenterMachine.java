@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(schema = "reg", name = "reg_center_machine")
-public class CenterMachine {
+public class CenterMachine extends RegistrationCommonFields {
 
 	/**
 	 * serialVersionUID
@@ -23,86 +23,55 @@ public class CenterMachine {
 	private static final long serialVersionUID = 4546131262621540483L;
 
 	@EmbeddedId
-	@Column(name = "pk_cntrm_usr_id")
+	@Column(name = "pk_cntrmac_usr_id")
 	private CenterMachineId centerMachineId;
-
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-	@Column(name = "cr_by", length = 24, nullable = false)
-	private String createdBy;
-	@Column(name = "cr_dtimesz", nullable = false)
-	private Timestamp createdDateTime;
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
-	@Column(name = "upd_dtimesz")
-	private Timestamp updatedDateTime;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
-	@Column(name = "del_dtimesz")
+	private Boolean isDeleted;
+	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
-
+	/**
+	 * @return the centerMachineId
+	 */
 	public CenterMachineId getCenterMachineId() {
 		return centerMachineId;
 	}
-
+	/**
+	 * @param centerMachineId the centerMachineId to set
+	 */
 	public void setCenterMachineId(CenterMachineId centerMachineId) {
 		this.centerMachineId = centerMachineId;
 	}
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Timestamp getCreatedDateTime() {
-		return createdDateTime;
-	}
-
-	public void setCreatedDateTime(Timestamp createdDateTime) {
-		this.createdDateTime = createdDateTime;
-	}
-
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	public Timestamp getUpdatedDateTime() {
-		return updatedDateTime;
-	}
-
-	public void setUpdatedDateTime(Timestamp updatedDateTime) {
-		this.updatedDateTime = updatedDateTime;
-	}
-
-	public boolean isDeleted() {
+	/**
+	 * @return the isDeleted
+	 */
+	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
-
-	public void setDeleted(boolean isDeleted) {
+	/**
+	 * @param isDeleted the isDeleted to set
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
+	/**
+	 * @return the deletedDateTime
+	 */
 	public Timestamp getDeletedDateTime() {
 		return deletedDateTime;
 	}
-
+	/**
+	 * @param deletedDateTime the deletedDateTime to set
+	 */
 	public void setDeletedDateTime(Timestamp deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;
 	}
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
 
 }

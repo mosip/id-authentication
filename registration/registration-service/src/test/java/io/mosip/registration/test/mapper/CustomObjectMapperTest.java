@@ -75,11 +75,5 @@ public class CustomObjectMapperTest {
 		assertEquals(demographicInfoDTO.getMobile(), demographicInfo.getMobile());
 		assertEquals(demographicInfoDTO.isChild(), demographicInfo.isChild());
 	}
-	
-	@Test
-	public void convertTest() throws JsonProcessingException {
-		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
-		System.out.println(JsonUtils.javaObjectToJsonString(packetMetaInfo));
-	}
-	
+
 }

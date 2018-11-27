@@ -8,61 +8,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="approveRegistrationRoot" prefHeight="590.0" prefWidth="1013.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationApprovalController">
+<AnchorPane fx:id="approveRegistrationRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.EODController">
 	<children>
-      <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="57.0" prefHeight="535.0" prefWidth="1014.0">
-         <children>
-      		<Pagination fx:id="pagination" layoutX="10.0" layoutY="73.0" prefHeight="350.0" prefWidth="625.0">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></Pagination>
-      		<TableView fx:id="table" layoutX="10.0" layoutY="73.0" prefHeight="278.0" prefWidth="625.0">
-      			<columns>
-      				<TableColumn fx:id="id" prefWidth="238.0" resizable="false" text="Registration ID" />
-      				<TableColumn fx:id="type" prefWidth="40.0" resizable="false" text="Type" />
-      				<TableColumn fx:id="residentName" prefWidth="120.0" resizable="false" text="Resident Name" />
-      				<TableColumn fx:id="operatorId" minWidth="0.0" prefWidth="100.0" resizable="false" text="Operator ID" />
-      				<TableColumn fx:id="operatorName" minWidth="0.0" prefWidth="125.0" resizable="false" text="Operator Name" />
-                  <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
-      			</columns>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-      		</TableView>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="639.0" layoutY="73.0" prefHeight="304.0" prefWidth="311.0">
-               <children>
-                  <ImageView fx:id="imageView" fitHeight="294.0" fitWidth="304.0" layoutX="7.0" layoutY="8.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></ImageView>
-               </children>
-            </AnchorPane>
-            <Button fx:id="approvalBtn" layoutX="669.0" layoutY="43.0" mnemonicParsing="false" onAction="#approvePacket" onMouseClicked="#goToHomePage" prefHeight="20.0" prefWidth="80.0" text="Approve">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="rejectionBtn" layoutX="755.0" layoutY="43.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="80.0" text="Reject" textAlignment="CENTER">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="onHoldBtn" layoutX="841.0" layoutY="43.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="80.0" text="On Hold" textAlignment="CENTER">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-         </children>
-      </AnchorPane>
+      <Accordion fx:id="approvalAccordion" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
+        <panes>
+          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="Pending Approval">
+               <content>
+                  <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </TitledPane>
+          <TitledPane fx:id="pendingActionTitledPane" animated="false" onMouseClicked="#loadPendingActionController" prefWidth="850.0" text="Pending Action">
+               <content>
+                  <AnchorPane fx:id="pendingActionAnchorPane" prefHeight="200.0" prefWidth="200.0" />
+               </content></TitledPane>
+            <TitledPane fx:id="reRegisterTitledPane" animated="false" prefWidth="850.0" text="Re Register">
+               <content>
+                  <AnchorPane fx:id="reRegisterAnchorPane" prefHeight="200.0" prefWidth="200.0" />
+               </content></TitledPane>
+        </panes>
+      </Accordion>
       <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/Home.png" />

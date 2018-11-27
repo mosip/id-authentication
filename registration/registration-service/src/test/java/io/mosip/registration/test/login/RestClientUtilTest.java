@@ -1,5 +1,6 @@
 package io.mosip.registration.test.login;
 
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -12,6 +13,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -31,7 +35,7 @@ public class RestClientUtilTest {
 	RestClientUtil restClientUtil;
 	
 	@Test
-	public void invokeTest() throws URISyntaxException {
+	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorResponseDto generatorResponseDto=new OtpGeneratorResponseDto();
 		generatorResponseDto.setOtp("099977");
 		OtpGeneratorRequestDto otpGeneratorRequestDto=new OtpGeneratorRequestDto();

@@ -32,4 +32,11 @@ public class VelocityPDFGeneratorTest {
 		assertNotNull(writer);
 	}
 	
+	@Test
+	public void generateNotificationTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
+		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+		Writer writer = velocityGenerator.generateNotificationTemplate("sample text", registrationDTO);
+		assertNotNull(writer);
+	}
+	
 }
