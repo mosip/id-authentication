@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,74 +38,71 @@ public class CryptoExceptionHandler {
 	private static final String ERR = "error";
 	private static final String WHITESPACE = " ";
 
-	private Map<String, ArrayList<ErrorBean>> setError(ErrorBean error) {
-		ArrayList<ErrorBean> errorList = new ArrayList<>();
+	private Map<String, ArrayList<Error>> setError(Error error) {
+		ArrayList<Error> errorList = new ArrayList<>();
 		errorList.add(error);
-		Map<String, ArrayList<ErrorBean>> map = new HashMap<>();
+		Map<String, ArrayList<Error>> map = new HashMap<>();
 		map.put(ERR, errorList);
 		return map;
 	}
 
 	@ExceptionHandler(NullDataException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> nullDataException(final NullDataException e) {
-		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+	public ResponseEntity<Map<String, ArrayList<Error>>> nullDataException(final NullDataException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> invalidKeyException(final InvalidKeyException e) {
-		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+	public ResponseEntity<Map<String, ArrayList<Error>>> invalidKeyException(final InvalidKeyException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> noSuchAlgorithmException(
+	public ResponseEntity<Map<String, ArrayList<Error>>> noSuchAlgorithmException(
 			final NoSuchAlgorithmException e) {
-		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> arrayIndexOutOfBoundsException(
+	public ResponseEntity<Map<String, ArrayList<Error>>> arrayIndexOutOfBoundsException(
 			final ArrayIndexOutOfBoundsException e) {
-		ErrorBean error = new ErrorBean(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
+		Error error = new Error(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
 				CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(InvalidDataException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> invalidDataException(final InvalidDataException e) {
-		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+	public ResponseEntity<Map<String, ArrayList<Error>>> invalidDataException(final InvalidDataException e) {
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(ConnectException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> connectException(final ConnectException e) {
-		ErrorBean error = new ErrorBean(CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
+	public ResponseEntity<Map<String, ArrayList<Error>>> connectException(final ConnectException e) {
+		Error error = new Error(CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
+		Map<String, ArrayList<Error>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 
 	
     @ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> methodArgumentNotValidException(
+	public ResponseEntity<ErrorResponse<Error>> methodArgumentNotValidException(
 			final MethodArgumentNotValidException e) {
-		ArrayList<ErrorBean> errorList = new ArrayList<>();
-		BindingResult bindingResult = e.getBindingResult();
-		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ErrorBean error = new ErrorBean(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),
+			Error error = new Error(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),
 					x.getField() + WHITESPACE + x.getDefaultMessage());
-			errorList.add(error);
+			errorResponse.getErrors().add(error);
 		});
-		Map<String, ArrayList<ErrorBean>> map = new HashMap<>();
-		map.put(ERR, errorList);
-		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 }
