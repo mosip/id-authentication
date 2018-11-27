@@ -108,7 +108,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
 					RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		} catch (SocketTimeoutException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - PUSH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
 			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
 		}
