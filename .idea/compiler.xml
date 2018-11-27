@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="authentication-core" />
+        <module name="authentication-service" />
+        <module name="failover-stage" />
+        <module name="filesystem-adapter-ceph" />
+        <module name="kernel-auditmanager-api" />
+        <module name="kernel-auditmanager-service" />
+        <module name="kernel-batch-framework" />
+        <module name="kernel-batch-server" />
+        <module name="kernel-config-server" />
+        <module name="kernel-core" />
+        <module name="kernel-crypto-bouncycastle" />
+        <module name="kernel-dataaccess-hibernate" />
+        <module name="kernel-datamapper-orika" />
+        <module name="kernel-datavalidator" />
+        <module name="kernel-emailnotification-service" />
+        <module name="kernel-idgenerator-prid" />
+        <module name="kernel-idgenerator-rid" />
+        <module name="kernel-idgenerator-tokenid" />
+        <module name="kernel-idgenerator-uin" />
+        <module name="kernel-idgenerator-vid" />
+        <module name="kernel-idvalidator" />
+        <module name="kernel-json-validator" />
+        <module name="kernel-keygenerator-bouncycastle" />
+        <module name="kernel-logger-logback" />
+        <module name="kernel-masterdata-service" />
+        <module name="kernel-otpmanager-service" />
+        <module name="kernel-packetserver-http" />
+        <module name="kernel-packetserver-sftp" />
+        <module name="kernel-packetuploader-sftp-jsch" />
+        <module name="kernel-pdfgenerator-itext" />
+        <module name="kernel-smsnotification-service" />
+        <module name="kernel-templatemanager-freemarker" />
+        <module name="kernel-templatemanager-velocity" />
+        <module name="kernel-virusscanner-clamav" />
+        <module name="packet-info-storage-service" />
+        <module name="packet-manager" />
+        <module name="packet-receiver" />
+        <module name="packet-validator" />
+        <module name="pre-registration-auth-service" />
+        <module name="pre-registration-core" />
+        <module name="pre-registration-datasync-service" />
+        <module name="pre-registration-demographic-service" />
+        <module name="pre-registration-document-service" />
+        <module name="quality-checker" />
+        <module name="quality-matchness-checker-stage" />
+        <module name="registration-processor-camel-bridge" />
+        <module name="registration-processor-core" />
+        <module name="registration-service" />
+        <module name="registration-status" />
+        <module name="registration-ui" />
+        <module name="retry-stage" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

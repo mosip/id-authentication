@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/authentication" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/authentication/authentication-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/authentication/authentication-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-auditmanager-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-auditmanager-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-batch-framework" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-batch-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-config-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-crypto-bouncycastle" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-dataaccess-hibernate" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-datamapper-orika" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-datavalidator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-emailnotification-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idgenerator-prid" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idgenerator-rid" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idgenerator-tokenid" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idgenerator-uin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idgenerator-vid" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-idvalidator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-json-validator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-keygenerator-bouncycastle" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-logger-logback" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-masterdata-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-otpmanager-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-packetserver-http" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-packetserver-sftp" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-packetuploader-sftp-jsch" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-pdfgenerator-itext" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-smsnotification-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-templatemanager-freemarker" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-templatemanager-velocity" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kernel/kernel-virusscanner-clamav" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-auth-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-datasync-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-demographic-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-document-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/filesystem-adapter-ceph" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/packet-info-storage-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/packet-manager" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/packet-receiver" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/quality-checker" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/registration-processor-camel-bridge" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/registration-processor-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/registration-status-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/stages" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/stages/failover-stage" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/stages/packet-validator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/stages/quality-matchness-checker-stage" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration-processor/stages/retry-stage" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration/registration-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registration/registration-ui" charset="UTF-8" />
+  </component>
+</project>

@@ -1,35 +1,60 @@
-/*package io.mosip.registration.processor.stages;
+package io.mosip.registration.processor.stages;
 
-import org.junit.After;
+import static org.hamcrest.CoreMatchers.anything;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+
+import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
+import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
+import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.stages.quality.check.assignment.QualityCheckerAssignmentStage;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
 
-@RefreshScope
-@RunWith(VertxUnitRunner.class)
+
+@RunWith(MockitoJUnitRunner.class)
 public class QualittyMatchnesCheckerStageTest {
 
-	private Vertx vertx;
+	@Mock
+	QualityMatchnessCheckerStageApplication app;
+	
+	@InjectMocks
+	QualityCheckerAssignmentStage stage = new QualityCheckerAssignmentStage() {
+		@Override
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+			return new MosipEventBus(vertx);
+		}
+		
+		@Override
+		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {}
+	};
 
-	QualityCheckerAssignmentStage stage = new QualityCheckerAssignmentStage();
-
+	@Mock
+	QualityCheckManager<String, QCUserDto> qualityCheckManager;
+	QCUserDto qcUserDto=new QCUserDto();
 	private MessageDTO dto = new MessageDTO();
-
+	private Logger fooLogger;
+	private ListAppender<ILoggingEvent> listAppender;
 	@Before
-	public void setup(TestContext context) {
-		stage.deployVerticle();
-		// vertx = stage.getEventBus(QualityCheckerAssignmentStage.class, "",
-		// "").getEventbus();
+	public void setup() {
+		fooLogger = (Logger) LoggerFactory.getLogger(QualityCheckerAssignmentStage.class);
+        listAppender = new ListAppender<>();
 
 		dto.setRid("1001");
 		dto.setRetryCount(null);
@@ -37,25 +62,32 @@ public class QualittyMatchnesCheckerStageTest {
 		dto.setInternalError(false);
 		dto.setMessageBusAddress(MessageBusAddress.QUALITY_CHECK_BUS);
 
-	}
-
-	@After
-	public void tearDown(TestContext context) {
-		vertx.close(context.asyncAssertSuccess());
+		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
+		qcUserDto.setQcUserId("qc001");
+		qcUserDto.setRegId(dto.getRid());
 
 	}
+
 
 	@Test
-	public void checkProcessRetry(TestContext testContext) {
+	public void checkProcessRetry() {
+		 listAppender.start();
+	        fooLogger.addAppender(listAppender);
 
-		final Async async = testContext.async();
-		JsonObject jsonObject = JsonObject.mapFrom(dto);
-		vertx.eventBus().send(MessageBusAddress.QUALITY_CHECK_BUS.getAddress(), jsonObject);
+			Mockito.when(qualityCheckManager.assignQCUser(anyString())).thenReturn(qcUserDto);
 
-		async.complete();
 
-		async.awaitSuccess();
+			stage.process(dto);
+
+			Assertions.assertThat(listAppender.list)
+	        .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+			.containsExactly(Tuple.tuple( Level.INFO, "qc001 - 1001  packet assigned to qcuser successfully"));
+	}
+	
+	@Test
+	public void deployVerticalTest() {
+		stage.deployVerticle();
 	}
 
+
 }
-*/

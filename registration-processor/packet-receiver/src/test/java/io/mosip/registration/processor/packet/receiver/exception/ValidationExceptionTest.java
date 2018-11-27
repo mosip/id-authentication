@@ -17,13 +17,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class ValidationExceptionTest {
-	private static final String VALIDATION_EXCEPTION = "This is validation exception";
+
 	private static final Logger log = LoggerFactory.getLogger(ValidationExceptionTest.class);
 	
 	@Mock
@@ -32,7 +32,7 @@ public class ValidationExceptionTest {
 	@Test
 	public void TestValidationException() {
 		
-		ValidationException ex = new ValidationException(VALIDATION_EXCEPTION);
+		ValidationException ex = new ValidationException(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getMessage());
 		
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -53,9 +53,9 @@ public class ValidationExceptionTest {
 
 		}  catch (ValidationException e) {
 			assertThat("Should throw Validation Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_VALIDATION_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getCode()));
 			assertThat("Should throw Validation Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(VALIDATION_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getMessage()));
 
 		}
 	}

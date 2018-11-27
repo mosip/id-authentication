@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.mosip.registration.processor.camel.bridge.processor.StructureValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.ValidationProcessor;
 import io.mosip.registration.processor.camel.bridge.statuscode.MessageEnum;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -27,7 +27,7 @@ public class MosipBridgeMappingTest {
 	private CamelContext camelContext = new DefaultCamelContext();
 
 	private CamelBridgeOptions options;
-	private static Processor validateStructure = new StructureValidationProcessor();
+	private static Processor validateStructure = new ValidationProcessor();
 
 	@Before
 	public void setup() throws Exception {
