@@ -2,7 +2,6 @@ package io.mosip.kernel.smsnotification.exception;
 
 import java.util.List;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -10,8 +9,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
@@ -24,7 +21,7 @@ import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
  *
  */
 @RestControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler {
 
 	/**
 	 * This variable represents the errors.
@@ -40,11 +37,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return The response entity.
 	 * 
 	 */
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse<Error>> smsInvalidInputsFound(final MethodArgumentNotValidException exception) {
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException exception,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(getErrorResponse(exception, headers, status, request), HttpStatus.NOT_ACCEPTABLE);
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		BindingResult bindingResult = exception.getBindingResult();
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		fieldErrors.forEach(x -> {
+			Error error = new Error(SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorCode(),
+					x.getField() + WHITESPACE + x.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+
 	}
 
 	/**
@@ -59,21 +65,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.NOT_ACCEPTABLE);
 
-	}
-
-	private ErrorResponse<Error> getErrorResponse(MethodArgumentNotValidException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-		BindingResult bindingResult = ex.getBindingResult();
-		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-		fieldErrors.forEach(x -> {
-			Error error = new Error(SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorCode(),
-					x.getField() + WHITESPACE + x.getDefaultMessage());
-			errorResponse.getErrors().add(error);
-		});
-
-		return errorResponse;
 	}
 
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
