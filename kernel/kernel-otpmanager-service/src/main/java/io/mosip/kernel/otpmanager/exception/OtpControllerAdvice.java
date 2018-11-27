@@ -9,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 
 /**
@@ -72,12 +71,5 @@ public class OtpControllerAdvice {
 		errorResponse.getErrors().addAll(exception.getList());
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
-	}
-
-	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrors().add(error);
-		return errorResponse;
 	}
 }
