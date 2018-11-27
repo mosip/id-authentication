@@ -146,13 +146,16 @@ public class ReRegistrationController extends BaseController implements Initiali
 					}
 				}
 			}
-			FileInputStream file;
-			try {
-				file = new FileInputStream(new File(table.getSelectionModel().getSelectedItem().getSourcePath()));
+			try (FileInputStream file = new FileInputStream(
+					new File(table.getSelectionModel().getSelectedItem().getSourcePath()))) {
+
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, fileNotFoundException.getMessage());
+			} catch (IOException ioException) {
+				LOGGER.error("RE_REGISTRATION_CONTROLLER - FAILED_WHILE_READING_ACKNOWLEDGEMENT", APPLICATION_NAME,
+						APPLICATION_ID, ioException.getMessage());
 			}
 
 		}
@@ -230,18 +233,19 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * 
 	 */
 	private void showReregisterdPackets() {
-		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
-			ObservableList<PacketStatusDTO> observableList = FXCollections.observableArrayList(reRegistrationPacketsList);
+			ObservableList<PacketStatusDTO> observableList = FXCollections
+					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
 		} else {
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}
-		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
 	}
 
