@@ -45,7 +45,7 @@ public class PacketSyncStatusJob extends BaseJob {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketSyncStatusJob.class);
 
 	/*
 	 * (non-Javadoc)
