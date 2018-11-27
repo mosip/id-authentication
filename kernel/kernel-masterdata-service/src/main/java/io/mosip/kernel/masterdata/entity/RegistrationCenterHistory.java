@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -72,17 +74,17 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "per_kiosk_process_time")
 	private LocalTime perKioskProcessTime;
 
-	@Column(name = "process_start_time")
-	private LocalTime processStartTime;
+	@Column(name = "center_start_time")
+	private LocalTime centerStartTime;
 
-	@Column(name = "process_end_time")
-	private LocalTime processEndTime;
+	@Column(name = "center_end_time")
+	private LocalTime centerEndTime;
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
 	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
+	private Boolean isActive;
 
 	@Column(name = "cr_by", nullable = false, length = 24)
 	private String createdBy;
@@ -101,6 +103,21 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
+
+	@Column(name = "time_zone", length = 64)
+	private String timeZone;
+
+	@Column(name = "contact_person", length = 128)
+	private String contactPerson;
+
+	@Column(name = "lunch_start_time")
+	private LocalTime lunchStartTime;
+
+	@Column(name = "lunch_end_time")
+	private LocalTime lunchEndTime;
+
+	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL)
+	private LocationHierarcyLevel location;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;
