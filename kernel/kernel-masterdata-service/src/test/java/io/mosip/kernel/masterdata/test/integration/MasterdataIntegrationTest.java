@@ -194,7 +194,7 @@ public class MasterdataIntegrationTest {
 
 	private LanguageRequestResponseDto languageRequestResponseDto;
 
-	private List<LanguageDto> languageDtos;
+	private List<LanguageDto> languageDtos; 
 
 	@Before
 	public void setUp() {
@@ -462,25 +462,25 @@ public class MasterdataIntegrationTest {
 	// -----------------------------BlacklistedWordsTest----------------------------------
 	@Test
 	public void getAllWordsBylangCodeSuccessTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(words);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(words);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeNullResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(null);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(null);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeEmptyArrayResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(new ArrayList<>());
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(new ArrayList<>());
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeFetchExceptionTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(wordsRepository.findAllByLangCode(anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 

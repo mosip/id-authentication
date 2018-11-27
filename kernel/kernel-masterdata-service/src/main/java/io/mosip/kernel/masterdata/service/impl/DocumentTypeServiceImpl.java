@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -19,8 +18,8 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This class have methods to fetch list of valid document types and to create

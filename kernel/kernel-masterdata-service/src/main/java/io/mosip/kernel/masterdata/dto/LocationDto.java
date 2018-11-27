@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
- * This DTO class handles 
+ * 
  * @author Srinivasan
  * @since 1.0.0
  *

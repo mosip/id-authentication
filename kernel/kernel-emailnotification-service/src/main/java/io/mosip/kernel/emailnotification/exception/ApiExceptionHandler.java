@@ -1,9 +1,5 @@
 package io.mosip.kernel.emailnotification.exception;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,10 +25,9 @@ public class ApiExceptionHandler {
 	 * @return the error map.
 	 */
 	@ExceptionHandler(InvalidArgumentsException.class)
-	public ResponseEntity<Object> mailNotifierArgumentsValidation(
-			final InvalidArgumentsException exception) {
-		Map<String, List<Error>> map = new HashMap<>();
-		map.put(err, exception.getList());
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	public ResponseEntity<Object> mailNotifierArgumentsValidation(final InvalidArgumentsException exception) {
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 }
