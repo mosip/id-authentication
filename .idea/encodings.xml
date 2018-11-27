@@ -38,23 +38,16 @@
     <file url="file://$PROJECT_DIR$/pre-registration" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-auth-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-datasync-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-demographic-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pre-registration/pre-registration-document-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/filesystem-adapter-ceph" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs/packet-decryption-job" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs/packet-ftp-scanner-job" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs/packet-landingzone-scanner-job" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs/packet-scanner-job" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/jobs/packet-virus-scanner-job" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/packet-info-storage-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/packet-manager" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/packet-receiver" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/qc-users-manger" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/quality-checker" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registration-processor/registration-processor-auditmanager-client" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/registration-processor-camel-bridge" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/registration-processor-core" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/registration-processor/registration-status-service" charset="UTF-8" />

@@ -40,23 +40,17 @@
         <module name="kernel-templatemanager-freemarker" />
         <module name="kernel-templatemanager-velocity" />
         <module name="kernel-virusscanner-clamav" />
-        <module name="packet-decryption-job" />
-        <module name="packet-ftp-scanner-job" />
         <module name="packet-info-storage-service" />
-        <module name="packet-landingzone-scanner-job" />
         <module name="packet-manager" />
         <module name="packet-receiver" />
-        <module name="packet-scanner-job" />
         <module name="packet-validator" />
-        <module name="packet-virus-scanner-job" />
         <module name="pre-registration-auth-service" />
         <module name="pre-registration-core" />
+        <module name="pre-registration-datasync-service" />
         <module name="pre-registration-demographic-service" />
         <module name="pre-registration-document-service" />
-        <module name="qc-users-manger" />
         <module name="quality-checker" />
         <module name="quality-matchness-checker-stage" />
-        <module name="registration-processor-auditmanager-client" />
         <module name="registration-processor-camel-bridge" />
         <module name="registration-processor-core" />
         <module name="registration-service" />
@@ -65,75 +59,5 @@
         <module name="retry-stage" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="admin-parent" target="1.5" />
-      <module name="authentication-core" target="1.8" />
-      <module name="authentication-parent" target="1.8" />
-      <module name="authentication-service" target="1.8" />
-      <module name="config-parent" target="1.5" />
-      <module name="failover-stage" target="1.8" />
-      <module name="filesystem-adapter-ceph" target="1.8" />
-      <module name="kernel-auditmanager-api" target="1.8" />
-      <module name="kernel-auditmanager-service" target="1.8" />
-      <module name="kernel-batch-framework" target="1.8" />
-      <module name="kernel-batch-server" target="1.8" />
-      <module name="kernel-config-server" target="1.8" />
-      <module name="kernel-core" target="1.8" />
-      <module name="kernel-crypto-bouncycastle" target="1.8" />
-      <module name="kernel-dataaccess-hibernate" target="1.8" />
-      <module name="kernel-datamapper-orika" target="1.8" />
-      <module name="kernel-datavalidator" target="1.8" />
-      <module name="kernel-emailnotification-service" target="1.8" />
-      <module name="kernel-idgenerator-prid" target="1.8" />
-      <module name="kernel-idgenerator-rid" target="1.8" />
-      <module name="kernel-idgenerator-tokenid" target="1.8" />
-      <module name="kernel-idgenerator-uin" target="1.8" />
-      <module name="kernel-idgenerator-vid" target="1.8" />
-      <module name="kernel-idvalidator" target="1.8" />
-      <module name="kernel-json-validator" target="1.8" />
-      <module name="kernel-keygenerator-bouncycastle" target="1.8" />
-      <module name="kernel-logger-logback" target="1.8" />
-      <module name="kernel-masterdata-service" target="1.8" />
-      <module name="kernel-otpmanager-service" target="1.8" />
-      <module name="kernel-packetserver-http" target="1.8" />
-      <module name="kernel-packetserver-sftp" target="1.8" />
-      <module name="kernel-packetuploader-sftp-jsch" target="1.8" />
-      <module name="kernel-parent" target="1.8" />
-      <module name="kernel-pdfgenerator-itext" target="1.8" />
-      <module name="kernel-smsnotification-service" target="1.8" />
-      <module name="kernel-templatemanager-freemarker" target="1.8" />
-      <module name="kernel-templatemanager-velocity" target="1.8" />
-      <module name="kernel-virusscanner-clamav" target="1.8" />
-      <module name="launcher-parent" target="1.5" />
-      <module name="mosip-parent" target="1.5" />
-      <module name="packet-decryption-job" target="1.8" />
-      <module name="packet-ftp-scanner-job" target="1.8" />
-      <module name="packet-info-storage-service" target="1.8" />
-      <module name="packet-landingzone-scanner-job" target="1.8" />
-      <module name="packet-manager" target="1.8" />
-      <module name="packet-receiver" target="1.8" />
-      <module name="packet-scanner-job" target="1.8" />
-      <module name="packet-validator" target="1.8" />
-      <module name="packet-virus-scanner-job" target="1.8" />
-      <module name="pre-registration-auth-service" target="1.8" />
-      <module name="pre-registration-core" target="1.8" />
-      <module name="pre-registration-demographic-service" target="1.8" />
-      <module name="pre-registration-document-service" target="1.8" />
-      <module name="pre-registration-parent" target="1.8" />
-      <module name="qc-users-manger" target="1.8" />
-      <module name="quality-checker" target="1.8" />
-      <module name="quality-matchness-checker-stage" target="1.8" />
-      <module name="registration-parent" target="1.8" />
-      <module name="registration-processor" target="1.8" />
-      <module name="registration-processor-auditmanager-client" target="1.8" />
-      <module name="registration-processor-camel-bridge" target="1.8" />
-      <module name="registration-processor-core" target="1.8" />
-      <module name="registration-processor-jobs" target="1.8" />
-      <module name="registration-service" target="1.8" />
-      <module name="registration-status" target="1.8" />
-      <module name="registration-ui" target="1.8" />
-      <module name="retry-stage" target="1.8" />
-      <module name="stages" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
