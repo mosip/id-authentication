@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -12,13 +14,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
@@ -34,10 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -45,6 +43,8 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -65,23 +65,11 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private InternalRegistrationStatusDto mockDto;
 
-    @Mock
-    private AuditRequestBuilder auditRequestBuilder;
-
-    @Mock
-    AuditRequestDto auditRequestDto;
-
-    @Mock
-    private AuditHandler<AuditRequestDto> auditHandler;
-
 	@Mock
     private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
-	@Rule
-	public ExpectedException exceptionRule = ExpectedException.none();
-
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -121,12 +109,18 @@ public class PacketReceiverServiceTest {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-		}
+		}finally {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
-		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		Mockito.doReturn(true).when(auditHandler).addAudit(ArgumentMatchers.any());
-		
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+
+
+		}
+
+		/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
@@ -135,7 +129,7 @@ public class PacketReceiverServiceTest {
 		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+		f1.set(auditRequestBuilder, auditRequest1);*/
 	}
 
 	@Test
@@ -232,6 +226,17 @@ public class PacketReceiverServiceTest {
 						.contains("Registration Packet is Not yet sync in Sync table");
 			}
 		}));
+	}
+	
+	@Test
+	public void testIoException() throws IOException {
+		
+		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
+		
+		boolean result = packetReceiverService.storePacket(mockMultipartFile);
+		
+		assertFalse(result);
 	}
 
 }

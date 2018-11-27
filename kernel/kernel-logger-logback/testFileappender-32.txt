@@ -1,0 +1,1 @@
+2018-11-21T12:52:32+05:30 - [io.mosip.kernel.logger.logback.test.LogfactoryTest] - ERROR - sessionid - idType - id - description

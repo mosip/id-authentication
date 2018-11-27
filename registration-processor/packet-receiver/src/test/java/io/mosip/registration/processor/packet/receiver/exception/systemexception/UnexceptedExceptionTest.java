@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -18,13 +17,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class UnexceptedExceptionTest {
-	private static final String UNEXCEPTED_EXCEPTION = "This is unexcepted exception";
+
 	private static final Logger log = LoggerFactory.getLogger(UnexceptedExceptionTest.class);
 
 	@Mock
@@ -33,7 +31,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() {
 
-		UnexpectedException ex = new UnexpectedException(UNEXCEPTED_EXCEPTION);
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -53,9 +51,9 @@ public class UnexceptedExceptionTest {
 			packetHandlerService.storePacket(file);
 		} catch (UnexpectedException e) {
 			assertThat("Should throw Unexpected Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode()));
 			assertThat("Should throw Unexpected Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage()));
 		}
 	}
 }

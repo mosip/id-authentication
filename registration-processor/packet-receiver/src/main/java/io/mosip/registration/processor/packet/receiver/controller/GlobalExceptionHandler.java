@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -16,8 +18,6 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidE
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
 /**
@@ -54,8 +54,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MissingServletRequestPartException.class)
 	public ResponseEntity<ExceptionJSONInfo> handlePacketNotAvailableException(
 			final MissingServletRequestPartException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_AVAILABLE,
-				RegistrationStatusCode.PACKET_NOT_PRESENT_IN_REQUEST.toString());
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getCode(),
+				PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage());
 		log.error(errorDetails.getErrorcode(), e.getCause());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}

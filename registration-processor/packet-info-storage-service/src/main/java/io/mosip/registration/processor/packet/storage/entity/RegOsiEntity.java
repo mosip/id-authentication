@@ -1,12 +1,15 @@
-package io.mosip.registration.processor.packet.storage.entity;
+	package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 /**
  * The persistent class for the reg_osi database table.
  * 
@@ -32,6 +35,21 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "officer_iris_image_name")
 	private String officerIrisImageName;
 
+	@Column(name = "officer_fingerp_typ")
+	private String officerfingerType;
+
+	@Column(name = "officer_iris_typ")
+	private String officerIrisType;
+
+	@Column(name = "officer_photo_name")
+	private String officerPhotoName;
+
+	@Column(name = "officer_hashed_pin")
+	private String officerHashedPin;
+
+	@Column(name = "officer_hashed_pwd")
+	private String officerHashedPwd;
+
 	/** The officer fingerp image name. */
 	@Column(name = "officer_fingerp_image_name")
 	private String officerFingerpImageName;
@@ -48,6 +66,20 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "supervisor_iris_image_name")
 	private String supervisorIrisImageName;
 
+	@Column(name = "supervisor_fingerp_typ")
+	private String supervisorFingerType;
+
+	@Column(name = "supervisor_iris_typ")
+	private String supervisorIrisType;
+
+	@Column(name = "supervisor_hashed_pwd")
+	private String supervisorHashedPwd;
+
+	@Column(name = "supervisor_hashed_pin")
+	private String supervisorHashedPin;
+
+	@Column(name = "supervisor_photo_name")
+	private String supervisorPhotoName;
 	/** The introducer id. */
 	@Column(name = "introducer_id")
 	private String introducerId;
@@ -64,6 +96,12 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "introducer_iris_image_name")
 	private String introducerIrisImageName;
 
+	@Column(name = "introducer_fingerp_typ")
+	private String introducerFingerpType;
+
+	@Column(name = "introducer_iris_typ")
+	private String introducerIrisType;
+
 	/** The introducer fingerp image name. */
 	@Column(name = "introducer_fingerp_image_name")
 	private String introducerFingerpImageName;
@@ -71,6 +109,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/** The introducer uin. */
 	@Column(name = "introducer_uin")
 	private String introducerUin;
+
 
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
@@ -81,27 +120,27 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
 	/** The upd by. */
 	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
 	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
 	/** The del dtimesz. */
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private LocalDateTime delDtimes;
 
 	/**
 	 * Instantiates a new reg osi entity.
@@ -122,7 +161,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the prereg id.
 	 *
-	 * @param preregId the new prereg id
+	 * @param preregId
+	 *            the new prereg id
 	 */
 	public void setPreregId(String preregId) {
 		this.preregId = preregId;
@@ -140,7 +180,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the officer id.
 	 *
-	 * @param officerId the new officer id
+	 * @param officerId
+	 *            the new officer id
 	 */
 	public void setOfficerId(String officerId) {
 		this.officerId = officerId;
@@ -158,7 +199,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the officer iris image name.
 	 *
-	 * @param officerIrisImageName the new officer iris image name
+	 * @param officerIrisImageName
+	 *            the new officer iris image name
 	 */
 	public void setOfficerIrisImageName(String officerIrisImageName) {
 		this.officerIrisImageName = officerIrisImageName;
@@ -176,7 +218,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the officer fingerp image name.
 	 *
-	 * @param officerFingerpImageName the new officer fingerp image name
+	 * @param officerFingerpImageName
+	 *            the new officer fingerp image name
 	 */
 	public void setOfficerFingerpImageName(String officerFingerpImageName) {
 		this.officerFingerpImageName = officerFingerpImageName;
@@ -194,7 +237,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the supervisor id.
 	 *
-	 * @param supervisorId the new supervisor id
+	 * @param supervisorId
+	 *            the new supervisor id
 	 */
 	public void setSupervisorId(String supervisorId) {
 		this.supervisorId = supervisorId;
@@ -212,7 +256,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the supervisor fingerp image name.
 	 *
-	 * @param supervisorFingerpImageName the new supervisor fingerp image name
+	 * @param supervisorFingerpImageName
+	 *            the new supervisor fingerp image name
 	 */
 	public void setSupervisorFingerpImageName(String supervisorFingerpImageName) {
 		this.supervisorFingerpImageName = supervisorFingerpImageName;
@@ -230,7 +275,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the supervisor iris image name.
 	 *
-	 * @param supervisorIrisImageName the new supervisor iris image name
+	 * @param supervisorIrisImageName
+	 *            the new supervisor iris image name
 	 */
 	public void setSupervisorIrisImageName(String supervisorIrisImageName) {
 		this.supervisorIrisImageName = supervisorIrisImageName;
@@ -248,7 +294,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer id.
 	 *
-	 * @param introducerId the new introducer id
+	 * @param introducerId
+	 *            the new introducer id
 	 */
 	public void setIntroducerId(String introducerId) {
 		this.introducerId = introducerId;
@@ -266,7 +313,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer typ.
 	 *
-	 * @param introducerTyp the new introducer typ
+	 * @param introducerTyp
+	 *            the new introducer typ
 	 */
 	public void setIntroducerTyp(String introducerTyp) {
 		this.introducerTyp = introducerTyp;
@@ -284,7 +332,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer reg id.
 	 *
-	 * @param introducerRegId the new introducer reg id
+	 * @param introducerRegId
+	 *            the new introducer reg id
 	 */
 	public void setIntroducerRegId(String introducerRegId) {
 		this.introducerRegId = introducerRegId;
@@ -302,7 +351,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer iris image name.
 	 *
-	 * @param introducerIrisImageName the new introducer iris image name
+	 * @param introducerIrisImageName
+	 *            the new introducer iris image name
 	 */
 	public void setIntroducerIrisImageName(String introducerIrisImageName) {
 		this.introducerIrisImageName = introducerIrisImageName;
@@ -320,7 +370,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer fingerp image name.
 	 *
-	 * @param introducerFingerpImageName the new introducer fingerp image name
+	 * @param introducerFingerpImageName
+	 *            the new introducer fingerp image name
 	 */
 	public void setIntroducerFingerpImageName(String introducerFingerpImageName) {
 		this.introducerFingerpImageName = introducerFingerpImageName;
@@ -338,7 +389,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the introducer uin.
 	 *
-	 * @param introducerUin the new introducer uin
+	 * @param introducerUin
+	 *            the new introducer uin
 	 */
 	public void setIntroducerUin(String introducerUin) {
 		this.introducerUin = introducerUin;
@@ -356,7 +408,8 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive the new checks if is active
+	 * @param isActive
+	 *            the new checks if is active
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -374,28 +427,30 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
 	}
 
 	/**
-	 * Gets the cr dtimesz.
+	 * Gets the cr dtimes.
 	 *
-	 * @return the cr dtimesz
+	 * @return the cr dtimes
 	 */
 	public LocalDateTime getCrDtimesz() {
-		return crDtimesz;
+		return crDtimes;
 	}
 
 	/**
-	 * Sets the cr dtimesz.
+	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimesz the new cr dtimesz
+	 * @param crDtimes
+	 *            the new cr dtimes
 	 */
 	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+		this.crDtimes = crDtimesz;
 	}
 
 	/**
@@ -410,28 +465,30 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
 	}
 
 	/**
-	 * Gets the upd dtimesz.
+	 * Gets the upd dtimes.
 	 *
-	 * @return the upd dtimesz
+	 * @return the upd dtimes
 	 */
 	public LocalDateTime getUpdDtimesz() {
-		return updDtimesz;
+		return updDtimes;
 	}
 
 	/**
-	 * Sets the upd dtimesz.
+	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimesz the new upd dtimesz
+	 * @param updDtimes
+	 *            the new upd dtimes
 	 */
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+		this.updDtimes = updDtimesz;
 	}
 
 	/**
@@ -446,28 +503,127 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
 	/**
-	 * Gets the del dtimesz.
+	 * Gets the del dtimes.
 	 *
-	 * @return the del dtimesz
+	 * @return the del dtimes
 	 */
 	public LocalDateTime getDelDtimesz() {
-		return delDtimesz;
+		return delDtimes;
 	}
 
 	/**
-	 * Sets the del dtimesz.
+	 * Sets the del dtimes.
 	 *
-	 * @param delDtimesz the new del dtimesz
+	 * @param delDtimes
+	 *            the new del dtimes
 	 */
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
+		this.delDtimes = delDtimesz;
+	}
+	
+
+	public String getOfficerfingerType() {
+		return officerfingerType;
+	}
+
+	public void setOfficerfingerType(String officerfingerType) {
+		this.officerfingerType = officerfingerType;
+	}
+
+	public String getOfficerIrisType() {
+		return officerIrisType;
+	}
+
+	public void setOfficerIrisType(String officerIrisType) {
+		this.officerIrisType = officerIrisType;
+	}
+
+	public String getOfficerPhotoName() {
+		return officerPhotoName;
+	}
+
+	public void setOfficerPhotoName(String officerPhotoName) {
+		this.officerPhotoName = officerPhotoName;
+	}
+
+	public String getOfficerHashedPin() {
+		return officerHashedPin;
+	}
+
+	public void setOfficerHashedPin(String officerHashedPin) {
+		this.officerHashedPin = officerHashedPin;
+	}
+
+	public String getOfficerHashedPwd() {
+		return officerHashedPwd;
+	}
+
+	public void setOfficerHashedPwd(String officerHashedPwd) {
+		this.officerHashedPwd = officerHashedPwd;
+	}
+
+	public String getSupervisorFingerType() {
+		return supervisorFingerType;
+	}
+
+	public void setSupervisorFingerType(String supervisorFingerType) {
+		this.supervisorFingerType = supervisorFingerType;
+	}
+
+	public String getSupervisorIrisType() {
+		return supervisorIrisType;
+	}
+
+	public void setSupervisorIrisType(String supervisorTrisType) {
+		this.supervisorIrisType = supervisorTrisType;
+	}
+
+	public String getSupervisorHashedPwd() {
+		return supervisorHashedPwd;
+	}
+
+	public void setSupervisorHashedPwd(String supervisorHashedPwd) {
+		this.supervisorHashedPwd = supervisorHashedPwd;
+	}
+
+	public String getSupervisorHashedPin() {
+		return supervisorHashedPin;
+	}
+
+	public void setSupervisorHashedPin(String supervisorHashedPin) {
+		this.supervisorHashedPin = supervisorHashedPin;
+	}
+
+	public String getSupervisorPhotoName() {
+		return supervisorPhotoName;
+	}
+
+	public void setSupervisorPhotoName(String supervisorPhotoName) {
+		this.supervisorPhotoName = supervisorPhotoName;
+	}
+
+	public String getIntroducerFingerpType() {
+		return introducerFingerpType;
+	}
+
+	public void setIntroducerFingerpType(String introducerFingerpType) {
+		this.introducerFingerpType = introducerFingerpType;
+	}
+
+	public String getIntroducerIrisType() {
+		return introducerIrisType;
+	}
+
+	public void setIntroducerIrisType(String introducerIrisType) {
+		this.introducerIrisType = introducerIrisType;
 	}
 
 }

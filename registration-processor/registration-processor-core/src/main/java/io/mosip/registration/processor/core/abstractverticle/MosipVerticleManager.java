@@ -10,7 +10,7 @@ import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
-import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -68,7 +68,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
-				throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE);
+				throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage());
 			}
 		});
 
@@ -76,7 +76,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			mosipEventBus = new MosipEventBus(eventBus.get());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE, e);
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage(), e);
 
 		}
 		return mosipEventBus;

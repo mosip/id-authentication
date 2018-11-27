@@ -52,9 +52,14 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	@Column(name = "ref_id_type")
 	private String referenceIdType;
 
-	/** The is active. */
-	@Column(name = "is_active")
-	private Boolean isActive = true;
+	/** is deleted? */
+	@Column(name = "is_deleted", length = 32)
+	private Boolean isDeleted ;
+
+	/** The update date time. */
+	@Column(name = "del_dtimes")
+	@UpdateTimestamp
+	private LocalDateTime deleteDateTime;
 
 	/** The created by. */
 	@Column(name = "cr_by")
@@ -277,23 +282,22 @@ public class TransactionEntity extends BaseRegistrationEntity {
 		this.statusComment = statusComment;
 	}
 
-	/**
-	 * Get is Active from transaction table.
-	 * 
-	 * @return the isActive
-	 */
-	public Boolean getIsActive() {
-		return isActive;
+	
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
 	}
 
-	/**
-	 * Set is Active to transaction table.
-	 * 
-	 * @param isActive
-	 *            the isActive to set
-	 */
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public LocalDateTime getDeleteDateTime() {
+		return deleteDateTime;
+	}
+
+	public void setDeleteDateTime(LocalDateTime deleteDateTime) {
+		this.deleteDateTime = deleteDateTime;
 	}
 
 	/**

@@ -13,10 +13,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
  * @author M1022006
@@ -24,8 +24,6 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 @RunWith(SpringRunner.class)
 public class UnexceptedExceptionTest {
-
-	private static final String UNEXCEPTED_EXCEPTION = "This is unexcepted exception";
 
 	@MockBean
 	private FileManager<DirectoryPathDto, File> fileManager;
@@ -35,7 +33,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() throws IOException {
 		String fileName = "sample";
-		UnexpectedException ex = new UnexpectedException(UNEXCEPTED_EXCEPTION);
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -43,9 +41,9 @@ public class UnexceptedExceptionTest {
 			fail();
 		} catch (UnexpectedException e) {
 			assertThat("Should throw  Unexpected Exception  with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_FSS_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode()));
 			assertThat("Should throw  Unexpected Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage()));
 		}
 
 	}
