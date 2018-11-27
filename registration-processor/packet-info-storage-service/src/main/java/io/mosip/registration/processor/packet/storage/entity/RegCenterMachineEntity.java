@@ -2,9 +2,11 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -30,8 +32,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	private String machineId;
 
 	/** The cntr id. */
-	@Column(name = "cntr_id", nullable = false)
-	private String cntrId;
+	@Column(name = "regcntr_id", nullable = false)
+	private String regcntr_id;
 
 	/** The latitude. */
 	private String latitude;
@@ -47,24 +49,24 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	@Column(name = "cr_by")
 	private String crBy = "MOSIP_SYSTEM";
 
-	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	/** The cr dtimes. */
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
 	/** The upd by. */
 	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	/** The upd dtimes. */
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
 
-	/** The del dtimesz. */
-	@Column(name = "del_dtimesz")
+	/** The del dtimes. */
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private LocalDateTime delDtimes;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -82,7 +84,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the prereg id.
 	 *
-	 * @param preregId the new prereg id
+	 * @param preregId
+	 *            the new prereg id
 	 */
 	public void setPreregId(String preregId) {
 		this.preregId = preregId;
@@ -100,7 +103,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the machine id.
 	 *
-	 * @param machineId the new machine id
+	 * @param machineId
+	 *            the new machine id
 	 */
 	public void setMachineId(String machineId) {
 		this.machineId = machineId;
@@ -112,16 +116,17 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	 * @return the cntr id
 	 */
 	public String getCntrId() {
-		return cntrId;
+		return regcntr_id;
 	}
 
 	/**
 	 * Sets the cntr id.
 	 *
-	 * @param cntrId the new cntr id
+	 * @param cntrId
+	 *            the new cntr id
 	 */
 	public void setCntrId(String cntrId) {
-		this.cntrId = cntrId;
+		this.regcntr_id = cntrId;
 	}
 
 	/**
@@ -136,7 +141,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the latitude.
 	 *
-	 * @param latitude the new latitude
+	 * @param latitude
+	 *            the new latitude
 	 */
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
@@ -154,7 +160,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the longitude.
 	 *
-	 * @param longitude the new longitude
+	 * @param longitude
+	 *            the new longitude
 	 */
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
@@ -172,7 +179,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive the new checks if is active
+	 * @param isActive
+	 *            the new checks if is active
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -190,28 +198,29 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
 	}
 
 	/**
-	 * Gets the cr dtimesz.
+	 * Gets the cr dtimes.
 	 *
-	 * @return the cr dtimesz
+	 * @return the cr dtimes
 	 */
-	public LocalDateTime getCrDtimesz() {
-		return crDtimesz;
+	public LocalDateTime getCrDtimes() {
+		return crDtimes;
 	}
 
 	/**
-	 * Sets the cr dtimesz.
+	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimesz the new cr dtimesz
+	 * @param crDtimes the new cr dtimes
 	 */
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+	public void setCrDtimes(LocalDateTime crDtimes) {
+		this.crDtimes = crDtimes;
 	}
 
 	/**
@@ -226,46 +235,47 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
 	}
 
 	/**
-	 * Gets the upd dtimesz.
+	 * Gets the upd dtimes.
 	 *
-	 * @return the upd dtimesz
+	 * @return the upd dtimes
 	 */
-	public LocalDateTime getUpdDtimesz() {
-		return updDtimesz;
+	public LocalDateTime getUpdDtimes() {
+		return updDtimes;
 	}
 
 	/**
-	 * Sets the upd dtimesz.
+	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimesz the new upd dtimesz
+	 * @param updDtimes the new upd dtimes
 	 */
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+	public void setUpdDtimes(LocalDateTime updDtimes) {
+		this.updDtimes = updDtimes;
 	}
 
 	/**
-	 * Gets the del dtimesz.
+	 * Gets the del dtimes.
 	 *
-	 * @return the del dtimesz
+	 * @return the del dtimes
 	 */
-	public LocalDateTime getDelDtimesz() {
-		return delDtimesz;
+	public LocalDateTime getDelDtimes() {
+		return delDtimes;
 	}
 
 	/**
-	 * Sets the del dtimesz.
+	 * Sets the del dtimes.
 	 *
-	 * @param delDtimesz the new del dtimesz
+	 * @param delDtimes the new del dtimes
 	 */
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
+	public void setDelDtimes(LocalDateTime delDtimes) {
+		this.delDtimes = delDtimes;
 	}
 
 	/**
@@ -280,7 +290,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;

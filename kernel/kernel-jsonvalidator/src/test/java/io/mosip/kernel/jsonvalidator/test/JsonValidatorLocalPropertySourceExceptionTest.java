@@ -13,15 +13,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
-import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
-import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.jsonvalidator.exception.UnidentifiedJsonException;
-import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class JsonValidatorLocalPropertySourceExceptionTest {
 	String propertySourceString= "propertySource";
 	
 	@InjectMocks
-	JsonValidator jsonValidator;
+	JsonValidatorImpl jsonValidator;
 
 	@Before
 	public void setup() {
@@ -58,7 +59,7 @@ public class JsonValidatorLocalPropertySourceExceptionTest {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		String jsonString = jsonSchemaNode.toString();
 		String schemaName = "schema.json";
-		JsonValidatorResponseDto validationResponse = jsonValidator.validateJson(jsonString, schemaName);
+		ValidationReport validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
 		assertEquals(true,isValid);
 	}
