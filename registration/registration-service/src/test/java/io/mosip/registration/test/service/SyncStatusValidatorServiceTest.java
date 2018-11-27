@@ -39,7 +39,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.GeoLocationCapture;
 import io.mosip.registration.service.impl.SyncStatusValidatorServiceImpl;
 
 public class SyncStatusValidatorServiceTest {
@@ -52,8 +51,6 @@ public class SyncStatusValidatorServiceTest {
 	private SyncJobDAO syncJobDAO;
 	@Mock
 	private SyncJobInfo syncJobnfo;
-	@Mock
-	private GeoLocationCapture geoLocationCapture;
 	@Mock
 	private IGPSIntegrator gpsIntegrator;
 
