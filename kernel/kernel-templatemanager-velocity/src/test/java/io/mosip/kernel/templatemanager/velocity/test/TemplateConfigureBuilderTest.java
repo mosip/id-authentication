@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
 public class TemplateConfigureBuilderTest {
 	
 	@Autowired
