@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -58,6 +59,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 
 	@Autowired
 	private TemplateService templateService;
+	
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder; 
 
 	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
 
@@ -115,7 +119,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			ackReceiptController.setRegistrationData(registrationDTO);
 
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO);
+			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO, templateManagerBuilder);
 			ackReceiptController.setStringWriter(writer);
 
 			

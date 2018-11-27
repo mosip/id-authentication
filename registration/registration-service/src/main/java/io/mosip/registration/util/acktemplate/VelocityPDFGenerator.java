@@ -26,8 +26,8 @@ import org.apache.commons.io.IOUtils;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -56,7 +56,7 @@ public class VelocityPDFGenerator {
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
-	public Writer generateTemplate(String templateText, RegistrationDTO registration) {
+	public Writer generateTemplate(String templateText, RegistrationDTO registration, TemplateManagerBuilder templateManagerBuilder) {
 		
 		LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"generateTemplate had been called for preparing Acknowledgement Template.");
@@ -175,7 +175,7 @@ public class VelocityPDFGenerator {
 			LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID,
 					"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
 
-			TemplateManager templateManager = new TemplateConfigureBuilder().build();
+			TemplateManager templateManager = templateManagerBuilder.build();
 			InputStream inputStream = templateManager.merge(is, templateValues);
 			String defaultEncoding = null;
 			IOUtils.copy(inputStream, writer, defaultEncoding);
@@ -196,7 +196,7 @@ public class VelocityPDFGenerator {
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
-	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration) {
+	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration, TemplateManagerBuilder templateManagerBuilder) {
 		
 		InputStream is = new ByteArrayInputStream(templateText.getBytes());
 		Map<String, Object> values = new LinkedHashMap<>();
@@ -244,7 +244,7 @@ public class VelocityPDFGenerator {
 		}
 		Writer writer = new StringWriter();
 		try {
-			TemplateManager templateManager = new TemplateConfigureBuilder().build();
+			TemplateManager templateManager = templateManagerBuilder.build();
 			String defaultEncoding = null;
 			InputStream inputStream = templateManager.merge(is, values);
 			IOUtils.copy(inputStream, writer, defaultEncoding);

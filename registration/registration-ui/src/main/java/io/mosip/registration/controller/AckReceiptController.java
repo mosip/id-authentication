@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
@@ -59,6 +60,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
 	
 	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
 
@@ -112,7 +116,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 					if (!notificationTemplate.isEmpty()) {
 						// generate the notification template
 						Writer writeNotificationTemplate = velocityGenerator
-								.generateNotificationTemplate(notificationTemplate, getRegistrationData());
+								.generateNotificationTemplate(notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
 						String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
