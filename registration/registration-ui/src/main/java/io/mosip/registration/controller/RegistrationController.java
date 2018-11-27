@@ -52,6 +52,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -321,7 +322,7 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
-			if(SessionContext.getInstance().getMapObject().get("PrevAddress")==null) {
+			if(SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY)==null) {
 				prevAddressButton.setVisible(false);
 			}
 			if (isEditPage && registrationDTOContent != null) {
@@ -408,7 +409,7 @@ public class RegistrationController extends BaseController {
 	private void loadAddressFromPreviousEntry() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading address from previous entry");
-			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject().get("PrevAddress")).getLocationDTO();
+			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
 			region.setText(locationDto.getRegion());
 			city.setText(locationDto.getCity());
 			province.setText(locationDto.getProvince());
@@ -436,52 +437,42 @@ public class RegistrationController extends BaseController {
 
 	}
 
+	
 	/**
 	 * 
-	 * Setting the focus to address line 1 local
+	 * Setting the focus to specific fields when keyboard loads
 	 * 
 	 */
-	public void adressLine1Focus() {
-		addressLine1LocalLanguage.requestFocus();
+	@FXML
+	private void setFocusonLocalField(MouseEvent event) {
+		
 		keyboardNode.setLayoutX(300.00);
-		keyboardNode.setLayoutY(270.00);
-		keyboardNode.setVisible(true);
-	}
+		Node node = (Node) event.getSource();
+	
+		if(node.getId().equals("addressLine1")) {
+			addressLine1LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(270.00);
+		}
+		
+		if(node.getId().equals("addressLine2")) {
+			addressLine2LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(320.00);
+		}
+		
+		if(node.getId().equals("addressLine3")) {
+			addressLine3LocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(375.00);
+		}
+		
+		if(node.getId().equals("fullName")) {
+			fullNameLocalLanguage.requestFocus();
+			keyboardNode.setLayoutY(120.00);
+		}
 
-	/**
-	 * 
-	 * Setting the focus to address line 2 local
-	 * 
-	 */
-	public void adressLine2Focus() {
-		addressLine2LocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(320);
-		keyboardNode.setVisible(true);
-	}
 
-	/**
-	 * 
-	 * Setting the focus to address line 3 local
-	 * 
-	 */
-	public void adressLine3Focus() {
-		addressLine3LocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(375);
 		keyboardNode.setVisible(true);
-	}
-
-	/**
-	 * 
-	 * Setting the focus to full name local
-	 * 
-	 */
-	public void fullNameFocus() {
-		fullNameLocalLanguage.requestFocus();
-		keyboardNode.setLayoutX(300);
-		keyboardNode.setLayoutY(120);
-		keyboardNode.setVisible(true);
+		
+		
 	}
 
 	/**
@@ -522,7 +513,7 @@ public class RegistrationController extends BaseController {
 			demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
 			demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
 			if (isChild) {
-				if (uinId.getText().length() == 28) {
+				if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
 					demographicDTO.setIntroducerRID(uinId.getText());
 				} else {
 					demographicDTO.setIntroducerUIN(uinId.getText());
