@@ -95,7 +95,7 @@ public class NotificationManager {
 		
 		String notificationMobileNo = phoneNumber;
 		//FIXME Taking from configuration for testing purpose.
-		if(!isNotNullorEmpty(phoneNumber)) {
+		if(isNotNullorEmpty(phoneNumber)) {
 			notificationMobileNo = environment.getProperty("test.notification.mobile.no");
 		}
 
