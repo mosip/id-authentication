@@ -64,6 +64,6 @@ Example1:-
 		@Autowired
 		JsonValidator jsonValidatorImpl;
 		
-<TBA>
+     jsonValidatorImpl.validateJson(jsonObj.toString(), "identity-schema.json");
 
 ```

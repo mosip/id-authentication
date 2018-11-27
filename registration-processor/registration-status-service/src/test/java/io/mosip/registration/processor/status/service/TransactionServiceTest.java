@@ -47,7 +47,7 @@ public class TransactionServiceTest {
 
 		transcationEntity = new TransactionEntity();
 		transcationEntity.setId("1");
-		transcationEntity.setIsActive(true);
+		
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setParentid(null);
 		transcationEntity.setRemarks("Add Enrolment operation");

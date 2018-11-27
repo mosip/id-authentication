@@ -17,12 +17,6 @@
 <dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>1.4.195</version>
@@ -51,22 +45,14 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>quality-checker</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
+		
 
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -74,33 +60,14 @@
 			<version>${commons.io.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.module.junit4.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
-			<version>${powermock.api.mockito.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>packet-info-storage-service</artifactId>
+			<artifactId>registration-processor-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-unit</artifactId>
-			<version>3.5.4</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
