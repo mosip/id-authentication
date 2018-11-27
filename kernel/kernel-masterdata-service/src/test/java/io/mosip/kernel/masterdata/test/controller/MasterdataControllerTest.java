@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.test.controller;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -23,9 +25,11 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
@@ -57,6 +61,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
+import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -133,15 +138,15 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-    
-    LocationHierarchyDto locationHierarchyDto=null;
+	private LocationHierarchyResponseDto locationHierarchyResponseDto = null;
+	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
 	List<Object[]> locObjList=null;
-	LocationHierarchyResponseDto locationHierarchyResponseDto=null;
+	
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -155,6 +160,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateService templateService;
+
+	@MockBean
+	private BlacklistedWordsService blacklistedWordsService;
 
 	private static final String TEMPLATE_EXPECTED_LIST = "[\r\n" + "  {\r\n" + "	\"id\": \"3\",\r\n"
 			+ "    \"name\": \"Email template\",\r\n" + "    \"description\": null,\r\n"
@@ -242,8 +250,7 @@ public class MasterdataControllerTest {
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
-		List<LocationHierarchyDto> locationHierarchyDtos=new ArrayList<>();
-		
+		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -267,13 +274,13 @@ public class MasterdataControllerTest {
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
-		LocationHierarchyDto locationHierarchyDto=new LocationHierarchyDto();
-		locationHierarchyDto.setLocationHierarchylevel((short)1);
+		LocationHierarchyDto locationHierarchyDto = new LocationHierarchyDto();
+		locationHierarchyDto.setLocationHierarchylevel((short) 1);
 		locationHierarchyDto.setLocationHierarchyName("COUNTRY");
 		locationHierarchyDtos.add(locationHierarchyDto);
-		locationHierarchyResponseDto =new LocationHierarchyResponseDto();
+		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		
+
 	}
 
 	private void idTypeSetup() {
@@ -642,8 +649,8 @@ public class MasterdataControllerTest {
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -658,16 +665,16 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -715,5 +722,48 @@ public class MasterdataControllerTest {
 						+ "        \"description\": \"xml format\",\n" + "        \"langCode\": \"ENG\"\n" + "      }\n"
 						+ "    ]\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void validateWordsTest() throws Exception {
+		List<String> words = new ArrayList<>();
+		words.add("test");
+		String str = "[\"string\"]";
+		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(true);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).content(str);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	public void validateWordsFalseTest() throws Exception {
+		List<String> words = new ArrayList<>();
+		words.add("test");
+		String str = "[\"string\"]";
+		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(false);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).content(str);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk()).andExpect(jsonPath("$", is("Invalid")));
+	}
+
+	@Test
+	public void validateWordsExceptionTest() throws Exception {
+		List<String> words = new ArrayList<>();
+		words.add("test");
+		String str = "[\"string\"]";
+		Mockito.when(blacklistedWordsService.validateWord(Mockito.any()))
+				.thenThrow(new MasterDataServiceException(
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).content(str);
+		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
 }

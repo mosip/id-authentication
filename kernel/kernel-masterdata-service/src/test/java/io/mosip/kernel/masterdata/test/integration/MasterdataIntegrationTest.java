@@ -15,7 +15,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -190,9 +190,11 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private LanguageRepository languageRepository;
 
-	private Language language;
+	private List<Language> languages;
 
-	private LanguageDto languageDto;
+	private LanguageRequestResponseDto languageRequestResponseDto;
+
+	private List<LanguageDto> languageDtos; 
 
 	@Before
 	public void setUp() {
@@ -225,15 +227,21 @@ public class MasterdataIntegrationTest {
 
 	private void languageTestSetup() {
 		// creating data coming from user
-		languageDto = new LanguageDto();
-		languageDto.setCode("ter");
-		languageDto.setName("terman");
-		languageDto.setIsActive(Boolean.TRUE);
+		languageRequestResponseDto = new LanguageRequestResponseDto();
+		languageDtos = new ArrayList<>();
+		LanguageDto hindiDto = new LanguageDto();
+		hindiDto.setCode("ter");
+		hindiDto.setName("terman");
+		hindiDto.setIsActive(Boolean.TRUE);
+		languageDtos.add(hindiDto);
+		languageRequestResponseDto.setLanguages(languageDtos);
 
-		language = new Language();
-		language.setCode("ter");
-		language.setName("terman");
-		language.setIsActive(Boolean.TRUE);
+		languages = new ArrayList<>();
+		Language hindi = new Language();
+		hindi.setCode("ter");
+		hindi.setName("terman");
+		hindi.setIsActive(Boolean.TRUE);
+		languages.add(hindi);
 	}
 
 	private void documentTypeSetUp() {
@@ -407,40 +415,45 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void saveAllLanguagesTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
-		when(languageRepository.create(Mockito.any())).thenReturn(language);
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(languages);
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 
 	}
 
 	@Test
-	public void saveLanguagesMasterDataServiceExceptionTest() throws Exception {
+	public void saveAllLanguagesMasterDataServiceExceptionTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
-		when(languageRepository.create(Mockito.any())).thenThrow(HibernateException.class);
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 
 	}
 
 	@Test
-	public void saveLanguagesEmptyDtoExceptionTest() throws Exception {
+	public void saveAllLanguagesMasterDataServiceExceptionWhenNoneCreatedTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(new LanguageDto());
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<>());
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isInternalServerError());
 
 	}
 
 	@Test
-	public void saveLanguagesInvalidDtoExceptionTest() throws Exception {
+	public void saveAllLanguagesRequestExceptionNullLanguageRequestResponseDtoTest() throws Exception {
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content("{}"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void saveAllLanguagesRequestExceptionNullLanguageDtosTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		LanguageDto dto = new LanguageDto();
-		dto.setCode("CDTDTDCTCRDC");
-		dto.setName(
-				"QWETYYYTRTYUYTDFCRDFCRCFCDRDCCRDRCDRCRCRCRCSRCSRCSRCDRCDTDRCDTDTRDTRDTDCTRCDCRDTCDRDRDRDRCDCRCDYRCDRCDYRCDYRCDRDCRCDTYTCYYYYYYYYYYYYYYYYYYYYYYYYYYYYYDTYDCRDCDCTDYYRRRRRRRRRRRRRRRRRRRRRRRRCCDDDUCDUCDUCDUDCDCCDCDUCDUCDUTDCCDURCDURCCDDCCDRCDURCDURCDURCDURCDUCDUDCDCCDURCDRCCDR");
+		LanguageRequestResponseDto dto = new LanguageRequestResponseDto();
 		String content = mapper.writeValueAsString(dto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(languages);
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
 
@@ -449,26 +462,25 @@ public class MasterdataIntegrationTest {
 	// -----------------------------BlacklistedWordsTest----------------------------------
 	@Test
 	public void getAllWordsBylangCodeSuccessTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(words);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(words);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeNullResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(null);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(null);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeEmptyArrayResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(new ArrayList<>());
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(new ArrayList<>());
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeFetchExceptionTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(wordsRepository.findAllByLangCode(anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 
@@ -481,8 +493,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG"))
-				.thenThrow(DataAccessLayerException.class);
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -521,8 +532,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
-				.thenReturn(genderTypes);
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype/{languageCode}", "ENG")).andExpect(status().isOk());
 
 	}
@@ -594,7 +604,8 @@ public class MasterdataIntegrationTest {
 	// -----------------------------IdTypeTest----------------------------------
 	@Test
 	public void getIdTypesByLanguageCodeFetchExceptionTest() throws Exception {
-		when(idTypeRepository.findByLangCodeAndIsDeletedFalse("ENG")).thenThrow(DataAccessLayerException.class);
+		when(idTypeRepository.findByLangCodeAndIsDeletedFalse("ENG"))
+				.thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
@@ -645,8 +656,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(reasoncategories);
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}
 
@@ -659,8 +670,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -673,23 +684,24 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(null);
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(null);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getAllRjectionReasonRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse())
+				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 
@@ -755,8 +767,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 
 		MvcResult result = mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
@@ -772,8 +784,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRegistrationCentersHistoryNotFoundExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andReturn();
@@ -781,8 +793,9 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRegistrationCentersHistoryEmptyExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(new ArrayList<RegistrationCenterHistory>());
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45")))
+						.thenReturn(new ArrayList<RegistrationCenterHistory>());
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andReturn();
@@ -790,8 +803,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRegistrationCentersHistoryFetchExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError()).andReturn();
@@ -839,7 +852,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG")).thenReturn(null);
+		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG"))
+				.thenReturn(null);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -881,8 +895,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("ENG", "BLR"))
-				.thenReturn(null);
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("ENG",
+				"BLR")).thenReturn(null);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -892,8 +906,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
-				.thenThrow(DataAccessLayerException.class);
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR",
+				"ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -921,7 +935,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTestSuccessTest() throws Exception {
-		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG")).thenReturn(banglore);
+		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG"))
+				.thenReturn(banglore);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -951,8 +966,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getLocationSpecificRegistrationCentersTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
-				.thenReturn(registrationCenters);
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR",
+				"ENG")).thenReturn(registrationCenters);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -965,8 +980,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getLocationSpecificMultipleRegistrationCentersTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
-				.thenReturn(registrationCenters);
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR",
+				"ENG")).thenReturn(registrationCenters);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -1016,7 +1031,7 @@ public class MasterdataIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andReturn();
 	}
 
-	// @Test
+	//@Test
 	public void getRegistrationCentersMachineUserMappingTest() throws Exception {
 		registrationCenterUserMachineHistories.add(registrationCenterUserMachineHistory);
 		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
