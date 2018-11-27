@@ -20,7 +20,7 @@ import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
-import io.mosip.kernel.keymanagerservice.entity.AliasMap;
+import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.repository.KeymanagerRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 
@@ -51,7 +51,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Keystore to handles and store cryptographic keys.
 	 */
 	@Autowired
-	KeyStore keymanagerInterface;
+	KeyStore keyStore;
 
 	/**
 	 * KeyGenerator instance to generate asymmetric key pairs
@@ -71,11 +71,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 		String alias;
 		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		List<AliasMap> aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId);
+		List<KeyAlias> aliasMaps = keymanagerRepository.findByApplicationIdAndReferenceId(applicationId, machineId);
 		aliasMaps.forEach(System.out::println);
 
-		Optional<AliasMap> currentAliasMap = aliasMaps.stream()
-				.sorted((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()))
+		Optional<KeyAlias> currentAliasMap = aliasMaps.stream().sorted(
+				(aliasMap1, aliasMap2) -> aliasMap2.getKeyGenerationTime().compareTo(aliasMap1.getKeyGenerationTime()))
 				.findFirst();
 		System.out.println(currentAliasMap);
 		if (!currentAliasMap.isPresent()) {
@@ -85,7 +85,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		} else {
 			System.out.println("!!!Already exists");
 			alias = currentAliasMap.get().getAlias();
-			X509Certificate certificate = (X509Certificate) keymanagerInterface.getCertificate(alias);
+			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
 			try {
 				certificate.checkValidity();
 				System.out.println("!!!Valid");
@@ -96,7 +96,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			}
 		}
 		System.out.println(alias);
-		PublicKey publicKey = keymanagerInterface.getPublicKey(alias);
+		PublicKey publicKey = keyStore.getPublicKey(alias);
 		keyResponseDto.setKey(publicKey.getEncoded());
 		return keyResponseDto;
 	}
@@ -113,16 +113,16 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			byte[] encryptedSymmetricKey) {
 
 		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		List<AliasMap> aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId);
+		List<KeyAlias> aliasMaps = keymanagerRepository.findByApplicationIdAndReferenceId(applicationId, machineId);
 		aliasMaps.forEach(System.out::println);
 
-		Optional<AliasMap> matchingAlias = aliasMaps.stream()
-				.filter(aliasMap -> aliasMap.getTimeStamp().compareTo(timeStamp) < 0)
-				.sorted((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()))
+		Optional<KeyAlias> matchingAlias = aliasMaps.stream()
+				.filter(aliasMap -> aliasMap.getKeyGenerationTime().compareTo(timeStamp) < 0).sorted((aliasMap1,
+						aliasMap2) -> aliasMap2.getKeyGenerationTime().compareTo(aliasMap1.getKeyGenerationTime()))
 				.findFirst();
 
 		if (matchingAlias.isPresent()) {
-			PrivateKey privateKey = keymanagerInterface.getPrivateKey(matchingAlias.get().getAlias());
+			PrivateKey privateKey = keyStore.getPrivateKey(matchingAlias.get().getAlias());
 			System.out.println(matchingAlias.get().getAlias());
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedSymmetricKey);
 			keyResponseDto.setKey(decryptedSymmetricKey);
@@ -138,12 +138,12 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	private void createNewKeyPair(String applicationId, String machineId, String alias) {
 		KeyPair keyPair = keyGenerator.getAsymmetricKey();
-		keymanagerInterface.storeAsymmetricKey(keyPair, alias, 1);
-		AliasMap aliasMap = new AliasMap();
+		keyStore.storeAsymmetricKey(keyPair, alias, 1);
+		KeyAlias aliasMap = new KeyAlias();
 		aliasMap.setAlias(alias);
 		aliasMap.setApplicationId(applicationId);
-		aliasMap.setMachineId(machineId);
-		aliasMap.setTimeStamp(LocalDateTime.now());
+		aliasMap.setReferenceId(machineId);
+		aliasMap.setKeyGenerationTime(LocalDateTime.now());
 		keymanagerRepository.create(aliasMap);
 	}
 }

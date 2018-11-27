@@ -4,8 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,9 +46,15 @@ public class IdTemplateManager {
 	
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
+	
+	private TemplateManager templateManager;
 
-	private TemplateManager templateManager = templateManagerBuilder.encodingType(ENCODE_TYPE)
-			.enableCache(false).resourceLoader(CLASSPATH).build();
+	
+	@PostConstruct
+	public void idTemplateManagerPostConstruct() {
+		templateManager = templateManagerBuilder.encodingType(ENCODE_TYPE)
+				.enableCache(false).resourceLoader(CLASSPATH).build();
+	}
 
 	/**
 	 * To apply Template for PDF Generation

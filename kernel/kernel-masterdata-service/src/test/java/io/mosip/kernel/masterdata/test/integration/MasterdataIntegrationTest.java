@@ -194,7 +194,7 @@ public class MasterdataIntegrationTest {
 
 	private LanguageRequestResponseDto languageRequestResponseDto;
 
-	private List<LanguageDto> languageDtos;
+	private List<LanguageDto> languageDtos; 
 
 	@Before
 	public void setUp() {

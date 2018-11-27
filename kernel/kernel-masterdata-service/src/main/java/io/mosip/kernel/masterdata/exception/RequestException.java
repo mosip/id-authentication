@@ -29,4 +29,18 @@ public class RequestException extends BaseUncheckedException {
 	public RequestException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
+
+	/**
+	 * Constructor the initialize Handler exception
+	 * 
+	 * @param errorCode
+	 *            The error code for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 * @param rootCause
+	 *            the specified cause
+	 */
+	public RequestException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
 }

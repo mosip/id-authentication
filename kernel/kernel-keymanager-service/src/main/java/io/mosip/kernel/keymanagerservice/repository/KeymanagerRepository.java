@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.keymanagerservice.entity.AliasMap;
+import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 
 /**
  * This interface extends BaseRepository which provides with the methods for
@@ -17,13 +17,13 @@ import io.mosip.kernel.keymanagerservice.entity.AliasMap;
  *
  */
 @Repository
-public interface KeymanagerRepository extends BaseRepository<AliasMap, String> {
+public interface KeymanagerRepository extends BaseRepository<KeyAlias, String> {
 
-	List<AliasMap> findByApplicationId(String applicationId);
+	List<KeyAlias> findByApplicationId(String applicationId);
 
-	List<AliasMap> findByApplicationIdAndMachineId(String applicationId, String machineId);
+	List<KeyAlias> findByApplicationIdAndReferenceId(String applicationId, String referenceId);
 
-	List<AliasMap> findByApplicationIdAndMachineIdAndTimeStampLessThanEqual(String applicationId, String machineId,
-			LocalDateTime localDateTime);
+	List<KeyAlias> findByApplicationIdAndReferenceIdAndKeyGenerationTimeLessThanEqual(String applicationId,
+			String referenceId, LocalDateTime keyGenerationTime);
 
 }

@@ -145,6 +145,8 @@ public class MasterdataControllerTest {
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
+	List<Object[]> locObjList=null;
+	
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -596,7 +598,8 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationHierarchy() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -623,7 +626,7 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationsDataBaseException() throws Exception {
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 

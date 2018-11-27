@@ -1,9 +1,6 @@
 package io.mosip.kernel.auditmanager.exception;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +24,6 @@ import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-	private static final String ERR = "error";
 	private static final String WHITESPACE = " ";
 
 	/**
@@ -38,20 +34,21 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> methodArgumentNotValidException(
+	public ResponseEntity<ErrorResponse<Error>> methodArgumentNotValidException(
 			final MethodArgumentNotValidException e) {
-		ArrayList<ErrorBean> errorList = new ArrayList<>();
+
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		BindingResult bindingResult = e.getBindingResult();
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ErrorBean error = new ErrorBean(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
+			Error error = new Error(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
 					Character.toUpperCase(x.getField().charAt(0)) + x.getField().substring(1) + WHITESPACE
 							+ x.getDefaultMessage());
-			errorList.add(error);
+			errorResponse.getErrors().add(error);
 		});
-		Map<String, ArrayList<ErrorBean>> map = new HashMap<>();
-		map.put(ERR, errorList);
-		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
 	}
 
 	/**
@@ -62,15 +59,14 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> methodArgumentFormatException(InvalidFormatException e) {
+	public ResponseEntity<ErrorResponse<Error>> methodArgumentFormatException(InvalidFormatException e) {
 
-		ArrayList<ErrorBean> errorList = new ArrayList<>();
-		ErrorBean error = new ErrorBean(AuditErrorCode.INVALIDFORMAT.getErrorCode(),
+		Error error = new Error(AuditErrorCode.INVALIDFORMAT.getErrorCode(),
 				AuditErrorCode.INVALIDFORMAT.getErrorMessage());
-		errorList.add(error);
-		Map<String, ArrayList<ErrorBean>> map = new HashMap<>();
-		map.put(ERR, errorList);
-		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().add(error);
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
 
