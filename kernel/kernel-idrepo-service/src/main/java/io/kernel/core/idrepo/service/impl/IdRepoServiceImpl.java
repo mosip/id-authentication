@@ -134,7 +134,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 			return restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class)
 					.getBody();
 		} catch (RestClientException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED, e);
 		}
 	}
 

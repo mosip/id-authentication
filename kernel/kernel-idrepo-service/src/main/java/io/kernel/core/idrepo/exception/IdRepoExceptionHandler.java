@@ -29,6 +29,7 @@ import io.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.core.idrepo.dto.ErrorDTO;
 import io.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 
 /**
  * The Class IdRepoExceptionHandler.
@@ -103,6 +104,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
+		
+		System.err.println(ExceptionUtils.getStackTrace(ex));
 
 		IdResponseDTO response = new IdResponseDTO();
 

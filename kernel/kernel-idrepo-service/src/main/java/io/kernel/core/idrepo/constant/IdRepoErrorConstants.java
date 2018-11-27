@@ -47,7 +47,9 @@ public enum IdRepoErrorConstants {
 	INTERNAL_SERVER_ERROR("KER-IDR-013", "Internal Server Error"),
 
 	/** The no record found. */
-	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found");
+	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found"),
+	
+	UIN_GENERATION_FAILED("KER-IDR-015", "Generation of UIN failed");
 
 	/** The error code. */
 	private final String errorCode;

@@ -63,7 +63,9 @@ public class IdRequestValidator implements Validator {
 	@Autowired
 	private UinValidatorImpl uinValidator;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
 	@Override
@@ -71,8 +73,11 @@ public class IdRequestValidator implements Validator {
 		return clazz.isAssignableFrom(IdRequestDTO.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
@@ -83,18 +88,24 @@ public class IdRequestValidator implements Validator {
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
 			validateVer(request.getVer(), errors);
-			validateUin(request.getUin(), errors);
 			validateStatus(request.getStatus(), errors);
 			validateRegId(request.getRegistrationId(), errors);
 			validateRequest(request.getRequest(), errors);
+		}
+
+		if (!errors.hasErrors()
+				&& (request.getId().equals(id.get("update")) || request.getId().equals(id.get("read")))) {
+			validateUin(request.getUin(), errors);
 		}
 	}
 
 	/**
 	 * Validate id.
 	 *
-	 * @param id the id
-	 * @param errors the errors
+	 * @param id
+	 *            the id
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateId(String id, Errors errors) {
 		if (Objects.isNull(id)) {
@@ -109,8 +120,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate ver.
 	 *
-	 * @param ver the ver
-	 * @param errors the errors
+	 * @param ver
+	 *            the ver
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateVer(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
@@ -126,8 +139,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate uin.
 	 *
-	 * @param uin the uin
-	 * @param errors the errors
+	 * @param uin
+	 *            the uin
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateUin(String uin, Errors errors) {
 		if (Objects.isNull(uin)) {
@@ -146,8 +161,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate status.
 	 *
-	 * @param status the status
-	 * @param errors the errors
+	 * @param status
+	 *            the status
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateStatus(String status, Errors errors) {
 		if (Objects.isNull(status)) {
@@ -162,8 +179,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate reg id.
 	 *
-	 * @param registrationId the registration id
-	 * @param errors the errors
+	 * @param registrationId
+	 *            the registration id
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateRegId(String registrationId, Errors errors) {
 		if (Objects.isNull(registrationId)) {
@@ -175,8 +194,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate request.
 	 *
-	 * @param request the request
-	 * @param errors the errors
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateRequest(Object request, Errors errors) {
 		if (Objects.isNull(request)) {
@@ -188,8 +209,10 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param timestamp the timestamp
-	 * @param errors the errors
+	 * @param timestamp
+	 *            the timestamp
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateReqTime(String timestamp, Errors errors) {
 		if (Objects.isNull(timestamp)) {
