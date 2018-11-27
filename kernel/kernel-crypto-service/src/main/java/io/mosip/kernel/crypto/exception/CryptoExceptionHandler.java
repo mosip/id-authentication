@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.crypto.exceptionhandler;
+package io.mosip.kernel.crypto.exception;
 
 import java.net.ConnectException;
 import java.util.ArrayList;

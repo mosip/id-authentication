@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.crypto.exceptionhandler;
+package io.mosip.kernel.crypto.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
