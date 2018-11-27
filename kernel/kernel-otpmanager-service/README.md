@@ -18,7 +18,17 @@ localhost:8085/swagger-ui.html
  
  ```
  {
-     "key":"M85301Z"
+  OkHttpClient client = new OkHttpClient();
+
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\"key\":\"testkey\"}");
+Request request = new Request.Builder()
+  .url("http://localhost:8085/otp/generate")
+  .post(body)
+  .addHeader("content-type", "application/json")
+  .build();
+  
+Response response = client.newCall(request).execute();
  }
  ```
  
@@ -49,8 +59,20 @@ Usage2:
 
 OTP Validation Request:
  
-http://localhost:8085/otp/validate?key=testkey&otp=614491
+```
+OkHttpClient client = new OkHttpClient();
 
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\"key\" :\"test\"}");
+Request request = new Request.Builder()
+  .url("http://localhost:8085/otp/validate?key=testkey&otp=279230")
+  .get()
+  .addHeader("content-type", "application/json")
+  .build();
+
+Response response = client.newCall(request).execute();
+
+```
 OTP Validation Responses:
 Case : Validation Successful
 
