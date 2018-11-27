@@ -14,6 +14,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -127,6 +128,12 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (IOException e) {
+			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
+			object.setInternalError(Boolean.TRUE);
+			description = "Internal error occured while processing registration  id : " + registrationId;
+
+		} catch (ApisResourceAccessException e) {
+
 			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
