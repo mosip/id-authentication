@@ -129,8 +129,7 @@ public class SyncTransactionManagerTest {
 		// TODO
 		syncTransaction.setLangCode("EN");
 
-		syncTransaction.setActive(true);
-
+		
 		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
 		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
@@ -194,8 +193,6 @@ public class SyncTransactionManagerTest {
 		syncTransaction.setCntrId("CNTR123");
 		// TODO
 		syncTransaction.setLangCode("EN");
-
-		syncTransaction.setActive(true);
 
 		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 

@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(schema="reg",name="sync_transaction")
-public class SyncTransaction  extends RegistrationCommonFields{
+public class SyncTransaction  {
 	@Id
 	//@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", length = 36)
@@ -48,12 +48,44 @@ public class SyncTransaction  extends RegistrationCommonFields{
 	private String syncParam;
 	@Column(name = "lang_code", length = 3)
 	private String langCode;
-	@Column(name = "is_active")
-	private boolean isActive;
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
+	
+	@Column(name = "CR_BY")
+	private String crBy;
+	@Column(name = "CR_DTIMES")
+	private Timestamp crDtime;
+	@Column(name = "UPD_BY")
+	private String updBy;
+	@Column(name = "UPD_DTIMES")
+	private Timestamp updDtimes;
+	
+	public String getCrBy() {
+		return crBy;
+	}
+	public void setCrBy(String crBy) {
+		this.crBy = crBy;
+	}
+	public Timestamp getCrDtime() {
+		return crDtime;
+	}
+	public void setCrDtime(Timestamp crDtime) {
+		this.crDtime = crDtime;
+	}
+	public String getUpdBy() {
+		return updBy;
+	}
+	public void setUpdBy(String updBy) {
+		this.updBy = updBy;
+	}
+	public Timestamp getUpdDtimes() {
+		return updDtimes;
+	}
+	public void setUpdDtimes(Timestamp updDtimes) {
+		this.updDtimes = updDtimes;
+	}
 	public String getId() {
 		return id;
 	}
@@ -138,12 +170,7 @@ public class SyncTransaction  extends RegistrationCommonFields{
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	public boolean isActive() {
-		return isActive;
-	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
+	
 	public boolean isDeleted() {
 		return isDeleted;
 	}

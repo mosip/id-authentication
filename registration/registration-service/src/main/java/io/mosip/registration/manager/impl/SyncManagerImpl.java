@@ -117,8 +117,7 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setLangCode("EN");
 
-			syncTransaction.setActive(true);
-
+			
 			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
 			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
