@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -107,9 +106,9 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane childSpecificFields;
 
-	private SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty switchedOn;
 	
-	private SimpleBooleanProperty switchedOnForBiometricException = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty switchedOnForBiometricException;
 
 	@FXML
 	private ComboBox<String> gender;
@@ -231,19 +230,17 @@ public class RegistrationController extends BaseController {
 
 	private static RegistrationDTO registrationDTOContent;
 
-	public static DatePicker ageDatePickerContent;
+	private static DatePicker ageDatePickerContent;
 
-	private boolean toggleAgeOrDobField = false;
+	private boolean toggleAgeOrDobField;
 	
-	private boolean toggleBiometricException = false;
+	private boolean toggleBiometricException;
 
-	private boolean isChild = true;
+	private boolean isChild;
 
 	private static boolean isEditPage;
 
-	VirtualKeyboard keyboard = new VirtualKeyboard();
-
-	Node keyboardNode = keyboard.view();
+	Node keyboardNode;
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
@@ -287,25 +284,30 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void initialize() {
 
-		if (capturePhotoUsingDevice.equals("Y")) {
-			defaultImage = applicantImage.getImage();
-			biometrics.setVisible(false);
-			biometricsNext.setVisible(false);
-			biometricsPane.setVisible(true);
-		} else if (capturePhotoUsingDevice.equals("N")) {
-			biometrics.setVisible(true);
-			biometricsNext.setVisible(true);
-			biometricsPane.setVisible(false);
-			biometricsNext.setDisable(false);
-		}
-
 		try {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Entering the LOGIN_CONTROLLER");
-			switchedOn.set(false);
-			switchedOnForBiometricException.set(false);
+			
+			if (capturePhotoUsingDevice.equals("Y")) {
+				defaultImage = applicantImage.getImage();
+				biometrics.setVisible(false);
+				biometricsNext.setVisible(false);
+				biometricsPane.setVisible(true);
+			} else if (capturePhotoUsingDevice.equals("N")) {
+				biometrics.setVisible(true);
+				biometricsNext.setVisible(true);
+				biometricsPane.setVisible(false);
+				biometricsNext.setDisable(false);
+			}
+			
+			switchedOn = new SimpleBooleanProperty(false);
+			switchedOnForBiometricException = new SimpleBooleanProperty(false);
+			toggleAgeOrDobField=false;
+			toggleBiometricException=false;
+			isChild=true;
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
+			keyboardNode = new VirtualKeyboard().view();
 			accord.setExpandedPane(demoGraphicTitlePane);
 			disableFutureDays();
 			toggleFunction();
@@ -402,7 +404,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	
-	public void loadAddressFromPreviousEntry() {
+	@FXML
+	private void loadAddressFromPreviousEntry() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading address from previous entry");
 			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject().get("PrevAddress")).getLocationDTO();
@@ -419,7 +422,8 @@ public class RegistrationController extends BaseController {
 	 * Loading the second demographic pane
 	 * 
 	 */
-	public void gotoSecondDemographicPane() {
+	@FXML
+	private void gotoSecondDemographicPane() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading the second demographic pane");
 		if (validatePaneOne()) {
@@ -485,7 +489,8 @@ public class RegistrationController extends BaseController {
 	 * Saving the detail into concerned DTO'S
 	 * 
 	 */
-	public void saveDetail() {
+	@FXML
+	private void saveDetail() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		RegistrationDTO registrationDTO = new RegistrationDTO();
@@ -562,7 +567,8 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void goToPreviousPane() {
+	@FXML
+	private void goToPreviousPane() {
 		demoGraphicTitlePane.setExpanded(true);
 	}
 
@@ -571,7 +577,8 @@ public class RegistrationController extends BaseController {
 	 * To open camera to capture Applicant Image
 	 * 
 	 */
-	public void openCamForApplicantPhoto() {
+	@FXML
+	private void openCamForApplicantPhoto() {
 		openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
 	}
 
@@ -580,7 +587,8 @@ public class RegistrationController extends BaseController {
 	 * To open camera to capture Exception Image
 	 * 
 	 */
-	public void openCamForExceptionPhoto() {
+	@FXML
+	private void openCamForExceptionPhoto() {
 		openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
 	}
 
@@ -644,7 +652,8 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void saveBiometricDetails() {
+	@FXML
+	private void saveBiometricDetails() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 
@@ -1245,7 +1254,8 @@ public class RegistrationController extends BaseController {
 		return gotoNext;
 	}
 
-	public void scanPoaDocument() {
+	@FXML
+	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
 			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					RegistrationConstants.POA_DOCUMENT_EMPTY, "Numbers are not allowed");
@@ -1257,7 +1267,8 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void scanPoiDocument() {
+	@FXML
+	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
 			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					RegistrationConstants.POI_DOCUMENT_EMPTY, "Numbers are not allowed");
@@ -1269,7 +1280,8 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void scanPorDocument() {
+	@FXML
+	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
 			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					RegistrationConstants.POR_DOCUMENT_EMPTY, "Numbers are not allowed");
@@ -1326,7 +1338,8 @@ public class RegistrationController extends BaseController {
 		uinId.setText("93939939");
 	}
 
-	public void gotoFirstDemographicPane() {
+	@FXML
+	private void gotoFirstDemographicPane() {
 		demoGraphicTitlePane.setContent(null);
 		demoGraphicTitlePane.setExpanded(false);
 		demoGraphicTitlePane.setContent(demoGraphicPane1);
