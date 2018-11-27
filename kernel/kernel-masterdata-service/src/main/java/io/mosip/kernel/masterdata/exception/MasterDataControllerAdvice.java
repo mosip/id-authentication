@@ -71,7 +71,7 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 	}
 
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
-		Error error = new Error(e.getErrorCode(), e.getMessage());
+		Error error = new Error(e.getErrorCode(), e.getErrorText());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
 		return errorResponse;
