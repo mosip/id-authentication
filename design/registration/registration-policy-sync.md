@@ -17,27 +17,6 @@ The **target users** are
 
 The key **requirements** are
 
--   Design -- Login
-
-\[Username-Password / OTP/ Bio\]
-
-Background
-
-The Registration Officer/Supervisor can be used the provided ways to
-login to the registration client. The provided ways are
-Username/Password, OTP and Bio \[Fingerprint/Iris/Face\]. The login will
-be maintained by the configurable un-successful login attempts. If the
-RO/RS crossed the limit the same should be locked and release after the
-configurable login period.
-
-The **target users** are
-
--   Supervisor
-
--   Officer
-
-The key **requirements** are
-
 -   The public key generated against each station or machine id should be provided 
 	to the client application before expiring of the key.
 -   The key should be used to encrypt the packet before sending to the server.
@@ -52,24 +31,22 @@ The key **non-functional requirements** are
 **Solution**
 
 1.	Key sync from server.
-a.	Frequency of execution – once in a day. 
-
-b.	Automatic
-2.	Key pull from db based on date and unique id.
+-	Frequency of execution – once in a day. [configurable]
+-	Automatic
 
 1.	Global PARAM table: Holds the key refresh threshold period with respect to client environment.
-a.	Threshold period - How many days before the key file to be pulled from server?
+-	Threshold period - How many days before the key file to be pulled from server?
 2.	Get the key for current date from the table. [key_manage_tbl]
-a.	If not available, make the online call to REST service to download the key along with the expiry date.
-b.	If available but within threshold period [current key expiry date – today date] then download the new key and store it with new start date and end date.
+-	If not available, make the online call to REST service to download the key along with the expiry date.
+-	If available but within threshold period [current key expiry date – today date] then download the new key and store it with new start date and end date.
 
 3.	Invoke the key sync rest service call.
-a.	This service would provide the key valid as on that date [either existing key or new key will be generated and share the same]
-b.	Pass the required input parameter 
+-	This service would provide the key valid as on that date [either existing key or new key will be generated and share the same]
+-	Pass the required input parameter 
 	   MachineId and current date / future date
 5.	Parse the response :-
-a.	This would provide us either existing key or new key file.
-b.	Expiry date.
+-	This would provide us either existing key or new key file.
+-	Expiry date.
 6.	Store the received key file into the database table along with other detail.
 
 
