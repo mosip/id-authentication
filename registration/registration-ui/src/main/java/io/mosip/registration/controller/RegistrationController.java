@@ -229,7 +229,7 @@ public class RegistrationController extends BaseController {
 
 	private static AnchorPane demoGraphicPane2Content;
 
-	public static RegistrationDTO registrationDTOContent;
+	private static RegistrationDTO registrationDTOContent;
 
 	public static DatePicker ageDatePickerContent;
 
@@ -1300,6 +1300,10 @@ public class RegistrationController extends BaseController {
 
 	public static void setEditPage(boolean isEditPage) {
 		RegistrationController.isEditPage = isEditPage;
+	}
+
+	public static RegistrationDTO getRegistrationDTOContent() {
+		return registrationDTOContent;
 	}
 
 	public void clickMe() {
