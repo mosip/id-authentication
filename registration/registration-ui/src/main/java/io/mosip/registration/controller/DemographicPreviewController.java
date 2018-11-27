@@ -38,7 +38,7 @@ public class DemographicPreviewController extends BaseController {
 	@FXML
 	private TitledPane demographicPreview;
 
-	private boolean isInPane1 = true;
+	private boolean isInPane1;
 
 	@Autowired
 	private RegistrationController registrationController;
