@@ -30,20 +30,23 @@ The key **non-functional requirements** are
 	
 **Solution**
 
-1.	Key sync from server.
+1.	Key sync from server if the existing is policy going to be expired.
 -	Frequency of execution – once in a day. [configurable]
 -	Automatic
 
 1.	Global PARAM table: Holds the key refresh threshold period with respect to client environment.
 -	Threshold period - How many days before the key file to be pulled from server?
-2.	Get the key for current date from the local db table. 
+
+2.	Get the latest key along with the validity expiry date from the local db table. 
 -	If not available, make the online call to REST service to download the key along with the expiry date.
--	If available but within threshold period [current key expiry date – today date] then download the new key and store it with new start date and end date.
+-	If available but within threshold period [key expiry date – today date] then download the new key and store it with new start date and end date.
+-   If key available but above threshold period [key expiry date – today date] then nothing to be pulled from server.
 
 3.	Invoke the key sync rest service call.
 -	This service would provide the key valid as on that date [either existing key or new key will be generated and share the same]
 -	Pass the required input parameter 
 	   MachineId and current date / future date
+	   
 5.	Parse the response :-
 -	This would provide us either existing key or new key file.
 -	Expiry date.
