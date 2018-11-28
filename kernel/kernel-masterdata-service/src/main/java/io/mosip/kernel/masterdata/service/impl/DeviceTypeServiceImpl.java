@@ -1,16 +1,12 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -46,9 +42,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 		try {
 			renDeviceType = deviceTypeRepository.create(entity);
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage());
+					e.getErrorText());
 		}
 		
 		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();

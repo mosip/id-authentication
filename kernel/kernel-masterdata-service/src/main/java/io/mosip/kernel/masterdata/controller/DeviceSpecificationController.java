@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
 
@@ -78,11 +76,11 @@ public class DeviceSpecificationController {
 	/**
 	 * Save list of device specification details to the database table
 	 * 
-	 * @param deviceSpecifications
+	 * @param deviceSpecification
 	 *            input from user Device specification DTO
-	 * @return {@link DeviceSpecificationRequestDto}
+	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	@PostMapping("/devicespecifications")
+	@PostMapping("/devicespecification")
 	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> saveDeviceSpecification(
 			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
 

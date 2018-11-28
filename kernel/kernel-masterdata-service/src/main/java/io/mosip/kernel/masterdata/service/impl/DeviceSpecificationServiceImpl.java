@@ -1,15 +1,14 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
@@ -18,8 +17,8 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * Service class has methods to save and fetch DeviceSpecification Details
@@ -97,10 +96,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				.setCreateMetaData(deviceSpecifications.getRequest().getDeviceSpecificationDto(), DeviceSpecification.class);
 		try {
 			 renDeviceSpecification = deviceSpecificationRepository.create(entity);
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage());
+					e.getErrorText());
 		}
 			DeviceTypeCodeAndLanguageCodeAndId deviceTypeCodeAndLanguageCodeId = new DeviceTypeCodeAndLanguageCodeAndId();
 				dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCodeId, true, null, null, true);

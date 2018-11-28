@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 
@@ -25,11 +24,12 @@ public class DeviceTypeController {
 	 * Save list of device Type details to the Database
 	 * 
 	 * @param DeviceTypeRequestDto
+	 * 				input from user Device Type DTO
 	 *            
-	 * @return {@link PostResponseDto}
+	 * @return {@link CodeAndLanguageCodeId}
 	 */
 
-	@PostMapping("/devicetypes")
+	@PostMapping("/devicetype")
 	public ResponseEntity<CodeAndLanguageCodeId> saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
 		return new ResponseEntity<>( deviceTypeService.saveDeviceTypes(deviceTypes), HttpStatus.CREATED);
 	}
