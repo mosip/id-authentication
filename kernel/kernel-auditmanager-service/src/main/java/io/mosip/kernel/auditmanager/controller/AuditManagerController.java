@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.AuditManagerService;
 
 /**
@@ -40,7 +40,6 @@ public class AuditManagerController {
 	 */
 	@PostMapping(value = "/auditmanager/audits")
 	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid AuditRequestDto auditRequestDto) {
-
 		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.CREATED);
 	}
 

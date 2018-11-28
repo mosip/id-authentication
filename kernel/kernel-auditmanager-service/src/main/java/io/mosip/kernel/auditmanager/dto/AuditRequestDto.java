@@ -1,4 +1,4 @@
-package io.mosip.kernel.auditmanager.request;
+package io.mosip.kernel.auditmanager.dto;
 
 import java.time.LocalDateTime;
 
