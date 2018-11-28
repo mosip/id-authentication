@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LanguageResponseCodeDto {
+public class CodeResponseDto {
 
 	private String code;
 }

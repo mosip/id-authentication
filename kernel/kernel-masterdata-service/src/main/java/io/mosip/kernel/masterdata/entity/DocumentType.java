@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * @author Ritesh Sinha
  * @author Uday Kumar
  * @since 1.0.0
  *

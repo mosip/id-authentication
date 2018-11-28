@@ -11,6 +11,9 @@
 	<artifactId>kernel-crypto-service</artifactId>
 	<packaging>jar</packaging>
 	<name>kernel-crypto-service</name>
+		<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

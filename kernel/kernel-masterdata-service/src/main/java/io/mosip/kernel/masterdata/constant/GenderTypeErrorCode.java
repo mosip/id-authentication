@@ -9,8 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum GenderTypeErrorCode {
-	GENDER_TYPE_FETCH_EXCEPTION("KER-MSD-017",
-			"Error occured while fetching gender types"), GENDER_TYPE_NOT_FOUND("KER-MSD-018", "Gender Type not found");
+	GENDER_TYPE_FETCH_EXCEPTION("KER-MSD-017", "Error occured while fetching gender types"), GENDER_TYPE_NOT_FOUND(
+			"KER-MSD-018", "Gender Type not found"), GENDER_POST_EXCEPTION("KER-MSD-XX", "Could not add Gender Data");
 
 	private final String errorCode;
 	private final String errorMessage;
