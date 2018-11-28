@@ -82,7 +82,7 @@ public class LanguageServiceImpl implements LanguageService {
 	public String saveLanguage(LanguageDto dto) {
 
 		try {
-			Language languages = metaDataUtils.mapDtoToEntity(dto, Language.class);
+			Language languages = metaDataUtils.setCreateMetaData(dto, Language.class);
 			return languageRepository.create(languages).getCode();
 		} catch (HibernateException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),

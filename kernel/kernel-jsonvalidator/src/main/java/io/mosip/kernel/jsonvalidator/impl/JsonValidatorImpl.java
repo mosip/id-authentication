@@ -67,15 +67,24 @@ public class JsonValidatorImpl implements JsonValidator{
 	 *            name of the schema file against which JSON needs to be validated,
 	 *            the schema file should be present in your config server storage or
 	 *            local storage, which ever option is selected in properties file.
-	 * @return ValidationReport containing 'valid' variable as boolean and
+	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
 	 * @throws HttpRequestException
+	 *             HttpRequestException
 	 * @throws JsonValidationProcessingException
+	 *             JsonValidationProcessingException
 	 * @throws JsonIOException
+	 *             JsonIOException
 	 * @throws NullJsonNodeException
+	 *             NullJsonNodeException
 	 * @throws UnidentifiedJsonException
+	 *             UnidentifiedJsonException
 	 * @throws JsonSchemaIOException
+	 *             JsonSchemaIOException
 	 * @throws ConfigServerConnectionException
+	 *             ConfigServerConnectionException
+	 * @throws FileIOException
+	 *             FileIOException
 	 */
 
 	public ValidationReport validateJson(String jsonString, String schemaName)

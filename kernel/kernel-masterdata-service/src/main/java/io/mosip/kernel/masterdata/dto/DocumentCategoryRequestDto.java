@@ -26,5 +26,5 @@ public class DocumentCategoryRequestDto {
 	/**
 	 * 
 	 */
-	private DocumentCategoryListDto request;
+	private DocumentCategoryData request;
 }
