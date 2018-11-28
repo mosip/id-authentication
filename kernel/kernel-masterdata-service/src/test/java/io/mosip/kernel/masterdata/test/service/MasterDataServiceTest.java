@@ -26,7 +26,7 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationListDto;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
@@ -111,6 +111,7 @@ public class MasterDataServiceTest {
 	private Application application2;
 
 	private List<Application> applicationList;
+	private ApplicationDto applicationDto;
 
 	private ApplicationRequestDto applicationRequestDto;
 
@@ -520,15 +521,15 @@ public class MasterDataServiceTest {
 		applicationList.add(application2);
 
 		applicationRequestDto = new ApplicationRequestDto();
-		ApplicationListDto request = new ApplicationListDto();
-		ApplicationDto applicationDto = new ApplicationDto();
+		ApplicationData request = new ApplicationData();
+		applicationDto = new ApplicationDto();
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("ENG");
-		List<ApplicationDto> applicationDtos = new ArrayList<>();
-		applicationDtos.add(applicationDto);
-		request.setApplicationtypes(applicationDtos);
+		// List<ApplicationDto> applicationDtos = new ArrayList<>();
+		// applicationDtos.add(applicationDto);
+		request.setApplicationtype(applicationDto);
 		applicationRequestDto.setRequest(request);
 	}
 
@@ -629,16 +630,16 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void addApplicationDataSuccess() {
-		Mockito.when(applicationRepository.saveAll(Mockito.any())).thenReturn(applicationList);
+		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
-		PostResponseDto postResponseDto = applicationService.addApplicationData(applicationRequestDto);
-		assertEquals(applicationList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
-		assertEquals(applicationList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+		CodeAndLanguageCodeId codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
+		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void addApplicationDataFetchException() {
-		Mockito.when(applicationRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		applicationService.addApplicationData(applicationRequestDto);
 	}
 
