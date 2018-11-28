@@ -8,14 +8,17 @@ import javax.xml.bind.annotation.XmlValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * For boi(finger print) authentication.
+ * BioType enum for Biometric type.
  *
  * @author Rakesh Roshan
  */
 public enum BioType {
 
-	/** bio type. */
-	TYPE("bio");
+	
+	FGRMIN("fgrMin"),
+	FGRIMG("fgrImg"),
+	IRISIMG("irisImg"),
+	FACEIMG("faceImg");
 
 	/** The type. */
 	String type;
