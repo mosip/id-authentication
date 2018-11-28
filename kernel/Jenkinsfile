@@ -41,7 +41,7 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  }
 
 
@@ -110,7 +110,26 @@ node {
 			 if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]})" ]; then
 			  docker rename \${containerNamesShell[\$INDEX]} \${containerNamesShell[\$INDEX]}-backup && docker stop \${containerNamesShell[\$INDEX]}-backup
 			 fi
-			 docker run -d -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i 
+			 docker run -d -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+			  "\${containerNamesShell[\$INDEX]}" \$i 
+			  if [ \$? -eq 0 ]; then
+				echo Container Started - \${containerNamesShell[\$INDEX]}
+				if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
+					echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
+					docker rm \${containerNamesShell[\$INDEX]}-backup
+				fi
+			  else
+				echo Error - Cannot start new container, rollbacking to previous container
+				docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
+			  fi
+			  let INDEX=\${INDEX}+1
+			done
+			
+			if [ "\$(docker images | grep  '<none>')" ]; then
+				echo Removing all untagged images
+				docker rmi \$(docker images | awk '/<none>/ {print \$3}')
+			fi
+            echo Deployment process completed
     """
   sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
