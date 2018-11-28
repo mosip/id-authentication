@@ -432,7 +432,7 @@ public class RegistrationController extends BaseController {
 	private void gotoSecondDemographicPane() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading the second demographic pane");
-		if (validatePaneOne()) {
+		if (validateDemographicPaneOne()) {
 			demoGraphicTitlePane.setContent(null);
 			demoGraphicTitlePane.setExpanded(false);
 			demoGraphicTitlePane.setContent(demoGraphicPane2);
@@ -488,11 +488,11 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		LocationDTO locationDto = new LocationDTO();
-		AddressDTO addressDto = new AddressDTO();
+		LocationDTO locationDTO = new LocationDTO();
+		AddressDTO addressDTO = new AddressDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
-		OSIDataDTO osiDataDto = new OSIDataDTO();
-		if (validatePaneTwo()) {
+		OSIDataDTO osiDataDTO = new OSIDataDTO();
+		if (validateDemographicPaneTwo()) {
 			demographicInfoDTO.setFullName(fullName.getText());
 			if (ageDatePicker.getValue() != null) {
 				demographicInfoDTO.setDateOfBirth(
@@ -500,15 +500,15 @@ public class RegistrationController extends BaseController {
 			}
 			demographicInfoDTO.setAge(ageField.getText());
 			demographicInfoDTO.setGender(gender.getValue());
-			addressDto.setAddressLine1(addressLine1.getText());
-			addressDto.setAddressLine2(addressLine2.getText());
-			addressDto.setLine3(addressLine3.getText());
-			locationDto.setProvince(province.getText());
-			locationDto.setCity(city.getText());
-			locationDto.setRegion(region.getText());
-			locationDto.setPostalCode(postalCode.getText());
-			addressDto.setLocationDTO(locationDto);
-			demographicInfoDTO.setAddressDTO(addressDto);
+			addressDTO.setAddressLine1(addressLine1.getText());
+			addressDTO.setAddressLine2(addressLine2.getText());
+			addressDTO.setLine3(addressLine3.getText());
+			locationDTO.setProvince(province.getText());
+			locationDTO.setCity(city.getText());
+			locationDTO.setRegion(region.getText());
+			locationDTO.setPostalCode(postalCode.getText());
+			addressDTO.setLocationDTO(locationDTO);
+			demographicInfoDTO.setAddressDTO(addressDTO);
 			demographicInfoDTO.setMobile(mobileNo.getText());
 			demographicInfoDTO.setEmailId(emailId.getText());
 			demographicInfoDTO.setChild(isChild);
@@ -520,27 +520,27 @@ public class RegistrationController extends BaseController {
 				} else {
 					demographicDTO.setIntroducerUIN(uinId.getText());
 				}
-				osiDataDto.setIntroducerType(IntroducerType.PARENT.getCode());
+				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 				demographicInfoDTO.setParentOrGuardianName(parentName.getText());
 			}
 			demographicDTO.setDemoInUserLang(demographicInfoDTO);
-			osiDataDto.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
+			osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
 			// local language
 			demographicInfoDTO = new DemographicInfoDTO();
-			locationDto = new LocationDTO();
-			addressDto = new AddressDTO();
-			addressDto.setLocationDTO(locationDto);
-			demographicInfoDTO.setAddressDTO(addressDto);
+			locationDTO = new LocationDTO();
+			addressDTO = new AddressDTO();
+			addressDTO.setLocationDTO(locationDTO);
+			demographicInfoDTO.setAddressDTO(addressDTO);
 			demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
-			addressDto.setAddressLine1(addressLine1LocalLanguage.getText());
-			addressDto.setAddressLine2(addressLine2LocalLanguage.getText());
-			addressDto.setLine3(addressLine3LocalLanguage.getText());
+			addressDTO.setAddressLine1(addressLine1LocalLanguage.getText());
+			addressDTO.setAddressLine2(addressLine2LocalLanguage.getText());
+			addressDTO.setLine3(addressLine3LocalLanguage.getText());
 
 			demographicDTO.setDemoInLocalLang(demographicInfoDTO);
 
 			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
-			registrationDTO.setOsiDataDTO(osiDataDto);
+			registrationDTO.setOsiDataDTO(osiDataDTO);
 			registrationDTO.setDemographicDTO(demographicDTO);
 
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -1039,7 +1039,7 @@ public class RegistrationController extends BaseController {
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
-	private boolean validatePaneOne() {
+	private boolean validateDemographicPaneOne() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
@@ -1127,7 +1127,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 
-	private boolean validatePaneTwo() {
+	private boolean validateDemographicPaneTwo() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = false;
