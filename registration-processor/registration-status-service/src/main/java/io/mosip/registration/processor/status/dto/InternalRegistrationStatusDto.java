@@ -3,6 +3,7 @@ package io.mosip.registration.processor.status.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationStatusDto.
  */
@@ -55,6 +56,9 @@ public class InternalRegistrationStatusDto implements Serializable {
 
 	/** The retry count. */
 	private Integer retryCount;
+	
+	/** The retry count. */
+	private String applicantType;
 
 	/**
 	 * Instantiates a new registration status dto.
@@ -346,6 +350,24 @@ public class InternalRegistrationStatusDto implements Serializable {
 	 */
 	public void setRetryCount(Integer retryCount) {
 		this.retryCount = retryCount;
+	}
+
+	/**
+	 * Gets the applicant type.
+	 *
+	 * @return the applicant type
+	 */
+	public String getApplicantType() {
+		return applicantType;
+	}
+
+	/**
+	 * Sets the applicant type.
+	 *
+	 * @param applicantType the new applicant type
+	 */
+	public void setApplicantType(String applicantType) {
+		this.applicantType = applicantType;
 	}
 
 }

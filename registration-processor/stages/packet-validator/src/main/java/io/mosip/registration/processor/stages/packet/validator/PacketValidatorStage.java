@@ -19,6 +19,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -58,6 +59,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
+	
+	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
 	@Autowired
@@ -152,6 +155,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				description = "Packet validation successful for registration id : " + registrationId;
 			}
 			registrationStatusDto.setUpdatedBy(USER);
+			for (FieldValue field : packetMetaInfo.getIdentity().getMetaData()) {
+				if (field.getLabel().matches(APPLICANT_TYPE)) {
+					registrationStatusDto.setApplicantType(field.getValue());
+					break;
+				}
+			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 		} catch (IOException e) {

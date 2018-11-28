@@ -141,7 +141,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 *            the registration id
 	 * @return the sync registration entity
 	 */
-	private SyncRegistrationEntity findByRegistrationId(String registrationId) {
+	@Override
+	public SyncRegistrationEntity findByRegistrationId(String registrationId) {
 		return syncRegistrationDao.findById(registrationId);
 	}
 

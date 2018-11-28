@@ -356,6 +356,7 @@ public class RegistrationStatusServiceImpl
 		registrationStatusEntity.setIsDeleted(dto.isDeleted());
 		registrationStatusEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
+		registrationStatusEntity.setApplicantType(dto.getApplicantType());
 		return registrationStatusEntity;
 	}
 

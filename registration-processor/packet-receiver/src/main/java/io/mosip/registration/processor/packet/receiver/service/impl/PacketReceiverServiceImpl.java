@@ -27,6 +27,7 @@ import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -80,8 +81,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		String registrationId = file.getOriginalFilename().split("\\.")[0];
 		boolean storageFlag = false;
 		boolean isTransactionSuccessful = false;
-
-		if (!syncRegistrationService.isPresent(registrationId)) {
+		SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
+		if (regEntity==null) {
 			logger.info("Registration Packet is Not yet sync in Sync table");
 			throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 		}
@@ -97,7 +98,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 				InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 				dto.setRegistrationId(registrationId);
-				dto.setRegistrationType(RegistrationType.NEW.toString());
+				dto.setRegistrationType(regEntity.getRegistrationType());
 				dto.setReferenceRegistrationId(null);
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 				dto.setLangCode("eng");
@@ -105,6 +106,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				dto.setIsActive(true);
 				dto.setCreatedBy(USER);
 				dto.setIsDeleted(false);
+				dto.setApplicantType("NEW");
 				registrationStatusService.addRegistrationStatus(dto);
 				storageFlag = true;
 				isTransactionSuccessful = true;
