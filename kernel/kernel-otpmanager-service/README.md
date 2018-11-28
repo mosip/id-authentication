@@ -1,4 +1,4 @@
-# kernel-otpmanager-service :
+# kernel-otpmanager-service
 
 1- [Background & Design](../../design/kernel/kernel-otpmanager.md)
 
