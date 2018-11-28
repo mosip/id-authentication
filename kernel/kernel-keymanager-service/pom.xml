@@ -13,6 +13,9 @@
 	<artifactId>kernel-keymanager-service</artifactId>
 
 	<name>kernel-keymanager-service</name>
+ <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 
 	<dependencies>
 
