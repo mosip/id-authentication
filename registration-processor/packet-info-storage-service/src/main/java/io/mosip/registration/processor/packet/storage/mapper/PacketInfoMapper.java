@@ -362,13 +362,16 @@ public class PacketInfoMapper {
 				regCenterMachineEntity.setLatitude(field.getValue());
 			} else if (field.getLabel().matches("geoLoclongitude")) {
 				regCenterMachineEntity.setLongitude(field.getValue());
-
+			}else if (field.getLabel().matches("centerId")) {
+				regCenterMachineEntity.setCntrId(field.getValue());
+			}else if (field.getLabel().matches("machineId")) {
+				regCenterMachineEntity.setMachineId(field.getValue());
 			}
 
-		}
-
-		regCenterMachineEntity.setCntrId("Center 1");
-		regCenterMachineEntity.setMachineId("Machine 1");
+			}
+		
+			regCenterMachineEntity.setId(regCenterMachinePKEntity);
+			regCenterMachineEntity.setIsActive(true);
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
 
