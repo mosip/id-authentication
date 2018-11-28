@@ -39,6 +39,12 @@ Finger Print
 -   Capture the applicant fingerprint image.
 -   De-duplicate validation against the list of users or supervisor enrolled in the machine.
 
+IRIS
+-	Allow the user to login to the application using IRIS.
+-   Authenticate the registration process by capturing RO IRIS.
+-   Capture the applicant IRIS image.
+-   De-duplicate validation against the list of users or supervisor IRIS with the applicant IRIS.
+ 
 The key **non-functional requirements** are
 
 IO Connection:
@@ -159,3 +165,15 @@ None of the client classes should invoke the device specific classes directly.
 ![Device class diagram](_images/fingerprint-device-integration.png)
 
 
+**Solution - IRIS**
+
+Facade and Factory pattern should be introduced to invoke the IRIS device vendor specific implementation class
+at run time. The device specific code should be encapsulated within the device specific implementation code.
+None of the client classes should invoke the device specific classes directly. 
+
+The sequence flow and class level detail are provided in the respective diagram. 
+
+UI controller should wait for some time to capture the BIO image from device implementation class.
+
+**Sequence and Class Diagram**
+![IRIS device class diagram](_images/iris-device-integration.png)
