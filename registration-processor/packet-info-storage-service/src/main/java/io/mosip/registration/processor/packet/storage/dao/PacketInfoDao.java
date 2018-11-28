@@ -94,6 +94,7 @@ public class PacketInfoDao {
 		regOsiDto.setIntroducerFingerpType(regOsiEntity.getIntroducerFingerpType());
 		regOsiDto.setIntroducerIrisType(regOsiEntity.getIntroducerIrisType());
 		regOsiDto.setIntroducerFingerpImageName(regOsiEntity.getIntroducerFingerpImageName());
+		regOsiDto.setIntroducerPhotoName(regOsiEntity.getIntroducerPhotoName());
 		regOsiDto.setIntroducerUin(regOsiEntity.getIntroducerUin());
 		regOsiDto.setIsActive(true);
 		regOsiDto.setIsDeleted(false);
