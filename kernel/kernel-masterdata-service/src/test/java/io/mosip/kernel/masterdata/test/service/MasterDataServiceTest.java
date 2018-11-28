@@ -37,7 +37,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -549,7 +549,7 @@ public class MasterDataServiceTest {
 	}
 
 	private DeviceTypeRequestDto reqTypeDto;
-	private DeviceTypeListDto request;
+	private DeviceTypeDtoData request;
 	private List<DeviceTypeDto> deviceTypeDtoList;
 	private DeviceTypeDto deviceTypeDto;
 
@@ -561,7 +561,7 @@ public class MasterDataServiceTest {
 	private void deviceTypeSetUp() {
 
 		reqTypeDto = new DeviceTypeRequestDto();
-		request = new DeviceTypeListDto();
+		request = new DeviceTypeDtoData();
 		deviceTypeDtoList = new ArrayList<>();
 		deviceTypeDto = new DeviceTypeDto();
 

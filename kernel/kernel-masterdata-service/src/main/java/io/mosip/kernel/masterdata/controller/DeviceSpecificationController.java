@@ -74,7 +74,7 @@ public class DeviceSpecificationController {
 	}
 
 	/**
-	 * Save list of device specification details to the database table
+	 * Save device specification details to the database table
 	 * 
 	 * @param deviceSpecification
 	 *            input from user Device specification DTO

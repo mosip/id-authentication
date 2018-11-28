@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 
 /**
  * This interface has abstract methods to save a Machine Type Details to the
@@ -11,15 +11,15 @@ import io.mosip.kernel.masterdata.dto.PostResponseDto;
  * @since 1.0.0
  *
  */
-public class MachineTypeService {
+public interface MachineTypeService {
 	
 	/**
-	 * Abstract method to save Device Type Details to the Database
+	 * Abstract method to save Machine Type Details to the Database
 	 * 
-	 * @param deviceTypes
+	 * @param machineType
 	 * 
-	 * @return {@link PostResponseDto}
+	 * @return {@link CodeAndLanguageCodeId}
 	 */
-//	public PostResponseDto saveMachineType(MachineTypeRequestDto machineType);
+   public CodeAndLanguageCodeId saveMachineType(MachineTypeRequestDto machineType);
 
 }
