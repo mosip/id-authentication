@@ -50,6 +50,15 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort );
 		
+		if(!((pathsegments == null) || (pathsegments.isEmpty()))) {
+			for(String segment:pathsegments) {
+				if(!((segment == null) || (("").equals(segment))))
+				{
+					builder.pathSegment(segment);
+				}
+			}
+			
+		}
 		
 		if (!((queryParamName == null) || (("").equals(queryParamName)))) {
 
@@ -60,15 +69,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 		}
-		if(!((pathsegments == null) || (pathsegments.isEmpty()))) {
-			for(String segment:pathsegments) {
-				if(!((segment == null) || (("").equals(segment))))
-				{
-					builder.pathSegment(segment);
-				}
-			}
-			
-		}
+		
 		try{
 			obj=restApiClient.getApi(builder.toUriString(), responseType);
 
