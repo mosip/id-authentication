@@ -334,8 +334,7 @@ public class RegistrationController extends BaseController {
 				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
-			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
@@ -1044,11 +1043,10 @@ public class RegistrationController extends BaseController {
 	private boolean validatePaneOne() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
-		
+
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+			generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 			fullName.requestFocus();
 		} else {
 			if (validateAgeorDob()) {
@@ -1057,43 +1055,50 @@ public class RegistrationController extends BaseController {
 					gender.requestFocus();
 				} else {
 					if (validateRegex(addressLine1, "^.{6,50}$")) {
-						generateAlert(RegistrationConstants.ADDRESS_LINE_1_EMPTY, RegistrationConstants.ADDRESS_LINE_WARNING);
+						generateAlert(RegistrationConstants.ADDRESS_LINE_1_EMPTY,
+								RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
 							generateAlert(RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
-								+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+									+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
-									generateAlert(RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
-											+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+								generateAlert(RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS
+										+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
-										generateAlert(RegistrationConstants.PROVINCE_EMPTY, RegistrationConstants.ONLY_ALPHABETS
-											+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+									generateAlert(RegistrationConstants.PROVINCE_EMPTY,
+											RegistrationConstants.ONLY_ALPHABETS + " "
+													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 									province.requestFocus();
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
-										generateAlert(RegistrationConstants.POSTAL_CODE_EMPTY,RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
+										generateAlert(RegistrationConstants.POSTAL_CODE_EMPTY,
+												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
-											generateAlert(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,RegistrationConstants.ONLY_ALPHABETS);
+											generateAlert(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+													RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
-												generateAlert(RegistrationConstants.MOBILE_NUMBER_EMPTY,RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+												generateAlert(RegistrationConstants.MOBILE_NUMBER_EMPTY,
+														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(emailId,
 														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
-													generateAlert(RegistrationConstants.EMAIL_ID_EMPTY,RegistrationConstants.EMAIL_ID_EXAMPLE);
+													generateAlert(RegistrationConstants.EMAIL_ID_EMPTY,
+															RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
-														generateAlert(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
+														generateAlert(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
+																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cniOrPinNumber.requestFocus();
 													} else {
 														gotoNext = true;
