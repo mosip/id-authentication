@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.stages.demodedupe;
+package io.mosip.registration.processor.stages.demodedupe;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,19 +23,19 @@ import io.vertx.core.logging.LoggerFactory;
  * The Class PacketValidatorStage.
  *
  * @author M1048358 Alok Ranjan
- * 		   Girish Yarru 
+ * 
  */
 
 @RefreshScope
 @Service
 public class DemodedupeStage extends MosipVerticleManager {
-	
+
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(DemodedupeStage.class);
-	
+
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
@@ -46,17 +46,17 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
-	
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -67,6 +67,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+
 		object.setMessageBusAddress(MessageBusAddress.DEMODEDUPE_BUS_IN);
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
