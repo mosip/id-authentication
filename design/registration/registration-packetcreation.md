@@ -234,11 +234,10 @@ Packet Structure
 
 	**Biometric File: **
 
-    ![Biometric File] (_images/bioMetric_folder.png)
+    ![BioMetric Files](_images/bioMetric_folder.png)
 
    **Demographic :**
-
-    _images/demographic_folder.png
+   ![Demographic Files](_images/demographic_folder.png)
 
 Folder level Data: 
 
@@ -737,8 +736,7 @@ c.  Introducer
 7.  **Registration Supervisor Bio Image\[JPEG\]**
 
 **Packet DTO Structure**
-
-	![Packet DTO Structure](_images/PacketCreation.jpg)
+    ![Packet DTO Structure](_images/PacketCreation.jpg)
 
 Validations:
 
@@ -753,13 +751,11 @@ Validations:
     is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
 **Class Diagram**
-
-	![Packet Creation Class Diagram](_images/_class\_diagram/registration-packetcreation-classDiagram.png)
+	![Packet Creation Class Diagram](_images/_class_diagram/registration-packetcreation-classDiagram.png)
 	
 
 **Sequence Diagram**
-
-	![Packet Creation Sequence Diagram](_images/_sequence\_diagram/registration-packetcreation-sequenceDiagram.png)
+	![Packet Creation Sequence Diagram](_images/_sequence_diagram/registration-packetcreation-sequenceDiagram.png)
 
 **User Story References**
 
