@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -473,8 +474,36 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
+			/*
+			 * String getIdentityJsonString =
+			 * Utilities.getJson(utility.getConfigServerFileStorageURL(),
+			 * utility.getGetRegProcessorIdentityJson());
+			 */
+			String getIdentityJsonString = "{\r\n" + 
+					"	\"identity\": {\r\n" + 
+					"		\"name\": {\r\n" + 
+					"			\"value\": \"firstName+lastName\",\r\n" + 
+					"			\"weight\": 10\r\n" + 
+					"		},\r\n" + 
+					"		\"pheoniticName\": {\r\n" + 
+					"			\"value\": \"firstName+lastName\",\r\n" + 
+					"			\"weight\": 10\r\n" + 
+					"		},\r\n" + 
+					"		\"gender\": {\r\n" + 
+					"			\"language\": \"eng\",\r\n" + 
+					"			\"value\": \"gender\",\r\n" + 
+					"			\"weight\": 10,\r\n" + 
+					"			\"matchType\": \"exact\"\r\n" + 
+					"		},\r\n" + 
+					"		\"dob\": {\r\n" + 
+					"			\"language\": \"eng\",\r\n" + 
+					"			\"value\": \"dateOfBirth\",\r\n" + 
+					"			\"weight\": 10,\r\n" + 
+					"			\"matchType\": \"exact\"\r\n" + 
+					"		}\r\n" + 
+					"	}\r\n" + 
+					"}\r\n" + 
+					"";
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -483,20 +512,18 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+			
+			List<JsonValue[]> jsonNameList = new ArrayList<>();
+			
+			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
+			for(int i =0;i<nameArray.length;i++) {
+				jsonNameList.add(getJsonValues(nameArray[i]));
+			}
 
-			demographicData.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getFirstName()));
-			demographicData.setMiddleName(getJsonValues(regProcessorIdentityJson.getIdentity().getMiddleName()));
-			demographicData.setLastName(getJsonValues(regProcessorIdentityJson.getIdentity().getLastName()));
-			demographicData.setFullName(getJsonValues(regProcessorIdentityJson.getIdentity().getFullName()));
-			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob()));
-			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender()));
-			demographicData.setAddressLine1(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine1()));
-			demographicData.setAddressLine2(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine2()));
-			demographicData.setAddressLine3(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine3()));
-			demographicData.setAddressLine4(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine4()));
-			demographicData.setAddressLine5(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine5()));
-			demographicData.setAddressLine6(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine6()));
-			demographicData.setZipcode(getJsonValues(regProcessorIdentityJson.getIdentity().getPincode()));
+			demographicData.setName(jsonNameList);
+			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
+			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
+			demographicData.setPheoniticName("12345");
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
