@@ -46,8 +46,8 @@ import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatListDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
@@ -191,8 +191,10 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private TemplateFileFormatService templateFileFormatService;
+	
+	private TemplateFileFormat templateFileFormat;
 
-	private List<TemplateFileFormat> templateFileFormatList;
+	// private List<TemplateFileFormat> templateFileFormatList;
 
 	private TemplateFileFormatRequestDto templateFileFormatRequestDto;
 
@@ -531,20 +533,21 @@ public class MasterDataServiceTest {
 	}
 
 	private void templateFileFormatSetup() {
-		TemplateFileFormat templateFileFormat = new TemplateFileFormat();
-		templateFileFormatList = new ArrayList<>();
+		templateFileFormat = new TemplateFileFormat();
+		// templateFileFormatList = new ArrayList<>();
 		templateFileFormat.setCode("xml");
 		templateFileFormat.setLangCode("ENG");
-		templateFileFormatList.add(templateFileFormat);
+		// templateFileFormatList.add(templateFileFormat);
 
 		templateFileFormatRequestDto = new TemplateFileFormatRequestDto();
-		TemplateFileFormatListDto request = new TemplateFileFormatListDto();
+		TemplateFileFormatData request = new TemplateFileFormatData();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
 		templateFileFormatDto.setLangCode("ENG");
-		List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
-		templateFileFormatDtos.add(templateFileFormatDto);
-		request.setTemplateFileFormatDtos(templateFileFormatDtos);
+		// List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
+		// templateFileFormatDtos.add(templateFileFormatDto);
+		// request.setTemplateFileFormatDtos(templateFileFormatDtos);
+		request.setTemplateFileFormat(templateFileFormatDto);
 		templateFileFormatRequestDto.setRequest(request);
 	}
 
@@ -1220,16 +1223,16 @@ public class MasterDataServiceTest {
 	// ------------------------------------TemplateFileFormatServiceTest---------------------------
 	@Test
 	public void addTemplateFileFormatSuccess() {
-		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any())).thenReturn(templateFileFormatList);
+		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		PostResponseDto postResponseDto = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
-		assertEquals(templateFileFormatList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
-		assertEquals(templateFileFormatList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+		CodeAndLanguageCodeId codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void addTemplateFileFormatInsertExceptionTest() {
-		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any()))
+		Mockito.when(templateFileFormatRepository.create(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
 	}
