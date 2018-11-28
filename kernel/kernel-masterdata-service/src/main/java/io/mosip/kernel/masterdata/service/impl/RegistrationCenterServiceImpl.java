@@ -76,6 +76,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(String registrationCenterId, int year,
 			String langCode) {
+		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
+		List<RegistrationCenter> registrationCenterEntity = new ArrayList<>();
 		RegistrationCenterHolidayDto registrationCenterHolidayResponse = null;
 		RegistrationCenterDto registrationCenterDto = null;
 		RegistrationCenter registrationCenter = null;
@@ -98,7 +100,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
+			//registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
+			registrationCenterEntity.add(registrationCenter);
+			//registrationCenterDto=
+					
+			registrationCenters=objectMapperUtil.mapRegistrationCenter(registrationCenterEntity);
+			registrationCenterDto=registrationCenters.get(0);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
 				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
