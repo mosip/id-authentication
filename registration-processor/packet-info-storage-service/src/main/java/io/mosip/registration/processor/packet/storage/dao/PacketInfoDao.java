@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
@@ -21,7 +24,9 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
-
+	@Autowired
+	private BasePacketRepository<RegCenterMachineEntity, RegCenterMachinePKEntity> regCenterMachineRepository;
+	
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
 	@Autowired
@@ -66,7 +71,20 @@ public class PacketInfoDao {
 		}
 		return regOsiDto;
 	}
-
+	
+	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
+		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
+		regCenterMachinePKEntity.setRegId(regid);
+		RegCenterMachineEntity regCenterMachineEntity=regCenterMachineRepository.findById(RegCenterMachineEntity.class, regCenterMachinePKEntity);
+		RegistrationCenterMachineDto dto=new RegistrationCenterMachineDto();
+		dto.setIsActive(regCenterMachineEntity.getIsActive());
+		dto.setLatitude(regCenterMachineEntity.getLatitude());
+		dto.setLongitude(regCenterMachineEntity.getLongitude());
+		dto.setRegcntrId(regCenterMachineEntity.getCntrId());
+		dto.setRegId(regCenterMachineEntity.getId().getRegId());
+		dto.setMachineId(regCenterMachineEntity.getMachineId());
+		return dto;
+	}
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
 		RegOsiDto regOsiDto = new RegOsiDto();
 		regOsiDto.setRegId(regOsiEntity.getId().getRegId());

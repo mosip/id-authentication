@@ -31,5 +31,14 @@ public enum ApiName {
 	REGSTATUS,
 	
 	/** The regsync. */
-	REGSYNC
+	REGSYNC,
+	
+	/** The machine history. */
+	MACHINEHISTORY,
+	
+	/** The center history. */
+	CENTERHISTORY,
+	
+	/** The center-machine-user history. */
+	CENTERUSERMACHINEHISTORY
 }

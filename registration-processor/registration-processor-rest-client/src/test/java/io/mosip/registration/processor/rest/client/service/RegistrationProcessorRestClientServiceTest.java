@@ -2,6 +2,8 @@ package io.mosip.registration.processor.rest.client.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +51,7 @@ public class RegistrationProcessorRestClientServiceTest {
 
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		Mockito.when(restApiClient.getApi(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(auditResponseDto);
-		AuditResponseDto resultDto = (AuditResponseDto) registrationProcessorRestClientService.getApi(ApiName.AUDIT,
+		AuditResponseDto resultDto = (AuditResponseDto) registrationProcessorRestClientService.getApi(ApiName.AUDIT,null,
 				"query1", "12345", AuditResponseDto.class);
 		assertEquals(true, resultDto.isStatus());
 	}
@@ -70,7 +72,8 @@ public class RegistrationProcessorRestClientServiceTest {
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
 		Mockito.when(restApiClient.getApi(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(exp);
-		registrationProcessorRestClientService.getApi(ApiName.AUDIT, "query1", "12345", AuditResponseDto.class);
+		
+		registrationProcessorRestClientService.getApi(ApiName.AUDIT,Arrays.asList("abc","def"), "query1", "12345", AuditResponseDto.class);
 	}
 	
 	@Test(expected = ApisResourceAccessException.class)
