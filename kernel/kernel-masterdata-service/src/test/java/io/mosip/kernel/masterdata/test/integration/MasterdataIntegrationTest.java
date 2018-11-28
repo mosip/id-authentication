@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.dto.GenderRequestDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
@@ -191,8 +192,11 @@ public class MasterdataIntegrationTest {
 	private LanguageRepository languageRepository;
 
 	private LanguageDto languageDto;
+	private GenderRequestDto genderTypeRequestDto;
 
 	private Language language;
+	
+	private GenderType genderType;
 
 	@Before
 	public void setUp() {
@@ -377,7 +381,7 @@ public class MasterdataIntegrationTest {
 	private void genderTypeSetup() {
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
-		GenderType genderType = new GenderType();
+		genderType = new GenderType();
 		genderId = new GenderTypeId();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
@@ -386,7 +390,6 @@ public class MasterdataIntegrationTest {
 		genderType.setCreatedtimes(null);
 		genderType.setIsDeleted(true);
 		genderType.setDeletedtimes(null);
-		genderType.setId(genderId);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Dom");
 		genderType.setUpdatedtimes(null);
@@ -1062,16 +1065,17 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentCategoryRepository.saveAll(Mockito.any())).thenReturn(entities);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentCategoryRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentCategoryRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
@@ -1109,4 +1113,14 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
+	
+	@Test
+	public void addGenderTypeTest() throws Exception {
+		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
+		when(genderTypeRepository.save(Mockito.any())).thenReturn(genderType);
+		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	
 }
