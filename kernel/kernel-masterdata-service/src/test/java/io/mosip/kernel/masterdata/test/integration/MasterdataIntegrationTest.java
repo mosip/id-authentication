@@ -15,7 +15,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +38,7 @@ import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -408,7 +408,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void saveLanguagesTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
+		String content = mapper
+				.writeValueAsString(new RequestDto<>("mosip.create.language", "1.0.0", null, languageDto));
 		when(languageRepository.create(Mockito.any())).thenReturn(language);
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
@@ -416,12 +417,11 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void saveLanguagesMasterDataServiceExceptionTest() throws Exception {
+	public void saveLanguagesExceptionTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
-		when(languageRepository.create(Mockito.any())).thenThrow(HibernateException.class);
+		String content = mapper.writeValueAsString(new RequestDto<>("mosip.create.language", "1.0.0", null, null));
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isBadRequest());
 
 	}
 
