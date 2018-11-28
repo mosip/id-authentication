@@ -30,7 +30,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.NotificationService;
 import io.mosip.registration.service.PacketHandlerService;
 import io.mosip.registration.service.TemplateService;
-import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
+import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -60,11 +60,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-	
-	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
+
+	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
@@ -90,7 +90,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	/**
-	 * @param stringWriter the stringWriter to set
+	 * @param stringWriter
+	 *            the stringWriter to set
 	 */
 	public void setStringWriter(Writer stringWriter) {
 		this.stringWriter = stringWriter;
@@ -103,9 +104,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				// get the mode of communication
-				
-				String notificationServiceName = String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-				
+
+				String notificationServiceName = String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+						.get(RegistrationConstants.MODE_OF_COMMUNICATION));
+
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					ResponseDTO responseDTO = null;
 
@@ -115,13 +117,14 @@ public class AckReceiptController extends BaseController implements Initializabl
 					String alert = RegistrationConstants.EMPTY;
 					if (!notificationTemplate.isEmpty()) {
 						// generate the notification template
-						Writer writeNotificationTemplate = velocityGenerator
-								.generateNotificationTemplate(notificationTemplate, getRegistrationData(), templateManagerBuilder);
+						Writer writeNotificationTemplate = templateGenerator.generateNotificationTemplate(
+								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
 						String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
 
-						if (!number.isEmpty() && notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+						if (!number.isEmpty()
+								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
 							// send sms
 							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
 									rid);
@@ -133,7 +136,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
 
-						if (!emailId.isEmpty() && notificationServiceName.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+						if (!emailId.isEmpty() && notificationServiceName
+								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 							// send email
 							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
 									rid);
@@ -147,7 +151,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 							String data = "Unable to send notification";
 							if (alert.equals("SMS")) {
 								data = "Unable to send SMS notification";
-							}else if(alert.equals("EMAIL")) {
+							} else if (alert.equals("EMAIL")) {
 								data = "Unable to send Email notification";
 							}
 							generateAlert(data);
@@ -190,7 +194,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		generateAlert("Success", AlertType.INFORMATION, "Packet Created Successfully!");
 		// Adding individual address to session context
-		if (response.getSuccessResponseDTO() != null && response.getSuccessResponseDTO().getMessage().equals("Success")) {
+		if (response.getSuccessResponseDTO() != null
+				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
 			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInUserLang().getAddressDTO();
 			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
 			addr.put("PrevAddress", addressDTO);
@@ -205,7 +210,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		generateAlert(RegistrationConstants.NOTIFICATION_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 				alertMessage);
 	}
-	
+
 	@FXML
 	public void goToNewRegistrationPage() {
 		packetController.createPacket();
