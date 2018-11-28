@@ -7,29 +7,13 @@ import lombok.Data;
 @Data
 @Component
 public class Identity {
-    private String middleName;
+	private IdentityJsonValues name;
+	
+	private IdentityJsonValues gender;
 
-    private String lastName;
+	private IdentityJsonValues dob;
+	
+	private IdentityJsonValues pheoniticName;
 
-    private String dob;
 
-    private String addressLine6;
-
-    private String gender;
-
-    private String addressLine5;
-
-    private String addressLine4;
-
-    private String fullName;
-
-    private String addressLine3;
-
-    private String firstName;
-
-    private String addressLine2;
-
-    private String addressLine1;
-    
-    private String pincode;
 }

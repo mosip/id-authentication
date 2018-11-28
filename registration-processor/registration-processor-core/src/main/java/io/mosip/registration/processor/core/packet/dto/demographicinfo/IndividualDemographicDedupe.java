@@ -1,34 +1,20 @@
 package io.mosip.registration.processor.core.packet.dto.demographicinfo;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 public class IndividualDemographicDedupe {
-	private JsonValue[] firstName;
-
-	private JsonValue[] middleName;
-
-	private JsonValue[] lastName;
-
-	private JsonValue[] fullName;
+	private List<JsonValue[]> name;
 
 	private JsonValue[] dateOfBirth;
 
 	private JsonValue[] gender;
+	
+	private String pheoniticName;
 
-	private JsonValue[] addressLine1;
 
-	private JsonValue[] addressLine2;
-
-	private JsonValue[] addressLine3;
-
-	private JsonValue[] addressLine4;
-
-	private JsonValue[] addressLine5;
-
-	private JsonValue[] addressLine6;
-
-	private JsonValue[] zipcode;
 
 
 }
