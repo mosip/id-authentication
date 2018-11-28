@@ -1,143 +1,23 @@
-![](media/image1.png){width="8.570833333333333in"
-height="3.1166666666666667in"}a
+Design - Packet Creation
 
-Copyright Information {#copyright-information .TOCHeading}
-=====================
+**Background**
 
-This document is the exclusive property of
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_; the recipient agrees that they may not
-copy, transmit, use or disclose the confidential and proprietary
-information in this document by any means without the expressed and
-written consent of Mindtree. By accepting a copy, the recipient agrees
-to adhere to these conditions to the confidentiality of
-\_\_\_\_\_\_\_\_\_\_\_\_\_ practices and procedures; and to use these
-documents solely for responding to \_\_\_\_\_\_\_\_\_\_\_\_\_\_
-operations methodology.
+As part of the registration process,RO will capture all the details of the 
+individual and the infomration called as packet should be stored in desired location. 
+The packet should be encrypted before saving into the location. 
+This docomuent illustrtaes about the which information we are capturing as part 
+of the packet and the encryption logic which we are using to encrypt the packet.
 
-Revision History {#revision-history .TOCHeading}
-================
 
-  **Ver**   **Change Description**   **Sections**       **Date**      **Author**              **Reviewer**
-  --------- ------------------------ ------------------ ------------- ----------------------- --------------
-  0.1       First Draft              All                24-Aug-18     Omsaieswar Mulakaluri   Karthik R
-  0.2       Second Draft             All                29-Aug-2018   Omsaieswar              Karthik R
-  0.3       Third Draft              Packet Structure   06-Sep-2018   Omsaieswar              Karthik R
+The **target users** are
 
-References {#references .TOCHeading}
-==========
+-   Supervisor
+-   Officer
+-   Registrtaion Processor
 
-+------+---------------+------+----------+
-| No   | Document Name | Ver. | Location |
-+======+===============+======+==========+
-| 1.   |               |      |          |
-+------+---------------+------+----------+
-| 2.   |               |      |          |
-+------+---------------+------+----------+
-| 3.   |               |      |          |
-+------+---------------+------+----------+
-| 4.   |               |      |          |
-+------+---------------+------+----------+
+The key **requirements** are
 
-Glossary {#glossary .TOCHeading}
-========
-
-  **Terminology**   **Definition**                                        **Remarks**
-  ----------------- ----------------------------------------------------- ------------------
-  EC                Enrollment Client / ID Issuance Client application.   
-  IDC               ID Issuance Client                                    Enrolment client
-  EO                Enrollment Officer                                    
-  ES                Enrollment Supervisor                                 
-                                                                          
-
-**\
-**
-
-Table of Contents {#table-of-contents .TOCHeading}
-=================
-
-[Copyright Information 2](#copyright-information)
-
-[Revision History 2](#revision-history)
-
-[References 2](#references)
-
-[Glossary 2](#glossary)
-
-[Table of Contents 3](#_Toc524000490)
-
-[Part A: Background 5](#part-a-background)
-
-[1 Introduction 5](#introduction)
-
-[1.1 Context 5](#context)
-
-[1.2 Purpose of this document 5](#purpose-of-this-document)
-
-[2 Scope 5](#scope)
-
-[2.1 Functional Scope 5](#functional-scope)
-
-[2.2 Non Functional Scope 6](#non-functional-scope)
-
-[2.3 Assumption 6](#assumption)
-
-[2.4 Out of Scope 7](#out-of-scope)
-
-[3 Technical Approach 7](#technical-approach)
-
-[3.1 Design Detail 7](#design-detail)
-
-[3.1.1 Packet Structure 9](#packet-structure)
-
-[3.1.2 Folder level Data: 10](#folder-level-data)
-
-[3.1.3 Entity Object Structure: 11](#entity-object-structure)
-
-[3.1.4 Validations: 11](#validations)
-
-[3.2 Class Diagram 11](#class-diagram)
-
-[3.3 Sequence Diagram 11](#sequence-diagram)
-
-[4 Success / Error Code 12](#success-error-code)
-
-[5 Dependency Modules 12](#dependency-modules)
-
-[6 Database - Tables 13](#database---tables)
-
-[7 User Story References 13](#user-story-references)
-
-[8 Pending Items / FAQ 13](#pending-items-faq)
-
-**\
-**
-
-Part A: Background {#part-a-background .PartHeader}
-==================
-
-Introduction
-============
-
-Context
--------
-
-MOSIP is developed as an open source framework project. The java
-standard design principles will be followed to design the component.
-
-Purpose of this document
-------------------------
-
-This document provides the low level technical design approach of a
-particular functionality in MOSIP Platform. It details out the in depth
-technical area of a particular scope.
-
-Scope
-=====
-
-Functional Scope
-----------------
-
--   Expose the API to create the Enrollment packet, where the data
+-   Expose the API to create the Registration packet, where the data
     captured in the ID Issuance client UI application should be stored.
 
 -   Packet should have the detail of:
@@ -150,28 +30,27 @@ Functional Scope
 
     -   Officer / Supervisor -- Bio-Metric
 
-    -   Enrollment Id.
+    -   Registration Id.
 
     -   Packet Metadata.
 
-    -   Enrollment Acknowledgement form.
+    -   Registration Acknowledgement form.
 
--   Enrollment packet should be stored in encrypted format in the local
+-   Registration packet should be stored in encrypted format in the local
     hard disk.
 
 -   Once the packet is created the same shouldn't be sent to the server
-    until it is approved by the Enrollment Supervisor.
+    until it is approved by the Registration Supervisor.
 
 -   The API should return the success / failure status code along with
     the respective message.
 
-Non Functional Scope
---------------------
+The key **non-functional requirements** are
 
 -   Security :
 
-    -   The Enrollment packet shouldn't be decryptable other than
-        Enrollment Server.
+    -   The Registration packet shouldn't be decryptable other than
+        Registration Server.
 
     -   Hash out the data -- the hash code of the data should be sent
         along with the packet.
@@ -180,7 +59,7 @@ Non Functional Scope
         encrypted.
 
     -   Un-encrypted data shouldn't be stored in local hard disk during
-        the creation of Enrollment packet.
+        the creation of Registration packet.
 
     -   The IDIS application able to get the RSA public key from Core
         Kernel module.
@@ -195,7 +74,7 @@ Non Functional Scope
 
 -   Cache :
 
-    -   Enrollment packet data shouldn't be cached and clear off all the
+    -   Registration packet data shouldn't be cached and clear off all the
         data from the JVM local memory once the packet is created in
         local hard disk.
 
@@ -215,7 +94,7 @@ Non Functional Scope
 
     -   The IDIS able to authenticate by using the Core Kernal module.
 
-    -   Maintain the Enrollment id, status and other high level info in
+    -   Maintain the Registration id, status and other high level info in
         the database table.
 
 -   Configuration:
@@ -223,57 +102,17 @@ Non Functional Scope
     -   Public Key -- the respective byte values will be present in the
         database table along with the expiry detail.
 
-    -   Before initiating the enrollment process, the key expiry to be
+    -   Before initiating the Registration process, the key expiry to be
         validated.
 
-Assumption
-----------
 
--   System should have enough space to create the packet at the desired
-    location.
+**Solution**
 
--   The valid Key file \[public\] will be present in the client machine.
+The detailed technical process for Registration packet creation is
+provided below:
 
--   This API should get the captured fingerprint, iris and authenticated
-    \[officer biometric\] information as an images bytes from the UI
-    client.
 
--   The UI client should follow the defined [DTO
-    structure](#entity-object-structure) while capturing the Enrollment
-    data from the Resident.
-
--   The Enrollment ID will be generated before invoking this Packet
-    creation process.
-
--   Every officer will have their own ID that will be used during AES
-    seed creation.
-
-Out of Scope
-------------
-
--   Validation of system space while creating the packet.
-
--   RSA Key pair generation and management.
-
--   Send the packet to the Enrollment server.
-
--   Archival of the Enrollment packet.
-
--   Enrollment ID creation.
-
--   Validating the request object provided by the UI client. \[will be
-    taken care in the next sprint\]
-
-Technical Approach
-==================
-
-Design Detail
--------------
-
-> The detailed technical process for Enrollment packet creation is
-> provided below:
->
-> **Packet API:**
+**Packet API:**
 
 -   Create a Java component as 'PacketHandler' with 'createPacket'
     method to accept the Defined [DTO
@@ -291,16 +130,15 @@ Design Detail
     location.
 
 -   Get the Demographic byte stream from the respective DTO object and
-    store it into the Zip object using right folder path \[....\].
+    store it into the Zip object using right folder path.
 
 -   Get the Biometric byte stream from the respective DTO object and
-    store it into the Zip object using right folder path \[....\].
+    store it into the Zip object using right folder path.
 
 -   Get the Proof of documents byte stream from the respective DTO
-    object and store it into the Zip object using right folder path
-    \[....\].
+    object and store it into the Zip object using right folder path.
 
--   Get the 'Enrollment ID' from the respective request object, write
+-   Get the 'Registration ID' from the respective request object, write
     the same into the File object and save the file object into the Zip
     object.
 
@@ -314,7 +152,7 @@ Design Detail
 -   Store the generated Hash in a file and append to the created Zip
     object.
 
--   Capture the Enrollment Officer/Supervisor Authentication finger
+-   Capture the Registration Officer/Supervisor Authentication finger
     image from the respective DTO object and append to the Zip object.
 
 -   Create the Packet Info JSON file, which contains the **Meta data**
@@ -330,9 +168,7 @@ Design Detail
 
     -   Pass the Random Session Key as a seed to this AES encryption.
 
-    -   Get the Enrollment Officer Id from user context object.
-
-    -   
+    -   Get the Registration Officer Id from user context object. 
 
 -   RSA Public Key Encryption:
 
@@ -360,34 +196,30 @@ Design Detail
 -   Timestamp format is \[DDMMYYYYHHMMSSS\]
 
 -   Once the packet has been successfully created then update the packet
-    information in the 'Enrollment' table.
+    information in the 'Registration' table.
 
-> **Client \[UI\] Application:**
+**Client \[UI\] Application:**
 
 -   Invoking client application should store all information about the
     resident as desired format of [DTO
     objects](#entity-object-structure).
 
--   Enrollment ID should have already been generated and pass it in the
-    EnrollmentDTO object.
+-   Registration ID should have already been generated and pass it in the
+    RegistrationDTO object.
 
--   Invoke the 'PacketHandler'.createPacket(EnrollmentDTO) method to
-    prepare the Enrollment packet at the configured location in local
+-   Invoke the 'PacketHandler'.createPacket(RegistrationDTO) method to
+    prepare the Registration packet at the configured location in local
     machine.
 
-> **Packet Archival:**
+**Packet Archival:**
 
--   Get the Packet status using the 'Enrollment packet status' reader
+-   Get the Packet status using the 'Registration packet status' reader
     REST service. If the status is UIN generated /Updated, we need to
-    update the same info to the database and clean the packet. {will be
-    taken care in the next sprint}
+    update the same info to the database and clean the packet. 
 
--   
+Packet Structure 
 
-### Packet Structure 
-
-> ![](media/image2.png){width="4.645833333333333in"
-> height="3.2096030183727033in"}
+	_images/packet_creation_overview.png
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -400,21 +232,18 @@ Design Detail
 
     -   HOF
 
--   **Biometric File: **
+	**Biometric File: **
 
-    ![cid:image006.jpg\@01D433FD.27942630](media/image3.jpeg){width="3.8541666666666665in"
-    height="1.7847222222222223in"}
+    _images/bioMetric_folder.png
 
--   **Demographic :**
+   **Demographic :**
 
-    ![](media/image4.png){width="3.8239621609798777in"
-    height="1.3680555555555556in"}
+    _images/demographic_folder.png
 
 ### Folder level Data: 
 
 1.  **Biometric**
 
-<!-- -->
 
 a.  Applicant
 
@@ -438,7 +267,6 @@ c.  Introducer
 
     -   **LeftThumb.jpg/png**
 
-<!-- -->
 
 2.  **Demographic **
 
@@ -454,29 +282,464 @@ c.  Introducer
 
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
 
-        -   Enrollment Acknowledgement.jpg
+        -   Registration Acknowledgement.jpg
 
     b.  Demographic\_info.json
+	
+					{
+				"identity": {
+					"firstName": [
+						{
+							"language": "ar",
+							"label": "الاسم الاول",
+							"value": "ابراهيم"
+						},
+						{
+							"language": "fr",
+							"label": "Prénom",
+							"value": "Ibrahim"
+						}
+					],
+					"middleName": [
+						{
+							"language": "ar",
+							"label": "الاسم الأوسط",
+							"value": "بن"
+						},
+						{
+							"language": "fr",
+							"label": "deuxième nom",
+							"value": "Ibn"
+						}
+					],
+					"lastName": [
+						{
+							"language": "ar",
+							"label": "الكنية",
+							"value": "علي"
+						},
+						{
+							"language": "fr",
+							"label": "nom de famille",
+							"value": "Ali"
+						}
+					],
+					"dateOfBirth": [
+						{
+							"language": "ar",
+							"label": "تاريخ الولادة",
+							"value": "16/04/1955"
+						},
+						{
+							"language": "fr",
+							"label": "date de naissance",
+							"value": "16/04/1955"
+						}
+					],
+					"gender": [
+						{
+							"language": "ar",
+							"label": "جنس",
+							"value": "الذكر"
+						},
+						{
+							"language": "fr",
+							"label": "le sexe",
+							"value": "mâle"
+						}
+					],
+					"addressLine1": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 1",
+							"value": "عنوان العينة سطر 1"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 1",
+							"value": "exemple d'adresse ligne 1"
+						}
+					],
+					"addressLine2": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 2",
+							"value": "عنوان العينة سطر 2"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 2",
+							"value": "exemple d'adresse ligne 2"
+						}
+					],
+					"addressLine3": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 3",
+							"value": "عنوان العينة سطر 3"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 3",
+							"value": "exemple d'adresse ligne 3"
+						}
+					],
+					"region": [
+						{
+							"language": "ar",
+							"label": "رمنطقة",
+							"value": "طنجة - تطوان - الحسيمة"
+						},
+						{
+							"language": "fr",
+							"label": "Région",
+							"value": "Tanger-Tétouan-Al Hoceima"
+						}
+					],
+					"province": [
+						{
+							"language": "ar",
+							"label": "المحافظة",
+							"value": "فاس-مكناس"
+						},
+						{
+							"language": "fr",
+							"label": "province",
+							"value": "Fès-Meknès"
+						}
+					],
+					"city": [
+						{
+							"language": "ar",
+							"label": "مدينة",
+							"value": "فاس-الدار البيضاء"
+						},
+						{
+							"language": "fr",
+							"label": "ville",
+							"value": "Casablanca"
+						}
+					],
+					"localAdministrativeAuthority": [
+						{
+							"language": "ar",
+							"label": "الهيئة الإدارية المحلية",
+							"value": "طنجة - تطوان - الحسيمة"
+						},
+						{
+							"language": "fr",
+							"label": "Autorité administrative locale",
+							"value": "Tanger-Tétouan-Al Hoceima"
+						}
+					],
+					"mobileNumber": [
+						{
+							"language": "ar",
+							"label": "رقم الهاتف المحمول",
+							"value": "+212-5398-12345"
+						},
+						{
+							"language": "fr",
+							"label": "numéro de portable",
+							"value": "+212-5398-12345"
+						}
+					],
+					"emailId": [
+						{
+							"language": "ar",
+							"label": "عنوان الايميل",
+							"value": "sample@samplamail.com"
+						},
+						{
+							"language": "fr",
+							"label": "identifiant email",
+							"value": "sample@samplamail.com"
+						}
+					],
+					"CNEOrPINNumber": [
+						{
+							"language": "ar",
+							"label": "رقم CNE / PIN",
+							"value": "AB453625"
+						},
+						{
+							"language": "fr",
+							"label": "Numéro CNE / PIN",
+							"value": "AB453625"
+						}
+					],
+					"parentOrGuardianName": [
+						{
+							"language": "ar",
+							"label": "اسم ولي الأمر / الوصي",
+							"value": "سلمى"
+						},
+						{
+							"language": "fr",
+							"label": "Nom du parent / tuteur",
+							"value": "salma"
+						}
+					],
+					"parentOrGuardianRIDOrUIN": [
+						{
+							"language": "ar",
+							"label": "الوالد / الوصي RID / UIN",
+							"value": "123456789123"
+						},
+						{
+							"language": "fr",
+							"label": "parent / tuteur RID / UIN",
+							"value": "123456789123"
+						}
+					]
+				}
+			}
 
-3.  **EnrollmentID.txt**
+3.  **RegistrationID.txt**
 
 4.  **HMAC File.txt **
 
 5.  **Packet\_MetaInfo.json **
+	
+				{
+			  "identity" : {
+				"biometric" : {
+				  "applicant" : {
+					"leftEye" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "LeftEye",
+					  "type" : "iris",
+					  "qualityScore" : 79.0,
+					  "numRetry" : 2,
+					  "forceCaptured" : false
+					},
+					"rightEye" : null,
+					"leftSlap" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "LeftPalm",
+					  "type" : "fingerprint",
+					  "qualityScore" : 80.0,
+					  "numRetry" : 3,
+					  "forceCaptured" : false
+					},
+					"rightSlap" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "RightPalm",
+					  "type" : "fingerprint",
+					  "qualityScore" : 95.0,
+					  "numRetry" : 2,
+					  "forceCaptured" : false
+					},
+					"thumbs" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "BothThumbs",
+					  "type" : "fingerprint",
+					  "qualityScore" : 85.0,
+					  "numRetry" : 0,
+					  "forceCaptured" : false
+					}
+				  },
+				  "introducer" : {
+					"introducerFingerprint" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "introducerLeftThumb",
+					  "type" : "fingerprint",
+					  "qualityScore" : 0.0,
+					  "numRetry" : 0,
+					  "forceCaptured" : false
+					},
+					"introducerIris" : null,
+					"introducerImage" : null
+				  }
+				},
+				"exceptionBiometrics" : [ {
+				  "language" : "en",
+				  "type" : "fingerprint",
+				  "missingBiometric" : "LeftThumb",
+				  "exceptionDescription" : "Due to accident",
+				  "exceptionType" : "Permananent"
+				}, {
+				  "language" : "en",
+				  "type" : "fingerprint",
+				  "missingBiometric" : "LeftForefinger",
+				  "exceptionDescription" : "Due to accident",
+				  "exceptionType" : "Permananent"
+				}, {
+				  "language" : "en",
+				  "type" : "iris",
+				  "missingBiometric" : "RightEye",
+				  "exceptionDescription" : "By birth",
+				  "exceptionType" : "Permananent"
+				} ],
+				"applicantPhotograph" : {
+				  "language" : "en",
+				  "label" : "label",
+				  "photographName" : "ApplicantPhoto",
+				  "numRetry" : 1,
+				  "qualityScore" : 89.0
+				},
+				"exceptionPhotograph" : {
+				  "language" : "en",
+				  "label" : "label",
+				  "photographName" : "ExceptionPhoto",
+				  "numRetry" : 0,
+				  "qualityScore" : 0.0
+				},
+				"documents" : [ {
+				  "documentName" : "ProofOfIdentity",
+				  "documentCategory" : "PoI",
+				  "documentOwner" : "Self",
+				  "documentType" : "PAN"
+				}, {
+				  "documentName" : "ProofOfAddress",
+				  "documentCategory" : "PoA",
+				  "documentOwner" : "hof",
+				  "documentType" : "passport"
+				}, {
+				  "documentName" : "RegistrationAcknowledgement",
+				  "documentCategory" : "RegistrationAcknowledgement",
+				  "documentOwner" : "Self",
+				  "documentType" : "RegistrationAcknowledgement"
+				} ],
+				"metaData" : [ {
+				  "label" : "geoLocLatitude",
+				  "value" : "13.0049"
+				}, {
+				  "label" : "geoLoclongitude",
+				  "value" : "80.24492"
+				}, {
+				  "label" : "registrationType",
+				  "value" : "Child"
+				}, {
+				  "label" : "applicantType",
+				  "value" : "New"
+				}, {
+				  "label" : "preRegistrationId",
+				  "value" : "PEN1345T"
+				}, {
+				  "label" : "registrationId",
+				  "value" : "2018782130000121112018103016"
+				}, {
+				  "label" : "registrationIdHash",
+				  "value" : "8ECBD20FB5D7561F265EB70613836780ACD3CFF1AF8CB1884C05F0B083D4ED38"
+				}, {
+				  "label" : "machineId",
+				  "value" : "yyeqy26356"
+				}, {
+				  "label" : "centerId",
+				  "value" : "12245"
+				}, {
+				  "label" : "uin",
+				  "value" : null
+				}, {
+				  "label" : "previousRID",
+				  "value" : null
+				}, {
+				  "label" : "introducerType",
+				  "value" : "Parent"
+				}, {
+				  "label" : "introducerRID",
+				  "value" : "2018234500321157812"
+				}, {
+				  "label" : "introducerRIDHash",
+				  "value" : "58086E976BA47A9F1A52099412665D8AF3FC587D946817553697E06A352D88E3"
+				}, {
+				  "label" : "introducerUIN",
+				  "value" : null
+				}, {
+				  "label" : "introducerUINHash",
+				  "value" : null
+				}, {
+				  "label" : "officerFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "officerIrisType",
+				  "value" : null
+				}, {
+				  "label" : "supervisorFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "supervisorIrisType",
+				  "value" : null
+				}, {
+				  "label" : "introducerFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "introducerIrisType",
+				  "value" : null
+				} ],
+				"osiData" : [ {
+				  "label" : "officerId",
+				  "value" : "op0r0s12"
+				}, {
+				  "label" : "officerFingerprintImage",
+				  "value" : "officerLeftThumb"
+				}, {
+				  "label" : "officerIrisImage",
+				  "value" : null
+				}, {
+				  "label" : "supervisorId",
+				  "value" : "s9ju2jhu"
+				}, {
+				  "label" : "supervisorFingerprintImage",
+				  "value" : "supervisorLeftThumb"
+				}, {
+				  "label" : "supervisorIrisImage",
+				  "value" : null
+				}, {
+				  "label" : "supervisorPassword",
+				  "value" : null
+				}, {
+				  "label" : "officerPassword",
+				  "value" : null
+				}, {
+				  "label" : "supervisorPIN",
+				  "value" : null
+				}, {
+				  "label" : "officerPIN",
+				  "value" : null
+				}, {
+				  "label" : "supervisorAuthenticationImage",
+				  "value" : null
+				}, {
+				  "label" : "officerAuthenticationImage",
+				  "value" : null
+				} ],
+				"hashSequence" : [ {
+				  "label" : "applicantBiometricSequence",
+				  "value" : [ "BothThumbs", "LeftPalm", "RightPalm", "LeftEye" ]
+				}, {
+				  "label" : "introducerBiometricSequence",
+				  "value" : [ "introducerLeftThumb" ]
+				}, {
+				  "label" : "applicantDemographicSequence",
+				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
+				} ],
+				"checkSum" : [ {
+				  "label" : "registration-service.jar",
+				  "value" : "65gfhab67586cjhsabcjk78"
+				}, {
+				  "label" : "registration-ui.jar",
+				  "value" : "uygdfajkdjkHHD56TJHASDJKA"
+				} ]
+			  }
+			}
+	
 
-6.  **Enrollment Officer Bio Image\[JPEG\]**
+6.  **Registration Officer Bio Image\[JPEG\]**
 
-7.  **Enrollment Supervisor Bio Image\[JPEG\]**
+7.  **Registration Supervisor Bio Image\[JPEG\]**
 
-8.  **Meta\_Info.json \[Outside of the encrypted Packet\]**
+**Packet DTO Structure**
 
-###  {#section .ListParagraph}
+	_images/PacketCreation.jpg
 
-### Entity Object Structure:
-
-> **Packet DTO Structure **
-
-### Validations:
+Validations:
 
 -   Verify the Packet decryption, but this not in our scope but as a
     demo we need to show.
@@ -486,99 +749,15 @@ c.  Introducer
 -   The packet structure should be validated.
 
 -   The packet name should be unique and the name of the packet
-    is\[EnrollmentID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
+    is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
 Class Diagram
 -------------
-
-> [**https://github.com/mosip/mosip/blob/DEV/design/registration/\_images/\_class\_diagram/registration-packetcreation-classDiagram.png**](https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-packetcreation-classDiagram.png)
+	_images/\_class\_diagram/registration-packetcreation-classDiagram.png
 
 Sequence Diagram
 ----------------
-
-> **https://github.com/mosip/mosip/blob/DEV/design/registration/\_images/\_sequence\_diagram/registration-packetcreation-sequenceDiagram.png
-> **
-
-**\
-**
-
-Success / Error Code 
-=====================
-
-> While processing the packet if there is any error or successfully
-> created the packet then send the respective Success or error code to
-> the UI from API layer as Response object.
-
-  **Code**          **Type**   **Message**
-  ----------------- ---------- -----------------------------------------
-  0000              Success    Packet Successfully created
-  IDC-FRA-PAC-001   Error      Unable zip the packet.
-  IDC-FRA-PAC-002   Error      No socket is available
-  IDC-FRA-PAC-003   Error      The host is unknown
-  IDC-FRA-PAC-004   Error      No such algorithm available for input
-  IDC-FRA-PAC-005   Error      No such padding available for input
-  IDC-FRA-PAC-006   Error      Invalid key for input
-  IDC-FRA-PAC-007   Error      Invalid parameter for the algorithm
-  IDC-FRA-PAC-008   Error      The block size is illegal for the input
-  IDC-FRA-PAC-009   Error      Bad padding for the input
-  IDC-FRA-PAC-010   Error      Invalid seeds for key generation
-  IDI-FRA-PAC-011   Error      IO exception
-  IDC-FRA-PAC-012   Error      Exception while parsing object to JSON
-  IDC-FRA-PAC-013   Error      Illegal key size for key generation
-  IDC-FRA-PAC-014   Error      Invalid key spec for input
-  IDC-FRA-PAC-015   Error      File not found for input path
-  IDC-FRA-PAC-016   Error      Input-output relation failed
-  IDC-FRA-PAC-017   Error      Class not found for input
-
-> **[Audit LOG]{.underline}:** Following status should be logged into
-> the Audit Manager while processing the packets**.**
-
-  **Type**            **Description**
-  ------------------- ---------------------------------------
-  Success             Packet Successfully created.
-  Encrypted           Packet Encrypted Successfully
-  Uploaded            Packet Uploaded Successfully
-  Synched to Server   Packet Synched to Server Successfully
-  Deleted             Packet Deleted Successfully
-  Approved            Packet approved Successfully
-  Rejected            Packet Rejected Successfully
-  Hold                Packet Hold on particular stage
-  Internal Error      Packet creation Error
-                      
-
-> **DB Packet Table \[Status code and description\]: **
-
-  **Code \[Status\_Code\]**   **Description**
-  --------------------------- --------------------------------------------
-  C                           Packet Encrypted and successfully created.
-  U                           Packet Uploaded Successfully
-  S                           Packet Meta information synched to server
-  D                           Packet Deleted
-  A                           Packet approved
-  R                           Packet Rejected
-  H                           Packet Hold on particular stage
-  E                           Packet errors\[ Ex : Virus scanner error\]
-                              
-
-Dependency Modules
-==================
-
-  **Component Name**   **Module Name**   **Description**
-  -------------------- ----------------- ---------------------------------------------------------------
-  Audit Manager        Kernel            To audit the process while creating the packet.
-  Exception Manager    Kernel            To prepare the user defined exception and render to the user.
-  Log                  Kernel            To log the process.
-  JOSN Utility         Kernel            To convert the object to JSON structure
-  ZIP Utility          Kernel            To convert the packet structure to ZIP
-  Encryption           Kernel            Encrypt the packet information using AES and RSA
-  Key Generator        Kernel            To get the generated public key
-
-Database - Tables
-=================
-
-1.  PACKET -- table
-
-    Structure:
+	_images/\_sequence\_diagram/registration-packetcreation-sequenceDiagram.png
 
 User Story References
 =====================
@@ -588,60 +767,3 @@ User Story References
   **MOS-64**           <https://mosipid.atlassian.net/browse/MOS-64>
   **MOS-65**           <https://mosipid.atlassian.net/browse/MOS-65>
 
-Pending Items / FAQ
-===================
-
-1.  Is there any new file will be appended to the encrypted packet,
-    which contains the EO's information?
-
-    Comment: Yes \[Meta\_Info.json\]
-
-2.  What is the maximum number of packets we can save in in-memory?
-
-    Comment: 1 \[Because we may save the packet in to the machine
-    location, and the offline save packet counts should be 1001 in
-    offline\]
-
-3.  If the System crashes, how we are going to recover these packets?
-
-    Comment: Consultancy has to inform the **Resident** to come over and
-    submit once again
-
-4.  Is the supervisor immediately verify the resident information?
-
-    Comment: EOD process
-
-5.  Is the supervisor comes to each machine and verify the packets?
-
-    Comment: Yes
-
-6.  Enrolment ID generation and packet file name?
-
-    Comment: The packet file name is unique \[Enrollment ID + Timestamp
-    \[DDMMYYYYHHMMSS\]
-
-    Ex File Name: Enrollement ID\_TimeStamp
-
-    Length of Enrollment ID: 14 digit
-
-    Length of Timestamp: 14 digit.
-
-7.  UIN information stored in client DB?
-
-    Comment: No
-
-8.  Is there possibility that the Resident can enroll in one machine and
-    go for EID correction or UIN updating in another machine?
-
-    Comment: Yes, the Resident can go but we need to maintain the
-    enrollment ID/ UIN information as part of the "PacketMeta" info and
-    need to maintain the packet status \[ex: created/updated...\]
-
-    File Name: New packet will be created with the updated information.
-
-9.  How and when to push the packet to the server to be decided? If we
-    use the Export option then manual intervention in required to push
-    the packet. So, raised the concern to get the update on this
-    process..
-
-10. Where to maintain the Public key provided by the Server application?

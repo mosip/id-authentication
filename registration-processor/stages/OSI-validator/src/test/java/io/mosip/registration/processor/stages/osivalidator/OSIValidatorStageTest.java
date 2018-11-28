@@ -144,6 +144,7 @@ public class OSIValidatorStageTest {
 		regOsiDto.setIntroducerFingerpImageName("introducerFingerpImageName");
 		regOsiDto.setIntroducerFingerpType("RIGHTRING");
 		regOsiDto.setIntroducerIrisImageName("IntroducerIrisImageName");
+		regOsiDto.setIntroducerPhotoName("IntroducerPhotoName");
 		regOsiDto.setIntroducerIrisType("RIGHTEYE");
 
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
@@ -278,7 +279,7 @@ public class OSIValidatorStageTest {
 		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
 		regOsiDto.setIntroducerFingerpImageName(null);
 		regOsiDto.setIntroducerIrisImageName(null);
-
+		regOsiDto.setIntroducerPhotoName(null);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
 		MessageDTO messageDto = osiValidatorStage.process(dto);
