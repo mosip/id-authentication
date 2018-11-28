@@ -195,7 +195,7 @@ public class MasterdataIntegrationTest {
 	private GenderRequestDto genderTypeRequestDto;
 
 	private Language language;
-	
+
 	private GenderType genderType;
 
 	@Before
@@ -883,7 +883,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenReturn(new ArrayList<RegistrationCenter>());
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -893,8 +893,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
-				.thenThrow(DataAccessLayerException.class);
+		when(registrationCenterRepository.findAll(RegistrationCenter.class)).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -960,8 +959,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCenterTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
-				.thenReturn(registrationCenters);
+		when(registrationCenterRepository.findAll(RegistrationCenter.class)).thenReturn(registrationCenters);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
@@ -1113,7 +1111,9 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
+	// -----------------------------------gender-type----------------------------------------
+
 	@Test
 	public void addGenderTypeTest() throws Exception {
 		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
@@ -1121,6 +1121,15 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
-	
+
+	@Test
+	public void addGenderTypeExceptionTest() throws Exception {
+
+		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
+		when(genderTypeRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+
+	}
+
 }

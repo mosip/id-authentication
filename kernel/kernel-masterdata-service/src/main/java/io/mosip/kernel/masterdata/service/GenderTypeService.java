@@ -26,7 +26,14 @@ public interface GenderTypeService {
 	 * @return all gender types for the given language code
 	 */
 	GenderTypeResponseDto getGenderTypeByLanguageCode(String languageCode);
-	
+
+	/**
+	 * Method to add a gender type
+	 * 
+	 * @param genderRequestDto
+	 *            input column parameters to add gender data
+	 * @return added row of gender type
+	 */
 	GenderTypeResponseDto saveGenderType(GenderRequestDto genderRequestDto);
 
 }
