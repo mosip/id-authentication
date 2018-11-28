@@ -1,16 +1,16 @@
-package io.mosip.authentication.service.integration;
+package io.mosip.authentication.core.dto.indauth;
 
 /**
  * 
  * @author Dinesh Karuppiah.T
  */
-public enum SenderType {
+public enum NotificationType {
 
-	AUTH("auth"), OTP("otp");
+	EMAIL("email"), SMS("sms");
 
 	private String name;
 
-	SenderType(String name) {
+	NotificationType(String name) {
 		this.name = name;
 	}
 
