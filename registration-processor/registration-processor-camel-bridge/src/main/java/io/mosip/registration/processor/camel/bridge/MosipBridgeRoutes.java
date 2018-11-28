@@ -42,14 +42,23 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 
-		// OSI validation to quality check
+		// OSI validation to demo dedupe stage routing
 		from(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)).process(validateStructure).choice()
 				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+		
+		//DemoDedupe to quality check
+		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)).process(validateStructure).choice()
+		.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
+		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 
 		// Demographic validation to Biometric validation routing
 		/*

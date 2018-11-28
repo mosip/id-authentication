@@ -97,5 +97,11 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant STRUCTURE_BUS_OUT. */
 	public static final MessageBusAddress OSI_BUS_OUT = new MessageBusAddress("osi-bus-out");
+	
+	/** The Constant DEMODEDUPE_BUS_IN. */
+	public static final MessageBusAddress DEMODEDUPE_BUS_IN = new MessageBusAddress("demodedupe-bus-in");
 
+	/** The Constant DEMODEDUPE_BUS_OUT. */
+	public static final MessageBusAddress DEMODEDUPE_BUS_OUT = new MessageBusAddress("demodedupe-bus-out");
+	
 }
