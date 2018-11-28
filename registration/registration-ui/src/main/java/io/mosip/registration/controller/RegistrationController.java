@@ -278,11 +278,9 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button porScanBtn;
 
-	  @FXML
+	@FXML
 	private AnchorPane fingerPrintCapturePane;
-	
-												
-												
+
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
@@ -292,8 +290,8 @@ public class RegistrationController extends BaseController {
 	private void initialize() {
 
 		try {
-			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					"Entering the LOGIN_CONTROLLER");
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 
 			if (capturePhotoUsingDevice.equals("Y")) {
 				defaultImage = applicantImage.getImage();
@@ -341,7 +339,6 @@ public class RegistrationController extends BaseController {
 			}
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-																																			
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
@@ -352,62 +349,73 @@ public class RegistrationController extends BaseController {
 	 * This method is to prepopulate all the values for edit operation
 	 */
 	private void prepareEditPageContent() {
-		DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
-		DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
-		AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
-		LocationDTO locationDTO = addressDTO.getLocationDTO();
-		fullName.setText(demographicInfoDTO.getFullName());
-		if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
-			ageDatePicker.setValue(ageDatePickerContent.getValue());
-		} else {
-			switchedOn.set(true);
-			ageDatePicker.setDisable(true);
-			ageField.setDisable(false);
-			ageField.setText(demographicInfoDTO.getAge());
+			DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
+			DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
 
-		}
-		gender.setValue(demographicInfoDTO.getGender());
-		addressLine1.setText(addressDTO.getAddressLine1());
-		addressLine2.setText(addressDTO.getAddressLine2());
-		addressLine3.setText(addressDTO.getAddressLine3());
-		province.setText(locationDTO.getProvince());
-		city.setText(locationDTO.getCity());
-		region.setText(locationDTO.getRegion());
-		postalCode.setText(locationDTO.getPostalCode());
-		mobileNo.setText(demographicInfoDTO.getMobile());
-		emailId.setText(demographicInfoDTO.getEmailId());
-		cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
-		localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
-		if (demographicDTO.getIntroducerRID() != null) {
-			uinId.setText(demographicDTO.getIntroducerRID());
-		} else {
-			uinId.setText(demographicDTO.getIntroducerUIN());
-		}
-		parentName.setText(demographicInfoDTO.getParentOrGuardianName());
-		preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
+			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
+			LocationDTO locationDTO = addressDTO.getLocationDTO();
+			fullName.setText(demographicInfoDTO.getFullName());
+			if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
+				ageDatePicker.setValue(ageDatePickerContent.getValue());
+			} else {
+				switchedOn.set(true);
+				ageDatePicker.setDisable(true);
+				ageField.setDisable(false);
+				ageField.setText(demographicInfoDTO.getAge());
 
-		// for applicant biometrics
-		if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
-			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
-				byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
-				if (photoInBytes != null) {
-					ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
-					applicantImage.setImage(new Image(byteArrayInputStream));
+			}
+			gender.setValue(demographicInfoDTO.getGender());
+			addressLine1.setText(addressDTO.getAddressLine1());
+			addressLine2.setText(addressDTO.getAddressLine2());
+			addressLine3.setText(addressDTO.getAddressLine3());
+			province.setText(locationDTO.getProvince());
+			city.setText(locationDTO.getCity());
+			region.setText(locationDTO.getRegion());
+			postalCode.setText(locationDTO.getPostalCode());
+			mobileNo.setText(demographicInfoDTO.getMobile());
+			emailId.setText(demographicInfoDTO.getEmailId());
+			cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
+			localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
+			if (demographicDTO.getIntroducerRID() != null) {
+				uinId.setText(demographicDTO.getIntroducerRID());
+			} else {
+				uinId.setText(demographicDTO.getIntroducerUIN());
+			}
+			parentName.setText(demographicInfoDTO.getParentOrGuardianName());
+			preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
+
+			// for applicant biometrics
+			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
+				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+					byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+							.getPhoto();
+					if (photoInBytes != null) {
+						ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+						applicantImage.setImage(new Image(byteArrayInputStream));
+					}
+				}
+				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
+					byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+							.getExceptionPhoto();
+					if (exceptionPhotoInBytes != null) {
+						ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
+						exceptionImage.setImage(new Image(inputStream));
+					}
 				}
 			}
-			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
-				byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
-						.getExceptionPhoto();
-				if (exceptionPhotoInBytes != null) {
-					ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
-					exceptionImage.setImage(new Image(inputStream));
-				}
-			}
+			isEditPage = false;
+			ageFieldValidations();
+			ageValidationInDatePicker();
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
-		isEditPage = false;
-		ageFieldValidations();
-		ageValidationInDatePicker();
+
 	}
 
 	/**
@@ -415,19 +423,24 @@ public class RegistrationController extends BaseController {
 	 * Loading the address detail from previous entry
 	 * 
 	 */
-
 	@FXML
 	private void loadAddressFromPreviousEntry() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Loading address from previous entry");
-		LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
-		region.setText(locationDto.getRegion());
-		city.setText(locationDto.getCity());
-		province.setText(locationDto.getProvince());
-		postalCode.setText(locationDto.getPostalCode());
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
+
+			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
+					.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
+			region.setText(locationDto.getRegion());
+			city.setText(locationDto.getCity());
+			province.setText(locationDto.getProvince());
+			postalCode.setText(locationDto.getPostalCode());
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - LOADING ADDRESS FROM PREVIOUS ENTRY FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
@@ -437,16 +450,21 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void gotoSecondDemographicPane() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Loading the second demographic pane");
-		if (validateDemographicPaneOne()) {
-			demoGraphicTitlePane.setContent(null);
-			demoGraphicTitlePane.setExpanded(false);
-			demoGraphicTitlePane.setContent(demoGraphicPane2);
-			demoGraphicTitlePane.setExpanded(true);
-			anchorPaneRegistration.setMaxHeight(700);
-		}
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loading the second demographic pane");
 
+			if (validateDemographicPaneOne()) {
+				demoGraphicTitlePane.setContent(null);
+				demoGraphicTitlePane.setExpanded(false);
+				demoGraphicTitlePane.setContent(demoGraphicPane2);
+				demoGraphicTitlePane.setExpanded(true);
+				anchorPaneRegistration.setMaxHeight(700);
+			}
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
@@ -456,59 +474,35 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
+		try {
+			keyboardNode.setLayoutX(300.00);
+			Node node = (Node) event.getSource();
 
-		keyboardNode.setLayoutX(300.00);
-		Node node = (Node) event.getSource();
+			if (node.getId().equals("addressLine1")) {
+				addressLine1LocalLanguage.requestFocus();
+				keyboardNode.setLayoutY(270.00);
+			}
 
-		if (node.getId().equals("addressLine1")) {
-			addressLine1LocalLanguage.requestFocus();
-			keyboardNode.setLayoutY(270.00);
+			if (node.getId().equals("addressLine2")) {
+				addressLine2LocalLanguage.requestFocus();
+				keyboardNode.setLayoutY(320.00);
+			}
+
+			if (node.getId().equals("addressLine3")) {
+				addressLine3LocalLanguage.requestFocus();
+				keyboardNode.setLayoutY(375.00);
+			}
+
+			if (node.getId().equals("fullName")) {
+				fullNameLocalLanguage.requestFocus();
+				keyboardNode.setLayoutY(120.00);
+			}
+
+			keyboardNode.setVisible(true);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
-
-		if (node.getId().equals("addressLine2")) {
-			addressLine2LocalLanguage.requestFocus();
-			keyboardNode.setLayoutY(320.00);
-		}
-
-		if (node.getId().equals("addressLine3")) {
-			addressLine3LocalLanguage.requestFocus();
-			keyboardNode.setLayoutY(375.00);
-		}
-
-		if (node.getId().equals("fullName")) {
-	
-	
-								 
-										   
-							   
-			fullNameLocalLanguage.requestFocus();
-			keyboardNode.setLayoutY(120.00);
-  
-
-		}
-
-											 
-	
-	
-								 
-										   
-							   
-							   
-								
-  
-		keyboardNode.setVisible(true);
-	
-
-										
-	
-	
-							  
-									   
-							   
-							   
-								
-  
-
 	}
 
 	/**
@@ -518,112 +512,107 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void saveDetail() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
-		RegistrationDTO registrationDTO = new RegistrationDTO();
-		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		LocationDTO locationDTO = new LocationDTO();
-		AddressDTO addressDTO = new AddressDTO();
-		DemographicDTO demographicDTO = new DemographicDTO();
-		OSIDataDTO osiDataDTO = new OSIDataDTO();
-		if (validateDemographicPaneTwo()) {
-			demographicInfoDTO.setFullName(fullName.getText());
-			if (ageDatePicker.getValue() != null) {
-				demographicInfoDTO.setDateOfBirth(
-						Date.from(ageDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-			}
-			demographicInfoDTO.setAge(ageField.getText());
-			demographicInfoDTO.setGender(gender.getValue());
-			addressDTO.setAddressLine1(addressLine1.getText());
-			addressDTO.setAddressLine2(addressLine2.getText());
-			addressDTO.setLine3(addressLine3.getText());
-			locationDTO.setProvince(province.getText());
-			locationDTO.setCity(city.getText());
-			locationDTO.setRegion(region.getText());
-			locationDTO.setPostalCode(postalCode.getText());
-			addressDTO.setLocationDTO(locationDTO);
-			demographicInfoDTO.setAddressDTO(addressDTO);
-			demographicInfoDTO.setMobile(mobileNo.getText());
-			demographicInfoDTO.setEmailId(emailId.getText());
-			demographicInfoDTO.setChild(isChild);
-			demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
-			demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
-			if (isChild) {
-				if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
-					demographicDTO.setIntroducerRID(uinId.getText());
-				} else {
-					demographicDTO.setIntroducerUIN(uinId.getText());
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
+
+			RegistrationDTO registrationDTO = new RegistrationDTO();
+			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+			LocationDTO locationDTO = new LocationDTO();
+			AddressDTO addressDTO = new AddressDTO();
+			DemographicDTO demographicDTO = new DemographicDTO();
+			OSIDataDTO osiDataDTO = new OSIDataDTO();
+			if (validateDemographicPaneTwo()) {
+				demographicInfoDTO.setFullName(fullName.getText());
+				if (ageDatePicker.getValue() != null) {
+					demographicInfoDTO.setDateOfBirth(Date
+							.from(ageDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 				}
-				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-				demographicInfoDTO.setParentOrGuardianName(parentName.getText());
+				demographicInfoDTO.setAge(ageField.getText());
+				demographicInfoDTO.setGender(gender.getValue());
+				addressDTO.setAddressLine1(addressLine1.getText());
+				addressDTO.setAddressLine2(addressLine2.getText());
+				addressDTO.setLine3(addressLine3.getText());
+				locationDTO.setProvince(province.getText());
+				locationDTO.setCity(city.getText());
+				locationDTO.setRegion(region.getText());
+				locationDTO.setPostalCode(postalCode.getText());
+				addressDTO.setLocationDTO(locationDTO);
+				demographicInfoDTO.setAddressDTO(addressDTO);
+				demographicInfoDTO.setMobile(mobileNo.getText());
+				demographicInfoDTO.setEmailId(emailId.getText());
+				demographicInfoDTO.setChild(isChild);
+				demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
+				demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
+				if (isChild) {
+					if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+						demographicDTO.setIntroducerRID(uinId.getText());
+					} else {
+						demographicDTO.setIntroducerUIN(uinId.getText());
+					}
+					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+					demographicInfoDTO.setParentOrGuardianName(parentName.getText());
+				}
+				demographicDTO.setDemoInUserLang(demographicInfoDTO);
+				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
+
+				// local language
+				demographicInfoDTO = new DemographicInfoDTO();
+				locationDTO = new LocationDTO();
+				addressDTO = new AddressDTO();
+				addressDTO.setLocationDTO(locationDTO);
+				demographicInfoDTO.setAddressDTO(addressDTO);
+				demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
+				addressDTO.setAddressLine1(addressLine1LocalLanguage.getText());
+				addressDTO.setAddressLine2(addressLine2LocalLanguage.getText());
+				addressDTO.setLine3(addressLine3LocalLanguage.getText());
+
+				demographicDTO.setDemoInLocalLang(demographicInfoDTO);
+
+				registrationDTO.setPreRegistrationId(preRegistrationId.getText());
+				registrationDTO.setOsiDataDTO(osiDataDTO);
+				registrationDTO.setDemographicDTO(demographicDTO);
+
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
+
+				registrationDTOContent = registrationDTO;
+				if (ageDatePicker.getValue() != null) {
+					ageDatePickerContent = new DatePicker();
+					ageDatePickerContent.setValue(ageDatePicker.getValue());
+				}
+
+				biometricTitlePane.setExpanded(true);
+				// TODO : load fxml
+
+				try {
+					Parent pendingActionRoot = BaseController
+							.load(getClass().getResource("/fxml/FingerPrintCapture.fxml"));
+					ObservableList<Node> approvalNodes = fingerPrintCapturePane.getChildren();
+					approvalNodes.add(pendingActionRoot);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				if (capturePhotoUsingDevice.equals("N")) {
+					biometricsNext.setDisable(false);
+				}
 			}
-			demographicDTO.setDemoInUserLang(demographicInfoDTO);
-			osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
-
-			// local language
-			demographicInfoDTO = new DemographicInfoDTO();
-			locationDTO = new LocationDTO();
-			addressDTO = new AddressDTO();
-			addressDTO.setLocationDTO(locationDTO);
-			demographicInfoDTO.setAddressDTO(addressDTO);
-			demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
-			addressDTO.setAddressLine1(addressLine1LocalLanguage.getText());
-			addressDTO.setAddressLine2(addressLine2LocalLanguage.getText());
-			addressDTO.setLine3(addressLine3LocalLanguage.getText());
-
-			demographicDTO.setDemoInLocalLang(demographicInfoDTO);
-
-			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
-			registrationDTO.setOsiDataDTO(osiDataDTO);
-			registrationDTO.setDemographicDTO(demographicDTO);
-
-			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					"Saved the demographic fields to DTO");
-
-			registrationDTOContent = registrationDTO;
-			if (ageDatePicker.getValue() != null) {
-				ageDatePickerContent = new DatePicker();
-				ageDatePickerContent.setValue(ageDatePicker.getValue());
-			}
-
-			biometricTitlePane.setExpanded(true);
-   //TODO : load fxml
-			
-
-			try {
-				Parent pendingActionRoot = BaseController
-						.load(getClass().getResource("/fxml/FingerPrintCapture.fxml"));
-				ObservableList<Node> approvalNodes = fingerPrintCapturePane.getChildren();
-				approvalNodes.add(pendingActionRoot);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			
-									 
-	
-   
-  
-
-	  
-								  
-										 
-  
-
-	
-	
-
-	
-			if (capturePhotoUsingDevice.equals("N")) {
-				biometricsNext.setDisable(false);
-			}
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
 
 	@FXML
 	private void goToPreviousPane() {
-		demoGraphicTitlePane.setExpanded(true);
+		try {
+			demoGraphicTitlePane.setExpanded(true);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
@@ -654,7 +643,7 @@ public class RegistrationController extends BaseController {
 	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 		try {
 			Stage primaryStage = new Stage();
@@ -669,14 +658,14 @@ public class RegistrationController extends BaseController {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					ioException.getMessage());
+			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
 
 	@Override
 	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType) {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
@@ -693,7 +682,7 @@ public class RegistrationController extends BaseController {
 
 	@Override
 	public void clearPhoto(String photoType) {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "clearing the image that is captured");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && applicantBufferedImage != null) {
@@ -708,7 +697,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void saveBiometricDetails() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 
 		if (capturePhotoUsingDevice.equals("Y")) {
@@ -735,14 +724,14 @@ public class RegistrationController extends BaseController {
 						applicantDocumentDTO.setHasExceptionPhoto(false);
 					}
 					registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
-					LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
 
 					setPreviewContent();
 					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} catch (IOException ioException) {
-					LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-							ioException.getMessage());
+					LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 				}
 			}
 
@@ -751,8 +740,8 @@ public class RegistrationController extends BaseController {
 				setPreviewContent();
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						ioException.getMessage());
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 			}
 		}
 
@@ -775,7 +764,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	private boolean validateApplicantImage() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
 		boolean imageCaptured = false;
@@ -806,178 +795,17 @@ public class RegistrationController extends BaseController {
 	 * Validating the age field for the child/Infant check.
 	 */
 	public void ageValidationInDatePicker() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the age given by DatePiker");
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating the age given by DatePiker");
 
-		if (ageDatePicker.getValue() != null) {
-			LocalDate selectedDate = ageDatePicker.getValue();
-			Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			long ageInMilliSeconds = new Date().getTime() - date.getTime();
-			long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMilliSeconds);
-			int age = (int) ageInDays / 365;
-			if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-				childSpecificFields.setVisible(true);
-				isChild = true;
-				documentFields.setLayoutY(134.00);
-			} else {
-				isChild = false;
-				childSpecificFields.setVisible(false);
-				documentFields.setLayoutY(25.00);
-			}
-		}
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validated the age given by DatePiker");
-	}
-
-	/**
-	 * Disabling the future days in the date picker calendar.
-	 */
-	private void disableFutureDays() {
-		ageDatePicker.setDayCellFactory(picker -> new DateCell() {
-			@Override
-			public void updateItem(LocalDate date, boolean empty) {
-				super.updateItem(date, empty);
-				LocalDate today = LocalDate.now();
-
-				setDisable(empty || date.compareTo(today) > 0);
-			}
-		});
-
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Future dates disabled");
-	}
-
-	/**
-	 * Populating the user language fields to local language fields
-	 */
-	private void populateTheLocalLangFields() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Populating the local language fields");
-		fullName.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-					final String newValue) {
-				if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-					generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
-	 
-					fullName.setText(fullName.getText().replaceAll("\\d+", ""));
-					fullName.requestFocus();
-				} else {
-					fullNameLocalLanguage.setText(fullName.getText());
-				}
-			}
-		});
-
-		addressLine1.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-					final String newValue) {
-				addressLine1LocalLanguage.setText(addressLine1.getText());
-			}
-		});
-
-		addressLine2.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-					final String newValue) {
-				addressLine2LocalLanguage.setText(addressLine2.getText());
-			}
-		});
-
-		addressLine3.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-					final String newValue) {
-				addressLine3LocalLanguage.setText(addressLine3.getText());
-			}
-		});
-	}
-
-	/**
-	 * To restrict the user not to enter any values other than integer values.
-	 */
-	private void loadLanguageSpecificKeyboard() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Loading the local language keyboard");
-		addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-				if (oldValue) {
-					keyboardNode.setVisible(false);
-				}
-
-			}
-		});
-
-		addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-				if (oldValue) {
-					keyboardNode.setVisible(false);
-				}
-
-			}
-		});
-
-		addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-				if (oldValue) {
-					keyboardNode.setVisible(false);
-				}
-
-			}
-		});
-
-		fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-				if (oldValue) {
-					keyboardNode.setVisible(false);
-				}
-
-			}
-		});
-
-	}
-
-	/**
-	 * To restrict the user not to enter any values other than integer values.
-	 */
-	private void ageFieldValidations() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Validating the age given by age field");
-		ageField.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-					final String newValue) {
-				if (ageField.getText().length() > 2) {
-					String age = ageField.getText().substring(0, 2);
-					ageField.setText(age);
-				}
-				if (!newValue.matches("\\d*")) {
-					ageField.setText(newValue.replaceAll("[^\\d]", ""));
-				}
-			}
-		});
-		ageField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
-					Boolean newPropertyValue) {
-				int ageValue = 0;
-				if (!newPropertyValue && !ageField.getText().equals("")) {
-					ageValue = Integer.parseInt(ageField.getText());
-				}
-				if (ageValue < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))
-						&& ageValue != 0) {
+			if (ageDatePicker.getValue() != null) {
+				LocalDate selectedDate = ageDatePicker.getValue();
+				Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				long ageInMilliSeconds = new Date().getTime() - date.getTime();
+				long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMilliSeconds);
+				int age = (int) ageInDays / 365;
+				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 					isChild = true;
 					documentFields.setLayoutY(134.00);
@@ -987,60 +815,254 @@ public class RegistrationController extends BaseController {
 					documentFields.setLayoutY(25.00);
 				}
 			}
-		});
-		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Validating the age given by age field");
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validated the age given by DatePiker");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - VALIDATION OF AGE FOR DATEPICKER FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * Disabling the future days in the date picker calendar.
+	 */
+	private void disableFutureDays() {
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Disabling future dates");
+
+			ageDatePicker.setDayCellFactory(picker -> new DateCell() {
+				@Override
+				public void updateItem(LocalDate date, boolean empty) {
+					super.updateItem(date, empty);
+					LocalDate today = LocalDate.now();
+
+					setDisable(empty || date.compareTo(today) > 0);
+				}
+			});
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Future dates disabled");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * Populating the user language fields to local language fields
+	 */
+	private void populateTheLocalLangFields() {
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
+			fullName.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
+						generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+
+						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
+						fullName.requestFocus();
+					} else {
+						fullNameLocalLanguage.setText(fullName.getText());
+					}
+				}
+			});
+
+			addressLine1.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					addressLine1LocalLanguage.setText(addressLine1.getText());
+				}
+			});
+
+			addressLine2.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					addressLine2LocalLanguage.setText(addressLine2.getText());
+				}
+			});
+
+			addressLine3.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					addressLine3LocalLanguage.setText(addressLine3.getText());
+				}
+			});
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * To restrict the user not to enter any values other than integer values.
+	 */
+	private void loadLanguageSpecificKeyboard() {
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loading the local language keyboard");
+			addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+					if (oldValue) {
+						keyboardNode.setVisible(false);
+					}
+
+				}
+			});
+
+			addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+					if (oldValue) {
+						keyboardNode.setVisible(false);
+					}
+
+				}
+			});
+
+			addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+					if (oldValue) {
+						keyboardNode.setVisible(false);
+					}
+
+				}
+			});
+
+			fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+					if (oldValue) {
+						keyboardNode.setVisible(false);
+					}
+
+				}
+			});
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - KEYBOARD LOADING FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * To restrict the user not to enter any values other than integer values.
+	 */
+	private void ageFieldValidations() {
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
+			ageField.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (ageField.getText().length() > 2) {
+						String age = ageField.getText().substring(0, 2);
+						ageField.setText(age);
+					}
+					if (!newValue.matches("\\d*")) {
+						ageField.setText(newValue.replaceAll("[^\\d]", ""));
+					}
+				}
+			});
+			ageField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
+						Boolean newPropertyValue) {
+					int ageValue = 0;
+					if (!newPropertyValue && !ageField.getText().equals("")) {
+						ageValue = Integer.parseInt(ageField.getText());
+					}
+					if (ageValue < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))
+							&& ageValue != 0) {
+						childSpecificFields.setVisible(true);
+						isChild = true;
+						documentFields.setLayoutY(134.00);
+					} else {
+						isChild = false;
+						childSpecificFields.setVisible(false);
+						documentFields.setLayoutY(25.00);
+					}
+				}
+			});
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - AGE FIELD VALIDATION FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
 	 * Toggle functionality between age field and date picker.
 	 */
 	private void toggleFunction() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Entering into toggle function for toggle label 1 and toggle level 2");
-		toggleLabel1.setId("toggleLabel1");
-		toggleLabel2.setId("toggleLabel2");
-		switchedOn.addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-				if (newValue) {
-					toggleLabel1.setId("toggleLabel2");
-					toggleLabel2.setId("toggleLabel1");
-					ageField.clear();
-					ageDatePicker.setValue(null);
-					parentName.clear();
-					uinId.clear();
-					childSpecificFields.setVisible(false);
-					ageDatePicker.setDisable(true);
-					ageField.setDisable(false);
-					toggleAgeOrDobField = true;
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Entering into toggle function for toggle label 1 and toggle level 2");
 
-				} else {
-					toggleLabel1.setId("toggleLabel1");
-					toggleLabel2.setId("toggleLabel2");
-					ageField.clear();
-					ageDatePicker.setValue(null);
-					parentName.clear();
-					uinId.clear();
-					childSpecificFields.setVisible(false);
-					ageDatePicker.setDisable(false);
-					ageField.setDisable(true);
-					toggleAgeOrDobField = false;
+			toggleLabel1.setId("toggleLabel1");
+			toggleLabel2.setId("toggleLabel2");
+			switchedOn.addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						toggleLabel1.setId("toggleLabel2");
+						toggleLabel2.setId("toggleLabel1");
+						ageField.clear();
+						ageDatePicker.setValue(null);
+						parentName.clear();
+						uinId.clear();
+						childSpecificFields.setVisible(false);
+						ageDatePicker.setDisable(true);
+						ageField.setDisable(false);
+						toggleAgeOrDobField = true;
 
+					} else {
+						toggleLabel1.setId("toggleLabel1");
+						toggleLabel2.setId("toggleLabel2");
+						ageField.clear();
+						ageDatePicker.setValue(null);
+						parentName.clear();
+						uinId.clear();
+						childSpecificFields.setVisible(false);
+						ageDatePicker.setDisable(false);
+						ageField.setDisable(true);
+						toggleAgeOrDobField = false;
+
+					}
 				}
-			}
-		});
+			});
 
-		toggleLabel1.setOnMouseClicked((event) -> {
-			switchedOn.set(!switchedOn.get());
-		});
-		toggleLabel2.setOnMouseClicked((event) -> {
-			switchedOn.set(!switchedOn.get());
-		});
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Exiting the toggle function for toggle label 1 and toggle level 2");
+			toggleLabel1.setOnMouseClicked((event) -> {
+				switchedOn.set(!switchedOn.get());
+			});
+			toggleLabel2.setOnMouseClicked((event) -> {
+				switchedOn.set(!switchedOn.get());
+			});
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Exiting the toggle function for toggle label 1 and toggle level 2");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
@@ -1048,31 +1070,37 @@ public class RegistrationController extends BaseController {
 	 * format("dd-mm-yyyy").
 	 */
 	private void dateFormatter() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the date format");
-		ageDatePicker.setConverter(new StringConverter<LocalDate>() {
-			String pattern = "dd-MM-yyyy";
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating the date format");
 
-			{
-				ageDatePicker.setPromptText(pattern.toLowerCase());
-			}
+			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
+				String pattern = "dd-MM-yyyy";
+				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
-			@Override
-			public String toString(LocalDate date) {
-				return date != null ? dateFormatter.format(date) : "";
-
-			}
-
-			@Override
-			public LocalDate fromString(String string) {
-				if (string != null && !string.isEmpty()) {
-					return LocalDate.parse(string, dateFormatter);
-				} else {
-					return null;
+				{
+					ageDatePicker.setPromptText(pattern.toLowerCase());
 				}
-			}
-		});
+
+				@Override
+				public String toString(LocalDate date) {
+					return date != null ? dateFormatter.format(date) : "";
+
+				}
+
+				@Override
+				public LocalDate fromString(String string) {
+					if (string != null && !string.isEmpty()) {
+						return LocalDate.parse(string, dateFormatter);
+					} else {
+						return null;
+					}
+				}
+			});
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - DATE FORMAT VALIDATION FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	/**
@@ -1081,7 +1109,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void goToHomePage() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		try {
@@ -1102,41 +1130,41 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private boolean validateDemographicPaneOne() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
 			generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
-																	  
+
 			fullName.requestFocus();
 		} else {
 			if (validateAgeOrDob()) {
 				if (gender.getValue() == null) {
 					generateAlert(RegistrationConstants.GENDER_EMPTY);
-																	 
+
 					gender.requestFocus();
 				} else {
 					if (validateRegex(addressLine1, "^.{6,50}$")) {
-							
+
 						generateAlert(RegistrationConstants.ADDRESS_LINE_1_EMPTY,
 								RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
-																  
+
 							generateAlert(RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
 									+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
-																					
+
 								generateAlert(RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS
 										+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
-																			
+
 									generateAlert(RegistrationConstants.PROVINCE_EMPTY,
 											RegistrationConstants.ONLY_ALPHABETS + " "
 													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
@@ -1144,20 +1172,20 @@ public class RegistrationController extends BaseController {
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
 										generateAlert(RegistrationConstants.POSTAL_CODE_EMPTY,
-																				 
+
 												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
 											generateAlert(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
-																			  
+
 													RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
-																				 
+
 												generateAlert(RegistrationConstants.MOBILE_NUMBER_EMPTY,
-															   
+
 														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
@@ -1170,8 +1198,7 @@ public class RegistrationController extends BaseController {
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
-		
-	   
+
 														generateAlert(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
 																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cniOrPinNumber.requestFocus();
@@ -1192,7 +1219,7 @@ public class RegistrationController extends BaseController {
 
 			}
 		}
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
 		return gotoNext;
 	}
@@ -1204,7 +1231,7 @@ public class RegistrationController extends BaseController {
 	 */
 
 	private boolean validateDemographicPaneTwo() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = false;
 		if (isChild) {
@@ -1222,7 +1249,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private boolean getParentToggle() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Toggling for parent/guardian fields");
 		boolean gotoNext = false;
 
@@ -1234,7 +1261,7 @@ public class RegistrationController extends BaseController {
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
 					generateAlert(RegistrationConstants.UIN_ID_EMPTY);
-																						  
+
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1250,29 +1277,37 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private void loadLocalLanguageFields() throws IOException {
-		ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
-		fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
-		addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
-		addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
-		addressLine3LocalLanguagelabel.setText(properties.getString("address_line3"));
-		String userlangTitle = demoGraphicTitlePane.getText();
-		demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+			ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
+			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
+			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
+			addressLine3LocalLanguagelabel.setText(properties.getString("address_line3"));
+			String userlangTitle = demoGraphicTitlePane.getText();
+			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
-				if (oldValue) {
-					demoGraphicTitlePane.setText(userlangTitle);
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+					if (oldValue) {
+						demoGraphicTitlePane.setText(userlangTitle);
+					}
+
+					if (newValue) {
+						demoGraphicTitlePane.setText("    " + userlangTitle
+								+ "                                                              " + ApplicationContext
+										.getInstance().getLocalLanguageProperty().getString("titleDemographicPane"));
+
+					}
 				}
-
-				if (newValue) {
-					demoGraphicTitlePane.setText("    " + userlangTitle
-							+ "                                                              " + ApplicationContext
-									.getInstance().getLocalLanguageProperty().getString("titleDemographicPane"));
-
-				}
-			}
-		});
+			});
+		} catch (RuntimeException exception) {
+			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+		}
 	}
 
 	/**
@@ -1281,9 +1316,17 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private void loadListOfDocuments() {
-		poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-		poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
-		porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
+
+			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
+			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
+			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
 	private boolean validateAgeOrDob() {
@@ -1291,7 +1334,7 @@ public class RegistrationController extends BaseController {
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
 				generateAlert(RegistrationConstants.AGE_EMPTY);
-	
+
 				ageField.requestFocus();
 			} else {
 				if (Integer.parseInt(ageField.getText()) < 5) {
@@ -1302,7 +1345,7 @@ public class RegistrationController extends BaseController {
 		} else if (!toggleAgeOrDobField) {
 			if (ageDatePicker.getValue() == null) {
 				generateAlert(RegistrationConstants.DATE_OF_BIRTH_EMPTY);
-		  
+
 				ageDatePicker.requestFocus();
 			} else {
 				gotoNext = true;
@@ -1314,33 +1357,33 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
-							   
+
 			generateAlert(RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
 			poaLabel.setId("doc_label");
 			poaLabel.setText(poaDocuments.getValue());
-  
+
 		}
 	}
 
 	@FXML
 	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
-							   
+
 			generateAlert(RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
 			poiLabel.setId("doc_label");
 			poiLabel.setText(poiDocuments.getValue());
-  
+
 		}
 	}
 
 	@FXML
 	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
-								 
+
 			generateAlert(RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
@@ -1408,38 +1451,41 @@ public class RegistrationController extends BaseController {
 	 * Toggle functionality for biometric exception
 	 */
 	private void toggleFunctionForBiometricException() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-									
-				RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
-		bioExceptionToggleLabel1.setId("toggleLabel1");
-		bioExceptionToggleLabel2.setId("toggleLabel2");
-		switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-				if (newValue) {
-					bioExceptionToggleLabel1.setId("toggleLabel2");
-					bioExceptionToggleLabel2.setId("toggleLabel1");
-					toggleBiometricException = true;
-					captureExceptionImage.setDisable(false);
-				} else {
-					bioExceptionToggleLabel1.setId("toggleLabel1");
-					bioExceptionToggleLabel2.setId("toggleLabel2");
-					toggleBiometricException = false;
-					captureExceptionImage.setDisable(true);
-				}
-			}
-		});
+		try {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 
-		bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
-			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
-		});
-		bioExceptionToggleLabel2.setOnMouseClicked((event) -> {
-			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
-		});
-		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-								  
-				RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
+			bioExceptionToggleLabel1.setId("toggleLabel1");
+			bioExceptionToggleLabel2.setId("toggleLabel2");
+			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						bioExceptionToggleLabel1.setId("toggleLabel2");
+						bioExceptionToggleLabel2.setId("toggleLabel1");
+						toggleBiometricException = true;
+						captureExceptionImage.setDisable(false);
+					} else {
+						bioExceptionToggleLabel1.setId("toggleLabel1");
+						bioExceptionToggleLabel2.setId("toggleLabel2");
+						toggleBiometricException = false;
+						captureExceptionImage.setDisable(true);
+					}
+				}
+			});
+
+			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
+				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
+			});
+			bioExceptionToggleLabel2.setOnMouseClicked((event) -> {
+				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
+			});
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - TOGGLING FOR BIOMETRIC EXCEPTION SWITCH FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
 	}
 
-								  
 }
