@@ -797,8 +797,7 @@ public class RegistrationController extends BaseController {
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 					final String newValue) {
 				if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.FULL_NAME_EMPTY, "Numbers are not allowed");
+					generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 					fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 					fullName.requestFocus();
 				} else {
