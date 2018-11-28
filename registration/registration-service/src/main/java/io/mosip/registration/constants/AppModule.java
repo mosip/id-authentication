@@ -40,7 +40,10 @@ public enum AppModule {
 	NOTIFICATION_SERVICE("REG-NOT-21", "Notification"),
 	
 	DEVICE_MAPPING("REG-DVM-22","device mapping"),
-	DEVICE_UN_MAPPING("REG-DVUM-23","device un mapping");
+	DEVICE_UN_MAPPING("REG-DVUM-23","device un mapping"),
+	
+	//Registration Controller
+	REGISTRATION_CONTROLLER("REG-DVM-24","Registration initialization");
 	/**
 	 * The constructor
 	 */

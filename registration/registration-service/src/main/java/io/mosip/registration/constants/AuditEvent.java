@@ -55,7 +55,11 @@ public enum AuditEvent {
 	UPDATE_DEVICES_ONBOARDING("UPD_DVC", "Update Devices", "Devices onboarding updated for the registration client"),
 	// Notification Service
 	// Notification Service
-	NOTIFICATION_STATUS("NOT_SER", "Notification SERVICE", "Notification request status");
+	NOTIFICATION_STATUS("NOT_SER", "Notification SERVICE", "Notification request status"),
+	
+	// Registration Audits
+	GET_REGISTRATION_CONTROLLER("REG_INI","Registration initialization","Initializing the registration controller"),
+	SAVE_DETAIL_TO_DTO("SAVE","Save to DTO","Saving the details to DTO");
 	
 	/**
 	 * The constructor

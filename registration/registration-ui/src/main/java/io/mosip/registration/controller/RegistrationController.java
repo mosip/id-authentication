@@ -21,6 +21,8 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -288,11 +290,14 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void initialize() {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
-
+			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, AppModule.REGISTRATION_CONTROLLER,
+					"initializing the registration controller", SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+			
 			if (capturePhotoUsingDevice.equals("Y")) {
 				defaultImage = applicantImage.getImage();
 				biometrics.setVisible(false);
@@ -512,10 +517,14 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void saveDetail() {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
+		
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
-
+			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, AppModule.REGISTRATION_CONTROLLER,
+					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+			
 			RegistrationDTO registrationDTO = new RegistrationDTO();
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
