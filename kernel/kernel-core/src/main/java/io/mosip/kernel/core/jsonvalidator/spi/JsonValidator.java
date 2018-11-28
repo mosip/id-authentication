@@ -31,12 +31,21 @@ public interface JsonValidator {
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
 	 * @throws HttpRequestException
+	 *             HttpRequestException
 	 * @throws JsonValidationProcessingException
+	 *             JsonValidationProcessingException
 	 * @throws JsonIOException
+	 *             JsonIOException
 	 * @throws NullJsonNodeException
+	 *             NullJsonNodeException
 	 * @throws UnidentifiedJsonException
+	 *             UnidentifiedJsonException
 	 * @throws JsonSchemaIOException
+	 *             JsonSchemaIOException
 	 * @throws ConfigServerConnectionException
+	 *             ConfigServerConnectionException
+	 * @throws FileIOException
+	 *             FileIOException
 	 */
 
 	public ValidationReport validateJson(String jsonString, String schemaName)

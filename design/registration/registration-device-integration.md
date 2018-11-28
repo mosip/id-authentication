@@ -99,7 +99,7 @@ During runtime the program will scan across the port and identify the GPS relate
                API Integration: WebCamDeviceImpl.java
 
 **Sequence and Class Diagram **
-![Umc class diagram](_images/webcam-device-integration.png)
+![Webcam class diagram](_images/webcam-device-integration.png)
 
 **Solution - Finger Print**
 
@@ -156,6 +156,6 @@ None of the client classes should invoke the device specific classes directly.
           It interface between client application and device.
       
 **Sequence and Class Diagram**
-![Umc class diagram](_images/fingerprint-device-integration.png)
+![Device class diagram](_images/fingerprint-device-integration.png)
 
 

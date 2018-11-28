@@ -190,9 +190,9 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private LanguageRepository languageRepository;
 
-	private Language language;
-
 	private LanguageDto languageDto;
+
+	private Language language;
 
 	@Before
 	public void setUp() {
@@ -225,6 +225,7 @@ public class MasterdataIntegrationTest {
 
 	private void languageTestSetup() {
 		// creating data coming from user
+
 		languageDto = new LanguageDto();
 		languageDto.setCode("ter");
 		languageDto.setName("terman");
@@ -405,7 +406,7 @@ public class MasterdataIntegrationTest {
 
 	// -----------------------------LanguageImplementationTest----------------------------------
 	@Test
-	public void saveAllLanguagesTest() throws Exception {
+	public void saveLanguagesTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(languageDto);
 		when(languageRepository.create(Mockito.any())).thenReturn(language);
@@ -424,51 +425,28 @@ public class MasterdataIntegrationTest {
 
 	}
 
-	@Test
-	public void saveLanguagesEmptyDtoExceptionTest() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(new LanguageDto());
-		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isBadRequest());
-
-	}
-
-	@Test
-	public void saveLanguagesInvalidDtoExceptionTest() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		LanguageDto dto = new LanguageDto();
-		dto.setCode("CDTDTDCTCRDC");
-		dto.setName(
-				"QWETYYYTRTYUYTDFCRDFCRCFCDRDCCRDRCDRCRCRCRCSRCSRCSRCDRCDTDRCDTDTRDTRDTDCTRCDCRDTCDRDRDRDRCDCRCDYRCDRCDYRCDYRCDRDCRCDTYTCYYYYYYYYYYYYYYYYYYYYYYYYYYYYYDTYDCRDCDCTDYYRRRRRRRRRRRRRRRRRRRRRRRRCCDDDUCDUCDUCDUDCDCCDCDUCDUCDUTDCCDURCDURCCDDCCDRCDURCDURCDURCDURCDUCDUDCDCCDURCDRCCDR");
-		String content = mapper.writeValueAsString(dto);
-		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isBadRequest());
-
-	}
-
 	// -----------------------------BlacklistedWordsTest----------------------------------
 	@Test
 	public void getAllWordsBylangCodeSuccessTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(words);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(words);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeNullResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(null);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(null);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeEmptyArrayResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(new ArrayList<>());
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(new ArrayList<>());
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeFetchExceptionTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(wordsRepository.findAllByLangCode(anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 

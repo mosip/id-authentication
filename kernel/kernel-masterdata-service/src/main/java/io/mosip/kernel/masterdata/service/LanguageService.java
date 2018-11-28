@@ -1,7 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
@@ -15,9 +16,15 @@ public interface LanguageService {
 	/**
 	 * This method provides all the languages present in database.
 	 * 
-	 * @return LanguageRequestResponseDto
+	 * @return LanguageResponseDto
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while retrieving languages
+	 * 
+	 * @throws DataNotFoundException
+	 *             if no language found
 	 */
-	LanguageRequestResponseDto getAllLaguages();
+	LanguageResponseDto getAllLaguages();
 
 	/**
 	 * This method save {@link LanguageDto} provide by the user in database.

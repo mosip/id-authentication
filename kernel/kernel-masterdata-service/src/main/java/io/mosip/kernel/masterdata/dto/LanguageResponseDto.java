@@ -10,8 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * This class work as a request and response object which will be provided by
- * the user or given by the MOSIP system respectively.
+ * This class work as a request object which will be provided by the user or
+ * given by the MOSIP system respectively.
  * 
  * @author Bal Vikash Sharma
  * @Version 1.0.0
@@ -20,16 +20,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class LanguageRequestResponseDto {
+public class LanguageResponseDto {
 
 	/**
 	 * List of Languages.
 	 */
 	private List<LanguageDto> languages;
-
-	/**
-	 * List of successfully language created.
-	 */
-	private List<String> successfullyCreatedLanguages;
 
 }
