@@ -1,7 +1,7 @@
 package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_PAGE_OPEN_ERROR;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -334,11 +334,11 @@ public class RegistrationController extends BaseController {
 				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
-			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 		}
 	}
 
