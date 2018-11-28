@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author Bal Vikash Sharma
- * @since 1.0.0
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LanguageResponseCodeDto {
+public class MachineTypeRequestDto {
+	
+	private String id;
+	private String ver;
+	private String timestamp;
+	private MachineTypeDtoData request;
 
-	private String code;
 }

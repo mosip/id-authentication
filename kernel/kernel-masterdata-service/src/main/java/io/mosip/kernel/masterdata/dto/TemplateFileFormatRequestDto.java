@@ -12,6 +12,6 @@ public class TemplateFileFormatRequestDto {
 	private String id;
 	private String ver;
 	private String timestamp;
-	private TemplateFileFormatListDto request;
+	private TemplateFileFormatData request;
 	
 }

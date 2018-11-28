@@ -12,6 +12,6 @@ public class ApplicationRequestDto {
 	private String id;
 	private String ver;
 	private String timestamp;
-	private ApplicationListDto request;
+	private ApplicationData request;
 
 }
