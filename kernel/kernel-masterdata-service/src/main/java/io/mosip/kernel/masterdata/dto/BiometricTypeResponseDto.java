@@ -6,15 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author Uday Kumar
- * @version 1.0.0
- * @since 23-10-2016
- */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BiometricTypeResponseDto {
-	List<BiometricAttributeDto> biometricattributes;
+
+	private List<BiometricTypeDto> biometrictypes;
+	
 }

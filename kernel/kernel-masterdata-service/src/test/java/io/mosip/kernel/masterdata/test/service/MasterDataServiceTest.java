@@ -25,14 +25,13 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationData;
+import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
@@ -44,7 +43,6 @@ import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
@@ -286,7 +284,7 @@ public class MasterDataServiceTest {
 
 	private void templateServiceSetup() {
 		Template template = new Template();
-		template.setCode("3");
+		template.setId("3");
 		template.setName("Email template");
 		template.setFileFormatCode("xml");
 		template.setTemplateTypeCode("EMAIL");
@@ -782,29 +780,29 @@ public class MasterDataServiceTest {
 	public void getAllBioTypesSuccess() {
 		Mockito.when(biometricTypeRepository.findAllByIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenReturn(biometricTypeList);
-		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService.getAllBiometricTypes();
-		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeDtoList.get(0).getCode());
-		assertEquals(biometricTypeList.get(0).getName(), biometricTypeDtoList.get(0).getName());
+		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService.getAllBiometricTypes();
+		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeResponseDto.getBiometrictypes().get(0).getCode());
+		assertEquals(biometricTypeList.get(0).getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
 
 	@Test
 	public void getAllBioTypesByLanguageCodeSuccess() {
 		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(biometricTypeList);
-		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService
+		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService
 				.getAllBiometricTypesByLanguageCode(Mockito.anyString());
-		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeDtoList.get(0).getCode());
-		assertEquals(biometricTypeList.get(0).getName(), biometricTypeDtoList.get(0).getName());
+		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeResponseDto.getBiometrictypes().get(0).getCode());
+		assertEquals(biometricTypeList.get(0).getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
 
 	@Test
 	public void getBioTypeByCodeAndLangCodeSuccess() {
 		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(biometricType1);
-		BiometricTypeDto actual = biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),
+		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),
 				Mockito.anyString());
-		assertEquals(biometricType1.getCode(), actual.getCode());
-		assertEquals(biometricType1.getName(), actual.getName());
+		assertEquals(biometricType1.getCode(), biometricTypeResponseDto.getBiometrictypes().get(0).getCode());
+		assertEquals(biometricType1.getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
 
 	// ------------------ BlacklistedServiceTest -----------------
@@ -1197,7 +1195,7 @@ public class MasterDataServiceTest {
 		Mockito.when(templateRepository.findAllByIsDeletedFalse(Template.class)).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplate();
 
-		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
@@ -1207,7 +1205,7 @@ public class MasterDataServiceTest {
 				.thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
 
-		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
@@ -1218,7 +1216,7 @@ public class MasterDataServiceTest {
 		templateDtoList = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString());
 
-		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
