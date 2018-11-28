@@ -880,7 +880,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenReturn(new ArrayList<RegistrationCenter>());
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -890,7 +890,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -957,7 +957,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCenterTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenReturn(registrationCenters);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
