@@ -33,6 +33,10 @@ public class FingerprintFacade {
 	public String getMinutia() {
 		return fingerprintProvider.getMinutia();
 	}
+	
+	public byte[] getIsoTemplate() {
+		return fingerprintProvider.getIsoTemplate();
+	}
 
 	public String getErrorMessage() {
 		return fingerprintProvider.getErrorMessage();

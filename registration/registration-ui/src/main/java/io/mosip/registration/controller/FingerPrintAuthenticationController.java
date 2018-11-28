@@ -5,6 +5,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.service.LoginService;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.util.biometric.FingerprintFacade;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
+import io.mosip.registration.validator.AuthenticationValidatorFactory;
+import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,9 +64,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@FXML
 	private ImageView fingerScannedImage;
 
-	@Autowired
-	private LoginService userDataService;
-
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
@@ -82,8 +83,11 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@Autowired
 	private BaseController baseController;
-
+	
 	private FingerprintFacade fingerprintFacade = null;
+	
+	@Autowired
+	private AuthenticationValidatorFactory validator;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -107,7 +111,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 			MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
 					.getFingerprintProviderFactory(providerName);
 			int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut,
-					RegistrationConstants.FINGER_TYPE_MINUTIA);
+					"");
 			if (statusCode != 0) {
 
 				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
@@ -125,16 +129,24 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				fingerPrintConnector.uninitFingerPrintDevice();
 				fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
 
-				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+				if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 					// if FP data fetched then retrieve the user specific detail from db.
-					RegistrationUserDetail registrationUserDetail = userDataService
-							.getUserDetail(SessionContext.getInstance().getUserContext().getUserId());
+					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
+					FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+					fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
+					fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+					authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+					authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
+					AuthenticationValidatorImplementation authenticationValidatorImplementation=validator.getValidator("Fingerprint");
+					/*RegistrationUserDetail registrationUserDetail = userDataService
+							.getUserDetail("mosip");
 
 					boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
 							.anyMatch(bio -> fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
-									bio.getBioMinutia()) > fingerPrintScore);
+									bio.getBioMinutia()) > fingerPrintScore);*/
 
-					if (isValidFingerPrint) {
+					if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
 						baseController.getFingerPrintStatus(primaryStage);
 					} else {
 						generateAlert("Info", AlertType.INFORMATION, "Authentication Failure");

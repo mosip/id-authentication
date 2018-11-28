@@ -1,7 +1,7 @@
 package io.mosip.registration.validator;
 
-public class AuthenticationValidatorImplementation {
-	public void validate() {
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 
-	}
+public abstract class AuthenticationValidatorImplementation {
+	public abstract boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO);
 }
