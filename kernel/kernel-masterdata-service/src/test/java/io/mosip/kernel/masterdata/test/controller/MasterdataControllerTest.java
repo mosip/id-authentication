@@ -208,7 +208,7 @@ public class MasterdataControllerTest {
 		templateDto.setName("Email template");
 		templateDto.setFileFormatCode("xml");
 		templateDto.setTemplateTypeCode("EMAIL");
-		templateDto.setLanguageCode("HIN");
+		templateDto.setLangCode("HIN");
 
 		templateDtoList.add(templateDto);
 	}

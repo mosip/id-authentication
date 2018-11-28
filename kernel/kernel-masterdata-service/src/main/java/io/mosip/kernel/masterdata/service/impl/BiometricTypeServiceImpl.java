@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.BiometricTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeRequestDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * 
@@ -23,9 +26,11 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class BiometricTypeServiceImpl implements BiometricTypeService {
 
-
 	@Autowired
 	private MapperUtils objectMapperUtil;
+
+	@Autowired
+	private MetaDataUtils metaDataUtils;
 
 	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
@@ -125,8 +130,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		BiometricType biometricType;
 		BiometricTypeDto biometricTypeDto;
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
-					langCode);
+			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
@@ -139,6 +143,24 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
 		}
 		return biometricTypeDto;
+	}
+
+	@Override
+	public CodeAndLanguageCodeId addBiometricType(BiometricTypeRequestDto biometricTypeRequestDto) {
+
+		BiometricType entity = metaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(), BiometricType.class);
+		BiometricType biometricType = null;
+		
+		try {
+			biometricType = biometricTypeRepository.create(entity);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		}
+		
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode(biometricType.getCode());
+		
+		return codeAndLanguageCodeId;
 	}
 
 }

@@ -39,6 +39,7 @@ public class DocumentCategory extends BaseEntity implements Serializable {
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String code;
 	private String langCode;
+	
 	@Column(name = "name", nullable = false)
 	private String name;
 

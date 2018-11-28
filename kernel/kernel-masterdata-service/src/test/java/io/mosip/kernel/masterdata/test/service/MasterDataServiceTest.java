@@ -286,11 +286,11 @@ public class MasterDataServiceTest {
 
 	private void templateServiceSetup() {
 		Template template = new Template();
-		template.setId("3");
+		template.setCode("3");
 		template.setName("Email template");
 		template.setFileFormatCode("xml");
 		template.setTemplateTypeCode("EMAIL");
-		template.setLanguageCode("HIN");
+		template.setLangCode("HIN");
 		template.setCreatedBy("Neha");
 		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
 		template.setIsActive(true);
@@ -1162,7 +1162,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
@@ -1171,7 +1171,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(templateList);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
@@ -1179,7 +1179,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
+		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
@@ -1187,7 +1187,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
+		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateList);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
@@ -1197,28 +1197,28 @@ public class MasterDataServiceTest {
 		Mockito.when(templateRepository.findAllByIsDeletedFalse(Template.class)).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplate();
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
+		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString());
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
+		assertEquals(templateList.get(0).getCode(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
