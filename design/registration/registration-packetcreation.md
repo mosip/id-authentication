@@ -5,15 +5,14 @@
 As part of the registration process,RO will capture all the details of the 
 individual and the infomration called as packet should be stored in desired location. 
 The packet should be encrypted before saving into the location. 
-This docomuent illustrtaes about the which information we are capturing as part 
-of the packet and the encryption logic which we are using to encrypt the packet.
+This docomuent illustrtaes about the information we are capturing as part 
+of the packet and the encryption logic we are using to encrypt the packet.
 
 
 The **target users** are
 
 -   Supervisor
 -   Officer
--   Registrtaion Processor
 
 The key **requirements** are
 
@@ -23,17 +22,11 @@ The key **requirements** are
 -   Packet should have the detail of:
 
     -   Applicant -- Demo and Bio-metric
-
     -   Introducer -- Demo and Bio-metric
-
     -   HOF -- Demo and Bio-metric
-
     -   Officer / Supervisor -- Bio-Metric
-
     -   Registration Id.
-
     -   Packet Metadata.
-
     -   Registration Acknowledgement form.
 
 -   Registration packet should be stored in encrypted format in the local
@@ -226,11 +219,9 @@ provided below:
     structure.
 
     -   Applicant
-
     -   Introducer
-
     -   HOF
-
+    
     **Biometric File :**
 
     ![BioMetric Files](_images/bioMetric_folder.png)
@@ -242,19 +233,13 @@ Folder level Data:
 
 1.  **Biometric**
 
-
 a.  Applicant
 
     -   LetThumb.jpg/png
-
     -   RightThumb.jpg/png
-
     -   LeftPalm.jpg/png
-
     -   RightPalm.jpg/png
-
     -   LeftEye.jpg/png
-
     -   RightEye.jpg/png
 
 b.  HOF
@@ -265,24 +250,18 @@ c.  Introducer
 
     -   **LeftThumb.jpg/png**
 
-
 2.  **Demographic **
 
     a.  Applicant
 
         -   ProofOfIdentity.docx
-
         -   ProofOfResidenty.docx
-
         -   ProofOfAddress.docx
-
         -   ApplicantPhoto.jpg/png
-
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
-
         -   Registration Acknowledgement.jpg
 
-    b.  Demographic\_info.json
+    b.  Demographic\_info.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
 	
 					{
 				"identity": {
