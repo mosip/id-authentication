@@ -36,7 +36,7 @@ import io.vertx.core.logging.LoggerFactory;
  */
 @RefreshScope
 @Service
-public class OSIValidatorStage extends MosipVerticleManager {
+public class OSIValidatorStage extends MosipVerticleManager  {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -56,21 +56,15 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The adapter. */
-	@Autowired
-	FilesystemCephAdapterImpl adapter;
 
-	/** The rest client service. */
-	@Autowired
-	RegistrationProcessorRestClientService<Object> restClientService;
-
-	/** The audit log request builder. */
+    /** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The packet info manager. */
+	
+	/** The osi validator. */
 	@Autowired
-	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	OSIValidator osiValidator;
 
 	/**
 	 * Deploy verticle.
@@ -100,7 +94,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		boolean isValidOSI = false;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-		OSIValidator osiValidator = new OSIValidator(adapter, restClientService, packetInfoManager);
+	
 		osiValidator.registrationStatusDto = registrationStatusDto;
 
 		try {

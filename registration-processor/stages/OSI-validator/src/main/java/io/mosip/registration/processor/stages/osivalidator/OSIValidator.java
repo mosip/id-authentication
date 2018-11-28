@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -23,19 +26,23 @@ import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
+@Service
 public class OSIValidator {
 
-	/** The packet info manager. */
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	@Autowired
+	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -43,11 +50,18 @@ public class OSIValidator {
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
 
+
+	
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
 	/** The adapter. */
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	@Autowired
+	FilesystemCephAdapterImpl adapter;
 
 	/** The rest client service. */
-	private RegistrationProcessorRestClientService<Object> restClientService;
+	@Autowired
+	RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The message. */
 	private String message = null;
@@ -73,24 +87,7 @@ public class OSIValidator {
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
 
-	/**
-	 * Instantiates a new OSI validator.
-	 *
-	 * @param adapter
-	 *            the adapter
-	 * @param restClientService
-	 *            the rest client service
-	 * @param packetInfoManager
-	 *            the packet info manager
-	 */
-	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
-			RegistrationProcessorRestClientService<Object> restClientService,
-			PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager) {
-		this.packetInfoManager = packetInfoManager;
-		this.adapter = adapter;
-		this.restClientService = restClientService;
-	}
-
+	
 	/**
 	 * Checks if is valid OSI.
 	 *
