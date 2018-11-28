@@ -6,6 +6,9 @@ node {
  projectToBuild = 'kernel'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ targetDeploymentServer = 'kernel-dev-server'
+ containersToRun = ''
+ containerNames= ''
 
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
@@ -38,15 +41,9 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
  }
 
- stage('---------- SonarQube Analysis --------------') {
-  def mvnHome = tool name: 'M2_HOME', type: 'maven'
-  withSonarQubeEnv('sonar') {
-   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
-  }
- }
 
  stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
@@ -63,7 +60,6 @@ node {
      if(locationOfDockerFiles[i].equals("")){
      break;
      }
-     echo locationOfDockerFiles[i]
      def currentModule = locationOfDockerFiles[i]
      sh "basename `dirname $currentModule` > parentDirectoryName"
      parentDirectoryName = readFile('parentDirectoryName').trim()
@@ -73,11 +69,10 @@ node {
      sh "rm -f parentDirectoryPath"
 
      parentDirectoryPathForamtted = parentDirectoryPath.substring(2);
-
-     echo "------------------------" + changedModules[j]
-     echo ">>>>>>>>>>>>>>>>>>>>>>>>" + parentDirectoryPathForamtted
-
      if (changedModules[j].contains(parentDirectoryPathForamtted)) {
+     echo "Updating changed images list"
+     containersToRun=containersToRun+" "+registryName+'/'+parentDirectoryName
+     containerNames=containerNames+" "+parentDirectoryName
       echo parentDirectoryPathForamtted + " will be built"
       docker.withRegistry(registryUrl) {
       def buildName = "$parentDirectoryName:$BUILD_NUMBER"
@@ -89,7 +84,7 @@ node {
       sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
       sh "docker rmi $registryName/$parentDirectoryName"
 
-     }
+    }
     }
 
 
@@ -98,8 +93,8 @@ node {
   }
  }
 
-
 }
+
 
 @NonCPS
 def showChangeLogs() {
