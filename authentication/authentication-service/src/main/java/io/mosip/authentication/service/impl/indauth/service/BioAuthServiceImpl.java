@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
@@ -14,11 +15,7 @@ import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
 
-	@Override
-	public AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public boolean validateDevice(DeviceInfo deviceInfo) {
@@ -36,6 +33,12 @@ public class BioAuthServiceImpl implements BioAuthService {
 	public double getMatchScore(byte[] inputImage, String storedMinutiae) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity, BioInfo bioInfo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

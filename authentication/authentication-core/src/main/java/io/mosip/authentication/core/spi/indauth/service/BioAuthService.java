@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 
@@ -14,7 +15,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 
 public interface BioAuthService {
 
-	AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity);
+	AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity,BioInfo bioInfo);
 
 	boolean validateDevice(DeviceInfo deviceInfo);
 
