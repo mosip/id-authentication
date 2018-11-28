@@ -36,6 +36,7 @@ import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -44,7 +45,6 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
@@ -90,6 +90,7 @@ public class MasterdataControllerTest {
 	private BiometricTypeDto biometricTypeDto2 = new BiometricTypeDto();
 
 	private List<BiometricTypeDto> biometricTypeDtoList = new ArrayList<>();
+	private BiometricTypeResponseDto biometricTypeResponseDto;
 
 	@MockBean
 	private ApplicationService applicationService;
@@ -103,7 +104,7 @@ public class MasterdataControllerTest {
 
 	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
-	private BiometricTypeResponseDto biometricTypeResponseDto;
+	private BiometricAttributeResponseDto biometricAttributeResponseDto;
 	private List<BiometricAttributeDto> biometricattributes;
 
 	private DocumentCategoryDto documentCategoryDto1;
@@ -209,7 +210,7 @@ public class MasterdataControllerTest {
 		templateDto.setName("Email template");
 		templateDto.setFileFormatCode("xml");
 		templateDto.setTemplateTypeCode("EMAIL");
-		templateDto.setLanguageCode("HIN");
+		templateDto.setLangCode("HIN");
 
 		templateDtoList.add(templateDto);
 	}
@@ -340,7 +341,7 @@ public class MasterdataControllerTest {
 		biometricAttribute.setDescription(null);
 		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
-		biometricTypeResponseDto = new BiometricTypeResponseDto(biometricattributes);
+		biometricAttributeResponseDto = new BiometricAttributeResponseDto(biometricattributes);
 	}
 
 	private void applicationSetup() {
@@ -365,27 +366,34 @@ public class MasterdataControllerTest {
 
 		biometricTypeDtoList.add(biometricTypeDto1);
 		biometricTypeDtoList.add(biometricTypeDto2);
+		
+		biometricTypeResponseDto = new BiometricTypeResponseDto();
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtoList);
 	}
 
 	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
-		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeDtoList);
+		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	public void fetchAllBiometricTypeUsingLangCodeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString()))
-				.thenReturn(biometricTypeDtoList);
+				.thenReturn(biometricTypeResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	public void fetchBiometricTypeUsingCodeAndLangCode() throws Exception {
+		BiometricTypeResponseDto biometricTypeResponseDto = new BiometricTypeResponseDto();
+		List<BiometricTypeDto> biometricTypeDtos = new ArrayList<>();
+		biometricTypeDtos.add(biometricTypeDto1);
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtos);
 		Mockito.when(biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(biometricTypeDto1);
+				.thenReturn(biometricTypeResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/1/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -422,15 +430,15 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		PostResponseDto postResponseDto = new PostResponseDto();
-		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		/*PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();*/
 		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
-		results.add(codeAndLanguageCodeId);
-		postResponseDto.setResults(results);
+		/*results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);*/
 		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
-				.thenReturn(postResponseDto);
+				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"

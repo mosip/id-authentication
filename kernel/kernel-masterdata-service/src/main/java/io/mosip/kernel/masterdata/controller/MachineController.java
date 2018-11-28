@@ -1,14 +1,21 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
-import io.mosip.kernel.masterdata.service.MachineDetailService;
+import io.mosip.kernel.masterdata.dto.MachineRequestDto;
+import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
+import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.service.MachineService;
 
 /**
 
@@ -21,13 +28,13 @@ import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 @RestController
 @RequestMapping(value = "/machines")
-public class MachineDetailController {
+public class MachineController {
 
 	/**
 	 * Reference to MachineDetailService.
 	 */
 	@Autowired
-	private MachineDetailService macService;
+	private MachineService machineService;
 
 	/**
 	 * 
@@ -40,7 +47,7 @@ public class MachineDetailController {
 	@GetMapping(value = "/{id}/{langcode}")
 	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
-		return macService.getMachineDetailIdLang(machineId, langCode);
+		return machineService.getMachineDetailIdLang(machineId, langCode);
 
 	}
 
@@ -54,7 +61,7 @@ public class MachineDetailController {
 
 	@GetMapping(value = "/{langcode}")
 	public MachineDetailResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
-		return macService.getMachineDetailLang(langCode);
+		return machineService.getMachineDetailLang(langCode);
 
 	}
 
@@ -66,8 +73,22 @@ public class MachineDetailController {
 
 	@GetMapping
 	public MachineDetailResponseDto getMachineDetailAll() {
-		return macService.getMachineDetailAll();
+		return machineService.getMachineDetailAll();
 
+	}
+	
+	/**
+	 * Save machine  details to the database table
+	 * 
+	 * @param machine
+	 *            input from user Machine  DTO
+	 * @return {@link MachineTypeCodeAndLanguageCodeAndId}
+	 */
+	@PostMapping("/")
+	public ResponseEntity<MachineSpecIdAndId> saveMachine(
+			@RequestBody MachineRequestDto machine) {
+
+		return new ResponseEntity<>(machineService.saveMachine(machine), HttpStatus.CREATED);
 	}
 
 }

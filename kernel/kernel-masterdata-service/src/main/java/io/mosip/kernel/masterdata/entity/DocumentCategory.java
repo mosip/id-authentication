@@ -42,6 +42,7 @@ public class DocumentCategory extends BaseEntity implements Serializable {
 	private String code;
 	@OneToMany(mappedBy="langCode")
 	private String langCode;
+	
 	@Column(name = "name", nullable = false)
 	private String name;
 

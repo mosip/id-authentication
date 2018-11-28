@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeviceTypeCodeAndLanguageCode {
+public class DeviceTypeCodeAndLanguageCodeAndId {
 	
 	private String id;
 	private String deviceTypeCode;

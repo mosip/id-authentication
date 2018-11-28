@@ -475,7 +475,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -486,7 +486,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG")).thenReturn(genderTypesNull);
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+				.thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -515,7 +516,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(
+				genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype/{languageCode}", "ENG")).andExpect(status().isOk());
 

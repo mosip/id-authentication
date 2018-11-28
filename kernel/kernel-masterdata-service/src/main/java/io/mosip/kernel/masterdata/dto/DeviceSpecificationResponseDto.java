@@ -7,8 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Response DTO class for Device specification get operation 
  * 
- * @author Uday Kumar
+ * @author Uday
  * @version 1.0.0
  */
 @Data
