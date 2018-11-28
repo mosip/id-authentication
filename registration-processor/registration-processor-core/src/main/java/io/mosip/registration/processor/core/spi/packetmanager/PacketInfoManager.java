@@ -34,11 +34,17 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	public void saveDemographicInfoJson(InputStream demographicJsonStream,List<FieldValue> metaData);
 	
 	/**
+	 * Gets the OsiData for QC user.
+	 *
+	 * @param regid the registration id
+	 * @return OsiData for the registration id
+	 */
+	public RegOsiDto getOsi(String regid);
+	/**
 	 * Gets the packetsfor QC user.
 	 *
 	 * @param qcUserId the qc user id
 	 * @return the packetsfor QC user
 	 */
-	public RegOsiDto getOsi(String regid);
 	public List<A> getPacketsforQCUser(String qcUserId);
 }
