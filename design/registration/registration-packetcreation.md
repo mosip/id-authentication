@@ -1,4 +1,4 @@
-Design - Packet Creation
+**Design - Packet Creation**
 
 **Background**
 
@@ -217,9 +217,8 @@ provided below:
     REST service. If the status is UIN generated /Updated, we need to
     update the same info to the database and clean the packet. 
 
-Packet Structure 
-
-	![Packet Design view] (_images/packet_creation_overview.png)
+**Packet Structure**
+	![Packet Design view](_images/packet_creation_overview.png)
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -232,7 +231,7 @@ Packet Structure
 
     -   HOF
 
-	**Biometric File: **
+    **Biometric File :**
 
     ![BioMetric Files](_images/bioMetric_folder.png)
 
