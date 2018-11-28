@@ -41,7 +41,6 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
-import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -140,7 +139,7 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\": [ {\"hierarchylevel\": 2,\"hierarchyName\": \"STATE\",\"isActive\": true,\"code\":\"TN\",\"name\":\"TamilNadu\",\"parentLocCode\":\"IND\", \"languageCode\":\"TAM\"}]}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -149,7 +148,7 @@ public class MasterdataControllerTest {
 	LocationResponseDto locationResponseDto = null;
 	List<Object[]> locObjList = null;
 	LocationHierarchyResponseDto locationHierarchyResponseDto = null;
-	LocationCodeResponseDto locationCodeResponseDto = null;
+	LocationCodeDto locationCodeDto = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -284,14 +283,10 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		LocationCodeDto locationDto = new LocationCodeDto();
-		locationDto.setCode("TN");
-		locationDto.setIsActive(true);
-		List<LocationCodeDto> locationCodeList = new ArrayList<>();
-		locationCodeList.add(locationDto);
-		locationCodeResponseDto = new LocationCodeResponseDto();
-		locationCodeResponseDto.setLocations(locationCodeList);
-
+		locationCodeDto=new LocationCodeDto();
+		locationCodeDto.setCode("TN");
+		locationCodeDto.setIsActive(true);
+		locationCodeDto.setParentLocCode("IND");
 	}
 
 	private void idTypeSetup() {
@@ -658,7 +653,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeResponseDto);
+		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
 	}

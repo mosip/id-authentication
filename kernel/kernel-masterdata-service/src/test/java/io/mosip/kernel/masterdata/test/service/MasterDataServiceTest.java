@@ -25,6 +25,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationListDto;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
@@ -189,7 +190,7 @@ public class MasterDataServiceTest {
 	LocationCodeResponseDto locationCodeResponseDto=null;
 	Location locationHierarchy=null;
 	Location locationHierarchy1=null;
-	List<LocationDto> locationDtos=null;
+	LocationDto locationDtos=null;
 	LocationRequestDto locationRequestDto= null;
 
 	@MockBean
@@ -345,10 +346,9 @@ public class MasterDataServiceTest {
 		locationDto.setLanguageCode("FRA");
 		locationDto.setParentLocCode("IND");
 		locationDto.setIsActive(true);
-		locationDtos=new ArrayList<>();
-		locationDtos.add(locationDto);
+		
 		locationRequestDto = new LocationRequestDto();
-		locationRequestDto.setLocations(locationDtos);
+		locationRequestDto.setLocations(locationDto);
 		
 		
 	}
@@ -1163,21 +1163,17 @@ public class MasterDataServiceTest {
 	
 	@Test
 	public void locationHierarchySaveTest() {
-		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenReturn(locationHierarchies);
+		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
 		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
 	}
 	
-	@Test()
+	@Test(expected=MasterDataServiceException.class)
 	public void locationHierarchySaveNegativeTest() {
-		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
 	}
 	
-	/*@Test()
-	public void locationHierarchySaveDataNotFoundTest() {
-		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenReturn(locationHierarchies);
-		locationHierarchyService.saveLocationHierarchy(locationRequestDto.setLocations(new ArrayList<LocationDto>()));
-	}*/
+	
 
 	// ------------------ TemplateServiceTest -----------------
 

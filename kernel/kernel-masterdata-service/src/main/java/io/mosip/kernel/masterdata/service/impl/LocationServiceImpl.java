@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
-import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -195,29 +195,24 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public LocationCodeResponseDto saveLocationHierarchy(LocationRequestDto locationRequestDto) {
-		List<LocationDto> locationRequestDtos = locationRequestDto.getLocations();
-		List<Location> locationList = null;
-		List<Location> locationResultantEntities = null;
-		LocationCodeResponseDto locationCodeResponseDto = new LocationCodeResponseDto();
-		if (!locationRequestDtos.isEmpty()) {
-			locationList = metaDataUtils.setCreateMetaData(locationRequestDtos, Location.class);
+	public LocationCodeDto saveLocationHierarchy(LocationRequestDto locationRequestDto) {
+		
+	    Location location = null;
+		Location locationResultantEntity = null;
+		LocationCodeDto locationCodeDto = new LocationCodeDto();
+		
+			location = metaDataUtils.setCreateMetaData(locationRequestDto.getLocations(), Location.class);
 			try {
-				locationResultantEntities = locationList.stream()
-						.map(locationObj -> locationRepository.save(locationObj)).collect(Collectors.toList());
-			} catch (DataAccessException ex) {
+				locationResultantEntity = locationRepository.create(location);
+			} catch (DataAccessLayerException ex) {
 				throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 			}
-		} else {
-			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
-		List<LocationCodeDto> locationCodeDtos = objectMapperUtil.mapAll(locationResultantEntities,
-				LocationCodeDto.class);
 		
-        locationCodeResponseDto.setLocations(locationCodeDtos);
-		return locationCodeResponseDto;
+	   locationCodeDto = objectMapperUtil.map(locationResultantEntity,LocationCodeDto.class);
+		
+        
+		return locationCodeDto;
 	}
 
 }
