@@ -92,6 +92,28 @@ node {
 
   }
  }
+ 
+  stage('----deploy----')
+ {
+	  command = """
+ 		INDEX=0
+		containersToRunShell=(${containersToRun})
+		containerNamesShell=(${containerNames})
+		
+ 		for i in "\${containersToRunShell[@]}"
+			do
+			  echo "Deploying Service - " \$i
+			  docker pull \$i
+			  portExposed="\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{index (split \$p "/") 0}} {{end}}' \$i)"
+			  portExposedFormatted="\$(echo \$portExposed| xargs)"
+			  echo Container will expose services on \$portExposedFormatted 
+			 if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]})" ]; then
+			  docker rename \${containerNamesShell[\$INDEX]} \${containerNamesShell[\$INDEX]}-backup && docker stop \${containerNamesShell[\$INDEX]}-backup
+			 fi
+			 docker run -d -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i 
+    """
+  sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
+    }
 
 }
 
