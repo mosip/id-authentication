@@ -20,7 +20,7 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
-	public <T, D extends BaseEntity> D mapDtoToEntity(final T dto, Class<? extends BaseEntity> entityClass) {
+	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
 		@SuppressWarnings("unchecked")
@@ -49,13 +49,8 @@ public class MetaDataUtils {
 	private <D extends BaseEntity> void setMetaData(String contextUser, D entity) {
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 		LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
-		entity.setIsActive(true);
-		entity.setDeletedtimes(null);
-		entity.setUpdatedBy(contextUser);
-		entity.setUpdatedtimes(utime);
 		entity.setCreatedBy(contextUser);
 		entity.setCreatedtimes(time);
-		entity.setIsDeleted(false);
 	}
 
 	/*
