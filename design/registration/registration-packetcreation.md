@@ -219,7 +219,7 @@ provided below:
 
 Packet Structure 
 
-	_images/packet_creation_overview.png
+	![Packet Design view] (_images/packet_creation_overview.png)
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -234,13 +234,13 @@ Packet Structure
 
 	**Biometric File: **
 
-    _images/bioMetric_folder.png
+    ![Biometric File] (_images/bioMetric_folder.png)
 
    **Demographic :**
 
     _images/demographic_folder.png
 
-### Folder level Data: 
+Folder level Data: 
 
 1.  **Biometric**
 
@@ -718,7 +718,8 @@ c.  Introducer
 				  "value" : [ "introducerLeftThumb" ]
 				}, {
 				  "label" : "applicantDemographicSequence",
-				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
+				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", 
+							  "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
 				} ],
 				"checkSum" : [ {
 				  "label" : "registration-service.jar",
@@ -737,7 +738,7 @@ c.  Introducer
 
 **Packet DTO Structure**
 
-	_images/PacketCreation.jpg
+	![Packet DTO Structure](_images/PacketCreation.jpg)
 
 Validations:
 
@@ -751,19 +752,17 @@ Validations:
 -   The packet name should be unique and the name of the packet
     is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
-Class Diagram
--------------
-	_images/\_class\_diagram/registration-packetcreation-classDiagram.png
+**Class Diagram**
 
-Sequence Diagram
-----------------
-	_images/\_sequence\_diagram/registration-packetcreation-sequenceDiagram.png
+	![Packet Creation Class Diagram](_images/_class\_diagram/registration-packetcreation-classDiagram.png)
+	
 
-User Story References
-=====================
+**Sequence Diagram**
 
-  **User Story No.**   **Reference Link**
-  -------------------- -----------------------------------------------
-  **MOS-64**           <https://mosipid.atlassian.net/browse/MOS-64>
-  **MOS-65**           <https://mosipid.atlassian.net/browse/MOS-65>
+	![Packet Creation Sequence Diagram](_images/_sequence\_diagram/registration-packetcreation-sequenceDiagram.png)
+
+**User Story References**
+
+1.  **MOS-64** - <https://mosipid.atlassian.net/browse/MOS-64>
+2.  **MOS-65** - <https://mosipid.atlassian.net/browse/MOS-65>
 
