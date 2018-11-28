@@ -45,6 +45,13 @@ public class GenderTypeController {
 		return genderTypeService.getGenderTypeByLanguageCode(langCode);
 	}
 
+	/**
+	 * Post API to enter a new Gender Type Data
+	 * 
+	 * @param genderRequestDto
+	 *            input columns for adding data
+	 * @return added row of gender type
+	 */
 	@PostMapping("/gendertype")
 	public GenderTypeResponseDto saveGenderType(@RequestBody GenderRequestDto genderRequestDto) {
 		return genderTypeService.saveGenderType(genderRequestDto);

@@ -705,15 +705,15 @@ public class MasterdataControllerTest {
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
 
-		PostResponseDto postResponseDto = new PostResponseDto();
-		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		// PostResponseDto postResponseDto = new PostResponseDto();
+		// List<CodeAndLanguageCodeId> results = new ArrayList<>();
 		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
 		codeAndLanguageCodeId.setCode("xml");
 		codeAndLanguageCodeId.setLangCode("ENG");
-		results.add(codeAndLanguageCodeId);
-		postResponseDto.setResults(results);
+		// results.add(codeAndLanguageCodeId);
+		// postResponseDto.setResults(results);
 		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any(TemplateFileFormatRequestDto.class)))
-				.thenReturn(postResponseDto);
+				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"

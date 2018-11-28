@@ -34,13 +34,12 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	@Autowired
 	GenderTypeRepository genderTypeRepository;
-	
+
 	@Autowired
 	private MapperUtils objectMapperUtil;
-	
+
 	@Autowired
 	private MetaDataUtils metaDataUtils;
-
 
 	/*
 	 * (non-Javadoc)
@@ -100,7 +99,14 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		return genderResponseDto;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#saveGenderType(io.mosip.
+	 * kernel.masterdata.dto.GenderRequestDto)
+	 */
 	@Override
 	public GenderTypeResponseDto saveGenderType(GenderRequestDto genderRequestDto) {
 		List<GenderDto> genderRequestDtos = genderRequestDto.getGenderList();
@@ -110,25 +116,22 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		if (!genderRequestDtos.isEmpty()) {
 			genderList = metaDataUtils.setCreateMetaData(genderRequestDtos, GenderType.class);
 			try {
-				genderResultantEntities = genderList.stream()
-						.map(genderObj -> genderTypeRepository.save(genderObj)).collect(Collectors.toList());
+				genderResultantEntities = genderList.stream().map(genderObj -> genderTypeRepository.save(genderObj))
+						.collect(Collectors.toList());
 			} catch (DataAccessException ex) {
-				ex.printStackTrace();
-				throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
-						GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
+
+				throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_POST_EXCEPTION.getErrorCode(),
+						GenderTypeErrorCode.GENDER_POST_EXCEPTION.getErrorMessage());
 			}
 		} else {
-			
+
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		List<GenderTypeDto> genderCodeDtos = objectMapperUtil.mapAll(genderResultantEntities,
-				GenderTypeDto.class);
-		
-        genderCodeResponseDto.setGenderType(genderCodeDtos);
+		List<GenderTypeDto> genderCodeDtos = objectMapperUtil.mapAll(genderResultantEntities, GenderTypeDto.class);
+
+		genderCodeResponseDto.setGenderType(genderCodeDtos);
 		return genderCodeResponseDto;
 	}
-
-	
 
 }

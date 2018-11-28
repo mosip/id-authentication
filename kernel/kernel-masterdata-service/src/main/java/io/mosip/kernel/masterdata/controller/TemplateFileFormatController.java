@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 
 @RestController
@@ -18,7 +18,7 @@ public class TemplateFileFormatController {
 	private TemplateFileFormatService templateFileFormatService;
 
 	@PostMapping
-	public PostResponseDto addTemplateFileFormat(@RequestBody TemplateFileFormatRequestDto templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeId addTemplateFileFormat(@RequestBody TemplateFileFormatRequestDto templateFileFormatRequestDto) {
 		return templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
 		
 	}
