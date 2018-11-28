@@ -1052,7 +1052,7 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void testSucessGetAllLaguages() {
-		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(languages);
+		Mockito.when(languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(languages);
 		LanguageResponseDto dto = languageService.getAllLaguages();
 		assertNotNull(dto);
 		assertEquals(2, dto.getLanguages().size());
@@ -1060,19 +1060,20 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundException() {
-		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(null);
+		Mockito.when(languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(null);
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundExceptionWhenNoLanguagePresent() {
-		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(new ArrayList<Language>());
+		Mockito.when(languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
+				.thenReturn(new ArrayList<Language>());
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void testLanguageFetchException() {
-		Mockito.when(languageRepository.findAllByIsDeletedFalse())
+		Mockito.when(languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(HibernateObjectRetrievalFailureException.class);
 		languageService.getAllLaguages();
 	}
