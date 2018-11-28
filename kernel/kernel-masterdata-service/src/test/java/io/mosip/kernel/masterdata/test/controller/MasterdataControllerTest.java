@@ -36,6 +36,8 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -132,16 +134,17 @@ public class MasterdataControllerTest {
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private static final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-    
-    LocationHierarchyDto locationHierarchyDto=null;
+	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\": [ {\"hierarchylevel\": 2,\"hierarchyName\": \"STATE\",\"isActive\": true,\"code\":\"TN\",\"name\":\"TamilNadu\",\"parentLocCode\":\"IND\", \"languageCode\":\"TAM\"}]}";
+	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
-	List<Object[]> locObjList=null;
-	LocationHierarchyResponseDto locationHierarchyResponseDto=null;
+	List<Object[]> locObjList = null;
+	LocationHierarchyResponseDto locationHierarchyResponseDto = null;
+	LocationCodeResponseDto locationCodeResponseDto = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -242,8 +245,8 @@ public class MasterdataControllerTest {
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
-		List<LocationHierarchyDto> locationHierarchyDtos=new ArrayList<>();
-		
+		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
+
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -267,13 +270,20 @@ public class MasterdataControllerTest {
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
-		LocationHierarchyDto locationHierarchyDto=new LocationHierarchyDto();
-		locationHierarchyDto.setLocationHierarchylevel((short)1);
+		LocationHierarchyDto locationHierarchyDto = new LocationHierarchyDto();
+		locationHierarchyDto.setLocationHierarchylevel((short) 1);
 		locationHierarchyDto.setLocationHierarchyName("COUNTRY");
 		locationHierarchyDtos.add(locationHierarchyDto);
-		locationHierarchyResponseDto =new LocationHierarchyResponseDto();
+		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		
+		LocationCodeDto locationDto = new LocationCodeDto();
+		locationDto.setCode("TN");
+		locationDto.setIsActive(true);
+		List<LocationCodeDto> locationCodeList = new ArrayList<>();
+		locationCodeList.add(locationDto);
+		locationCodeResponseDto = new LocationCodeResponseDto();
+		locationCodeResponseDto.setLocations(locationCodeList);
+
 	}
 
 	private void idTypeSetup() {
@@ -591,8 +601,7 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationHierarchy() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG")).andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -602,7 +611,7 @@ public class MasterdataControllerTest {
 				Mockito.anyString());
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED))
+				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED_GET))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
@@ -639,11 +648,27 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
+	@Test
+	public void testSaveLocationHierarchy() throws Exception {
+		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testNegativeSaveLocationHierarchy() throws Exception {
+		Mockito.when(locationService.saveLocationHierarchy(Mockito.any()))
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+	}
+
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -658,16 +683,16 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
-				anyString())).thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",

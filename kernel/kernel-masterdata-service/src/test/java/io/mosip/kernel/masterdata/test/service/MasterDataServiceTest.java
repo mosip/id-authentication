@@ -40,7 +40,10 @@ import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationRequestDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
@@ -181,6 +184,11 @@ public class MasterDataServiceTest {
 
 	List<Location> locationHierarchies = null;
 	List<Object[]> locObjList=null;
+	LocationCodeResponseDto locationCodeResponseDto=null;
+	Location locationHierarchy=null;
+	Location locationHierarchy1=null;
+	List<LocationDto> locationDtos=null;
+	LocationRequestDto locationRequestDto= null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -299,7 +307,7 @@ public class MasterDataServiceTest {
 
 	private void locationServiceSetup() {
 		locationHierarchies = new ArrayList<>();
-		Location locationHierarchy = new Location();
+	    locationHierarchy = new Location();
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
 		locationHierarchy.setHierarchyLevel(0);
@@ -310,7 +318,7 @@ public class MasterDataServiceTest {
 		locationHierarchy.setUpdatedBy("sdfsd");
 		locationHierarchy.setIsActive(true);
 		locationHierarchies.add(locationHierarchy);
-		Location locationHierarchy1 = new Location();
+	    locationHierarchy1 = new Location();
 		locationHierarchy1.setCode("KAR");
 		locationHierarchy1.setName("KARNATAKA");
 		locationHierarchy1.setHierarchyLevel(1);
@@ -327,6 +335,20 @@ public class MasterDataServiceTest {
 		objectArray[2]=true;
 	    locObjList=new ArrayList<>();
 		locObjList.add(objectArray);
+		LocationDto locationDto= new LocationDto();
+		locationDto.setCode("KAR");
+		locationDto.setName("KARNATAKA");
+		locationDto.setHierarchyLevel(2);
+		locationDto.setHierarchyName("STATE");
+		locationDto.setLanguageCode("FRA");
+		locationDto.setParentLocCode("IND");
+		locationDto.setIsActive(true);
+		locationDtos=new ArrayList<>();
+		locationDtos.add(locationDto);
+		locationRequestDto = new LocationRequestDto();
+		locationRequestDto.setLocations(locationDtos);
+		
+		
 	}
 
 	private void langServiceSetup() {
@@ -1141,6 +1163,24 @@ public class MasterDataServiceTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
+	
+	@Test
+	public void locationHierarchySaveTest() {
+		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenReturn(locationHierarchies);
+		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+	}
+	
+	@Test()
+	public void locationHierarchySaveNegativeTest() {
+		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+	}
+	
+	/*@Test()
+	public void locationHierarchySaveDataNotFoundTest() {
+		Mockito.when(locationHierarchyRepository.save(Mockito.any())).thenReturn(locationHierarchies);
+		locationHierarchyService.saveLocationHierarchy(locationRequestDto.setLocations(new ArrayList<LocationDto>()));
+	}*/
 
 	// ------------------ TemplateServiceTest -----------------
 
