@@ -35,6 +35,7 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -277,6 +278,11 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button porScanBtn;
 
+	  @FXML
+	private AnchorPane fingerPrintCapturePane;
+	
+												
+												
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
@@ -335,6 +341,7 @@ public class RegistrationController extends BaseController {
 			}
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+																																			
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
@@ -469,11 +476,38 @@ public class RegistrationController extends BaseController {
 		}
 
 		if (node.getId().equals("fullName")) {
+	
+	
+								 
+										   
+							   
 			fullNameLocalLanguage.requestFocus();
 			keyboardNode.setLayoutY(120.00);
+  
+
 		}
 
+											 
+	
+	
+								 
+										   
+							   
+							   
+								
+  
 		keyboardNode.setVisible(true);
+	
+
+										
+	
+	
+							  
+									   
+							   
+							   
+								
+  
 
 	}
 
@@ -553,7 +587,34 @@ public class RegistrationController extends BaseController {
 			}
 
 			biometricTitlePane.setExpanded(true);
+   //TODO : load fxml
+			
 
+			try {
+				Parent pendingActionRoot = BaseController
+						.load(getClass().getResource("/fxml/FingerPrintCapture.fxml"));
+				ObservableList<Node> approvalNodes = fingerPrintCapturePane.getChildren();
+				approvalNodes.add(pendingActionRoot);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			
+									 
+	
+   
+  
+
+	  
+								  
+										 
+  
+
+	
+	
+
+	
 			if (capturePhotoUsingDevice.equals("N")) {
 				biometricsNext.setDisable(false);
 			}
@@ -798,6 +859,7 @@ public class RegistrationController extends BaseController {
 					final String newValue) {
 				if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
 					generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+	 
 					fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 					fullName.requestFocus();
 				} else {
@@ -1046,29 +1108,35 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
 			generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+																	  
 			fullName.requestFocus();
 		} else {
 			if (validateAgeOrDob()) {
 				if (gender.getValue() == null) {
 					generateAlert(RegistrationConstants.GENDER_EMPTY);
+																	 
 					gender.requestFocus();
 				} else {
 					if (validateRegex(addressLine1, "^.{6,50}$")) {
+							
 						generateAlert(RegistrationConstants.ADDRESS_LINE_1_EMPTY,
 								RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
+																  
 							generateAlert(RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
 									+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
+																					
 								generateAlert(RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS
 										+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
+																			
 									generateAlert(RegistrationConstants.PROVINCE_EMPTY,
 											RegistrationConstants.ONLY_ALPHABETS + " "
 													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
@@ -1076,26 +1144,34 @@ public class RegistrationController extends BaseController {
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
 										generateAlert(RegistrationConstants.POSTAL_CODE_EMPTY,
+																				 
 												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
 											generateAlert(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+																			  
 													RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
+																				 
 												generateAlert(RegistrationConstants.MOBILE_NUMBER_EMPTY,
+															   
 														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(emailId,
 														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
+
 													generateAlert(RegistrationConstants.EMAIL_ID_EMPTY,
+
 															RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
+		
+	   
 														generateAlert(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
 																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cniOrPinNumber.requestFocus();
@@ -1152,11 +1228,13 @@ public class RegistrationController extends BaseController {
 
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
+
 				generateAlert(RegistrationConstants.PARENT_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
 					generateAlert(RegistrationConstants.UIN_ID_EMPTY);
+																						  
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1213,6 +1291,7 @@ public class RegistrationController extends BaseController {
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
 				generateAlert(RegistrationConstants.AGE_EMPTY);
+	
 				ageField.requestFocus();
 			} else {
 				if (Integer.parseInt(ageField.getText()) < 5) {
@@ -1223,6 +1302,7 @@ public class RegistrationController extends BaseController {
 		} else if (!toggleAgeOrDobField) {
 			if (ageDatePicker.getValue() == null) {
 				generateAlert(RegistrationConstants.DATE_OF_BIRTH_EMPTY);
+		  
 				ageDatePicker.requestFocus();
 			} else {
 				gotoNext = true;
@@ -1234,33 +1314,39 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
+							   
 			generateAlert(RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
 			poaLabel.setId("doc_label");
 			poaLabel.setText(poaDocuments.getValue());
+  
 		}
 	}
 
 	@FXML
 	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
+							   
 			generateAlert(RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
 			poiLabel.setId("doc_label");
 			poiLabel.setText(poiDocuments.getValue());
+  
 		}
 	}
 
 	@FXML
 	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
+								 
 			generateAlert(RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
 			porLabel.setId("doc_label");
 			porLabel.setText(porDocuments.getValue());
+
 		}
 	}
 
@@ -1323,6 +1409,7 @@ public class RegistrationController extends BaseController {
 	 */
 	private void toggleFunctionForBiometricException() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+									
 				RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 		bioExceptionToggleLabel1.setId("toggleLabel1");
 		bioExceptionToggleLabel2.setId("toggleLabel2");
@@ -1350,7 +1437,9 @@ public class RegistrationController extends BaseController {
 			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 		});
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+								  
 				RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
 	}
 
+								  
 }

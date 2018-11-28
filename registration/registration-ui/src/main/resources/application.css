@@ -177,19 +177,19 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
-#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane{
+#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane,#fingerPrintScanAnchorPane{
 	-fx-background-color:#ffffff;
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane,#authenticationRoot{
+#onHoldPane, #rejectionPane,#authenticationRoot,#fingerPrintScanRoot{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
+#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane,#fingerPrintScanRootPane{
 	-fx-background-color:#808080;
 }
-#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane{
+#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane,#fingerPrintCapturePane,#fingerPrintScanRootSubPane{
 	-fx-background-color:#ffffff;
 }
 #pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
@@ -211,7 +211,7 @@
     -fx-font-size: 10px;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
-#exitButton, #rejectionExit, #authExit,#authenticationExit{
+#exitButton, #rejectionExit, #authExit,#authenticationExit,#fingerPrintScanExit{
 	 -fx-border-color: transparent;
      -fx-padding: 4 0 4 0;
      -fx-text-fill: black;
@@ -282,5 +282,9 @@
 }
 #applicantImageHBox, #exceptionImageHBox {
 	-fx-border-color: black;
+	-fx-border-width: 2;
+}
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane{
+	-fx-border-color: #d3d3d3;
 	-fx-border-width: 2;
 }

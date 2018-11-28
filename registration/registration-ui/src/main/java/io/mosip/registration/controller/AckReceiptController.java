@@ -154,7 +154,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 							} else if (alert.equals("EMAIL")) {
 								data = "Unable to send Email notification";
 							}
-							generateAlert(data);
+							generateNotificationAlert(data);
 						}
 					}
 				}
@@ -205,7 +205,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		goToHomePage();
 	}
 
-	private void generateAlert(String alertMessage) {
+	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
 		generateAlert(RegistrationConstants.NOTIFICATION_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 				alertMessage);

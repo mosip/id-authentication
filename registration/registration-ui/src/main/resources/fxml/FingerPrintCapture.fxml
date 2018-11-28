@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="fingerPrintCapturePane" prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.FingerPrintCaptureController">
+   <children>
+      <AnchorPane fx:id="leftHandPalmPane" layoutX="14.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
+         <children>
+            <ImageView fx:id="leftHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </AnchorPane>
+      <Label layoutX="20.0" layoutY="38.0" text="Fingerprint" />
+      <AnchorPane fx:id="rightHandPalmPane" layoutX="288.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
+         <children>
+            <ImageView fx:id="rightHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="thumbPane" layoutX="559.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
+         <children>
+            <ImageView fx:id="thumbImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </AnchorPane>
+      <Button fx:id="scanBtn" layoutX="17.0" layoutY="381.0" mnemonicParsing="false" onAction="#scan" prefHeight="23.0" prefWidth="75.0" text="Scan">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Button fx:id="biometricsNext" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#saveBiometricDetails" prefHeight="23.0" prefWidth="55.0" text="Next">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Label layoutX="20.0" layoutY="308.0" text="Quality %       :" />
+      <Label layoutX="20.0" layoutY="335.0" text="Threshold %   :" />
+      <Label layoutX="288.0" layoutY="336.0" text="Threshold %   :" />
+      <Label layoutX="288.0" layoutY="309.0" text="Quality %       :" />
+      <Label layoutX="559.0" layoutY="336.0" text="Threshold %   :" />
+      <Label layoutX="559.0" layoutY="309.0" text="Quality %       :" />
+   </children>
+</AnchorPane>
