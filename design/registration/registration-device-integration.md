@@ -152,7 +152,7 @@ None of the client classes should invoke the device specific classes directly.
 		      Interface which contains all the required 
           functionality that needs to be implemented by the vendor specific classes. 
           The client classes will work on this interface rather using the 
-          implementation [vendor specific] classes directly. 
+          implementation [vendor specific] classes directly . 
 					
 -    MantraFingerprintProvider –
           Vendor specific class to interact with their specific
