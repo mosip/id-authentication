@@ -13,7 +13,7 @@ import java.util.List;
 public class PreRegistrationResponseDTO<T> {
 
 	/** The error details. */
-	private List<Object> err;
+	private List<PreRegistrationExceptionJSONInfoDTO> err;
 	
 	private String status;
 
@@ -21,11 +21,11 @@ public class PreRegistrationResponseDTO<T> {
 
 	private List<T> response;
 
-	public List<Object> getErr() {
+	public List<PreRegistrationExceptionJSONInfoDTO> getErr() {
 		return err;
 	}
 
-	public void setErr(List<Object> err) {
+	public void setErr(List<PreRegistrationExceptionJSONInfoDTO> err) {
 		this.err = err;
 	}
 
