@@ -1235,39 +1235,33 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POA_DOCUMENT_EMPTY, "Numbers are not allowed");
+			generateAlert(RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
 			poaLabel.setId("doc_label");
 			poaLabel.setText(poaDocuments.getValue());
-			;
 		}
 	}
 
 	@FXML
 	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POI_DOCUMENT_EMPTY, "Numbers are not allowed");
+			generateAlert(RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
 			poiLabel.setId("doc_label");
 			poiLabel.setText(poiDocuments.getValue());
-			;
 		}
 	}
 
 	@FXML
 	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POR_DOCUMENT_EMPTY, "Numbers are not allowed");
+			generateAlert(RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
 			porLabel.setId("doc_label");
 			porLabel.setText(porDocuments.getValue());
-			;
 		}
 	}
 
