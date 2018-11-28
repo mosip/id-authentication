@@ -735,9 +735,8 @@ c.  Introducer
 
 7.  **Registration Supervisor Bio Image\[JPEG\]**
 
-**Packet DTO Structure**
-
-	_images/PacketCreation.jpg
+**Packet DTO Structure** 
+![Packet DTO Structure](_images/PacketCreation.jpg)
 
 Validations:
 
