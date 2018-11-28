@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.GenderRequestDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
@@ -58,6 +57,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.TitleId;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
@@ -72,6 +72,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
+import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 
 /**
  * 
@@ -100,6 +101,9 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private DocumentCategoryRepository documentCategoryRepository;
+
+	@MockBean
+	private ValidDocumentRepository validDocumentRepository;
 
 	List<DocumentType> documentTypes;
 
@@ -192,11 +196,12 @@ public class MasterdataIntegrationTest {
 	private LanguageRepository languageRepository;
 
 	private LanguageDto languageDto;
-	private GenderRequestDto genderTypeRequestDto;
 
 	private Language language;
 
 	private GenderType genderType;
+
+	private ValidDocument validDocument;
 
 	@Before
 	public void setUp() {
@@ -225,6 +230,14 @@ public class MasterdataIntegrationTest {
 		registrationCenterTypeSetUp();
 
 		languageTestSetup();
+
+		addValidDocumentSetUp();
+	}
+
+	private void addValidDocumentSetUp() {
+		validDocument = new ValidDocument();
+		validDocument.setDocTypeCode("ttt");
+		validDocument.setDocCategoryCode("ddd");
 	}
 
 	private void languageTestSetup() {
@@ -1090,7 +1103,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void addDocumentTypesDatabaseConnectionExceptionTest() throws Exception {
 		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentType\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
-		when(documentTypeRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(documentTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
@@ -1130,6 +1144,24 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 
+	}
+	// ------------------------------------------valid-document-------------------------------------------
+
+	@Test
+	public void insertValidDocumentTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(validDocumentRepository.create(Mockito.any())).thenReturn(validDocument);
+		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void insertValidDocumentExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(validDocumentRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
 	}
 
 }
