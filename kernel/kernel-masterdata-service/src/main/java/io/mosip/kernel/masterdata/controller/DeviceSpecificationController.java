@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,8 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
 
@@ -79,9 +83,10 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationRequestDto}
 	 */
 	@PostMapping("/devicespecifications")
-	public DeviceSpecPostResponseDto addDeviceType(
-			@RequestBody DeviceSpecificationRequestDto deviceSpecifications) {
-		return deviceSpecificationService.saveDeviceSpecifications(deviceSpecifications);
+	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> saveDeviceSpecification(
+			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
+
+		return new ResponseEntity<>(deviceSpecificationService.saveDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
 	}
 
 }

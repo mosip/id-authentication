@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +22,7 @@ public class DeviceTypeController {
 	private DeviceTypeService deviceTypeService;
 	
 	/**
-	 * Save list of device Type details to the Databse
+	 * Save list of device Type details to the Database
 	 * 
 	 * @param DeviceTypeRequestDto
 	 *            
@@ -28,8 +30,8 @@ public class DeviceTypeController {
 	 */
 
 	@PostMapping("/devicetypes")
-	public CodeAndLanguageCodeId saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
-		return deviceTypeService.saveDeviceTypes(deviceTypes);
+	public ResponseEntity<CodeAndLanguageCodeId> saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
+		return new ResponseEntity<>( deviceTypeService.saveDeviceTypes(deviceTypes), HttpStatus.CREATED);
 	}
 
 }
