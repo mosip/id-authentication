@@ -600,5 +600,15 @@ public class RegistrationConstants {
 	public static List<String> getPacketStatus() {
 		return Arrays.asList( "APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 	}
+	
+	//Pre Registration
+	public static final String PRE_REGISTRATION_ID = "preId";
+	public static final String GET_PRE_REGISTRATION_ID_ERROR_MESSAGE = "Unable to get Pre Registration Id's";
+	public static final String GET_PRE_REGISTRATION_ERROR_MESSAGE = "Unable to get Pre-Registration";
+	public static final String SAVE_PRE_REGISTRATION_ERROR_MESSAGE = "Unable to save Pre-Registration";
+	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
+	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
+	
+	
 
 }
