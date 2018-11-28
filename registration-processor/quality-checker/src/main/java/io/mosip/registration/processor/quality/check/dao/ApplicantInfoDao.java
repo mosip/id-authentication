@@ -128,7 +128,7 @@ public class ApplicantInfoDao {
 		demo.setFirstName(object.getFirstName());
 		demo.setMiddleName(object.getMiddleName());
 		demo.setLastName(object.getLastName());
-		demo.setFullName(object.getFullName());
+		demo.setFullName(object.getName());
 		demo.setGenderCode(object.getGenderCode());
 		demo.setDob(object.getDob());
 		demo.setAddrLine1(object.getAddrLine1());

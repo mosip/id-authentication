@@ -397,24 +397,31 @@ public class PacketInfoMapper {
 		return languages.toString().split(",");
 	}
 
+	private static String getName(List<JsonValue[]> jsonValueList,String language) {
+		String name ="";
+		for(int i =0;i<jsonValueList.size();i++) {
+			
+			for(int j=0;j<jsonValueList.get(i).length;j++) {
+				if(language.equals(jsonValueList.get(i)[j].getLanguage())) {
+					name = name+jsonValueList.get(i)[j].getValue();
+				}
+			}
+				
+			}
+		return name;
+		}
+		
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
 			IndividualDemographicDedupe demoDto, String regId, String preRegId) {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
-		getLanguages(demoDto.getFirstName());
-		getLanguages(demoDto.getMiddleName());
-		getLanguages(demoDto.getLastName());
-		getLanguages(demoDto.getFullName());
-		getLanguages(demoDto.getFirstName());
+		for( int i =0;i<demoDto.getName().size();i++) {
+			getLanguages(demoDto.getName().get(i));
+
+		}
 		getLanguages(demoDto.getDateOfBirth());
-		getLanguages(demoDto.getGender());
-		getLanguages(demoDto.getAddressLine1());
-		getLanguages(demoDto.getAddressLine2());
-		getLanguages(demoDto.getAddressLine3());
-		getLanguages(demoDto.getAddressLine4());
-		getLanguages(demoDto.getAddressLine5());
-		String[] languageArray = getLanguages(demoDto.getAddressLine6());
+		String[] languageArray =  getLanguages(demoDto.getGender());
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
@@ -426,11 +433,8 @@ public class PacketInfoMapper {
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
-
-			entity.setFirstName(getJsonValues(demoDto.getFirstName(), languageArray[i]));
-			entity.setMiddleName(getJsonValues(demoDto.getMiddleName(), languageArray[i]));
-			entity.setLastName(getJsonValues(demoDto.getLastName(), languageArray[i]));
-			entity.setFullName(getJsonValues(demoDto.getFullName(), languageArray[i]));
+			entity.setName(getName(demoDto.getName(),languageArray[i]));
+			entity.setPheoniticName("testValue");
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
 				try {
@@ -442,13 +446,6 @@ public class PacketInfoMapper {
 				}
 			}
 			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));
-			entity.setAddrLine1(getJsonValues(demoDto.getAddressLine1(), languageArray[i]));
-			entity.setAddrLine2(getJsonValues(demoDto.getAddressLine2(), languageArray[i]));
-			entity.setAddrLine3(getJsonValues(demoDto.getAddressLine3(), languageArray[i]));
-			entity.setAddrLine4(getJsonValues(demoDto.getAddressLine4(), languageArray[i]));
-			entity.setAddrLine5(getJsonValues(demoDto.getAddressLine5(), languageArray[i]));
-			entity.setAddrLine6(getJsonValues(demoDto.getAddressLine6(), languageArray[i]));
-			entity.setZipCode(getJsonValues(demoDto.getZipcode(), languageArray[i]));
 			demogrphicDedupeEntities.add(entity);
 
 		}
