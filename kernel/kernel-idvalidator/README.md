@@ -144,7 +144,13 @@ Valid RID Example:
 	@Autowired
 	private RidValidator<String> ridValidatorImpl;
 	
-	boolean return = ridValidatorImpl.validateId("27847657360002520181208183050"); //return true
+	String centerId = "27847";
+
+	String dongleId = "65736";
+	
+	String rid ="27847657360002520181208183050";
+	
+	boolean return = ridValidatorImpl.validateId(rid,centerId,dongleId); //return true
 
  
  ```
@@ -154,7 +160,13 @@ Valid RID Example:
 	@Autowired
 	private RidValidator<String> ridValidatorImpl;
 	
-	boolean return = ridValidatorImpl.validateId("27847657360002520181208183070"); //Throws Exception "Invalid Time Stamp Found"
+	String centerId = "27847";
+
+	String dongleId = "65736";
+	
+	String rid ="27847657360002520181208183070";
+	
+	boolean return = ridValidatorImpl.validateId(rid,centerId,dongleId); //Throws Exception "Invalid Time Stamp Found"
 	
  ```
 
