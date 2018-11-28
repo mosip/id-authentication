@@ -51,6 +51,7 @@ public class MetaDataUtils {
 		LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
 		entity.setCreatedBy(contextUser);
 		entity.setCreatedtimes(time);
+		entity.setIsDeleted(false);
 	}
 
 	/*
