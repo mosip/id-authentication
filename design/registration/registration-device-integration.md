@@ -174,7 +174,7 @@ None of the client classes should invoke the device specific classes directly.
 
 Facade and Factory pattern should be introduced to invoke the IRIS device vendor specific implementation class
 at run time. The device specific code should be encapsulated within the device specific implementation code.
-None of the client classes should invoke the device specific classes directly. 
+None of the client classes should invoke the device specific classes directly . 
 
 The sequence flow and class level detail are provided in the respective diagram. 
 
