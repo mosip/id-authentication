@@ -45,7 +45,6 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
@@ -428,15 +427,15 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		PostResponseDto postResponseDto = new PostResponseDto();
-		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		/*PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();*/
 		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
-		results.add(codeAndLanguageCodeId);
-		postResponseDto.setResults(results);
+		/*results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);*/
 		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
-				.thenReturn(postResponseDto);
+				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
@@ -726,15 +725,15 @@ public class MasterdataControllerTest {
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
 
-		PostResponseDto postResponseDto = new PostResponseDto();
-		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		// PostResponseDto postResponseDto = new PostResponseDto();
+		// List<CodeAndLanguageCodeId> results = new ArrayList<>();
 		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
 		codeAndLanguageCodeId.setCode("xml");
 		codeAndLanguageCodeId.setLangCode("ENG");
-		results.add(codeAndLanguageCodeId);
-		postResponseDto.setResults(results);
+		// results.add(codeAndLanguageCodeId);
+		// postResponseDto.setResults(results);
 		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any(TemplateFileFormatRequestDto.class)))
-				.thenReturn(postResponseDto);
+				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
