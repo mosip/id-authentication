@@ -250,7 +250,7 @@ c.  Introducer
 
     -   **LeftThumb.jpg/png**
 
-2.  **Demographic **
+2.  **Demographic**
 
     a.  Applicant
 
@@ -474,9 +474,9 @@ c.  Introducer
 
 3.  **RegistrationID.txt**
 
-4.  **HMAC File.txt **
+4.  **HMAC File.txt**
 
-5.  **Packet\_MetaInfo.json **
+5.  **Packet\_MetaInfo.json**
 	
 				{
 			  "identity" : {
@@ -739,4 +739,3 @@ Validations:
 
 1.  **MOS-64** - <https://mosipid.atlassian.net/browse/MOS-64>
 2.  **MOS-65** - <https://mosipid.atlassian.net/browse/MOS-65>
-
