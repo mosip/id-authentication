@@ -111,7 +111,6 @@ node {
 			  docker rename \${containerNamesShell[\$INDEX]} \${containerNamesShell[\$INDEX]}-backup && docker stop \${containerNamesShell[\$INDEX]}-backup
 			 fi
 			 docker run -d -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
-			  "\${containerNamesShell[\$INDEX]}" \$i 
 			  if [ \$? -eq 0 ]; then
 				echo Container Started - \${containerNamesShell[\$INDEX]}
 				if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
