@@ -1,4 +1,4 @@
-Design - Packet Creation
+**Design - Packet Creation**
 
 **Background**
 
@@ -217,9 +217,8 @@ provided below:
     REST service. If the status is UIN generated /Updated, we need to
     update the same info to the database and clean the packet. 
 
-Packet Structure 
-
-	![Packet Design view] (_images/packet_creation_overview.png)
+**Packet Structure**
+	![Packet Design view](_images/packet_creation_overview.png)
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -232,13 +231,12 @@ Packet Structure
 
     -   HOF
 
-	**Biometric File: **
+    **Biometric File :**
 
-    ![Biometric File] (_images/bioMetric_folder.png)
+    ![BioMetric Files](_images/bioMetric_folder.png)
 
    **Demographic :**
-
-    _images/demographic_folder.png
+   ![Demographic Files](_images/demographic_folder.png)
 
 Folder level Data: 
 
@@ -737,8 +735,7 @@ c.  Introducer
 7.  **Registration Supervisor Bio Image\[JPEG\]**
 
 **Packet DTO Structure**
-
-	![Packet DTO Structure](_images/PacketCreation.jpg)
+    ![Packet DTO Structure](_images/PacketCreation.jpg)
 
 Validations:
 
@@ -753,13 +750,11 @@ Validations:
     is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
 **Class Diagram**
-
-	![Packet Creation Class Diagram](_images/_class\_diagram/registration-packetcreation-classDiagram.png)
+	![Packet Creation Class Diagram](_images/_class_diagram/registration-packetcreation-classDiagram.png)
 	
 
 **Sequence Diagram**
-
-	![Packet Creation Sequence Diagram](_images/_sequence\_diagram/registration-packetcreation-sequenceDiagram.png)
+	![Packet Creation Sequence Diagram](_images/_sequence_diagram/registration-packetcreation-sequenceDiagram.png)
 
 **User Story References**
 
