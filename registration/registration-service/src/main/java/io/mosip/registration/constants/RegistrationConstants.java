@@ -381,7 +381,7 @@ public class RegistrationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 
 	// UI Registration Validations
-	public static final String FULL_NAME_EMPTY = "Please Provide First Name";
+	public static final String FULL_NAME_EMPTY = "Please Provide Full Name";
 	public static final String MIDDLE_NAME_EMPTY = "Please Provide Middle Name";
 	public static final String LAST_NAME_EMPTY = "Please Provide Last Name";
 	public static final String AGE_EMPTY = "Please Provide Age";
