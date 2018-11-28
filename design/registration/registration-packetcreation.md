@@ -1,9 +1,12 @@
 Design - Packet Creation
 
 **Background**
-==================
-	As part of the registration process,RO will capture all the details of the individual and the infomration called as packet should be stored in desired location. 
-	The packet should be encrypted before saving into the location. This docomuent illustrtaes about the which information we are capturing as part of the packet and the encryption logic which we are using to encrypt the packet.
+
+As part of the registration process,RO will capture all the details of the 
+individual and the infomration called as packet should be stored in desired location. 
+The packet should be encrypted before saving into the location. 
+This docomuent illustrtaes about the which information we are capturing as part 
+of the packet and the encryption logic which we are using to encrypt the packet.
 
 
 The **target users** are
@@ -14,7 +17,7 @@ The **target users** are
 
 The key **requirements** are
 
--   Expose the API to create the Enrollment packet, where the data
+-   Expose the API to create the Registration packet, where the data
     captured in the ID Issuance client UI application should be stored.
 
 -   Packet should have the detail of:
@@ -27,17 +30,17 @@ The key **requirements** are
 
     -   Officer / Supervisor -- Bio-Metric
 
-    -   Enrollment Id.
+    -   Registration Id.
 
     -   Packet Metadata.
 
-    -   Enrollment Acknowledgement form.
+    -   Registration Acknowledgement form.
 
--   Enrollment packet should be stored in encrypted format in the local
+-   Registration packet should be stored in encrypted format in the local
     hard disk.
 
 -   Once the packet is created the same shouldn't be sent to the server
-    until it is approved by the Enrollment Supervisor.
+    until it is approved by the Registration Supervisor.
 
 -   The API should return the success / failure status code along with
     the respective message.
@@ -46,8 +49,8 @@ The key **non-functional requirements** are
 
 -   Security :
 
-    -   The Enrollment packet shouldn't be decryptable other than
-        Enrollment Server.
+    -   The Registration packet shouldn't be decryptable other than
+        Registration Server.
 
     -   Hash out the data -- the hash code of the data should be sent
         along with the packet.
@@ -56,7 +59,7 @@ The key **non-functional requirements** are
         encrypted.
 
     -   Un-encrypted data shouldn't be stored in local hard disk during
-        the creation of Enrollment packet.
+        the creation of Registration packet.
 
     -   The IDIS application able to get the RSA public key from Core
         Kernel module.
@@ -71,7 +74,7 @@ The key **non-functional requirements** are
 
 -   Cache :
 
-    -   Enrollment packet data shouldn't be cached and clear off all the
+    -   Registration packet data shouldn't be cached and clear off all the
         data from the JVM local memory once the packet is created in
         local hard disk.
 
@@ -91,7 +94,7 @@ The key **non-functional requirements** are
 
     -   The IDIS able to authenticate by using the Core Kernal module.
 
-    -   Maintain the Enrollment id, status and other high level info in
+    -   Maintain the Registration id, status and other high level info in
         the database table.
 
 -   Configuration:
@@ -99,14 +102,15 @@ The key **non-functional requirements** are
     -   Public Key -- the respective byte values will be present in the
         database table along with the expiry detail.
 
-    -   Before initiating the enrollment process, the key expiry to be
+    -   Before initiating the Registration process, the key expiry to be
         validated.
 
 
 **Solution**
 
-1. The detailed technical process for Enrollment packet creation is
-   provided below:
+The detailed technical process for Registration packet creation is
+provided below:
+
 
 **Packet API:**
 
@@ -126,16 +130,15 @@ The key **non-functional requirements** are
     location.
 
 -   Get the Demographic byte stream from the respective DTO object and
-    store it into the Zip object using right folder path \[....\].
+    store it into the Zip object using right folder path.
 
 -   Get the Biometric byte stream from the respective DTO object and
-    store it into the Zip object using right folder path \[....\].
+    store it into the Zip object using right folder path.
 
 -   Get the Proof of documents byte stream from the respective DTO
-    object and store it into the Zip object using right folder path
-    \[....\].
+    object and store it into the Zip object using right folder path.
 
--   Get the 'Enrollment ID' from the respective request object, write
+-   Get the 'Registration ID' from the respective request object, write
     the same into the File object and save the file object into the Zip
     object.
 
@@ -149,7 +152,7 @@ The key **non-functional requirements** are
 -   Store the generated Hash in a file and append to the created Zip
     object.
 
--   Capture the Enrollment Officer/Supervisor Authentication finger
+-   Capture the Registration Officer/Supervisor Authentication finger
     image from the respective DTO object and append to the Zip object.
 
 -   Create the Packet Info JSON file, which contains the **Meta data**
@@ -165,9 +168,7 @@ The key **non-functional requirements** are
 
     -   Pass the Random Session Key as a seed to this AES encryption.
 
-    -   Get the Enrollment Officer Id from user context object.
-
-    -   
+    -   Get the Registration Officer Id from user context object. 
 
 -   RSA Public Key Encryption:
 
@@ -195,7 +196,7 @@ The key **non-functional requirements** are
 -   Timestamp format is \[DDMMYYYYHHMMSSS\]
 
 -   Once the packet has been successfully created then update the packet
-    information in the 'Enrollment' table.
+    information in the 'Registration' table.
 
 **Client \[UI\] Application:**
 
@@ -203,26 +204,22 @@ The key **non-functional requirements** are
     resident as desired format of [DTO
     objects](#entity-object-structure).
 
--   Enrollment ID should have already been generated and pass it in the
-    EnrollmentDTO object.
+-   Registration ID should have already been generated and pass it in the
+    RegistrationDTO object.
 
--   Invoke the 'PacketHandler'.createPacket(EnrollmentDTO) method to
-    prepare the Enrollment packet at the configured location in local
+-   Invoke the 'PacketHandler'.createPacket(RegistrationDTO) method to
+    prepare the Registration packet at the configured location in local
     machine.
 
-> **Packet Archival:**
+**Packet Archival:**
 
--   Get the Packet status using the 'Enrollment packet status' reader
+-   Get the Packet status using the 'Registration packet status' reader
     REST service. If the status is UIN generated /Updated, we need to
-    update the same info to the database and clean the packet. {will be
-    taken care in the next sprint}
+    update the same info to the database and clean the packet. 
 
--   
+Packet Structure 
 
-### Packet Structure 
-
-> ![](media/image2.png){width="4.645833333333333in"
-> height="3.2096030183727033in"}
+	_images/packet_creation_overview.png
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -235,21 +232,18 @@ The key **non-functional requirements** are
 
     -   HOF
 
--   **Biometric File: **
+	**Biometric File: **
 
-    ![cid:image006.jpg\@01D433FD.27942630](media/image3.jpeg){width="3.8541666666666665in"
-    height="1.7847222222222223in"}
+    _images/bioMetric_folder.png
 
--   **Demographic :**
+   **Demographic :**
 
-    ![](media/image4.png){width="3.8239621609798777in"
-    height="1.3680555555555556in"}
+    _images/demographic_folder.png
 
 ### Folder level Data: 
 
 1.  **Biometric**
 
-<!-- -->
 
 a.  Applicant
 
@@ -273,7 +267,6 @@ c.  Introducer
 
     -   **LeftThumb.jpg/png**
 
-<!-- -->
 
 2.  **Demographic **
 
@@ -289,21 +282,464 @@ c.  Introducer
 
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
 
-        -   Enrollment Acknowledgement.jpg
+        -   Registration Acknowledgement.jpg
 
     b.  Demographic\_info.json
+	
+					{
+				"identity": {
+					"firstName": [
+						{
+							"language": "ar",
+							"label": "الاسم الاول",
+							"value": "ابراهيم"
+						},
+						{
+							"language": "fr",
+							"label": "Prénom",
+							"value": "Ibrahim"
+						}
+					],
+					"middleName": [
+						{
+							"language": "ar",
+							"label": "الاسم الأوسط",
+							"value": "بن"
+						},
+						{
+							"language": "fr",
+							"label": "deuxième nom",
+							"value": "Ibn"
+						}
+					],
+					"lastName": [
+						{
+							"language": "ar",
+							"label": "الكنية",
+							"value": "علي"
+						},
+						{
+							"language": "fr",
+							"label": "nom de famille",
+							"value": "Ali"
+						}
+					],
+					"dateOfBirth": [
+						{
+							"language": "ar",
+							"label": "تاريخ الولادة",
+							"value": "16/04/1955"
+						},
+						{
+							"language": "fr",
+							"label": "date de naissance",
+							"value": "16/04/1955"
+						}
+					],
+					"gender": [
+						{
+							"language": "ar",
+							"label": "جنس",
+							"value": "الذكر"
+						},
+						{
+							"language": "fr",
+							"label": "le sexe",
+							"value": "mâle"
+						}
+					],
+					"addressLine1": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 1",
+							"value": "عنوان العينة سطر 1"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 1",
+							"value": "exemple d'adresse ligne 1"
+						}
+					],
+					"addressLine2": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 2",
+							"value": "عنوان العينة سطر 2"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 2",
+							"value": "exemple d'adresse ligne 2"
+						}
+					],
+					"addressLine3": [
+						{
+							"language": "ar",
+							"label": "العنوان السطر 3",
+							"value": "عنوان العينة سطر 3"
+						},
+						{
+							"language": "fr",
+							"label": "Adresse 3",
+							"value": "exemple d'adresse ligne 3"
+						}
+					],
+					"region": [
+						{
+							"language": "ar",
+							"label": "رمنطقة",
+							"value": "طنجة - تطوان - الحسيمة"
+						},
+						{
+							"language": "fr",
+							"label": "Région",
+							"value": "Tanger-Tétouan-Al Hoceima"
+						}
+					],
+					"province": [
+						{
+							"language": "ar",
+							"label": "المحافظة",
+							"value": "فاس-مكناس"
+						},
+						{
+							"language": "fr",
+							"label": "province",
+							"value": "Fès-Meknès"
+						}
+					],
+					"city": [
+						{
+							"language": "ar",
+							"label": "مدينة",
+							"value": "فاس-الدار البيضاء"
+						},
+						{
+							"language": "fr",
+							"label": "ville",
+							"value": "Casablanca"
+						}
+					],
+					"localAdministrativeAuthority": [
+						{
+							"language": "ar",
+							"label": "الهيئة الإدارية المحلية",
+							"value": "طنجة - تطوان - الحسيمة"
+						},
+						{
+							"language": "fr",
+							"label": "Autorité administrative locale",
+							"value": "Tanger-Tétouan-Al Hoceima"
+						}
+					],
+					"mobileNumber": [
+						{
+							"language": "ar",
+							"label": "رقم الهاتف المحمول",
+							"value": "+212-5398-12345"
+						},
+						{
+							"language": "fr",
+							"label": "numéro de portable",
+							"value": "+212-5398-12345"
+						}
+					],
+					"emailId": [
+						{
+							"language": "ar",
+							"label": "عنوان الايميل",
+							"value": "sample@samplamail.com"
+						},
+						{
+							"language": "fr",
+							"label": "identifiant email",
+							"value": "sample@samplamail.com"
+						}
+					],
+					"CNEOrPINNumber": [
+						{
+							"language": "ar",
+							"label": "رقم CNE / PIN",
+							"value": "AB453625"
+						},
+						{
+							"language": "fr",
+							"label": "Numéro CNE / PIN",
+							"value": "AB453625"
+						}
+					],
+					"parentOrGuardianName": [
+						{
+							"language": "ar",
+							"label": "اسم ولي الأمر / الوصي",
+							"value": "سلمى"
+						},
+						{
+							"language": "fr",
+							"label": "Nom du parent / tuteur",
+							"value": "salma"
+						}
+					],
+					"parentOrGuardianRIDOrUIN": [
+						{
+							"language": "ar",
+							"label": "الوالد / الوصي RID / UIN",
+							"value": "123456789123"
+						},
+						{
+							"language": "fr",
+							"label": "parent / tuteur RID / UIN",
+							"value": "123456789123"
+						}
+					]
+				}
+			}
 
 3.  **RegistrationID.txt**
 
 4.  **HMAC File.txt **
 
 5.  **Packet\_MetaInfo.json **
+	
+				{
+			  "identity" : {
+				"biometric" : {
+				  "applicant" : {
+					"leftEye" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "LeftEye",
+					  "type" : "iris",
+					  "qualityScore" : 79.0,
+					  "numRetry" : 2,
+					  "forceCaptured" : false
+					},
+					"rightEye" : null,
+					"leftSlap" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "LeftPalm",
+					  "type" : "fingerprint",
+					  "qualityScore" : 80.0,
+					  "numRetry" : 3,
+					  "forceCaptured" : false
+					},
+					"rightSlap" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "RightPalm",
+					  "type" : "fingerprint",
+					  "qualityScore" : 95.0,
+					  "numRetry" : 2,
+					  "forceCaptured" : false
+					},
+					"thumbs" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "BothThumbs",
+					  "type" : "fingerprint",
+					  "qualityScore" : 85.0,
+					  "numRetry" : 0,
+					  "forceCaptured" : false
+					}
+				  },
+				  "introducer" : {
+					"introducerFingerprint" : {
+					  "language" : "en",
+					  "label" : "label",
+					  "imageName" : "introducerLeftThumb",
+					  "type" : "fingerprint",
+					  "qualityScore" : 0.0,
+					  "numRetry" : 0,
+					  "forceCaptured" : false
+					},
+					"introducerIris" : null,
+					"introducerImage" : null
+				  }
+				},
+				"exceptionBiometrics" : [ {
+				  "language" : "en",
+				  "type" : "fingerprint",
+				  "missingBiometric" : "LeftThumb",
+				  "exceptionDescription" : "Due to accident",
+				  "exceptionType" : "Permananent"
+				}, {
+				  "language" : "en",
+				  "type" : "fingerprint",
+				  "missingBiometric" : "LeftForefinger",
+				  "exceptionDescription" : "Due to accident",
+				  "exceptionType" : "Permananent"
+				}, {
+				  "language" : "en",
+				  "type" : "iris",
+				  "missingBiometric" : "RightEye",
+				  "exceptionDescription" : "By birth",
+				  "exceptionType" : "Permananent"
+				} ],
+				"applicantPhotograph" : {
+				  "language" : "en",
+				  "label" : "label",
+				  "photographName" : "ApplicantPhoto",
+				  "numRetry" : 1,
+				  "qualityScore" : 89.0
+				},
+				"exceptionPhotograph" : {
+				  "language" : "en",
+				  "label" : "label",
+				  "photographName" : "ExceptionPhoto",
+				  "numRetry" : 0,
+				  "qualityScore" : 0.0
+				},
+				"documents" : [ {
+				  "documentName" : "ProofOfIdentity",
+				  "documentCategory" : "PoI",
+				  "documentOwner" : "Self",
+				  "documentType" : "PAN"
+				}, {
+				  "documentName" : "ProofOfAddress",
+				  "documentCategory" : "PoA",
+				  "documentOwner" : "hof",
+				  "documentType" : "passport"
+				}, {
+				  "documentName" : "RegistrationAcknowledgement",
+				  "documentCategory" : "RegistrationAcknowledgement",
+				  "documentOwner" : "Self",
+				  "documentType" : "RegistrationAcknowledgement"
+				} ],
+				"metaData" : [ {
+				  "label" : "geoLocLatitude",
+				  "value" : "13.0049"
+				}, {
+				  "label" : "geoLoclongitude",
+				  "value" : "80.24492"
+				}, {
+				  "label" : "registrationType",
+				  "value" : "Child"
+				}, {
+				  "label" : "applicantType",
+				  "value" : "New"
+				}, {
+				  "label" : "preRegistrationId",
+				  "value" : "PEN1345T"
+				}, {
+				  "label" : "registrationId",
+				  "value" : "2018782130000121112018103016"
+				}, {
+				  "label" : "registrationIdHash",
+				  "value" : "8ECBD20FB5D7561F265EB70613836780ACD3CFF1AF8CB1884C05F0B083D4ED38"
+				}, {
+				  "label" : "machineId",
+				  "value" : "yyeqy26356"
+				}, {
+				  "label" : "centerId",
+				  "value" : "12245"
+				}, {
+				  "label" : "uin",
+				  "value" : null
+				}, {
+				  "label" : "previousRID",
+				  "value" : null
+				}, {
+				  "label" : "introducerType",
+				  "value" : "Parent"
+				}, {
+				  "label" : "introducerRID",
+				  "value" : "2018234500321157812"
+				}, {
+				  "label" : "introducerRIDHash",
+				  "value" : "58086E976BA47A9F1A52099412665D8AF3FC587D946817553697E06A352D88E3"
+				}, {
+				  "label" : "introducerUIN",
+				  "value" : null
+				}, {
+				  "label" : "introducerUINHash",
+				  "value" : null
+				}, {
+				  "label" : "officerFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "officerIrisType",
+				  "value" : null
+				}, {
+				  "label" : "supervisorFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "supervisorIrisType",
+				  "value" : null
+				}, {
+				  "label" : "introducerFingerprintType",
+				  "value" : "leftThumb"
+				}, {
+				  "label" : "introducerIrisType",
+				  "value" : null
+				} ],
+				"osiData" : [ {
+				  "label" : "officerId",
+				  "value" : "op0r0s12"
+				}, {
+				  "label" : "officerFingerprintImage",
+				  "value" : "officerLeftThumb"
+				}, {
+				  "label" : "officerIrisImage",
+				  "value" : null
+				}, {
+				  "label" : "supervisorId",
+				  "value" : "s9ju2jhu"
+				}, {
+				  "label" : "supervisorFingerprintImage",
+				  "value" : "supervisorLeftThumb"
+				}, {
+				  "label" : "supervisorIrisImage",
+				  "value" : null
+				}, {
+				  "label" : "supervisorPassword",
+				  "value" : null
+				}, {
+				  "label" : "officerPassword",
+				  "value" : null
+				}, {
+				  "label" : "supervisorPIN",
+				  "value" : null
+				}, {
+				  "label" : "officerPIN",
+				  "value" : null
+				}, {
+				  "label" : "supervisorAuthenticationImage",
+				  "value" : null
+				}, {
+				  "label" : "officerAuthenticationImage",
+				  "value" : null
+				} ],
+				"hashSequence" : [ {
+				  "label" : "applicantBiometricSequence",
+				  "value" : [ "BothThumbs", "LeftPalm", "RightPalm", "LeftEye" ]
+				}, {
+				  "label" : "introducerBiometricSequence",
+				  "value" : [ "introducerLeftThumb" ]
+				}, {
+				  "label" : "applicantDemographicSequence",
+				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
+				} ],
+				"checkSum" : [ {
+				  "label" : "registration-service.jar",
+				  "value" : "65gfhab67586cjhsabcjk78"
+				}, {
+				  "label" : "registration-ui.jar",
+				  "value" : "uygdfajkdjkHHD56TJHASDJKA"
+				} ]
+			  }
+			}
+	
 
-6.  **Enrollment Officer Bio Image\[JPEG\]**
+6.  **Registration Officer Bio Image\[JPEG\]**
 
-7.  **Enrollment Supervisor Bio Image\[JPEG\]**
+7.  **Registration Supervisor Bio Image\[JPEG\]**
 
-### Validations:
+**Packet DTO Structure**
+
+	_images/PacketCreation.jpg
+
+Validations:
 
 -   Verify the Packet decryption, but this not in our scope but as a
     demo we need to show.
@@ -313,7 +749,7 @@ c.  Introducer
 -   The packet structure should be validated.
 
 -   The packet name should be unique and the name of the packet
-    is\[EnrollmentID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
+    is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
 Class Diagram
 -------------
