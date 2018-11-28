@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
+import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -38,7 +38,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 			 renMachineSpecification = machineSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					e.getErrorText(), e);
 		}
 		MachineTypeCodeAndLanguageCodeAndId machineTypeCodeAndLanguageCodeAndId = new MachineTypeCodeAndLanguageCodeAndId();

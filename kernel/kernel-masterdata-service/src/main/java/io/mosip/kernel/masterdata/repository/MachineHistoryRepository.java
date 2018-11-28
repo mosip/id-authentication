@@ -30,6 +30,7 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            effective Date and time provided by user in the format "yyyy-mm-ddThh:mm:ss"
 	 * @return List<MachineHistory> fetched from database
 	 */
+	//@Query("from MachineHistory where id =?1 langCode=?2 and effectDtimes <= ?3 and ( isDeleted =false or isDeleted is null)")
 	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(String id, String langCode,
 			LocalDateTime effectDtimes);
 }

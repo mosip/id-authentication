@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -26,6 +27,7 @@ import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
+import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
@@ -172,5 +174,36 @@ public class MapperUtils {
 			deviceSpecificationDtoList.add(deviceSpecificationDto);
 		}
 		return deviceSpecificationDtoList;
+	}
+	
+	
+	
+	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList){
+		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
+		
+		for (MachineHistory machineHistory : machineHistoryList) {
+			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
+			machineHistoryDto.setId(machineHistory.getId());
+			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
+			machineHistoryDto.setCreatedtime(machineHistory.getCreatedtimes());
+			machineHistoryDto.setDeletedtime(machineHistory.getDeletedtimes());
+			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
+			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
+			machineHistoryDto.setIsActive(machineHistory.getIsActive());
+			machineHistoryDto.setIsDeleted(machineHistory.getIsDeleted());
+			machineHistoryDto.setLangCode(machineHistory.getLangCode());
+			machineHistoryDto.setMacAddress(machineHistory.getMacAddress());
+			machineHistoryDto.setMspecId(machineHistory.getMspecId());
+			machineHistoryDto.setName(machineHistory.getName());
+			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
+			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
+			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedtimes());
+			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
+			machineHistoryDtoList.add(machineHistoryDto);
+			
+		}
+		
+		return machineHistoryDtoList;
+		
 	}
 }
