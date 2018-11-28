@@ -32,6 +32,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
  * Test class for KycServiceImpl.
@@ -39,7 +40,7 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
  * @author Sanjay Murali
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
 @WebMvcTest
 @Import(IDAMappingConfig.class)
 @TestPropertySource("classpath:sample-output-test.properties")
@@ -64,7 +65,8 @@ public class KycServiceImplTest {
 	
 	IdAuthService idAuthService = new IdAuthServiceImpl();
 	
-	IdTemplateManager idTemplateManager = new IdTemplateManager();
+	@Autowired
+	IdTemplateManager idTemplateManager;
 	
 	PDFGenerator pdfGenerator = new PDFGeneratorImpl();
 	

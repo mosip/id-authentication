@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.GenderRequestDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeResponseDto;
 
 /**
@@ -25,5 +26,7 @@ public interface GenderTypeService {
 	 * @return all gender types for the given language code
 	 */
 	GenderTypeResponseDto getGenderTypeByLanguageCode(String languageCode);
+	
+	GenderTypeResponseDto saveGenderType(GenderRequestDto genderRequestDto);
 
 }

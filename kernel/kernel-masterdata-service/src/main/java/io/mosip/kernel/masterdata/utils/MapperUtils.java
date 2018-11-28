@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterHistoryConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -19,11 +21,14 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 
 @Component
 public class MapperUtils {
@@ -38,12 +43,39 @@ public class MapperUtils {
 
 	public <D, T> D map(final T entity, Class<D> outCLass) {
 		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
+
 	}
 
 	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
 		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
 	}
 
+	public List<RegistrationCenterDto> mapRegistrationCenterHistory(List<RegistrationCenterHistory> list) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterHistoryConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+
+	
+	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+
+	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();

@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 
 /**
  * This interface have methods to fetch list of document category and to create
@@ -46,7 +47,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param category
 	 *            dto with document categories list.
-	 * @return {@linkplain PostResponseDto}
+	 * @return {@linkplain CodeAndLanguageCodeId}
 	 */
-	public PostResponseDto addDocumentCategoriesData(DocumentCategoryRequestDto category);
+	public CodeAndLanguageCodeId addDocumentCategoriesData(DocumentCategoryRequestDto category);
 }
