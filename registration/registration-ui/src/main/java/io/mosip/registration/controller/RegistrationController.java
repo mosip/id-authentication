@@ -1048,7 +1048,7 @@ public class RegistrationController extends BaseController {
 			generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 			fullName.requestFocus();
 		} else {
-			if (validateAgeorDob()) {
+			if (validateAgeOrDob()) {
 				if (gender.getValue() == null) {
 					generateAlert(RegistrationConstants.GENDER_EMPTY);
 					gender.requestFocus();
@@ -1208,7 +1208,7 @@ public class RegistrationController extends BaseController {
 		porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
 	}
 
-	private boolean validateAgeorDob() {
+	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
