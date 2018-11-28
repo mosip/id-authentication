@@ -6,6 +6,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>kernel-idrepo-service</artifactId>
+   <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
   <dependencies>
   	<dependency>
   		<groupId>org.springframework.boot</groupId>
@@ -59,7 +62,7 @@
   	</dependency>
   	<dependency>
   		<groupId>io.mosip.kernel</groupId>
-  		<artifactId>kernel-json-validator</artifactId>
+  		<artifactId>kernel-jsonvalidator</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   </dependencies>
