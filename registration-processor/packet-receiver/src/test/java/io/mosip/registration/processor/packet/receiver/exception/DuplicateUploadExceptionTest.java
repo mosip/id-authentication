@@ -21,10 +21,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -80,9 +80,9 @@ public class DuplicateUploadExceptionTest {
 			fail();
 		} catch (DuplicateUploadRequestException e) {
 			assertThat("Should throw duplicate exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getCode()));
 			assertThat("Should throw duplicate exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage()));
 
 		}
 	}

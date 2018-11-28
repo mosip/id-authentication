@@ -1,5 +1,1 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl
-io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl
-io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl
-io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
@@ -29,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			TransactionEntity entity = convertDtoToEntity(transactionStatusDto);
 			return transactionRepositary.save(entity);
 		} catch (DataAccessLayerException e) {
-			throw new TransactionTableNotAccessibleException("Could not add Information to Transaction table", e);
+			throw new TransactionTableNotAccessibleException(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		}
 
 	}

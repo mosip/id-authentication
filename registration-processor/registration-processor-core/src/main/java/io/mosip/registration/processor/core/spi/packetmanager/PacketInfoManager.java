@@ -1,9 +1,10 @@
 package io.mosip.registration.processor.core.spi.packetmanager;
 
+import java.io.InputStream;
 import java.util.List;
 
-import org.apache.ignite.internal.util.typedef.internal.A;
-import org.springframework.stereotype.Service;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 
 
 /**
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
  * @param <T> PacketInfoDto
  * @param <D> DemographicInfo
  */
-@Service
-public interface PacketInfoManager<T, D, M, A> {
+public interface PacketInfoManager<T,/** D, M,*/ A> {
 
 
 	/**
@@ -31,7 +31,7 @@ public interface PacketInfoManager<T, D, M, A> {
 	 *
 	 * @param demograficData the demografic data
 	 */
-	public void saveDemographicData(D demograficData,M metaData);
+	public void saveDemographicInfoJson(InputStream demographicJsonStream,List<FieldValue> metaData);
 	
 	/**
 	 * Gets the packetsfor QC user.
@@ -39,5 +39,6 @@ public interface PacketInfoManager<T, D, M, A> {
 	 * @param qcUserId the qc user id
 	 * @return the packetsfor QC user
 	 */
+	public RegOsiDto getOsi(String regid);
 	public List<A> getPacketsforQCUser(String qcUserId);
 }

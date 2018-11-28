@@ -24,6 +24,12 @@ public class TemplateConfigureBuilderTest {
 	public void buildDefaultConfiguration() {
 		TemplateManagerBuilderImpl builder=(TemplateManagerBuilderImpl) templateManagerBuilder;
 		builder.build();
+	
+		System.out.println("1getDefaultEncoding " + builder.getDefaultEncoding());
+		System.out.println("1getResourceLoader " + builder.getResourceLoader());
+		System.out.println("1getTemplatePath " +  builder.getTemplatePath());
+		
+		
 		assertEquals("UTF-8", builder.getDefaultEncoding());
 		assertEquals("classpath", builder.getResourceLoader());
 		assertEquals(".", builder.getTemplatePath());
@@ -36,6 +42,12 @@ public class TemplateConfigureBuilderTest {
 		TemplateManagerBuilderImpl builder = (TemplateManagerBuilderImpl) new TemplateManagerBuilderImpl().encodingType("UTF-16").enableCache(false)
 				.resourcePath("/templates").resourceLoader("classpath");
 		builder.build();
+		
+		
+		System.out.println("2getDefaultEncoding " + builder.getDefaultEncoding());
+		System.out.println("2getResourceLoader " + builder.getResourceLoader());
+		System.out.println("2getTemplatePath " +  builder.getTemplatePath());
+		
 		assertEquals("UTF-16", builder.getDefaultEncoding());
 		assertEquals("classpath", builder.getResourceLoader());
 		assertEquals("/templates", builder.getTemplatePath());

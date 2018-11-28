@@ -7,6 +7,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -27,15 +29,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "gender", schema = "master")
+@IdClass(GenderTypeId.class)
 public class GenderType extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1323022736883315822L;
 
-	@EmbeddedId
-	@AttributeOverrides({
-			@AttributeOverride(name = "genderCode", column = @Column(name = "code", nullable = false, length = 16)),
-			@AttributeOverride(name = "genderName", column = @Column(name = "name", nullable = false, length = 64)) })
+	
+	
+	@Id
 	@Column(name = "code", unique = true, nullable = false, length = 16)
-	private GenderTypeId id;
+	private String genderCode;
+    @Id
+	@Column(name = "name", unique = true, nullable = false, length = 64)
+	private String genderName;
 
 	@Column(name = "lang_code", unique = true, nullable = false, length = 3)
 	private String languageCode;

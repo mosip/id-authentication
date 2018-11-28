@@ -36,13 +36,18 @@ public class MosipBridgeMapping {
 						.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 						.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
+				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN))
+						.toVertx(MessageBusAddress.OSI_BUS_IN.getAddress()))
 
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.BATCH_BUS.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)))
+						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.RETRY_BUS.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)));
+						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)))
+				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.OSI_BUS_OUT.getAddress())
+						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS)));
+
 		return options;
 	}
 

@@ -20,6 +20,15 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
+	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		String contextUser = authN.getName();
+		@SuppressWarnings("unchecked")
+		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
+		setMetaData(contextUser, entity);
+		return entity;
+	}
+
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
@@ -27,21 +36,21 @@ public class MetaDataUtils {
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
+			@SuppressWarnings("unchecked")
 			D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
-			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
-			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
-			entity.setIsActive(true);
-			entity.setDeletedtimes(null);
-			entity.setUpdatedBy(contextUser);
-			entity.setUpdatedtimes(utime);
-			entity.setCreatedBy(contextUser);
-			entity.setCreatedtimes(time);
-			entity.setIsDeleted(false);
+			setMetaData(contextUser, entity);
 			entities.add(entity);
 
 		});
 		return entities;
 
+	}
+
+	private <D extends BaseEntity> void setMetaData(String contextUser, D entity) {
+		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
+		LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
+		entity.setCreatedBy(contextUser);
+		entity.setCreatedtimes(time);
 	}
 
 	/*

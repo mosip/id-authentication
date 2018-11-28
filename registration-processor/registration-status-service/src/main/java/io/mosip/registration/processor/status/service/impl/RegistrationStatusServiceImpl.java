@@ -1,22 +1,17 @@
 package io.mosip.registration.processor.status.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -69,7 +64,8 @@ public class RegistrationStatusServiceImpl
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
 
 	/*
 	 * (non-Javadoc)
@@ -86,7 +82,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -98,7 +94,7 @@ public class RegistrationStatusServiceImpl
 					? "Get registration status by registration id is successful"
 					: "Get registration status by registration id is unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
 	}
@@ -119,7 +115,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -131,7 +127,7 @@ public class RegistrationStatusServiceImpl
 					? "Find files by threshold time and statuscode is successful"
 					: "Find files by threshold time and statuscode is unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
 		}
@@ -160,7 +156,7 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Could not add Information to table", e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -172,7 +168,7 @@ public class RegistrationStatusServiceImpl
 					? "Registration status added successfully"
 					: "Failure in adding registration status to registration table";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 		}
 	}
@@ -204,7 +200,7 @@ public class RegistrationStatusServiceImpl
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Could not update Information to table", e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -216,7 +212,7 @@ public class RegistrationStatusServiceImpl
 					? "Updated registration status successfully"
 					: "Updated registration status unsuccessfully";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 
 		}
@@ -238,7 +234,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -249,7 +245,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by status successfully"
 					: "Get list of registration status by status unsuccessfully";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
@@ -273,7 +269,7 @@ public class RegistrationStatusServiceImpl
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -284,7 +280,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by registration id successfully"
 					: "Get list of registration status by registration id unsuccessfully";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}

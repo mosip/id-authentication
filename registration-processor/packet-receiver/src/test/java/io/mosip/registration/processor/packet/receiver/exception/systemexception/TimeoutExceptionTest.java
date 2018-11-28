@@ -18,21 +18,21 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class TimeoutExceptionTest {
-	private static final String TIMEOUT_EXCEPTION = "This is Timeout exception";
+
 	private static final Logger log = LoggerFactory.getLogger(TimeoutExceptionTest.class);
+	
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
 	@Test
 	public void TestTimeoutException() {
 
-		TimeoutException ex = new TimeoutException(TIMEOUT_EXCEPTION);
+		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -55,9 +55,9 @@ public class TimeoutExceptionTest {
 
 		} catch (TimeoutException e) {
 			assertThat("Should throw Timeout Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode()));
 			assertThat("Should throw Timeout Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(TIMEOUT_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage()));
 
 		}
 	}

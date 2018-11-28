@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 
 /**
@@ -18,4 +20,11 @@ public interface BlacklistedWordsService {
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
 	BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode);
+	
+	/**
+	 * @param blacklistedwords
+	 *            the words to validate
+	 * @return if the words are valid or invaid
+	 */
+	public boolean validateWord(List<String> blacklistedwords);
 }

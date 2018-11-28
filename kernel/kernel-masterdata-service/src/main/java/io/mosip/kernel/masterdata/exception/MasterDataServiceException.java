@@ -28,4 +28,18 @@ public class MasterDataServiceException extends BaseUncheckedException {
 		super(errorCode, errorMessage);
 	}
 
+	/**
+	 * Constructor the initialize Handler exception
+	 * 
+	 * @param errorCode
+	 *            The error code for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 * @param rootCause
+	 *            the specified cause
+	 */
+	public MasterDataServiceException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
+
 }
