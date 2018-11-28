@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 
 @RestController
@@ -27,7 +28,7 @@ public class DeviceTypeController {
 	 */
 
 	@PostMapping("/devicetypes")
-	public PostResponseDto saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
+	public CodeAndLanguageCodeId saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
 		return deviceTypeService.saveDeviceTypes(deviceTypes);
 	}
 

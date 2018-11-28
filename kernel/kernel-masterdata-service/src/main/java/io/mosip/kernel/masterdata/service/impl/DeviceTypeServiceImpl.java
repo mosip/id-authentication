@@ -38,28 +38,22 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	private DataMapper dataMapper;
 
 	@Override
-	public PostResponseDto saveDeviceTypes(DeviceTypeRequestDto deviceTypes) {
-		PostResponseDto postResponseDto = new PostResponseDto();
-		List<DeviceType> renDeviceTypeList = null;
+	public CodeAndLanguageCodeId saveDeviceTypes(DeviceTypeRequestDto deviceType) {
+		DeviceType renDeviceType = null;
 
-		List<DeviceType> entities = metaUtils.setCreateMetaData(deviceTypes.getRequest().getDeviceTypeDtos(),
+		DeviceType entity = metaUtils.setCreateMetaData(deviceType.getRequest().getDeviceTypeDto(),
 				DeviceType.class);
 
 		try {
-			renDeviceTypeList = deviceTypeRepository.saveAll(entities);
+			renDeviceType = deviceTypeRepository.create(entity);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		renDeviceTypeList.forEach(renDeviceType -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
-
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+		
+		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
 	}
 
 }
