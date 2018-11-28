@@ -106,7 +106,7 @@
                                     <TextField fx:id="province" layoutX="14.0" layoutY="232.0" prefHeight="30.0" prefWidth="153.0" />
                                     <Label layoutX="180.0" layoutY="220.0" text="%postal_code" />
                                     <TextField fx:id="postalCode" layoutX="180.0" layoutY="232.0" prefHeight="30.0" prefWidth="155.0" />
-                                     <Button fx:id="prevAddressButton" layoutX="350.0" layoutY="240.0" mnemonicParsing="false" onAction="#loadAddressFromPreviousEntry" text="Fetch address from last entry"/>
+                                     <Button fx:id="prevAddressButton" layoutX="350.0" layoutY="240.0" mnemonicParsing="false" onAction="#loadAddressFromPreviousEntry" text="Fetch address from last entry" />
                                     <Label layoutX="17.0" layoutY="270.0" text="%local_administrative_authority" />
                                     <TextField fx:id="localAdminAuthority" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label layoutX="17.0" layoutY="320.0" text="%mobile_number" />
@@ -154,7 +154,7 @@
                      </content></TitledPane>
                   <TitledPane fx:id="biometricTitlePane" text="Applicant Biometrics">
                      <content>
-                        <AnchorPane id="demographicPane" prefHeight="85.0" prefWidth="417.0" visible="false">
+                        <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0" visible="false">
                            <children>
                               <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
                               <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />

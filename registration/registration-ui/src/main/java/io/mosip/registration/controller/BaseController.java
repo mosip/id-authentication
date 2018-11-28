@@ -119,6 +119,32 @@ public class BaseController {
 		alert.setTitle(title);
 		alert.showAndWait();
 	}
+	
+	/**
+	 * 
+	 * /* Alert creation with specified title, header, and context
+	 * @param header    alert header
+	 * @param context   alert context
+	 */
+	protected void generateAlert(String header, String context) {
+		Alert alert = new Alert(AlertType.valueOf(RegistrationConstants.ALERT_ERROR));
+		alert.setHeaderText(header);
+		alert.setContentText(context);
+		alert.setTitle(RegistrationConstants.ALERT_ERROR);
+		alert.showAndWait();
+	}
+	
+	/**
+	 * 
+	 * /* Alert creation with specified header
+	 * @param header    alert header
+	 */
+	protected void generateAlert(String header) {
+		Alert alert = new Alert(AlertType.valueOf(RegistrationConstants.ALERT_ERROR));
+		alert.setHeaderText(header);
+		alert.setTitle(RegistrationConstants.ALERT_ERROR);
+		alert.showAndWait();
+	}
 
 	/**
 	 * Alert creation with specified title and context

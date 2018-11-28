@@ -381,7 +381,7 @@ public class RegistrationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 
 	// UI Registration Validations
-	public static final String FULL_NAME_EMPTY = "Please Provide First Name";
+	public static final String FULL_NAME_EMPTY = "Please Provide Full Name";
 	public static final String MIDDLE_NAME_EMPTY = "Please Provide Middle Name";
 	public static final String LAST_NAME_EMPTY = "Please Provide Last Name";
 	public static final String AGE_EMPTY = "Please Provide Age";
@@ -409,7 +409,7 @@ public class RegistrationConstants {
 	public static final String POR_DOCUMENT_EMPTY = "Please Provide POR Document";
 	public static final String ONLY_ALPHABETS="Only alphabets are allowed";
 	public static final String TEN_LETTER_INPUT_LIMT="Please provide in the range of 6 to 10 letters";
-	public static final String SIX_DIGIT_INPUT_LIMT="Please provide 5 digit detail";
+	public static final String SIX_DIGIT_INPUT_LIMT="Please provide 6 digit detail";
 	public static final String THIRTY_DIGIT_INPUT_LIMT="Please provide 30 digit detail";
 	public static final String ADDRESS_KEY="PrevAddress";
 

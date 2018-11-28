@@ -24,7 +24,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.TemplateService;
-import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
+import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,7 +63,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder; 
 
-	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
+	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
@@ -119,7 +119,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			ackReceiptController.setRegistrationData(registrationDTO);
 
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO, templateManagerBuilder);
+			Writer writer = templateGenerator.generateTemplate(ackTemplateText, registrationDTO, templateManagerBuilder);
 			ackReceiptController.setStringWriter(writer);
 
 			

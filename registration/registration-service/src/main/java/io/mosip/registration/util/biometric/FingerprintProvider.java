@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.stereotype.Component;
+
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
@@ -17,7 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-
+@Component
 public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
 	protected String minutia = "";

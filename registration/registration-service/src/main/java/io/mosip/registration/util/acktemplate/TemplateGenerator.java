@@ -41,12 +41,12 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
  * @author Himaja Dhanyamraju
  *
  */
-public class VelocityPDFGenerator {
+public class TemplateGenerator {
 	
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(VelocityPDFGenerator.class);
+	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
 	/**
 	 * @param templateText

@@ -33,7 +33,7 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @Configuration
 @Import({ HibernateDaoConfig.class, AuditConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
-@ComponentScan("io.mosip.registration")
+@ComponentScan({"io.mosip.registration", "io.mosip.kernel"})
 @PropertySource("spring.properties")
 public class AppConfig {
 

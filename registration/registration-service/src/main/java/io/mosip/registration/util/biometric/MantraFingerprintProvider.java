@@ -1,5 +1,7 @@
 package io.mosip.registration.util.biometric;
 
+import org.springframework.stereotype.Component;
+
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
@@ -10,6 +12,7 @@ import MFS100.MFS100Event;
  * @author M1046564
  *
  */
+@Component
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
 	/** The fp device. */

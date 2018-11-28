@@ -1,7 +1,7 @@
 package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_PAGE_OPEN_ERROR;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -35,6 +35,7 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -277,6 +278,11 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button porScanBtn;
 
+	  @FXML
+	private AnchorPane fingerPrintCapturePane;
+	
+												
+												
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
@@ -334,11 +340,11 @@ public class RegistrationController extends BaseController {
 				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
-			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+																																			
+					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+					REG_UI_PAGE_OPEN_ERROR.getErrorMessage());
 		}
 	}
 
@@ -433,7 +439,7 @@ public class RegistrationController extends BaseController {
 	private void gotoSecondDemographicPane() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading the second demographic pane");
-		if (validatePaneOne()) {
+		if (validateDemographicPaneOne()) {
 			demoGraphicTitlePane.setContent(null);
 			demoGraphicTitlePane.setExpanded(false);
 			demoGraphicTitlePane.setContent(demoGraphicPane2);
@@ -470,11 +476,38 @@ public class RegistrationController extends BaseController {
 		}
 
 		if (node.getId().equals("fullName")) {
+	
+	
+								 
+										   
+							   
 			fullNameLocalLanguage.requestFocus();
 			keyboardNode.setLayoutY(120.00);
+  
+
 		}
 
+											 
+	
+	
+								 
+										   
+							   
+							   
+								
+  
 		keyboardNode.setVisible(true);
+	
+
+										
+	
+	
+							  
+									   
+							   
+							   
+								
+  
 
 	}
 
@@ -489,11 +522,11 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		LocationDTO locationDto = new LocationDTO();
-		AddressDTO addressDto = new AddressDTO();
+		LocationDTO locationDTO = new LocationDTO();
+		AddressDTO addressDTO = new AddressDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
-		OSIDataDTO osiDataDto = new OSIDataDTO();
-		if (validatePaneTwo()) {
+		OSIDataDTO osiDataDTO = new OSIDataDTO();
+		if (validateDemographicPaneTwo()) {
 			demographicInfoDTO.setFullName(fullName.getText());
 			if (ageDatePicker.getValue() != null) {
 				demographicInfoDTO.setDateOfBirth(
@@ -501,15 +534,15 @@ public class RegistrationController extends BaseController {
 			}
 			demographicInfoDTO.setAge(ageField.getText());
 			demographicInfoDTO.setGender(gender.getValue());
-			addressDto.setAddressLine1(addressLine1.getText());
-			addressDto.setAddressLine2(addressLine2.getText());
-			addressDto.setLine3(addressLine3.getText());
-			locationDto.setProvince(province.getText());
-			locationDto.setCity(city.getText());
-			locationDto.setRegion(region.getText());
-			locationDto.setPostalCode(postalCode.getText());
-			addressDto.setLocationDTO(locationDto);
-			demographicInfoDTO.setAddressDTO(addressDto);
+			addressDTO.setAddressLine1(addressLine1.getText());
+			addressDTO.setAddressLine2(addressLine2.getText());
+			addressDTO.setLine3(addressLine3.getText());
+			locationDTO.setProvince(province.getText());
+			locationDTO.setCity(city.getText());
+			locationDTO.setRegion(region.getText());
+			locationDTO.setPostalCode(postalCode.getText());
+			addressDTO.setLocationDTO(locationDTO);
+			demographicInfoDTO.setAddressDTO(addressDTO);
 			demographicInfoDTO.setMobile(mobileNo.getText());
 			demographicInfoDTO.setEmailId(emailId.getText());
 			demographicInfoDTO.setChild(isChild);
@@ -521,27 +554,27 @@ public class RegistrationController extends BaseController {
 				} else {
 					demographicDTO.setIntroducerUIN(uinId.getText());
 				}
-				osiDataDto.setIntroducerType(IntroducerType.PARENT.getCode());
+				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 				demographicInfoDTO.setParentOrGuardianName(parentName.getText());
 			}
 			demographicDTO.setDemoInUserLang(demographicInfoDTO);
-			osiDataDto.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
+			osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
 			// local language
 			demographicInfoDTO = new DemographicInfoDTO();
-			locationDto = new LocationDTO();
-			addressDto = new AddressDTO();
-			addressDto.setLocationDTO(locationDto);
-			demographicInfoDTO.setAddressDTO(addressDto);
+			locationDTO = new LocationDTO();
+			addressDTO = new AddressDTO();
+			addressDTO.setLocationDTO(locationDTO);
+			demographicInfoDTO.setAddressDTO(addressDTO);
 			demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
-			addressDto.setAddressLine1(addressLine1LocalLanguage.getText());
-			addressDto.setAddressLine2(addressLine2LocalLanguage.getText());
-			addressDto.setLine3(addressLine3LocalLanguage.getText());
+			addressDTO.setAddressLine1(addressLine1LocalLanguage.getText());
+			addressDTO.setAddressLine2(addressLine2LocalLanguage.getText());
+			addressDTO.setLine3(addressLine3LocalLanguage.getText());
 
 			demographicDTO.setDemoInLocalLang(demographicInfoDTO);
 
 			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
-			registrationDTO.setOsiDataDTO(osiDataDto);
+			registrationDTO.setOsiDataDTO(osiDataDTO);
 			registrationDTO.setDemographicDTO(demographicDTO);
 
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -554,7 +587,34 @@ public class RegistrationController extends BaseController {
 			}
 
 			biometricTitlePane.setExpanded(true);
+   //TODO : load fxml
+			
 
+			try {
+				Parent pendingActionRoot = BaseController
+						.load(getClass().getResource("/fxml/FingerPrintCapture.fxml"));
+				ObservableList<Node> approvalNodes = fingerPrintCapturePane.getChildren();
+				approvalNodes.add(pendingActionRoot);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			
+									 
+	
+   
+  
+
+	  
+								  
+										 
+  
+
+	
+	
+
+	
 			if (capturePhotoUsingDevice.equals("N")) {
 				biometricsNext.setDisable(false);
 			}
@@ -798,8 +858,8 @@ public class RegistrationController extends BaseController {
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 					final String newValue) {
 				if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.FULL_NAME_EMPTY, "Numbers are not allowed");
+					generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+	 
 					fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 					fullName.requestFocus();
 				} else {
@@ -1041,75 +1101,78 @@ public class RegistrationController extends BaseController {
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
-	private boolean validatePaneOne() {
+	private boolean validateDemographicPaneOne() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
+
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.FULL_NAME_EMPTY, "Numbers are not allowed");
+			generateAlert(RegistrationConstants.FULL_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+																	  
 			fullName.requestFocus();
 		} else {
-			if (validateAgeorDob()) {
+			if (validateAgeOrDob()) {
 				if (gender.getValue() == null) {
-					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.GENDER_EMPTY);
+					generateAlert(RegistrationConstants.GENDER_EMPTY);
+																	 
 					gender.requestFocus();
 				} else {
 					if (validateRegex(addressLine1, "^.{6,50}$")) {
-						generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.ADDRESS_LINE_1_EMPTY, RegistrationConstants.ADDRESS_LINE_WARNING);
+							
+						generateAlert(RegistrationConstants.ADDRESS_LINE_1_EMPTY,
+								RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
-							generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
-											+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+																  
+							generateAlert(RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
+									+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
-								generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
-												+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+																					
+								generateAlert(RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS
+										+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
-									generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-											RegistrationConstants.PROVINCE_EMPTY, RegistrationConstants.ONLY_ALPHABETS
-													+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+																			
+									generateAlert(RegistrationConstants.PROVINCE_EMPTY,
+											RegistrationConstants.ONLY_ALPHABETS + " "
+													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 									province.requestFocus();
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
-										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-												RegistrationConstants.POSTAL_CODE_EMPTY,
+										generateAlert(RegistrationConstants.POSTAL_CODE_EMPTY,
+																				 
 												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
-											generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+											generateAlert(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+																			  
 													RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
-												generateAlert("Error",
-														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-														RegistrationConstants.MOBILE_NUMBER_EMPTY,
+																				 
+												generateAlert(RegistrationConstants.MOBILE_NUMBER_EMPTY,
+															   
 														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(emailId,
 														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
-													generateAlert("Error",
-															AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-															RegistrationConstants.EMAIL_ID_EMPTY,
+
+													generateAlert(RegistrationConstants.EMAIL_ID_EMPTY,
+
 															RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
-														generateAlert("Error",
-																AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
+		
+	   
+														generateAlert(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
 																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cniOrPinNumber.requestFocus();
 													} else {
@@ -1140,7 +1203,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 
-	private boolean validatePaneTwo() {
+	private boolean validateDemographicPaneTwo() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = false;
@@ -1165,13 +1228,13 @@ public class RegistrationController extends BaseController {
 
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
-				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.PARENT_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
+
+				generateAlert(RegistrationConstants.PARENT_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
-					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.UIN_ID_EMPTY);
+					generateAlert(RegistrationConstants.UIN_ID_EMPTY);
+																						  
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1223,12 +1286,12 @@ public class RegistrationController extends BaseController {
 		porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
 	}
 
-	private boolean validateAgeorDob() {
+	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
-				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.AGE_EMPTY);
+				generateAlert(RegistrationConstants.AGE_EMPTY);
+	
 				ageField.requestFocus();
 			} else {
 				if (Integer.parseInt(ageField.getText()) < 5) {
@@ -1238,8 +1301,8 @@ public class RegistrationController extends BaseController {
 			}
 		} else if (!toggleAgeOrDobField) {
 			if (ageDatePicker.getValue() == null) {
-				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.DATE_OF_BIRTH_EMPTY);
+				generateAlert(RegistrationConstants.DATE_OF_BIRTH_EMPTY);
+		  
 				ageDatePicker.requestFocus();
 			} else {
 				gotoNext = true;
@@ -1251,39 +1314,39 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POA_DOCUMENT_EMPTY, "Numbers are not allowed");
+							   
+			generateAlert(RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
 			poaLabel.setId("doc_label");
 			poaLabel.setText(poaDocuments.getValue());
-			;
+  
 		}
 	}
 
 	@FXML
 	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POI_DOCUMENT_EMPTY, "Numbers are not allowed");
+							   
+			generateAlert(RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
 			poiLabel.setId("doc_label");
 			poiLabel.setText(poiDocuments.getValue());
-			;
+  
 		}
 	}
 
 	@FXML
 	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
-			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.POR_DOCUMENT_EMPTY, "Numbers are not allowed");
+								 
+			generateAlert(RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
 			porLabel.setId("doc_label");
 			porLabel.setText(porDocuments.getValue());
-			;
+
 		}
 	}
 
@@ -1346,6 +1409,7 @@ public class RegistrationController extends BaseController {
 	 */
 	private void toggleFunctionForBiometricException() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+									
 				RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 		bioExceptionToggleLabel1.setId("toggleLabel1");
 		bioExceptionToggleLabel2.setId("toggleLabel2");
@@ -1373,7 +1437,9 @@ public class RegistrationController extends BaseController {
 			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 		});
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+								  
 				RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
 	}
 
+								  
 }

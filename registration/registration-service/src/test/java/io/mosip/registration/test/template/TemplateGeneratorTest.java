@@ -16,13 +16,13 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
-import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
+import io.mosip.registration.util.acktemplate.TemplateGenerator;
 
-public class VelocityPDFGeneratorTest {
+public class TemplateGeneratorTest {
 	TemplateManagerBuilderImpl template =  new TemplateManagerBuilderImpl();
 	
 	@InjectMocks
-	VelocityPDFGenerator velocityGenerator;
+	TemplateGenerator templateGenerator;
 	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -30,14 +30,14 @@ public class VelocityPDFGeneratorTest {
 	@Test
 	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
-		Writer writer = velocityGenerator.generateTemplate("sample text", registrationDTO, template);
+		Writer writer = templateGenerator.generateTemplate("sample text", registrationDTO, template);
 		assertNotNull(writer);
 	}
 	
 	@Test
 	public void generateNotificationTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
-		Writer writer = velocityGenerator.generateNotificationTemplate("sample text", registrationDTO, template);
+		Writer writer = templateGenerator.generateNotificationTemplate("sample text", registrationDTO, template);
 		assertNotNull(writer);
 	}
 	
