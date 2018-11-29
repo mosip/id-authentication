@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 
 @Component
@@ -35,6 +36,10 @@ public class MetaDataUtils {
 	 *            class type of destination object to be created.
 	 * 
 	 * @return an new Object of <code>entityClass</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             when any error occurred while mapping <code>dto</code> values to
+	 *             embedded Id
 	 */
 	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
@@ -53,15 +58,9 @@ public class MetaDataUtils {
 					field.set(entity, id);
 					field.setAccessible(false);
 					break;
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Exception e) {
+					throw new io.mosip.kernel.core.exception.IllegalArgumentException("",
+							"Error while mapping Embedded Id fields", e);
 				}
 			}
 		}
