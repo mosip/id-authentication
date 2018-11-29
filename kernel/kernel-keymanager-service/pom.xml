@@ -78,6 +78,11 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

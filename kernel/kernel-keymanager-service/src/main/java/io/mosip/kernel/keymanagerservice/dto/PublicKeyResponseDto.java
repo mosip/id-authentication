@@ -21,6 +21,8 @@ public class PublicKeyResponseDto {
 
 	private byte[] publicKey;
 
+	private String base64EncodedPublicKey;
+
 	private LocalDateTime keyGenerationTime;
 
 	private LocalDateTime keyExpiryTime;

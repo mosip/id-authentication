@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -159,7 +161,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		PublicKey publicKey = keyStore.getPublicKey(alias);
 		// System.out.println(keyStore.getCertificate(alias).toString());
 		keyResponseDto.setPublicKey(publicKey.getEncoded());
-
+		keyResponseDto.setBase64EncodedPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
 		return keyResponseDto;
 	}
 
