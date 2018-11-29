@@ -1,6 +1,6 @@
 Design - User Device Mapping
 
-**[Background]{.underline}**
+**Background**
 ============================
 
 After successful login by the Admin person, user can tag the list of
@@ -42,7 +42,7 @@ The key **non-functional requirements** are
     -   The data which resides in the data-base should be in encrypted
         format.
 
-**[Solution]{.underline}**
+**Solution**
 ==========================
 
 The key solution considerations are --
