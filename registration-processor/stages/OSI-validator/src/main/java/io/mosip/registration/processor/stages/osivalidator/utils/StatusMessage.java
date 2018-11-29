@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.stages.osivalidator.utils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class StatusMessage.
  */
@@ -39,5 +38,11 @@ public class StatusMessage {
 
 	/** The Constant OSI_VALIDATION_SUCCESS. */
 	public static final String OSI_VALIDATION_SUCCESS = "OSI_VALIDATION_SUCCESS";
+
+	public static final String PARENT_UIN_AND_RID_NOT_IN_PACKET = "The UIN and RID of Parent is not present in Packet";
+
+	public static final String PARENT_RID_NOT_IN_REGISTRATION_TABLE = "The RID of Parent is not present in Packet";
+
+	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
 
 }

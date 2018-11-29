@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -15,13 +16,8 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.stages.osivalidator.exception.utils.ExceptionMessages;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -30,13 +26,12 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidatorStage.
  */
 @RefreshScope
 @Service
-public class OSIValidatorStage extends MosipVerticleManager  {
+public class OSIValidatorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -56,12 +51,10 @@ public class OSIValidatorStage extends MosipVerticleManager  {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-
-    /** The audit log request builder. */
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-	
 	/** The osi validator. */
 	@Autowired
 	OSIValidator osiValidator;
@@ -94,7 +87,7 @@ public class OSIValidatorStage extends MosipVerticleManager  {
 		boolean isValidOSI = false;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-	
+
 		osiValidator.registrationStatusDto = registrationStatusDto;
 
 		try {
@@ -121,19 +114,18 @@ public class OSIValidatorStage extends MosipVerticleManager  {
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
-		} catch (IOException e) {
-			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
+		} catch (DataAccessException e) {
+			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = "Data voilation in reg packet : " + registrationId;
 
-		} catch (ApisResourceAccessException e) {
-
-			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
+		} catch (IOException | ApisResourceAccessException e) {
+			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), ex);
+			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
