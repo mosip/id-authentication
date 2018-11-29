@@ -126,6 +126,7 @@
 
 		
 		<module>kernel-idrepo-service</module>
+		<module>kernel-synchandler-service</module>
 	</modules>
 
 	<dependencies>
