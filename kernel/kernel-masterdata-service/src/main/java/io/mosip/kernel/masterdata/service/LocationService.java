@@ -2,9 +2,10 @@ package io.mosip.kernel.masterdata.service;
 
 
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationRequestDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 
 /**
  * Interface class from which various implementation can be performed
@@ -32,5 +33,5 @@ public interface LocationService {
 	 * 
 	 * @return 
 	 */
-	public LocationCodeDto saveLocationHierarchy(LocationRequestDto locationRequestDto);
+	public LocationCodeDto saveLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 }

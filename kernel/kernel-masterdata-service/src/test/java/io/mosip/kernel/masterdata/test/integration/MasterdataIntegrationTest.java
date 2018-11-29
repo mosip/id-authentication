@@ -283,12 +283,12 @@ public class MasterdataIntegrationTest {
 		titleId.setTitleCode("ABC");
 		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
-		title.setCreatedtimes(null);
+		title.setCreatedDateTime(null);
 		title.setId(titleId);
 		title.setTitleDescription("AAAAAAAAAAAA");
 		title.setTitleName("HELLO");
 		title.setUpdatedBy("XYZ");
-		title.setUpdatedtimes(null);
+		title.setUpdatedDateTime(null);
 		titleList.add(title);
 	}
 
@@ -374,7 +374,7 @@ public class MasterdataIntegrationTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtimes(specificDate);
+		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setIsActive(true);
 
@@ -382,7 +382,7 @@ public class MasterdataIntegrationTest {
 		holiday2.setHolidayId(new HolidayId(1, "KAH", date, "ENG"));
 		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
-		holiday2.setCreatedtimes(specificDate);
+		holiday2.setCreatedDateTime(specificDate);
 		holiday2.setHolidayDesc("Diwali");
 		holiday2.setIsActive(true);
 
@@ -399,12 +399,12 @@ public class MasterdataIntegrationTest {
 		genderId.setGenderName("Raj");
 		genderType.setIsActive(true);
 		genderType.setCreatedBy("John");
-		genderType.setCreatedtimes(null);
+		genderType.setCreatedDateTime(null);
 		genderType.setIsDeleted(true);
-		genderType.setDeletedtimes(null);
+		genderType.setDeletedDateTime(null);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Dom");
-		genderType.setUpdatedtimes(null);
+		genderType.setUpdatedDateTime(null);
 		genderTypes.add(genderType);
 	}
 

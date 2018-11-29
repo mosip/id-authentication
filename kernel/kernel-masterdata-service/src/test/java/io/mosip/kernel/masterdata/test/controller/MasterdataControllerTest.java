@@ -146,7 +146,7 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"request\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -232,7 +232,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setCenterTypeCode("PAR");
 		registrationCenter.setContactPhone("987654321");
 		registrationCenter.setCreatedBy("John");
-		registrationCenter.setCreatedtimes(specificDate);
+		registrationCenter.setCreatedDateTime(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
 		registrationCenter.setLocationCode("KAR_59");
 		registrationCenter.setId("REG_CR_001");
@@ -248,7 +248,7 @@ public class MasterdataControllerTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtimes(specificDate);
+		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setIsActive(true);
 

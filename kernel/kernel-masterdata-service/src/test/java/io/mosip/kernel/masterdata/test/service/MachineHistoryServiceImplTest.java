@@ -72,7 +72,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistory.setLangCode("ENG");
 		machineHistory.setIsActive(true);
 		machineHistory.setCreatedBy("Admin");
-		machineHistory.setCreatedtimes(localDateTime);
+		machineHistory.setCreatedDateTime(localDateTime);
 		machineHistory.setUpdatedBy("Admin");
 		machineHistory.setIsDeleted(false);
 		machineHistory.setIpAddress("100.10.01.01");
