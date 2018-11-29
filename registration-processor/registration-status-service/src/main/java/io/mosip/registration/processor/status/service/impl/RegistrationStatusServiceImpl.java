@@ -2,11 +2,14 @@ package io.mosip.registration.processor.status.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +37,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
  */
 @Component
 public class RegistrationStatusServiceImpl
-		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
@@ -66,6 +69,8 @@ public class RegistrationStatusServiceImpl
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	private RidValidator<String> ridValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -92,7 +97,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get registration status by registration id is successful"
-					: "Get registration status by registration id is unsuccessful";
+							: "Get registration status by registration id is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
@@ -125,7 +130,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Find files by threshold time and statuscode is successful"
-					: "Find files by threshold time and statuscode is unsuccessful";
+							: "Find files by threshold time and statuscode is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
@@ -166,7 +171,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Registration status added successfully"
-					: "Failure in adding registration status to registration table";
+							: "Failure in adding registration status to registration table";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -210,7 +215,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Updated registration status successfully"
-					: "Updated registration status unsuccessfully";
+							: "Updated registration status unsuccessfully";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -244,7 +249,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get list of registration status by status successfully"
-					: "Get list of registration status by status unsuccessfully";
+							: "Get list of registration status by status unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
@@ -260,13 +265,41 @@ public class RegistrationStatusServiceImpl
 	@Override
 	public List<RegistrationStatusDto> getByIds(String ids) {
 		boolean isTransactionSuccessful = false;
+		List<RegistrationStatusDto> list=new ArrayList<>();
+		List<String> registrationIds;
+		List<String> registrationIdsSuceess=new ArrayList<>();
 		try {
 			String[] registrationIdArray = ids.split(",");
-			List<String> registrationIds = Arrays.asList(registrationIdArray);
-			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
-					.getByIds(registrationIds);
-			isTransactionSuccessful = true;
-			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
+			registrationIds =Arrays.asList(registrationIdArray);
+			for (int i = 0; i < registrationIds.size(); i++) {
+				try {
+				if(!(ridValidator.validateId(registrationIds.get(i)))) {
+					RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
+					registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
+					registrationIdFailureDto.setStatusCode("RegistartionId Is Not correct");
+					list.add(registrationIdFailureDto);
+				}	else {
+					registrationIdsSuceess.add(registrationIds.get(i));
+				}
+				
+				}catch(InvalidIDException e) {
+					RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
+					registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
+					registrationIdFailureDto.setStatusCode(e.getErrorText());
+					list.add(registrationIdFailureDto);
+					
+				}
+
+			}
+
+			if(!(registrationIdsSuceess.isEmpty())) {
+				List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao.getByIds(registrationIdsSuceess);
+				isTransactionSuccessful = true;
+				list=convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList,list);
+
+			}
+
+			return list;
 
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
@@ -279,20 +312,18 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get list of registration status by registration id successfully"
-					: "Get list of registration status by registration id unsuccessfully";
+							: "Get list of registration status by registration id unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
 
-	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(
-			List<RegistrationStatusEntity> entities) {
-		List<RegistrationStatusDto> list = new ArrayList<>();
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities,List<RegistrationStatusDto> list) {
+
 		if (entities != null) {
 			for (RegistrationStatusEntity entity : entities) {
 				list.add(convertEntityToDtoAndGetExternalStatus(entity));
 			}
-
 		}
 		return list;
 	}

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * The Class RegistrationStatusApplication.
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.core",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client" })
+		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client","io.mosip.kernel.idvalidator.rid.impl" ,"io.mosip.kernel.core.idvalidator.spi"})
 public class RegistrationStatusApplication {
 
 	/**
