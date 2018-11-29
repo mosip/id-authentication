@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -107,10 +106,7 @@ public class TemplateGenerator {
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
 				.getDocumentDetailsDTO();
-		List<String> documentNames = new ArrayList<>();
-		for (DocumentDetailsDTO document : documents) {
-			documentNames.add(document.getDocumentName());
-		}
+		List<String> documentNames = documents.stream().map(document -> document.getDocumentName()).collect(Collectors.toList());
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
