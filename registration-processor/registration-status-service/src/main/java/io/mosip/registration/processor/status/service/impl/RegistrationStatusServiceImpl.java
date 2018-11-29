@@ -273,21 +273,21 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 			registrationIds =Arrays.asList(registrationIdArray);
 			for (int i = 0; i < registrationIds.size(); i++) {
 				try {
-				if(!(ridValidator.validateId(registrationIds.get(i)))) {
+					if(!(ridValidator.validateId(registrationIds.get(i)))) {
+						RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
+						registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
+						registrationIdFailureDto.setStatusCode("RegistartionId Is Not correct");
+						list.add(registrationIdFailureDto);
+					}	else {
+						registrationIdsSuceess.add(registrationIds.get(i));
+					}
+
+				}catch(InvalidIDException iie) {
 					RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
 					registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
-					registrationIdFailureDto.setStatusCode("RegistartionId Is Not correct");
+					registrationIdFailureDto.setStatusCode(iie.getErrorText());
 					list.add(registrationIdFailureDto);
-				}	else {
-					registrationIdsSuceess.add(registrationIds.get(i));
-				}
-				
-				}catch(InvalidIDException e) {
-					RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
-					registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
-					registrationIdFailureDto.setStatusCode(e.getErrorText());
-					list.add(registrationIdFailureDto);
-					
+
 				}
 
 			}
