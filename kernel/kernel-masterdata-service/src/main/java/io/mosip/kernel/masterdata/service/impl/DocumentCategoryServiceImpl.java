@@ -45,7 +45,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
-	private List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
+	// private List<DocumentCategoryDto> documentCategoryDtoList = new
+	// ArrayList<>();
 
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
 
@@ -66,7 +67,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 */
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
-
+		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
 			documentCategoryList = documentCategoryRepository.findAllByIsDeletedFalse(DocumentCategory.class);
 		} catch (DataAccessException e) {
@@ -109,7 +110,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 */
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
-
+		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
 			documentCategoryList = documentCategoryRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
@@ -118,9 +119,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		}
 
 		if (!(documentCategoryList.isEmpty())) {
-			documentCategoryList.forEach(documentCategoryList -> {
+			documentCategoryList.forEach(documentCategory -> {
 				DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
-				dataMapper.map(documentCategoryList, documentCategoryDto, true, null, null, true);
+				dataMapper.map(documentCategory, documentCategoryDto, true, null, null, true);
 				documentCategoryDtoList.add(documentCategoryDto);
 			});
 		} else {
@@ -155,7 +156,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 */
 	@Override
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode) {
-
+		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		DocumentCategory documentCategory;
 		DocumentCategoryDto documentCategoryDto;
 		try {
@@ -172,7 +173,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
+		// List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		documentCategoryDtoList.add(documentCategoryDto);
 		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
 		return documentCategoryResponseDto;
