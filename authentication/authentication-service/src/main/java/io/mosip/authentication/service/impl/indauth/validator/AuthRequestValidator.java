@@ -188,7 +188,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 				validateReqHmac(authRequestDto.getReqHmac(), errors);
 
-				// validateBioDetails(authRequestDto, errors);
+				validateBioDetails(authRequestDto, errors);
 
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);

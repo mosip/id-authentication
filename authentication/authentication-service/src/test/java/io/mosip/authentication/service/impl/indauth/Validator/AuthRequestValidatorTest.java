@@ -7,11 +7,9 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -48,6 +46,7 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
  * This class validates the AuthRequestValidator
  * 
  * @author Arun Bose
+ * @author Rakesh Roshan
  */
 
 @RunWith(SpringRunner.class)
@@ -63,10 +62,10 @@ public class AuthRequestValidatorTest {
 
 	@Autowired
 	Environment env;
-	
+
 	@InjectMocks
 	DateHelper dateHelper;
-	
+
 	@Mock
 	UinValidatorImpl uinValidator;
 
@@ -85,7 +84,7 @@ public class AuthRequestValidatorTest {
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 	}
-	
+
 	@Test
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
@@ -331,7 +330,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -341,32 +340,32 @@ public class AuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue("25");
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(null);
 		idInfoDTO5.setValue("M");
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
@@ -397,7 +396,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -411,32 +410,32 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue("25");
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(null);
 		idInfoDTO5.setValue("M");
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
@@ -450,7 +449,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInValidRequest3() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -467,7 +466,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -481,32 +480,32 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue("25");
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(null);
 		idInfoDTO5.setValue("M");
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
@@ -537,7 +536,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.secondary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -551,32 +550,32 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue("25");
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(null);
 		idInfoDTO5.setValue("M");
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(null);
@@ -607,7 +606,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -621,32 +620,32 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
@@ -660,7 +659,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInValidRequest6() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -677,7 +676,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(false);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -691,32 +690,32 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
@@ -730,7 +729,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInValidRequest7() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -747,7 +746,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -761,39 +760,39 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
 		idDTO.setDateOfBirthType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
-		
+
 		authTypeDTO.setOtp(true);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
@@ -803,7 +802,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInValidRequest8() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -820,7 +819,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -834,39 +833,39 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
 		idDTO.setDateOfBirthType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
-		
+
 		authTypeDTO.setOtp(true);
 		PinInfo pin = new PinInfo();
 		pin.setType("OTP");
@@ -881,7 +880,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidRequest2() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -898,7 +897,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -912,39 +911,39 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
 		idDTO.setDateOfBirthType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
-		
+
 		authTypeDTO.setOtp(true);
 		PinInfo pin = new PinInfo();
 		List<PinInfo> pinInfo = new ArrayList<>();
@@ -957,7 +956,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidRequest10() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -974,7 +973,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		//name
+		// name
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue(null);
@@ -988,39 +987,39 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		idInfoList.add(idInfoDTO6);
-		//dob
+		// dob
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
-		//dobtype
+		// dobtype
 		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
 		idInfoDTO4.setLanguage(null);
 		idInfoDTO4.setValue("V");
 		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
 		idInfoList2.add(idInfoDTO4);
-		//age
+		// age
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		idInfoDTO3.setLanguage(null);
 		idInfoDTO3.setValue(null);
 		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
 		idInfoList3.add(idInfoDTO3);
-		//gender
+		// gender
 		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
 		idInfoDTO5.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO5.setValue(null);
 		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
 		idInfoList4.add(idInfoDTO5);
-		
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setDateOfBirth(idInfoList1);
 		idDTO.setDateOfBirthType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
-		
+
 		authTypeDTO.setOtp(true);
 		PinInfo pin = new PinInfo();
 		pin.setType("OTP");

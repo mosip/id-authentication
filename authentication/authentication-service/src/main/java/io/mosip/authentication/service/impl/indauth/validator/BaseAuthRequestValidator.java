@@ -116,7 +116,8 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * Validate Biometric details
+	 * Validate Biometric details i.e validating fingers,iris,face and device
+	 * information.
 	 * 
 	 * @param authRequestDTO
 	 * @param errors
@@ -124,32 +125,78 @@ public class BaseAuthRequestValidator implements Validator {
 	protected void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
-		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
-		if ((authTypeDTO != null && authTypeDTO.isBio()) && (bioInfo != null && !bioInfo.isEmpty())) {
 
-			if (isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN)) {
-				checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
-				validateFingerRequestCount(authRequestDTO, errors);
-			}
-			if (isContainBioInfo(bioInfo, BioType.FGRIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG)) {
-				checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
-				validateFingerRequestCount(authRequestDTO, errors);
-			}
+		if ((authTypeDTO != null && authTypeDTO.isBio())) {
 
-			if (isContainBioInfo(bioInfo, BioType.IRISIMG) && isDuplicateBioRequest(authRequestDTO, BioType.IRISIMG)) {
-				checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
-				validateIrisRequestCount(authRequestDTO);
-			}
+			List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
 
-			if (isContainBioInfo(bioInfo, BioType.FACEIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FACEIMG)) {
-				checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
-			}
+			if (bioInfo != null && !bioInfo.isEmpty() && isContainDeviceInfo(bioInfo)) {
 
-		} else {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+				validateFinger(authRequestDTO, bioInfo, errors);
+
+				validateIris(authRequestDTO, bioInfo, errors);
+
+				validateFace(authRequestDTO, bioInfo, errors);
+
+			} else {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			}
 		}
 
+	}
+
+	/**
+	 * Validate fingers.
+	 * 
+	 * @param authRequestDTO
+	 * @param bioInfo
+	 * @param errors
+	 */
+	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+		if (isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN)) {
+
+			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
+
+			validateFingerRequestCount(authRequestDTO, errors);
+		}
+		if (isContainBioInfo(bioInfo, BioType.FGRIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG)) {
+
+			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
+
+			validateFingerRequestCount(authRequestDTO, errors);
+		}
+	}
+
+	/**
+	 * Validate Iris.
+	 * 
+	 * @param authRequestDTO
+	 * @param bioInfo
+	 * @param errors
+	 */
+	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+		if (isContainBioInfo(bioInfo, BioType.IRISIMG) && isDuplicateBioRequest(authRequestDTO, BioType.IRISIMG)) {
+
+			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
+
+			validateIrisRequestCount(authRequestDTO);
+		}
+	}
+
+	/**
+	 * Validate Face.
+	 * 
+	 * @param authRequestDTO
+	 * @param bioInfo
+	 * @param errors
+	 */
+	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+
+		if (isContainBioInfo(bioInfo, BioType.FACEIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FACEIMG)) {
+
+			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
+		}
 	}
 
 	/**
@@ -233,6 +280,17 @@ public class BaseAuthRequestValidator implements Validator {
 	private boolean isContainBioInfo(List<BioInfo> bioInfoList, BioType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
 				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
+	}
+
+	/**
+	 * If AuthType is Bio, then validate device information is available or not.
+	 * 
+	 * @param deviceInfoList
+	 * @return
+	 */
+	private boolean isContainDeviceInfo(List<BioInfo> deviceInfoList) {
+
+		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo() != null);
 	}
 
 	/**
