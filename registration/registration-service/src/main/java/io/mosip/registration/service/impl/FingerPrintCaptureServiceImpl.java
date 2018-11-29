@@ -3,6 +3,7 @@ package io.mosip.registration.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -10,6 +11,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.validator.AuthenticationValidatorFactory;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 
+@Service
 public class FingerPrintCaptureServiceImpl {
 
 	@Autowired

@@ -254,7 +254,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private Label biometrics;
 	@FXML
-	private AnchorPane biometricsPane;
+	protected AnchorPane biometricsPane;
 	@FXML
 	protected ImageView applicantImage;
 	@FXML

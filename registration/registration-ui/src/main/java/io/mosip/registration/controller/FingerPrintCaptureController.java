@@ -12,13 +12,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.impl.FingerPrintCaptureServiceImpl;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,8 +40,14 @@ import javafx.stage.StageStyle;
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
 
+	@Value("${capture_photo_using_device}")
+	public String capturePhotoUsingDevice;
 	@Autowired
 	private FingerPrintScanController fingerPrintScanController;
+	@Autowired
+	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
+	@Autowired
+	private RegistrationController registrationController;
 	@FXML
 	private AnchorPane fingerPrintCapturePane;
 	@FXML
@@ -63,7 +72,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		detailsDTOs=new ArrayList<>();
+		registrationController.biometricsPane.setVisible(false);
+		detailsDTOs = new ArrayList<>();
 		selectAnchorPane();
 	}
 
@@ -83,7 +93,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			Stage primaryStage = new Stage();
 			primaryStage.initStyle(StageStyle.UNDECORATED);
 			Parent ackRoot = BaseController.load(getClass().getResource("/fxml/FingerPrintScan.fxml"));
-			fingerPrintScanController.init(selectedPane,primaryStage,detailsDTOs);
+			fingerPrintScanController.init(selectedPane, primaryStage, detailsDTOs);
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -105,6 +115,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	public void saveBiometricDetails() {
 		
+		//fingerPrintCaptureServiceImpl.validateFingerprint(detailsDTOs);
+		fingerPrintCapturePane.setVisible(false);
+		if (capturePhotoUsingDevice.equals("Y")) {
+			registrationController.biometricsPane.setVisible(true);
+		} else {
+			registrationController.biometricsPane.setVisible(false);
+		}
+		/*registrationController.getRegistrationDTOContent().setgetBiometricDTO().getApplicantBiometricDTO()
+				.setFingerprintDetailsDTO(detailsDTOs);*/
 	}
 
 }
