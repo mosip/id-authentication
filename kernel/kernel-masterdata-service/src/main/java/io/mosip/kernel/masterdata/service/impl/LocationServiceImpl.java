@@ -199,7 +199,7 @@ public class LocationServiceImpl implements LocationService {
 		
 	    Location location = null;
 		Location locationResultantEntity = null;
-		LocationCodeDto locationCodeDto = new LocationCodeDto();
+		LocationCodeDto locationCodeDto = null;
 		
 			location = metaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
 			try {
