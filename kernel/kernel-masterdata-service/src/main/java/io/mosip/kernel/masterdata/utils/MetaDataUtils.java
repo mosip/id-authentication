@@ -49,19 +49,7 @@ public class MetaDataUtils {
 
 	private <D extends BaseEntity> void setMetaData(String contextUser, D entity) {
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
-		LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
 		entity.setCreatedBy(contextUser);
 		entity.setCreatedtimes(time);
 	}
-
-	/*
-	 * public <T> List<T> setUpdateMetaData(final Collection<T> entityList) { //
-	 * ForEach DTO to Entity // Set updateBY // SEt UpdatedAt }
-	 * 
-	 * public <T> List<T> setDeleteMetaData(final Collection<T> entityList) { //
-	 * ForEach DTO to Entity // Set isDelted // Set delttedAt // SEt UpdatedBy }
-	 * 
-	 * public <T> List<T> setActiveMetaData(final Collection<T> entityList) { //
-	 * ForEach DTO to Entity // Set isActive // Set updateBY // SEt UpdatedAt }
-	 */
 }
