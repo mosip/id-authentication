@@ -195,7 +195,7 @@ public class LoginServiceImpl implements LoginService {
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
                        successResponse
-                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+                                     .setMessage(AppConfig.getMessageProperty(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE) + otpGeneratorResponseDto.getOtp());
 
                        Map<String, Object> otherAttributes = new HashMap<String, Object>();
                      otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
@@ -207,7 +207,7 @@ public class LoginServiceImpl implements LoginService {
 
                  } else {
                        // create Error Response
-                       response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+                       getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE));
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Error Response called");
 
@@ -215,7 +215,7 @@ public class LoginServiceImpl implements LoginService {
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // create Error Response
-                 response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+                 getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE));
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response created");
 
@@ -259,7 +259,7 @@ public class LoginServiceImpl implements LoginService {
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-                        successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
+                        successResponse.setMessage(AppConfig.getMessageProperty(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE));
                         response.setSuccessResponseDTO(successResponse);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Success Response Created");
@@ -267,7 +267,7 @@ public class LoginServiceImpl implements LoginService {
                  } else {
 
                        // Create Error response
-                       getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                       getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE));
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                     APPLICATION_ID, "Error Response Created");
 

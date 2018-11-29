@@ -3,8 +3,6 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_APPROVE_SCREEN_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -82,7 +80,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 			} else {
 				StringBuilder errorMessage = new StringBuilder();
 				String errorAlert = null;
@@ -150,7 +148,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 			} else {
 				Button button = (Button) event.getSource();
 				AnchorPane anchorPane = (AnchorPane) button.getParent();
@@ -167,7 +165,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 					APPLICATION_ID, ioException.getMessage());
 		
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					REG_UI_APPROVE_SCREEN_EXCEPTION.getErrorMessage());
+					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_APPROVAL_PAGE));
 		}
 	}
 
@@ -186,7 +184,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 			} else {
 				Button button = (Button) event.getSource();
 				AnchorPane anchorPane = (AnchorPane) button.getParent();

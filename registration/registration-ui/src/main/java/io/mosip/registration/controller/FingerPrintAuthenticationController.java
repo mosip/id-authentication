@@ -116,7 +116,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.DEVICE_INFO_MESSAGE,
-						RegistrationConstants.DEVICE_FP_NOT_FOUND);
+						generateErrorMessage(RegistrationConstants.DEVICE_FP_NOT_FOUND));
 
 			} else {
 
@@ -149,14 +149,14 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 					if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
 						baseController.getFingerPrintStatus(primaryStage);
 					} else {
-						generateAlert("Info", AlertType.INFORMATION, "Authentication Failure");
+						generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.AUTHENTICATION_FAILURE));
 						primaryStage.close();
 					}
 				} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
 					if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
-						generateAlert("Info", AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
+						generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_DEVICE_TIMEOUT));
 					} else {
-						generateAlert("Info", AlertType.INFORMATION, "Error in fingerprint scan");
+						generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_DEVICE_ERROR));
 					}
 				}
 				LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,

@@ -39,18 +39,12 @@ public enum RegistrationExceptions {
 	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-003", "Unable to load the screen"),
 	REG_UI_LOGIN_IO_EXCEPTION("LGN-UI-SHE-004", "IO Exception"),
 	REG_UI_LOGIN_RESOURCE_EXCEPTION("LGN-UI-SHE-005", "Unable to load the Resource"),
-	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-006", "Unable to load Initial Login Screen"),
-	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-007", "Unable to load the Login Screen"),
-	REG_UI_HOMEPAGE_IO_EXCEPTION("REG-UI-SHE-008", "Unable to load the Home Screen"),
 	REG_UI_LOGOUT_IO_EXCEPTION("REG-UI-SHE-009", "Unable to logout"),
 	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-010","Unable to write the image file"),
-	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-010","You are not authorized to access this feature"),
-	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen"),
 	REG_PACKET_SYNC_EXCEPTION("REG-PSS-001","Unable to Sync Packets to the server"),
 	REG_PACKET_UPLOAD_ERROR("REG-PUS-001","Unable to Push Packets to the server"),
 	REG_ID_JSON_ERROR("REG-JSC-001","Exception while parsing DemographicDTO to ID JSON"),
-	REG_ID_JSON_FIELD_ACCESS_ERROR("REG-JSC-002","Exception while accessing fields in DemographicDTO for ID JSON conversion"),
-	REG_UI_PAGE_OPEN_ERROR("REG-JSC-003","Exception while opening the Registration page");
+	REG_ID_JSON_FIELD_ACCESS_ERROR("REG-JSC-002","Exception while accessing fields in DemographicDTO for ID JSON conversion");
 
 
 	/**

@@ -134,7 +134,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
 							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
-									RegistrationConstants.OPT_TO_REG_ICS‌_002_MSG,
+									AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED),
 									RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 
 						}
@@ -143,7 +143,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 				if (syncFailureCount > 0) {
 					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
-							RegistrationConstants.OPT_TO_REG_ICS‌_001_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+							AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED), RegistrationConstants.OPT_TO_REG_INFOTYPE,
 							errorResponseDTOList);
 				}
 			}
@@ -158,7 +158,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						"refIdType");
 
 				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
-						RegistrationConstants.OPT_TO_REG_ICS‌_003_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT), RegistrationConstants.OPT_TO_REG_INFOTYPE,
 						errorResponseDTOList);
 			}
 
@@ -235,7 +235,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 					.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
 				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
-						RegistrationConstants.OPT_TO_REG_ICS‌_004_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION), RegistrationConstants.OPT_TO_REG_INFOTYPE,
 						errorResponseDTOList);
 			} else {
 
@@ -244,16 +244,16 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			}
 		} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_ICS‌_006_MSG,
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_WEAK_GPS),
 					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
 				|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
 						.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_ICS‌_005_MSG,
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_INSERT_GPS),
 					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		} else {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, RegistrationConstants.OPT_TO_REG_ICS‌_007_MSG,
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH),
 					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		}
 

@@ -2,7 +2,6 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,7 +65,7 @@ public class RegistrationOfficerController extends BaseController implements Ini
 					APPLICATION_ID, exception.getMessage());
 			
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_HOME_PAGE));
 		}
 	}
 }

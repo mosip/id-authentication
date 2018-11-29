@@ -2,10 +2,7 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG;
 import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_EXCEPTION_ALERT;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -86,12 +83,6 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			onlineAvailabilityCheck();
 
 		}
-		/*
-		 * availableIcon.setVisible(true);
-		 * 
-		 * RegistrationAppHealthCheckUtil registrationAppHealthCheckUtil=new
-		 * RegistrationAppHealthCheckUtil();
-		 */
 	}
 
 	/**
@@ -117,6 +108,9 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
+			
+			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGOUT_PAGE));
 		}
 	}
 
@@ -138,7 +132,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					APPLICATION_ID, exception.getMessage());
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_HOME_PAGE));
 		}
 	}
 
@@ -156,7 +150,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		if (!validateScreenAuthorization(onBoardRoot.getId())) {
 			generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 					AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.AUTHORIZATION_INFO_MESSAGE, REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+					RegistrationConstants.AUTHORIZATION_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 		} else {
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
 			Object parent = pane.getChildren().get(0);
@@ -179,7 +173,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 			} else {
 				VBox pane = (VBox) (menu.getParent().getParent().getParent());
 				for (int index = pane.getChildren().size() - 1; index > 0; index--) {
@@ -212,7 +206,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
 			} else {
 				VBox pane = (VBox) menu.getParent().getParent().getParent();
 				Object parent = pane.getChildren().get(0);
@@ -225,7 +219,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
 
-			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, generateErrorMessage(RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG));
 		} finally {
 			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");

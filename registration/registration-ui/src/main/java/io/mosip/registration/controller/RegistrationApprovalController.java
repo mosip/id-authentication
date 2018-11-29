@@ -414,7 +414,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
-		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,RegistrationConstants.AUTH_APPROVAL_SUCCESS_MSG);
+		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,generateErrorMessage(RegistrationConstants.AUTH_APPROVAL_SUCCESS_MSG));
 		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,

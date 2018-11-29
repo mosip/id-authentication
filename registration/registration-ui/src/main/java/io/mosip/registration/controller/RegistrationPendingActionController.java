@@ -301,7 +301,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
-		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
+		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,generateErrorMessage(RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG));
 		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,

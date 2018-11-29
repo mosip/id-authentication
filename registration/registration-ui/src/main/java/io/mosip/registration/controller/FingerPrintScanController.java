@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,7 +60,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/LeftPalm.png");
 			fingerPrintScanImage.setImage(img);
-			generateAlert("INFO", AlertType.INFORMATION, "Fingerprint captured successfully!");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
 			primarystage.close();
 			fpScanController.leftHandPalmImageview.setImage(img);
 
@@ -69,7 +70,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/rightPalm.jpg");
 			fingerPrintScanImage.setImage(img);
-			generateAlert("INFO", AlertType.INFORMATION, "Fingerprint captured successfully!");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
 			primarystage.close();
 			fpScanController.rightHandPalmImageview.setImage(img);
 
@@ -79,7 +80,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/thumb.jpg");
 			fingerPrintScanImage.setImage(img);
-			generateAlert("INFO", AlertType.INFORMATION, "Fingerprint captured successfully!");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
 			primarystage.close();
 			fpScanController.thumbImageview.setImage(img);
 

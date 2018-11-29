@@ -148,11 +148,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 						// generate alert
 						if (!alert.equals("")) {
-							String data = "Unable to send notification";
+							String data = generateErrorMessage(RegistrationConstants.NOTIFICATION_FAIL);
 							if (alert.equals("SMS")) {
-								data = "Unable to send SMS notification";
+								data = generateErrorMessage(RegistrationConstants.NOTIFICATION_SMS_FAIL);
 							} else if (alert.equals("EMAIL")) {
-								data = "Unable to send Email notification";
+								data = generateErrorMessage(RegistrationConstants.NOTIFICATION_EMAIL_FAIL);
 							}
 							generateNotificationAlert(data);
 						}
@@ -192,7 +192,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 				registrationData.getRegistrationId() + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 
-		generateAlert("Success", AlertType.INFORMATION, "Packet Created Successfully!");
+		generateAlert(RegistrationConstants.SUCCESS_MSG, AlertType.INFORMATION,
+				generateErrorMessage(RegistrationConstants.PACKET_CREATED_SUCCESS));
 		// Adding individual address to session context
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {

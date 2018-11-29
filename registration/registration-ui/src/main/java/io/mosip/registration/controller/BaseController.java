@@ -162,22 +162,6 @@ public class BaseController {
 
 	}
 
-	/**
-	 * Alert creation with specified title and context
-	 * 
-	 * @param alertType type of alert
-	 * @param title     alert title
-	 * @param header    alert header
-	 */
-	protected void generateAlert(AlertType alertType, String title, String header) {
-		Alert alert = new Alert(alertType);
-		alert.setHeaderText(header);
-		alert.setContentText(null);
-		alert.setTitle(title);
-		alert.showAndWait();
-
-	}
-
 	protected ResponseDTO validateSyncStatus() {
 
 		return syncStatusValidatorService.validateSyncStatus();
@@ -317,6 +301,10 @@ public class BaseController {
 			}
 			counter++;
 		}
+	}
+	
+	protected String generateErrorMessage(String keyValue) {
+		return AppConfig.getMessageProperty(keyValue);
 	}
 
 }
