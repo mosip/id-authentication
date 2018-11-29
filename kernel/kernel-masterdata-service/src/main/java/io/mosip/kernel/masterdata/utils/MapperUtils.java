@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHistoryConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
@@ -23,6 +24,7 @@ import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -63,6 +65,21 @@ public class MapperUtils {
 
 		return responseDto;
 	}
+	
+	
+	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(List<RegistrationCenter> list) {
+		List<RegistrationCenterHierarchyLevelDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterHierarchyLevelDto dto = new RegistrationCenterHierarchyLevelDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterHierarchyLevelConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+	
+	
 
 	
 	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {

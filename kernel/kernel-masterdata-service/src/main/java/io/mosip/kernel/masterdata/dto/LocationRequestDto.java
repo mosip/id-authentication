@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LocationRequestDto  {
 
-	private List<LocationDto> locations;
+	private LocationDto locations;
 }

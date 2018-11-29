@@ -41,8 +41,21 @@ public class RegistrationCenterHierarchyLevelDto {
 	private Short numberOfKiosks;
 	
 	private LocalTime perKioskProcessTime;
+
+	private LocalTime centerStartTime;
+
+	private LocalTime centerEndTime;
 	
-	private LocalTime processStartTime;
+	private String timeZone;
+
+	private String contactPerson;
+
+	private LocalTime lunchStartTime;
+
+	private LocalTime lunchEndTime;
+
 	
-	private LocalTime processEndTime;
+	
+
+
 }
