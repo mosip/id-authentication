@@ -134,7 +134,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
 
-		return locationRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse(locCode, langCode);
+		return locationRepository.findLocationHierarchyByCodeAndLanguageCode(locCode, langCode);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
 
-		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsDeletedFalse(locCode,
+		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(locCode,
 				langCode);
 
 	}
