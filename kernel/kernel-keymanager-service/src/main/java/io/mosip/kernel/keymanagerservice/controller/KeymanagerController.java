@@ -38,7 +38,7 @@ public class KeymanagerController {
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
 			@RequestParam("referenceId") Optional<String> referenceId) {
 
-		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId), HttpStatus.CREATED);
+		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/symmetricKey")
