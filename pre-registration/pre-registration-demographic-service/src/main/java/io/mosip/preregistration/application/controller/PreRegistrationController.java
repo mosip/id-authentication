@@ -1,6 +1,5 @@
 package io.mosip.preregistration.application.controller;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +31,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * Registration controller
+ * 
  * @author M1037717
  *
  */
@@ -47,7 +47,6 @@ public class PreRegistrationController {
 	@Autowired
 	private PreRegistrationService preRegistrationService;
 
-
 	/**
 	 * 
 	 * @param list
@@ -59,11 +58,19 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration Entity") })
-	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject jsonObject
-			) {
-		ResponseDto<CreateDto> response = new ResponseDto<CreateDto>();
+	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject jsonObject) {
+		ResponseDto<CreateDto> response = preRegistrationService.addRegistration(jsonObject.toJSONString());
 
-		response = preRegistrationService.addRegistration(jsonObject.toJSONString());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get Pre-Registartion data")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully retrieved"),
+			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
+	public ResponseEntity<ResponseDto<CreateDto>> getApplication(
+			@RequestParam(value = "preRegId", required = true) String preRegId) {
+		ResponseDto<CreateDto> response = preRegistrationService.getPreRegistration(preRegId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

@@ -1,6 +1,7 @@
 package io.mosip.preregistration.application.service;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -405,6 +406,42 @@ public class PreRegistrationService {
 		response.setStatus("true");
 		response.setResponse(deleteList);
 
+		return response;
+	}
+
+	public ResponseDto<CreateDto> getPreRegistration(String preRegId) {
+		List<CreateDto> createDtos = new ArrayList<>();
+		CreateDto createDto = new CreateDto();
+		ResponseDto<CreateDto> response = new ResponseDto<>();
+		PreRegistrationEntity details = new PreRegistrationEntity();
+		List<ExceptionJSONInfo> excepList = null;
+		JSONParser parser = new JSONParser();
+		JSONObject applicantDetailJson;
+		try {
+			details = preRegistrationRepository.findBypreRegistrationId(preRegId);
+			createDto.setPrId(details.getPreRegistrationId());
+			createDto.setCreatedBy(details.getCreatedBy());
+			createDto.setCreateDateTime(details.getCreateDateTime());
+			createDto.setUpdatedBy(details.getUpdatedBy());
+			createDto.setUpdateDateTime(details.getUpdateDateTime());
+
+			applicantDetailJson = (JSONObject) parser
+					.parse(new String(details.getApplicantDetailJson(), StandardCharsets.UTF_8));
+			JSONObject reqObject = (JSONObject) applicantDetailJson.get("request");
+			JSONObject demoObj = (JSONObject) reqObject.get("demographicDetails");
+
+			createDto.setDemographicDetails(demoObj.toString());
+			createDtos.add(createDto);
+			response.setResponse(createDtos);
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException(PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setStatus("true");
+		response.setErr(excepList);
 		return response;
 	}
 
