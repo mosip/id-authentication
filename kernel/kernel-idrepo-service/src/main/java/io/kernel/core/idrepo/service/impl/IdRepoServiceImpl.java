@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.google.common.collect.Maps;
@@ -131,9 +132,14 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Override
 	public String generateUIN() throws IdRepoAppException {
 		try {
-			return restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class)
+			ObjectNode body = restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class)
 					.getBody();
-		} catch (RestClientException e) {
+			if (body.has("uin")) {
+				return body.get("uin").textValue();
+			} else {
+				throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED);
+			}
+		} catch (IdRepoAppException | RestClientException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED, e);
 		}
 	}

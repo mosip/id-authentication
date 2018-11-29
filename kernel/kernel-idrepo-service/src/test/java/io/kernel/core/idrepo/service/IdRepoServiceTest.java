@@ -2,6 +2,7 @@ package io.kernel.core.idrepo.service;
 
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +27,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.kernel.core.idrepo.dao.impl.IdRepoDaoImpl;
 import io.kernel.core.idrepo.dto.IdRequestDTO;
@@ -95,6 +99,7 @@ public class IdRepoServiceTest {
 		ReflectionTestUtils.setField(service, "mapper", mapper);
 		ReflectionTestUtils.setField(service, "env", env);
 		ReflectionTestUtils.setField(service, "id", id);
+		ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
 		request.setRegistrationId("registrationId");
 		request.setRequest(null);
 		uin.setUin("1234");
@@ -109,24 +114,33 @@ public class IdRepoServiceTest {
 	 * Test add identity.
 	 *
 	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	@Test
-	public void testAddIdentity() throws IdRepoAppException {
+	public void testAddIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(uin);
-		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
-				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
+				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+		service.addIdentity(request);
 	}
 
 	/**
 	 * Test add identity exception.
 	 *
 	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	@Test(expected = IdRepoAppException.class)
-	public void testAddIdentityException() throws IdRepoAppException {
+	public void testAddIdentityException() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IdRepoAppException());
-		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
-				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
+				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.addIdentity(request);
 	}
 
@@ -134,20 +148,25 @@ public class IdRepoServiceTest {
 	 * Test retrieve identity.
 	 *
 	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	@Test
-	public void testRetrieveIdentity() throws IdRepoAppException {
+	public void testRetrieveIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(uin);
-		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
-				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
+				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.retrieveIdentity("1234");
 	}
 	
 	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityNullUinOject() throws IdRepoAppException {
+	public void testRetrieveIdentityNullUinOject() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(null);
-		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class))
-				.thenReturn(new ResponseEntity<String>("1234", HttpStatus.OK));
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
+				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.retrieveIdentity("1234");
 	}
 	
