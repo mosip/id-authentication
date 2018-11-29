@@ -3,8 +3,6 @@
  */
 package io.mosip.kernel.keymanagerservice.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublicKeyRequestDto {
+public class SymmetricKeyResponseDto {
 
-	private String applicationId;
-
-	private LocalDateTime timeStamp;
-
-	private String referenceId;
+	private byte[] symmetricKey;
 
 }
