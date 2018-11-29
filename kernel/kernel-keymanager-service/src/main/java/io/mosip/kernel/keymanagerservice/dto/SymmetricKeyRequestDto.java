@@ -25,6 +25,6 @@ public class SymmetricKeyRequestDto {
 
 	private String referenceId;
 
-	private byte[] encryptedSymmetricKey;
+	private String encryptedSymmetricKey;
 
 }

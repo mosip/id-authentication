@@ -212,7 +212,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println(privateKey);
 
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
-					symmetricKeyRequestDto.getEncryptedSymmetricKey());
+					Base64.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
 
 			System.out.println("SymmetricKey: " + decryptedSymmetricKey);
 			keyResponseDto.setSymmetricKey(Base64.encodeBase64String(decryptedSymmetricKey));
