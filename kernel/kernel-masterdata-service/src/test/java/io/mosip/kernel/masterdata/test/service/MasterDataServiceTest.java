@@ -28,10 +28,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
@@ -52,7 +50,6 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -207,7 +204,7 @@ public class MasterDataServiceTest {
 
 	// private List<TemplateFileFormat> templateFileFormatList;
 
-	private TemplateFileFormatRequestDto templateFileFormatRequestDto;
+	private RequestDto<TemplateFileFormatData> templateFileFormatRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -567,7 +564,7 @@ public class MasterDataServiceTest {
 		templateFileFormat.setLangCode("ENG");
 		// templateFileFormatList.add(templateFileFormat);
 
-		templateFileFormatRequestDto = new TemplateFileFormatRequestDto();
+		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatData>();
 		TemplateFileFormatData request = new TemplateFileFormatData();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
