@@ -121,7 +121,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequestDTO
 	 * @param errors
 	 */
-	public void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
+	protected void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
 		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
@@ -158,7 +158,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequestDTO
 	 * @param errors
 	 */
-	public void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
+	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 
 		boolean isAtleastOneFingerRequestAvailable = Optional.ofNullable(authRequestDTO.getRequest())
 				.map(RequestDTO::getIdentity).map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent()
@@ -193,7 +193,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequestDTO
 	 * @param errors
 	 */
-	public void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
+	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		boolean isIrisRequestAvailable = authRequestDTO.getRequest() != null
 				&& authRequestDTO.getRequest().getIdentity() != null
 				&& authRequestDTO.getRequest().getIdentity().getLeftEye() != null
@@ -213,7 +213,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequestDTO
 	 * @param errors
 	 */
-	public void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
+	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		boolean isFaceRequestAvailable = authRequestDTO.getRequest() != null
 				&& authRequestDTO.getRequest().getIdentity() != null
 				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
@@ -230,7 +230,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param bioType
 	 * @return
 	 */
-	public boolean isContainBioInfo(List<BioInfo> bioInfoList, BioType bioType) {
+	private boolean isContainBioInfo(List<BioInfo> bioInfoList, BioType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
 				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
 	}
@@ -243,7 +243,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param bioType
 	 * @return
 	 */
-	public boolean isDuplicateBioRequest(AuthRequestDTO authRequestDTO, BioType bioType) {
+	private boolean isDuplicateBioRequest(AuthRequestDTO authRequestDTO, BioType bioType) {
 		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
 		Long bioTypeCount = Optional.ofNullable(bioInfo).map(List::parallelStream)
 				.map(stream -> stream
@@ -262,7 +262,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequestDTO
 	 * @param errors
 	 */
-	public void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
+	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 
 		// --- Left Finger ---
@@ -330,7 +330,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * 
 	 * @param authRequestDTO
 	 */
-	public void validateIrisRequestCount(AuthRequestDTO authRequestDTO) {
+	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 
 		List<IdentityInfoDTO> leftEye = identity.getLeftEye();
