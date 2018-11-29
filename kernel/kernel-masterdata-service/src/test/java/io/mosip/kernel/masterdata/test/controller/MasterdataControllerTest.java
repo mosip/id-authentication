@@ -234,7 +234,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setCenterTypeCode("PAR");
 		registrationCenter.setContactPhone("987654321");
 		registrationCenter.setCreatedBy("John");
-		registrationCenter.setCreatedtimes(specificDate);
+		registrationCenter.setCreatedDateTime(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
 		registrationCenter.setLocationCode("KAR_59");
 		registrationCenter.setId("REG_CR_001");
