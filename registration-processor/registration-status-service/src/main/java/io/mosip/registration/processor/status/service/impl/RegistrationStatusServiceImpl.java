@@ -10,6 +10,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -155,9 +156,9 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
-		} catch (DataAccessLayerException e) {
+		}catch (DataAccessException | DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
+		}  finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
@@ -199,7 +200,7 @@ public class RegistrationStatusServiceImpl
 				transactionDto.setReferenceIdType("updated registration record");
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 

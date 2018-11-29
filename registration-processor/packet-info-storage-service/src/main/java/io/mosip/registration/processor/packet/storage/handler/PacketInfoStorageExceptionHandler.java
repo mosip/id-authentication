@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.controller;
+package io.mosip.registration.processor.packet.storage.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,17 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
-/**
- * The Class RegistrationStatusExceptionHandler.
- */
 @RestControllerAdvice
-public class RegistrationStatusExceptionHandler {
+public class PacketInfoStorageExceptionHandler {
 	
 	/** The Constant log. */
-	private static final Logger log = LoggerFactory.getLogger(RegistrationStatusExceptionHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(PacketInfoStorageExceptionHandler.class);
 
 	/**
 	 * Duplicateentry.

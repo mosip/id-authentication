@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -163,8 +164,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
-		} catch (IOException e) {
+		}catch (DataAccessException e) {
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
+			object.setInternalError(Boolean.TRUE);
+			description = "Data voilation in reg packet : " + registrationId;
+
+		} 
+		catch (IOException exc) {
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), exc);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 

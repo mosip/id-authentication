@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import io.mosip.registration.processor.core.code.EventId;
@@ -45,6 +46,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	public static final String LOG_FORMATTER = "{} - {}";
+	
 	/** The file extension. */
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
@@ -110,8 +113,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				registrationStatusService.addRegistrationStatus(dto);
 				storageFlag = true;
 				isTransactionSuccessful = true;
-			} catch (IOException e) {
-				logger.error(e.getMessage());
+			} catch (DataAccessException | IOException e) {
+				logger.info(LOG_FORMATTER, "Error while updating status", e.getMessage());
 			} finally {
 				String eventId = "";
 				String eventName = "";
