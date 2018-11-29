@@ -15,5 +15,6 @@ import io.mosip.kernel.masterdata.entity.BiometricAttribute;
  */
 @Repository
 public interface BiometricAttributeRepository extends BaseRepository<BiometricAttribute, String> {
-	List<BiometricAttribute> findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(String biometricTypeCode, String langCode);
+	List<BiometricAttribute> findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String biometricTypeCode, String langCode);
+	
 }

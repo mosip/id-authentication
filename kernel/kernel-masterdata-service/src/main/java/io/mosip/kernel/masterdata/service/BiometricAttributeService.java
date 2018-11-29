@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
+import io.mosip.kernel.masterdata.dto.BiometricAttributeRequestDto;
+import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 
 /**
  * 
@@ -23,5 +25,15 @@ public interface BiometricAttributeService {
 	 * @return {@link List<BiometricAttributeDTO>}
 	 */
 	List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode);
+
+	/**
+	 * Function to save Device Specification Details to the Database
+	 * 
+	 * @param deviceTypes
+	 * 
+	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
+	 */
+	BioTypeCodeAndLangCodeAndAttributeCode createBiometricAttribute(
+			BiometricAttributeRequestDto biometricAttribute);
 
 }

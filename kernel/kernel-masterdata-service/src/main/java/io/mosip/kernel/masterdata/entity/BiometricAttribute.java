@@ -2,9 +2,15 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "biometric_attribute", schema = "master")
+@IdClass(CodeAndLanguageCodeId.class)
 public class BiometricAttribute extends BaseEntity implements Serializable {
 
 	/**
@@ -31,19 +38,25 @@ public class BiometricAttribute extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = -1302520630931393544L;
 	@Id
-	@Column(name = "code", nullable = false)
+	@AttributeOverrides({
+			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String code;
+	private String langCode;
 
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "descr")
+	@Column(name = "descr", length = 128)
 	private String description;
 
-	@Column(name = "bmtyp_code", nullable = false)
+	@Column(name = "bmtyp_code", length = 36, nullable = false)
 	private String biometricTypeCode;
 
-	@Column(name = "lang_code", nullable = false)
-	private String langCode;
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "bmtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private BiometricType biometricType;
 
 }

@@ -190,7 +190,7 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private TemplateFileFormatService templateFileFormatService;
-	
+
 	private TemplateFileFormat templateFileFormat;
 
 	// private List<TemplateFileFormat> templateFileFormatList;
@@ -439,7 +439,7 @@ public class MasterDataServiceTest {
 		deviceSpecificationDto.setDeviceTypeCode("Laptop");
 		deviceSpecificationDto.setLangCode("ENG");
 		deviceSpecificationDtos.add(deviceSpecificationDto);
-		//deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
+		// deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
 		deviceSpecificationRequestDto.setRequest(deviceSpecificationListDto);
 	}
 
@@ -573,7 +573,7 @@ public class MasterDataServiceTest {
 		deviceTypeDto.setName("HP");
 		deviceTypeDto.setDescription("Laptop Desc");
 		deviceTypeDtoList.add(deviceTypeDto);
-		//request.setDeviceTypeDtos(deviceTypeDtoList);
+		// request.setDeviceTypeDtos(deviceTypeDtoList);
 		reqTypeDto.setRequest(request);
 
 		deviceTypeList = new ArrayList<>();
@@ -631,8 +631,10 @@ public class MasterDataServiceTest {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
 		CodeAndLanguageCodeId codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(), codeAndLanguageCodeId.getCode());
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(), codeAndLanguageCodeId.getLangCode());
+		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
+				codeAndLanguageCodeId.getCode());
+		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
+				codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -690,8 +692,9 @@ public class MasterDataServiceTest {
 	public void getBiometricAttributeTest() {
 		String biometricTypeCode = "iric";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode,
-				langCode)).thenReturn(biometricattributes);
+		Mockito.when(biometricAttributeRepository
+				.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode))
+				.thenReturn(biometricattributes);
 
 		List<BiometricAttributeDto> attributes = biometricAttributeService.getBiometricAttribute(biometricTypeCode,
 				langCode);
@@ -705,8 +708,9 @@ public class MasterDataServiceTest {
 		List<BiometricAttribute> empityList = new ArrayList<BiometricAttribute>();
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode,
-				langCode)).thenReturn(empityList);
+		Mockito.when(biometricAttributeRepository
+				.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode))
+				.thenReturn(empityList);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
 	}
@@ -715,8 +719,9 @@ public class MasterDataServiceTest {
 	public void noRecordsFoudExceptionForNullTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode,
-				langCode)).thenReturn(null);
+		Mockito.when(biometricAttributeRepository
+				.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode))
+				.thenReturn(null);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
 	}
@@ -725,8 +730,9 @@ public class MasterDataServiceTest {
 	public void dataAccessExceptionInGetAllTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode,
-				langCode)).thenThrow(DataAccessResourceFailureException.class);
+		Mockito.when(biometricAttributeRepository
+				.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode))
+				.thenThrow(DataAccessResourceFailureException.class);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
 	}
@@ -799,8 +805,8 @@ public class MasterDataServiceTest {
 	public void getBioTypeByCodeAndLangCodeSuccess() {
 		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(biometricType1);
-		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),
-				Mockito.anyString());
+		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService
+				.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 		assertEquals(biometricType1.getCode(), biometricTypeResponseDto.getBiometrictypes().get(0).getCode());
 		assertEquals(biometricType1.getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
@@ -949,21 +955,22 @@ public class MasterDataServiceTest {
 
 	}
 
-	/*@Test
-	public void addDeviceSpecificationsTest() {
-		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn(deviceSpecificationList);
-		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService
-				.saveDeviceSpecifications(deviceSpecificationRequestDto);
-		assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).getId(),
-				deviceSpecPostResponseDto.getResults().get(0).getId());
-	}
-
-	@Test(expected = MasterDataServiceException.class)
-	public void testaddSpecificationThrowsDataAccessException() {
-		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
-	}*/
+	/*
+	 * @Test public void addDeviceSpecificationsTest() {
+	 * Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn
+	 * (deviceSpecificationList); DeviceSpecPostResponseDto
+	 * deviceSpecPostResponseDto = deviceSpecificationService
+	 * .saveDeviceSpecifications(deviceSpecificationRequestDto);
+	 * assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).
+	 * getId(), deviceSpecPostResponseDto.getResults().get(0).getId()); }
+	 * 
+	 * @Test(expected = MasterDataServiceException.class) public void
+	 * testaddSpecificationThrowsDataAccessException() {
+	 * Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any()))
+	 * .thenThrow(DataRetrievalFailureException.class);
+	 * deviceSpecificationService.saveDeviceSpecifications(
+	 * deviceSpecificationRequestDto); }
+	 */
 
 	// ------------------ DocumentCategoryServiceTest -----------------
 
@@ -1225,15 +1232,15 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatSuccess() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		CodeAndLanguageCodeId codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		CodeAndLanguageCodeId codeAndLanguageCodeId = templateFileFormatService
+				.addTemplateFileFormat(templateFileFormatRequestDto);
 		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
 		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void addTemplateFileFormatInsertExceptionTest() {
-		Mockito.when(templateFileFormatRepository.create(Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
 	}
 
@@ -1287,18 +1294,20 @@ public class MasterDataServiceTest {
 
 	// ----------------------------------------DeviceTypeServiceImplTest------------------------------------------------
 
-	/*@Test
-	public void addDeviceTypesTest() {
-		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(deviceTypeList);
-		PostResponseDto postResponseDto = deviceTypeService.saveDeviceTypes(reqTypeDto);
-		assertEquals(request.getDeviceTypeDtos().get(0).getCode(), postResponseDto.getResults().get(0).getCode());
-	}
-
-	@Test(expected = MasterDataServiceException.class)
-	public void testaddDeviceTypesThrowsDataAccessException() {
-		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		deviceTypeService.saveDeviceTypes(reqTypeDto);
-	}*/
+	/*
+	 * @Test public void addDeviceTypesTest() {
+	 * Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(
+	 * deviceTypeList); PostResponseDto postResponseDto =
+	 * deviceTypeService.saveDeviceTypes(reqTypeDto);
+	 * assertEquals(request.getDeviceTypeDtos().get(0).getCode(),
+	 * postResponseDto.getResults().get(0).getCode()); }
+	 * 
+	 * @Test(expected = MasterDataServiceException.class) public void
+	 * testaddDeviceTypesThrowsDataAccessException() {
+	 * Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(
+	 * DataRetrievalFailureException.class);
+	 * deviceTypeService.saveDeviceTypes(reqTypeDto); }
+	 */
 
 	// ----------------------------------------------- Blacklisted word validator
 	// ----------------------
