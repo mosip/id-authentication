@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PublicKeyResponseDto {
 
-	private byte[] publicKey;
+//	private byte[] publicKey;
 
-	private String base64EncodedPublicKey;
+	private String publicKey;
 
 	private LocalDateTime keyGenerationTime;
 

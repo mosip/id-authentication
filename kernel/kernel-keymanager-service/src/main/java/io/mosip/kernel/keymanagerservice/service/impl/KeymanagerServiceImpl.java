@@ -160,8 +160,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		System.out.println(alias);
 		PublicKey publicKey = keyStore.getPublicKey(alias);
 		// System.out.println(keyStore.getCertificate(alias).toString());
-		keyResponseDto.setPublicKey(publicKey.getEncoded());
-		keyResponseDto.setBase64EncodedPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
+		keyResponseDto.setPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
 		return keyResponseDto;
 	}
 
