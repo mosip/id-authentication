@@ -20,10 +20,6 @@ import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
  */
 @RestControllerAdvice
 public class OtpControllerAdvice {
-	/**
-	 * This variable represents the errors.
-	 */
-	String err = "errors";
 
 	/**
 	 * This method handles MethodArgumentNotValidException.

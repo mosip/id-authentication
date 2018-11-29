@@ -13,12 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 public class ApiExceptionHandler {
-
-	/**
-	 * The error variable for error map.
-	 */
-	String err = "errors";
-
 	/**
 	 * @param exception
 	 *            the exception to be handled.
