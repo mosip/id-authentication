@@ -34,9 +34,13 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
+import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -128,6 +132,11 @@ public class MasterdataControllerTest {
 	private IdTypeRepository repository;
 
 	private IdType idType;
+	private BlacklistedWordsDto blacklistedWordsDto;
+	private BlackListedWordsRequest blackListedWordsRequest;
+	private BlackListedWordsRequestDto blackListedWordsRequestDto;
+
+	private BlackListedWordsResponse blackListedWordsResponse;
 
 	@MockBean
 	private LanguageService languageService;
@@ -146,8 +155,7 @@ public class MasterdataControllerTest {
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
-	List<Object[]> locObjList=null;
-	
+	List<Object[]> locObjList = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -198,7 +206,7 @@ public class MasterdataControllerTest {
 		// TODO MachineHistoryControllerTest
 
 		registrationCenterController();
-
+		blackListedWordSetUp();
 		templateSetup();
 
 	}
@@ -366,9 +374,39 @@ public class MasterdataControllerTest {
 
 		biometricTypeDtoList.add(biometricTypeDto1);
 		biometricTypeDtoList.add(biometricTypeDto2);
-		
+
 		biometricTypeResponseDto = new BiometricTypeResponseDto();
 		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtoList);
+	}
+
+	private void blackListedWordSetUp() {
+		blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setIsActive(true);
+		blacklistedWordsDto.setDescription("Test");
+		blacklistedWordsDto.setWord("testword");
+		blackListedWordsRequest = new BlackListedWordsRequest();
+		blackListedWordsRequest.setBlacklistedword(blacklistedWordsDto);
+		blackListedWordsRequestDto = new BlackListedWordsRequestDto();
+		blackListedWordsRequestDto.setId("TEST");
+		blackListedWordsRequestDto.setRequest(blackListedWordsRequest);
+		blackListedWordsResponse = new BlackListedWordsResponse();
+		blackListedWordsResponse.setLangCode("TST");
+		blackListedWordsResponse.setWord("testword");
+
+	}
+
+	// --------------------------------BlackListedWordsControllerTest--------------------------
+	@Test
+	public void addBlackListedWordTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
+
+		Mockito.when(blacklistedWordsService.addBlackListedWord(blackListedWordsRequestDto))
+				.thenReturn(blackListedWordsResponse);
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+
 	}
 
 	// -------------------------------BiometricTypeControllerTest--------------------------
@@ -430,13 +468,16 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		/*PostResponseDto postResponseDto = new PostResponseDto();
-		List<CodeAndLanguageCodeId> results = new ArrayList<>();*/
+		/*
+		 * PostResponseDto postResponseDto = new PostResponseDto();
+		 * List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		 */
 		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
-		/*results.add(codeAndLanguageCodeId);
-		postResponseDto.setResults(results);*/
+		/*
+		 * results.add(codeAndLanguageCodeId); postResponseDto.setResults(results);
+		 */
 		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
 				.thenReturn(codeAndLanguageCodeId);
 
@@ -606,8 +647,7 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationHierarchy() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/locations/ENG")).andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
