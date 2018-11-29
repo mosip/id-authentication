@@ -179,7 +179,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		String referenceId = symmetricKeyRequestDto.getReferenceId();
 		String applicationId = symmetricKeyRequestDto.getApplicationId();
 
-		if (referenceId == null || referenceId.isEmpty()) {
+		if (referenceId == null) {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, null);
 		} else {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId);
