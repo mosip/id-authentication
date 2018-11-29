@@ -23,7 +23,7 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
-import io.mosip.kernel.keymanagerservice.exception.ApplicationIdNotValid;
+import io.mosip.kernel.keymanagerservice.exception.ApplicationIdNotValidException;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
@@ -139,7 +139,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			Optional<String> referenceId, String alias) {
 		Optional<KeyPolicy> keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
 		if(!keyPolicy.isPresent())
-			throw new ApplicationIdNotValid(KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorCode(), KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorMessage());
+			throw new ApplicationIdNotValidException(KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorCode(), KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorMessage());
 		return  keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.get().getValidityInDays());
 	
 	}
