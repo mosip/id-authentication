@@ -2,9 +2,12 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,30 +16,43 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * blacklisted word entity
+ * Entity class for blacklisted words.
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 06-11-2018
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  */
-@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "blacklisted_words", schema = "master")
+@EqualsAndHashCode(callSuper = false)
+@IdClass(WordAndLanguageCodeId.class)
 public class BlacklistedWords extends BaseEntity implements Serializable {
 
+	/**
+	 * Serialized version ID.
+	 */
 	private static final long serialVersionUID = -402658536057675404L;
 
 	@Id
-	@Column(name = "word", nullable = false, length = 128)
+	@AttributeOverrides({
+			@AttributeOverride(name = "word", column = @Column(name = "word", nullable = false, length = 128)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	/**
+	 * The blacklisted word.
+	 */
 	private String word;
 
-	@Column(name = "descr", length = 256)
-	private String description;
-
-	@Column(name = "lang_code", nullable = false, length = 3)
+	/**
+	 * The language code of the word.
+	 */
 	private String langCode;
 
+	/**
+	 * The description of the word.
+	 */
+	@Column(name = "descr", length = 256)
+	private String description;
 }
