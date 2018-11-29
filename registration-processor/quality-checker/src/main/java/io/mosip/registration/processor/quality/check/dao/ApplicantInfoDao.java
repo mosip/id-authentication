@@ -125,19 +125,10 @@ public class ApplicantInfoDao {
 		demo.setRegId(object.getId().getRefId());
 		demo.setPreRegId(object.getId().getRefId());
 		demo.setLangCode(object.getId().getLangCode());
-		demo.setFirstName(object.getFirstName());
-		demo.setMiddleName(object.getMiddleName());
-		demo.setLastName(object.getLastName());
-		demo.setFullName(object.getName());
+		demo.setName(object.getName());
 		demo.setGenderCode(object.getGenderCode());
 		demo.setDob(object.getDob());
-		demo.setAddrLine1(object.getAddrLine1());
-		demo.setAddrLine2(object.getAddrLine2());
-		demo.setAddrLine3(object.getAddrLine3());
-		demo.setAddrLine4(object.getAddrLine4());
-		demo.setAddrLine5(object.getAddrLine5());
-		demo.setAddrLine6(object.getAddrLine6());
-		demo.setZipCode(object.getZipCode());
+
 		return demo;
 	}
 

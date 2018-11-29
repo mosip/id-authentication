@@ -458,10 +458,13 @@ public class PacketInfoMapper {
 					Languages.LanguageSet.from(languageSet));
 			Soundex soundex = new Soundex();
 			entity.setPheoniticName(soundex.encode(encodedInputString));
+			System.out.println("--------------------------------------------------------");
 
-			System.out.println(getName(demoDto.getName(), languageArray[i])+ " Before Encoding ***************");
-			System.out.println(encodedInputString+ " After Pheonitic Representation ***************");
-			System.out.println(soundex.encode(encodedInputString)+ " After Soundex Alogorithm ***************");
+			System.out.println(getName(demoDto.getName(), languageArray[i])+ " Before Encoding ");
+			System.out.println(encodedInputString+ " After Pheonitic Representation ");
+			System.out.println(soundex.encode(encodedInputString)+ " After Soundex Alogorithm ");
+			
+			System.out.println("--------------------------------------------------------");
 
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
