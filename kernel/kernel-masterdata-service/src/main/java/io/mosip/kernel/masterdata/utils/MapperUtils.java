@@ -91,6 +91,18 @@ public class MapperUtils {
 		return responseDto;
 	}
 
+	public List<RegistrationCenterDto> mapRegistrationCenter(RegistrationCenter entity) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(entity, dto, new RegistrationCenterConverter());
+			dataMapperImpl.map(entity, dto, true, null, null, true);
+			responseDto.add(dto);
+		
+
+		return responseDto;
+	}
+	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
