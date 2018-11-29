@@ -61,7 +61,7 @@
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
 		<commons-io>2.6</commons-io>
-		<commons-codec>1.10</commons-codec>
+		<commons-codec>1.11</commons-codec>
 		<guava.version>19.0</guava.version>
 		<seventeam-otp.version>1.0.0</seventeam-otp.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
