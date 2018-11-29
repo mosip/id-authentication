@@ -1,6 +1,5 @@
 package io.mosip.kernel.keymanagerservice.service.impl;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateExpiredException;
@@ -18,13 +17,14 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
-import io.mosip.kernel.keymanagerservice.dto.PublicKeyRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.repository.KeymanagerRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.keymanagerservice.util.KeyPairUtil;
+import io.mosip.kernel.keymanagerservice.util.MetadataUtil;
 
 /**
  * This class provides the implementation for the methods of KeymanagerService
@@ -38,10 +38,10 @@ import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
-	 * KeyGenerator instance to generate asymmetric key pairs
+	 * Keystore to handles and store cryptographic keys.
 	 */
 	@Autowired
-	KeyGenerator keyGenerator;
+	KeyStore keyStore;
 
 	/**
 	 * Decryptor instance to decrypt data
@@ -50,16 +50,22 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	/**
-	 * Keystore to handles and store cryptographic keys.
-	 */
-	@Autowired
-	KeyStore keyStore;
-
-	/**
 	 * KeyGenerator instance to generate asymmetric key pairs
 	 */
 	@Autowired
 	KeymanagerRepository keymanagerRepository;
+
+	/**
+	 * Utility to generate KeyPair
+	 */
+	@Autowired
+	KeyPairUtil keyPairUtil;
+
+	/**
+	 * Utility to generate Metadata
+	 */
+	@Autowired
+	MetadataUtil metadataUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -68,39 +74,53 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * io.mosip.kernel.keymanager.service.KeymanagerService#getPublicKey(java.lang.
 	 * String, java.time.LocalDateTime, java.util.Optional)
 	 */
-	@Override
-	public KeyResponseDto getPublicKey(PublicKeyRequestDto publicKeyRequestDto) {
+	public PublicKeyResponseDto getPublicKey(String applicationId, LocalDateTime timeStamp,
+			Optional<String> referenceId) {
 
 		String alias;
-		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		List<KeyAlias> aliasMaps = keymanagerRepository.findByApplicationIdAndReferenceId(
-				publicKeyRequestDto.getApplicationId(), publicKeyRequestDto.getReferenceId());
-		aliasMaps.forEach(System.out::println);
+		List<KeyAlias> keyAliases;
+		PublicKeyResponseDto keyResponseDto = new PublicKeyResponseDto();
 
-		Optional<KeyAlias> currentAliasMap = aliasMaps.stream().sorted(
-				(aliasMap1, aliasMap2) -> aliasMap2.getKeyGenerationTime().compareTo(aliasMap1.getKeyGenerationTime()))
+		if (referenceId.isPresent()) {
+			keyAliases = keymanagerRepository.findByApplicationIdAndReferenceId(applicationId, referenceId.get());
+		} else {
+			keyAliases = keymanagerRepository.findByApplicationId(applicationId);
+		}
+
+		keyAliases.forEach(System.out::println);
+
+		Optional<KeyAlias> currentKeyAlias = keyAliases.stream().sorted(
+				(keyAlias1, keyAlias2) -> keyAlias2.getKeyGenerationTime().compareTo(keyAlias1.getKeyGenerationTime()))
 				.findFirst();
-		System.out.println(currentAliasMap);
-		if (!currentAliasMap.isPresent()) {
+
+		System.out.println(currentKeyAlias);
+
+		if (!currentKeyAlias.isPresent()) {
+
 			System.out.println("!!!Creating new");
 			alias = UUID.randomUUID().toString();
-			createNewKeyPair(publicKeyRequestDto.getApplicationId(), publicKeyRequestDto.getReferenceId(), alias);
+			KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias);
+			keymanagerRepository.create(metadataUtil.setMetaData(keyAlias));
 		} else {
+
 			System.out.println("!!!Already exists");
-			alias = currentAliasMap.get().getAlias();
+			alias = currentKeyAlias.get().getAlias();
 			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
 			try {
+				
 				certificate.checkValidity();
 				System.out.println("!!!Valid");
 			} catch (CertificateExpiredException | CertificateNotYetValidException e) {
+				
 				System.out.println("!!!Not Valid");
 				alias = UUID.randomUUID().toString();
-				createNewKeyPair(publicKeyRequestDto.getApplicationId(), publicKeyRequestDto.getReferenceId(), alias);
+				KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias);
+				keymanagerRepository.create(metadataUtil.setMetaData(keyAlias));
 			}
 		}
 		System.out.println(alias);
 		PublicKey publicKey = keyStore.getPublicKey(alias);
-		keyResponseDto.setKey(publicKey.getEncoded());
+		keyResponseDto.setPublicKey(publicKey.getEncoded());
 		return keyResponseDto;
 	}
 
@@ -112,17 +132,17 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
 	 */
 	@Override
-	public KeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
+	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
-		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		List<KeyAlias> aliasMaps = keymanagerRepository.findByApplicationIdAndReferenceId(
+		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
+		List<KeyAlias> keyAliases = keymanagerRepository.findByApplicationIdAndReferenceId(
 				symmetricKeyRequestDto.getApplicationId(), symmetricKeyRequestDto.getReferenceId());
-		aliasMaps.forEach(System.out::println);
+		keyAliases.forEach(System.out::println);
 
-		Optional<KeyAlias> matchingAlias = aliasMaps.stream().filter(
-				aliasMap -> aliasMap.getKeyGenerationTime().compareTo(symmetricKeyRequestDto.getTimeStamp()) < 0)
-				.sorted((aliasMap1, aliasMap2) -> aliasMap2.getKeyGenerationTime()
-						.compareTo(aliasMap1.getKeyGenerationTime()))
+		Optional<KeyAlias> matchingAlias = keyAliases.stream().filter(
+				keyAlias -> keyAlias.getKeyGenerationTime().compareTo(symmetricKeyRequestDto.getTimeStamp()) < 0)
+				.sorted((keyAlias1, keyAlias2) -> keyAlias2.getKeyGenerationTime()
+						.compareTo(keyAlias1.getKeyGenerationTime()))
 				.findFirst();
 
 		if (matchingAlias.isPresent()) {
@@ -130,26 +150,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println(matchingAlias.get().getAlias());
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
 					symmetricKeyRequestDto.getEncryptedSymmetricKey());
-			keyResponseDto.setKey(decryptedSymmetricKey);
+			keyResponseDto.setSymmetricKey(decryptedSymmetricKey);
 		}
 
 		return keyResponseDto;
 	}
-
-	/**
-	 * @param applicationId
-	 * @param referenceId
-	 * @param alias
-	 */
-	private void createNewKeyPair(String applicationId, String referenceId, String alias) {
-		KeyPair keyPair = keyGenerator.getAsymmetricKey();
-		keyStore.storeAsymmetricKey(keyPair, alias, 1);
-		KeyAlias aliasMap = new KeyAlias();
-		aliasMap.setAlias(alias);
-		aliasMap.setApplicationId(applicationId);
-		aliasMap.setReferenceId(referenceId);
-		aliasMap.setKeyGenerationTime(LocalDateTime.now());
-		keymanagerRepository.create(aliasMap);
-	}
-
 }
