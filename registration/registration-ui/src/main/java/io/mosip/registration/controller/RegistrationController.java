@@ -23,8 +23,8 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -323,30 +323,24 @@ public class RegistrationController extends BaseController {
 				biometricsNext.setDisable(false);
 			}
 
-			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						headerImage.setImage(new Image(RegistrationConstants.DEMOGRAPHIC_DETAILS_LOGO));
-					}
-				}
-			});
-			biometricTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						headerImage.setImage(new Image(RegistrationConstants.APPLICANT_BIOMETRICS_LOGO));
-					}
-				}
-			});
-			authenticationTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
-					}
-				}
-			});
+			demoGraphicTitlePane.expandedProperty().addListener(
+					(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+						if (newValue) {
+							headerImage.setImage(new Image(RegistrationConstants.DEMOGRAPHIC_DETAILS_LOGO));
+						}
+					});
+			biometricTitlePane.expandedProperty().addListener(
+					(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+						if (newValue) {
+							headerImage.setImage(new Image(RegistrationConstants.APPLICANT_BIOMETRICS_LOGO));
+						}
+					});
+			authenticationTitlePane.expandedProperty().addListener(
+					(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+						if (newValue) {
+							headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
+						}
+					});
 
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
@@ -684,7 +678,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
