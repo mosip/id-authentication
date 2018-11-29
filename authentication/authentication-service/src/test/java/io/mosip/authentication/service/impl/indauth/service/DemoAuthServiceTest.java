@@ -353,11 +353,18 @@ public class DemoAuthServiceTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInValidgetDemoStatuswithException() throws IdAuthenticationBusinessException {
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
 		DemoAuthServiceImpl demoAuthService = Mockito.mock(DemoAuthServiceImpl.class);
-		Mockito.when(demoAuthService.getDemoStatus(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), null))
+		Mockito.when(demoAuthService.getDemoStatus(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		demoAuthService.getDemoStatus(authRequestDTO, "", null);
+		
+		demoAuthService.getDemoStatus(authRequestDTO, "", idInfo);
 	}
 
 	@Test
@@ -374,7 +381,13 @@ public class DemoAuthServiceTest {
 		entityInfo.put("firstName", identityInfoList);
 		Mockito.when(idInfoService.getIdInfo(Mockito.anyString())).thenReturn(entityInfo);
 		AuthRequestDTO authRequestDTO = generateData();
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", null);
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", idInfo);
 		assertTrue(!authStatusInfo.isStatus());
 	}
 
@@ -433,7 +446,13 @@ public class DemoAuthServiceTest {
 //		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
 //		Mockito.when(idInfoService.getIdInfo(Mockito.anyString())).thenReturn(null);
 //		AuthRequestDTO authRequestDTO = generateData();
-//		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212");
+//		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+//		list.add(new IdentityInfoDTO("en", "mosip"));
+//		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+//		idInfo.put("name", list);
+//		idInfo.put("email", list);
+//		idInfo.put("phone", list);
+//		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212",idInfo);
 //	}
 
 }

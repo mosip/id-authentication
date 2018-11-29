@@ -2,6 +2,8 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,143 +96,33 @@ public class KycServiceImplTest {
 		
 	}
 	
-	@SuppressWarnings("null")
+	
 	@Test
 	public void validUIN() {
 		try {
-			Map<String, List<IdentityInfoDTO>> idInfo = null;
-			List<IdentityInfoDTO> name = null;
-			List<IdentityInfoDTO> dateOfBirth=null;
-			List<IdentityInfoDTO> dateOfBirthType = null;
-			List<IdentityInfoDTO> age = null;
-			List<IdentityInfoDTO> gender = null;
-			List<IdentityInfoDTO> phoneNumber = null;
-			List<IdentityInfoDTO> emailId = null;
-			List<IdentityInfoDTO> addressLine1 = null;
-			List<IdentityInfoDTO> addressLine2 = null;
-			List<IdentityInfoDTO> addressLine3 = null;
-			List<IdentityInfoDTO> location1= null;
-			List<IdentityInfoDTO> location2= null;
-			List<IdentityInfoDTO> location3= null;
-			List<IdentityInfoDTO> pinCode= null;
-			List<IdentityInfoDTO> fullAddress= null;
-			List<IdentityInfoDTO> leftEye= null;
-			List<IdentityInfoDTO> rightEye= null;
-			List<IdentityInfoDTO> leftIndex= null;
-			List<IdentityInfoDTO> leftLittle= null;
-			List<IdentityInfoDTO> leftMiddle= null;
-			List<IdentityInfoDTO> leftRing= null;
-			List<IdentityInfoDTO> leftThumb= null;
-			List<IdentityInfoDTO> rightIndex= null;
-			List<IdentityInfoDTO> rightLittle= null;
-			List<IdentityInfoDTO> rightMiddle= null;
-			List<IdentityInfoDTO> rightRing= null;
-			List<IdentityInfoDTO> rightThumb= null;
-			List<IdentityInfoDTO> face= null;
-			IdentityInfoDTO dto = null;
-			dto.setLanguage("FR");
-			dto.setValue("John");
-			name.add(dto);
-			
-			IdentityInfoDTO dto1 = null;
-			dto1.setLanguage("FR");
-			dto1.setValue("20-10-2018");
-			dateOfBirth.add(dto1);
-			idInfo.put("name", name);
-			idInfo.put("dateOfBirth", dateOfBirth);
-			idInfo.put("dateOfBirthType", dateOfBirthType);
-			idInfo.put("age", age);
-			idInfo.put("gender", gender);
-			idInfo.put("phoneNumber", phoneNumber);
-			idInfo.put("emailId", emailId);
-			idInfo.put("addressLine1", addressLine1);
-			idInfo.put("addressLine2", addressLine2);
-			idInfo.put("addressLine3", addressLine3);
-			idInfo.put("location1", location1);
-			idInfo.put("location2", location2);
-			idInfo.put("location3", location3);
-			idInfo.put("pinCode", pinCode);
-			idInfo.put("fullAddress", fullAddress);
-			idInfo.put("leftEye", leftEye);
-			idInfo.put("rightEye", rightEye);
-			idInfo.put("leftIndex", leftIndex);
-			idInfo.put("leftLittle", leftLittle);
-			idInfo.put("leftMiddle", leftMiddle);
-			idInfo.put("leftRing", leftRing);
-			idInfo.put("leftThumb", leftThumb);
-			idInfo.put("rightIndex", rightIndex);
-			idInfo.put("rightLittle", rightLittle);
-			idInfo.put("rightMiddle", rightMiddle);
-			idInfo.put("rightRing", rightRing);
-			idInfo.put("rightThumb", rightThumb);
-			idInfo.put("face", face);
+
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
 		}
 	}
-	@SuppressWarnings("null")
+
 	@Test
 	public void validUIN1() {
 		try {
-			Map<String, List<IdentityInfoDTO>> idInfo = null;
-			List<IdentityInfoDTO> name = null;
-			List<IdentityInfoDTO> dateOfBirth=null;
-			List<IdentityInfoDTO> dateOfBirthType = null;
-			List<IdentityInfoDTO> age = null;
-			List<IdentityInfoDTO> gender = null;
-			List<IdentityInfoDTO> phoneNumber = null;
-			List<IdentityInfoDTO> emailId = null;
-			List<IdentityInfoDTO> addressLine1 = null;
-			List<IdentityInfoDTO> addressLine2 = null;
-			List<IdentityInfoDTO> addressLine3 = null;
-			List<IdentityInfoDTO> location1= null;
-			List<IdentityInfoDTO> location2= null;
-			List<IdentityInfoDTO> location3= null;
-			List<IdentityInfoDTO> pinCode= null;
-			List<IdentityInfoDTO> fullAddress= null;
-			List<IdentityInfoDTO> leftEye= null;
-			List<IdentityInfoDTO> rightEye= null;
-			List<IdentityInfoDTO> leftIndex= null;
-			List<IdentityInfoDTO> leftLittle= null;
-			List<IdentityInfoDTO> leftMiddle= null;
-			List<IdentityInfoDTO> leftRing= null;
-			List<IdentityInfoDTO> leftThumb= null;
-			List<IdentityInfoDTO> rightIndex= null;
-			List<IdentityInfoDTO> rightLittle= null;
-			List<IdentityInfoDTO> rightMiddle= null;
-			List<IdentityInfoDTO> rightRing= null;
-			List<IdentityInfoDTO> rightThumb= null;
-			List<IdentityInfoDTO> face= null;
-			idInfo.put("name", name);
-			idInfo.put("dateOfBirth", dateOfBirth);
-			idInfo.put("dateOfBirthType", dateOfBirthType);
-			idInfo.put("age", age);
-			idInfo.put("gender", gender);
-			idInfo.put("phoneNumber", phoneNumber);
-			idInfo.put("emailId", emailId);
-			idInfo.put("addressLine1", addressLine1);
-			idInfo.put("addressLine2", addressLine2);
-			idInfo.put("addressLine3", addressLine3);
-			idInfo.put("location1", location1);
-			idInfo.put("location2", location2);
-			idInfo.put("location3", location3);
-			idInfo.put("pinCode", pinCode);
-			idInfo.put("fullAddress", fullAddress);
-			idInfo.put("leftEye", leftEye);
-			idInfo.put("rightEye", rightEye);
-			idInfo.put("leftIndex", leftIndex);
-			idInfo.put("leftLittle", leftLittle);
-			idInfo.put("leftMiddle", leftMiddle);
-			idInfo.put("leftRing", leftRing);
-			idInfo.put("leftThumb", leftThumb);
-			idInfo.put("rightIndex", rightIndex);
-			idInfo.put("rightLittle", rightLittle);
-			idInfo.put("rightMiddle", rightMiddle);
-			idInfo.put("rightRing", rightRing);
-			idInfo.put("rightThumb", rightThumb);
-			idInfo.put("face", face);
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);		
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -241,7 +133,12 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN2() {
 		try {
-			Map<String, List<IdentityInfoDTO>> idInfo=null;
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);	
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -253,7 +150,12 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN3() {
 		try {			
-			Map<String, List<IdentityInfoDTO>> idInfo=null;
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -264,7 +166,12 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN4() {
 		try {			
-			Map<String, List<IdentityInfoDTO>> idInfo=null;
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);		
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -275,7 +182,12 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN5() {
 		try {			
-			Map<String, List<IdentityInfoDTO>> idInfo=null;
+			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+			list.add(new IdentityInfoDTO("en", "mosip"));
+			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+			idInfo.put("name", list);
+			idInfo.put("email", list);
+			idInfo.put("phone", list);	
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {

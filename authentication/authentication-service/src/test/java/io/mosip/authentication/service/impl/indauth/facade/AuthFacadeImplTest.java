@@ -240,7 +240,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 		
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, 
-				 refId, authResponseDTO);
+				 refId, authResponseDTO,idInfo);
 		
 		authFacadeImpl.authenticateApplicant(authRequestDTO);
 	}
@@ -252,7 +252,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	@Ignore
+	
 	@Test
 	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -272,7 +272,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	@Ignore
+	
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -361,7 +361,7 @@ public class AuthFacadeImplTest {
 	}
 
 	 
-	@Ignore
+	
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -442,7 +442,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 * @throws IdAuthenticationDaoException
 	 */
-	@Ignore
+
 	@Test
 	public void testSendAuthNotificationSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
@@ -520,7 +520,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, 
-				refId, authResponseDTO);
+				refId, authResponseDTO,idInfo);
 	}
 	
 	
