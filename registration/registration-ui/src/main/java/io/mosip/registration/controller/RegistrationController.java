@@ -231,9 +231,7 @@ public class RegistrationController extends BaseController {
 	private static AnchorPane demoGraphicPane1Content;
 
 	private static AnchorPane demoGraphicPane2Content;
-
-	private static RegistrationDTO registrationDTOContent;
-
+	
 	private static DatePicker ageDatePickerContent;
 
 	private boolean toggleAgeOrDobField;
@@ -297,7 +295,6 @@ public class RegistrationController extends BaseController {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, AppModule.REGISTRATION_CONTROLLER,
 					"initializing the registration controller", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
 			if (capturePhotoUsingDevice.equals("Y")) {
 				defaultImage = applicantImage.getImage();
 				biometrics.setVisible(false);
@@ -339,7 +336,7 @@ public class RegistrationController extends BaseController {
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
-			if (isEditPage && registrationDTOContent != null) {
+			if (isEditPage && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
@@ -358,7 +355,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
-			DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
+			DemographicDTO demographicDTO = getRegistrationDtoContent().getDemographicDTO();
 			DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
 
 			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
@@ -391,20 +388,20 @@ public class RegistrationController extends BaseController {
 				uinId.setText(demographicDTO.getIntroducerUIN());
 			}
 			parentName.setText(demographicInfoDTO.getParentOrGuardianName());
-			preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
+			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
 			// for applicant biometrics
-			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
-				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
-					byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null) {
+				if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+					byte[] photoInBytes = getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
 							.getPhoto();
 					if (photoInBytes != null) {
 						ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
 						applicantImage.setImage(new Image(byteArrayInputStream));
 					}
 				}
-				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
-					byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+				if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
+					byte[] exceptionPhotoInBytes = getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
 							.getExceptionPhoto();
 					if (exceptionPhotoInBytes != null) {
 						ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
@@ -585,7 +582,8 @@ public class RegistrationController extends BaseController {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
-				registrationDTOContent = registrationDTO;
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+				
 				if (ageDatePicker.getValue() != null) {
 					ageDatePickerContent = new DatePicker();
 					ageDatePickerContent.setValue(ageDatePicker.getValue());
@@ -732,7 +730,7 @@ public class RegistrationController extends BaseController {
 					} else {
 						applicantDocumentDTO.setHasExceptionPhoto(false);
 					}
-					registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
+					getRegistrationDtoContent().getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
 
@@ -778,7 +776,7 @@ public class RegistrationController extends BaseController {
 
 		boolean imageCaptured = false;
 		if (applicantImageCaptured) {
-			if (registrationDTOContent != null && registrationDTOContent.getDemographicDTO() != null) {
+			if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
 				imageCaptured = true;
 			} else {
 				generateAlert(RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR, AlertType.ERROR,
@@ -1126,6 +1124,7 @@ public class RegistrationController extends BaseController {
 			demoGraphicPane1Content = null;
 			demoGraphicPane2Content = null;
 			ageDatePickerContent = null;
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
@@ -1418,10 +1417,11 @@ public class RegistrationController extends BaseController {
 		RegistrationController.isEditPage = isEditPage;
 	}
 
-	public static RegistrationDTO getRegistrationDTOContent() {
-		return registrationDTOContent;
+	private RegistrationDTO getRegistrationDtoContent() {
+		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
-
+	
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
 		int age = 3;

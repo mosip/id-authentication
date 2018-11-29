@@ -413,6 +413,7 @@ public class RegistrationConstants {
 	public static final String THIRTY_DIGIT_INPUT_LIMT="Please provide 30 digit detail";
 	public static final String ADDRESS_KEY="PrevAddress";
 	public static final String REGISTRATION_CONTROLLER="REGISTRATION_CONTROLLER";
+	public static final String REGISTRATION_DATA="registrationDTOContent";
 
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";

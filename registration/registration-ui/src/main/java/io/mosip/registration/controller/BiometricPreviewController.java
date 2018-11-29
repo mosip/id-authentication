@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -52,7 +53,7 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private ImageView thumb;
-	
+
 	@FXML
 	private ImageView individualPhoto;
 
@@ -77,8 +78,8 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
-
-		RegistrationDTO registrationDTOContent = RegistrationController.getRegistrationDTOContent();
+		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
 		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
 
@@ -112,8 +113,8 @@ public class BiometricPreviewController extends BaseController {
 	 * screen
 	 */
 	public void handleNextBtnAction() {
-		registrationOfficerPacketController.showReciept(RegistrationController.getRegistrationDTOContent(),
-				capturePhotoUsingDevice);
+		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
 	}
 
 	/**
