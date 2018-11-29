@@ -13,6 +13,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -22,12 +24,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 import io.mosip.kernel.crypto.dto.CryptoRequestDto;
-import io.mosip.kernel.crypto.dto.KeyManagerPublicKeyRequestDto;
 import io.mosip.kernel.crypto.dto.KeyManagerResponseDto;
 import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyRequestDto;
 
@@ -96,9 +98,12 @@ public class CryptoUtil {
 	public PublicKey getPublicKey(
 			CryptoRequestDto cryptoRequestDto) {
 		PublicKey key = null;
-		KeyManagerPublicKeyRequestDto keyManagerPublicKeyRequestDto = new KeyManagerPublicKeyRequestDto();
-	    dataMapper.map(cryptoRequestDto,keyManagerPublicKeyRequestDto, new KeyManagerPublicKeyConverter());
-        KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(getPublicKeyUrl, keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
+		Map<String, String> uriParams = new HashMap<>();
+		uriParams.put("applicationId", cryptoRequestDto.getApplicationId());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
+		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
+		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
+		KeyManagerResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.toUriString(),KeyManagerResponseDto.class,uriParams);
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getKey()));
 		} catch (InvalidKeySpecException e) {

@@ -90,14 +90,11 @@ public class CryptoServiceImpl implements CryptoService {
 		final int cipherKeyandDataLength = cryptoRequestDto.getData().length;
 		final int keySplitterLength = keySplitter.length();
 		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
-
-		keyDemiliterIndex = cryptoUtil.getSplitterIndex(cryptoRequestDto, keyDemiliterIndex,
+        keyDemiliterIndex = cryptoUtil.getSplitterIndex(cryptoRequestDto, keyDemiliterIndex,
 				keySplitterLength, keySplitterFirstByte);
-
-		byte[] encryptedKey = copyOfRange(cryptoRequestDto.getData(), 0, keyDemiliterIndex);
+        byte[] encryptedKey = copyOfRange(cryptoRequestDto.getData(), 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(cryptoRequestDto.getData(), keyDemiliterIndex + keySplitterLength,
 				cipherKeyandDataLength);
-		
 		cryptoRequestDto.setData(encryptedKey);
 		SecretKey decryptedSymmetricKey=cryptoUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		CryptoResponseDto cryptoResponseDto= new CryptoResponseDto();

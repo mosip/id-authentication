@@ -28,7 +28,7 @@ private String applicationId;
 /**
  * 
  */
-private String machineId;
+private String referenceId;
 /**
  * 
  */

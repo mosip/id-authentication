@@ -28,7 +28,7 @@ public class KeyManagerPublicKeyRequestDto {
 	/**
 	 * 
 	 */
-	private String machineId;
+	private String referenceId;
 	/**
 	 * 
 	 */
