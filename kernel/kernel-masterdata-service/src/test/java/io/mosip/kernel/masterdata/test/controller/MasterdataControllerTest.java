@@ -631,7 +631,6 @@ public class MasterdataControllerTest {
 				Mockito.anyString());
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED_GET))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
