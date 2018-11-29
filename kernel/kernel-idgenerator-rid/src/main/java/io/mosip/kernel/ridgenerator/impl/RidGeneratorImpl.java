@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
