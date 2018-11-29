@@ -23,7 +23,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -31,7 +31,7 @@ import io.mosip.registration.dto.DeviceDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.MapMachineService;
+import io.mosip.registration.service.mapping.MapMachineService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -110,7 +110,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 				"Initializing Device On-boarding Page");
 
 		try {
-			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES_TYPES, AppModule.DEVICE_ONBOARD,
+			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES_TYPES, Components.DEVICE_ONBOARD,
 					"Get the types of onboarding devices", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
@@ -196,7 +196,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching and displaying all available and mapped devices from Service and UI");
 
-			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, AppModule.DEVICE_ONBOARD,
+			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get all the available and mapped devices",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -262,7 +262,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			// Reset the Search TextField
 			searchField.setText(RegistrationConstants.EMPTY);
 
-			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, AppModule.DEVICE_ONBOARD,
+			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get the available and mapped devices for ".concat(selectedDeviceType),
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -457,7 +457,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 				"Updating the mapping of onboarding devices for Registration Machine");
 
 		try {
-			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, AppModule.DEVICE_ONBOARD,
+			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, Components.DEVICE_ONBOARD,
 					"Updating mapping of devices", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 

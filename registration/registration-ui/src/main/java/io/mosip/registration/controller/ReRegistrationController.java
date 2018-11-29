@@ -20,7 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.service.impl.ReRegistrationService;
+import io.mosip.registration.service.packet.ReRegistrationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

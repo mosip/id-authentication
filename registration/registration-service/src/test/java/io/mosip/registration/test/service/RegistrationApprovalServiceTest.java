@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -31,7 +31,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.RegistrationApprovalServiceImpl;
+import io.mosip.registration.service.packet.impl.RegistrationApprovalServiceImpl;
 
 public class RegistrationApprovalServiceTest {
 
@@ -53,7 +53,7 @@ public class RegistrationApprovalServiceTest {
 	
 	@Before
 	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		List<String> roles = new ArrayList<>();
 		roles.add("SUPERADMIN");

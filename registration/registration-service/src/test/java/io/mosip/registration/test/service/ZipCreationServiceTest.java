@@ -16,7 +16,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.ZipCreationServiceImpl;
+import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
 
 import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;

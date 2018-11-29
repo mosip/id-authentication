@@ -18,7 +18,7 @@ import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
@@ -102,7 +102,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
-			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, AppModule.PACKET_AES_ENCRYPTOR,
+			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
 					"RSA and AES Encryption completed successfully", "RID", "Packet RID");
 			
 			return concat(rsaEncryptedKey, encryptedData);

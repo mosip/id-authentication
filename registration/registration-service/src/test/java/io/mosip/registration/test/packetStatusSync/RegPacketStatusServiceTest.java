@@ -19,7 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.RegPacketStatusServiceImpl;
+import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class RegPacketStatusServiceTest {

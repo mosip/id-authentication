@@ -17,7 +17,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
@@ -100,7 +100,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of login modes");
 
-		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, AppModule.LOGIN_MODES, "Fetching list of login modes",
+		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
 
 		return registrationAppLoginDAO.getModesOfLogin();
@@ -120,7 +120,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
-		auditFactory.audit(AuditEvent.FETCH_USR_DET, AppModule.USER_DETAIL, "Fetching User details", "refId",
+		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, "Fetching User details", "refId",
 				"refIdType");
 
 		return registrationUserDetailDAO.getUserDetail(userId);
@@ -139,7 +139,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Center details");
 
-		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, AppModule.CENTER_DETAIL, "Fetching Center details",
+		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, "Fetching Center details",
 				"refId", "refIdType");
 
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
@@ -158,7 +158,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of Screens to be Authorized");
 
-		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, AppModule.SCREEN_AUTH,
+		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH,
 				"Fetching list of Screens to be Authorized", "refId", "refIdType");
 
 		return registrationScreenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);

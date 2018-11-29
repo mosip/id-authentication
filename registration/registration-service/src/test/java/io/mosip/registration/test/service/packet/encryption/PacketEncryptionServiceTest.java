@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -27,8 +27,8 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.AESEncryptionService;
-import io.mosip.registration.service.impl.PacketEncryptionServiceImpl;
-import io.mosip.registration.service.StorageService;
+import io.mosip.registration.service.external.StorageService;
+import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 
 public class PacketEncryptionServiceTest {
 
@@ -53,7 +53,7 @@ public class PacketEncryptionServiceTest {
 		
 		registrationDTO = DataProvider.getPacketDTO();
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 

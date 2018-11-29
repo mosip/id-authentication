@@ -29,8 +29,8 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
 import io.mosip.registration.manager.JobManager;
 import io.mosip.registration.manager.SyncManager;
-import io.mosip.registration.service.RegPacketStatusService;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.packet.RegPacketStatusService;
 
 public class BaseJobTest {
 

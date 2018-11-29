@@ -27,7 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -40,7 +40,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.SyncStatusValidatorServiceImpl;
+import io.mosip.registration.service.sync.impl.SyncStatusValidatorServiceImpl;
 
 public class SyncStatusValidatorServiceTest {
 
@@ -75,7 +75,7 @@ public class SyncStatusValidatorServiceTest {
 		maplastTime.put("lastCapturedTime", lastCapturedTime);
 		SessionContext.getInstance().setMapObject(maplastTime);
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 

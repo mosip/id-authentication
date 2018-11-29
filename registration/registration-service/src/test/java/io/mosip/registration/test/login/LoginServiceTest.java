@@ -24,7 +24,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
@@ -90,7 +90,7 @@ public class LoginServiceTest {
 	@Test
 	public void getModesOfLoginTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationAppLoginMethod registrationAppLoginMethod = new RegistrationAppLoginMethod();
@@ -111,7 +111,7 @@ public class LoginServiceTest {
 	@Test
 	public void getUserDetailTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
@@ -128,7 +128,7 @@ public class LoginServiceTest {
 	@Test
 	public void getRegistrationCenterDetailsTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationCenter registrationCenter = new RegistrationCenter();
@@ -146,7 +146,7 @@ public class LoginServiceTest {
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationScreenAuthorization registrationScreenAuthorization = new RegistrationScreenAuthorization();
@@ -220,7 +220,7 @@ public class LoginServiceTest {
 
 	@Test
 	public void updateLoginParamsTest() {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
 		

@@ -24,7 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.service.impl.PhotoCaptureServiceImpl;
+import io.mosip.registration.service.device.impl.PhotoCaptureServiceImpl;
 import io.mosip.registration.util.webcam.WebcamDeviceImpl;
 
 @RunWith(PowerMockRunner.class)

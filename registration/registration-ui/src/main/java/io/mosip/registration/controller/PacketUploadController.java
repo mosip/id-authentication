@@ -16,7 +16,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -27,8 +27,8 @@ import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.PacketSynchService;
-import io.mosip.registration.service.PacketUploadService;
+import io.mosip.registration.service.packet.PacketUploadService;
+import io.mosip.registration.service.sync.PacketSynchService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -116,7 +116,7 @@ public class PacketUploadController extends BaseController {
 				APPLICATION_ID, "Sync the packets to the server");
 		String syncErrorStatus = "";
 		try {
-			auditFactory.audit(AuditEvent.SYNC_SERVER, AppModule.PACKET_SYNC, "Sync the packets status to the server",
+			auditFactory.audit(AuditEvent.SYNC_SERVER, Components.PACKET_SYNC, "Sync the packets status to the server",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
@@ -223,7 +223,7 @@ public class PacketUploadController extends BaseController {
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
 					if (!synchedPackets.isEmpty()) {
-						auditFactory.audit(AuditEvent.PACKET_UPLOAD, AppModule.PACKET_UPLOAD,
+						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								"Upload packets to the server",
 								SessionContext.getInstance().getUserContext().getUserId(),
 								RegistrationConstants.PACKET_UPLOAD_REF_ID);

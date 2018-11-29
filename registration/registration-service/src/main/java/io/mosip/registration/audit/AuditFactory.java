@@ -2,7 +2,7 @@ package io.mosip.registration.audit;
 
 import org.springframework.data.auditing.AuditingHandler;
 
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 
 public interface AuditFactory {
@@ -10,7 +10,7 @@ public interface AuditFactory {
 	/**
 	 * Static method to audit the events across Registration Processor Module.
 	 * <p>
-	 * This method takes {@code AuditEventEnum}, {@link AppModule}, audit
+	 * This method takes {@code AuditEventEnum}, {@link Components}, audit
 	 * description, refId and refIdType as inputs values from Session Context object
 	 * namely createdBy, sessionUserId and sessionUserName to build the
 	 * {@link AuditRequest} object. This {@link AuditRequest} object will be passed
@@ -30,7 +30,7 @@ public interface AuditFactory {
 	 * @param refIdType
 	 *            the ref id type of the audit event
 	 */
-	void audit(AuditEvent auditEventEnum, AppModule appModuleEnum, String auditDescription, String refId,
+	void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
 			String refIdType);
 
 }

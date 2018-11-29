@@ -19,12 +19,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.NotificationServiceImpl;
+import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class NotificationServiceTest {
@@ -40,7 +40,7 @@ public class NotificationServiceTest {
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 

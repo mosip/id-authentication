@@ -29,7 +29,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
 public class JobConfigurationServiceTest {
 

@@ -18,7 +18,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.service.PhotoCaptureService;
+import io.mosip.registration.service.device.PhotoCaptureService;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

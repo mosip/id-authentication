@@ -32,7 +32,7 @@ import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.manager.impl.SyncManagerImpl;
 import io.mosip.registration.repositories.SyncTransactionRepository;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 public class SyncTransactionManagerTest {

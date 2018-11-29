@@ -20,7 +20,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.service.impl.ReRegistrationServiceImpl;
+import io.mosip.registration.service.packet.impl.ReRegistrationServiceImpl;
 
 public class ReRegistrationServiceTest {
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -70,7 +70,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 			LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 					"Fetching the last sync details from databse ended");
 
-			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, AppModule.SYNC_VALIDATE,
+			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, Components.SYNC_VALIDATE,
 					"SyncJobInfo containing the synccontrol list and yet to exportpacket count fetched successfully",
 					"refId", "refIdType");
 

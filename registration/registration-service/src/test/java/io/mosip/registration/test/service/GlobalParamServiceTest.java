@@ -15,10 +15,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.impl.GlobalParamDAOImpl;
-import io.mosip.registration.service.impl.GlobalParamServiceImpl;
+import io.mosip.registration.service.config.impl.GlobalParamServiceImpl;
 
 public class GlobalParamServiceTest {
 	
@@ -37,7 +37,7 @@ public class GlobalParamServiceTest {
 	@Test
 	public void getGlobalParamsTest() { 
 		
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		
 		Map<String,Object> globalParamMap = new LinkedHashMap<>();

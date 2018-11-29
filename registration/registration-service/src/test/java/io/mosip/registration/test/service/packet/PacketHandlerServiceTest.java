@@ -16,9 +16,9 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.PacketCreationService;
-import io.mosip.registration.service.PacketEncryptionService;
-import io.mosip.registration.service.impl.PacketHandlerServiceImpl;
+import io.mosip.registration.service.packet.PacketCreationService;
+import io.mosip.registration.service.packet.PacketEncryptionService;
+import io.mosip.registration.service.packet.impl.PacketHandlerServiceImpl;
 
 public class PacketHandlerServiceTest {
 	@Rule

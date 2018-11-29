@@ -15,7 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.StorageServiceImpl;
+import io.mosip.registration.service.external.impl.StorageServiceImpl;
 
 import static org.mockito.Mockito.when;
 

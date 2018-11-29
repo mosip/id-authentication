@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
-import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -37,10 +37,10 @@ public class AuditFactoryImpl implements AuditFactory {
 	private Environment environment;
 
 	/* (non-Javadoc)
-	 * @see io.mosip.registration.audit.AuditFactory#audit(io.mosip.registration.constants.AuditEvent, io.mosip.registration.constants.AppModule, java.lang.String, java.lang.String, java.lang.String)
+	 * @see io.mosip.registration.audit.AuditFactory#audit(io.mosip.registration.constants.AuditEvent, io.mosip.registration.constants.Components, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void audit(AuditEvent auditEventEnum, AppModule appModuleEnum, String auditDescription, String refId,
+	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
 			String refIdType) {
 
 		// Get UserContext Object from SessionContext
