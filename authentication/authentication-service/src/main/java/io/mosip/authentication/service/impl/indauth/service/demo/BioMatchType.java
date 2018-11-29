@@ -1,0 +1,163 @@
+package io.mosip.authentication.service.impl.indauth.service.demo;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
+
+/**
+ * 
+ *
+ * @author Rakesh Roshan
+ */
+public enum BioMatchType implements MatchType {
+
+	// Left Finger Minutiea
+	FGRMIN_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftThumb,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftIndex,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftMiddle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_LEFT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftRing,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftLittle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	// Right Finger Minutiea
+	FGRMIN_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightThumb,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightIndex,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightMiddle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_RIGHT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightRing,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightLittle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+
+	// Left Finger Image FGRIMG
+	FGRIMG_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftThumb,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftIndex,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftMiddle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_LEFT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftRing,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftLittle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	
+	// Right Finger Image
+	FGRIMG_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightThumb,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightIndex,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightMiddle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_RIGHT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightRing,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRIMG_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightLittle,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity());
+	
+	
+	/** The mosipLogger. */
+	private static final Logger mosipLogger = IdaLogger.getLogger(BioMatchType.class);
+
+	/** The allowed matching strategy. */
+	private Set<MatchingStrategy> allowedMatchingStrategy;
+
+	/** The entity info. */
+	private Function<String, String> entityInfoFetcher;
+
+	/** The used bit. */
+	private AuthUsageDataBit usedBit;
+
+	/** The matched bit. */
+	private AuthUsageDataBit matchedBit;
+
+	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
+
+	private IdMapping idMapping;
+
+	BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit, Function<String, String> entityInfoFetcher) {
+		this.idMapping = idMapping;
+		this.identityInfoFunction = identityInfoFunction;
+		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
+		this.entityInfoFetcher = entityInfoFetcher;
+		this.usedBit = usedBit;
+		this.matchedBit = matchedBit;
+	}
+
+	/**
+	 * Gets the allowed matching strategy.
+	 *
+	 * @param matchStrategyType the match strategy type
+	 * @return the allowed matching strategy
+	 */
+	public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
+		return allowedMatchingStrategy.stream().filter(ms -> ms.getType().equals(matchStrategyType)).findAny();
+	}
+
+	/**
+	 * Gets the entity info.
+	 *
+	 * @return the entity info
+	 */
+	public Function<String, String> getEntityInfoFetcher() {
+		return entityInfoFetcher;
+	}
+
+	/**
+	 * Gets the used bit.
+	 *
+	 * @return the used bit
+	 */
+	public AuthUsageDataBit getUsedBit() {
+		return usedBit;
+	}
+
+	/**
+	 * Gets the matched bit.
+	 *
+	 * @return the matched bit
+	 */
+	public AuthUsageDataBit getMatchedBit() {
+		return matchedBit;
+	}
+
+	/**
+	 * Sets the of.
+	 *
+	 * @param matchingStrategies the matching strategies
+	 * @return the sets the
+	 */
+	public static Set<MatchingStrategy> setOf(MatchingStrategy... matchingStrategies) {
+		return Stream.of(matchingStrategies).collect(Collectors.toSet());
+
+	}
+
+	public IdMapping getIdMapping() {
+		return idMapping;
+	}
+
+	@Override
+	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+		return identityInfoFunction;
+	}
+
+	private static Logger getLogger() {
+		return mosipLogger;
+	}
+}

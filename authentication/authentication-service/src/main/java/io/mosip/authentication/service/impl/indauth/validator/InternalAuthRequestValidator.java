@@ -70,17 +70,17 @@ public class InternalAuthRequestValidator implements Validator {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
 		if (authTypeDTO != null) {
 
-			if (authRequestDTO.getAuthType().isFingerPrint() && !validateFinger(authRequestDTO)) {
+			if (!validateFinger(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 			}
 
-			if (authRequestDTO.getAuthType().isIris() && !validateIris(authRequestDTO)) {
+			if (!validateIris(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 			}
 
-			if (authRequestDTO.getAuthType().isFace() && !validateFace(authRequestDTO)) {
+			if (!validateFace(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 			}

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -108,9 +107,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFace(true);
-		authTypeDTO.setFingerPrint(true);
-		authTypeDTO.setIris(true);
+
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 
@@ -134,7 +131,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -149,9 +146,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFace(true);
-		authTypeDTO.setFingerPrint(true);
-		authTypeDTO.setIris(true);
+
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
@@ -181,9 +176,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFace(true);
-		authTypeDTO.setFingerPrint(true);
-		authTypeDTO.setIris(true);
+
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue(null);
@@ -300,7 +293,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validateUinVin(authRequestDTO, "1234567890", errors);
 		// assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestInvalidTimeFormat() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
