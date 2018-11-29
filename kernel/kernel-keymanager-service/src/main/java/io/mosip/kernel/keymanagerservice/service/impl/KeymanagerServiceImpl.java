@@ -107,11 +107,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			alias = currentKeyAlias.get().getAlias();
 			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
 			try {
-				
+
 				certificate.checkValidity();
 				System.out.println("!!!Valid");
 			} catch (CertificateExpiredException | CertificateNotYetValidException e) {
-				
+
 				System.out.println("!!!Not Valid");
 				alias = UUID.randomUUID().toString();
 				KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias);
