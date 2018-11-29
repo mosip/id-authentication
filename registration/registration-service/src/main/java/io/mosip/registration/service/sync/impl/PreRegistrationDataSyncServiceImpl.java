@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -20,6 +21,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+@Service
 public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSyncService {
 
 	/**
