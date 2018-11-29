@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -68,8 +67,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 
 		try {
-			documentCategoryList = documentCategoryRepository
-					.findAllByIsDeletedFalse(DocumentCategory.class);
+			documentCategoryList = documentCategoryRepository.findAllByIsDeletedFalse(DocumentCategory.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -112,8 +110,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 
 		try {
-			documentCategoryList = documentCategoryRepository
-					.findAllByLangCodeAndIsDeletedFalse(langCode);
+			documentCategoryList = documentCategoryRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -161,8 +158,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		DocumentCategory documentCategory;
 		DocumentCategoryDto documentCategoryDto;
 		try {
-			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
-					langCode);
+			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -189,25 +185,22 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * DocumentCategoryRequestDto)
 	 */
 	@Override
-	public PostResponseDto addDocumentCategoriesData(DocumentCategoryRequestDto category) {
-
-		List<DocumentCategory> entities = metaUtils.setCreateMetaData(category.getRequest().getDocumentCategories(),
+	public CodeAndLanguageCodeId addDocumentCategoriesData(DocumentCategoryRequestDto category) {
+		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest().getDocumentCategory(),
 				DocumentCategory.class);
-		List<DocumentCategory> documentCategories;
+		DocumentCategory documentCategory;
 		try {
-			documentCategories = documentCategoryRepository.saveAll(entities);
-		} catch (DataAccessException e) {
+			documentCategory = documentCategoryRepository.create(entity);
+
+		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getErrorText());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		documentCategories.forEach(documentCategory -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+
+		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
+
+		return codeLangCodeId;
 	}
+
 }

@@ -26,7 +26,6 @@ import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
-import io.mosip.kernel.otpmanager.exception.RequiredKeyNotFoundException;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
 
@@ -55,8 +54,9 @@ public class OtpExceptionTest {
 	public void testForExceptionWhenKeyNotFound() throws Exception {
 		List<Error> validationErrorsList = new ArrayList<>();
 		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
-					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
-		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
+		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/otp/validate?key=test&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
@@ -65,8 +65,9 @@ public class OtpExceptionTest {
 	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
 		List<Error> validationErrorsList = new ArrayList<>();
 		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
-					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
-		when(validatorService.validateOtp(Mockito.any(), Mockito.any())).thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
+		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/otp/validate?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}

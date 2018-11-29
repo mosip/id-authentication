@@ -105,6 +105,11 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/** The introducer fingerp image name. */
 	@Column(name = "introducer_fingerp_image_name")
 	private String introducerFingerpImageName;
+	
+	
+	/** The introducer face image name. */
+	@Column(name = "introducer_photo_name")
+	private String introducerPhotoName;
 
 	/** The introducer uin. */
 	@Column(name = "introducer_uin")
@@ -375,6 +380,24 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 */
 	public void setIntroducerFingerpImageName(String introducerFingerpImageName) {
 		this.introducerFingerpImageName = introducerFingerpImageName;
+	}
+
+	/**
+	 * Gets the introducer photo name.
+	 *
+	 * @return the introducer photo name
+	 */
+	public String getIntroducerPhotoName() {
+		return introducerPhotoName;
+	}
+
+	/**
+	 * Sets the introducer photo name.
+	 *
+	 * @param introducerPhotoName the new introducer photo name
+	 */
+	public void setIntroducerPhotoName(String introducerPhotoName) {
+		this.introducerPhotoName = introducerPhotoName;
 	}
 
 	/**

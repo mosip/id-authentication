@@ -15,7 +15,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,11 +33,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.dto.GenderRequestDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -190,9 +191,12 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private LanguageRepository languageRepository;
 
-	private Language language;
-
 	private LanguageDto languageDto;
+	private GenderRequestDto genderTypeRequestDto;
+
+	private Language language;
+	
+	private GenderType genderType;
 
 	@Before
 	public void setUp() {
@@ -225,6 +229,7 @@ public class MasterdataIntegrationTest {
 
 	private void languageTestSetup() {
 		// creating data coming from user
+
 		languageDto = new LanguageDto();
 		languageDto.setCode("ter");
 		languageDto.setName("terman");
@@ -376,7 +381,7 @@ public class MasterdataIntegrationTest {
 	private void genderTypeSetup() {
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
-		GenderType genderType = new GenderType();
+		genderType = new GenderType();
 		genderId = new GenderTypeId();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
@@ -385,7 +390,6 @@ public class MasterdataIntegrationTest {
 		genderType.setCreatedtimes(null);
 		genderType.setIsDeleted(true);
 		genderType.setDeletedtimes(null);
-		genderType.setId(genderId);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Dom");
 		genderType.setUpdatedtimes(null);
@@ -405,9 +409,10 @@ public class MasterdataIntegrationTest {
 
 	// -----------------------------LanguageImplementationTest----------------------------------
 	@Test
-	public void saveAllLanguagesTest() throws Exception {
+	public void saveLanguagesTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
+		String content = mapper
+				.writeValueAsString(new RequestDto<>("mosip.create.language", "1.0.0", null, languageDto));
 		when(languageRepository.create(Mockito.any())).thenReturn(language);
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
@@ -415,32 +420,9 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void saveLanguagesMasterDataServiceExceptionTest() throws Exception {
+	public void saveLanguagesExceptionTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(languageDto);
-		when(languageRepository.create(Mockito.any())).thenThrow(HibernateException.class);
-		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
-
-	}
-
-	@Test
-	public void saveLanguagesEmptyDtoExceptionTest() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		String content = mapper.writeValueAsString(new LanguageDto());
-		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isBadRequest());
-
-	}
-
-	@Test
-	public void saveLanguagesInvalidDtoExceptionTest() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		LanguageDto dto = new LanguageDto();
-		dto.setCode("CDTDTDCTCRDC");
-		dto.setName(
-				"QWETYYYTRTYUYTDFCRDFCRCFCDRDCCRDRCDRCRCRCRCSRCSRCSRCDRCDTDRCDTDTRDTRDTDCTRCDCRDTCDRDRDRDRCDCRCDYRCDRCDYRCDYRCDRDCRCDTYTCYYYYYYYYYYYYYYYYYYYYYYYYYYYYYDTYDCRDCDCTDYYRRRRRRRRRRRRRRRRRRRRRRRRCCDDDUCDUCDUCDUDCDCCDCDUCDUCDUTDCCDURCDURCCDDCCDRCDURCDURCDURCDURCDUCDUDCDCCDURCDRCCDR");
-		String content = mapper.writeValueAsString(dto);
+		String content = mapper.writeValueAsString(new RequestDto<>("mosip.create.language", "1.0.0", null, null));
 		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
 
@@ -449,26 +431,25 @@ public class MasterdataIntegrationTest {
 	// -----------------------------BlacklistedWordsTest----------------------------------
 	@Test
 	public void getAllWordsBylangCodeSuccessTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(words);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(words);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeNullResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(null);
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(null);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeEmptyArrayResponseTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString())).thenReturn(new ArrayList<>());
+		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(new ArrayList<>());
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getAllWordsBylangCodeFetchExceptionTest() throws Exception {
-		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(wordsRepository.findAllByLangCode(anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 
@@ -902,7 +883,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenReturn(new ArrayList<RegistrationCenter>());
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -912,7 +893,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -979,7 +960,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCenterTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class))
+		when(registrationCenterRepository.findAll(RegistrationCenter.class))
 				.thenReturn(registrationCenters);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -1084,16 +1065,17 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentCategoryRepository.saveAll(Mockito.any())).thenReturn(entities);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentCategoryRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentCategoryRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
@@ -1131,4 +1113,14 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
+	
+	@Test
+	public void addGenderTypeTest() throws Exception {
+		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
+		when(genderTypeRepository.save(Mockito.any())).thenReturn(genderType);
+		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	
 }

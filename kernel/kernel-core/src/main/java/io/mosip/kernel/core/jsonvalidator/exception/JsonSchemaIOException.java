@@ -11,21 +11,9 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
  */
 public class JsonSchemaIOException extends BaseCheckedException {
 
-	/**
-	 * Generated serialization ID.
-	 */
 	private static final long serialVersionUID = 6632617381107602675L;
 
-	/**
-	 * Constructor for JsonSchemaIOException class.
-	 * 
-	 * @param errorCode
-	 *            the error code of the exception.
-	 * @param errorMessage
-	 *            the error message associated with the exception.
-	 * @param rootCause
-	 * 			  root cause of exception.
-	 */
+
 	public JsonSchemaIOException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
