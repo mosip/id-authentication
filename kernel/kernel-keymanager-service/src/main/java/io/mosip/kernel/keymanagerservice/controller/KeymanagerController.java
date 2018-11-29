@@ -36,7 +36,7 @@ public class KeymanagerController {
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseEntity<PublicKeyResponseDto> getPublicKey(@PathVariable("applicationId") String applicationId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
-			@RequestParam("machineId") Optional<String> referenceId) {
+			@RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId), HttpStatus.CREATED);
 	}
