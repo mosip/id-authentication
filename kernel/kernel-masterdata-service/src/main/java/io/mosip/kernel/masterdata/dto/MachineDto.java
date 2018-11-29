@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.dto;
 
 import lombok.AllArgsConstructor;
@@ -5,10 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Response dto for Machine Detail
  * 
  * @author Megha Tanga
- * @version 1.0.0
+ * @since 1.0.0
+ *
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

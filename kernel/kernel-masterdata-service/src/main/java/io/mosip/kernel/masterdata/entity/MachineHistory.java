@@ -77,7 +77,7 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	/**
 	 * Field to hold effected date and time
 	 */
-	@Column(name = "validity_end_dtimes", nullable = false)
+	@Column(name = "validity_end_dtimes")
 	private LocalDateTime valEndDtimes;
 
 }

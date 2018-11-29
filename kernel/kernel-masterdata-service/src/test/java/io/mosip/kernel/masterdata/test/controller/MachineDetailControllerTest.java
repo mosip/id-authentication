@@ -15,8 +15,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.masterdata.controller.MachineController;
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 
@@ -38,7 +38,7 @@ public class MachineDetailControllerTest {
 	@Test
 	public void getMachineDetailIdLangTest() {
 		MachineDetailResponseIdDto machineDetailResponseIdDto =  new MachineDetailResponseIdDto();
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -46,21 +46,21 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setIsActive(true);
 
-		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
+		machineDetailResponseIdDto.setMachineDto(machineDetailDto);
 		Mockito.when(macService.getMachineDetailIdLang(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetailResponseIdDto);
 		MachineDetailResponseIdDto actual = machineDetailController.getMachineDetailIdLang(Mockito.anyString(),
 				Mockito.anyString());
 
 		Assert.assertNotNull(actual);
-		Assert.assertEquals(machineDetailDto.getId(), actual.getMachineDetail().getId());
+		Assert.assertEquals(machineDetailDto.getId(), actual.getMachineDto().getId());
 
 	}
 
 	@Test
 	public void getMachineDetailAllTest() {
-		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		List<MachineDto> machineDetailDtoList = new ArrayList<>();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -68,10 +68,10 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
-		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
+		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
 		Mockito.when(macService.getMachineDetailAll()).thenReturn(machineDetailResponseDto);
-		MachineDetailResponseDto actual = machineDetailController.getMachineDetailAll();
+		MachineResponseDto actual = machineDetailController.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -79,9 +79,9 @@ public class MachineDetailControllerTest {
 	
 	@Test
 	public void getMachineDetailLangTest() {
-		MachineDetailResponseDto machineDetailResponseDto =  new MachineDetailResponseDto();
-		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		MachineResponseDto machineDetailResponseDto =  new MachineResponseDto();
+		List<MachineDto> machineDetailDtoList = new ArrayList<>();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -92,7 +92,7 @@ public class MachineDetailControllerTest {
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
 		Mockito.when(macService.getMachineDetailLang(Mockito.anyString()))
 				.thenReturn(machineDetailResponseDto);
-		MachineDetailResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
+		MachineResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);

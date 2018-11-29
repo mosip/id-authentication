@@ -17,8 +17,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataRetrievalFailureException;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -50,7 +50,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test
 	public void getMachineDetailIdLangTest() {
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -66,20 +66,20 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setLangCode("ENG");
 		machineDetail.setIsActive(true);
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
-		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class)).thenReturn(machineDetailDto);
+		Mockito.when(objectMapperUtil.map(machineDetail, MachineDto.class)).thenReturn(machineDetailDto);
 		MachineDetailResponseIdDto actual = machineDetailServiceImpl.getMachineDetailIdLang(Mockito.anyString(),
 				Mockito.anyString());
 		Assert.assertNotNull(actual);
-		Assert.assertEquals(machineDetailDto.getId(), actual.getMachineDetail().getId());
+		Assert.assertEquals(machineDetailDto.getId(), actual.getMachineDto().getId());
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailIdLangThrowsMachineNotFoundExceptionTest() {
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		machineDetailServiceImpl.getMachineDetailIdLang("1000", "ENG");
 
@@ -88,7 +88,7 @@ public class MachineDetailServiceImplTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void getMachineDetailIdLangThrowsDataAccessExceptionTest() {
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineDetailIdLang("1000", "ENG");
 
@@ -96,8 +96,8 @@ public class MachineDetailServiceImplTest {
 
 	@Test
 	public void getMachineDetailAllTest() {
-		List<MachineDetailDto> machineDetailDtoList = new ArrayList<MachineDetailDto>();
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		List<MachineDto> machineDetailDtoList = new ArrayList<MachineDto>();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -116,10 +116,10 @@ public class MachineDetailServiceImplTest {
 
 		List<Machine> machineDetailList = new ArrayList<Machine>();
 		machineDetailList.add(machineDetail);
-		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalse()).thenReturn(machineDetailList);
-		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
+		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(machineDetailList);
+		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -128,7 +128,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailAllThrowsMachineNotFoundExcetionTest() {
-		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalse())
+		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataNotFoundException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
 
@@ -136,7 +136,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getMachineDetailAllThrowsDataAccessExcetionTest() {
-		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalse())
+		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
 
@@ -144,15 +144,15 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailAllThrowsMachineDetailNotFoundExceptionTest() {
-		doReturn(null).when(machineDetailsRepository).findAllByIsDeletedFalse();
+		doReturn(null).when(machineDetailsRepository).findAllByIsDeletedFalseOrIsDeletedIsNull();
 		machineDetailServiceImpl.getMachineDetailAll();
 	}
 	
 	
 	@Test
 	public void getMachineDetailLangTest() {
-		List<MachineDetailDto> machineDetailDtoList = new ArrayList<MachineDetailDto>();
-		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		List<MachineDto> machineDetailDtoList = new ArrayList<MachineDto>();
+		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
 		machineDetailDto.setSerialNum("1234567890");
@@ -171,10 +171,10 @@ public class MachineDetailServiceImplTest {
 
 		List<Machine> machineDetailList = new ArrayList<Machine>();
 		machineDetailList.add(machineDetail);
-		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(machineDetailList);
-		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(machineDetailList);
+		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -183,14 +183,14 @@ public class MachineDetailServiceImplTest {
 	
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailLangThrowsMachineNotFoundExcetionTest() {
-		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalse("ENG")).thenThrow(DataNotFoundException.class);
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG")).thenThrow(DataNotFoundException.class);
 		machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getMachineDetailLangThrowsDataAccessExcetionTest() {
-		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalse("ENG")).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG")).thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 	}
@@ -198,7 +198,7 @@ public class MachineDetailServiceImplTest {
 	
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailThrowsMachineDetailNotFoundExceptionTest() {
-		doReturn(null).when(machineDetailsRepository).findAllByLangCodeAndIsDeletedFalse("ENG");
+		doReturn(null).when(machineDetailsRepository).findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG");
 		machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 	}
