@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,66 +23,66 @@ import javax.persistence.Table;
 @Table(schema = "REG", name = "REGISTRATION")
 public class Registration extends RegistrationCommonFields {
 	@Id
-	@Column(name = "ID", length = 28, nullable = false, updatable = false)
+	@Column(name = "ID")
 	private String id;
-	@Column(name = "REG_TYPE", length = 64, nullable = false, updatable = true)
+	@Column(name = "REG_TYPE")
 	private String regType;
-	@Column(name = "REF_REG_ID", length = 28, nullable = true, updatable = true)
+	@Column(name = "REF_REG_ID")
 	private String refRegId;
-	@Column(name = "STATUS_CODE", length = 64, nullable = false, updatable = true)
+	@Column(name = "STATUS_CODE")
 	private String statusCode;
-	@Column(name = "LANG_CODE", length = 3, nullable = false, updatable = true)
+	@Column(name = "LANG_CODE")
 	private String langCode;
-	@Column(name = "STATUS_COMMENT", length = 256, nullable = true, updatable = true)
+	@Column(name = "STATUS_COMMENT")
 	private String statusComment;
-	@Column(name = "STATUS_DTIMES", nullable = true, updatable = true)
+	@Column(name = "STATUS_DTIMES")
 	private Timestamp statusTimestamp;
-	@Column(name = "ACK_FILENAME", length = 128, nullable = true, updatable = true)
+	@Column(name = "ACK_FILENAME")
 	private String ackFilename;
-	@Column(name = "CLIENT_STATUS_CODE", length = 64, nullable = true, updatable = true)
+	@Column(name = "CLIENT_STATUS_CODE")
 	private String clientStatusCode;
-	@Column(name = "SERVER_STATUS_CODE", length = 64, nullable = true, updatable = true)
+	@Column(name = "SERVER_STATUS_CODE")
 	private String serverStatusCode;
-	@Column(name = "CLIENT_STATUS_DTIME", nullable = true, updatable = true)
+	@Column(name = "CLIENT_STATUS_DTIME")
 	private Timestamp clientStatusTimestamp;
-	@Column(name = "SERVER_STATUS_DTIME", nullable = true, updatable = true)
+	@Column(name = "SERVER_STATUS_DTIME")
 	private Timestamp serverStatusTimestamp;
-	@Column(name = "CLIENT_STATUS_COMMENT", length = 256, nullable = true, updatable = true)
+	@Column(name = "CLIENT_STATUS_COMMENT")
 	private String clientStatusComments;
-	@Column(name = "SERVER_STATUS_COMMENT", length = 256, nullable = true, updatable = true)
+	@Column(name = "SERVER_STATUS_COMMENT")
 	private String serverStatusComments;
-	@Column(name = "INDV_NAME", length = 128, nullable = false, updatable = true)
+	@Column(name = "INDV_NAME")
 	private String individualName;
-	@Column(name = "REG_USR_ID", length = 28, nullable = true, updatable = true)
+	@Column(name = "REG_USR_ID")
 	private String regUsrId;
-	@Column(name = "REG_CNTR_ID", length = 28, nullable = true, updatable = true)
+	@Column(name = "REGCNTR_ID")
 	private String regCntrId;
-	@Column(name = "APPROVER_USR_ID", length = 28, nullable = true, updatable = true)
+	@Column(name = "APPROVER_USR_ID")
 	private String approverUsrId;
-	@Column(name = "APPROVER_ROLE_CODE", length = 32, nullable = true, updatable = true)
+	@Column(name = "APPROVER_ROLE_CODE")
 	private String approverRoleCode;
-	@Column(name = "FILE_UPLOAD_STATUS", length = 64, nullable = true, updatable = true)
+	@Column(name = "FILE_UPLOAD_STATUS")
 	private String fileUploadStatus;
-	@Column(name = "UPLOAD_COUNT", nullable = true, updatable = true)
+	@Column(name = "UPLOAD_COUNT")
 	private Short uploadCount;
-	@Column(name = "UPLOAD_DTIMES", nullable = true, updatable = true)
+	@Column(name = "UPLOAD_DTIMES")
 	private Timestamp uploadTimestamp;
-	@Column(name = "LATEST_REGTRN_ID", length = 64, nullable = true, updatable = true)
+	@Column(name = "LATEST_REGTRN_ID")
 	private String latestRegTrnId;
-	@Column(name = "LATEST_TRN_TYPE_CODE", length = 64, nullable = true, updatable = true)
+	@Column(name = "LATEST_TRN_TYPE_CODE")
 	private String latestTrnTypeCode;
-	@Column(name = "LATEST_TRN_STATUS_CODE", length = 64, nullable = true, updatable = true)
+	@Column(name = "LATEST_TRN_STATUS_CODE")
 	private String latestTrnStatusCode;
-	@Column(name = "LATEST_TRN_LANG_CODE", length = 3, nullable = true, updatable = true)
+	@Column(name = "LATEST_TRN_LANG_CODE")
 	private String latestTrnLangCode;
-	@Column(name = "LATEST_REGTRN_DTIMES", nullable = true, updatable = true)
+	@Column(name = "LATEST_REGTRN_DTIMES")
 	private Timestamp latestRegTrnTimestamp;
 
 	@ManyToOne
 	@JoinColumn(name = "CR_BY", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegistrationUserDetail userdetail;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "REG_ID")
 	private List<RegistrationTransaction> registrationTransaction;
 

@@ -337,6 +337,9 @@ public class PacketInfoMapper {
 			regOsiEntity.setIntroducerFingerpImageName(introducer.getIntroducerFingerprint().getImageName());
 		if (introducer.getIntroducerIris() != null)
 			regOsiEntity.setIntroducerIrisImageName(introducer.getIntroducerIris().getImageName());
+		if (introducer.getIntroducerImage() != null)
+			regOsiEntity.setIntroducerPhotoName(introducer.getIntroducerImage().getImageName());
+		
 
 		regOsiEntity.setId(regOsiPkEntity);
 

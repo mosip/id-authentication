@@ -22,22 +22,22 @@
       <Label fx:id="downloadDate" layoutX="775.0" layoutY="106.0" prefHeight="27.0" prefWidth="130.0" />
       <ImageView fitHeight="27.0" fitWidth="46.0" layoutX="67.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/VirusScan.PNG" />
+            <Image url="@../images/VirusScan.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="35.0" fitWidth="53.0" layoutX="264.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/RegistrationUpdate.PNG" />
+            <Image url="@../images/RegistrationUpdate.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="35.0" fitWidth="46.0" layoutX="497.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/SyncData.PNG" />
+            <Image url="@../images/SyncData.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="35.0" fitWidth="53.0" layoutX="674.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/DownloadData.PNG" />
+            <Image url="@../images/DownloadData.png" />
          </image>
       </ImageView>
    </children>

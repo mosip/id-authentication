@@ -1,6 +1,6 @@
 Design -- Acknowledgement Notification
 
-**[Background]{.underline}**
+**Background**
 
 Once the user captures the demographic details, biometrics and other
 details of the individual and ready for packet generation, an
@@ -74,8 +74,7 @@ The key **non-functional requirements** are
 
     -   All connection should be closed once DB process completed.
 
-**[Solution]{.underline}**
-==========================
+**Solution**
 
 The key solution considerations are --
 
@@ -93,7 +92,7 @@ The key solution considerations are --
 **Service**
 
 -   Get the Template details by using the **Template Service** by
-    > calling **generateTemplate(). **
+     calling **generateTemplate(). **
 
     -   Internally calls the **Template DAO** to fetch the Details from
         DB
@@ -106,11 +105,10 @@ The key solution considerations are --
 
         -   List\<TemplateFileFormat\> getAllTemplateFileFormats();
 
-> We will fetch the HTML template by using above details.
+ We will fetch the HTML template by using above details.
 
 -   Create **NotificationService with the following methods.**
 
-<!-- -->
 
 -   **sendSMS** -- invokes the SMS trigger API from kernel to trigger
     SMS to registered mobile number of the individual.
@@ -124,12 +122,11 @@ RegistrtaionTransaction Table.
 -   Handle exceptions in using custom Exception handler and send correct
     response to client.
 
-**\
-UI **
+**UI**
 
 Create the proper alert success/error to intimate the user.
 
-> **Apply the below common criteria**
+ **Apply the below common criteria**
 
 -   Audit
 
@@ -151,14 +148,13 @@ Create the proper alert success/error to intimate the user.
 
 -   sendEmail ()
 
-> **DAO**: TemplateDAO
+ **DAO**: TemplateDAO
 
 **Repository**: TemplateRepository
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/reg_ack_notification_class_diagram.png>
+![Ack Notification Class Diagram](_images/_class_diagram/reg_ack_notification_class_diagram.png)
 
 Sequence Diagram:
-
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/reg_ack_notification_sequence_diagram.png>
+![Ack Notification Sequence Diagram](_images/_sequence_diagram/reg_ack_notification_sequence_diagram.png)

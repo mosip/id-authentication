@@ -219,7 +219,7 @@ public class OSIValidator {
 			return true;
 
 		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
-				&& (regOsi.getIntroducerFingerpImageName() == null)) {
+				&& (regOsi.getIntroducerPhotoName() == null)) {
 			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 			return false;
 		} else {
@@ -227,7 +227,7 @@ public class OSIValidator {
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
 			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName();
 			String irisType = regOsi.getIntroducerIrisType();
-			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName();
+			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName();
 
 			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)

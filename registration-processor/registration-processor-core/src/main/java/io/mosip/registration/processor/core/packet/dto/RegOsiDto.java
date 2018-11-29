@@ -53,6 +53,8 @@ public class RegOsiDto {
 	private String introducerIrisType;
 
 	private String introducerFingerpImageName;
+	
+	private String introducerPhotoName;
 
 	private String introducerUin;
 

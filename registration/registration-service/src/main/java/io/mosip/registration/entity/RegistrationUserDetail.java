@@ -9,9 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * RegistrationUserDetail entity details
@@ -25,30 +24,44 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name = "id", length = 64, nullable = false, updatable = false)
+	@Column(name = "id")
 	private String id;
-	@Column(name = "name", length = 64, nullable = false, updatable = false)
+	
+	@Column(name = "uin_ref_id")
+	private String uinRefId;
+	
+	@Column(name = "name")
 	private String name;
-	@Column(name = "email", length = 64, nullable = true, updatable = false)
+	
+	@Column(name = "email")
 	private String email;
-	@Column(name = "mobile", length = 16, nullable = true, updatable = false)
+	
+	@Column(name = "mobile")
 	private String mobile;
-	@Column(name = "cntr_id", length = 28, nullable = false, updatable = false)
-	private String cntrId;
-	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
+	
+	@Column(name = "status_code")
+	private String statusCode;
+	
+	@Column(name = "lang_code")
 	private String langCode;
-	@Column(name = "last_login_dtimes", nullable = true, updatable = false)
+	
+	@Column(name = "last_login_dtimes")
 	private Timestamp lastLoginDtimes;
-	@Column(name = "last_login_method", length = 64, nullable = true, updatable = false)
+	
+	@Column(name = "last_login_method")
 	private String lastLoginMethod;
-	@Column(name = "is_deleted", nullable = true, updatable = false)
-	@Type(type = "true_false")
-	private boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true, updatable = false)
+	
+	@Column(name = "unsuccessful_login_count")
+	private Integer unsuccessfulLoginCount;
+	
+	@Column(name = "userlock_till_dtimes")
+	private Timestamp userlockTillDtimes;
+	
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	
+	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
-	@Column(name = "user_status", length = 64, nullable = true, updatable = false)
-
-	private String userStatus;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
 	private Set<RegistrationUserRole> userRole;
@@ -59,51 +72,11 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
 	private Set<UserBiometric> userBiometric;
 
-	/**
-	 * @return the userRole
-	 */
-	public Set<RegistrationUserRole> getUserRole() {
-		return userRole;
-	}
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private RegistrationUserPassword registrationUserPassword;
 
-	/**
-	 * @param userRole
-	 *            the userRole to set
-	 */
-	public void setUserRole(Set<RegistrationUserRole> userRole) {
-		this.userRole = userRole;
-	}
-
-	/**
-	 * @return the userMachineMapping
-	 */
-	public Set<UserMachineMapping> getUserMachineMapping() {
-		return userMachineMapping;
-	}
-
-	/**
-	 * @param userMachineMapping
-	 *            the userMachineMapping to set
-	 */
-	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
-		this.userMachineMapping = userMachineMapping;
-
-	}
-
-	/**
-	 * @return the userBiometric
-	 */
-	public Set<UserBiometric> getUserBiometric() {
-		return userBiometric;
-	}
-
-	/**
-	 * @param userBiometric
-	 *            the userBiometric to set
-	 */
-	public void setUserBiometric(Set<UserBiometric> userBiometric) {
-		this.userBiometric = userBiometric;
-	}
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private RegistrationCenterUser registrationCenterUser;
 
 	/**
 	 * @return the id
@@ -118,6 +91,21 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the uinRefId
+	 */
+	public String getUinRefId() {
+		return uinRefId;
+	}
+
+	/**
+	 * @param uinRefId
+	 *            the uinRefId to set
+	 */
+	public void setUinRefId(String uinRefId) {
+		this.uinRefId = uinRefId;
 	}
 
 	/**
@@ -166,18 +154,18 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	}
 
 	/**
-	 * @return the cntrId
+	 * @return the statusCode
 	 */
-	public String getCntrId() {
-		return cntrId;
+	public String getStatusCode() {
+		return statusCode;
 	}
 
 	/**
-	 * @param cntrId
-	 *            the cntrId to set
+	 * @param statusCode
+	 *            the statusCode to set
 	 */
-	public void setCntrId(String cntrId) {
-		this.cntrId = cntrId;
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
 	}
 
 	/**
@@ -226,9 +214,39 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	}
 
 	/**
+	 * @return the unsuccessfulLoginCount
+	 */
+	public Integer getUnsuccessfulLoginCount() {
+		return unsuccessfulLoginCount;
+	}
+
+	/**
+	 * @param unsuccessfulLoginCount
+	 *            the unsuccessfulLoginCount to set
+	 */
+	public void setUnsuccessfulLoginCount(Integer unsuccessfulLoginCount) {
+		this.unsuccessfulLoginCount = unsuccessfulLoginCount;
+	}
+
+	/**
+	 * @return the userlockTillDtimes
+	 */
+	public Timestamp getUserlockTillDtimes() {
+		return userlockTillDtimes;
+	}
+
+	/**
+	 * @param userlockTillDtimes
+	 *            the userlockTillDtimes to set
+	 */
+	public void setUserlockTillDtimes(Timestamp userlockTillDtimes) {
+		this.userlockTillDtimes = userlockTillDtimes;
+	}
+
+	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
 
@@ -236,7 +254,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
@@ -256,18 +274,78 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	}
 
 	/**
-	 * @return the userStatus
+	 * @return the userRole
 	 */
-	public String getUserStatus() {
-		return userStatus;
+	public Set<RegistrationUserRole> getUserRole() {
+		return userRole;
 	}
 
 	/**
-	 * @param userStatus
-	 *            the userStatus to set
+	 * @param userRole
+	 *            the userRole to set
 	 */
-	public void setUserStatus(String userStatus) {
-		this.userStatus = userStatus;
+	public void setUserRole(Set<RegistrationUserRole> userRole) {
+		this.userRole = userRole;
+	}
+
+	/**
+	 * @return the userMachineMapping
+	 */
+	public Set<UserMachineMapping> getUserMachineMapping() {
+		return userMachineMapping;
+	}
+
+	/**
+	 * @param userMachineMapping
+	 *            the userMachineMapping to set
+	 */
+	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
+		this.userMachineMapping = userMachineMapping;
+	}
+
+	/**
+	 * @return the userBiometric
+	 */
+	public Set<UserBiometric> getUserBiometric() {
+		return userBiometric;
+	}
+
+	/**
+	 * @param userBiometric
+	 *            the userBiometric to set
+	 */
+	public void setUserBiometric(Set<UserBiometric> userBiometric) {
+		this.userBiometric = userBiometric;
+	}
+
+	/**
+	 * @return the registrationUserPassword
+	 */
+	public RegistrationUserPassword getRegistrationUserPassword() {
+		return registrationUserPassword;
+	}
+
+	/**
+	 * @param registrationUserPassword
+	 *            the registrationUserPassword to set
+	 */
+	public void setRegistrationUserPassword(RegistrationUserPassword registrationUserPassword) {
+		this.registrationUserPassword = registrationUserPassword;
+	}
+
+	/**
+	 * @return the registrationCenterUser
+	 */
+	public RegistrationCenterUser getRegistrationCenterUser() {
+		return registrationCenterUser;
+	}
+
+	/**
+	 * @param registrationCenterUser
+	 *            the registrationCenterUser to set
+	 */
+	public void setRegistrationCenterUser(RegistrationCenterUser registrationCenterUser) {
+		this.registrationCenterUser = registrationCenterUser;
 	}
 
 }

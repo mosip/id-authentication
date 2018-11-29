@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="authenticationRoot" prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.FingerPrintAuthenticationController">
+   <children>
+      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="474.0">
+         <children>
+            <Button fx:id="scanBtn" layoutX="406.0" layoutY="233.0" mnemonicParsing="false" onAction="#scanFinger" text="Scan">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <ComboBox fx:id="deviceCmbBox" layoutX="10.0" layoutY="20.0" prefHeight="39.0" prefWidth="283.0" promptText="-Select-" />
+            <AnchorPane fx:id="fingerPrintAnchorPane" layoutX="10.0" layoutY="71.0" prefHeight="184.0" prefWidth="220.0">
+               <children>
+                  <ImageView fx:id="fingerScannedImage" fitHeight="192.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="74.0" layoutY="274.0" text="Finger Scan" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0">
+         <children>
+            <Label layoutX="178.0" layoutY="14.0" text="Authentication">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

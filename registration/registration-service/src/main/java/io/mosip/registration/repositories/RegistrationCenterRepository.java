@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.RegistrationCenter;
-import io.mosip.registration.entity.RegistrationCenterId;
 
 /**
  * The repository interface for {@link RegistrationCenter} entity
@@ -14,7 +13,7 @@ import io.mosip.registration.entity.RegistrationCenterId;
  *
  */
 
-public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, RegistrationCenterId> {
+public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, String> {
 
 	/**
 	 * This method returns the optional of {@link RegistrationCenter} based on id
@@ -23,6 +22,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the registration center id
 	 * @return the optional of {@link RegistrationCenter}
 	 */
-	Optional<RegistrationCenter> findByRegistrationCenterIdCenterIdAndIsActiveTrue(String id);
+	Optional<RegistrationCenter> findByCenterIdAndIsActiveTrue(String id);
 
 }
