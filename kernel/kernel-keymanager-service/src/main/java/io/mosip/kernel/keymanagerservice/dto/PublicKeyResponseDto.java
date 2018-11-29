@@ -20,9 +20,9 @@ import lombok.NoArgsConstructor;
 public class PublicKeyResponseDto {
 
 	private byte[] publicKey;
-	
-	private LocalDateTime keyExpiryTime;
-	
+
 	private LocalDateTime keyGenerationTime;
+
+	private LocalDateTime keyExpiryTime;
 
 }
