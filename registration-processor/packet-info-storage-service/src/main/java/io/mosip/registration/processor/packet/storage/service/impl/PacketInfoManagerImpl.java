@@ -479,30 +479,30 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			 * Utilities.getJson(utility.getConfigServerFileStorageURL(),
 			 * utility.getGetRegProcessorIdentityJson());
 			 */
-			String getIdentityJsonString = "{\r\n" + 
-					"	\"identity\": {\r\n" + 
-					"		\"name\": {\r\n" + 
-					"			\"value\": \"firstName+lastName\",\r\n" + 
-					"			\"weight\": 10\r\n" + 
-					"		},\r\n" + 
-					"		\"pheoniticName\": {\r\n" + 
-					"			\"value\": \"firstName+lastName\",\r\n" + 
-					"			\"weight\": 10\r\n" + 
-					"		},\r\n" + 
-					"		\"gender\": {\r\n" + 
-					"			\"language\": \"eng\",\r\n" + 
-					"			\"value\": \"gender\",\r\n" + 
-					"			\"weight\": 10,\r\n" + 
-					"			\"matchType\": \"exact\"\r\n" + 
-					"		},\r\n" + 
-					"		\"dob\": {\r\n" + 
-					"			\"language\": \"eng\",\r\n" + 
-					"			\"value\": \"dateOfBirth\",\r\n" + 
-					"			\"weight\": 10,\r\n" + 
-					"			\"matchType\": \"exact\"\r\n" + 
-					"		}\r\n" + 
-					"	}\r\n" + 
-					"}\r\n" + 
+			String getIdentityJsonString = "{\r\n" +
+					"	\"identity\": {\r\n" +
+					"		\"name\": {\r\n" +
+					"			\"value\": \"firstName+lastName\",\r\n" +
+					"			\"weight\": 10\r\n" +
+					"		},\r\n" +
+					"		\"pheoniticName\": {\r\n" +
+					"			\"value\": \"firstName+lastName\",\r\n" +
+					"			\"weight\": 10\r\n" +
+					"		},\r\n" +
+					"		\"gender\": {\r\n" +
+					"			\"language\": \"eng\",\r\n" +
+					"			\"value\": \"gender\",\r\n" +
+					"			\"weight\": 10,\r\n" +
+					"			\"matchType\": \"exact\"\r\n" +
+					"		},\r\n" +
+					"		\"dob\": {\r\n" +
+					"			\"language\": \"eng\",\r\n" +
+					"			\"value\": \"dateOfBirth\",\r\n" +
+					"			\"weight\": 10,\r\n" +
+					"			\"matchType\": \"exact\"\r\n" +
+					"		}\r\n" +
+					"	}\r\n" +
+					"}\r\n" +
 					"";
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
@@ -512,9 +512,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-			
+
 			List<JsonValue[]> jsonNameList = new ArrayList<>();
-			
+
 			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
 			for(int i =0;i<nameArray.length;i++) {
 				jsonNameList.add(getJsonValues(nameArray[i]));
@@ -523,7 +523,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demographicData.setName(jsonNameList);
 			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
-			demographicData.setPheoniticName("12345");
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),

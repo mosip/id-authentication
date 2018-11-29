@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -27,10 +28,10 @@
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
-        <spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
-        <spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
 		<javax.el-api.version>3.0.0</javax.el-api.version>
@@ -77,10 +78,11 @@
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
 		<awaitility.version>3.1.0</awaitility.version>
 		<jsonsimple.version>1.1.1</jsonsimple.version>
+		<commons.codec.version>1.9</commons.codec.version>
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-		
+
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
 		<!-- json-simple -->
@@ -113,10 +115,10 @@
 		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>
 		<module>registration-processor-camel-bridge</module>
-    	<module>stages</module>
-    	<module>packet-info-storage-service</module>
-    	<module>quality-checker</module>
-  </modules>
+		<module>stages</module>
+		<module>packet-info-storage-service</module>
+		<module>quality-checker</module>
+	</modules>
 
 	<profiles>
 		<profile>
