@@ -1,6 +1,10 @@
 package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
@@ -32,9 +35,11 @@ public class TransactionServiceTest {
 	private TransactionEntity transcationEntity;
 	private TransactionDto transactionDto;
 
+	private List<TransactionEntity> transcationEntities;
+
 	@Before
 	public void setup() {
-
+		transcationEntities = new ArrayList<TransactionEntity>();
 		transactionDto = new TransactionDto();
 		transactionDto.setRegistrationId("1");
 		transactionDto.setIsActive(true);
@@ -47,7 +52,7 @@ public class TransactionServiceTest {
 
 		transcationEntity = new TransactionEntity();
 		transcationEntity.setId("1");
-		
+
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setParentid(null);
 		transcationEntity.setRemarks("Add Enrolment operation");
@@ -55,6 +60,7 @@ public class TransactionServiceTest {
 		transcationEntity.setStatusComment("Add Enrolment started");
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
 		transcationEntity.setLangCode("eng");
+		transcationEntities.add(transcationEntity);
 
 	}
 
@@ -75,9 +81,19 @@ public class TransactionServiceTest {
 	@Test(expected = TransactionTableNotAccessibleException.class)
 	public void addRegistrationTransactionFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(
-				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage", new Exception());
+				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 		Mockito.when(transactionRepositary.save(ArgumentMatchers.any())).thenThrow(exception);
 		transactionService.addRegistrationTransaction(transactionDto);
+	}
+
+	@Test
+	public void getTransactionByRegIdAndStatusCodeSuccessCheck() {
+		Mockito.when(transactionRepositary.getTransactionByRegIdAndStatusCode(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(transcationEntities);
+		TransactionDto dto = transactionService.getTransactionByRegIdAndStatusCode("1234", "status");
+
+		assertNotEquals(dto, null);
 	}
 
 }
