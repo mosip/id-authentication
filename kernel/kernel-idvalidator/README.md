@@ -151,7 +151,7 @@ Valid RID Example:
 	String rid ="27847657360002520181208183050";
 	
 	boolean return = ridValidatorImpl.validateId(rid,centerId,dongleId); //return true
-
+   boolean return = ridValidatorImpl.validateId(rid); //return true
  
  ```
  Invalid RID Example:
