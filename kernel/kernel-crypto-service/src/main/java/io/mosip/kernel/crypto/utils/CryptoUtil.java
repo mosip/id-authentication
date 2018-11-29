@@ -30,8 +30,9 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.crypto.constant.CryptoErrorCode;
 import io.mosip.kernel.crypto.dto.CryptoRequestDto;
-import io.mosip.kernel.crypto.dto.KeyManagerResponseDto;
+import io.mosip.kernel.crypto.dto.KeyManagerPublicKeyResponseDto;
 import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyRequestDto;
+import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyResponseDto;
 
 /**
  * @author Urvil Joshi
@@ -103,9 +104,9 @@ public class CryptoUtil {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
 		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
-		KeyManagerResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.toUriString(),KeyManagerResponseDto.class,uriParams);
+		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.toUriString(),KeyManagerPublicKeyResponseDto.class,uriParams);
 		try {
-			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getKey()));
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getPublicKey()));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
 					CryptoErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
@@ -127,9 +128,9 @@ public class CryptoUtil {
 		
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
-		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerResponseDto.class);
-		return new SecretKeySpec(keyManagerResponseDto.getKey(), 0,
-				keyManagerResponseDto.getKey().length, symmetricAlgorithmName);
+		KeyManagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerSymmetricKeyResponseDto.class);
+		return new SecretKeySpec(keyManagerSymmetricKeyResponseDto.getSymmetricKey(), 0,
+				keyManagerSymmetricKeyResponseDto.getSymmetricKey().length, symmetricAlgorithmName);
 	}
 
 	/**

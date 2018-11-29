@@ -21,7 +21,9 @@ import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
-import io.mosip.kernel.keymanagerservice.repository.KeymanagerRepository;
+import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
+import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
+import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.mosip.kernel.keymanagerservice.util.KeyPairUtil;
 import io.mosip.kernel.keymanagerservice.util.MetadataUtil;
@@ -53,7 +55,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * KeyGenerator instance to generate asymmetric key pairs
 	 */
 	@Autowired
-	KeymanagerRepository keymanagerRepository;
+	KeyAliasRepository keyAliasRepository;
+	
+	/**
+	 * KeyGenerator instance to generate asymmetric key pairs
+	 */
+	@Autowired
+	KeyPolicyRepository keyPolicyRepository;
 
 	/**
 	 * Utility to generate KeyPair
@@ -82,9 +90,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		PublicKeyResponseDto keyResponseDto = new PublicKeyResponseDto();
 
 		if (referenceId.isPresent()) {
-			keyAliases = keymanagerRepository.findByApplicationIdAndReferenceId(applicationId, referenceId.get());
+			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId.get());
 		} else {
-			keyAliases = keymanagerRepository.findByApplicationId(applicationId);
+			keyAliases = keyAliasRepository.findByApplicationId(applicationId);
 		}
 
 		keyAliases.forEach(System.out::println);
@@ -99,8 +107,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 			System.out.println("!!!Creating new");
 			alias = UUID.randomUUID().toString();
-			KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias);
-			keymanagerRepository.create(metadataUtil.setMetaData(keyAlias));
+			System.out.println(applicationId);
+			final KeyPolicy keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
+			KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.getValidityInDays());
+			keyAliasRepository.create(metadataUtil.setMetaData(keyAlias));
 		} else {
 
 			System.out.println("!!!Already exists");
@@ -114,8 +124,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 				System.out.println("!!!Not Valid");
 				alias = UUID.randomUUID().toString();
-				KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias);
-				keymanagerRepository.create(metadataUtil.setMetaData(keyAlias));
+				final KeyPolicy keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
+				KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.getValidityInDays());
+				keyAliasRepository.create(metadataUtil.setMetaData(keyAlias));
 			}
 		}
 		System.out.println(alias);
@@ -135,7 +146,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
 		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
-		List<KeyAlias> keyAliases = keymanagerRepository.findByApplicationIdAndReferenceId(
+		List<KeyAlias> keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(
 				symmetricKeyRequestDto.getApplicationId(), symmetricKeyRequestDto.getReferenceId());
 		keyAliases.forEach(System.out::println);
 
@@ -150,9 +161,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println(matchingAlias.get().getAlias());
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
 					symmetricKeyRequestDto.getEncryptedSymmetricKey());
+			
 			keyResponseDto.setSymmetricKey(decryptedSymmetricKey);
 		}
-
+		System.out.println("decryp"+keyResponseDto.getSymmetricKey());
 		return keyResponseDto;
 	}
 }

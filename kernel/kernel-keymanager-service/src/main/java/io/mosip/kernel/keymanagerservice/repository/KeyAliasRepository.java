@@ -17,7 +17,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
  *
  */
 @Repository
-public interface KeymanagerRepository extends BaseRepository<KeyAlias, String> {
+public interface KeyAliasRepository extends BaseRepository<KeyAlias, String> {
 
 	List<KeyAlias> findByApplicationId(String applicationId);
 
@@ -25,5 +25,4 @@ public interface KeymanagerRepository extends BaseRepository<KeyAlias, String> {
 
 	List<KeyAlias> findByApplicationIdAndReferenceIdAndKeyGenerationTimeLessThanEqual(String applicationId,
 			String referenceId, LocalDateTime keyGenerationTime);
-
 }

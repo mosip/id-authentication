@@ -28,9 +28,9 @@ public class KeyPolicy extends BaseEntity {
 	private String applicationId;
 
 	@Column(name = "key_validity_duration")
-	private String validityInDays;
+	private int validityInDays;
 
 	@Column(name = "is_active")
-	private Boolean isActive;
+	private boolean isActive;
 
 }

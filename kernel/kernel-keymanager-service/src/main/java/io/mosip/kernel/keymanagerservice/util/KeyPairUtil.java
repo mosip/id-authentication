@@ -28,6 +28,7 @@ public class KeyPairUtil {
 	 */
 	@Autowired
 	KeyGenerator keyGenerator;
+	
 
 	/**
 	 * Keystore to handles and store cryptographic keys.
@@ -39,9 +40,11 @@ public class KeyPairUtil {
 	 * @param applicationId
 	 * @param referenceId
 	 * @param alias
+	 * @param timeStamp 
+	 * @param validityInDays 
 	 * @return
 	 */
-	public KeyAlias createNewKeyPair(String applicationId, Optional<String> referenceId, String alias) {
+	public KeyAlias createNewKeyPair(String applicationId, Optional<String> referenceId, String alias, LocalDateTime timeStamp, int validityInDays) {
 		KeyPair keyPair = keyGenerator.getAsymmetricKey();
 		keyStore.storeAsymmetricKey(keyPair, alias, 1);
 		KeyAlias keyAlias = new KeyAlias();
@@ -50,7 +53,8 @@ public class KeyPairUtil {
 		if (referenceId.isPresent()) {
 			keyAlias.setReferenceId(referenceId.get());
 		}
-		keyAlias.setKeyGenerationTime(LocalDateTime.now(ZoneId.of("UTC")));
+		keyAlias.setKeyGenerationTime(timeStamp);
+		keyAlias.setKeyExpiryTime(timeStamp.plusDays(validityInDays));
 		return keyAlias;
 
 	}

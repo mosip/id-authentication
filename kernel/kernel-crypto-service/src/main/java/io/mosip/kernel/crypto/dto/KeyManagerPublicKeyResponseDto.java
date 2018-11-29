@@ -6,6 +6,8 @@
  */
 package io.mosip.kernel.crypto.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +20,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KeyManagerResponseDto {
-/**
- * 
- */
-private byte[] key;
+public class KeyManagerPublicKeyResponseDto {
+    
+	private byte[] publicKey;
+	
+	private LocalDateTime keyExpiryTime;
+	
+	private LocalDateTime keyGenerationTime;
 }
