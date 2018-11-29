@@ -222,6 +222,15 @@
                         </AnchorPane>
                      </content>
                   </TitledPane>
+                  <TitledPane fx:id="authenticationTitlePane" disable="true" text="Operator Authentication">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="55.0" layoutY="27.0" text="To-Do" />
+                              <Button layoutX="726.0" layoutY="91.0" mnemonicParsing="false" onAction="#submitRegistration" text="Submit" />
+                           </children></AnchorPane>
+                    </content>
+                  </TitledPane>
               </panes>
             </Accordion>
              </children>

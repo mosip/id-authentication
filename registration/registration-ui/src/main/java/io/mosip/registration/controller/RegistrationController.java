@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
@@ -230,7 +231,7 @@ public class RegistrationController extends BaseController {
 	private static AnchorPane demoGraphicPane1Content;
 
 	private static AnchorPane demoGraphicPane2Content;
-	
+
 	private static DatePicker ageDatePickerContent;
 
 	private boolean toggleAgeOrDobField;
@@ -286,13 +287,20 @@ public class RegistrationController extends BaseController {
 	private Image defaultImage;
 
 	@FXML
+	private TitledPane authenticationTitlePane;
+
+	@Autowired
+	private RegistrationOfficerPacketController registrationOfficerPacketController;
+
+	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 
 		try {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller", SessionContext.getInstance().getUserContext().getUserId(),
+					"initializing the registration controller",
+					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 			if (capturePhotoUsingDevice.equals("Y")) {
 				defaultImage = applicantImage.getImage();
@@ -310,6 +318,31 @@ public class RegistrationController extends BaseController {
 				biometricsPane.setVisible(false);
 				biometricsNext.setDisable(false);
 			}
+
+			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						headerImage.setImage(new Image(RegistrationConstants.DEMOGRAPHIC_DETAILS_LOGO));
+					}
+				}
+			});
+			biometricTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						headerImage.setImage(new Image(RegistrationConstants.APPLICANT_BIOMETRICS_LOGO));
+					}
+				}
+			});
+			authenticationTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
+					}
+				}
+			});
 
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
@@ -399,9 +432,10 @@ public class RegistrationController extends BaseController {
 						applicantImage.setImage(new Image(byteArrayInputStream));
 					}
 				}
-				if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
-					byte[] exceptionPhotoInBytes = getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
-							.getExceptionPhoto();
+				if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto() != null) {
+					byte[] exceptionPhotoInBytes = getRegistrationDtoContent().getDemographicDTO()
+							.getApplicantDocumentDTO().getExceptionPhoto();
 					if (exceptionPhotoInBytes != null) {
 						ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
 						exceptionImage.setImage(new Image(inputStream));
@@ -515,12 +549,12 @@ public class RegistrationController extends BaseController {
 	private void saveDetail() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
-		
+
 		try {
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
+
 			RegistrationDTO registrationDTO = new RegistrationDTO();
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
@@ -581,8 +615,9 @@ public class RegistrationController extends BaseController {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
-				
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
+						registrationDTO);
+
 				if (ageDatePicker.getValue() != null) {
 					ageDatePickerContent = new DatePicker();
 					ageDatePickerContent.setValue(ageDatePicker.getValue());
@@ -867,7 +902,8 @@ public class RegistrationController extends BaseController {
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
 					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-						generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY), generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+						generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY),
+								generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
 
 						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 						fullName.requestFocus();
@@ -1142,7 +1178,8 @@ public class RegistrationController extends BaseController {
 
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
-			generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY), generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+			generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY),
+					generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
 
 			fullName.requestFocus();
 		} else {
@@ -1160,21 +1197,24 @@ public class RegistrationController extends BaseController {
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
 
-							generateAlert(generateErrorMessage(RegistrationConstants.REGION_EMPTY), generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
-									+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+							generateAlert(generateErrorMessage(RegistrationConstants.REGION_EMPTY),
+									generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
+											+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
 
-								generateAlert(generateErrorMessage(RegistrationConstants.CITY_EMPTY), generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS)
-										+ " " + generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+								generateAlert(generateErrorMessage(RegistrationConstants.CITY_EMPTY),
+										generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
+												+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
 
 									generateAlert(generateErrorMessage(RegistrationConstants.PROVINCE_EMPTY),
 											generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
-													+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+													+ generateErrorMessage(
+															RegistrationConstants.TEN_LETTER_INPUT_LIMT));
 									province.requestFocus();
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
@@ -1184,30 +1224,39 @@ public class RegistrationController extends BaseController {
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
-											generateAlert(generateErrorMessage(RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY),
+											generateAlert(
+													generateErrorMessage(
+															RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY),
 
 													generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
 
-												generateAlert(generateErrorMessage(RegistrationConstants.MOBILE_NUMBER_EMPTY),
+												generateAlert(
+														generateErrorMessage(RegistrationConstants.MOBILE_NUMBER_EMPTY),
 
-														generateErrorMessage(RegistrationConstants.MOBILE_NUMBER_EXAMPLE));
+														generateErrorMessage(
+																RegistrationConstants.MOBILE_NUMBER_EXAMPLE));
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(emailId,
 														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
 
-													generateAlert(generateErrorMessage(RegistrationConstants.EMAIL_ID_EMPTY),
+													generateAlert(
+															generateErrorMessage(RegistrationConstants.EMAIL_ID_EMPTY),
 
-															generateErrorMessage(RegistrationConstants.EMAIL_ID_EXAMPLE));
+															generateErrorMessage(
+																	RegistrationConstants.EMAIL_ID_EXAMPLE));
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
 
-														generateAlert(generateErrorMessage(RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY),
-																generateErrorMessage(RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT));
+														generateAlert(
+																generateErrorMessage(
+																		RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY),
+																generateErrorMessage(
+																		RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT));
 														cniOrPinNumber.requestFocus();
 													} else {
 														gotoNext = true;
@@ -1263,7 +1312,8 @@ public class RegistrationController extends BaseController {
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
 
-				generateAlert(generateErrorMessage(RegistrationConstants.PARENT_NAME_EMPTY), generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+				generateAlert(generateErrorMessage(RegistrationConstants.PARENT_NAME_EMPTY),
+						generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
@@ -1420,7 +1470,7 @@ public class RegistrationController extends BaseController {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
-	
+
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
 		int age = 3;
@@ -1496,4 +1546,26 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+	public void submitRegistration() {
+		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
+	}
+
+	public void goToAuthenticationPage() {
+		try {
+			setEditPage(true);
+			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
+
+			accord.setExpandedPane(authenticationTitlePane);
+			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
+
+			biometricTitlePane.setDisable(true);
+			demoGraphicTitlePane.setDisable(true);
+			authenticationTitlePane.setDisable(false);
+
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+		}
+	}
 }

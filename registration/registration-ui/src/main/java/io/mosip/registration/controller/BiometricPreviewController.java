@@ -66,9 +66,6 @@ public class BiometricPreviewController extends BaseController {
 	@Autowired
 	private DemographicPreviewController demographicPreviewController;
 
-	@Autowired
-	private RegistrationOfficerPacketController registrationOfficerPacketController;
-
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -113,8 +110,7 @@ public class BiometricPreviewController extends BaseController {
 	 * screen
 	 */
 	public void handleNextBtnAction() {
-		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
+		registrationController.goToAuthenticationPage();
 	}
 
 	/**
