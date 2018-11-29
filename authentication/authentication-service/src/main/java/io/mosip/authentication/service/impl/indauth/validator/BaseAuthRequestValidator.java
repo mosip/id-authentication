@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -157,13 +158,9 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if (isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN)) {
-
-			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
-
-			validateFingerRequestCount(authRequestDTO, errors);
-		}
-		if (isContainBioInfo(bioInfo, BioType.FGRIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG)) {
+		if ((isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN))
+				|| (isContainBioInfo(bioInfo, BioType.FGRIMG)
+						&& isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG))) {
 
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
 
@@ -210,26 +207,11 @@ public class BaseAuthRequestValidator implements Validator {
 	 */
 	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 
-		boolean isAtleastOneFingerRequestAvailable = Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getIdentity).map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent();
+		@SuppressWarnings("unchecked")
+		boolean isAtleastOneFingerRequestAvailable = checkAnyIdInfoAvailable(authRequestDTO, IdentityDTO::getLeftThumb,
+				IdentityDTO::getLeftIndex, IdentityDTO::getLeftMiddle, IdentityDTO::getLeftRing,
+				IdentityDTO::getLeftLittle, IdentityDTO::getRightThumb, IdentityDTO::getRightIndex,
+				IdentityDTO::getRightMiddle, IdentityDTO::getRightRing, IdentityDTO::getRightLittle);
 		if (!isAtleastOneFingerRequestAvailable) {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
@@ -244,13 +226,9 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isIrisRequestAvailable = authRequestDTO.getRequest() != null
-				&& authRequestDTO.getRequest().getIdentity() != null
-				&& authRequestDTO.getRequest().getIdentity().getLeftEye() != null
-				&& !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
-				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
-						&& authRequestDTO.getRequest().getIdentity().getRightEye() != null
-						&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty();
+		@SuppressWarnings("unchecked")
+		boolean isIrisRequestAvailable = checkAnyIdInfoAvailable(authRequestDTO, IdentityDTO::getLeftEye,
+				IdentityDTO::getRightEye);
 		if (!isIrisRequestAvailable) {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
@@ -271,6 +249,21 @@ public class BaseAuthRequestValidator implements Validator {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 		}
+	}
+
+	/**
+	 * check any IdentityInfoDto data available or not.
+	 * 
+	 * @param authRequestDTO
+	 * @param functions
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
+			Function<IdentityDTO, List<IdentityInfoDTO>>... functions) {
+		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions)
+				.anyMatch(func -> Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(func).filter(list -> !list.isEmpty()).isPresent());
 	}
 
 	/**
@@ -325,28 +318,21 @@ public class BaseAuthRequestValidator implements Validator {
 	 */
 	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
-		
+
 		List<Supplier<List<IdentityInfoDTO>>> listOfIndInfoSupplier = Stream.<Supplier<List<IdentityInfoDTO>>>of(
-				identity::getLeftThumb,
-				identity::getLeftIndex,
-				identity::getLeftMiddle,
-				identity::getLeftRing,
-				identity::getLeftLittle,
-				identity::getRightThumb,
-				identity::getRightIndex,
-				identity::getRightMiddle,
-				identity::getRightRing,
-				identity::getRightLittle
-				).collect(Collectors.toList());
-		
-		boolean anyInfoIsMoreThanOne = listOfIndInfoSupplier.stream().anyMatch(s ->  getIdInfoCount(s.get()) > 1);
+				identity::getLeftThumb, identity::getLeftIndex, identity::getLeftMiddle, identity::getLeftRing,
+				identity::getLeftLittle, identity::getRightThumb, identity::getRightIndex, identity::getRightMiddle,
+				identity::getRightRing, identity::getRightLittle).collect(Collectors.toList());
+
+		boolean anyInfoIsMoreThanOne = listOfIndInfoSupplier.stream().anyMatch(s -> getIdInfoCount(s.get()) > 1);
 		if (anyInfoIsMoreThanOne) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "Duplicate fingers ");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage(), REQUEST));
 		}
 
-		Long fingerCountExceeding = listOfIndInfoSupplier.stream().map(s ->  getIdInfoCount(s.get())).mapToLong(l -> l).sum();
+		Long fingerCountExceeding = listOfIndInfoSupplier.stream().map(s -> getIdInfoCount(s.get())).mapToLong(l -> l)
+				.sum();
 		if (fingerCountExceeding > 10) {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), REQUEST));
@@ -355,7 +341,8 @@ public class BaseAuthRequestValidator implements Validator {
 
 	private Long getIdInfoCount(List<IdentityInfoDTO> list) {
 		return Optional.ofNullable(list).map(List::parallelStream)
-		.map(stream -> stream.filter(lt -> lt.getValue() !=null && !lt.getValue().isEmpty()).count()).orElse((long) 0);
+				.map(stream -> stream.filter(lt -> lt.getValue() != null && !lt.getValue().isEmpty()).count())
+				.orElse((long) 0);
 	}
 
 	/**
