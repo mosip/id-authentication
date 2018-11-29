@@ -104,7 +104,8 @@ public class CryptoUtil {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
 		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
-		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.toUriString(),KeyManagerPublicKeyResponseDto.class,uriParams);
+		System.out.println("uri"+builder.buildAndExpand(uriParams).toUri());
+		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getPublicKey()));
 		} catch (InvalidKeySpecException e) {
