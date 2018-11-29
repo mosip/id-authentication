@@ -32,7 +32,7 @@ public class KeyAlias extends BaseEntity {
 	@Column(name = "app_id", nullable = false, length = 36)
 	private String applicationId;
 
-	@Column(name = "ref_id", nullable = false, length = 36)
+	@Column(name = "ref_id", length = 36)
 	private String referenceId;
 
 	@Column(name = "key_gen_dtimes")

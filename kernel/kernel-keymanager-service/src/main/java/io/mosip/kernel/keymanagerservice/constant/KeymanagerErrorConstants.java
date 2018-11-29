@@ -8,8 +8,11 @@ package io.mosip.kernel.keymanagerservice.constant;
  *
  */
 public enum KeymanagerErrorConstants {
-	VALIDITY_CHECK_FAIL("KER-KMS-001","Certificate is not valid"),
-	APPLICATIONID_NOT_VALID("KER-KMS-002","Application Id not Valid");
+	VALIDITY_CHECK_FAIL("KER-KMS-001", "Certificate is not valid"),
+
+	APPLICATIONID_NOT_VALID("KER-KMS-002", "ApplicationId not Valid"),
+
+	NO_UNIQUE_ALIAS("KER-KMS-003", "No unique alias is found");
 	/**
 	 * The error code.
 	 */
