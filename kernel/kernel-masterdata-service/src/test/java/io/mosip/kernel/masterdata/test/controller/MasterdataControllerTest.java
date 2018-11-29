@@ -107,8 +107,6 @@ public class MasterdataControllerTest {
 
 	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
-	private BiometricAttributeResponseDto biometricAttributeResponseDto;
-
 	private List<BiometricAttributeDto> biometricattributes;
 
 	private DocumentCategoryDto documentCategoryDto1;
@@ -356,7 +354,7 @@ public class MasterdataControllerTest {
 		biometricAttribute.setDescription(null);
 		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
-		biometricAttributeResponseDto = new BiometricAttributeResponseDto(biometricattributes);
+		new BiometricAttributeResponseDto(biometricattributes);
 	}
 
 	private void applicationSetup() {
@@ -686,7 +684,7 @@ public class MasterdataControllerTest {
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
@@ -702,7 +700,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
@@ -710,7 +708,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
