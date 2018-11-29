@@ -43,7 +43,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
@@ -51,9 +51,9 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.AuditHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -103,7 +103,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The demo auth service. */
 	@Autowired
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	/** The id auth service. */
 	@Autowired
@@ -120,7 +120,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private NotificationManager notificationManager;
 	/** The Id Info Service */
 	@Autowired
-	private IdInfoService idInfoService;
+	private IdRepoService idInfoService;
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -55,17 +54,17 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
@@ -113,10 +112,10 @@ public class AuthFacadeImplTest {
 	private KycService kycService;
 
 	@Mock
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	@Mock
-	private IdInfoService idInfoService;
+	private IdRepoService idInfoService;
 	@Mock
 	private DemoAuthService demoAuthService;
 

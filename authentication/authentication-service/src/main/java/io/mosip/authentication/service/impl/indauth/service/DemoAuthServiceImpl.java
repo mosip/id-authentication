@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -22,12 +18,11 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
@@ -56,10 +51,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private DemoMatcher demoMatcher;
 
 	@Autowired
-	private IdInfoService idInfoService;
+	private IdRepoService idInfoService;
 
 	@Autowired
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	/**
 	 * Construct match input.

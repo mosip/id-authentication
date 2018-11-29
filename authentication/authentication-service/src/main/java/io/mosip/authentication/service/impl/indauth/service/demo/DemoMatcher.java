@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityValue;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 
 /**
  * @author Arun Bose The Class DemoMatcher.
@@ -22,7 +23,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityValue;
 public class DemoMatcher {
 	
 	@Autowired
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	/**
 	 * Match demo data.

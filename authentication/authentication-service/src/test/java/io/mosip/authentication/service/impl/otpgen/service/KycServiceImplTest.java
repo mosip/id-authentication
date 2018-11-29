@@ -29,12 +29,12 @@ import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
-import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -59,12 +59,12 @@ public class KycServiceImplTest {
 	Environment environment;
 	
 	@InjectMocks
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 	
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 	
-	IdInfoService idInfoService = new IdInfoServiceImpl();
+	IdRepoService idInfoService = new IdRepoServiceImpl();
 	
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;

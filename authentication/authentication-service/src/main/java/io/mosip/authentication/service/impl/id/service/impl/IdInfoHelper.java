@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.service.impl.id.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,11 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 
 @Component
-public class DemoHelper {
+public class IdInfoHelper {
 	
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";

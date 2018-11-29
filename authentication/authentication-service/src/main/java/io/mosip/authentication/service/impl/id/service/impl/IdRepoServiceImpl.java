@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 
 /**
  * 
@@ -25,7 +25,7 @@ import io.mosip.authentication.core.spi.id.service.IdInfoService;
 
 @PropertySource("classpath:sample-output.properties")
 @Service
-public class IdInfoServiceImpl implements IdInfoService {
+public class IdRepoServiceImpl implements IdRepoService {
 
 	@Value("${sample.demo.entity}")
 	private String value;

@@ -26,14 +26,14 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.DateHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -81,10 +81,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	NotificationManager notificationManager;
 
 	@Autowired
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	@Autowired
-	IdInfoService idInfoService;
+	IdRepoService idInfoService;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);

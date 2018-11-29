@@ -35,15 +35,15 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
@@ -93,9 +93,9 @@ public class OTPFacadeImplTest {
 	private RestHelper restHelper;
 
 	@Mock
-	IdInfoService idInfoService;
+	IdRepoService idInfoService;
 	@Mock
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	@Mock
 	DemoRepository demoRepository;

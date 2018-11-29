@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,9 +36,9 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
@@ -56,7 +55,7 @@ public class DemoAuthServiceTest {
 	private Environment environment;
 
 	@InjectMocks
-	private DemoHelper demoHelper;
+	private IdInfoHelper demoHelper;
 
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
@@ -67,7 +66,7 @@ public class DemoAuthServiceTest {
 	private DemoMatcher demomatcher = new DemoMatcher();
 
 	@Mock
-	private IdInfoService idInfoService;
+	private IdRepoService idInfoService;
 
 	@Mock
 	private DemoRepository demoRepository;

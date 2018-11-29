@@ -28,13 +28,12 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -71,7 +70,7 @@ public class KycServiceImpl implements KycService {
     private MessageSource messageSource;
 
     @Autowired
-    private IdInfoService idInfoService;
+    private IdRepoService idInfoService;
 
     @Autowired
     private IdAuthService idAuthService;
@@ -80,7 +79,7 @@ public class KycServiceImpl implements KycService {
     private IdTemplateManager idTemplateManager;
 
     @Autowired
-    private DemoHelper demoHelper;
+    private IdInfoHelper demoHelper;
 
     @Autowired
     private PDFGenerator pdfGenerator;
