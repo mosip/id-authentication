@@ -39,6 +39,8 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
+import io.mosip.kernel.core.datavalidator.spi.EmailValidator;
+import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -146,6 +148,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The date helper. */
 	@Autowired
 	private DateHelper dateHelper;
+
+	/** email Validator */
+	@Autowired
+	EmailValidator<String> emailValidatorImpl;
+
+	/** phone Validator */
+	@Autowired
+	PhoneValidator<String> phoneValidatorImpl;
 
 	/*
 	 * (non-Javadoc)
@@ -348,6 +358,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			checkDOBType(authRequest, errors);
 			checkAge(authRequest, errors);
 			checkGender(authRequest, errors);
+			validateEmail(authRequest);
+			validatePhone(authRequest);
 		}
 	}
 
@@ -671,4 +683,37 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * validate email id.
+	 * 
+	 * @param authRequest authRequest
+	 */
+	private void validateEmail(AuthRequestDTO authRequest) {
+
+		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoFunction()
+				.apply(authRequest.getRequest().getIdentity());
+		if (emailId != null) {
+			for (IdentityInfoDTO email : emailId) {
+				emailValidatorImpl.validateEmail(email.getValue());
+			}
+		}
+
+	}
+
+	/**
+	 * validate phone number.
+	 * 
+	 * @param authRequest authRequest
+	 */
+	private void validatePhone(AuthRequestDTO authRequest) {
+
+		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoFunction()
+				.apply(authRequest.getRequest().getIdentity());
+		if (phoneNumber != null) {
+			for (IdentityInfoDTO phone : phoneNumber) {
+				phoneValidatorImpl.validatePhone(phone.getValue());
+			}
+		}
+
+	}
 }
