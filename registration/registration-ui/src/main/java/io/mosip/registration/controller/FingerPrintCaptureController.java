@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
-import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;

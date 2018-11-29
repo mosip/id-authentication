@@ -3,7 +3,6 @@ package io.mosip.registration.util.kernal;
 import java.util.Date;
 
 import io.mosip.kernel.core.util.DateUtils;
-
 import io.mosip.registration.constants.RegistrationConstants;
 
 /**

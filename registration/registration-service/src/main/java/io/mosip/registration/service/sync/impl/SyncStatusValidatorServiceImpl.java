@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
@@ -134,8 +134,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
 							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
-									AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED),
-									RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+									RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED,
+									RegistrationConstants.ERROR, errorResponseDTOList);
 
 						}
 					}
@@ -143,7 +143,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 				if (syncFailureCount > 0) {
 					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
-							AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED), RegistrationConstants.OPT_TO_REG_INFOTYPE,
+							RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
 							errorResponseDTOList);
 				}
 			}
@@ -158,7 +158,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						"refIdType");
 
 				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
-						AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT), RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
 						errorResponseDTOList);
 			}
 
@@ -235,7 +235,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 					.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
 				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
-						AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION), RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION, RegistrationConstants.ERROR,
 						errorResponseDTOList);
 			} else {
 
@@ -244,17 +244,17 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			}
 		} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_WEAK_GPS),
-					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_WEAK_GPS,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
 				|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
 						.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_INSERT_GPS),
-					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		} else {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH),
-					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		}
 
 		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,

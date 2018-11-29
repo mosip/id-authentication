@@ -31,7 +31,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;

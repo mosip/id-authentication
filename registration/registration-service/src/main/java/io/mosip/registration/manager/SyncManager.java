@@ -1,14 +1,6 @@
 package io.mosip.registration.manager;
 
-import java.util.List;
-import java.util.Map;
-
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.Trigger;
-
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 

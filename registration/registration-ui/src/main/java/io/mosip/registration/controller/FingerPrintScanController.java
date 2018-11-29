@@ -21,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -60,7 +59,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/LeftPalm.png");
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpScanController.leftHandPalmImageview.setImage(img);
 
@@ -70,7 +69,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/rightPalm.jpg");
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpScanController.rightHandPalmImageview.setImage(img);
 
@@ -80,7 +79,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			Image img = loadImage("src/main/resources/images/thumb.jpg");
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.FP_CAPTURE_SUCCESS));
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpScanController.thumbImageview.setImage(img);
 

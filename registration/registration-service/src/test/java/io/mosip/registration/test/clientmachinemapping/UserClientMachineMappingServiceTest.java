@@ -1,5 +1,8 @@
 package io.mosip.registration.test.clientmachinemapping;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.doNothing;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,8 +24,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.DeviceDTO;
@@ -47,9 +50,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-
-import static org.mockito.Mockito.doNothing;
-import static org.hamcrest.CoreMatchers.is;
 
 public class UserClientMachineMappingServiceTest {
 
@@ -146,11 +146,9 @@ public class UserClientMachineMappingServiceTest {
 	public void updateTest() {
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "ACTIVE",
 				"CNTR123", "STN123", "MCHN123");
-		UserMachineMapping user = new UserMachineMapping();
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -171,7 +169,6 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -192,7 +189,6 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);

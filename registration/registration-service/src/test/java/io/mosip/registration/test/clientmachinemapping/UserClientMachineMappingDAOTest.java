@@ -1,9 +1,11 @@
 package io.mosip.registration.test.clientmachinemapping;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.doNothing;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +22,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
@@ -46,9 +48,6 @@ import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.doNothing;
 
 public class UserClientMachineMappingDAOTest {
 

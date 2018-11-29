@@ -24,7 +24,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -81,8 +80,7 @@ public class WebCameraController extends BaseController implements Initializable
 			jPanelWindow.setVisible(true);
 			webcamera.setContent(jPanelWindow);
 		} else {
-			generateAlert(RegistrationConstants.WEBCAM_ALERT_TITLE, AlertType.ERROR,
-					RegistrationConstants.WEBCAM_ALERT_HEADER, generateErrorMessage(RegistrationConstants.WEBCAM_ALERT_CONTEXT));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.WEBCAM_ALERT_CONTEXT);
 			((Stage) demographicPane.getScene().getWindow()).close();
 		}
 	}

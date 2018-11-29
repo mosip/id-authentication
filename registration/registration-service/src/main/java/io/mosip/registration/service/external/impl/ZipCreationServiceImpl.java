@@ -1,13 +1,18 @@
 package io.mosip.registration.service.external.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
+import static java.io.File.separator;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static java.io.File.separator;
 
 import org.springframework.stereotype.Service;
 
@@ -23,12 +28,6 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.ZipCreationService;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
 
 /**
  * API Class to generate the in-memory zip file for Registration Packet.

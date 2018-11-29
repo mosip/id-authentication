@@ -3,7 +3,6 @@ package io.mosip.registration.util.hmac;
 import java.util.List;
 
 import io.mosip.kernel.core.util.HMACUtils;
-
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;

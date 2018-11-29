@@ -1,20 +1,20 @@
 package io.mosip.registration.service.packet.impl;
 
-import java.util.LinkedList;
-import java.util.List;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
-import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -24,10 +24,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_ENCRYPTION;
 
 /**
  * This class encrypts the Registration packet using RSA and AES algorithms.

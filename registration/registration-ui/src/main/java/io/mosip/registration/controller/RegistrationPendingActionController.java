@@ -1,9 +1,9 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_PENDING_ACTION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_PENDING_ACTION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +39,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -301,7 +300,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
-		generateAlert(RegistrationConstants.AUTH_INFO, AlertType.INFORMATION,generateErrorMessage(RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG));
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
 		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,

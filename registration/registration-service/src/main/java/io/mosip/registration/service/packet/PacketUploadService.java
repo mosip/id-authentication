@@ -3,7 +3,6 @@ package io.mosip.registration.service.packet;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;

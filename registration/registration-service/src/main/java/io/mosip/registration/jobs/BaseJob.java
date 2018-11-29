@@ -142,7 +142,6 @@ public abstract class BaseJob extends QuartzJobBean {
 
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setInfoType(RegistrationConstants.ERROR);
-				errorResponseDTO.setCode(RegistrationConstants.BATCH_JOB_CODE);
 				errorResponseDTO.setMessage(regBaseUncheckedException.getMessage());
 
 				errorResponseDTOs.add(errorResponseDTO);

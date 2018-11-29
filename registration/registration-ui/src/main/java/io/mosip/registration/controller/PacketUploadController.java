@@ -16,8 +16,8 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
@@ -36,7 +36,6 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -87,20 +86,19 @@ public class PacketUploadController extends BaseController {
 						String[] displayStatus = status.split("-");
 						if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
 							if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
-								generateAlert(displayStatus[0], AlertType.ERROR,
-										displayStatus[1] + " " + packetSyncStatus);
+								generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
 							} else {
-								generateAlert(displayStatus[0], AlertType.ERROR, displayStatus[1]);
+								generateAlert(displayStatus[0], displayStatus[1]);
 							}
 						} else {
-							generateAlert(displayStatus[0], AlertType.INFORMATION, displayStatus[1]);
+							generateAlert(displayStatus[0], displayStatus[1]);
 						}
 
 					}
 				}
 			});
 		} catch (RegBaseCheckedException checkedException) {
-			generateAlert(RegistrationConstants.PACKET_SYNC_ERROR, AlertType.ERROR, checkedException.getErrorText());
+			generateAlert(RegistrationConstants.ALERT_ERROR, checkedException.getErrorText());
 		}
 
 	}

@@ -1,8 +1,5 @@
 package io.mosip.registration.service.config;
 
-import java.util.List;
-
-import org.quartz.JobExecutionContext;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dto.ResponseDTO;

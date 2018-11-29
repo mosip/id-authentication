@@ -49,7 +49,7 @@ public class RegistrationAppLoginDAOTest {
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(
 				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
+		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.PARAM_ONE);
 		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 
@@ -62,7 +62,7 @@ public class RegistrationAppLoginDAOTest {
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(
 				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
+		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.PARAM_ONE);
 		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 

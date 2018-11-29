@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,21 +17,18 @@ import org.mockito.junit.MockitoRule;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.springframework.context.ApplicationContext;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
+import io.mosip.registration.dao.SyncJobTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.manager.impl.SyncManagerImpl;
 import io.mosip.registration.repositories.SyncTransactionRepository;
-import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 public class SyncTransactionManagerTest {

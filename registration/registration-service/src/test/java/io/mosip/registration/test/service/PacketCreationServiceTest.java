@@ -13,19 +13,16 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.registration.test.util.datastub.DataProvider;
-
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.impl.PacketCreationServiceImpl;
+import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
 public class PacketCreationServiceTest {

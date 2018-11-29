@@ -51,7 +51,7 @@ public class RegistrationAppLoginDAOImpl implements RegistrationAppLoginDAO {
 		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");
 		
-		loginModes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
+		loginModes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.PARAM_ONE);
 		return loginModes;
 	}
 }

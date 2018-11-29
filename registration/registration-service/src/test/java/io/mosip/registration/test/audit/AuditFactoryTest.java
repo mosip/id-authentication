@@ -15,8 +15,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 

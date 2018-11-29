@@ -1,5 +1,7 @@
 package io.mosip.registration.test.service.packet.encryption.aes;
 
+import static org.mockito.Mockito.when;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -29,8 +30,6 @@ import io.mosip.registration.service.RSAEncryptionService;
 import io.mosip.registration.service.impl.AESEncryptionServiceImpl;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
-
-import static org.mockito.Mockito.when;
 
 public class AESEncryptionServiceTest {
 

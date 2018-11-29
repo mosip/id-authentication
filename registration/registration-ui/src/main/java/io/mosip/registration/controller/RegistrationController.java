@@ -48,7 +48,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
@@ -372,8 +371,7 @@ public class RegistrationController extends BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_REG_PAGE));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -811,12 +809,10 @@ public class RegistrationController extends BaseController {
 			if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
 				imageCaptured = true;
 			} else {
-				generateAlert(RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR, AlertType.ERROR,
-						generateErrorMessage(RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 			}
 		} else {
-			generateAlert(RegistrationConstants.APPLICANT_BIOMETRICS_ERROR, AlertType.ERROR,
-					generateErrorMessage(RegistrationConstants.APPLICANT_IMAGE_ERROR));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
 		}
 		return imageCaptured;
 	}
@@ -902,8 +898,7 @@ public class RegistrationController extends BaseController {
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
 					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-						generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY),
-								generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 
 						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
 						fullName.requestFocus();
@@ -1194,85 +1189,67 @@ public class RegistrationController extends BaseController {
 
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
-			generateAlert(generateErrorMessage(RegistrationConstants.FULL_NAME_EMPTY),
-					generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+			generateAlert(RegistrationConstants.ALERT_ERROR, 
+					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 
 			fullName.requestFocus();
 		} else {
 			if (validateAgeOrDob()) {
 				if (gender.getValue() == null) {
-					generateAlert(generateErrorMessage(RegistrationConstants.GENDER_EMPTY));
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.GENDER_EMPTY);
 
 					gender.requestFocus();
 				} else {
 					if (validateRegex(addressLine1, "^.{6,50}$")) {
 
-						generateAlert(generateErrorMessage(RegistrationConstants.ADDRESS_LINE_1_EMPTY),
-								generateErrorMessage(RegistrationConstants.ADDRESS_LINE_WARNING));
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY + " "
+										+ RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
 						if (validateRegex(region, "^.{6,50}$")) {
 
-							generateAlert(generateErrorMessage(RegistrationConstants.REGION_EMPTY),
-									generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
-											+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.REGION_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS
+											+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 							region.requestFocus();
 						} else {
 							if (validateRegex(city, "^.{6,10}$")) {
 
-								generateAlert(generateErrorMessage(RegistrationConstants.CITY_EMPTY),
-										generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
-												+ generateErrorMessage(RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CITY_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS
+												+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								city.requestFocus();
 							} else {
 								if (validateRegex(province, "^.{6,10}$")) {
 
-									generateAlert(generateErrorMessage(RegistrationConstants.PROVINCE_EMPTY),
-											generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS) + " "
-													+ generateErrorMessage(
-															RegistrationConstants.TEN_LETTER_INPUT_LIMT));
+									generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PROVINCE_EMPTY+" "+
+											RegistrationConstants.ONLY_ALPHABETS + " " +
+															RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 									province.requestFocus();
 								} else {
 									if (validateRegex(postalCode, "\\d{6}")) {
-										generateAlert(generateErrorMessage(RegistrationConstants.POSTAL_CODE_EMPTY),
-
-												generateErrorMessage(RegistrationConstants.SIX_DIGIT_INPUT_LIMT));
+										generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POSTAL_CODE_EMPTY+" "+RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
-											generateAlert(
-													generateErrorMessage(
-															RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY),
-
-													generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+											generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY+" "+RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{9}")) {
 
-												generateAlert(
-														generateErrorMessage(RegistrationConstants.MOBILE_NUMBER_EMPTY),
-
-														generateErrorMessage(
-																RegistrationConstants.MOBILE_NUMBER_EXAMPLE));
+												generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EMPTY+" "+
+																RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(emailId,
 														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
 
-													generateAlert(
-															generateErrorMessage(RegistrationConstants.EMAIL_ID_EMPTY),
-
-															generateErrorMessage(
-																	RegistrationConstants.EMAIL_ID_EXAMPLE));
+													generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EMPTY+" "+
+																	RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
 													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
 
-														generateAlert(
-																generateErrorMessage(
-																		RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY),
-																generateErrorMessage(
-																		RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT));
+														generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY+" "+
+																		RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cniOrPinNumber.requestFocus();
 													} else {
 														gotoNext = true;
@@ -1328,12 +1305,12 @@ public class RegistrationController extends BaseController {
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
 
-				generateAlert(generateErrorMessage(RegistrationConstants.PARENT_NAME_EMPTY),
-						generateErrorMessage(RegistrationConstants.ONLY_ALPHABETS));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PARENT_NAME_EMPTY+" "+
+						RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
-					generateAlert(generateErrorMessage(RegistrationConstants.UIN_ID_EMPTY));
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
 
 					uinId.requestFocus();
 				} else {
@@ -1406,7 +1383,7 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
-				generateAlert(generateErrorMessage(RegistrationConstants.AGE_EMPTY));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
 
 				ageField.requestFocus();
 			} else {
@@ -1417,7 +1394,7 @@ public class RegistrationController extends BaseController {
 			}
 		} else if (!toggleAgeOrDobField) {
 			if (ageDatePicker.getValue() == null) {
-				generateAlert(generateErrorMessage(RegistrationConstants.DATE_OF_BIRTH_EMPTY));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DATE_OF_BIRTH_EMPTY);
 
 				ageDatePicker.requestFocus();
 			} else {
@@ -1431,7 +1408,7 @@ public class RegistrationController extends BaseController {
 	private void scanPoaDocument() {
 		if (poaDocuments.getValue() == null) {
 
-			generateAlert(generateErrorMessage(RegistrationConstants.POA_DOCUMENT_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
 			poaLabel.setId("doc_label");
@@ -1444,7 +1421,7 @@ public class RegistrationController extends BaseController {
 	private void scanPoiDocument() {
 		if (poiDocuments.getValue() == null) {
 
-			generateAlert(generateErrorMessage(RegistrationConstants.POI_DOCUMENT_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
 			poiLabel.setId("doc_label");
@@ -1457,7 +1434,7 @@ public class RegistrationController extends BaseController {
 	private void scanPorDocument() {
 		if (porDocuments.getValue() == null) {
 
-			generateAlert(generateErrorMessage(RegistrationConstants.POR_DOCUMENT_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
 			porLabel.setId("doc_label");

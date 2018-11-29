@@ -29,7 +29,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -77,10 +76,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 					"Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
 				StringBuilder errorMessage = new StringBuilder();
 				String errorAlert = null;
@@ -93,8 +89,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 						.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
 				errorAlert = errorResponseDTO.getInfoType();
 					}
-					generateAlert(RegistrationConstants.ERROR, AlertType.valueOf(errorAlert),
-							errorMessage.toString().trim());
+					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
 
 				} else {
 					LoginController.getScene().setRoot(createRoot);
@@ -145,10 +140,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 					"Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
 				Button button = (Button) event.getSource();
 				AnchorPane anchorPane = (AnchorPane) button.getParent();
@@ -164,8 +156,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
 		
-			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_APPROVAL_PAGE));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
 	}
 
@@ -181,10 +172,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 					"Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
-				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-						generateErrorMessage(RegistrationConstants.AUTHORIZATION_ERROR));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
 				Button button = (Button) event.getSource();
 				AnchorPane anchorPane = (AnchorPane) button.getParent();

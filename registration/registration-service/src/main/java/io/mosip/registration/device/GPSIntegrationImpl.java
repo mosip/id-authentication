@@ -2,7 +2,6 @@ package io.mosip.registration.device;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static org.mockito.Matchers.contains;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

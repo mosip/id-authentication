@@ -12,8 +12,8 @@ import java.security.PublicKey;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;

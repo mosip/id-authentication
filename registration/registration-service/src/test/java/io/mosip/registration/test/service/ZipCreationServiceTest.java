@@ -1,5 +1,10 @@
 package io.mosip.registration.test.service;
 
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.HASHING_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.PACKET_META_JSON_NAME;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,18 +15,13 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.registration.test.util.datastub.DataProvider;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
-
-import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.HASHING_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.PACKET_META_JSON_NAME;
+import io.mosip.registration.test.util.datastub.DataProvider;
 
 public class ZipCreationServiceTest {
 

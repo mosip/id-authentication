@@ -1,5 +1,8 @@
 package io.mosip.registration.test.service.packet.encryption.rsa;
 
+import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static org.mockito.Mockito.when;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -22,9 +25,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
-
-import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
-import static org.mockito.Mockito.when;
 
 public class RSAEncryptionServiceTest {
 

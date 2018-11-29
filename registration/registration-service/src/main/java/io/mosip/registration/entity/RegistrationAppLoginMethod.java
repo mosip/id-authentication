@@ -5,9 +5,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import io.mosip.registration.entity.RegistrationAppLoginMethodId;
-import io.mosip.registration.entity.RegistrationCommonFields;
-
 /**
  * RegistrationAppLoginMethod entity details
  * 

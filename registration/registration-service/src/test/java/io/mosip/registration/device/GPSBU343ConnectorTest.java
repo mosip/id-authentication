@@ -29,8 +29,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
-import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 

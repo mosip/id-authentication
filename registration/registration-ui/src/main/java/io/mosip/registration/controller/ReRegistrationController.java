@@ -28,7 +28,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -223,7 +222,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, AlertType.INFORMATION, generateErrorMessage(RegistrationConstants.REREGISTRATION_APPROVE_SUCCESS));
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.REREGISTRATION_APPROVE_SUCCESS);
 		primaryStage.close();
 		reloadTableView();
 	}

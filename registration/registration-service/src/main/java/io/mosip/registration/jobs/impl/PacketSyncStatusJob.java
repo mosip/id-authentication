@@ -1,6 +1,5 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.quartz.JobExecutionContext;
@@ -14,15 +13,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.manager.JobManager;
 import io.mosip.registration.manager.SyncManager;
-import io.mosip.registration.manager.impl.SyncManagerImpl;
-import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**

@@ -1,16 +1,23 @@
 package io.mosip.registration.service.packet.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_HANLDER;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.INTERNAL_SERVER_ERROR;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -20,13 +27,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_HANLDER;
-import static io.mosip.registration.constants.RegistrationConstants.INTERNAL_SERVER_ERROR;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 /**
  * The class to handle the enrollment data and create packet out of it

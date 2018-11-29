@@ -26,9 +26,8 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
@@ -378,7 +377,7 @@ public class SyncStatusValidatorServiceTest {
 				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-007", errorResponseDTOs.get(3).getCode());
-		assertEquals(AppConfig.getMessageProperty(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH),
+		assertEquals(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH,
 				errorResponseDTOs.get(3).getMessage());
 
 	}

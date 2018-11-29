@@ -2,8 +2,8 @@ package io.mosip.registration.audit;
 
 import org.springframework.data.auditing.AuditingHandler;
 
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 
 public interface AuditFactory {
 

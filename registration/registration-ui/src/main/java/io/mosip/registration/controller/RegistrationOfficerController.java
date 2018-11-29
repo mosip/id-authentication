@@ -14,7 +14,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -64,8 +63,7 @@ public class RegistrationOfficerController extends BaseController implements Ini
 			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 			
-			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_HOME_PAGE));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 }

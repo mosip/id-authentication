@@ -1,5 +1,13 @@
 package io.mosip.registration.service.mapping.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEVICE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -36,14 +44,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.MapMachineService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEVICE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 /**
  * This service implementation updates the mapping of users and devices to the
@@ -121,13 +121,12 @@ public class MapMachineServiceImpl implements MapMachineService {
 			}
 			/* create success response */
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(AppConfig.getMessageProperty(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE));
+			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
-			responseDTO = getErrorResponse(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE));
+			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 
 		}
@@ -161,8 +160,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			if (registrationUserDetails != null && !registrationUserDetails.isEmpty()) {
 				/* create success response */
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-				successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
-				successResponseDTO.setMessage(AppConfig.getMessageProperty(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE));
+				successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
 				successResponseDTO
 						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, registrationUserDetails));
 
@@ -170,7 +168,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 				LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 						"View Method Success Response created");
 			} else {
-				getErrorResponse(responseDTO, AppConfig.getMessageProperty(MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS));
+				getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			responseDTO = getErrorResponse(responseDTO, regBaseUncheckedException.getMessage());
@@ -267,7 +265,6 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
 		errorResponse.setMessage(message);
 
@@ -436,14 +433,14 @@ public class MapMachineServiceImpl implements MapMachineService {
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setCode(RegistrationConstants.DEVICE_MAPPING_SUCCESS_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(AppConfig.getMessageProperty(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE));
+			successResponseDTO.setMessage(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getDeviceMappedDevice(List,List) method is ended");
 		} catch (RuntimeException runtimeException) {
 			// Add the Error Response
-			responseDTO = buildErrorRespone(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE));
+			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE);
 
 			LOGGER.error(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 		}

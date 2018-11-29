@@ -1,7 +1,9 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +23,6 @@ import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.registration.dao.impl.AuditDAOImpl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
-
-import static org.mockito.Mockito.when;
-import static org.junit.Assert.assertEquals;
 
 public class AuditDAOTest {
 

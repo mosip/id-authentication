@@ -2,7 +2,6 @@ package io.mosip.registration.test.jobs;
 
 import static org.mockito.Mockito.doNothing;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

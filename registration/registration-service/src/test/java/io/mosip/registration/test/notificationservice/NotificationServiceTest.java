@@ -19,8 +19,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;

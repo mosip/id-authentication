@@ -1,28 +1,31 @@
 package io.mosip.registration.service.packet.impl;
 
-import java.io.File;
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.AuditDAO;
-import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.json.demo.Demographic;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
@@ -31,18 +34,10 @@ import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.util.hmac.HMACGeneration;
-import io.mosip.registration.util.json.JSONConverter;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
-import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+import io.mosip.registration.util.hmac.HMACGeneration;
+import io.mosip.registration.util.json.JSONConverter;
 
 /**
  * Class for creating the Resident Registration

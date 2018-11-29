@@ -1,7 +1,5 @@
 package io.mosip.registration.test.jobs;
 
-import static org.mockito.Mockito.doNothing;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,14 +9,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.springframework.scheduling.TriggerContext;
 
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
 import io.mosip.registration.manager.JobManager;
 import io.mosip.registration.manager.SyncManager;

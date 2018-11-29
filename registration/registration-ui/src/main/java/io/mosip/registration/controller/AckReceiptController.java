@@ -36,7 +36,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -148,11 +147,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 						// generate alert
 						if (!alert.equals("")) {
-							String data = generateErrorMessage(RegistrationConstants.NOTIFICATION_FAIL);
+							String data = RegistrationConstants.NOTIFICATION_FAIL;
 							if (alert.equals("SMS")) {
-								data = generateErrorMessage(RegistrationConstants.NOTIFICATION_SMS_FAIL);
+								data = RegistrationConstants.NOTIFICATION_SMS_FAIL;
 							} else if (alert.equals("EMAIL")) {
-								data = generateErrorMessage(RegistrationConstants.NOTIFICATION_EMAIL_FAIL);
+								data = RegistrationConstants.NOTIFICATION_EMAIL_FAIL;
 							}
 							generateNotificationAlert(data);
 						}
@@ -192,8 +191,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 				registrationData.getRegistrationId() + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 
-		generateAlert(RegistrationConstants.SUCCESS_MSG, AlertType.INFORMATION,
-				generateErrorMessage(RegistrationConstants.PACKET_CREATED_SUCCESS));
+		generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);
 		// Adding individual address to session context
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
@@ -208,8 +206,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
-		generateAlert(RegistrationConstants.NOTIFICATION_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-				alertMessage);
+		generateAlert(RegistrationConstants.ALERT_ERROR, alertMessage);
 	}
 
 	@FXML

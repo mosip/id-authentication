@@ -102,14 +102,14 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				try {
 					updatePacketIdsByServerStatus(registrations);
 				} catch (RegBaseUncheckedException regBaseUncheckedException) {
-					getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE));
+					getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 				}
 				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"packet status has been synced with server");
 				/** Create Success response */
 				successResponse = new SuccessResponseDTO();
 				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-				successResponse.setMessage(AppConfig.getMessageProperty(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE));
+				successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
 				Map<String, Object> otherAttributes = new HashMap<>();
 				otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
 				successResponse.setOtherAttributes(otherAttributes);
@@ -118,7 +118,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						"Success Response Created");
 			} else {
 				/** Create Error response */
-				getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE));
+				getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"Error Response Created");
 			}
@@ -126,7 +126,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException
 				| HttpClientErrorException exception) {
 			/** Create Error response */
-			getErrorResponse(response, AppConfig.getMessageProperty(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE));
+			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					"Error Response Created");
 		}

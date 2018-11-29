@@ -1,5 +1,12 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,13 +36,6 @@ import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 /**
  * This DAO implementation of {@link MachineMappingDAO}

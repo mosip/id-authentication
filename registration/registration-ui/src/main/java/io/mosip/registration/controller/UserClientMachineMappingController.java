@@ -18,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -105,8 +104,7 @@ public class UserClientMachineMappingController extends BaseController implement
 			/* Get error response */
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			/* Generate Alert */
-			generateAlert(errorResponseDTO.getCode(), AlertType.valueOf(errorResponseDTO.getInfoType()),
-					errorResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
 		}
 	}
 
@@ -189,8 +187,7 @@ public class UserClientMachineMappingController extends BaseController implement
 					? RegistrationConstants.MACHINE_MAPPING_ACTIVE
 					: RegistrationConstants.MACHINE_MAPPING_IN_ACTIVE));
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), AlertType.valueOf(successResponseDTO.getInfoType()),
-					successResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
 			userClientMachineMappingEditPane.setVisible(false);
 			statusComboBox.getSelectionModel().clearSelection();
 			view();
@@ -204,8 +201,7 @@ public class UserClientMachineMappingController extends BaseController implement
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 
 			/* Generate Alert*/
-			generateAlert(errorResponseDTO.getCode(), AlertType.valueOf(errorResponseDTO.getInfoType()),
-					errorResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
 		}
 
 	}

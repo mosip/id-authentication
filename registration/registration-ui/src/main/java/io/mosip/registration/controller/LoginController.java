@@ -46,7 +46,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -158,8 +157,8 @@ public class LoginController extends BaseController implements Initializable {
 		try {
 			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
 
-			if (userLoginMode.containsKey((RegistrationConstants.LOGIN_INITIAL_VAL))) {
-				loginMode = String.valueOf(userLoginMode.get(RegistrationConstants.LOGIN_INITIAL_VAL));
+			if (userLoginMode.containsKey((String.valueOf(RegistrationConstants.PARAM_ONE)))) {
+				loginMode = String.valueOf(userLoginMode.get(String.valueOf(RegistrationConstants.PARAM_ONE)));
 			}
 
 			// To maintain the login mode sequence
@@ -169,11 +168,13 @@ public class LoginController extends BaseController implements Initializable {
 			// Load the property files for application and local language
 			ApplicationContext.getInstance().setApplicationLanguageBundle();
 			ApplicationContext.getInstance().setLocalLanguageProperty();
+			ApplicationContext.getInstance().setApplicationMessagesBundle();
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");
 
-			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
+					ApplicationContext.getInstance().getApplicationMessagesBundle());
 
 			if (loginMode == null) {
 				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
@@ -197,15 +198,13 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		} catch (RuntimeException runtimeException) {
 
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage());
-			
-			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		}
 
 		return loginMode;
@@ -224,20 +223,15 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials entered through UI");
 
 		if (userId.getText().isEmpty() && password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.MISSING_MANDATOTY_FIELDS), generateErrorMessage(RegistrationConstants.CREDENTIALS_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (userId.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.MISSING_MANDATOTY_FIELDS), generateErrorMessage(RegistrationConstants.USERNAME_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
 		} else if (password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					generateErrorMessage(RegistrationConstants.MISSING_MANDATOTY_FIELDS), generateErrorMessage(RegistrationConstants.PWORD_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PWORD_FIELD_EMPTY);
 		} else if (userId.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.LOGIN_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.USRNAME_PWORD_LENGTH));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
 		} else if (password.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.LOGIN_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.USRNAME_PWORD_LENGTH));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
 		} else {
 
 			String hashPassword = null;
@@ -256,9 +250,7 @@ public class LoginController extends BaseController implements Initializable {
 			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 
 			if (userDetail == null) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_FAILURE,
-						generateErrorMessage(RegistrationConstants.USER_NOT_ONBOARDED));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
 				if (!serverStatus) {
 					LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -268,7 +260,7 @@ public class LoginController extends BaseController implements Initializable {
 							APPLICATION_ID, "Validating number of login attempts");
 
 					if (!userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) {
-						offlineStatus = validateInvalidLogin(userDetail, generateErrorMessage(RegistrationConstants.INCORRECT_PWORD));
+						offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
 					} else {
 						offlineStatus = validateInvalidLogin(userDetail, "");
 					}
@@ -279,9 +271,7 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 								"Validating user status");
 
-						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.BLOCKED_USER_ERROR));
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 					} else {
 						try {
 
@@ -297,10 +287,7 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
 									APPLICATION_ID, exception.getMessage());
 
-							generateAlert(RegistrationConstants.ALERT_ERROR,
-									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.LOGIN_FAILURE,
-									generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN));
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
 					}
 				}
@@ -331,21 +318,18 @@ public class LoginController extends BaseController implements Initializable {
 
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(successResponseDTO.getCode()),
-						RegistrationConstants.OTP_INFO_MESSAGE, successResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ALERT_ERROR, successResponseDTO.getMessage());
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
-						RegistrationConstants.OTP_INFO_MESSAGE, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
 
 			}
 
 		} else {
 			// Generate Alert to show username field was empty
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.OTP_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.USERNAME_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
 
 		}
 
@@ -366,9 +350,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			if (userDetail == null) {
 
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_FAILURE,
-						generateErrorMessage(RegistrationConstants.USER_NOT_ONBOARDED));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 
 			} else {
 				responseDTO = loginService.validateOTP(userId.getText(), password.getText());
@@ -385,9 +367,7 @@ public class LoginController extends BaseController implements Initializable {
 					if (otpLoginStatus) {
 						// // Validating User status
 						if (validateUserStatus(userId.getText())) {
-							generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.LOGIN_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.BLOCKED_USER_ERROR));
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 						} else {
 							try {
 								SessionContext sessionContext = SessionContext.getInstance();
@@ -398,9 +378,7 @@ public class LoginController extends BaseController implements Initializable {
 								LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
 										APPLICATION_ID, exception.getMessage());
 
-								generateAlert(RegistrationConstants.ALERT_ERROR,
-										AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.LOGIN_FAILURE, generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN));
+								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 							}
 
 						}
@@ -410,11 +388,9 @@ public class LoginController extends BaseController implements Initializable {
 			}
 
 		} else if (userId.getText().length() == 3) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.OTP_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.USERNAME_FIELD_ERROR));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_ERROR);
 		} else {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.OTP_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.OTP_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 		}
 	}
 
@@ -424,16 +400,13 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials for Biometric login");
 
 		if (userId.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.MISSING_MANDATOTY_FIELDS, generateErrorMessage(RegistrationConstants.USERNAME_FIELD_EMPTY));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
 		} else {
 
 			RegistrationUserDetail detail = loginService.getUserDetail(userId.getText());
 
 			if (detail == null) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_FAILURE,
-						generateErrorMessage(RegistrationConstants.USER_NOT_ONBOARDED));
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
 
 				LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -444,14 +417,12 @@ public class LoginController extends BaseController implements Initializable {
 				if (validateBiometric(detail)) {
 					bioLoginStatus = validateInvalidLogin(detail, "");
 				} else {
-					bioLoginStatus = validateInvalidLogin(detail, generateErrorMessage(RegistrationConstants.FINGER_PRINT_MATCH));
+					bioLoginStatus = validateInvalidLogin(detail, RegistrationConstants.FINGER_PRINT_MATCH);
 				}
 				if (bioLoginStatus) {
 					if (detail.getStatusCode() != null
 							&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_INFO_MESSAGE, generateErrorMessage(RegistrationConstants.BLOCKED_USER_ERROR));
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 					} else {
 						try {
 							SessionContext sessionContext = SessionContext.getInstance();
@@ -462,10 +433,7 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
 									APPLICATION_ID, exception.getMessage());
 
-							generateAlert(RegistrationConstants.ALERT_ERROR,
-									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.LOGIN_FAILURE,
-									generateErrorMessage(RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN));
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
 					}
 				}
@@ -691,13 +659,9 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating roles and machine and center mapping");
 
 		if (authInfo != null && authInfo.equals(RegistrationConstants.ROLES_EMPTY)) {
-			generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
-					AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_FAILURE,
-					generateErrorMessage(RegistrationConstants.ROLES_EMPTY_ERROR));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ROLES_EMPTY_ERROR);
 		} else if (authInfo != null && authInfo.equals(RegistrationConstants.MACHINE_MAPPING)) {
-			generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
-					AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_FAILURE,
-					generateErrorMessage(RegistrationConstants.MACHINE_MAPPING_ERROR));
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MACHINE_MAPPING_ERROR);
 		} else if (authInfo != null && authInfo.equalsIgnoreCase(RegistrationConstants.SUCCESS_MSG)) {
 			SessionContext sessionContext = SessionContext.getInstance();
 
@@ -777,7 +741,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				userDetail.setLastLoginMethod(loginMode);
 				userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
-				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_RESET);
+				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
 				loginService.updateLoginParams(userDetail);
 			}
@@ -799,13 +763,12 @@ public class LoginController extends BaseController implements Initializable {
 				"Initializing FingerPrint device");
 
 		MosipFingerprintProvider fingerprintProvider = fingerprintFacade.getFingerprintProviderFactory(deviceName);
-		
-		if(fingerprintProvider.captureFingerprint(qualityScore, captureTimeOut, RegistrationConstants.FINGER_TYPE_MINUTIA) != 0) {
-			
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-					AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.DEVICE_INFO_MESSAGE,
-					generateErrorMessage(RegistrationConstants.DEVICE_FP_NOT_FOUND));
-			
+
+		if (fingerprintProvider.captureFingerprint(qualityScore, captureTimeOut,
+				RegistrationConstants.FINGER_TYPE_MINUTIA) != 0) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_FP_NOT_FOUND);
+
 			return false;
 		} else {
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
@@ -819,25 +782,20 @@ public class LoginController extends BaseController implements Initializable {
 
 			LOGGER.debug("REGISTRATION - LOGIN - BIOMETRICS", APPLICATION_NAME, APPLICATION_ID,
 					"Validation of fingerprint through Minutia");
-			
+
 			boolean fingerPrintStatus = false;
-			
+
 			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
-				
-				fingerPrintStatus = registrationUserDetail.getUserBiometric().stream().anyMatch(bio -> fingerprintProvider
-						.scoreCalculator(fingerprintFacade.getMinutia(), bio.getBioMinutia()) > fingerPrintScore);
-				
+
+				fingerPrintStatus = registrationUserDetail.getUserBiometric().stream()
+						.anyMatch(bio -> fingerprintProvider.scoreCalculator(fingerprintFacade.getMinutia(),
+								bio.getBioMinutia()) > fingerPrintScore);
+
 			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
 				if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
-					generateAlert(RegistrationConstants.ALERT_ERROR,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_FAILURE,
-							generateErrorMessage(RegistrationConstants.FP_DEVICE_TIMEOUT));
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FP_DEVICE_TIMEOUT);
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_FAILURE,
-							generateErrorMessage(RegistrationConstants.FP_DEVICE_ERROR));
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FP_DEVICE_ERROR);
 				}
 			}
 			return fingerPrintStatus;
@@ -876,18 +834,19 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
 
-			loginCount = RegistrationConstants.INVALID_LOGIN_COUNT_RESET;
-			registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_RESET);
+			loginCount = RegistrationConstants.PARAM_ZERO;
+			registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
 			loginService.updateLoginParams(registrationUserDetail);
 
 		}
 
-		String unlockMessage = generateErrorMessage(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER)
-				.concat(" ").concat(String.valueOf(invalidLoginCount))
-				.concat(" ").concat(generateErrorMessage(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE)).concat(" ").concat(String.valueOf(invalidLoginTime)
-						.concat(" ").concat(generateErrorMessage(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES)));
-		
+		String unlockMessage = RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER.concat(" ")
+				.concat(String.valueOf(invalidLoginCount)).concat(" ")
+				.concat(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE).concat(" ")
+				.concat(String.valueOf(invalidLoginTime).concat(" ")
+						.concat(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES));
+
 		if (loginCount > invalidLoginCount) {
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
@@ -895,15 +854,13 @@ public class LoginController extends BaseController implements Initializable {
 
 			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
 
-				registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_INCREMENT);
+				registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
 
 				loginService.updateLoginParams(registrationUserDetail);
 
 			} else {
-	
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_INFO_MESSAGE,
-						unlockMessage);
+
+				generateAlert(RegistrationConstants.ALERT_ERROR, unlockMessage);
 
 			}
 			return false;
@@ -913,24 +870,19 @@ public class LoginController extends BaseController implements Initializable {
 
 				LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 						"updating login count and time for invalid login attempts");
-				loginCount = loginCount + RegistrationConstants.INVALID_LOGIN_COUNT_INCREMENT;
+				loginCount = loginCount + RegistrationConstants.PARAM_ONE;
 				registrationUserDetail.setUserlockTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
-				registrationUserDetail
-						.setUnsuccessfulLoginCount(loginCount);
+				registrationUserDetail.setUnsuccessfulLoginCount(loginCount);
 
 				loginService.updateLoginParams(registrationUserDetail);
 
 				if (loginCount == invalidLoginCount) {
 
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, unlockMessage);
+					generateAlert(RegistrationConstants.ALERT_ERROR, unlockMessage);
 
 				} else {
 
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, errorMessage);
+					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
 
 				}
 				return false;

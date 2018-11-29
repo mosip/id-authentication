@@ -112,54 +112,13 @@ public class BaseController {
 	 * @param header    alert header
 	 * @param context   alert context
 	 */
-	protected void generateAlert(String title, AlertType alertType, String header, String context) {
-		Alert alert = new Alert(alertType);
-		alert.setHeaderText(header);
-		alert.setContentText(context);
-		alert.setTitle(title);
-		alert.showAndWait();
-	}
-	
-	/**
-	 * 
-	 * /* Alert creation with specified title, header, and context
-	 * @param header    alert header
-	 * @param context   alert context
-	 */
-	protected void generateAlert(String header, String context) {
-		Alert alert = new Alert(AlertType.valueOf(RegistrationConstants.ALERT_ERROR));
-		alert.setHeaderText(header);
-		alert.setContentText(context);
-		alert.setTitle(RegistrationConstants.ALERT_ERROR);
-		alert.showAndWait();
-	}
-	
-	/**
-	 * 
-	 * /* Alert creation with specified header
-	 * @param header    alert header
-	 */
-	protected void generateAlert(String header) {
-		Alert alert = new Alert(AlertType.valueOf(RegistrationConstants.ALERT_ERROR));
-		alert.setHeaderText(header);
-		alert.setTitle(RegistrationConstants.ALERT_ERROR);
-		alert.showAndWait();
-	}
-
-	/**
-	 * Alert creation with specified title and context
-	 * 
-	 * @param title     alert title
-	 * @param alertType type of alert
-	 * @param context   alert context
-	 */
-	protected void generateAlert(String title, AlertType alertType, String context) {
-		Alert alert = new Alert(alertType);
-		alert.setContentText(context);
+	protected void generateAlert(String title, String context) {
+		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
+		alert.setContentText(context);
 		alert.setTitle(title);
+		alert.setGraphic(null);
 		alert.showAndWait();
-
 	}
 
 	protected ResponseDTO validateSyncStatus() {
@@ -302,9 +261,4 @@ public class BaseController {
 			counter++;
 		}
 	}
-	
-	protected String generateErrorMessage(String keyValue) {
-		return AppConfig.getMessageProperty(keyValue);
-	}
-
 }
