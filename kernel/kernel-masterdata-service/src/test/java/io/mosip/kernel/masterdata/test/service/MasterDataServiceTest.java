@@ -301,7 +301,7 @@ public class MasterDataServiceTest {
 		template.setTemplateTypeCode("EMAIL");
 		template.setLangCode("HIN");
 		template.setCreatedBy("Neha");
-		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
+		template.setCreatedDateTime(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
 		template.setIsActive(true);
 		template.setIsDeleted(false);
 

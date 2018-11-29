@@ -29,17 +29,17 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final MasterDataServiceException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
+		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataNotFoundException(final DataNotFoundException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.NOT_FOUND);
+		return getErrorResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlRequestException(final RequestException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.BAD_REQUEST);
+		return getErrorResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(DateTimeParseException.class)
@@ -54,34 +54,26 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(getErrorResponse(ex), HttpStatus.BAD_REQUEST);
+		return getErrorResponseEntity(ex, HttpStatus.BAD_REQUEST);
 	}
 
-	private ErrorResponse<Error> getErrorResponse(MethodArgumentNotValidException ex) {
+	private ResponseEntity<Object> getErrorResponseEntity(MethodArgumentNotValidException ex, HttpStatus httpStatus) {
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-
 		ex.getBindingResult().getFieldErrors().stream().forEach(e -> {
 			Error error = new Error(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 					e.getField() + ": " + e.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
-
-		// for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-		// errorResponse.getErrors().add(error.getField() + ": " +
-		// error.getDefaultMessage());
-		// }
-		// for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-		// errorResponse.getErrors().add(error.getObjectName() + ": " +
-		// error.getDefaultMessage());
-		// }
-		return errorResponse;
+		return new ResponseEntity<>(errorResponse, httpStatus);
 	}
 
-	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
+	private ResponseEntity<ErrorResponse<Error>> getErrorResponseEntity(BaseUncheckedException e,
+			HttpStatus httpStatus) {
 		Error error = new Error(e.getErrorCode(), e.getErrorText());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
-		return errorResponse;
+		errorResponse.setStatus(httpStatus.value());
+		return new ResponseEntity<>(errorResponse, httpStatus);
 	}
 
 }

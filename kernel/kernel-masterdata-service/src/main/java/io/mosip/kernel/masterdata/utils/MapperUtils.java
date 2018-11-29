@@ -196,8 +196,8 @@ public class MapperUtils {
 			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
 			machineHistoryDto.setId(machineHistory.getId());
 			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
-			machineHistoryDto.setCreatedtime(machineHistory.getCreatedtimes());
-			machineHistoryDto.setDeletedtime(machineHistory.getDeletedtimes());
+			machineHistoryDto.setCreatedtime(machineHistory.getCreatedDateTime());
+			machineHistoryDto.setDeletedtime(machineHistory.getDeletedDateTime());
 			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
 			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
 			machineHistoryDto.setIsActive(machineHistory.getIsActive());
@@ -208,7 +208,7 @@ public class MapperUtils {
 			machineHistoryDto.setName(machineHistory.getName());
 			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
 			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
-			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedtimes());
+			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedDateTime());
 			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
 			machineHistoryDtoList.add(machineHistoryDto);
 
