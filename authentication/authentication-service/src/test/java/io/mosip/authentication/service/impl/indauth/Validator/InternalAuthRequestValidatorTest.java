@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -132,6 +133,7 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -162,6 +164,7 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -197,6 +200,7 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInvalidDate() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
