@@ -1,65 +1,53 @@
+-- create table section ---------------------------------------------------
+-- schema 		: regprc					- Registration Processor (enrolment server or ID issuance server)
+-- table 		: individual_demographic_dedup	- Registration Processor / Enrolment Packet and Transactions.
+-- table alias  : idemogd
+
+-- schemas section -------------------------------------------------------
+
+-- create schema if Registration Processor schema not exists
+
+create schema if not exists regprc
+;
 -- object: regprc.individual_demographic_dedup | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.individual_demographic_dedup CASCADE;
+
 CREATE TABLE regprc.individual_demographic_dedup(
-	ref_id_type character varying(36) NOT NULL,
-	ref_id character varying(28) NOT NULL,
-	first_name character varying(128),
-	middle_name character varying(128),
-	last_name character varying(128),
-	full_name character varying(256),
-	dob date,
-	gender character varying(36),
-	address_line_1 character varying(256),
-	address_line_2 character varying(256),
-	address_line_3 character varying(256),
-	address_line_4 character varying(256),
-	address_line_5 character varying(256),
-	address_line_6 character varying(256),
-	zip_code character varying(36),
-	lang_code character varying(3) NOT NULL,
-	is_active boolean NOT NULL,
-	cr_by character varying(32) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(32),
-	upd_dtimes timestamp,
-	is_deleted boolean,
-	del_dtimes timestamp,
-	CONSTRAINT idemog_pk PRIMARY KEY (ref_id_type,ref_id,lang_code)
+	reg_id 			character varying(28) not null,	   -- regprc.registration.id
+	uin_ref_id		character varying(28),
+	name 			character varying(128),            -- Name of an individual, This is combination of fname, mname and lname or full name
+	phonetic_name 	character varying(128),
+	dob 	date,
+	gender 	character varying(64),
+
+	lang_code 	character varying(3) not null,
+	is_active 	boolean not null,
+	cr_by 		character varying(32) not null,
+	cr_dtimes 	timestamp not null,
+	upd_by 		character varying(32),
+	upd_dtimes 	timestamp,
+	is_deleted 	boolean,
+	del_dtimes 	timestamp
 
 );
+
+-- keys section ----------------------------------------------------------------
+ alter table regprc.individual_demographic_dedup add constraint pk_idemogd_id primary key (reg_id, lang_code)
+ ; 
+
 -- ddl-end --
-COMMENT ON TABLE regprc.individual_demographic_dedup IS 'individual demographic table stores applicant demographic details for deduplication';
+COMMENT ON TABLE regprc.individual_demographic_dedup IS 'Individual demographic table stores applicant demographic details for deduplication';
 -- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.ref_id_type IS 'type of the reference id. It can have values like prereg_id, reg_id or uin_ref_id.';
+COMMENT ON COLUMN regprc.individual_demographic_dedup.reg_id IS 'Registration id of applicant';
 -- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.ref_id IS 'Reference id can be registration id of new registrations or uin_ref_id of individuals whose uin is already generated';
+COMMENT ON COLUMN regprc.individual_demographic_dedup.uin_ref_id IS 'UIN reference id of Individuals';
 -- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.first_name IS 'first name of an individual';
+COMMENT ON COLUMN regprc.individual_demographic_dedup.name IS 'Name of an individual, This is combination of fname, mname and lname or full name';
 -- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.middle_name IS 'Middle Name of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.last_name IS 'Last Name of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.full_name IS 'Full Name of an individual';
+COMMENT ON COLUMN regprc.individual_demographic_dedup.phonetic_name IS 'Phonetic name';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.dob IS 'DOB of an individual';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.gender IS 'Gender of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_1 IS 'Address Line 1 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_2 IS 'Address Line 2 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_3 IS 'Address Line 3 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_4 IS 'Address Line 4 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_5 IS 'Address Line 5 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.address_line_6 IS 'Address Line 6 of an individual';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.zip_code IS 'Zip / Pin / Postal Code of an individual';
--- ddl-end --
-ALTER TABLE regprc.individual_demographic_dedup OWNER TO appadmin;
--- ddl-end --
+
 

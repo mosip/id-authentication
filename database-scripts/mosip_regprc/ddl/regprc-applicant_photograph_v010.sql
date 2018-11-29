@@ -21,7 +21,7 @@ create schema if not exists regprc
 		image_store		bytea ,
 		
 		has_excp_photograph boolean,
-		excp_photo_name 	character varying(128) not null ,
+		excp_photo_name 	character varying(128) ,
 		excp_photo_store	bytea ,
 		
 		is_active 	boolean not null,

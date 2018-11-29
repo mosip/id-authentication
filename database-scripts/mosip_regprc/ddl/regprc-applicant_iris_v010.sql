@@ -19,6 +19,7 @@ create schema if not exists regprc
 		typ				character varying(36) not null ,
 		quality_score   numeric(5,3) ,
 		no_of_retry  	smallint,
+		forced_capture boolean,
 		
 		is_active 	boolean not null,
 		cr_by 		character varying (32) not null ,

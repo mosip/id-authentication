@@ -28,15 +28,19 @@ create table master.registration_center (
 		location_code character varying(36) not null ,	-- master.location.code
 		
 		contact_phone  character varying (16), 
+		contact_person character varying (128), 
 		
 		number_of_kiosks smallint ,
 		working_hours  character varying (32) ,
 		per_kiosk_process_time time,   
-		process_start_time time,
-		process_end_time time,
+		center_start_time time,
+		center_end_time time,
+		lunch_start_time time,
+		lunch_end_time time,
+		time_zone character varying (64),
 
 		holiday_loc_code  character varying(36),  		-- master.location.code ->> master.loc_holiday.location_code
-									-- tag holiday list specific to location.code / country,state,city,etc
+									                    -- tag holiday list specific to location.code / country,state,city,etc
 		
 		lang_code  character varying(3) not null ,  	-- master.language.code
 		
