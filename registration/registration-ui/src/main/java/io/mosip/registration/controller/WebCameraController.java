@@ -82,7 +82,7 @@ public class WebCameraController extends BaseController implements Initializable
 			webcamera.setContent(jPanelWindow);
 		} else {
 			generateAlert(RegistrationConstants.WEBCAM_ALERT_TITLE, AlertType.ERROR,
-					RegistrationConstants.WEBCAM_ALERT_HEADER, RegistrationConstants.WEBCAM_ALERT_CONTEXT);
+					RegistrationConstants.WEBCAM_ALERT_HEADER, generateErrorMessage(RegistrationConstants.WEBCAM_ALERT_CONTEXT));
 			((Stage) demographicPane.getScene().getWindow()).close();
 		}
 	}

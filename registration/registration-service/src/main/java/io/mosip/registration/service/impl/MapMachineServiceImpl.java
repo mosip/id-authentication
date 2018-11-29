@@ -123,11 +123,11 @@ public class MapMachineServiceImpl implements MapMachineService {
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
+			successResponseDTO.setMessage(AppConfig.getMessageProperty(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE));
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
-			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
+			responseDTO = getErrorResponse(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE));
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 
 		}
@@ -162,7 +162,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 				/* create success response */
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
-				successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
+				successResponseDTO.setMessage(AppConfig.getMessageProperty(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE));
 				successResponseDTO
 						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, registrationUserDetails));
 
@@ -170,7 +170,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 				LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 						"View Method Success Response created");
 			} else {
-				getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
+				getErrorResponse(responseDTO, AppConfig.getMessageProperty(MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS));
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			responseDTO = getErrorResponse(responseDTO, regBaseUncheckedException.getMessage());
@@ -436,14 +436,14 @@ public class MapMachineServiceImpl implements MapMachineService {
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setCode(RegistrationConstants.DEVICE_MAPPING_SUCCESS_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE);
+			successResponseDTO.setMessage(AppConfig.getMessageProperty(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE));
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getDeviceMappedDevice(List,List) method is ended");
 		} catch (RuntimeException runtimeException) {
 			// Add the Error Response
-			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE);
+			responseDTO = buildErrorRespone(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE));
 
 			LOGGER.error(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 		}

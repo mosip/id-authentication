@@ -40,6 +40,8 @@ public class AppConfig {
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
+	
+	private static final ResourceBundle messageProperties = ResourceBundle.getBundle("messages");
 
 	/**
 	 * Job processor
@@ -71,6 +73,10 @@ public class AppConfig {
 
 	public static String getApplicationProperty(String property) {
 		return applicationProperties.getString(property);
+	}
+	
+	public static String getMessageProperty(String property) {
+		return messageProperties.getString(property);
 	}
 
 	@Bean

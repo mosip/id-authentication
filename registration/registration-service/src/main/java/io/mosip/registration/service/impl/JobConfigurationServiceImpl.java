@@ -118,14 +118,14 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
-					setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
+					setSuccessResponseDTO(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE));
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, exception.getMessage());
 				
-				setErrorResponseDTO(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE);
+				setErrorResponseDTO(responseDTO, currentJob + AppConfig.getMessageProperty(RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE));
 			} 
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -142,13 +142,13 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			schedulerFactoryBean.getScheduler().shutdown(shutdown);
-			setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE);
+			setSuccessResponseDTO(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE));
 
 		} catch (SchedulerException schedulerException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE);
+			setErrorResponseDTO(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE));
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -186,7 +186,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE);
+			setErrorResponseDTO(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE));
 
 		}
 
@@ -223,7 +223,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			
 			responseDTO = new ResponseDTO();
-			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE);
+			setErrorResponseDTO(responseDTO, AppConfig.getMessageProperty(RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE));
 		} 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");

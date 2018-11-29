@@ -93,9 +93,6 @@ public class RegistrationConstants {
 	public static final String USERNAME_KEY = "key";
 	public static final String OTP_GENERATED = "otp";
 	public static final String OTP_VALIDATOR_SERVICE_NAME = "otp_validator";
-	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is : ";
-	public static final String OTP_VALIDATION_SUCCESS_MESSAGE = "OTP validation Successful";
-	public static final String OTP_GENERATION_ERROR_MESSAGE = "Please Enter Valid Username ";
 	public static final String OTP_GENERATOR_RESPONSE_DTO = "otpGeneratorResponseDTO";
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
 
@@ -157,13 +154,10 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";	
 	public static final String WEBCAM_ALERT_TITLE = "Webcam Alert";
 	public static final String WEBCAM_ALERT_HEADER = "Camera Not Found";
-	public static final String WEBCAM_ALERT_CONTEXT = "Camera not found. Please connect an on-boarded camera and retry.";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";	
 	public static final String APPLICANT_BIOMETRICS_ERROR = "Error in Applicant Biometrics";
-	public static final String APPLICANT_IMAGE_ERROR = "Applicant Biometrics are required.";
 	public static final String DEMOGRAPHIC_DETAILS_ERROR = "Error in Demographic Details";
-	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = "Demographic details are required.";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
@@ -182,19 +176,13 @@ public class RegistrationConstants {
 
 	// USER CLIENT MACHINE MAPPING
 	public static final String MACHINE_MAPPING_CODE = "USER CLIENT MACHINE MAPPING ALERT";
-	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
-	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
 	public static final String MACHINE_MAPPING_CREATED = "created";
 	public static final String MACHINE_MAPPING_UPDATED = "updated";
-	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "User Data Fetched Successfully";
-	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "No Records Found";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
 	public static final String DEVICE_MAPPING_LOGGER_TITLE="REGISTRATION - CENTER MACHINE DEVICE MAPPING";
 	//CENTER MACHINE DEVICE MAPPING
 	public static final String DEVICE_MAPPING_SUCCESS_CODE="REG-DVO‌-001";
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="On-boarding successful";
 	public static final String DEVICE_MAPPING_ERROR_CODE="REG-DVO‌-002";
-	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
 	
 	// BLOCKLISTED USER
 	public static final String BLACKLISTED = "BLOCKED";
@@ -209,14 +197,10 @@ public class RegistrationConstants {
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String OPT_TO_REG_ICS‌_001 = "REG-ICS‌-001";
-	public static final String OPT_TO_REG_ICS‌_001_MSG = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
 	public static final String OPT_TO_REG_INFOTYPE = "ERROR";
 	public static final String OPT_TO_REG_ICS‌_002 = "REG-ICS‌-002";
-	public static final String OPT_TO_REG_ICS‌_002_MSG = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
 	public static final String OPT_TO_REG_ICS‌_003 = "REG-ICS‌-003";
-	public static final String OPT_TO_REG_ICS‌_003_MSG = "Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration";
 	public static final String OPT_TO_REG_ICS‌_004 = "REG-ICS‌-004";
-	public static final String OPT_TO_REG_ICS‌_004_MSG = "Your client machine’s location is outside the registration centre. Please note that registration can be done only from within the registration centre";
 	public static final String OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
 	public static final double OPT_TO_REG_EARTH_RADIUS = 6371000;
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
@@ -227,9 +211,6 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
 	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
-	public static final String OPT_TO_REG_ICS‌_005_MSG = "Unable to validate machine location. Please insert the GPS device and try again";
-	public static final String OPT_TO_REG_ICS‌_006_MSG = "Unable to validate machine location due to weak GPS signal. Please try again.";
-	public static final String OPT_TO_REG_ICS‌_007_MSG = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again.";
 	public static final String OPT_TO_REG_SUCCESS = "success";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
 	public static final String OPT_TO_REG_ERROR_MESSAGE = "errorMessage";
@@ -246,13 +227,11 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 
 	/** Packet Status Sync Constants */
-	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "Packet Status Sync Successful";
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
 	public static final String PACKET_STATUS_SYNC_URL_PARAMETER = "registrationIds";
 	public static final String PACKET_STATUS_SYNC_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_SYNC_STATUS_CODE = "statusCode";
-	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "No Status Available";
 	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
 
 	/** Exception codes **/
@@ -335,43 +314,25 @@ public class RegistrationConstants {
 	public static final String LOGIN_METHOD_OTP = "OTP";
 	public static final String LOGIN_METHOD_BIO = "BIO";
 	public static final String BLOCKED = "BLOCKED";
-	public static final String MISSING_MANDATOTY_FIELDS = "Missing mandatory fields";
-	public static final String USERNAME_FIELD_EMPTY = "UserName is required";
-	public static final String PWORD_FIELD_EMPTY = "Password is required";
-	public static final String CREDENTIALS_FIELD_EMPTY = "UserName and Password are required";
-	public static final String USRNAME_PWORD_LENGTH = "Length of Username/Password should not be greater than 50";
-	public static final String INCORRECT_PWORD = "Incorrect Username/Password";
-	public static final String USER_NOT_ONBOARDED = "You have not been onboarded to use this client.";
-	public static final String BLOCKED_USER_ERROR = "You are not authorized to perform registration.";
-	public static final String LOGIN_INFO_MESSAGE = "Login Information";
-	public static final String OTP_FIELD_EMPTY = "Please Enter OTP";
 	public static final String LOGIN_FAILURE = "Unable To Login";
+	public static final String LOGIN_INFO_MESSAGE = "Login Information";
 	public static final String OTP_INFO_MESSAGE = "OTP Login Information";
-	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Please Enter Valid OTP";
-	public static final String USERNAME_FIELD_ERROR = "Please Enter Valid Username";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_INITIAL_VAL = "1";
 	public static final String HH_MM_SS = "HH:mm:ss";
 	
 	// FingerPrint
-	public static final String DEVICE_FP_NOT_FOUND = "Fingerprint device not found.";
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
-	public static final String FINGER_PRINT_MATCH = "Fingerprint match not found.";
 	public static final String DEVICE_INFO_MESSAGE = "Device Information";
 	public static final String FP_DEVICE = "Mantra";
 	public static final String FINGER_TYPE_MINUTIA = "minutia";
-	public static final String FP_DEVICE_TIMEOUT = "Please place your finger on the device.";
-	public static final String FP_DEVICE_ERROR = "Error occured while scanning the finger.";
-
+	
 	// Authorization Info
 	public static final String AUTHORIZATION_ALERT_TITLE = "Authorization Alert";
 	public static final String AUTHORIZATION_INFO_MESSAGE = "Authorization Information";
 	public static final String ADMIN_ROLE = "SUPERADMIN";
-	public static final String AUTHORIZATION_ERROR = "Please contact Admin.";
 	public static final String ROLES_EMPTY = "RolesEmpty";
-	public static final String ROLES_EMPTY_ERROR = "You are not authorized to perform registration.";
 	public static final String MACHINE_MAPPING = "MachineMapping";
-	public static final String MACHINE_MAPPING_ERROR = "You are not Authorized to login as you are not mapped to this machine. Please contact Admin.";
 	public static final String SUCCESS_MSG = "Success";
 
 	// Acknowledement Form
@@ -381,36 +342,6 @@ public class RegistrationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 
 	// UI Registration Validations
-	public static final String FULL_NAME_EMPTY = "Please Provide Full Name";
-	public static final String MIDDLE_NAME_EMPTY = "Please Provide Middle Name";
-	public static final String LAST_NAME_EMPTY = "Please Provide Last Name";
-	public static final String AGE_EMPTY = "Please Provide Age";
-	public static final String AGE_WARNING = "Please Provide Date Of Birth";
-	public static final String DATE_OF_BIRTH_EMPTY = "Please Provide Date Of Birth";
-	public static final String GENDER_EMPTY = "Please Provide Gender";
-	public static final String ADDRESS_LINE_1_EMPTY = "Please Provide Adress Line 1";
-	public static final String ADDRESS_LINE_2_EMPTY = "Please Provide Adress Line 2";
-	public static final String COUNTRY_EMPTY = "Please Provide Country";
-	public static final String CITY_EMPTY = "Please Provide City";
-	public static final String PROVINCE_EMPTY = "Please Provide Province";
-	public static final String REGION_EMPTY = "Please Provide Region";
-	public static final String POSTAL_CODE_EMPTY = "Please Provide Postal Code";
-	public static final String MOBILE_NUMBER_EMPTY = "Please Provide Mobile Number";
-	public static final String MOBILE_NUMBER_EXAMPLE = "Please provide 9 digit mobile no, Example : 990854240";
-	public static final String EMAIL_ID_EMPTY = "Please Provide Email Id";
-	public static final String EMAIL_ID_EXAMPLE = "Example : xyz@xyz.com";
-	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
-	public static final String UIN_ID_EMPTY = "Please provide Uin/Rid  of the parent, the detail should be numbers only from 6 to 28 letters";
-	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 50 characters";
-	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = "Please Provide Local Admin Authority";
-	public static final String CNIE_OR_PIN_NUMBER_EMPTY = "Please Provide CNIE OR PIN NUMBER";
-	public static final String POA_DOCUMENT_EMPTY = "Please Provide POA Document";
-	public static final String POI_DOCUMENT_EMPTY = "Please Provide POI Document";
-	public static final String POR_DOCUMENT_EMPTY = "Please Provide POR Document";
-	public static final String ONLY_ALPHABETS="Only alphabets are allowed";
-	public static final String TEN_LETTER_INPUT_LIMT="Please provide in the range of 6 to 10 letters";
-	public static final String SIX_DIGIT_INPUT_LIMT="Please provide 6 digit detail";
-	public static final String THIRTY_DIGIT_INPUT_LIMT="Please provide 30 digit detail";
 	public static final String ADDRESS_KEY="PrevAddress";
 	public static final String REGISTRATION_CONTROLLER="REGISTRATION_CONTROLLER";
 	public static final String REGISTRATION_DATA="registrationDTOContent";
@@ -447,8 +378,6 @@ public class RegistrationConstants {
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
 	public static final String ONHOLD_COMMENTS = "ONHOLD_COMMENTS";
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
-	public static final String AUTH_APPROVAL_SUCCESS_MSG = "Authentication successful. The selected registrations have been marked as Approved, Rejected or On hold.";
-	public static final String AUTH_PENDING_ACTION_SUCCESS_MSG = "Authentication successful. The selected registrations have been marked as Approved or Rejected.";
 	public static final String AUTH_FAILURE_MSG = "Authentication failure. Please try again.";
 	public static final String AUTH_INFO = "INFO";
 
@@ -505,7 +434,6 @@ public class RegistrationConstants {
 	public static final String ONBOARD_AVAILABLE_DEVICES = "availableDevices";
 	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
 	public static final String DEVICE_ONBOARD_EXCEPTION_ALERT = "Device Onboarding";
-	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
 	public static final String MACHINE_ID = "machineId";
@@ -530,9 +458,6 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
 
 	// Lock User account
-	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = "Your account has been temporarily locked as you have made ";
-	public static final String USER_ACCOUNT_LOCK_MESSAGE =	" unsuccessful login attempts. Please try logging in after ";
-	public static final String USER_ACCOUNT_LOCK_MESSAGE_MINUTES = " minutes.";
 	public static final int INVALID_LOGIN_COUNT_RESET = 0;
 	public static final int INVALID_LOGIN_COUNT_INCREMENT = 1;
 
@@ -549,9 +474,7 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
 	public static final String BATCH_JOB_CODE = "Sync Job Alert";
-	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "Jobs started successfully";
-	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
-
+	
 	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
 	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
 	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
@@ -559,11 +482,6 @@ public class RegistrationConstants {
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
 	
-	public static final String START_SCHEDULER_ERROR_MESSAGE = " Job Not Found";
-	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop JobScheduler";
-	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
-	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
-
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
 	public static final String GPS_LATITUDE = "latitude";
@@ -610,6 +528,131 @@ public class RegistrationConstants {
 	public static final String SAVE_PRE_REGISTRATION_ERROR_MESSAGE = "Unable to save Pre-Registration";
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
+	
+	//Key values to read value from messages.properties file
+	
+	//LOGIN 
+	public static final String UNABLE_LOAD_LOGIN_SCREEN = "UNABLE_LOAD_LOGIN_SCREEN";
+	public static final String MISSING_MANDATOTY_FIELDS	= "MISSING_MANDATOTY_FIELDS";
+	public static final String CREDENTIALS_FIELD_EMPTY  = "CREDENTIALS_FIELD_EMPTY";
+	public static final String USERNAME_FIELD_EMPTY = "USERNAME_FIELD_EMPTY";
+	public static final String PWORD_FIELD_EMPTY = "PWORD_FIELD_EMPTY";
+	public static final String USRNAME_PWORD_LENGTH = "USRNAME_PWORD_LENGTH";
+	public static final String USER_NOT_ONBOARDED = "USER_NOT_ONBOARDED";
+	public static final String INCORRECT_PWORD = "INCORRECT_PWORD";
+	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
+	public static final String USERNAME_FIELD_ERROR = "USERNAME_FIELD_ERROR";
+	public static final String OTP_FIELD_EMPTY = "OTP_FIELD_EMPTY";
+	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "OTP_GENERATION_SUCCESS_MESSAGE";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "OTP_GENERATION_ERROR_MESSAGE";
+	public static final String OTP_VALIDATION_SUCCESS_MESSAGE = "OTP_VALIDATION_SUCCESS_MESSAGE";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE = "OTP_VALIDATION_ERROR_MESSAGE";
+	public static final String FINGER_PRINT_MATCH = "FINGER_PRINT_MATCH";
+	
+	//AUTHORIZATION
+	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
+	public static final String MACHINE_MAPPING_ERROR = "MACHINE_MAPPING_ERROR";
+	public static final String AUTHORIZATION_ERROR = "AUTHORIZATION_ERROR";
+	
+	//DEVICE
+	public static final String DEVICE_FP_NOT_FOUND = "DEVICE_FP_NOT_FOUND";
+	public static final String FP_DEVICE_TIMEOUT = "FP_DEVICE_TIMEOUT";
+	public static final String FP_DEVICE_ERROR = "FP_DEVICE_ERROR";
+	public static final String FP_CAPTURE_SUCCESS = "FP_CAPTURE_SUCCESS";
+	public static final String WEBCAM_ALERT_CONTEXT = "WEBCAM_ALERT_CONTEXT";
+	
+	//LOCK ACCOUNT
+	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = "USER_ACCOUNT_LOCK_MESSAGE_NUMBER";
+	public static final String USER_ACCOUNT_LOCK_MESSAGE =	"USER_ACCOUNT_LOCK_MESSAGE";
+	public static final String USER_ACCOUNT_LOCK_MESSAGE_MINUTES = "USER_ACCOUNT_LOCK_MESSAGE_MINUTES";
+	
+	//NOTIFICATIONS
+	public static final String NOTIFICATION_FAIL = "NOTIFICATION_FAIL";
+	public static final String NOTIFICATION_SMS_FAIL = "NOTIFICATION_SMS_FAIL";
+	public static final String NOTIFICATION_EMAIL_FAIL = "NOTIFICATION_EMAIL_FAIL";
+	
+	//SUCCESS
+	public static final String PACKET_CREATED_SUCCESS = "PACKET_CREATED_SUCCESS";
+	public static final String REREGISTRATION_APPROVE_SUCCESS = "REREGISTRATION_APPROVE_SUCCESS";
+	
+	//DEVICE MAPPING
+	public static final String DEVICE_ONBOARD_ERROR_MSG = "DEVICE_ONBOARD_ERROR_MSG";
+	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = "DEVICE_MAPPING_SUCCESS_MESSAGE";
+	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "DEVICE_MAPPING_ERROR_MESSAGE";
+	
+	//AUTHENTICATION
+	public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
+	public static final String AUTH_APPROVAL_SUCCESS_MSG = "AUTH_APPROVAL_SUCCESS_MSG";
+	public static final String AUTH_PENDING_ACTION_SUCCESS_MSG = "AUTH_PENDING_ACTION_SUCCESS_MSG";
+	
+	//CAMERA
+	public static final String APPLICANT_IMAGE_ERROR = "APPLICANT_IMAGE_ERROR";
+	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = "DEMOGRAPHIC_DETAILS_ERROR_CONTEXT";
+	
+	//REGISTRATION
+	public static final String ONLY_ALPHABETS = "ONLY_ALPHABETS";
+	public static final String FULL_NAME_EMPTY = "FULL_NAME_EMPTY";
+	public static final String MIDDLE_NAME_EMPTY = "MIDDLE_NAME_EMPTY";
+	public static final String LAST_NAME_EMPTY = "LAST_NAME_EMPTY";
+	public static final String AGE_EMPTY = "AGE_EMPTY";
+	public static final String AGE_WARNING = "AGE_WARNING";
+	public static final String DATE_OF_BIRTH_EMPTY = "DATE_OF_BIRTH_EMPTY";
+	public static final String GENDER_EMPTY = "GENDER_EMPTY";
+	public static final String ADDRESS_LINE_1_EMPTY = "ADDRESS_LINE_1_EMPTY";
+	public static final String ADDRESS_LINE_2_EMPTY = "ADDRESS_LINE_2_EMPTY";
+	public static final String COUNTRY_EMPTY = "COUNTRY_EMPTY";
+	public static final String CITY_EMPTY = "CITY_EMPTY";
+	public static final String PROVINCE_EMPTY = "PROVINCE_EMPTY";
+	public static final String REGION_EMPTY = "REGION_EMPTY";
+	public static final String POSTAL_CODE_EMPTY = "POSTAL_CODE_EMPTY";
+	public static final String MOBILE_NUMBER_EMPTY = "MOBILE_NUMBER_EMPTY";
+	public static final String MOBILE_NUMBER_EXAMPLE = "MOBILE_NUMBER_EXAMPLE";
+	public static final String EMAIL_ID_EMPTY = "EMAIL_ID_EMPTY";
+	public static final String EMAIL_ID_EXAMPLE = "EMAIL_ID_EXAMPLE";
+	public static final String PARENT_NAME_EMPTY = "PARENT_NAME_EMPTY";
+	public static final String UIN_ID_EMPTY = "UIN_ID_EMPTY";
+	public static final String ADDRESS_LINE_WARNING = "ADDRESS_LINE_WARNING";
+	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = "LOCAL_ADMIN_AUTHORITY_EMPTY";
+	public static final String CNIE_OR_PIN_NUMBER_EMPTY = "CNIE_OR_PIN_NUMBER_EMPTY";
+	public static final String POA_DOCUMENT_EMPTY = "POA_DOCUMENT_EMPTY";
+	public static final String POI_DOCUMENT_EMPTY = "POI_DOCUMENT_EMPTY";
+	public static final String POR_DOCUMENT_EMPTY = "POR_DOCUMENT_EMPTY";
+	public static final String TEN_LETTER_INPUT_LIMT = "TEN_LETTER_INPUT_LIMT";
+	public static final String SIX_DIGIT_INPUT_LIMT = "SIX_DIGIT_INPUT_LIMT";
+	public static final String THIRTY_DIGIT_INPUT_LIMT = "THIRTY_DIGIT_INPUT_LIMT";
+	
+	//OPT TO REGISTER
+	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
+	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_EXPORT_EXCEED";
+	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "OPT_TO_REG_REACH_MAX_LIMIT"; 
+	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "OPT_TO_REG_OUTSIDE_LOCATION";
+	public static final String OPT_TO_REG_WEAK_GPS = "OPT_TO_REG_WEAK_GPS";
+	public static final String OPT_TO_REG_INSERT_GPS = "OPT_TO_REG_INSERT_GPS";
+	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "OPT_TO_REG_GPS_PORT_MISMATCH";
+	
+	//JOBS
+	public static final String EXECUTE_JOB_ERROR_MESSAGE = "EXECUTE_JOB_ERROR_MESSAGE";
+	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "BATCH_JOB_START_SUCCESS_MESSAGE";
+	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "BATCH_JOB_STOP_SUCCESS_MESSAGE";
+	public static final String START_SCHEDULER_ERROR_MESSAGE = "START_SCHEDULER_ERROR_MESSAGE";
+	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "STOP_SCHEDULER_ERROR_MESSAGE";
+	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "CURRENT_JOB_DETAILS_ERROR_MESSAGE";
+	
+	//MACHINE MAPPING
+	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "MACHINE_MAPPING_SUCCESS_MESSAGE";
+	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "MACHINE_MAPPING_ERROR_MESSAGE";
+	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE";
+	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS";
+	
+	//SYNC
+	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "PACKET_STATUS_SYNC_SUCCESS_MESSAGE";
+	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "PACKET_STATUS_SYNC_ERROR_RESPONSE";
+	
+	///////////
+	public static final String UNABLE_LOAD_HOME_PAGE = "UNABLE_LOAD_HOME_PAGE";
+	public static final String UNABLE_LOAD_LOGOUT_PAGE = "UNABLE_LOAD_LOGOUT_PAGE";
+	public static final String UNABLE_LOAD_APPROVAL_PAGE = "UNABLE_LOAD_APPROVAL_PAGE";
+	public static final String UNABLE_LOAD_REG_PAGE = "UNABLE_LOAD_REG_PAGE";
 	
 	
 
