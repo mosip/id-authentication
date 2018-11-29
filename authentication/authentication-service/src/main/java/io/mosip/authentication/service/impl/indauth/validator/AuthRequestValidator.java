@@ -24,15 +24,11 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.helper.DateHelper;
@@ -192,7 +188,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 				validateReqHmac(authRequestDto.getReqHmac(), errors);
 
-				//validateBioDetails(authRequestDto, errors);
+				// validateBioDetails(authRequestDto, errors);
 
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
@@ -675,183 +671,4 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	private void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
-
-		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
-		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
-		if ((authTypeDTO != null && authTypeDTO.isBio()) && (bioInfo != null && !bioInfo.isEmpty())) {
-
-			if (isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN)) {
-				checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
-				validateFingerRequestCount(authRequestDTO, errors);
-			}
-			if (isContainBioInfo(bioInfo, BioType.FGRIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG)) {
-				checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
-				validateFingerRequestCount(authRequestDTO, errors);
-			}
-
-			if (isContainBioInfo(bioInfo, BioType.IRISIMG) && isDuplicateBioRequest(authRequestDTO, BioType.IRISIMG)) {
-				checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
-				validateIrisRequestCount(authRequestDTO);
-			}
-
-			if (isContainBioInfo(bioInfo, BioType.FACEIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FACEIMG)) {
-				checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
-			}
-
-		} else {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-		}
-
-	}
-
-	private boolean isContainBioInfo(List<BioInfo> bioInfoList, BioType bioType) {
-		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
-				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
-	}
-
-	public void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-
-		boolean isAtleastOneFingerRequestAvailable = Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getIdentity).map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent();
-		if (!isAtleastOneFingerRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-		}
-
-	}
-
-	public void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isIrisRequestAvailable = authRequestDTO.getRequest() != null
-				&& authRequestDTO.getRequest().getIdentity() != null
-				&& authRequestDTO.getRequest().getIdentity().getLeftEye() != null
-				&& !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
-				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
-						&& authRequestDTO.getRequest().getIdentity().getRightEye() != null
-						&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty();
-		if (!isIrisRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-		}
-	}
-
-	public void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isFaceRequestAvailable = authRequestDTO.getRequest() != null
-				&& authRequestDTO.getRequest().getIdentity() != null
-				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
-		if (!isFaceRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-		}
-	}
-
-	public boolean isDuplicateBioRequest(AuthRequestDTO authRequestDTO, BioType bioType) {
-		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
-		Long bioTypeCount = Optional.ofNullable(bioInfo).map(List::parallelStream)
-				.map(stream -> stream
-						.filter(bio -> bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()))
-						.count())
-				.orElse((long) 0);
-
-		return bioTypeCount <= 1;
-
-	}
-
-	public void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
-		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
-
-		// --- Left Finger ---
-		List<IdentityInfoDTO> leftThumb = identity.getLeftThumb();
-		Long leftThumbCount = Optional.ofNullable(leftThumb).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftIndex = identity.getLeftIndex();
-		Long leftIndexCount = Optional.ofNullable(leftIndex).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftMiddle = identity.getLeftMiddle();
-		Long leftMiddleCount = Optional.ofNullable(leftMiddle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftRing = identity.getLeftRing();
-		Long leftRingCount = Optional.ofNullable(leftRing).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftLittle = identity.getLeftLittle();
-		Long leftLittleCount = Optional.ofNullable(leftLittle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		// - Right Finger ----
-		List<IdentityInfoDTO> rightThumb = identity.getRightThumb();
-		Long rightThumbCount = Optional.ofNullable(rightThumb).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightIndex = identity.getRightIndex();
-		Long rightIndexCount = Optional.ofNullable(rightIndex).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightMiddle = identity.getRightMiddle();
-		Long rightMiddleCount = Optional.ofNullable(rightMiddle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightRing = identity.getRightRing();
-		Long rightRingCount = Optional.ofNullable(rightRing).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightLittle = identity.getRightLittle();
-		Long rightLittleCount = Optional.ofNullable(rightLittle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		if (leftThumbCount > 1 || leftIndexCount > 1 || leftMiddleCount > 1 || leftRingCount > 1 || leftLittleCount > 1
-				|| rightThumbCount > 1 || rightIndexCount > 1 || rightMiddleCount > 1 || rightRingCount > 1
-				|| rightLittleCount > 1) {
-
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "Duplicate fingers ");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage(), REQUEST));
-		}
-
-		Long fingerCountExceeding = leftThumbCount + leftIndexCount + leftMiddleCount + leftRingCount + leftLittleCount
-				+ rightThumbCount + rightIndexCount + rightMiddleCount + rightRingCount + rightLittleCount;
-		if (fingerCountExceeding > 10) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), REQUEST));
-		}
-	}
-
-	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO) {
-		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
-
-		List<IdentityInfoDTO> leftEye = identity.getLeftEye();
-		Long leftEyeCount = Optional.ofNullable(leftEye).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightEye = identity.getRightEye();
-		Long rightEyeCount = Optional.ofNullable(rightEye).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		if (leftEyeCount > 1 || rightEyeCount > 1) {
-			// add errors
-		}
-
-	}
 }
