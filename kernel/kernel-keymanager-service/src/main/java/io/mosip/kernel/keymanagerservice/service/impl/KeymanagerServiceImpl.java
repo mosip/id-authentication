@@ -160,7 +160,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		System.out.println(alias);
 		PublicKey publicKey = keyStore.getPublicKey(alias);
 		// System.out.println(keyStore.getCertificate(alias).toString());
-		keyResponseDto.setPublicKey(Base64.encodeBase64String(publicKey.getEncoded()));
+		keyResponseDto.setPublicKey(Base64.encodeBase64URLSafeString(publicKey.getEncoded()));
 		return keyResponseDto;
 	}
 
@@ -215,7 +215,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					Base64.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
 
 			System.out.println("SymmetricKey: " + decryptedSymmetricKey);
-			keyResponseDto.setSymmetricKey(Base64.encodeBase64String(decryptedSymmetricKey));
+			keyResponseDto.setSymmetricKey(Base64.encodeBase64URLSafeString(decryptedSymmetricKey));
 
 		}
 		return keyResponseDto;
