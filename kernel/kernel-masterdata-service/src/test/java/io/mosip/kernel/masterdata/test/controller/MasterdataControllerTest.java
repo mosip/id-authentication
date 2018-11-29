@@ -51,11 +51,11 @@ import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
@@ -170,7 +170,7 @@ public class MasterdataControllerTest {
 	@MockBean
 	private TemplateService templateService;
 
-	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
 	@MockBean
 	private BlacklistedWordsService blacklistedWordsService;
@@ -220,7 +220,7 @@ public class MasterdataControllerTest {
 	}
 
 	private void templateFileFormatSetup() {
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("xml");
 		codeAndLanguageCodeId.setLangCode("FRE");
 	}
@@ -249,7 +249,7 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -365,7 +365,7 @@ public class MasterdataControllerTest {
 
 		applicationDtoList.add(applicationDto);
 		
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
 	}

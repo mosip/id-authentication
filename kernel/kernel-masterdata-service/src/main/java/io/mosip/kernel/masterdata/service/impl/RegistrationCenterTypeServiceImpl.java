@@ -12,8 +12,8 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -71,9 +71,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
+		List<CodeAndLanguageCodeID> codeLangCodeIds = new ArrayList<>();
 		regCenterTypes.forEach(regCenterType -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+			CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 			try {
 				dataMapper.map(regCenterType, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {

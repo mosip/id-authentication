@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 
 
@@ -28,11 +28,11 @@ public class MachineTypeController {
 	 * @param MachineTypeRequestDto
 	 * 				input from user Machine Type DTO
 	 *            
-	 * @return {@link CodeAndLanguageCodeId}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
 	@PostMapping("/machinetype")
-	public ResponseEntity<CodeAndLanguageCodeId> saveMachineType(@RequestBody MachineTypeRequestDto machineType) {
+	public ResponseEntity<CodeAndLanguageCodeID> saveMachineType(@RequestBody MachineTypeRequestDto machineType) {
 		return new ResponseEntity<>( machinetypeService.saveMachineType(machineType), HttpStatus.CREATED);
 	}
 

@@ -1,7 +1,4 @@
-/**
- * 
- */
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.masterdata.entity.id;
 
 import java.io.Serializable;
 
@@ -12,25 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author M1047717
- *
- */
 @Embeddable
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class DeviceTypePk implements Serializable {
-
+@AllArgsConstructor
+public class CodeAndLanguageCodeID implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2016138253768704918L;
+	private static final long serialVersionUID = 7001663925687776491L;
 
-	@Column(name = "code", nullable = false, length = 64)
+	@Column(name = "code", nullable = false)
 	private String code;
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
 }

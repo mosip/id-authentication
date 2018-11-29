@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.masterdata.entity.id;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HolidayId implements Serializable {
+public class HolidayID implements Serializable {
 
 	private static final long serialVersionUID = -1631873932622755759L;
 

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.GenderID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +27,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "gender", schema = "master")
-@IdClass(GenderTypeId.class)
-public class GenderType extends BaseEntity implements Serializable {
+@IdClass(GenderID.class)
+public class Gender extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1323022736883315822L;
 
 	

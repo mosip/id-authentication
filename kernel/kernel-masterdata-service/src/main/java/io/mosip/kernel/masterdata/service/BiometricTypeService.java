@@ -5,7 +5,7 @@ import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * @author Neha
@@ -38,5 +38,5 @@ public interface BiometricTypeService {
 	 */
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
 	
-	public CodeAndLanguageCodeId addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto);
+	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto);
 }

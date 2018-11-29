@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.masterdata.entity.id;
 
 import java.io.Serializable;
 
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterUserMachineHistoryId implements Serializable {
+public class RegistrationCenterMachineUserID implements Serializable {
 
 	/**
 	 *  Generated serial version

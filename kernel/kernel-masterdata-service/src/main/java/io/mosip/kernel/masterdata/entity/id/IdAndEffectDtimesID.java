@@ -1,6 +1,7 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.masterdata.entity.id;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,15 +14,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeAndLanguageCodeId implements Serializable {
-	/**
-	 * 
-	 */
+public class IdAndEffectDtimesID implements Serializable{
+	
 	private static final long serialVersionUID = 7001663925687776491L;
 
-	@Column(name = "code", nullable = false)
-	private String code;
+	@Column(name = "id", nullable = false)
+	private String id;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
+	@Column(name = "eff_dtimes", nullable = false)
+	private LocalDateTime effectDtimes;
+
 }

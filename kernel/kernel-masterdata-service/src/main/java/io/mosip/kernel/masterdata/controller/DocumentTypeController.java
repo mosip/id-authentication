@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.ApiOperation;
 
@@ -46,7 +46,7 @@ public class DocumentTypeController {
 	}
 
 	@PostMapping("/documenttypes")
-	public ResponseEntity<CodeAndLanguageCodeId> addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
+	public ResponseEntity<CodeAndLanguageCodeID> addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
 		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
 	}
 }

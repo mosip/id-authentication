@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.masterdata.entity.id;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class CodeLangCodeAndRsnCatCode implements Serializable {
+public class CodeLangCodeAndRsnCatCodeID implements Serializable {
 
 	/**
 	 * 

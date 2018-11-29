@@ -13,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +31,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "biometric_attribute", schema = "master")
-@IdClass(CodeAndLanguageCodeId.class)
+@IdClass(CodeAndLanguageCodeID.class)
 public class BiometricAttribute extends BaseEntity implements Serializable {
 
 	/**

@@ -14,6 +14,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +34,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(ValidDocumentId.class)
+@IdClass(ValidDocumentID.class)
 public class ValidDocument extends BaseEntity implements Serializable {
 
 	/**

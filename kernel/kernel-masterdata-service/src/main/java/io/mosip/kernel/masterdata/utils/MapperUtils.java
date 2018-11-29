@@ -28,11 +28,11 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 @Component
 public class MapperUtils {
@@ -108,7 +108,7 @@ public class MapperUtils {
 		List<HolidayDto> holidayDtos = new ArrayList<>();
 		holidays.forEach(holiday -> {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
-			HolidayId holidayId = holiday.getHolidayId();
+			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
 			dto.setHolidayId(String.valueOf(holidayId.getId()));
 			dto.setHolidayDate(String.valueOf(date));

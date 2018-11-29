@@ -54,7 +54,6 @@ import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
@@ -63,6 +62,7 @@ import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
@@ -581,8 +581,8 @@ public class MasterDataServiceTest {
 
 	private List<DeviceType> deviceTypeList;
 	private DeviceType deviceType;
-	private List<CodeAndLanguageCodeId> codeLangCodeIds;
-	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+	private List<CodeAndLanguageCodeID> codeLangCodeIds;
+	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
 	private void deviceTypeSetUp() {
 
@@ -609,7 +609,7 @@ public class MasterDataServiceTest {
 		deviceTypeList.add(deviceType);
 
 		codeLangCodeIds = new ArrayList<>();
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("Laptop");
 		codeAndLanguageCodeId.setLangCode("ENG");
 		codeLangCodeIds.add(codeAndLanguageCodeId);
@@ -653,7 +653,7 @@ public class MasterDataServiceTest {
 	public void addApplicationDataSuccess() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
-		CodeAndLanguageCodeId codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
 				codeAndLanguageCodeId.getCode());
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
@@ -1260,7 +1260,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatSuccess() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		CodeAndLanguageCodeId codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
 		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
 		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}

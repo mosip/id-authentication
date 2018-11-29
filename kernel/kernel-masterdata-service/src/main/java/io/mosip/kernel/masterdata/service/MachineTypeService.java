@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * This interface has abstract methods to save a Machine Type Details to the
@@ -18,8 +18,8 @@ public interface MachineTypeService {
 	 * 
 	 * @param machineType
 	 * 
-	 * @return {@link CodeAndLanguageCodeId}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
-   public CodeAndLanguageCodeId saveMachineType(MachineTypeRequestDto machineType);
+   public CodeAndLanguageCodeID saveMachineType(MachineTypeRequestDto machineType);
 
 }
