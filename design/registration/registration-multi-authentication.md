@@ -45,5 +45,6 @@ invoked by the AuthenticationService to perform validation.
     the authentication.
     
 
+
 **Sequence and Class Diagram**
 ![Authentication class diagram](_images/registration-multifactor-authentication.png)
