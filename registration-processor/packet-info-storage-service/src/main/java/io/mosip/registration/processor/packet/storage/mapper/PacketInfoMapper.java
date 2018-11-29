@@ -5,9 +5,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
+import org.apache.commons.codec.language.Soundex;
+import org.apache.commons.codec.language.bm.Languages;
+import org.apache.commons.codec.language.bm.NameType;
+import org.apache.commons.codec.language.bm.PhoneticEngine;
+import org.apache.commons.codec.language.bm.RuleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -397,31 +405,32 @@ public class PacketInfoMapper {
 		return languages.toString().split(",");
 	}
 
-	private static String getName(List<JsonValue[]> jsonValueList,String language) {
-		String name ="";
-		for(int i =0;i<jsonValueList.size();i++) {
-			
-			for(int j=0;j<jsonValueList.get(i).length;j++) {
-				if(language.equals(jsonValueList.get(i)[j].getLanguage())) {
-					name = name+jsonValueList.get(i)[j].getValue();
+	private static String getName(List<JsonValue[]> jsonValueList, String language) {
+		StringBuilder name = new StringBuilder();
+		for (int i = 0; i < jsonValueList.size(); i++) {
+
+			for (int j = 0; j < jsonValueList.get(i).length; j++) {
+				if (language.equals(jsonValueList.get(i)[j].getLanguage())) {
+					name = name.append(jsonValueList.get(i)[j].getValue());
+
 				}
 			}
-				
-			}
-		return name;
+
 		}
-		
+		return name.toString();
+	}
+
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
 			IndividualDemographicDedupe demoDto, String regId, String preRegId) {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
-		for( int i =0;i<demoDto.getName().size();i++) {
+		for (int i = 0; i < demoDto.getName().size(); i++) {
 			getLanguages(demoDto.getName().get(i));
 
 		}
 		getLanguages(demoDto.getDateOfBirth());
-		String[] languageArray =  getLanguages(demoDto.getGender());
+		String[] languageArray = getLanguages(demoDto.getGender());
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
@@ -433,8 +442,24 @@ public class PacketInfoMapper {
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
-			entity.setName(getName(demoDto.getName(),languageArray[i]));
-			entity.setPheoniticName("testValue");
+			entity.setName(getName(demoDto.getName(), languageArray[i]));
+
+			Locale loc = new Locale(languageArray[i]);
+			String languageName = loc.getDisplayLanguage();
+			
+			PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
+			Set<String> languageSet = new HashSet<>();
+			languageSet.add(languageName.toLowerCase());
+
+			String encodedInputString = phoneticEngine.encode(getName(demoDto.getName(), languageArray[i]),
+					Languages.LanguageSet.from(languageSet));
+			Soundex soundex = new Soundex();
+			entity.setPheoniticName(soundex.encode(encodedInputString));
+			
+			System.out.println(getName(demoDto.getName(), languageArray[i])+ " Before Encoding ***************");
+			System.out.println(encodedInputString+ " After Pheonitic Representation ***************");
+			System.out.println(soundex.encode(encodedInputString)+ " After Soundex Alogorithm ***************");
+
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
 				try {

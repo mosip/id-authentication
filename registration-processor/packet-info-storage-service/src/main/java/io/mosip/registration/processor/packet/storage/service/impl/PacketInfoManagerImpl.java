@@ -523,7 +523,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demographicData.setName(jsonNameList);
 			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
-			demographicData.setPheoniticName("12345");
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
