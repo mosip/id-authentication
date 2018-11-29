@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "valid_document", schema = "master")
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

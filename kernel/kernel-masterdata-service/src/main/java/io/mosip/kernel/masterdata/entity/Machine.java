@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  * Entity for Machine Details
  * 
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "biometric_type", schema = "master")
 @IdClass(CodeAndLanguageCodeId.class)
 public class BiometricType extends BaseEntity implements Serializable {

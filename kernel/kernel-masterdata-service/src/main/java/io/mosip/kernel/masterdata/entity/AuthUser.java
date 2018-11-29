@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class AuthUser extends User {
 	private static final long serialVersionUID = 3102294056807388456L;
 	private String displayName = null;

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "doc_category", schema = "master")
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

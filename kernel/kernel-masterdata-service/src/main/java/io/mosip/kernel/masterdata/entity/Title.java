@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
  */
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "Title.getThroughLanguageCode", query = "select code, name, descr , lang_code , is_active , cr_by , cr_dtimes , upd_by , upd_dtimes ,is_deleted , del_dtimes from master.title where lang_code = ?1 and is_deleted = 'f' or is_deleted IS NULL ", resultClass = Title.class) })
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
