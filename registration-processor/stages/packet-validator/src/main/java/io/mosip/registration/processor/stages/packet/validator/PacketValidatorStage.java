@@ -29,6 +29,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
@@ -60,7 +61,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
-	
+
 	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
@@ -115,19 +116,26 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			FilesValidation filesValidation = new FilesValidation(adapter);
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 			boolean isCheckSumValidated = false;
+			boolean isApplicantDocumentValidation = false;
 			if (isFilesValidated) {
 
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 						packetMetaInfo.getIdentity());
 
-				if (!isCheckSumValidated) {
+				if (isCheckSumValidated) {
+					ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+							registrationStatusDto);
+					isApplicantDocumentValidation = applicantDocumentValidation
+							.documentValidation(packetMetaInfo.getIdentity(), registrationId);
+
+				} else {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
 			} else {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
 			}
-			if (isFilesValidated && isCheckSumValidated) {
+			if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
@@ -164,13 +172,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
-		}catch (DataAccessException e) {
+		} catch (DataAccessException e) {
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Data voilation in reg packet : " + registrationId;
 
-		} 
-		catch (IOException exc) {
+		} catch (IOException exc) {
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), exc);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
