@@ -59,6 +59,10 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	OSIValidator osiValidator;
 
+	/** The umc validator. */
+	@Autowired
+	UMCValidator umcValidator;
+	
 	/**
 	 * Deploy verticle.
 	 */
@@ -82,7 +86,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		object.setInternalError(Boolean.FALSE);
 		String description = "";
 		boolean isTransactionSuccessful = false;
-
+		boolean isValidUMC=false;
 		String registrationId = object.getRid();
 		boolean isValidOSI = false;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
@@ -91,9 +95,9 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 
 		try {
-
+			isValidUMC=umcValidator.isValidUMC(registrationId);
 			isValidOSI = osiValidator.isValidOSI(registrationId);
-			if (isValidOSI) {
+			if (isValidUMC && isValidOSI) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL.toString());

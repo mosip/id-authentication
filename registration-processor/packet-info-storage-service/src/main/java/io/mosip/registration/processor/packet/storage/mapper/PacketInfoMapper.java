@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.storage.mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -366,8 +367,9 @@ public class PacketInfoMapper {
 				regCenterMachineEntity.setCntrId(field.getValue());
 			}else if (field.getLabel().matches("machineId")) {
 				regCenterMachineEntity.setMachineId(field.getValue());
+			}else if (field.getLabel().matches("creationDate")) {
+				regCenterMachineEntity.setPacketCreationDate(LocalDateTime.parse(field.getValue()));
 			}
-
 			}
 		
 			regCenterMachineEntity.setId(regCenterMachinePKEntity);

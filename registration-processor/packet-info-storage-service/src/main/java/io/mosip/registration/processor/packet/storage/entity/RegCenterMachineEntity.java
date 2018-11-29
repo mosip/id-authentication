@@ -40,7 +40,10 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 
 	/** The longitude. */
 	private String longitude;
-
+	
+	/** The packet creation time. */
+	private LocalDateTime packetCreationDate;
+	
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
@@ -302,6 +305,14 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	 */
 	public RegCenterMachineEntity() {
 		super();
+	}
+
+	public LocalDateTime getPacketCreationDate() {
+		return packetCreationDate;
+	}
+
+	public void setPacketCreationDate(LocalDateTime packetCreationDate) {
+		this.packetCreationDate = packetCreationDate;
 	}
 
 }

@@ -83,6 +83,7 @@ public class PacketInfoDao {
 		dto.setRegcntrId(regCenterMachineEntity.getCntrId());
 		dto.setRegId(regCenterMachineEntity.getId().getRegId());
 		dto.setMachineId(regCenterMachineEntity.getMachineId());
+		dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
 		return dto;
 	}
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
