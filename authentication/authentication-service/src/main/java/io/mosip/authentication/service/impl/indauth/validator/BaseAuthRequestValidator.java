@@ -3,7 +3,10 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -322,64 +325,37 @@ public class BaseAuthRequestValidator implements Validator {
 	 */
 	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
-
-		// --- Left Finger ---
-		List<IdentityInfoDTO> leftThumb = identity.getLeftThumb();
-		Long leftThumbCount = Optional.ofNullable(leftThumb).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftIndex = identity.getLeftIndex();
-		Long leftIndexCount = Optional.ofNullable(leftIndex).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftMiddle = identity.getLeftMiddle();
-		Long leftMiddleCount = Optional.ofNullable(leftMiddle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftRing = identity.getLeftRing();
-		Long leftRingCount = Optional.ofNullable(leftRing).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> leftLittle = identity.getLeftLittle();
-		Long leftLittleCount = Optional.ofNullable(leftLittle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		// - Right Finger ----
-		List<IdentityInfoDTO> rightThumb = identity.getRightThumb();
-		Long rightThumbCount = Optional.ofNullable(rightThumb).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightIndex = identity.getRightIndex();
-		Long rightIndexCount = Optional.ofNullable(rightIndex).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightMiddle = identity.getRightMiddle();
-		Long rightMiddleCount = Optional.ofNullable(rightMiddle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightRing = identity.getRightRing();
-		Long rightRingCount = Optional.ofNullable(rightRing).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		List<IdentityInfoDTO> rightLittle = identity.getRightLittle();
-		Long rightLittleCount = Optional.ofNullable(rightLittle).map(List::parallelStream)
-				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
-
-		if (leftThumbCount > 1 || leftIndexCount > 1 || leftMiddleCount > 1 || leftRingCount > 1 || leftLittleCount > 1
-				|| rightThumbCount > 1 || rightIndexCount > 1 || rightMiddleCount > 1 || rightRingCount > 1
-				|| rightLittleCount > 1) {
-
+		
+		List<Supplier<List<IdentityInfoDTO>>> listOfIndInfoSupplier = Stream.<Supplier<List<IdentityInfoDTO>>>of(
+				identity::getLeftThumb,
+				identity::getLeftIndex,
+				identity::getLeftMiddle,
+				identity::getLeftRing,
+				identity::getLeftLittle,
+				identity::getRightThumb,
+				identity::getRightIndex,
+				identity::getRightMiddle,
+				identity::getRightRing,
+				identity::getRightLittle
+				).collect(Collectors.toList());
+		
+		boolean anyInfoIsMoreThanOne = listOfIndInfoSupplier.stream().anyMatch(s ->  getIdInfoCount(s.get()) > 1);
+		if (anyInfoIsMoreThanOne) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "Duplicate fingers ");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage(), REQUEST));
 		}
 
-		Long fingerCountExceeding = leftThumbCount + leftIndexCount + leftMiddleCount + leftRingCount + leftLittleCount
-				+ rightThumbCount + rightIndexCount + rightMiddleCount + rightRingCount + rightLittleCount;
+		Long fingerCountExceeding = listOfIndInfoSupplier.stream().map(s ->  getIdInfoCount(s.get())).mapToLong(l -> l).sum();
 		if (fingerCountExceeding > 10) {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), REQUEST));
 		}
+	}
+
+	private Long getIdInfoCount(List<IdentityInfoDTO> list) {
+		return Optional.ofNullable(list).map(List::parallelStream)
+		.map(stream -> stream.filter(lt -> lt.getValue() !=null && !lt.getValue().isEmpty()).count()).orElse((long) 0);
 	}
 
 	/**
