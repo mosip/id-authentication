@@ -19,7 +19,7 @@ public class KeyManagerSymmetricKeyConverter implements DataConverter<CryptoRequ
 	@Override
 	public void convert(CryptoRequestDto source, KeyManagerSymmetricKeyRequestDto destination) {
 		destination.setApplicationId(source.getApplicationId());
-		destination.setMachineId(source.getMachineId());
+		destination.setReferenceId(source.getReferenceId());
 		destination.setTimeStamp(source.getTimeStamp());
 		destination.setEncryptedSymmetricKey(source.getData());
 	}

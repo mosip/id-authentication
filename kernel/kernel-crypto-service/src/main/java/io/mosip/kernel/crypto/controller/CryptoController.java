@@ -9,6 +9,7 @@ package io.mosip.kernel.crypto.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import io.mosip.kernel.crypto.service.CryptoService;
  *
  * @since 1.0.0
  */
+@CrossOrigin
 @RestController
 public class CryptoController {
 

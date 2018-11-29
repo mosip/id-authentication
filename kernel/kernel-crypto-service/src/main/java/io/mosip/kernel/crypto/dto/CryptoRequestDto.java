@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.lang.NonNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +34,7 @@ private String applicationId;
 /**
  * 
  */
-private String machineId;
+private String referenceId;
 /**
  * 
  */

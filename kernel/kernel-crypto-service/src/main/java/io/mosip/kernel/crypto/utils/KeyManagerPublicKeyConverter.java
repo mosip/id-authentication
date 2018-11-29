@@ -18,7 +18,7 @@ public class KeyManagerPublicKeyConverter implements DataConverter<CryptoRequest
 	@Override
 	public void convert(CryptoRequestDto source, KeyManagerPublicKeyRequestDto destination) {
 		destination.setApplicationId(source.getApplicationId());
-		destination.setMachineId(source.getMachineId());
+		destination.setReferenceId(source.getReferenceId());
 		destination.setTimeStamp(source.getTimeStamp());
 	}
 
