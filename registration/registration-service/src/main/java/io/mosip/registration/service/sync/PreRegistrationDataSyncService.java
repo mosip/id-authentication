@@ -6,8 +6,7 @@ import io.mosip.registration.dto.ResponseDTO;
 
 public interface PreRegistrationDataSyncService {
 
-	public ResponseDTO getPreRegistrationIds(String id, Timestamp reqTime, Timestamp fromDate, Timestamp toDate,
-			String regClientId, String userId, String ver);
+	public ResponseDTO getPreRegistrationIds();
 	
 	public ResponseDTO getPreRegistration(String preRegistrationId);
 }

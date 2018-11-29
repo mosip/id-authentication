@@ -531,6 +531,9 @@ public class RegistrationConstants {
 	public static final String SAVE_PRE_REGISTRATION_ERROR_MESSAGE = "Unable to save Pre-Registration";
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
+	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
+    public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
+    public static final String VER = "1.0";
 
 	// Key values to read value from messages.properties file
 
@@ -659,6 +662,6 @@ public class RegistrationConstants {
 
 	// UI Date Format
 	public static final String DEMOGRAPHIC_DOB_FORMAT = "dd-MM-yyyy";
-	public static final String DEMOGRAPHIC_DOB = "01-01-";
+	public static final String DEMOGRAPHIC_DOB = "01-01-";  
 
 }
