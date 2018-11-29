@@ -36,7 +36,7 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	private boolean oneToManyValidation(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
 
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-				.convert(fingerprintDetailsDTO.getFingerPrint());
+				.create(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
 		RegistrationUserDetail registrationUserDetail = userDataService.getUserDetail(userId);
 		return registrationUserDetail.getUserBiometric().stream().anyMatch(

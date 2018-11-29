@@ -29,7 +29,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="fingerPrintScanExit" layoutX="458.0" layoutY="10.0" text="X" />
+            <Hyperlink fx:id="fingerPrintScanExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" />
          </children>
       </AnchorPane>
    </children>
