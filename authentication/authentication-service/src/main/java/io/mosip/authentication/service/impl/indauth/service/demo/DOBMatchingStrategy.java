@@ -15,7 +15,6 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
-
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
 		if (reqInfo instanceof String) {

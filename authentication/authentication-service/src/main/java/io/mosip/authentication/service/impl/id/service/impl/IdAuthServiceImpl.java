@@ -26,6 +26,7 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -144,7 +145,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 		
 		Date currentDate = new Date();
-		if (!currentDate.before(vidEntity.getExpiryDate())) {
+		if(!DateUtils.before(currentDate, vidEntity.getExpiryDate())) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
 		}
 		

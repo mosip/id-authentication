@@ -92,13 +92,13 @@ public class KycServiceImpl implements KycService {
 	 * @param refId the refId
 	 * @param isSecLangInfoRequired the isseclanginforequired used to check secondary language info also needed
 	 * @param ePrintReq the ePrintReq used to check is PDF required or not
+     * @param identityInfo 
 	 * @return the map 
 	 */
     @Override
-    public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired)
+    public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired, Map<String, List<IdentityInfoDTO>> identityInfo)
 	    throws IdAuthenticationBusinessException {
 	KycInfo kycInfo = new KycInfo();
-	Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
 	Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
 		isSecLangInfoRequired);
 	kycInfo.setIdentity(filteredIdentityInfo);
@@ -118,24 +118,6 @@ public class KycServiceImpl implements KycService {
 	return kycInfo;
     }
 
-    /**
-	 * method to retrieve details by passing refid
-	 * 
-	 * @param refId
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-    private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String refId)
-	    throws IdAuthenticationBusinessException {
-	Map<String, List<IdentityInfoDTO>> identity = null;
-	try {
-	    identity = idInfoService.getIdInfo(refId);
-	} catch (IdAuthenticationDaoException e) {
-	    mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-	    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
-	}
-	return identity;
-    }
 
     /**
 	 * Construct identity info - Method to filter the details to be printed.

@@ -122,10 +122,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @see io.mosip.authentication.core.spi.indauth.service.DemoAuthService#
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
-	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
+	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId, Map<String, List<IdentityInfoDTO>> demoEntity)
 			throws IdAuthenticationBusinessException {
-
-		Map<String, List<IdentityInfoDTO>> demoEntity = getDemoEntity(refId);
 
 		if (demoEntity == null || demoEntity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
@@ -187,25 +185,5 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		});
 	}
 
-	/**
-	 * Gets the demo entity.
-	 *
-	 * @param uniqueId the unique id
-	 * @return the demo entity
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IdAuthenticationDaoException
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 */
-	public Map<String, List<IdentityInfoDTO>> getDemoEntity(String refId) throws IdAuthenticationBusinessException {
-
-		try {
-			return idInfoService.getIdInfo(refId);
-		} catch (IdAuthenticationDaoException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}
-
-	}
 
 }

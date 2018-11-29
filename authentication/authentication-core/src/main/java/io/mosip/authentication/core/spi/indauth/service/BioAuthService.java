@@ -1,9 +1,12 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
+import java.util.List;
+import java.util.Map;
+
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 
 /**
  * 
@@ -15,7 +18,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 
 public interface BioAuthService {
 
-	AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity,BioInfo bioInfo);
+	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String refId);
 
 	boolean validateDevice(DeviceInfo deviceInfo);
 

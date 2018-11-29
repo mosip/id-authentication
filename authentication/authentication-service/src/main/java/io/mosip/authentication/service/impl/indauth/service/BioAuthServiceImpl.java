@@ -1,10 +1,14 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
+
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 
 /**
@@ -36,7 +40,8 @@ public class BioAuthServiceImpl implements BioAuthService {
 	}
 
 	@Override
-	public AuthStatusInfo validateBioDetails(IdentityDTO inputIdentity, IdentityDTO storedIdentity, BioInfo bioInfo) {
+	public AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,
+			String refId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

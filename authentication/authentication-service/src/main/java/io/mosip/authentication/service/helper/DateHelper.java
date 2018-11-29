@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.helper;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,7 +20,7 @@ public class DateHelper {
 		String dateFormat = env.getProperty("datetime.pattern");
 		try {
 			return new SimpleDateFormat(dateFormat).parse(inputDate);
-		} catch (ParseException e) {
+		} catch (java.text.ParseException e) {
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "inputDate"), e);
 		}

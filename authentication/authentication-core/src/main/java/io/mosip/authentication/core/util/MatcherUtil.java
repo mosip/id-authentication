@@ -12,6 +12,7 @@ import org.apache.commons.codec.EncoderException;
 
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * 
@@ -104,7 +105,7 @@ public final class MatcherUtil {
 	 * @return 100 when the refInfo and entityInfo dates are matched
 	 */
 	public static int doExactMatch(Date reqInfo, Date entityInfo) {
-		if (reqInfo.compareTo(entityInfo) == 0) {
+		if(DateUtils.isSameInstant(reqInfo, entityInfo)) {
 			return EXACT_MATCH_VALUE;
 		} else {
 			return 0;
