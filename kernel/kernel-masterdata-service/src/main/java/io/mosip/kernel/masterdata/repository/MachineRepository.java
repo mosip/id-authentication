@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.masterdata.entity.MachineDetail;
+import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
  * Repository function to fetching machine details
@@ -15,13 +15,13 @@ import io.mosip.kernel.masterdata.entity.MachineDetail;
  */
 
 @Repository
-public interface MachineDetailRepository extends BaseRepository<MachineDetail, String> {
+public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the all Machine details code.
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
-	List<MachineDetail> findAllByIsDeletedFalse();
+	List<Machine> findAllByIsDeletedFalse();
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given machine
@@ -35,7 +35,7 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 * @return MachineDetail fetched from database
 	 */
 
-	MachineDetail findAllByIdAndLangCodeAndIsDeletedFalse(String id, String langCode);
+	Machine findAllByIdAndLangCodeAndIsDeletedFalse(String id, String langCode);
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given language
@@ -47,6 +47,6 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 * @return MachineDetail fetched from database
 	 */
 
-	List<MachineDetail> findAllByLangCodeAndIsDeletedFalse(String langCode);
+	List<Machine> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
 }
