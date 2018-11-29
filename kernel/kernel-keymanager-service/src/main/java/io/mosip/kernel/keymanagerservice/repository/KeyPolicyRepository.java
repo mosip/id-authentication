@@ -1,6 +1,6 @@
 package io.mosip.kernel.keymanagerservice.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +18,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 @Repository
 public interface KeyPolicyRepository extends BaseRepository<KeyPolicy, String> {
 
-	KeyPolicy findByApplicationId(String applicationId);
+	Optional<KeyPolicy> findByApplicationId(String applicationId);
 
 
 }

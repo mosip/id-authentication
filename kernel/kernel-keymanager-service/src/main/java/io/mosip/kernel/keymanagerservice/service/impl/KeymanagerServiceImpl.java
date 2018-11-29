@@ -17,11 +17,13 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstants;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
+import io.mosip.kernel.keymanagerservice.exception.ApplicationIdNotValid;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
@@ -108,8 +110,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println("!!!Creating new");
 			alias = UUID.randomUUID().toString();
 			System.out.println(applicationId);
-			final KeyPolicy keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
-			KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.getValidityInDays());
+			KeyAlias keyAlias = getKeyPolicy(applicationId, timeStamp,referenceId, alias);
 			keyAliasRepository.create(metadataUtil.setMetaData(keyAlias));
 		} else {
 
@@ -124,8 +125,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 				System.out.println("!!!Not Valid");
 				alias = UUID.randomUUID().toString();
-				final KeyPolicy keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
-				KeyAlias keyAlias = keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.getValidityInDays());
+				KeyAlias keyAlias = getKeyPolicy(applicationId, timeStamp,referenceId, alias);
 				keyAliasRepository.create(metadataUtil.setMetaData(keyAlias));
 			}
 		}
@@ -133,6 +133,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		PublicKey publicKey = keyStore.getPublicKey(alias);
 		keyResponseDto.setPublicKey(publicKey.getEncoded());
 		return keyResponseDto;
+	}
+
+	private KeyAlias getKeyPolicy(String applicationId, LocalDateTime timeStamp,
+			Optional<String> referenceId, String alias) {
+		Optional<KeyPolicy> keyPolicy=keyPolicyRepository.findByApplicationId(applicationId);
+		if(!keyPolicy.isPresent())
+			throw new ApplicationIdNotValid(KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorCode(), KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorMessage());
+		return  keyPairUtil.createNewKeyPair(applicationId, referenceId, alias,timeStamp,keyPolicy.get().getValidityInDays());
+	
 	}
 
 	/*
