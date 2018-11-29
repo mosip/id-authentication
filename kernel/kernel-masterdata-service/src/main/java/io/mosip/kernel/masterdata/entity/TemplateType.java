@@ -16,34 +16,28 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 
- * @author Neha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "appl_form_type", schema = "master")
+@Table(name = "template_type", schema = "master")
 @IdClass(CodeAndLanguageCodeId.class)
-public class Application extends BaseEntity implements Serializable {
-	/**
-	 * Generated serial version id
-	 */
-	private static final long serialVersionUID = 893244317356416503L;
+public class TemplateType extends BaseEntity implements Serializable {
+
+	private static final long serialVersionUID = -854194758755759037L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
+	@AttributeOverrides({
+			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String code;
 	private String langCode;
 
-	@Column(name = "name", nullable = false)
-	private String name;
-
-	@Column(name = "descr")
+	@Column(name = "descr", length = 256)
 	private String description;
-
 }

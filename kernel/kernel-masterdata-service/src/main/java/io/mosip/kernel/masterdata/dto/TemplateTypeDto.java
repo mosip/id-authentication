@@ -1,16 +1,17 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class BiometricTypeResponseDto {
+@NoArgsConstructor
+public class TemplateTypeDto {
 
-	private List<BiometricTypeDto> biometrictypes;
-	
+	private String code;
+	private String langCode;
+	private String description;
+	private Boolean isActive;
+
 }

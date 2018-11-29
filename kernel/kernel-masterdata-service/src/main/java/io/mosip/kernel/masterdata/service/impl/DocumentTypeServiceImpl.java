@@ -29,10 +29,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @since 1.0.0
  *
  */
-/**
- * @author M1044345
- *
- */
 @Service
 public class DocumentTypeServiceImpl implements DocumentTypeService {
 
@@ -86,7 +82,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getErrorText());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),e.getErrorText());
 		}
 
 		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();

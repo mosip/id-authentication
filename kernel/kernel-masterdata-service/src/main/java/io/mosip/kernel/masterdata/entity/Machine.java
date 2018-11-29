@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_master", schema = "master")
-public class MachineDetail extends BaseEntity implements Serializable {
+public class Machine extends BaseEntity implements Serializable {
 
 	/**
 	 * 
@@ -71,5 +74,9 @@ public class MachineDetail extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
+	
+	@ManyToOne
+	@JoinColumns({@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	private MachineSpecification machineSpecification;
 
 }

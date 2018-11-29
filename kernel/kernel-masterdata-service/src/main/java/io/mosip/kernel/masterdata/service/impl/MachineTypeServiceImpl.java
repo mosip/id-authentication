@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.MachineType;
@@ -36,7 +36,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		try {
 			renMachineType = machineTypeRepository.create(entity);
 		} catch (DataAccessLayerException e) {
-			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					e.getErrorText());
 		}
 		

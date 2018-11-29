@@ -30,8 +30,10 @@ public class Template extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id", nullable = false, unique = true, length = 36)
 	private String id;
+	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
@@ -56,8 +58,5 @@ public class Template extends BaseEntity implements Serializable {
 
 	@Column(name = "template_typ_code", length = 36)
 	private String templateTypeCode;
-
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String languageCode;
 
 }

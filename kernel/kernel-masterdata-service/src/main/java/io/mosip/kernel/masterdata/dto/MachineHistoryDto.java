@@ -91,5 +91,7 @@ public class MachineHistoryDto {
 	 * Field to hold Effective Date and time
 	 */
 	private LocalDateTime effectDtimes;
+	
+	private LocalDateTime valEndDtimes;
 
 }

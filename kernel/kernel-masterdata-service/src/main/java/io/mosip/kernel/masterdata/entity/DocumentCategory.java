@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,8 +38,11 @@ public class DocumentCategory extends BaseEntity implements Serializable {
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@OneToMany(mappedBy="docCategoryCode")
 	private String code;
+	@OneToMany(mappedBy="langCode")
 	private String langCode;
+	
 	@Column(name = "name", nullable = false)
 	private String name;
 

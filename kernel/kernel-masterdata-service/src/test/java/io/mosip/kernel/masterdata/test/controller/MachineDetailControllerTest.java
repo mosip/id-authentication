@@ -14,24 +14,24 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.masterdata.controller.MachineDetailController;
+import io.mosip.kernel.masterdata.controller.MachineController;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
-import io.mosip.kernel.masterdata.service.MachineDetailService;
+import io.mosip.kernel.masterdata.service.MachineService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MachineDetailControllerTest {
 
 	@InjectMocks
-	private MachineDetailController machineDetailController;
+	private MachineController machineDetailController;
 
 	@Mock
-	private MachineDetailService macService;
+	private MachineService macService;
 
 	@Before
 	public void setUp() {
-		machineDetailController = new MachineDetailController();
+		machineDetailController = new MachineController();
 		MockitoAnnotations.initMocks(this);
 	}
 
