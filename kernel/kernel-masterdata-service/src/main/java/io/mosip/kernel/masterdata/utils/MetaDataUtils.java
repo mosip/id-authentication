@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.EmbeddedId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,11 +23,49 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
+	/**
+	 * This method map the value of <code>dto</code> to an object of type
+	 * <code>entityClass</code>. If entityClass object have any composite primary
+	 * key it will map that value too.
+	 * 
+	 * @param dto
+	 *            source object.
+	 * 
+	 * @param entityClass
+	 *            class type of destination object to be created.
+	 * 
+	 * @return an new Object of <code>entityClass</code>.
+	 */
 	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
 		@SuppressWarnings("unchecked")
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
+
+		// to map embedded id object START
+		// Field fields[] = entity.getClass().getDeclaredFields();
+		// for (Field field : fields) {
+		// if (field.isAnnotationPresent(EmbeddedId.class)) {
+		// try {
+		// boolean isAccessible = field.isAccessible();
+		// field.setAccessible(true);
+		// dataMapper.map(dto, field.getClass().newInstance(), true, null, null, true);
+		// field.setAccessible(isAccessible);
+		// break;
+		// } catch (IllegalArgumentException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IllegalAccessException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (InstantiationException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// to map embedded id object END
+
 		setMetaData(contextUser, entity);
 		return entity;
 	}
@@ -45,7 +86,6 @@ public class MetaDataUtils {
 		return entities;
 
 	}
-
 
 	private <D extends BaseEntity> void setMetaData(String contextUser, D entity) {
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));

@@ -62,7 +62,6 @@ public class MapperUtils {
 		return responseDto;
 	}
 
-	
 	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
 		List<RegistrationCenterDto> responseDto = new ArrayList<>();
 		list.forEach(p -> {
@@ -75,7 +74,6 @@ public class MapperUtils {
 		return responseDto;
 	}
 
-	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
@@ -173,4 +171,5 @@ public class MapperUtils {
 		}
 		return deviceSpecificationDtoList;
 	}
+
 }
