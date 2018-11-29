@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -111,7 +112,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public CodeAndLanguageCodeId addApplicationData(ApplicationRequestDto applicationRequestDto) {
+	public CodeAndLanguageCodeId addApplicationData(RequestDto<ApplicationData> applicationRequestDto) {
 		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
 				Application.class);
 		Application application;
