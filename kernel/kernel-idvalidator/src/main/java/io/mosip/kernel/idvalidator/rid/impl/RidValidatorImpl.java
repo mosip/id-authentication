@@ -72,23 +72,26 @@ public class RidValidatorImpl implements RidValidator<String> {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.idvalidator.spi.RidValidator#validateId(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.idvalidator.spi.RidValidator#validateId(java.lang.
+	 * Object)
 	 */
 	@Override
 	public boolean validateId(String id) {
-		
+
 		String pattern = RidPropertyConstant.TIME_STAMP_REGEX.getProperty();
-		
+
 		int endIndex = centerIdLength + dongleIdLength;
-		
+
 		int timeStampStartIndex = endIndex + 5;
-		
+
 		int timeStampEndIndex = timeStampStartIndex + timeStampLength;
-		
+
 		if (id.length() != ridLength) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(),
-					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
+					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage() + ridLength);
 		}
 
 		if (!StringUtils.isNumeric(id)) {
