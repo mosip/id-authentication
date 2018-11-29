@@ -22,3 +22,4 @@ reg/
 
 #not ignore files
 !jfxrt.jar
+/Key_Store/

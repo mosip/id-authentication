@@ -18,7 +18,16 @@ public interface RidValidator<T> {
 	 *            the centerId.
 	 * @param dongleId
 	 *            the dongleId.
-	 * @return true if RID satisfied the specified generation logic else false.
+	 * @return true if RID satisfied the specified generation logic.
 	 */
 	boolean validateId(T id, T centerId, T dongleId);
+
+	/**
+	 * This method validate given RID only against specified generation logic.
+	 * 
+	 * @param id
+	 *            the RID.
+	 * @return true if RID satisfied the specified generation logic.
+	 */
+	boolean validateId(T id);
 }

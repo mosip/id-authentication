@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
  * The Entity class for SyncControl.
  * @author Mahesh Kumar
@@ -16,113 +14,133 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(schema="REG", name="SYNC_CONTROL")
-public class SyncControl {
+public class SyncControl extends RegistrationCommonFields {
 
 	@Id
-	@Column(name="SJOB_ID", length=32, nullable=false, updatable=false)
+	@Column(name="ID")
+	private String id;
+	@Column(name="SYNCJOB_ID")
 	private String syncJobId;
-	@Column(name="MACHM_ID", length=64, nullable=true, updatable=true)
-	private String machnId;
-	@Column(name="CNTR_ID", length=32, nullable=true, updatable=true)
-	private String cntrId;
-	@Column(name="LAST_SYNC_DTIMEZ", nullable=false, updatable=false)
-	private Timestamp lastSyncDtimez;
-	@Column(name="SYNCT_ID", length=32, nullable=false, updatable=false)
-	private String synctId;
-	@Column(name="LANG_CODE", length=3, nullable=true, updatable=true)
+	@Column(name="MACHINE_ID")
+	private String machineId;
+	@Column(name="REGCNTR_ID")
+	private String regcntrId;
+	@Column(name="LAST_SYNC_DTIMES")
+	private Timestamp lastSyncDtimes;
+	@Column(name="SYNCTRN_ID")
+	private String synctrnId;
+	@Column(name="LANG_CODE")
 	private String langCode;
-	@Column(name="IS_ACTIVE", nullable=false, updatable=true)
-	@Type(type= "true_false")
-	private boolean isActive;
-	@Column(name="CR_BY", length=24, nullable=false, updatable=true)
-	private String crBy;
-	@Column(name="CR_DTIMESZ", nullable=false, updatable=true)
-	private Timestamp crDtime;
-	@Column(name="UPD_BY", length=24, nullable=true, updatable=true)
-	private String updBy;
-	@Column(name="UPD_DTIMESZ", nullable=true, updatable=true)
-	private Timestamp updDtime;
-	@Column(name="IS_DELETED", nullable=true, updatable=true)
-	private boolean isDeleted;
-	@Column(name="DEL_DTIMESZ", nullable=true, updatable=true)
+	@Column(name="IS_DELETED")
+	private Boolean isDeleted;
+	@Column(name="DEL_DTIMES")
 	private Timestamp delDtime;
-	public String getsyncJobId() {
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+	/**
+	 * @return the syncJobId
+	 */
+	public String getSyncJobId() {
 		return syncJobId;
 	}
-	public void setsyncJobId(String syncJobId) {
+	/**
+	 * @param syncJobId the syncJobId to set
+	 */
+	public void setSyncJobId(String syncJobId) {
 		this.syncJobId = syncJobId;
 	}
-	public String getMachnId() {
-		return machnId;
+	/**
+	 * @return the machineId
+	 */
+	public String getMachineId() {
+		return machineId;
 	}
-	public void setMachnId(String machnId) {
-		this.machnId = machnId;
+	/**
+	 * @param machineId the machineId to set
+	 */
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
 	}
-	public String getCntrId() {
-		return cntrId;
+	/**
+	 * @return the regcntrId
+	 */
+	public String getRegcntrId() {
+		return regcntrId;
 	}
-	public void setCntrId(String cntrId) {
-		this.cntrId = cntrId;
+	/**
+	 * @param regcntrId the regcntrId to set
+	 */
+	public void setRegcntrId(String regcntrId) {
+		this.regcntrId = regcntrId;
 	}
-	public Timestamp getLastSyncDtimez() {
-		return lastSyncDtimez;
+	/**
+	 * @return the lastSyncDtimes
+	 */
+	public Timestamp getLastSyncDtimes() {
+		return lastSyncDtimes;
 	}
-	public void setLastSyncDtimez(Timestamp lastSyncDtimez) {
-		this.lastSyncDtimez = lastSyncDtimez;
+	/**
+	 * @param lastSyncDtimes the lastSyncDtimes to set
+	 */
+	public void setLastSyncDtimes(Timestamp lastSyncDtimes) {
+		this.lastSyncDtimes = lastSyncDtimes;
 	}
-	public String getSynctId() {
-		return synctId;
+	/**
+	 * @return the synctrnId
+	 */
+	public String getSynctrnId() {
+		return synctrnId;
 	}
-	public void setSynctId(String synctId) {
-		this.synctId = synctId;
+	/**
+	 * @param synctrnId the synctrnId to set
+	 */
+	public void setSynctrnId(String synctrnId) {
+		this.synctrnId = synctrnId;
 	}
+	/**
+	 * @return the langCode
+	 */
 	public String getLangCode() {
 		return langCode;
 	}
+	/**
+	 * @param langCode the langCode to set
+	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	public boolean isActive() {
-		return isActive;
-	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-	public String getCrBy() {
-		return crBy;
-	}
-	public void setCrBy(String crBy) {
-		this.crBy = crBy;
-	}
-	public Timestamp getCrDtime() {
-		return crDtime;
-	}
-	public void setCrDtime(Timestamp crDtime) {
-		this.crDtime = crDtime;
-	}
-	public String getUpdBy() {
-		return updBy;
-	}
-	public void setUpdBy(String updBy) {
-		this.updBy = updBy;
-	}
-	public Timestamp getUpdDtime() {
-		return updDtime;
-	}
-	public void setUpdDtime(Timestamp updDtime) {
-		this.updDtime = updDtime;
-	}
-	public boolean isDeleted() {
+	/**
+	 * @return the isDeleted
+	 */
+	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
-	public void setDeleted(boolean isDeleted) {
+	/**
+	 * @param isDeleted the isDeleted to set
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+	/**
+	 * @return the delDtime
+	 */
 	public Timestamp getDelDtime() {
 		return delDtime;
 	}
+	/**
+	 * @param delDtime the delDtime to set
+	 */
 	public void setDelDtime(Timestamp delDtime) {
 		this.delDtime = delDtime;
 	}
-	
 }

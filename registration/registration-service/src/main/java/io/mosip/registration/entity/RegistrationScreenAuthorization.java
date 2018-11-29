@@ -7,8 +7,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
  * RegistrationScreenAuthorization entity details
  * 
@@ -22,13 +20,11 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegistrationScreenAuthorizationId registrationScreenAuthorizationId;
 
-	@Column(name = "is_permitted", nullable = true, updatable = false)
-	@Type(type = "true_false")
-	private boolean isPermitted;
-	@Column(name = "is_deleted", nullable = true, updatable = true)
-	@Type(type = "true_false")
-	private boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true, updatable = true)
+	@Column(name = "is_permitted")
+	private Boolean isPermitted;
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 
 	/**
@@ -50,7 +46,7 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	/**
 	 * @return the isPermitted
 	 */
-	public boolean isPermitted() {
+	public Boolean isPermitted() {
 		return isPermitted;
 	}
 
@@ -58,14 +54,14 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	 * @param isPermitted
 	 *            the isPermitted to set
 	 */
-	public void setPermitted(boolean isPermitted) {
+	public void setPermitted(Boolean isPermitted) {
 		this.isPermitted = isPermitted;
 	}
 
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -73,7 +69,7 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

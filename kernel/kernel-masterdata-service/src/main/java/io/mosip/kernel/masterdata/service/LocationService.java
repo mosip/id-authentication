@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 
-import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationRequestDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
@@ -32,5 +32,5 @@ public interface LocationService {
 	 * 
 	 * @return 
 	 */
-	public LocationCodeResponseDto saveLocationHierarchy(LocationRequestDto locationRequestDto);
+	public LocationCodeDto saveLocationHierarchy(LocationRequestDto locationRequestDto);
 }

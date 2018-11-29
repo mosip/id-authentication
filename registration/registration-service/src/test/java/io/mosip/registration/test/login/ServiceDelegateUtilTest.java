@@ -3,6 +3,7 @@ package io.mosip.registration.test.login;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.core.env.Environment;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -49,7 +52,7 @@ public class ServiceDelegateUtilTest {
 	}
 
 	@Test
-	public void getRequestTest() throws RegBaseCheckedException {
+	public void getRequestTest() throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_validator.service.httpmethod")).thenReturn("GET");
@@ -67,7 +70,7 @@ public class ServiceDelegateUtilTest {
 	}
 
 	@Test
-	public void postRequestTest() throws URISyntaxException, HttpClientErrorException, RegBaseCheckedException {
+	public void postRequestTest() throws URISyntaxException, HttpClientErrorException, RegBaseCheckedException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_generator.service.httpmethod")).thenReturn("POST");

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -19,14 +20,15 @@ public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory,
 	 * 
 	 * @return
 	 */
-	List<ReasonCategory> findReasonCategoryByIsDeletedFalse();
+	List<ReasonCategory> findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
 	/**
 	 * 
 	 * @param code
 	 * @param languageCode
 	 * @return
 	 */
-	List<ReasonCategory> findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
+	@Query("FROM ReasonCategory r where r.code=?1 and r.langCode=?2 and (r.isDeleted is null or r.isDeleted=false)")
+	List<ReasonCategory> findReasonCategoryByCodeAndLangCode(String code, String languageCode);
 
 	
 }

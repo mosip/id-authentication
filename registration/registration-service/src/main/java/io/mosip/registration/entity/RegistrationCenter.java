@@ -1,13 +1,14 @@
 package io.mosip.registration.entity;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * RegistrationCenter entity details
@@ -18,49 +19,63 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(schema = "reg", name = "registration_center")
 public class RegistrationCenter extends RegistrationCommonFields {
-	
-	@EmbeddedId
-	private RegistrationCenterId registrationCenterId;
 
-	@Column(name = "name", length = 128, nullable = false, updatable = false)
+	@Id
+	@Column(name = "id")
+	private String centerId;
+	@Column(name = "name")
 	private String centerName;
-	@Column(name = "cntr_typ_code", length = 64, nullable = true, updatable = false)
+	@Column(name = "cntrtyp_code")
 	private String cntrTypCode;
-	@Column(name = "addr_line1", length = 256, nullable = true, updatable = false)
+	@Column(name = "addr_line1")
 	private String addrLine1;
-	@Column(name = "addr_line2", length = 256, nullable = true, updatable = false)
+	@Column(name = "addr_line2")
 	private String addrLine2;
-	@Column(name = "addr_line3", length = 256, nullable = true, updatable = false)
+	@Column(name = "addr_line3")
 	private String addrLine3;
-	@Column(name = "latitude", length = 32, nullable = true, updatable = false)
+	@Column(name = "latitude")
 	private String latitude;
-	@Column(name = "longitude", length = 32, nullable = true, updatable = false)
+	@Column(name = "longitude")
 	private String longitude;
-	@Column(name = "location_Code", length = 32, nullable = false, updatable = false)
+	@Column(name = "location_Code")
 	private String locationCode;
-	@Column(name = "number_of_stations", nullable = true, updatable = false)
-	private int numberOfStations;
-	@Column(name = "working_hours", length = 32, nullable = true, updatable = false)
+	@Column(name = "contact_phone")
+	private String contactPhone;
+	@Column(name = "number_of_kiosks")
+	private Integer numberOfKiosks;
+	@Column(name = "working_hours")
 	private String workingHours;
-	@Column(name = "is_deleted", nullable = true, updatable = false)
-	@Type(type = "true_false")
-	private boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true, updatable = false)
+	@Column(name = "per_kiosk_process_time")
+	private Time perKioskProcessTime;
+	@Column(name = "process_start_time")
+	private Time processStartTime;
+	@Column(name = "process_end_time")
+	private Time processEndTime;
+	@Column(name = "holiday_loc_code")
+	private String holidayLocCode;
+	@Column(name = "lang_code")
+	private String langCode;
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
+	
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private RegistrationCenterUser registrationCenterUser;
 
 	/**
-	 * @return the registrationCenterId
+	 * @return the centerId
 	 */
-	public RegistrationCenterId getRegistrationCenterId() {
-		return registrationCenterId;
+	public String getCenterId() {
+		return centerId;
 	}
 
 	/**
-	 * @param registrationCenterId
-	 *            the registrationCenterId to set
+	 * @param centerId
+	 *            the centerId to set
 	 */
-	public void setRegistrationCenterId(RegistrationCenterId registrationCenterId) {
-		this.registrationCenterId = registrationCenterId;
+	public void setCenterId(String centerId) {
+		this.centerId = centerId;
 	}
 
 	/**
@@ -184,18 +199,33 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @return the numberOfStations
+	 * @return the contactPhone
 	 */
-	public int getNumberOfStations() {
-		return numberOfStations;
+	public String getContactPhone() {
+		return contactPhone;
 	}
 
 	/**
-	 * @param numberOfStations
-	 *            the numberOfStations to set
+	 * @param contactPhone
+	 *            the contactPhone to set
 	 */
-	public void setNumberOfStations(int numberOfStations) {
-		this.numberOfStations = numberOfStations;
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+	/**
+	 * @return the numberOfKiosks
+	 */
+	public Integer getNumberOfKiosks() {
+		return numberOfKiosks;
+	}
+
+	/**
+	 * @param numberOfKiosks
+	 *            the numberOfKiosks to set
+	 */
+	public void setNumberOfKiosks(Integer numberOfKiosks) {
+		this.numberOfKiosks = numberOfKiosks;
 	}
 
 	/**
@@ -214,9 +244,84 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	}
 
 	/**
+	 * @return the perKioskProcessTime
+	 */
+	public Time getPerKioskProcessTime() {
+		return perKioskProcessTime;
+	}
+
+	/**
+	 * @param perKioskProcessTime
+	 *            the perKioskProcessTime to set
+	 */
+	public void setPerKioskProcessTime(Time perKioskProcessTime) {
+		this.perKioskProcessTime = perKioskProcessTime;
+	}
+
+	/**
+	 * @return the processStartTime
+	 */
+	public Time getProcessStartTime() {
+		return processStartTime;
+	}
+
+	/**
+	 * @param processStartTime
+	 *            the processStartTime to set
+	 */
+	public void setProcessStartTime(Time processStartTime) {
+		this.processStartTime = processStartTime;
+	}
+
+	/**
+	 * @return the processEndTime
+	 */
+	public Time getProcessEndTime() {
+		return processEndTime;
+	}
+
+	/**
+	 * @param processEndTime
+	 *            the processEndTime to set
+	 */
+	public void setProcessEndTime(Time processEndTime) {
+		this.processEndTime = processEndTime;
+	}
+
+	/**
+	 * @return the holidayLocCode
+	 */
+	public String getHolidayLocCode() {
+		return holidayLocCode;
+	}
+
+	/**
+	 * @param holidayLocCode
+	 *            the holidayLocCode to set
+	 */
+	public void setHolidayLocCode(String holidayLocCode) {
+		this.holidayLocCode = holidayLocCode;
+	}
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode
+	 *            the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
 
@@ -224,7 +329,7 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

@@ -2,9 +2,12 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -21,9 +24,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "appl_form_type", schema = "master")
+@IdClass(CodeAndLanguageCodeId.class)
 public class Application extends BaseEntity implements Serializable {
 	/**
 	 * Generated serial version id
@@ -31,16 +35,15 @@ public class Application extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 893244317356416503L;
 
 	@Id
-	@Column(name = "code")
+	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String code;
+	private String langCode;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@Column(name = "descr")
 	private String description;
-
-	@Column(name = "lang_code")
-	private String langCode;
 
 }

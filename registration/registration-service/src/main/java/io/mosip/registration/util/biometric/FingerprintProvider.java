@@ -3,27 +3,29 @@ package io.mosip.registration.util.biometric;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
-import MFS100.FingerData;
-import MFS100.MFS100Event;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
-/**
- * 
- * The Class FingerprintProvider - An Abstract class which contains default
- * implementation for calculating score based on ISO Template and Fingerprint
- * minutiae in Json format and also provides support for adding new fingerprint
- * providers.
- * 
- * @author Sravya Surampalli
- * 
- */
-public class FingerprintProvider implements MFS100Event {
+public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
+	protected String minutia = "";
+	protected byte isoTemplate[] = null;
+	protected String errorMessage = null;
+	protected WritableImage fingerPrintImage = null;
+	protected byte fingerDataInByte[] =null;
+	
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -36,6 +38,10 @@ public class FingerprintProvider implements MFS100Event {
 	 * 
 	 * MosipFingerprintProvider#scoreCalculator(byte[], byte[])
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#scoreCalculator(byte[], byte[])
+	 */
+	@Override
 	public double scoreCalculator(byte[] isoImage1, byte[] isoImage2) {
 		double score = 0;
 		try {
@@ -57,6 +63,10 @@ public class FingerprintProvider implements MFS100Event {
 	 * MosipFingerprintProvider#scoreCalculator(java.lang.String, java.lang.String)
 	 * 
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#scoreCalculator(java.lang.String, java.lang.String)
+	 */
+	@Override
 	public double scoreCalculator(String fingerImage1, String fingerImage2) {
 		double score = 0.0;
 		try {
@@ -71,13 +81,74 @@ public class FingerprintProvider implements MFS100Event {
 		return score;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#captureFingerprint(int, int, java.lang.String)
+	 */
 	@Override
-	public void OnCaptureCompleted(boolean arg0, int arg1, String arg2, FingerData arg3) {
+	public abstract int captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#uninitFingerPrintDevice()
+	 */
+	@Override
+	public abstract void uninitFingerPrintDevice();
 
+	protected void prepareMinutia(byte rawImage[]) {
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(rawImage);
+		this.minutia = fingerprintTemplate.serialize();
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getMinutia()
+	 */
+	@Override
+	public String getMinutia() {
+		return minutia;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getIsoTemplate()
+	 */
 	@Override
-	public void OnPreview(FingerData arg0) {
-
+	public byte[] getIsoTemplate() {
+		return isoTemplate;
 	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getErrorMessage()
+	 */
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	/* (non-Javadoc)
+	 * To display image in the screen.
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getFingerPrintImage()
+	 */
+	@Override
+	public WritableImage getFingerPrintImage() throws IOException{
+		WritableImage writableImage = null;
+		
+		if (null != fingerDataInByte) {
+			BufferedImage l_objBufferImg = null;
+			try {
+				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerDataInByte));
+			} catch (IOException ex) {
+				throw ex;
+			}
+
+			if (l_objBufferImg != null) {
+				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
+				PixelWriter pw = writableImage.getPixelWriter();
+				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
+					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
+						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
+					}
+				}
+			}
+		}
+		return writableImage;
+	}
+
+	
 }

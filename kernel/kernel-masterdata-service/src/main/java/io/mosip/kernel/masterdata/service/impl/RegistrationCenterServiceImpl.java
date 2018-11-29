@@ -288,8 +288,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		List<RegistrationCenterHierarchyLevelDto> registrationCentersDtoList = null;
 
-		registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
-				RegistrationCenterHierarchyLevelDto.class);
+		//registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+				//RegistrationCenterHierarchyLevelDto.class);
+		
+		registrationCentersDtoList = objectMapperUtil.mapRegistrationCenterHierarchyLevel(registrationCentersList);
 
 		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);

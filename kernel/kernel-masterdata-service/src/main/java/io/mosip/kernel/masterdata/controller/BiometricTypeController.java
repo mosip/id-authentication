@@ -1,14 +1,17 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeData;
+import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 
 /**
@@ -31,7 +34,7 @@ public class BiometricTypeController {
 	 * @return All Biometric types
 	 */
 	@GetMapping
-	public List<BiometricTypeDto> fetchAllBioMetricType() {
+	public BiometricTypeResponseDto fetchAllBioMetricType() {
 		return biometricTypeService.getAllBiometricTypes();
 	}
 
@@ -41,7 +44,7 @@ public class BiometricTypeController {
 	 * @return All Biometric types of specific language
 	 */
 	@GetMapping("/{langcode}")
-	public List<BiometricTypeDto> fetchAllBiometricTypeUsingLangCode(@PathVariable("langcode") String langCode) {
+	public BiometricTypeResponseDto fetchAllBiometricTypeUsingLangCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
@@ -51,8 +54,13 @@ public class BiometricTypeController {
 	 * @return A Biometric type
 	 */
 	@GetMapping("/{code}/{langcode}")
-	public BiometricTypeDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("code") String code,
+	public BiometricTypeResponseDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode);
+	}
+	
+	@PostMapping
+	public CodeAndLanguageCodeId addBiometricType(@RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return biometricTypeService.addBiometricType(biometricType);
 	}
 }

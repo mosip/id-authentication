@@ -1,19 +1,25 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricTypeErrorCode;
+import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * 
@@ -23,13 +29,14 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class BiometricTypeServiceImpl implements BiometricTypeService {
 
+	@Autowired
+	DataMapper dataMapper;
 
 	@Autowired
-	private MapperUtils objectMapperUtil;
+	private MetaDataUtils metaDataUtils;
 
 	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
-
 	private List<BiometricTypeDto> biometricTypeDtoList;
 	private List<BiometricType> biometricTypesList;
 
@@ -48,21 +55,27 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 *             If given required Biometric Type not found
 	 */
 	@Override
-	public List<BiometricTypeDto> getAllBiometricTypes() {
+	public BiometricTypeResponseDto getAllBiometricTypes() {
+		biometricTypeDtoList = new ArrayList<>();
 		try {
 			biometricTypesList = biometricTypeRepository.findAllByIsDeletedFalse(BiometricType.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
-
 		if (!(biometricTypesList.isEmpty())) {
-			biometricTypeDtoList = objectMapperUtil.mapAll(biometricTypesList, BiometricTypeDto.class);
+			biometricTypesList.forEach(biometricType -> {
+				BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
+				dataMapper.map(biometricType, biometricTypeDto, true, null, null, true);
+				biometricTypeDtoList.add(biometricTypeDto);
+			});
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		return biometricTypeDtoList;
+		BiometricTypeResponseDto biometricTypeResponseDto = new BiometricTypeResponseDto();
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtoList);
+		return biometricTypeResponseDto;
 	}
 
 	/**
@@ -83,21 +96,27 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 *             If given required Biometric Type not found
 	 */
 	@Override
-	public List<BiometricTypeDto> getAllBiometricTypesByLanguageCode(String langCode) {
+	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(String langCode) {
+		biometricTypeDtoList = new ArrayList<>();
 		try {
 			biometricTypesList = biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
-
 		if (!(biometricTypesList.isEmpty())) {
-			biometricTypeDtoList = objectMapperUtil.mapAll(biometricTypesList, BiometricTypeDto.class);
+			biometricTypesList.forEach(biometricType -> {
+				BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
+				dataMapper.map(biometricType, biometricTypeDto, true, null, null, true);
+				biometricTypeDtoList.add(biometricTypeDto);
+			});
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		return biometricTypeDtoList;
+		BiometricTypeResponseDto biometricTypeResponseDto = new BiometricTypeResponseDto();
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtoList);
+		return biometricTypeResponseDto;
 	}
 
 	/**
@@ -121,24 +140,43 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 *             If given required Biometric Type not found
 	 */
 	@Override
-	public BiometricTypeDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
 		BiometricType biometricType;
-		BiometricTypeDto biometricTypeDto;
+		BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
-					langCode);
+			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (biometricType != null) {
-			biometricTypeDto = objectMapperUtil.map(biometricType, BiometricTypeDto.class);
+			dataMapper.map(biometricType, biometricTypeDto, true, null, null, true);
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		return biometricTypeDto;
+		List<BiometricTypeDto> biometricTypeDtos = new ArrayList<>();
+		biometricTypeDtos.add(biometricTypeDto);
+		BiometricTypeResponseDto biometricTypeResponseDto = new BiometricTypeResponseDto();
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtos);
+		return biometricTypeResponseDto;
+	}
+
+	@Override
+	public CodeAndLanguageCodeId addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
+		BiometricType entity = metaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
+				BiometricType.class);
+		BiometricType biometricType;
+		try {
+			biometricType = biometricTypeRepository.create(entity);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		dataMapper.map(biometricType, codeAndLanguageCodeId, true, null, null, true);
+		return codeAndLanguageCodeId;
 	}
 
 }

@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.annotations.Type;
+
 /**
  * 
  * @author Brahmananda Reddy
@@ -24,7 +26,8 @@ public class MasterCommonFields {
 	@Column(name = "upd_dtimesz", nullable = true)
 	private Timestamp updatedTimesZone;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	@Type(type = "true_false")
+	private Boolean isDeleted;
 	@Column(name = "del_dtimesz")
 	private Timestamp deletedTimesZone;
 
@@ -106,7 +109,7 @@ public class MasterCommonFields {
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -114,7 +117,7 @@ public class MasterCommonFields {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

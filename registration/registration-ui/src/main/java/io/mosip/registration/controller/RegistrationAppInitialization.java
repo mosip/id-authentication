@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-@Component
+@Component 
 public class RegistrationAppInitialization extends Application {
 
 	/**
@@ -56,6 +56,13 @@ public class RegistrationAppInitialization extends Application {
 				APPLICATION_ID, "Application Initilization"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
+	}
+
+	
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+		RegistrationOfficerDetailsController.stopTimer();
 	}
 
 	public static ApplicationContext getApplicationContext() {

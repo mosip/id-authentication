@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,11 +29,11 @@ public class BiometricAttributeController {
 
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
 	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
-	public BiometricTypeResponseDto getBiometricAttributesByBiometricType(
+	public BiometricAttributeResponseDto getBiometricAttributesByBiometricType(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("biometrictypecode") String biometricTypeCode) {
 		List<BiometricAttributeDto> biomentricAttributes = biometricAttributeService
 				.getBiometricAttribute(biometricTypeCode, langCode);
-		return new BiometricTypeResponseDto(biomentricAttributes);
+		return new BiometricAttributeResponseDto(biomentricAttributes);
 	}
 }
