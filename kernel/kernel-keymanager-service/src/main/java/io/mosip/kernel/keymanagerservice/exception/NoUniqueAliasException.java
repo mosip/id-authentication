@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  *
  */
-public class ApplicationIdNotValidException extends BaseUncheckedException {
+public class NoUniqueAliasException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
@@ -24,7 +24,7 @@ public class ApplicationIdNotValidException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public ApplicationIdNotValidException(String errorCode, String errorMessage) {
+	public NoUniqueAliasException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
