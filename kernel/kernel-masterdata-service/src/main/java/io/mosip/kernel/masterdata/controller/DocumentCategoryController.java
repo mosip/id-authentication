@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
@@ -70,7 +71,7 @@ public class DocumentCategoryController {
 	 */
 	@PostMapping("/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeId> addDocumentCategories(
-			@RequestBody DocumentCategoryRequestDto category) {
+			@RequestBody RequestDto<DocumentCategoryData> category) {
 		return new ResponseEntity<>(documentCategoryService.addDocumentCategoriesData(category), HttpStatus.CREATED);
 
 	}
