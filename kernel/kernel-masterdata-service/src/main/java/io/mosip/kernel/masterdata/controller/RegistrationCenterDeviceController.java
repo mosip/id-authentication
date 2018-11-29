@@ -21,7 +21,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/registration_center_device")
+@RequestMapping("/registrationcenterdevice")
 public class RegistrationCenterDeviceController {
 
 	@Autowired
@@ -33,5 +33,4 @@ public class RegistrationCenterDeviceController {
 		return new ResponseEntity<ResponseRegistrationCenterDeviceDto>(
 				registrationCenterDeviceService.mapRegistrationCenterAndDevice(requestDto), HttpStatus.CREATED);
 	}
-
 }

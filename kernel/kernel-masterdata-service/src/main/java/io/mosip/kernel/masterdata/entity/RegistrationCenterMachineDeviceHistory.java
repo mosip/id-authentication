@@ -42,5 +42,5 @@ public class RegistrationCenterMachineDeviceHistory extends BaseEntity implement
 	private RegistrationCenterMachineDeviceHistoryPk registrationCenterMachineDeviceHistoryPk;
 
 	@Column(name = "eff_dtimes", nullable = false)
-	private LocalDateTime deletedtimes;
+	private LocalDateTime effectivetimes;
 }

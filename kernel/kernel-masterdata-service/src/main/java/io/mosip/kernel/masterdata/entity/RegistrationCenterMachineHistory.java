@@ -41,5 +41,5 @@ public class RegistrationCenterMachineHistory extends BaseEntity implements Seri
 	private RegistrationCenterMachineHistoryPk registrationCenterMachineHistoryPk;
 
 	@Column(name = "eff_dtimes", nullable = false)
-	private LocalDateTime deletedtimes;
+	private LocalDateTime effectivetimes;
 }

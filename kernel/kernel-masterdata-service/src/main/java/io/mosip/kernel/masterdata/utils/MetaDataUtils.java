@@ -43,27 +43,28 @@ public class MetaDataUtils {
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 
 		// to map embedded id object START
-		// Field fields[] = entity.getClass().getDeclaredFields();
-		// for (Field field : fields) {
-		// if (field.isAnnotationPresent(EmbeddedId.class)) {
-		// try {
-		// boolean isAccessible = field.isAccessible();
-		// field.setAccessible(true);
-		// dataMapper.map(dto, field.getClass().newInstance(), true, null, null, true);
-		// field.setAccessible(isAccessible);
-		// break;
-		// } catch (IllegalArgumentException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IllegalAccessException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (InstantiationException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// }
+		Field fields[] = entity.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(EmbeddedId.class)) {
+				try {
+					Object id = field.getType().newInstance();
+					dataMapper.map(dto, id, true, null, null, true);
+					field.setAccessible(true);
+					field.set(entity, id);
+					field.setAccessible(false);
+					break;
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// to map embedded id object END
 
 		setMetaData(contextUser, entity);
