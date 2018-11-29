@@ -635,27 +635,27 @@ public class MasterdataIntegrationTest {
 	// -----------------------------PacketRejectionTest----------------------------------
 	@Test
 	public void getAllRjectionReasonTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(reasoncategories);
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRjectionReasonFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse())
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
@@ -663,13 +663,13 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRjectionReasonRecordsNotFoundTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(null);
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(null);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(null);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
@@ -677,7 +677,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
@@ -685,7 +685,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRjectionReasonRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 

@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
@@ -45,6 +45,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
@@ -147,8 +148,8 @@ public class MasterdataControllerTest {
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private static final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private LocationHierarchyResponseDto locationHierarchyResponseDto = null;
+	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -156,6 +157,8 @@ public class MasterdataControllerTest {
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
 	List<Object[]> locObjList = null;
+	LocationHierarchyResponseDto locationHierarchyResponseDto = null;
+	LocationCodeDto locationCodeDto = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -260,6 +263,7 @@ public class MasterdataControllerTest {
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
+
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -289,7 +293,10 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-
+		locationCodeDto=new LocationCodeDto();
+		locationCodeDto.setCode("TN");
+		locationCodeDto.setIsActive(true);
+		locationCodeDto.setParentLocCode("IND");
 	}
 
 	private void idTypeSetup() {
@@ -466,7 +473,7 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Test
+	/*@Test
 	public void addApplication() throws Exception {
 		/*
 		 * PostResponseDto postResponseDto = new PostResponseDto();
@@ -488,7 +495,7 @@ public class MasterdataControllerTest {
 						+ "        \"description\": \"Pre-registration Application Form\",\n"
 						+ "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
-	}
+	}*/
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
 
@@ -657,7 +664,7 @@ public class MasterdataControllerTest {
 				Mockito.anyString());
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED))
+				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED_GET))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
@@ -692,6 +699,22 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
 				.andExpect(MockMvcResultMatchers.status().isNotFound());
+	}
+
+	@Test
+	public void testSaveLocationHierarchy() throws Exception {
+		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
+		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testNegativeSaveLocationHierarchy() throws Exception {
+		Mockito.when(locationService.saveLocationHierarchy(Mockito.any()))
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
