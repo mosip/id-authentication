@@ -7,8 +7,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -55,6 +58,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -680,8 +684,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -855,6 +858,8 @@ public class RegistrationController extends BaseController {
 					childSpecificFields.setVisible(false);
 					documentFields.setLayoutY(25.00);
 				}
+				// to populate age based on date of birth
+				ageField.setText("" + (Period.between(ageDatePicker.getValue(), LocalDate.now()).getYears()));
 			}
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validated the age given by DatePiker");
@@ -1009,6 +1014,22 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
+			// to populate date of birth based on age
+			ageField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+				@Override
+				public void handle(KeyEvent event) {
+					// to auto-populate DOB based on age
+					if (ageField.getText().length() > 0) {
+						DateTimeFormatter formatter = DateTimeFormatter
+								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
+						StringBuilder dob = new StringBuilder();
+						dob.append(RegistrationConstants.DEMOGRAPHIC_DOB);
+						dob.append(Calendar.getInstance().getWeekYear() - Integer.parseInt(ageField.getText()));
+						LocalDate date = LocalDate.parse(dob, formatter);
+						ageDatePicker.setValue(date);
+					}
+				}
+			});
 			ageField.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
