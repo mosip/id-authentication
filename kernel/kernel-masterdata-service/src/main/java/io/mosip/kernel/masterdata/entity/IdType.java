@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @IdClass(CodeAndLanguageCodeId.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class IdType extends BaseEntity implements Serializable {
 
 	/**

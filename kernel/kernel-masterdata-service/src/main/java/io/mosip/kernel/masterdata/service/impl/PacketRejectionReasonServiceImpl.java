@@ -53,7 +53,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		PacketRejectionReasonResponseDto reasonResponseDto = new PacketRejectionReasonResponseDto();
 
 		try {
-			reasonCategories = reasonRepository.findReasonCategoryByIsDeletedFalse();
+			reasonCategories = reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
@@ -82,7 +82,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository
-					.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(categoryCode, langCode);
+					.findReasonCategoryByCodeAndLangCode(categoryCode, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),

@@ -26,17 +26,19 @@ public class PacketMetaInfoConverterTest {
 	@Test
 	public void convertTest() throws JsonProcessingException {
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getLeftEye());
-		Assert.assertNull(packetMetaInfo.getIdentity().getRightEye());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftEye());
+		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightEye());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getApplicantPhotograph());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getExceptionPhotograph());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getExceptionBiometrics());
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getRightSlap());
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getLeftSlap());
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getThumbs());
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getParentFingerprint());
-		Assert.assertNull(packetMetaInfo.getIdentity().getParentIris());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightSlap());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftSlap());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getThumbs());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerFingerprint());
+		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerIris());
+		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerImage());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getMetaData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getOsiData());
+		Assert.assertNotNull(packetMetaInfo.getIdentity().getCheckSum());
 	}
 }

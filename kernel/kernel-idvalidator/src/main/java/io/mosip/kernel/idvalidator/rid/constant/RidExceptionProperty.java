@@ -12,7 +12,7 @@ public enum RidExceptionProperty {
 	INVALID_RID("KER-IDV-301", "Rid Must Be Numeric Only"),
 	INVALID_CENTER_ID("KER-IDV-302","Center Id Did Not Match"),
 	INVALID_DONGLE_ID("KER-IDV-303", "Dongle Id Did Not Match"),
-	INVALID_RID_LENGTH("KER-IDV-304","Rid Length Must Be 29"),
+	INVALID_RID_LENGTH("KER-IDV-304","Rid Length Must Be "),
 	INVALID_RID_TIMESTAMP("KER-IDV-305", "Invalid Time Stamp Found");
 
 	/**

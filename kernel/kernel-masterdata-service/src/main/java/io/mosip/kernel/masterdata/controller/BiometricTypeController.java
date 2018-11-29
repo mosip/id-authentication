@@ -3,10 +3,15 @@ package io.mosip.kernel.masterdata.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 
 /**
@@ -52,5 +57,10 @@ public class BiometricTypeController {
 	public BiometricTypeResponseDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode);
+	}
+	
+	@PostMapping
+	public CodeAndLanguageCodeId addBiometricType(@RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return biometricTypeService.addBiometricType(biometricType);
 	}
 }

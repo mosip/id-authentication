@@ -10,7 +10,7 @@ package io.mosip.kernel.auditmanager.constant;
 public enum AuditErrorCode {
 	HANDLEREXCEPTION("KER-AUD-001", "Invalid Audit Request. Required parameters must be present"),
 
-	INVALIDFORMAT("KER-AUD-002", "ActionTimeStamp should be in ISO 8601 format (e.g. 2019-04-05T14:30)");
+	INVALIDFORMAT("KER-AUD-002", "ActionTimeStamp should be in ISO 8601 format - yyyy-MM-ddTHH:mm:ss.SSS");
 
 	private final String errorCode;
 	private final String errorMessage;

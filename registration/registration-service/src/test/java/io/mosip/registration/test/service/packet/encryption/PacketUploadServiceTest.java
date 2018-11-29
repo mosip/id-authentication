@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,14 +23,19 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.service.impl.PacketUploadServiceImpl;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
@@ -59,26 +64,24 @@ public class PacketUploadServiceTest {
 	@InjectMocks
 	private PacketUploadServiceImpl packetUploadServiceImpl;
 
-	@Mock
-	private Logger logger;
+	@Before
+	public void initialize() {
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "urlPath", "http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets");
+	}
 	
-	@Ignore
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetSynchedPackets() {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
-		List<String> PACKET_STATUS = Arrays.asList("S", "resend", "E");
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
 		registration.setId("1111111111");
 		regList.add(registration);
-		Mockito.when(registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(regList);
-		assertEquals(regList, registrationDAO.getRegistrationByStatus(PACKET_STATUS));
+		Mockito.when(registrationDAO.getRegistrationByStatus(Mockito.anyList())).thenReturn(regList);
+		assertEquals(regList, packetUploadServiceImpl.getSynchedPackets());
 	}
 	
-	@Ignore
 	@Test
-	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
+	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		File f=new File("");
 		map.add("file", new FileSystemResource(f));
@@ -95,15 +98,31 @@ public class PacketUploadServiceTest {
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
-	@Ignore
 	@Test
 	public void testUpdateStatus() {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		List<Registration> packetList=new ArrayList<>();
 		Registration registration = new Registration();
 		packetList.add(registration);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration);
 		assertTrue(packetUploadServiceImpl.updateStatus(packetList));
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void testHttpException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+	}
+	
+	@Test(expected=RegBaseUncheckedException.class)
+	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		.thenThrow(new RuntimeException());
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
 }
