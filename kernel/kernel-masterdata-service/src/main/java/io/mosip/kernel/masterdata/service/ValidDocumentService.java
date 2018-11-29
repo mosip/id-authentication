@@ -18,5 +18,5 @@ public interface ValidDocumentService {
 	 *            the dto.
 	 * @return {@link ValidDocumentId}
 	 */
-	public ValidDocumentId insertDocumentCategory(ValidDocumentRequestDto document);
+	public ValidDocumentId insertValidDocument(ValidDocumentRequestDto document);
 }

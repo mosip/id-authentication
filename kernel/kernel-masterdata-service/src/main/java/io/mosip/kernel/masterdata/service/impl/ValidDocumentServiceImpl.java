@@ -43,7 +43,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * ValidDocumentRequestDto)
 	 */
 	@Override
-	public ValidDocumentId insertDocumentCategory(ValidDocumentRequestDto document) {
+	public ValidDocumentId insertValidDocument(ValidDocumentRequestDto document) {
 
 		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest().getValidDocument(),
 				ValidDocument.class);

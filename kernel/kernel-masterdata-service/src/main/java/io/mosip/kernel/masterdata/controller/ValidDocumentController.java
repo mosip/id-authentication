@@ -26,6 +26,6 @@ public class ValidDocumentController {
 
 	@PostMapping("/validdocuments")
 	public ResponseEntity<ValidDocumentId> createValidDocument(@RequestBody ValidDocumentRequestDto document) {
-		return new ResponseEntity<>(documentService.insertDocumentCategory(document), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentService.insertValidDocument(document), HttpStatus.CREATED);
 	}
 }
