@@ -3,6 +3,8 @@ package io.mosip.preregistration.application.dto;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.json.simple.JSONObject;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +38,6 @@ public class CreateDto implements Serializable {
 	/**
 	 * 
 	 */
-	private String demographicDetails;
+	private JSONObject demographicDetails;
 
 }

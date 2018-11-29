@@ -125,7 +125,7 @@ public class PreRegistrationService {
 			entity.setGroupId("1234567890");
 			entity.setCr_appuser_id((String) (applicantDetailJson.get("id")));
 			entity.setCreatedBy((String) (reqObject.get("createdBy")));
-			createDto.setDemographicDetails(demoObj.toJSONString());
+			createDto.setDemographicDetails(demoObj);
 
 			if (prid == null || prid.equals("")) {
 				prid = pridGenerator.generateId();
@@ -430,7 +430,7 @@ public class PreRegistrationService {
 			JSONObject reqObject = (JSONObject) applicantDetailJson.get("request");
 			JSONObject demoObj = (JSONObject) reqObject.get("demographicDetails");
 
-			createDto.setDemographicDetails(demoObj.toString());
+			createDto.setDemographicDetails(demoObj);
 			createDtos.add(createDto);
 			response.setResponse(createDtos);
 		} catch (DataAccessLayerException e) {
