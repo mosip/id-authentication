@@ -105,8 +105,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	private Object buildExceptionResponse(Exception ex) {
 		
-		System.err.println(ExceptionUtils.getStackTrace(ex));
-
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = ex;
