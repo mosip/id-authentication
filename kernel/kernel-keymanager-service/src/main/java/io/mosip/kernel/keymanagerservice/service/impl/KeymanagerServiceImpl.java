@@ -215,7 +215,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					symmetricKeyRequestDto.getEncryptedSymmetricKey());
 
 			System.out.println("SymmetricKey: " + decryptedSymmetricKey);
-			keyResponseDto.setSymmetricKey(decryptedSymmetricKey);
+			keyResponseDto.setSymmetricKey(Base64.encodeBase64String(decryptedSymmetricKey));
 
 		}
 		return keyResponseDto;
