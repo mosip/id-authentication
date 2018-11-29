@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.converter.MachineHistroyConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHistoryConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -63,6 +64,19 @@ public class MapperUtils {
 
 		return responseDto;
 	}
+	
+	public List<MachineHistoryDto> mapMachineHistory(List<MachineHistory> machineHistoryList) {
+		List<MachineHistoryDto> responseDto = new ArrayList<>();
+		machineHistoryList.forEach(p -> {
+			MachineHistoryDto dto = new MachineHistoryDto();
+			dataMapperImpl.map(p, dto, new MachineHistroyConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+	
 
 	
 	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
@@ -177,33 +191,5 @@ public class MapperUtils {
 	}
 	
 	
-	
-	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList){
-		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
-		
-		for (MachineHistory machineHistory : machineHistoryList) {
-			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
-			machineHistoryDto.setId(machineHistory.getId());
-			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
-			machineHistoryDto.setCreatedtime(machineHistory.getCreatedtimes());
-			machineHistoryDto.setDeletedtime(machineHistory.getDeletedtimes());
-			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
-			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
-			machineHistoryDto.setIsActive(machineHistory.getIsActive());
-			machineHistoryDto.setIsDeleted(machineHistory.getIsDeleted());
-			machineHistoryDto.setLangCode(machineHistory.getLangCode());
-			machineHistoryDto.setMacAddress(machineHistory.getMacAddress());
-			machineHistoryDto.setMspecId(machineHistory.getMspecId());
-			machineHistoryDto.setName(machineHistory.getName());
-			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
-			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
-			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedtimes());
-			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
-			machineHistoryDtoList.add(machineHistoryDto);
-			
-		}
-		
-		return machineHistoryDtoList;
-		
-	}
+								  
 }

@@ -62,7 +62,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistoryDto.setLangCode("ENG");
 		machineHistoryDto.setIsActive(true);
 		machineHistoryDto.setCreatedBy("Admin");
-		machineHistoryDto.setCreatedtime(localDateTime);
+		machineHistoryDto.setCreatedtimes(localDateTime);
 		machineHistoryDto.setUpdatedBy("Admin");
 		machineHistoryDto.setIsDeleted(false);
 		machineHistoryDto.setIpAddress("100.10.01.01");
