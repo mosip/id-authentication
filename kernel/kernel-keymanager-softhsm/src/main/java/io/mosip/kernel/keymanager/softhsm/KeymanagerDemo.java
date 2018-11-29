@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -82,7 +83,8 @@ public class KeymanagerDemo {
 		keyPairGenerator.initialize(2048);
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-		keyStoreImpl.storeAsymmetricKey(keyPair, "test-alias-private", 365);
+		keyStoreImpl.storeAsymmetricKey(keyPair, "test-alias-private", LocalDateTime.now(),
+				LocalDateTime.now().plusDays(365));
 
 		PrivateKey privateKey = keyStoreImpl.getPrivateKey("test-alias-private");
 
@@ -92,16 +94,16 @@ public class KeymanagerDemo {
 		PublicKey publicKey = keyStoreImpl.getPublicKey("test-alias-private");
 		System.out.println(publicKey.toString());
 		System.out.println(publicKey.getEncoded());
-		
+
 		X509Certificate certificate = (X509Certificate) keyStoreImpl.getCertificate("test-alias-private");
 		try {
 			System.out.println(certificate.toString());
-			System.out.println("!!!!!!!!!!!!!!"+certificate.getSubjectX500Principal());
+			System.out.println("!!!!!!!!!!!!!!" + certificate.getSubjectX500Principal());
 			certificate.checkValidity();
-//			certificate.checkValidity(new Date(1999, 12, 12));
-			System.out.println("@@@@@@@@@@2"+certificate.getIssuerDN());
-			System.out.println("##############"+certificate.getIssuerX500Principal());
-			System.out.println("$$$$$$$$$$$$$$$$"+certificate.getSubjectDN());
+			// certificate.checkValidity(new Date(1999, 12, 12));
+			System.out.println("@@@@@@@@@@2" + certificate.getIssuerDN());
+			System.out.println("##############" + certificate.getIssuerX500Principal());
+			System.out.println("$$$$$$$$$$$$$$$$" + certificate.getSubjectDN());
 		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 			e.printStackTrace();
 		}
