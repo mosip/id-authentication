@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
-import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
@@ -293,7 +292,7 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		locationCodeDto=new LocationCodeDto();
+		locationCodeDto = new LocationCodeDto();
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setIsActive(true);
 		locationCodeDto.setParentLocCode("IND");
@@ -473,29 +472,31 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	/*@Test
-	public void addApplication() throws Exception {
-		/*
-		 * PostResponseDto postResponseDto = new PostResponseDto();
-		 * List<CodeAndLanguageCodeId> results = new ArrayList<>();
-		 */
-		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
-		codeAndLanguageCodeId.setCode("101");
-		codeAndLanguageCodeId.setLangCode("ENG");
-		/*
+	/*
+	 * @Test public void addApplication() throws Exception { /* PostResponseDto
+	 * postResponseDto = new PostResponseDto(); List<CodeAndLanguageCodeId> results
+	 * = new ArrayList<>();
+	 */
+	/*
+	 * CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+	 * codeAndLanguageCodeId.setCode("101");
+	 * codeAndLanguageCodeId.setLangCode("ENG");
+	 *//*
 		 * results.add(codeAndLanguageCodeId); postResponseDto.setResults(results);
 		 */
-		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
-				.thenReturn(codeAndLanguageCodeId);
-
-		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
-				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
-						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n" + "    \"applicationtypes\": [\n"
-						+ "      {\n" + "        \"code\": \"101\",\n" + "        \"name\": \"pre-registeration\",\n"
-						+ "        \"description\": \"Pre-registration Application Form\",\n"
-						+ "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
-				.andExpect(status().isOk());
-	}*/
+	/*
+	 * Mockito.when(applicationService.addApplicationData(Mockito.any(
+	 * ApplicationRequestDto.class))) .thenReturn(codeAndLanguageCodeId);
+	 * 
+	 * mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(
+	 * MediaType.APPLICATION_JSON) .content("{\n" + "  \"id\": \"string\",\n" +
+	 * "  \"ver\": \"string\",\n" + "  \"timestamp\": \"string\",\n" +
+	 * "  \"request\": {\n" + "    \"applicationtypes\": [\n" + "      {\n" +
+	 * "        \"code\": \"101\",\n" + "        \"name\": \"pre-registeration\",\n"
+	 * + "        \"description\": \"Pre-registration Application Form\",\n" +
+	 * "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
+	 * .andExpect(status().isOk()); }
+	 */
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
 
