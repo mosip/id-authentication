@@ -65,12 +65,9 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		// This method validates the input parameters.
 		otpUtils.validateOtpRequestArguments(key, otp);
 		OtpValidatorResponseDto responseDto;
-
 		ResponseEntity<OtpValidatorResponseDto> validationResponseEntity;
-
 		// The OTP entity for a specific key.
 		OtpEntity otpResponse = otpRepository.findById(OtpEntity.class, key);
-
 		responseDto = new OtpValidatorResponseDto();
 		responseDto.setMessage(OtpStatusConstants.FAILURE_MESSAGE.getProperty());
 		responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
@@ -89,7 +86,6 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		// This variable holds the update query to be performed.
 		String updateString;
 		// This variable holds the count of number
-
 		int attemptCount = otpResponse.getValidationRetryCount();
 		if ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getGeneratedDtimes(),
 				OtpManagerUtils.getCurrentLocalDateTime())) > (Integer.parseInt(otpExpiryLimit))) {
@@ -162,7 +158,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	 *            the response dto.
 	 * @param validationResponseEntity
 	 *            the validation response entity.
-	 * @return
+	 * @return the response entity.
 	 */
 	private ResponseEntity<OtpValidatorResponseDto> unFreezeKey(String key, String otp, OtpEntity otpResponse,
 			int attemptCount, OtpValidatorResponseDto responseDto,
@@ -203,7 +199,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	 *            the new number of attempt value.
 	 * @param localDateTime
 	 *            the new LocalDateTime.
-	 * @return
+	 * @return the map.
 	 */
 	private HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
 			LocalDateTime localDateTime) {

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  * @since 24-10-2018
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
