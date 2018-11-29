@@ -14,8 +14,8 @@ import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationRequestDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -195,13 +195,13 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public LocationCodeDto saveLocationHierarchy(LocationRequestDto locationRequestDto) {
+	public LocationCodeDto saveLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 		
 	    Location location = null;
 		Location locationResultantEntity = null;
-		LocationCodeDto locationCodeDto = new LocationCodeDto();
+		LocationCodeDto locationCodeDto = null;
 		
-			location = metaDataUtils.setCreateMetaData(locationRequestDto.getLocations(), Location.class);
+			location = metaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
 			try {
 				locationResultantEntity = locationRepository.create(location);
 			} catch (DataAccessLayerException ex) {

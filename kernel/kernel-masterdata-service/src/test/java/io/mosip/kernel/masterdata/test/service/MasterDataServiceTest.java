@@ -190,6 +190,7 @@ public class MasterDataServiceTest {
 	Location locationHierarchy1=null;
 	LocationDto locationDtos=null;
 	LocationRequestDto locationRequestDto= null;
+	RequestDto<LocationDto> requestLocationDto=null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -346,9 +347,10 @@ public class MasterDataServiceTest {
 		locationDto.setLanguageCode("FRA");
 		locationDto.setParentLocCode("IND");
 		locationDto.setIsActive(true);
+		requestLocationDto = new RequestDto<>();
+		requestLocationDto.setRequest(locationDto);
 		
-		locationRequestDto = new LocationRequestDto();
-		locationRequestDto.setLocations(locationDto);
+		
 		
 		
 	}
@@ -1133,7 +1135,7 @@ public class MasterDataServiceTest {
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
 				.getLocationHierarchyByLangCode("IND", "HIN");
-		Assert.assertEquals(locationHierarchyResponseDto.getLocations().get(0).getCode(), "IND");
+		Assert.assertEquals( "IND",locationHierarchyResponseDto.getLocations().get(0).getCode());
 
 	}
 
@@ -1166,13 +1168,13 @@ public class MasterDataServiceTest {
 	@Test
 	public void locationHierarchySaveTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
-		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
 	}
 	
 	@Test(expected=MasterDataServiceException.class)
 	public void locationHierarchySaveNegativeTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
-		locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
 	}
 	
 	

@@ -148,7 +148,7 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"locations\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"request\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
