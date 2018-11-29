@@ -106,9 +106,16 @@ public class RidValidatorTest {
 		String rid = "27847657360002520181232183059";
 		assertThat(ridValidatorImpl.validateId(rid), is(false));
 	}
+
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidTimeTest() {
 		String rid = "27847657360002520181208253059";
+		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void nonNumericRidTest() {
+		String rid = "278476573600A2520181208183050";
 		assertThat(ridValidatorImpl.validateId(rid), is(false));
 	}
 }

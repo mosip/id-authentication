@@ -11,124 +11,29 @@ import java.util.List;
  */
 public class Identity {
 
-	private Biometric leftEye;
-	private Biometric rightEye;
-	private Biometric leftSlap;
-	private Biometric rightSlap;
-	private Biometric thumbs;
-	private Biometric parentFingerprint;
-	private Biometric parentIris;
+	private Biometric biometric;
 	private List<BiometricException> exceptionBiometrics;
 	private Photograph applicantPhotograph;
 	private Photograph exceptionPhotograph;
+	private List<Document> documents;
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence;
 	private List<FieldValue> checkSum;
 
 	/**
-	 * @return the leftEye
+	 * @return the biometric
 	 */
-	public Biometric getLeftEye() {
-		return leftEye;
+	public Biometric getBiometric() {
+		return biometric;
 	}
 
 	/**
-	 * @param leftEye
-	 *            the leftEye to set
+	 * @param biometric
+	 *            the biometric to set
 	 */
-	public void setLeftEye(Biometric leftEye) {
-		this.leftEye = leftEye;
-	}
-
-	/**
-	 * @return the rightEye
-	 */
-	public Biometric getRightEye() {
-		return rightEye;
-	}
-
-	/**
-	 * @param rightEye
-	 *            the rightEye to set
-	 */
-	public void setRightEye(Biometric rightEye) {
-		this.rightEye = rightEye;
-	}
-
-	/**
-	 * @return the leftSlap
-	 */
-	public Biometric getLeftSlap() {
-		return leftSlap;
-	}
-
-	/**
-	 * @param leftSlap
-	 *            the leftSlap to set
-	 */
-	public void setLeftSlap(Biometric leftSlap) {
-		this.leftSlap = leftSlap;
-	}
-
-	/**
-	 * @return the rightSlap
-	 */
-	public Biometric getRightSlap() {
-		return rightSlap;
-	}
-
-	/**
-	 * @param rightSlap
-	 *            the rightSlap to set
-	 */
-	public void setRightSlap(Biometric rightSlap) {
-		this.rightSlap = rightSlap;
-	}
-
-	/**
-	 * @return the thumbs
-	 */
-	public Biometric getThumbs() {
-		return thumbs;
-	}
-
-	/**
-	 * @param thumbs
-	 *            the thumbs to set
-	 */
-	public void setThumbs(Biometric thumbs) {
-		this.thumbs = thumbs;
-	}
-
-	/**
-	 * @return the parentFingerprint
-	 */
-	public Biometric getParentFingerprint() {
-		return parentFingerprint;
-	}
-
-	/**
-	 * @param parentFingerprint
-	 *            the parentFingerprint to set
-	 */
-	public void setParentFingerprint(Biometric parentFingerprint) {
-		this.parentFingerprint = parentFingerprint;
-	}
-
-	/**
-	 * @return the parentIris
-	 */
-	public Biometric getParentIris() {
-		return parentIris;
-	}
-
-	/**
-	 * @param parentIris
-	 *            the parentIris to set
-	 */
-	public void setParentIris(Biometric parentIris) {
-		this.parentIris = parentIris;
+	public void setBiometric(Biometric biometric) {
+		this.biometric = biometric;
 	}
 
 	/**
@@ -174,6 +79,21 @@ public class Identity {
 	 */
 	public void setExceptionPhotograph(Photograph exceptionPhotograph) {
 		this.exceptionPhotograph = exceptionPhotograph;
+	}
+
+	/**
+	 * @return the documents
+	 */
+	public List<Document> getDocuments() {
+		return documents;
+	}
+
+	/**
+	 * @param documents
+	 *            the documents to set
+	 */
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}
 
 	/**

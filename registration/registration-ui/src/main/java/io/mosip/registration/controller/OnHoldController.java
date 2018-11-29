@@ -1,66 +1,50 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_ONHOLD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.service.RegistrationApprovalService;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.RegistrationApprovalDTO;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 
 /**
- *{@code OnHoldController} is controller class for onHoldComment fxml page 
- *which consists the methods for updating the status to onhold
+ * {@code OnHoldController} is controller class for onHoldComment fxml page
+ * which consists the methods for updating the status to onhold
  *
  * @author Mahesh Kumar
  */
 @Controller
-public class OnHoldController extends BaseController implements Initializable{
-
-	
-	/**
-	 * Registration Id
-	 */
-	private String regId = null;
+public class OnHoldController extends BaseController implements Initializable {
 
 	/**
 	 * Stage
 	 */
 	private Stage primarystage;
-			
+
 	/**
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(OnHoldController.class);
 
-	/**
-	 * Object for RegistrationApprovalController
-	 */
-	@Autowired
-	private RegistrationApprovalController registrationController;
-	/**
-	 * Object for RegistrationApprovalService
-	 */
-	@Autowired
-	private RegistrationApprovalService registration;
 	/**
 	 * Combobox for for on hold reason
 	 */
@@ -71,70 +55,82 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	@FXML
 	private Button submit;
-	
+
+	/** Hyperlink for exit. */
 	@FXML
 	private Hyperlink exit;
 
-	 ObservableList<String> onHoldCommentslist=FXCollections.observableArrayList("Gender/Photo mismatch",
-	            "Partial Biometric",
-	            "Partial Iries",
-	            "Photo not clear",
-	            "Id not clear");
-	/* (non-Javadoc)
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+	/** The on hold map list. */
+	private List<Map<String, String>> onHoldMapList;
+
+	/** The on hold reg data. */
+	private RegistrationApprovalDTO onHoldRegData;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Page loading has been started");
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
-		onHoldComboBox.setItems(onHoldCommentslist);
-
+		onHoldComboBox.setItems(FXCollections.observableArrayList(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.ONHOLD_COMMENTS)).split(",")));
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
+
 	/**
 	 * Method to get the Stage and Registration Id from the other controller page
+	 * 
 	 * @param id
 	 * @param stage
 	 */
-	public void initData(String id,Stage stage) {
-	    regId=id;
-	    primarystage=stage;
-	  }
-	/**
-	 * {@code updatePacketStatus} is event class for updating packet status to onhold
-	 * @param event
-	 */
-	public void updatePacketStatus(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as on hold has been started");
-		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
-		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
+	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList) {
+		onHoldRegData = regData;
+		primarystage = stage;
+		onHoldMapList = mapList;
+	}
 
-		if(registration.packetUpdateStatus(regId, RegistrationClientStatusCode.ON_HOLD.getCode(),approverUserId, 
-				onHoldComboBox.getSelectionModel().getSelectedItem(), approverRoleCode)) {
-		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_MESSAGE);
-		submit.disableProperty().set(true);
-		registrationController.tablePagination();
-	}
-	else {
-		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_FAILURE_MESSAGE);
-	}
-		primarystage.close();
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as on hold has been ended");
-	}
 	/**
-	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
-	 * pop up window.
+	 * {@code updatePacketStatus} is for updating packet status to
+	 * onhold
 	 * 
 	 * @param event
 	 */
-	public void exitWindow(ActionEvent event) {
+	public void updatePacketStatus() {
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation to on hold has been started");
+
+		for (Map<String, String> registrationMap : onHoldMapList) {
+			if (registrationMap.containsValue(onHoldRegData.getId())) {
+				onHoldMapList.remove(registrationMap);
+				break;
+			}
+		}
+
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.REGISTRATIONID, onHoldRegData.getId());
+		map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.ON_HOLD.getCode());
+		map.put(RegistrationConstants.STATUSCOMMENT, onHoldComboBox.getSelectionModel().getSelectedItem());
+		onHoldMapList.add(map);
+
+		submit.disableProperty().set(true);
 		primarystage.close();
-																										
-																 
-  
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation to on hold has been ended");
+	}
+
+	/**
+	 * {@code rejectionWindowExit} is to exit from reason for rejection pop up window.
+	 * 
+	 * @param event
+	 */
+	public void exitWindow() {
+		primarystage.close();
+
 	}
 
 	/**
@@ -142,7 +138,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * 
 	 * @param event
 	 */
-	public void onHoldComboboxAction(ActionEvent event) {
+	public void onHoldComboboxAction() {
 		submit.disableProperty().set(false);
 	}
 }

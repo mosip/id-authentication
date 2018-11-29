@@ -5,8 +5,6 @@ import java.time.format.DateTimeParseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
+import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 
 /**
  * Rest Controller Advice for Master Data
@@ -55,18 +54,26 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(getErrorResponse(ex, headers, status, request), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(ex), HttpStatus.BAD_REQUEST);
 	}
 
-	private ErrorResponse<String> getErrorResponse(MethodArgumentNotValidException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		ErrorResponse<String> errorResponse = new ErrorResponse<>();
-		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-			errorResponse.getErrors().add(error.getField() + ": " + error.getDefaultMessage());
-		}
-		for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-			errorResponse.getErrors().add(error.getObjectName() + ": " + error.getDefaultMessage());
-		}
+	private ErrorResponse<Error> getErrorResponse(MethodArgumentNotValidException ex) {
+		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+
+		ex.getBindingResult().getFieldErrors().stream().forEach(e -> {
+			Error error = new Error(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+					e.getField() + ": " + e.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
+
+		// for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+		// errorResponse.getErrors().add(error.getField() + ": " +
+		// error.getDefaultMessage());
+		// }
+		// for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+		// errorResponse.getErrors().add(error.getObjectName() + ": " +
+		// error.getDefaultMessage());
+		// }
 		return errorResponse;
 	}
 

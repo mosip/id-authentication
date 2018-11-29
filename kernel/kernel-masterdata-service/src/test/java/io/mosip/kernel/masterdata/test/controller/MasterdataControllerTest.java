@@ -51,6 +51,7 @@ import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -107,6 +108,7 @@ public class MasterdataControllerTest {
 	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
 	private BiometricAttributeResponseDto biometricAttributeResponseDto;
+
 	private List<BiometricAttributeDto> biometricattributes;
 
 	private DocumentCategoryDto documentCategoryDto1;
@@ -170,14 +172,10 @@ public class MasterdataControllerTest {
 	@MockBean
 	private TemplateService templateService;
 
+	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+
 	@MockBean
 	private BlacklistedWordsService blacklistedWordsService;
-
-	private static final String TEMPLATE_EXPECTED_LIST = "[\r\n" + "  {\r\n" + "	\"id\": \"3\",\r\n"
-			+ "    \"name\": \"Email template\",\r\n" + "    \"description\": null,\r\n"
-			+ "	\"fileFormatCode\": \"xml\",\r\n" + "	\"model\": null,\r\n" + "	\"fileText\": null,\r\n"
-			+ "	\"moduleId\": null,\r\n" + "	\"moduleName\": null,\r\n" + "	\"templateTypeCode\": \"EMAIL\",\r\n"
-			+ "    \"languageCode\": \"HIN\"\r\n" + "  }\r\n" + "]";
 
 	private List<TemplateDto> templateDtoList = new ArrayList<>();
 
@@ -187,21 +185,17 @@ public class MasterdataControllerTest {
 	@Before
 	public void setUp() {
 		biometricTypeSetup();
-
 		applicationSetup();
-
 		biometricAttributeSetup();
 
 		// TODO DeviceControllerTest
 		// TODO DeviceSpecificationControllerTest
 
 		documentCategorySetup();
-
 		documentTypeSetup();
-
 		idTypeSetup();
-
 		locationSetup();
+
 		// TODO MachineDetailControllerTest
 		// TODO MachineHistoryControllerTest
 
@@ -209,18 +203,24 @@ public class MasterdataControllerTest {
 		blackListedWordSetUp();
 		templateSetup();
 
+		templateFileFormatSetup();
+
 	}
 
 	private void templateSetup() {
 		TemplateDto templateDto = new TemplateDto();
-
 		templateDto.setId("3");
 		templateDto.setName("Email template");
 		templateDto.setFileFormatCode("xml");
 		templateDto.setTemplateTypeCode("EMAIL");
 		templateDto.setLangCode("HIN");
-
 		templateDtoList.add(templateDto);
+	}
+
+	private void templateFileFormatSetup() {
+		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("xml");
+		codeAndLanguageCodeId.setLangCode("FRE");
 	}
 
 	private void registrationCenterController() {
@@ -361,8 +361,11 @@ public class MasterdataControllerTest {
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("ENG");
-
 		applicationDtoList.add(applicationDto);
+		
+		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("101");
+		codeAndLanguageCodeId.setLangCode("ENG");
 	}
 
 	private void biometricTypeSetup() {
@@ -470,31 +473,28 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	/*
-	 * @Test public void addApplication() throws Exception { /* PostResponseDto
-	 * postResponseDto = new PostResponseDto(); List<CodeAndLanguageCodeId> results
-	 * = new ArrayList<>();
-	 */
-	/*
-	 * CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
-	 * codeAndLanguageCodeId.setCode("101");
-	 * codeAndLanguageCodeId.setLangCode("ENG");
-	 *//*
-		 * results.add(codeAndLanguageCodeId); postResponseDto.setResults(results);
-		 */
-	/*
-	 * Mockito.when(applicationService.addApplicationData(Mockito.any(
-	 * ApplicationRequestDto.class))) .thenReturn(codeAndLanguageCodeId);
-	 * 
-	 * mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(
-	 * MediaType.APPLICATION_JSON) .content("{\n" + "  \"id\": \"string\",\n" +
-	 * "  \"ver\": \"string\",\n" + "  \"timestamp\": \"string\",\n" +
-	 * "  \"request\": {\n" + "    \"applicationtypes\": [\n" + "      {\n" +
-	 * "        \"code\": \"101\",\n" + "        \"name\": \"pre-registeration\",\n"
-	 * + "        \"description\": \"Pre-registration Application Form\",\n" +
-	 * "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
-	 * .andExpect(status().isOk()); }
-	 */
+	@Test
+	public void addApplication() throws Exception {
+		Mockito.when(applicationService.addApplicationData(Mockito.any()))
+				.thenReturn(codeAndLanguageCodeId);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + 
+						"  \"id\": \"string\",\n" + 
+						"  \"ver\": \"string\",\n" + 
+						"  \"timestamp\": \"2018-11-29T09:55:39.821Z\",\n" + 
+						"  \"request\": {\n" + 
+						"    \"applicationtype\": {\n" + 
+						"      \"code\": \"101\",\n" + 
+						"      \"name\": \"pre-registeration\",\n" + 
+						"      \"description\": \"Pre-registration Application Form\",\n" + 
+						"      \"langCode\": \"ENG\",\n" + 
+						"      \"isActive\": true\n" + 
+						"    }\n" + 
+						"  }\n" + 
+						"}"))
+				.andExpect(status().isOk());
+	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
 
@@ -525,42 +525,6 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
-
-	// -------------------------------DocumentCategoryControllerTest--------------------------
-
-	// @Test
-	// public void fetchAllDocumentCategoryTest() throws Exception {
-	//
-	// Mockito.when(documentCategoryService.getAllDocumentCategory()).thenReturn(documentCategoryDtoList);
-	//
-	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories"))
-	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
-	// .andExpect(MockMvcResultMatchers.status().isOk());
-	// }
-	//
-	// @Test
-	// public void fetchAllDocumentCategoryUsingLangCodeTest() throws Exception {
-	//
-	// Mockito.when(documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString()))
-	// .thenReturn(documentCategoryDtoList);
-	//
-	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/ENG"))
-	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
-	// .andExpect(MockMvcResultMatchers.status().isOk());
-	// }
-	//
-	// @Test
-	// public void fetchDocumentCategoryUsingCodeAndLangCodeTest() throws Exception
-	// {
-	//
-	// Mockito.when(documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(),
-	// Mockito.anyString()))
-	// .thenReturn(documentCategoryDto1);
-	//
-	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/101/ENG"))
-	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_OBJECT))
-	// .andExpect(MockMvcResultMatchers.status().isOk());
-	// }
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
@@ -772,27 +736,17 @@ public class MasterdataControllerTest {
 	}
 
 	// -----------------------------TemplateFileFormatControllerTest------------------------
-	/*@Test
+	@Test
 	public void addTemplateFileFormatTest() throws Exception {
-
-		// PostResponseDto postResponseDto = new PostResponseDto();
-		// List<CodeAndLanguageCodeId> results = new ArrayList<>();
-		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
-		codeAndLanguageCodeId.setCode("xml");
-		codeAndLanguageCodeId.setLangCode("ENG");
-		// results.add(codeAndLanguageCodeId);
-		// postResponseDto.setResults(results);
-		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any(RequestDto.class)))
-				.thenReturn(codeAndLanguageCodeId);
-
+		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
-						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n"
-						+ "    \"templateFileFormatDtos\": [\n" + "      {\n" + "        \"code\": \"xml\",\n"
-						+ "        \"description\": \"xml format\",\n" + "        \"langCode\": \"ENG\"\n" + "      }\n"
-						+ "    ]\n" + "  }\n" + "}"))
+						+ "  \"timestamp\": \"2018-11-29T09:32:01.911Z\",\n" + "  \"request\": {\n"
+						+ "    \"templateFileFormat\": {\n" + "      \"code\": \"xml\",\n"
+						+ "      \"description\": \"string\",\n" + "      \"langCode\": \"FRE\",\n"
+						+ "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
-	}*/
+	}
 
 	@Test
 	public void validateWordsTest() throws Exception {

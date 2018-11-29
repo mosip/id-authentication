@@ -65,9 +65,9 @@ public class MapperUtils {
 
 		return responseDto;
 	}
-	
-	
-	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(List<RegistrationCenter> list) {
+
+	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
+			List<RegistrationCenter> list) {
 		List<RegistrationCenterHierarchyLevelDto> responseDto = new ArrayList<>();
 		list.forEach(p -> {
 			RegistrationCenterHierarchyLevelDto dto = new RegistrationCenterHierarchyLevelDto();
@@ -78,10 +78,7 @@ public class MapperUtils {
 
 		return responseDto;
 	}
-	
-	
 
-	
 	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
 		List<RegistrationCenterDto> responseDto = new ArrayList<>();
 		list.forEach(p -> {
@@ -94,7 +91,6 @@ public class MapperUtils {
 		return responseDto;
 	}
 
-	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
@@ -192,12 +188,10 @@ public class MapperUtils {
 		}
 		return deviceSpecificationDtoList;
 	}
-	
-	
-	
-	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList){
+
+	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList) {
 		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
-		
+
 		for (MachineHistory machineHistory : machineHistoryList) {
 			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
 			machineHistoryDto.setId(machineHistory.getId());
@@ -217,10 +211,10 @@ public class MapperUtils {
 			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedtimes());
 			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
 			machineHistoryDtoList.add(machineHistoryDto);
-			
+
 		}
-		
+
 		return machineHistoryDtoList;
-		
+
 	}
 }

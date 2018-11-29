@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "template_file_format", schema = "master")
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @IdClass(CodeAndLanguageCodeId.class)
 public class TemplateFileFormat extends BaseEntity implements Serializable {
 

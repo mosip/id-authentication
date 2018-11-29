@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.converter;
 
 import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 
 public class RegistrationCenterHistoryConverter implements  DataConverter<RegistrationCenterHistory, RegistrationCenterDto>{

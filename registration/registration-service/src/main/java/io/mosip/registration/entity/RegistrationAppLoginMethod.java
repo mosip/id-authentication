@@ -21,7 +21,7 @@ public class RegistrationAppLoginMethod extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegistrationAppLoginMethodId registrationAppLoginMethodId;
 
-	@Column(name = "method_seq", nullable = true, updatable = false)
+	@Column(name = "method_seq")
 	private int methodSeq;
 
 	/**

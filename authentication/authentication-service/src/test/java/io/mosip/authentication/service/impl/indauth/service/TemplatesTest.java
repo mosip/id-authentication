@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -39,7 +40,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PDFGeneratorImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PDFGeneratorImpl.class, TemplateManagerBuilderImpl.class })
 public class TemplatesTest {
 	
 	private static final String EKYC_SECTION_VALUE = "<table style=\"height: 410px; color: Black; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-bottom-color: #000000; border-left-color: #000000; border-top-color: #000000; border-right-color: #000000; border-right-style: solid; border-left-style: solid; border-bottom-style: solid; border-top-style: solid\" >\r\n" + 
@@ -207,14 +208,17 @@ public class TemplatesTest {
 			"</body>\r\n" + 
 			"</html>";
 	
-	private static TemplateManager templateManager;
+	private TemplateManager templateManager;
 	
 	@Autowired
 	Environment env;
+	
+	@Autowired
+	TemplateManagerBuilder templateManagerBuilder;
 
-	@BeforeClass
-	public static void before() {
-		templateManager = new TemplateManagerBuilderImpl()
+	@Before
+	public void before() {
+		templateManager = templateManagerBuilder
 				.enableCache(false)
 				.resourceLoader("classpath")
 				.build();

@@ -57,8 +57,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public void save(String zipFileName, String individualName) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
-					"Save Registartion had been started");
+			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
 
 			Timestamp time = new Timestamp(System.currentTimeMillis());
 
@@ -73,17 +72,20 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
-			// TODO: Get from Session Context - Reg Center
+			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+					.getRegistrationCenterId());
 			registration.setIndividualName(individualName);
 			registration.setIsActive(true);
 			registration.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setCrDtime(time);
+			registration.setRegUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
 
 			List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registrationTxn.setCrDtime(time);
@@ -91,9 +93,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setRegistrationTransaction(registrationTransactions);
 
 			registrationRepository.create(registration);
-			
-			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
-					"Save Registration had been ended");
+
+			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration had been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
 					runtimeException.toString());
@@ -108,39 +109,38 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
-			String approverRoleCode) {
+	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
 		try {
-			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
-					APPLICATION_ID, "Packet updation has been started");
+			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+					"Packet updation has been started");
 
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			Registration registration = registrationRepository.getOne(id);
+			Registration registration = registrationRepository.getOne(registrationID);
 			registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
 			registration.setClientStatusCode(clientStatusCode);
 			registration.setClientStatusTimestamp(timestamp);
 			registration.setClientStatusComments(statusComments);
-			registration.setApproverUsrId(approverUsrId);
-			registration.setApproverRoleCode(approverRoleCode);
-			registration.setUpdBy(approverUsrId);
+			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
+			registration.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setUpdDtimes(timestamp);
-			
+
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
-			
+
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+			registrationTxn.setRegId(registrationID);
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
-			registrationTxn.setCrBy(approverUsrId);
+			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
-			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
-					APPLICATION_ID, "Packet updation has been ended");
-			
+			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+					"Packet updation has been ended");
+
 			return registrationRepository.update(registration);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
@@ -157,28 +157,18 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> getEnrollmentByStatus(String status) {
-		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Retriving packets based on status");
-		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving packets based on status");
+
 		return registrationRepository.findByclientStatusCode(status);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.mosip.registration.dao.RegistrationDAO#approvalList()
-	 */
-	@Override
-	public List<Registration> approvalList() {
-		LOGGER.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Retriving packets based on created status");
-		
-		return registrationRepository.findByclientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-	}
-
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.RegistrationDAO#getPacketsToBeSynched(java.util.List)
+	 * @see
+	 * io.mosip.registration.dao.RegistrationDAO#getPacketsToBeSynched(java.util.
+	 * List)
 	 */
 	public List<Registration> getPacketsToBeSynched(List<String> statusCodes) {
 		return registrationRepository.findByClientStatusCodeIn(statusCodes);
@@ -196,8 +186,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
 
-		return registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(
-				packetStatus.get(0), packetStatus.get(1), packetStatus.get(2));
+		return registrationRepository.findByStatusCodes(packetStatus.get(0), packetStatus.get(1), packetStatus.get(2));
 	}
 
 	/*
@@ -214,11 +203,14 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		Registration reg = registrationRepository.getOne(registrationPacket.getId());
 		reg.setClientStatusCode(registrationPacket.getClientStatusCode());
-		reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
+		if (registrationPacket.getFileUploadStatus() != null) {
+			reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
+		}
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
 		reg.setClientStatusTimestamp(timestamp);
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
+		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
 		return registrationRepository.update(reg);
 	}
 
@@ -243,17 +235,22 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
-		regTransaction.setIsActive(true);
-		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+		regTransaction.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
+		regTransaction.setLangCode("ENG");
 		regTransaction.setCrBy("mosip");
 		regTransaction.setCrDtime(time);
-		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
+		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
+		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);
 		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		return registrationTransaction;
+	}
+
+	public List<Registration> getAllReRegistrationPackets(String[] status) {
+		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
 
 }

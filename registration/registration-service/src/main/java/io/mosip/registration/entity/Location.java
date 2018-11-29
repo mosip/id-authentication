@@ -8,6 +8,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
  * 
  * @author Brahmananda Reddy
@@ -41,7 +43,8 @@ public class Location implements Serializable {
 	@Column(name = "upd_dtimesz")
 	private Timestamp updatedTimesZone;
 	@Column(name = "is_deleted", nullable = true)
-	private boolean isDeleted;
+	@Type(type = "true_false")
+	private Boolean isDeleted;
 	@Column(name = "del_dtimesz", nullable = true)
 	private Timestamp deletedTimesZone;
 
@@ -198,7 +201,7 @@ public class Location implements Serializable {
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -206,7 +209,7 @@ public class Location implements Serializable {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
