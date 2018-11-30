@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,8 @@ public class DocumentTypeController {
 	}
 
 	@PostMapping("/documenttypes")
-	public ResponseEntity<CodeAndLanguageCodeID> addDocumentTypeList(@RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
+			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.createDocumentTypes(types), HttpStatus.CREATED);
 	}
 }

@@ -38,6 +38,6 @@ public interface DocumentTypeService {
 	 *            dto with documents type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	public CodeAndLanguageCodeID addDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto);
+	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto);
 
 }
