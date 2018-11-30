@@ -201,16 +201,21 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs);
 
-		if (capturePhotoUsingDevice.equals("Y")) {
+		/*if (capturePhotoUsingDevice.equals("Y")) {
 			registrationController.getBiometricsPane().setVisible(true);
 		} else {
 			registrationController.getBiometricsPane().setVisible(false);
-		}
+		}*/
+
+		// Hide FingerprintCapture pane and show IrisCapture pane
+		registrationController.toggleFingerprintCaptureVisibility(false);
+		registrationController.toggleIrisCaptureVisibility(true);
+
 		if (null != registrationDTOContent) {
 			registrationDTOContent.setBiometricDTO(biometricDTO);
 		}
 
-		fingerPrintCapturePane.setVisible(false);
+		//fingerPrintCapturePane.setVisible(false);
 		}else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION,  "Please scan your Fingers to continue.");
 		}

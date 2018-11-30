@@ -278,6 +278,8 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane fingerPrintCapturePane;
+	@FXML
+	private AnchorPane irisCapture;
 
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
@@ -297,21 +299,10 @@ public class RegistrationController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			if (capturePhotoUsingDevice.equals("Y")) {
-				defaultImage = applicantImage.getImage();
-				biometrics.setVisible(false);
-				biometricsNext.setVisible(false);
-				getBiometricsPane().setVisible(true);
-				if (!isEditPage()) {
-					applicantImageCaptured = false;
-					exceptionBufferedImage = null;
-				}
-			} else if (capturePhotoUsingDevice.equals("N")) {
-
-				biometrics.setVisible(true);
-				biometricsNext.setVisible(true);
-				getBiometricsPane().setVisible(false);
-				biometricsNext.setDisable(false);
+			
+			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
+				applicantImageCaptured = false;
+				exceptionBufferedImage = null;
 			}
 
 			demoGraphicTitlePane.expandedProperty().addListener(
@@ -1552,4 +1543,51 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
+	
+	/**
+	 * This method toggles the visible property of the IrisCapture Pane.
+	 * 
+	 * @param visibility
+	 *            the value of the visible property to be set
+	 */
+	public void toggleIrisCaptureVisibility(boolean visibility) {
+		this.irisCapture.setVisible(visibility);
+	}
+	
+	/**
+	 * This method toggles the visible property of the FingerprintCapture Pane.
+	 * 
+	 * @param visibility
+	 *            the value of the visible property to be set
+	 */
+	public void toggleFingerprintCaptureVisibility(boolean visibility) {
+		this.fingerPrintCapturePane.setVisible(visibility);
+	}
+	
+	/**
+	 * This method toggles the visible property of the PhotoCapture Pane.
+	 * 
+	 * @param visibility
+	 *            the value of the visible property to be set
+	 */
+	public void togglePhotoCaptureVisibility(boolean visibility) {
+		if (visibility) {
+			if (capturePhotoUsingDevice.equals("Y")) {
+				defaultImage = applicantImage.getImage();
+				biometrics.setVisible(false);
+				biometricsNext.setVisible(false);
+				getBiometricsPane().setVisible(true);
+			} else if (capturePhotoUsingDevice.equals("N")) {
+				biometrics.setVisible(true);
+				biometricsNext.setVisible(true);
+				getBiometricsPane().setVisible(false);
+				biometricsNext.setDisable(false);
+			}
+		} else {
+			biometrics.setVisible(visibility);
+			biometricsNext.setVisible(visibility);
+			getBiometricsPane().setVisible(visibility);
+		}
+	}
+
 }

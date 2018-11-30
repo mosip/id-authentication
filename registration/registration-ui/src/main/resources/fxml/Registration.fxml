@@ -157,6 +157,7 @@
                         <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0">
                            <children>
                            <fx:include fx:id="fingerPrintCapturePane" source="FingerPrintCapture.fxml" />
+                           <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
                              <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" visible="false" />
                               <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." visible="false" />
                               <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">

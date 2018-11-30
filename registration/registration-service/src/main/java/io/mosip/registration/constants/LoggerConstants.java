@@ -20,9 +20,10 @@ public class LoggerConstants {
 	private static final String PKT_CREATION = APP_NAME + "PACKET_CREATION - ";
 	private static final String PKT_STORAGE = APP_NAME + "PACKET_STORAGE_MANAGER - ";
 	private static final String AUDIT_LOG_SYNC = APP_NAME + "AUDIT_LOG_SYNCHER - ";
-	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING";
+	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING - ";
 	private static final String PKT_APPROVAL = APP_NAME + "REGISTRATION_APPROVAL - ";
-	
+	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
+
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
 	public static final String LOG_PKT_CREATION = PKT_CREATION + "CREATE";
@@ -43,5 +44,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_EOD_CONTROLLER = PKT_APPROVAL + "EOD_CONTROLLER";
 	public static final String LOG_REG_ONHOLD_CONTROLLER = PKT_APPROVAL + "ONHOLD_CONTROLLER";
 	public static final String LOG_REG_REJECT_CONTROLLER = PKT_APPROVAL + "REJECTION_CONTROLLER";
+	public static final String LOG_REG_IRIS_CAPTURE_CONTROLLER = USER_REGISTRATION
+			+ "BIOMETRIC_IRIS_CAPTURE_CONTROLLER";
 
 }

@@ -380,6 +380,7 @@ public class RegistrationConstants {
 	public static final String REG_ACK_EXP_CODE = "ACK-";
 	public static final String DEVICE_ONBOARD_EXP_CODE = "DVO-";
 	public static final String SYNC_JOB_EXP_CODE = "SYN-";
+	private static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -631,6 +632,9 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_FILTER_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-012";
 	public static final String DEVICE_ONBOARD_FILTER_LIST_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-013";
 	public static final String DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-014";
+	
+	// Exceptions for User Registration - Iris Capture
+	public static final String USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
