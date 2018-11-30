@@ -11,7 +11,7 @@
    <children>
       <AnchorPane fx:id="fingerPrintScanRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="483.0">
          <children>
-            <Button fx:id="scanBtn" layoutX="387.0" layoutY="233.0" mnemonicParsing="false" onAction="#scanFinger" prefHeight="30.0" prefWidth="68.0" text="Scan">
+            <Button fx:id="scanBtn" layoutX="387.0" layoutY="233.0" mnemonicParsing="false" onAction="#scan" prefHeight="30.0" prefWidth="68.0" text="Scan">
                <font>
                   <Font size="10.0" />
                </font></Button>
@@ -24,7 +24,7 @@
       </AnchorPane>
       <AnchorPane fx:id="fingerPrintScanRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0">
          <children>
-            <Label layoutX="194.0" layoutY="14.0" text="Fingerprint">
+            <Label fx:id="popupTitle" layoutX="194.0" layoutY="14.0" text="Fingerprint">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

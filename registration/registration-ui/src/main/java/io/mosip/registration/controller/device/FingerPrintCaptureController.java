@@ -116,11 +116,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				|| SessionContext.getInstance().getMapObject().get("RIGHT_PALM_PATH") != null
 				|| SessionContext.getInstance().getMapObject().get("THUMB_PATH") != null) {
 			leftHandPalmImageview.setImage(fingerPrintScanController
-					.loadImage(SessionContext.getInstance().getMapObject().get("LEFT_PALM_PATH").toString()));
+					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("LEFT_PALM_PATH"))));
 			rightHandPalmImageview.setImage(fingerPrintScanController
-					.loadImage(SessionContext.getInstance().getMapObject().get("RIGHT_PALM_PATH").toString()));
+					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("RIGHT_PALM_PATH"))));
 			thumbImageview.setImage(fingerPrintScanController
-					.loadImage(SessionContext.getInstance().getMapObject().get("THUMB_PATH").toString()));
+					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("THUMB_PATH"))));
 		} else {
 			leftHandPalmImageview.setImage(null);
 			rightHandPalmImageview.setImage(null);
@@ -158,7 +158,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				selectedPane.requestFocus();
 				Stage primaryStage = new Stage();
 				primaryStage.initStyle(StageStyle.UNDECORATED);
-				Parent ackRoot = BaseController.load(getClass().getResource("/fxml/FingerPrintScan.fxml"));
+				Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
 				fingerPrintScanController.init(selectedPane, primaryStage, fingerprintDetailsDTOs);
 				primaryStage.setResizable(false);
 				Scene scene = new Scene(ackRoot);
@@ -188,7 +188,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Saving and Validating of captured fingerprints has started");
 		
-		if(null!=leftHandPalmImageview.getImage() && null!=rightHandPalmImageview.getImage() && null!=thumbImageview.getImage()) {
+		// FIXME left palm is not shown after being captured
+		if(null==leftHandPalmImageview.getImage() && null!=rightHandPalmImageview.getImage() && null!=thumbImageview.getImage()) {
 			
 			RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);

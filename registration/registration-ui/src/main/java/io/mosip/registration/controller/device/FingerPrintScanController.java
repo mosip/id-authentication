@@ -1,8 +1,5 @@
 package io.mosip.registration.controller.device;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +12,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -22,14 +29,10 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_BIOMETRIC_SCAN_CONTROLLER;
 
 /**
  * {@code FingerPrintScanController} is to scan fingerprint biometrics.
@@ -51,12 +54,22 @@ public class FingerPrintScanController extends BaseController implements Initial
 	/** The finger print scan image. */
 	@FXML
 	private ImageView fingerPrintScanImage;
+	@FXML
+	private Label popupTitle;
+
+	/**
+	 * @param popupTitle
+	 *            the popupTitle to set
+	 */
+	public void setPopupTitle(String popupTitle) {
+		this.popupTitle.setText(popupTitle);
+	}
 
 	/** The primary stage. */
 	private Stage primarystage;
 
 	/** The fingerprint details DT os. */
-	private List<FingerprintDetailsDTO> fingerprintDetailsDTOs = null;
+	private List<FingerprintDetailsDTO> fingerprintDetailsDTOs;
 
 	/*
 	 * (non-Javadoc)
@@ -66,12 +79,12 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 
 		fingerprintDetailsDTOs = new ArrayList<>();
 
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen ended");
 
 	}
@@ -88,14 +101,38 @@ public class FingerPrintScanController extends BaseController implements Initial
 		selectedAnchorPane = selectedPane;
 		primarystage = stage;
 		fingerprintDetailsDTOs = detailsDTOs;
+		popupTitle.setText("Fingerprint");
+	}
+
+	/**
+	 * This method scans the biometric of the individual
+	 */
+	@FXML
+	private void scan() {
+		try {
+			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of biometric details for user registration");
+
+			if (popupTitle.getText().equalsIgnoreCase("Fingerprint")) {
+				scanFinger();
+			} else {
+				scanIris();
+			}
+
+			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of biometric details for user registration completed");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("Exception while scanning biometric details for user registration: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
+		}
 	}
 
 	/**
 	 * {@code ScanFinger} is to scan the fingers.
 	 */
-	public void scanFinger() {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Scan Finger has started");
+	private void scanFinger() {
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has started");
 
 		if (selectedAnchorPane.getId() == fpCaptureController.leftHandPalmPane.getId()) {
 
@@ -133,8 +170,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 			SessionContext.getInstance().getMapObject().put("THUMB_PATH", "src/main/resources/FINGER PRINTS/thumb.jpg");
 
 		}
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Scan Finger has ended");
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
 
 	}
 
@@ -144,7 +180,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 * @param path
 	 */
 	private void readFingerPrints(String path) {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
 		try (Stream<Path> paths = Files.walk(Paths.get(path))) {
@@ -166,16 +202,15 @@ public class FingerPrintScanController extends BaseController implements Initial
 						fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 
 					} catch (IOException ioException) {
-						LOGGER.error("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 								ioException.getMessage());
 					}
 				}
 			});
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has ended");
 	}
 
@@ -186,16 +221,15 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 * @return Image
 	 */
 	protected Image loadImage(String imgPath) {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading scanned image started");
 		Image img = null;
 		try (FileInputStream file = new FileInputStream(new File(imgPath))) {
 			img = new Image(file);
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading scanned image ended");
 		return img;
 	}
@@ -206,10 +240,27 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 * @param event
 	 */
 	public void exitWindow(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_SCAN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Exit window has been called");
 		primarystage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		primarystage.close();
 
 	}
+
+	private void scanIris() {
+		try {
+			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration");
+
+			
+
+			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration completed");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("Exception while scanning iris details for user registration: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
+		}
+	}
+
 }

@@ -1,17 +1,20 @@
 package io.mosip.registration.controller.device;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.io.IOException;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +37,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
  * @since 1.0.0
  */
 @Controller
-public class IrisCaptureController extends BaseController implements Initializable {
+public class IrisCaptureController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(IrisCaptureController.class);
 
@@ -57,15 +60,11 @@ public class IrisCaptureController extends BaseController implements Initializab
 
 	@Autowired
 	private RegistrationController registrationController;
+	@Autowired
+	private FingerPrintScanController fingerPrintScanController;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
-	 * java.util.ResourceBundle)
-	 */
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	@FXML
+	public void initialize() {
 
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -74,8 +73,8 @@ public class IrisCaptureController extends BaseController implements Initializab
 			// Create ChangeListener object for Focus Property
 			ChangeListener<Boolean> irisPaneFocusListener = (observable, oldValue, newValue) -> System.out
 					.println("focus Called");
-			ChangeListener<? super EventHandler<? super MouseEvent>> irisPaneClickListener = (observable, oldValue, newValue) -> System.out
-					.println("click Called");
+			ChangeListener<? super EventHandler<? super MouseEvent>> irisPaneClickListener = (observable, oldValue,
+					newValue) -> System.out.println("click Called");
 
 			// Add listener to focused property
 			leftIrisPane.onMouseClickedProperty().addListener(irisPaneClickListener);
@@ -95,23 +94,81 @@ public class IrisCaptureController extends BaseController implements Initializab
 		}
 
 	}
-	
+
 	@FXML
 	private void scan(ActionEvent actionEvent) {
-		System.out.println(actionEvent.getSource());
-		System.out.println("welcome");
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Opening pop-up screen to capture Iris for user registration");
+
+			Stage popupStage = new Stage();
+			popupStage.initStyle(StageStyle.UNDECORATED);
+			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
+			fingerPrintScanController.setPopupTitle("Iris");
+			popupStage.setResizable(false);
+			Scene scene = new Scene(ackRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			popupStage.setScene(scene);
+			popupStage.initModality(Modality.WINDOW_MODAL);
+			popupStage.initOwner(stage);
+			popupStage.show();
+
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Opening pop-up screen to capture Iris for user registration completed");
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s -> %s",
+					RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, ioException.getMessage(),
+					ioException.getCause()));
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s",
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
+
+		}
 	}
 
 	@FXML
 	private void nextSection(ActionEvent actionEvent) {
-		registrationController.toggleIrisCaptureVisibility(false);
-		registrationController.togglePhotoCaptureVisibility(true);
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Navigating to Photo capture page for user registration");
+
+			registrationController.toggleIrisCaptureVisibility(false);
+			registrationController.togglePhotoCaptureVisibility(true);
+
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Navigating to Photo capture page for user registration completed");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s -> Navigating to Photo capture page for user registration  %s",
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP,
+							runtimeException.getMessage()));
+
+		}
 	}
 
 	@FXML
 	private void previousSection(ActionEvent actionEvent) {
-		registrationController.toggleIrisCaptureVisibility(false);
-		registrationController.toggleFingerprintCaptureVisibility(true);
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Navigating to Fingerprint capture page for user registration");
+
+			registrationController.toggleIrisCaptureVisibility(false);
+			registrationController.toggleFingerprintCaptureVisibility(true);
+
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Navigating to Fingerprint capture page for user registration completed");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s -> Navigating to Fingerprint capture page for user registration  %s",
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP,
+							runtimeException.getMessage()));
+
+		}
 	}
 
 }
