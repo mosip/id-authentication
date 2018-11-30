@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.exception;
+package io.mosip.kernel.core.exception;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  *
  */
 @Data
-public class Error {
+public class ServiceError {
 
 	/**
 	 * The error code.
@@ -27,7 +27,7 @@ public class Error {
 	 * @param errorMessage
 	 *            The error message.
 	 */
-	public Error(String errorCode, String errorMessage) {
+	public ServiceError(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

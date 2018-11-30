@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 
 /**
@@ -29,14 +31,15 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Object> otpGeneratorValidity(final MethodArgumentNotValidException e) {
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ErrorResponse<ServiceError>> otpGeneratorValidity(final MethodArgumentNotValidException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			Error error = new Error(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
+			ServiceError error = new ServiceError(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
 			errorResponse.getErrors().add(error);
 		});
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 
@@ -48,9 +51,11 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(OtpInvalidArgumentException.class)
-	public ResponseEntity<Object> otpValidationArgumentValidity(final OtpInvalidArgumentException exception) {
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ErrorResponse<ServiceError>> otpValidationArgumentValidity(
+			final OtpInvalidArgumentException exception) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(exception.getList());
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 
@@ -62,10 +67,11 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(RequiredKeyNotFoundException.class)
-	public ResponseEntity<Object> otpValidationKeyNullValidity(final RequiredKeyNotFoundException exception) {
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ErrorResponse<ServiceError>> otpValidationKeyNullValidity(
+			final RequiredKeyNotFoundException exception) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(exception.getList());
-
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 }
