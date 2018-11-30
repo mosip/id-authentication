@@ -35,7 +35,7 @@ public class PacketUploaderIOExceptionTest {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
-				.andExpect(jsonPath("$.errors[0].code", isA(String.class)));
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 }
