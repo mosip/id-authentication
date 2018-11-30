@@ -2,12 +2,15 @@ package io.mosip.registration.test.packetStatusSync;
 
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +20,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
@@ -32,6 +36,13 @@ public class RegPacketStatusServiceTest {
 	RegPacketStatusDAO packetStatusDao;
 	@InjectMocks
 	RegPacketStatusServiceImpl packetStatusService;
+	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	@Before
+	public void initialize() throws IOException, URISyntaxException {
+		applicationContext.setApplicationMessagesBundle();
+	}
 
 	@Test
 	public void packetSyncStatusSuccessTest() throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
