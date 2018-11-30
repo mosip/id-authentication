@@ -41,6 +41,6 @@ private LocalDateTime timeStamp;
 /**
  * 
  */
-@NotNull
+@NotBlank
 private String data; 
 }

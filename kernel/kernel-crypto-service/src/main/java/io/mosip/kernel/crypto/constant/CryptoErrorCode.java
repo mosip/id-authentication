@@ -37,7 +37,11 @@ public enum CryptoErrorCode {
 	/**
 	 * 
 	 */
-	KEYMANAGER_SERVICE_ERROR("KER-CRY-006","Keymanager Service has replied with following error")
+	KEYMANAGER_SERVICE_ERROR("KER-CRY-006","Keymanager Service has replied with following error"),
+	/**
+	 * 
+	 */
+	DATE_TIME_PARSE_EXCEPTION("KER-CRY-00","timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ (e.g. 2019-04-05T14:30)")
 	;
 
 	/**

@@ -6,6 +6,7 @@
  */
 package io.mosip.kernel.crypto.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,13 +28,18 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 	/**
+	 * Application name
+	 */
+	@Value("${mosip.kernel.crypto.application.name}")
+	private String applicationName;
+	/**
 	 * Produce Docket bean
 	 * 
 	 * @return Docket bean
 	 */
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
+		return new Docket(DocumentationType.SWAGGER_2).groupName(applicationName).select().apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.any()).build();
 	}
 }

@@ -4,9 +4,8 @@
  * 
  * 
  */
-package io.mosip.kernel.crypto.exception;
+package io.mosip.kernel.keymanagerservice.exception;
 
-import java.net.ConnectException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -15,8 +14,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -24,18 +21,18 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.crypto.constant.CryptoConstant;
-import io.mosip.kernel.crypto.constant.CryptoErrorCode;
+import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstants;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstants;
 
 /**
- * Rest Controller Advice for Crypto Service
+ * Rest Controller Advice for Keymanager Service
  * 
- * @author Urvil Joshi
+ * @author Dharmesh Khandelwal
  *
  * @since 1.0.0
  */
 @RestControllerAdvice
-public class CryptoExceptionHandler {
+public class KeymanagerExceptionHandler {
 
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ErrorResponse<Error>> nullDataException(final NullDataException e) {
@@ -53,36 +50,15 @@ public class CryptoExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-	public ResponseEntity<ErrorResponse<Error>> arrayIndexOutOfBoundsException(
-			final ArrayIndexOutOfBoundsException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(), CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage()), HttpStatus.BAD_REQUEST);
-	}
-	
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<Error>> dateTimeParseException(
 			final InvalidFormatException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+CryptoConstant.WHITESPACE+CryptoErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+KeyManagerConstants.WHITESPACE+KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<Error>> invalidDataException(final InvalidDataException e) {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()) ,HttpStatus.BAD_REQUEST);
-	}
-	
-	@ExceptionHandler(ConnectException.class)
-	public ResponseEntity<ErrorResponse<Error>> connectException(final ConnectException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptoErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	@ExceptionHandler(HttpClientErrorException.class)
-	public ResponseEntity<ErrorResponse<Error>> httpClientErrorException(final HttpClientErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getLocalizedMessage()), e.getStatusCode());
-	}
-	
-	@ExceptionHandler(HttpServerErrorException.class)
-	public ResponseEntity<ErrorResponse<Error>> httpServerErrorException(final HttpServerErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getLocalizedMessage()), e.getStatusCode());
 	}
 	
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -91,7 +67,7 @@ public class CryptoExceptionHandler {
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			Error error = new Error(CryptoErrorCode.INVALID_REQUEST.getErrorCode(),x.getField() + CryptoConstant.WHITESPACE + x.getDefaultMessage());
+			Error error = new Error(KeymanagerErrorConstants.INVALID_REQUEST.getErrorCode(),x.getField() + KeyManagerConstants.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

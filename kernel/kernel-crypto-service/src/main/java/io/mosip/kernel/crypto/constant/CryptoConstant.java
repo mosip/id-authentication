@@ -1,7 +1,7 @@
 package io.mosip.kernel.crypto.constant;
 
-public class CryptoConstants {
-	private CryptoConstants() {
+public class CryptoConstant {
+	private CryptoConstant() {
 
 	}
 	public static final String WHITESPACE = " ";
