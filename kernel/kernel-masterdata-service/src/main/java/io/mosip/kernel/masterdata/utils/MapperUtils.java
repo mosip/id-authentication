@@ -45,23 +45,41 @@ public class MapperUtils {
 	@Autowired
 	private DataMapper dataMapperImpl;
 
-	public <S, D> D map(final S source, D destination) {
-		mapValues(source, destination);
+	public <E, D> D map(final E entity, D object) {
+		dataMapperImpl.map(entity, object, true, null, null, true);
+		return object;
+	}
+
+	public <D, T> D map(final T entity, Class<D> outCLass) {
+		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
+
+	}
+
+	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
+		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
+	}
+
+	// ----------------------------------------------------------------------------------------------------------------------------
+	public <S, D> D mapNew(final S source, D destination) {
+		if (!EmptyCheckUtils.isNullEmpty(source) && !EmptyCheckUtils.isNullEmpty(destination)) {
+			mapValues(source, destination);
+		}
 		return destination;
 	}
 
-	public <S, D> D map(final S source, Class<D> destinationClass) {
+	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
 		Object destination;
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-991", "Error while mapping source object to destination", e);
+
+			throw new DataAccessLayerException("KER-MSD-991", e.getMessage(), e);
 		}
-		return (D) map(source, destination);
+		return (D) mapNew(source, destination);
 	}
 
-	public <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
-		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
+	public <S, D> List<D> mapAllNew(final Collection<S> sourceList, Class<D> destinationClass) {
+		return sourceList.stream().map(entity -> mapNew(entity, destinationClass)).collect(Collectors.toList());
 	}
 
 	private <S, D> void mapValues(S source, D destination) {
@@ -70,8 +88,10 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
+				sfield.setAccessible(true);
 				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
 					setFieldValue(sfield.get(source), destination);
+					sfield.setAccessible(false);
 					isIdMapped = true;
 				} else if (!isSuperMapped) {
 					setBaseFieldValue(source, destination);
@@ -82,7 +102,8 @@ public class MapperUtils {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-992", "Error while mapping local date or time", e);
+
+			throw new DataAccessLayerException("KER-MSD-992", e.getMessage(), e);
 		}
 	}
 
@@ -117,7 +138,8 @@ public class MapperUtils {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-993", "Error while mapping source object to destination", e);
+
+			throw new DataAccessLayerException("KER-MSD-993", e.getMessage(), e);
 		}
 	}
 
@@ -157,6 +179,7 @@ public class MapperUtils {
 		dtf.setAccessible(false);
 		ef.setAccessible(false);
 	}
+	// ----------------------------------------------------------------------------------------------------------------------------
 
 	/*
 	 * public List<RegistrationCenterDto>
