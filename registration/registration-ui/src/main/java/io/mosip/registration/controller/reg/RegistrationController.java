@@ -625,10 +625,6 @@ public class RegistrationController extends BaseController {
 
 				biometricTitlePane.setExpanded(true);
 
-				Parent pendingActionRoot = BaseController.load(getClass().getResource("/fxml/FingerPrintCapture.fxml"));
-				ObservableList<Node> approvalNodes = fingerPrintCapturePane.getChildren();
-				approvalNodes.add(pendingActionRoot);
-
 				if (capturePhotoUsingDevice.equals("N")) {
 					biometricsNext.setDisable(false);
 				}
@@ -636,10 +632,7 @@ public class RegistrationController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - COULD NOT LOAD FINGER BIOMETRIC PANE ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		}
+		} 
 	}
 
 	@FXML

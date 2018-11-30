@@ -154,11 +154,12 @@
                      </content></TitledPane>
                   <TitledPane fx:id="biometricTitlePane" text="Applicant Biometrics">
                      <content>
-                        <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0" visible="false">
+                        <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0">
                            <children>
-                              <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
-                              <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
-                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0">
+                           <fx:include fx:id="fingerPrintCapturePane" source="FingerPrintCapture.fxml" />
+                             <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" visible="false" />
+                              <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." visible="false" />
+                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
                                  <children>
                                     <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
                                     <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />

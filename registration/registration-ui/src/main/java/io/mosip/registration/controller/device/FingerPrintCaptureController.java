@@ -110,7 +110,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		fingerprintDetailsDTOs = new ArrayList<>();
-		registrationController.getBiometricsPane().setVisible(false);
 		selectAnchorPane();
 
 		if (SessionContext.getInstance().getMapObject().get("LEFT_PALM_PATH") != null
