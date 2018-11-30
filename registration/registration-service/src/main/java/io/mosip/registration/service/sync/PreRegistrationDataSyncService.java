@@ -6,5 +6,5 @@ public interface PreRegistrationDataSyncService {
 
 	public ResponseDTO getPreRegistrationIds();
 	
-	public ResponseDTO getPreRegistration(String preRegistrationId);
+	public byte[] getPreRegistration(String preRegistrationId);
 }
