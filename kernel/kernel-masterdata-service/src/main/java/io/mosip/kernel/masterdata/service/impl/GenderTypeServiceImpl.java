@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
-import io.mosip.kernel.masterdata.dto.GenderDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
@@ -54,7 +52,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public GenderTypeResponseDto getAllGenderTypes() {
 		GenderTypeResponseDto genderResponseDto = null;
-		List<GenderDto> genderDto = null;
+		List<GenderTypeDto> genderDto = null;
 		List<Gender> genderType = null;
 
 		try {
@@ -64,7 +62,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 					ExceptionUtils.parseException(e));
 		}
 		if (!(genderType.isEmpty())) {
-			genderDto = objectMapperUtil.mapAll(genderType, GenderDto.class);
+			genderDto = objectMapperUtil.mapAll(genderType, GenderTypeDto.class);
 		} else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
@@ -85,7 +83,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public GenderTypeResponseDto getGenderTypeByLangCode(String langCode) {
 		GenderTypeResponseDto genderResponseDto = null;
-		List<GenderDto> genderListDto = null;
+		List<GenderTypeDto> genderListDto = null;
 		List<Gender> gender = new ArrayList<>();
 
 		try {
@@ -98,7 +96,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		genderListDto = objectMapperUtil.mapAll(gender, GenderDto.class);
+		genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
 
 		genderResponseDto = new GenderTypeResponseDto();
 		genderResponseDto.setGenderType(genderListDto);
