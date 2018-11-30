@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,13 +16,21 @@ import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 @RestController
 @RequestMapping("/templatefileformats")
 public class TemplateFileFormatController {
-	
+
 	@Autowired
 	private TemplateFileFormatService templateFileFormatService;
 
+	/**
+	 * API to create a templatefileformat
+	 * 
+	 * @param templateFileFormatRequestDto
+	 * 
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
 	@PostMapping
-	public CodeAndLanguageCodeID addTemplateFileFormat(@RequestBody RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
-		return templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
-		
+	public CodeAndLanguageCodeID createTemplateFileFormat(
+			@Valid @RequestBody RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
+		return templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
+
 	}
 }

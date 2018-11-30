@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
-import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -46,8 +45,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	private MapperUtils mapperUtil;
 
 	@Override
-	public List<DocumentTypeData> getAllValidDocumentType(String code, String langCode) {
-		List<DocumentTypeData> listOfDocumentTypeDto = null;
+	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
+		List<DocumentTypeDto> listOfDocumentTypeDto = null;
 		List<DocumentType> documents = null;
 		try {
 			documents = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
@@ -57,7 +56,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (documents != null && !documents.isEmpty()) {
-			listOfDocumentTypeDto = mapperUtil.mapAll(documents, DocumentTypeData.class);
+			listOfDocumentTypeDto = mapperUtil.mapAll(documents, DocumentTypeDto.class);
 		} else {
 			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -76,7 +75,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
-		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest().getDocumentType(),
+		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(),
 				DocumentType.class);
 		DocumentType documentType;
 		try {

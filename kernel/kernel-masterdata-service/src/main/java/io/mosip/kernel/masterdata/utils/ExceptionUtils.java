@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ * This class is used to get the Exception related functionalities.
  * 
  * @author Urvil Joshi
  * @author Bal Vikash Sharma

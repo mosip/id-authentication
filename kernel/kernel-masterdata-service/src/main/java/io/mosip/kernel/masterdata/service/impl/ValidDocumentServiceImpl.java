@@ -47,7 +47,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Override
 	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document) {
 
-		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest().getValidDocument(),
+		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest(),
 				ValidDocument.class);
 		try {
 			validDocument = documentRepository.create(validDocument);

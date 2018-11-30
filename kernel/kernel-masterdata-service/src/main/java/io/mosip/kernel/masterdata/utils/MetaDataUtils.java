@@ -28,10 +28,10 @@ public class MetaDataUtils {
 	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
-	
+
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 
-		Field fields[] = entity.getClass().getDeclaredFields();
+		Field[] fields = entity.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
 				try {
@@ -62,7 +62,7 @@ public class MetaDataUtils {
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
-		
+
 		return entities;
 
 	}
