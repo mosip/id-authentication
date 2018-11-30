@@ -89,7 +89,6 @@ Refer the 'Registration Device Integration' design document for detail understan
 
 As per the ID defination specification the demographic detail captured from individual is structured and stored in to the packet.
 
-
 -   Create **RegistrationService** and create DTO for the same.
 
     -   Get the data from Registration UI
