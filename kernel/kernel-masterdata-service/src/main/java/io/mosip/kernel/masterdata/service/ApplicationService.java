@@ -2,9 +2,9 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * 
@@ -38,6 +38,6 @@ public interface ApplicationService {
 	 */
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
 
-	public CodeAndLanguageCodeId addApplicationData(RequestDto<ApplicationData> application);
+	public CodeAndLanguageCodeID addApplicationData(RequestDto<ApplicationData> application);
 
 }

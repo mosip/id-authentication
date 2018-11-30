@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeAndRsnCatCode;
+import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -105,9 +105,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	public PostResponseDto saveReasonCategories(ReasonCategoryRequestDto reasonRequestDto) {
 		List<ReasonCategory> reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getReasonCategories(),
 				ReasonCategory.class);
-		List<CodeAndLanguageCodeId> reasonCategoryIds = new ArrayList<>();
+		List<CodeAndLanguageCodeID> reasonCategoryIds = new ArrayList<>();
 		PostResponseDto reasonResponseDto = new PostResponseDto();
-		CodeAndLanguageCodeId reasonCategoryId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID reasonCategoryId = new CodeAndLanguageCodeID();
 		List<ReasonCategory> resultantReasonCategory = null;
 		if (!reasonCategories.isEmpty()) {
 			try {
@@ -147,9 +147,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	public ReasonListResponseDto saveReasonList(ReasonListRequestDto reasonRequestDto) {
 		List<ReasonList> reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getReasonList(),
 				ReasonList.class);
-		List<CodeLangCodeAndRsnCatCode> reasonListIds = new ArrayList<>();
+		List<CodeLangCodeAndRsnCatCodeID> reasonListIds = new ArrayList<>();
 		ReasonListResponseDto reasonResponseDto = new ReasonListResponseDto();
-		CodeLangCodeAndRsnCatCode reasonListId = new CodeLangCodeAndRsnCatCode();
+		CodeLangCodeAndRsnCatCodeID reasonListId = new CodeLangCodeAndRsnCatCodeID();
 		List<ReasonList> resultantReasonList = null;
 		if (!reasonList.isEmpty()) {
 			try {

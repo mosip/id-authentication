@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.GenderRequestDto;
-import io.mosip.kernel.masterdata.dto.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.GenderRequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 
 /**

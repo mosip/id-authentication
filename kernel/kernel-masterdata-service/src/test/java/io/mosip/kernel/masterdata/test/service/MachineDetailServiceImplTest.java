@@ -18,8 +18,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataRetrievalFailureException;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -119,7 +119,7 @@ public class MachineDetailServiceImplTest {
 		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalse()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -174,7 +174,7 @@ public class MachineDetailServiceImplTest {
 		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);

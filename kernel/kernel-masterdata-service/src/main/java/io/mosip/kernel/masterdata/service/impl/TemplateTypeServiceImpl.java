@@ -7,8 +7,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.TemplateTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.TemplateType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
@@ -34,7 +34,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	private TemplateTypeRepository templateTypeRepository;
 
 	@Override
-	public CodeAndLanguageCodeId createTemplateType(TemplateTypeRequestDto tempalteType) {
+	public CodeAndLanguageCodeID createTemplateType(TemplateTypeRequestDto tempalteType) {
 		TemplateType entity = metaUtils.setCreateMetaData(tempalteType.getRequest().getTemplateTypeDto(),
 				TemplateType.class);
 		TemplateType templateType;
@@ -46,7 +46,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 					e.getErrorText());
 		}
 
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(templateType, codeLangCodeId, true, null, null, true);
 
 		return codeLangCodeId;

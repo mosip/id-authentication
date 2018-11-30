@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BiometricTypeData;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 
 /**
@@ -60,7 +60,7 @@ public class BiometricTypeController {
 	}
 	
 	@PostMapping
-	public CodeAndLanguageCodeId addBiometricType(@RequestBody RequestDto<BiometricTypeData> biometricType) {
+	public CodeAndLanguageCodeID addBiometricType(@RequestBody RequestDto<BiometricTypeData> biometricType) {
 		return biometricTypeService.addBiometricType(biometricType);
 	}
 }

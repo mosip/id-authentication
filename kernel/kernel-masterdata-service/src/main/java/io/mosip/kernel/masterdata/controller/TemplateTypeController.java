@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.TemplateTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
 
 /**
@@ -29,10 +29,10 @@ public class TemplateTypeController {
 	 * 
 	 * @param category
 	 *            the request dto.
-	 * @return {@link CodeAndLanguageCodeId}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping("/templatetype")
-	public ResponseEntity<CodeAndLanguageCodeId> createTemplateType(@RequestBody TemplateTypeRequestDto templateType) {
+	public ResponseEntity<CodeAndLanguageCodeID> createTemplateType(@RequestBody TemplateTypeRequestDto templateType) {
 		return new ResponseEntity<>(templateTypeService.createTemplateType(templateType), HttpStatus.CREATED);
 
 	}

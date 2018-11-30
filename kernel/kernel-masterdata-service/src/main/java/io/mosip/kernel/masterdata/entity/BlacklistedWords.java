@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "blacklisted_words", schema = "master")
 @EqualsAndHashCode(callSuper = true)
-@IdClass(WordAndLanguageCodeId.class)
+@IdClass(WordAndLanguageCodeID.class)
 public class BlacklistedWords extends BaseEntity implements Serializable {
 
 	/**

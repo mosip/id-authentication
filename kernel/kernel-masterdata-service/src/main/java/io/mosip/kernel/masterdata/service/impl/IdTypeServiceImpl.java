@@ -12,10 +12,10 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.IdType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
@@ -96,9 +96,9 @@ public class IdTypeServiceImpl implements IdTypeService {
 			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
+		List<CodeAndLanguageCodeID> codeLangCodeIds = new ArrayList<>();
 		idTypes.forEach(idType -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+			CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 			dataMapper.map(idType, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});

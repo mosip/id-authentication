@@ -19,8 +19,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.kernel.masterdata.controller.DeviceController;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
 

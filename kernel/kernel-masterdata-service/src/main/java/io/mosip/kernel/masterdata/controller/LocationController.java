@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 
 /**

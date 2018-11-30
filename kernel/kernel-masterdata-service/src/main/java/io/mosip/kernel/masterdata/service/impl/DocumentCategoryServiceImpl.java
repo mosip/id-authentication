@@ -12,10 +12,10 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
@@ -187,7 +187,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * DocumentCategoryRequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeId addDocumentCategoriesData(RequestDto<DocumentCategoryData> category) {
+	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryData> category) {
 		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest().getDocumentCategory(),
 				DocumentCategory.class);
 		DocumentCategory documentCategory;
@@ -199,7 +199,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getErrorText());
 		}
 
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
 
 		return codeLangCodeId;

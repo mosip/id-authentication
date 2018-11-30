@@ -7,7 +7,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
 import io.mosip.kernel.masterdata.dto.ValidDocumentRequestDto;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
-import io.mosip.kernel.masterdata.entity.ValidDocumentId;
+import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
@@ -43,7 +43,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * ValidDocumentRequestDto)
 	 */
 	@Override
-	public ValidDocumentId insertValidDocument(ValidDocumentRequestDto document) {
+	public ValidDocumentID insertValidDocument(ValidDocumentRequestDto document) {
 
 		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest().getValidDocument(),
 				ValidDocument.class);
@@ -54,7 +54,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 					e.getErrorText());
 		}
 
-		ValidDocumentId validDocumentId = new ValidDocumentId();
+		ValidDocumentID validDocumentId = new ValidDocumentID();
 		validDocumentId.setDocCategoryCode(validDocument.getDocCategoryCode());
 		validDocumentId.setDocTypeCode(validDocument.getDocTypeCode());
 		return validDocumentId;

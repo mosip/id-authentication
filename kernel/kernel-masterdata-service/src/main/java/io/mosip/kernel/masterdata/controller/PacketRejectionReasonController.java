@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 
 @RestController

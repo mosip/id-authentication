@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 
 /**
  * Interface that provides the method for id types operations.

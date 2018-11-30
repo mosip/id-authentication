@@ -31,31 +31,31 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
@@ -106,8 +106,6 @@ public class MasterdataControllerTest {
 	private BiometricAttributeService biometricAttributeService;
 
 	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
-
-	private BiometricAttributeResponseDto biometricAttributeResponseDto;
 
 	private List<BiometricAttributeDto> biometricattributes;
 
@@ -172,7 +170,7 @@ public class MasterdataControllerTest {
 	@MockBean
 	private TemplateService templateService;
 
-	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
 	@MockBean
 	private BlacklistedWordsService blacklistedWordsService;
@@ -185,16 +183,19 @@ public class MasterdataControllerTest {
 	@Before
 	public void setUp() {
 		biometricTypeSetup();
+
 		applicationSetup();
+
 		biometricAttributeSetup();
 
 		// TODO DeviceControllerTest
 		// TODO DeviceSpecificationControllerTest
 
 		documentCategorySetup();
+
 		documentTypeSetup();
+
 		idTypeSetup();
-		locationSetup();
 
 		// TODO MachineDetailControllerTest
 		// TODO MachineHistoryControllerTest
@@ -209,6 +210,7 @@ public class MasterdataControllerTest {
 
 	private void templateSetup() {
 		TemplateDto templateDto = new TemplateDto();
+
 		templateDto.setId("3");
 		templateDto.setName("Email template");
 		templateDto.setFileFormatCode("xml");
@@ -218,7 +220,7 @@ public class MasterdataControllerTest {
 	}
 
 	private void templateFileFormatSetup() {
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("xml");
 		codeAndLanguageCodeId.setLangCode("FRE");
 	}
@@ -247,7 +249,7 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -260,7 +262,6 @@ public class MasterdataControllerTest {
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
-
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -353,7 +354,7 @@ public class MasterdataControllerTest {
 		biometricAttribute.setDescription(null);
 		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
-		biometricAttributeResponseDto = new BiometricAttributeResponseDto(biometricattributes);
+		new BiometricAttributeResponseDto(biometricattributes);
 	}
 
 	private void applicationSetup() {
@@ -361,9 +362,10 @@ public class MasterdataControllerTest {
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("ENG");
+
 		applicationDtoList.add(applicationDto);
 		
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
 	}
@@ -627,7 +629,6 @@ public class MasterdataControllerTest {
 				Mockito.anyString());
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED_GET))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
@@ -683,7 +684,7 @@ public class MasterdataControllerTest {
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
@@ -699,7 +700,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
@@ -707,7 +708,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
