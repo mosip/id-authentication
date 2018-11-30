@@ -20,7 +20,7 @@ import io.mosip.registration.processor.status.entity.BaseRegistrationEntity;
 @Repository
 public interface RegistrationRepositary<T extends BaseRegistrationEntity, E> extends BaseRepository<T, E> {
 
-	@Query("SELECT trn FROM TransactionEntity trn WHERE trn.regId=:regId and trn.statusCode=:statusCode")
+	@Query("SELECT trn FROM TransactionEntity trn WHERE trn.registrationId=:regId and trn.statusCode=:statusCode")
 	public List<T> getTransactionByRegIdAndStatusCode(@Param("regId") String regId,
 			@Param("statusCode") String statusCode);
 
