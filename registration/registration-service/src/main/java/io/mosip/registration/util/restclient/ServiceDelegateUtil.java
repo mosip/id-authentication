@@ -1,6 +1,7 @@
 package io.mosip.registration.util.restclient;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
@@ -44,10 +45,10 @@ public class ServiceDelegateUtil {
 
 	@Autowired
 	Environment environment;
-	
+
 	@Value("${HTTP_API_READ_TIMEOUT}")
 	int readTimeout;
-	
+
 	@Value("${HTTP_API_WRITE_TIMEOUT}")
 	int connectTimeout;
 
@@ -56,13 +57,17 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request
 	 * 
-	 * @param serviceName   service to be invoked
-	 * @param requestParams parameters along with url
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            parameters along with url
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
@@ -91,16 +96,20 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request
 	 * 
-	 * @param serviceName service to be invoked
-	 * @param object      request type
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object)
-			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException ,ResourceAccessException {
+			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				" post method called");
 
@@ -112,8 +121,6 @@ public class ServiceDelegateUtil {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 					baseCheckedException.getMessage());
 		}
-		// set timeout
-		setTimeout(requestDto);
 		responseBody = restClientUtil.invoke(requestDto);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"post method ended");
@@ -124,8 +131,10 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request
 	 * 
-	 * @param serviceName   service to be invoked
-	 * @param requestParams params need to add along with url
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            params need to add along with url
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
 	 * @throws RegBaseCheckedException
 	 * 
@@ -166,8 +175,10 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param serviceName service to be invoked
-	 * @param object      request type
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
 	 * @throws RegBaseCheckedException
 	 */
@@ -181,7 +192,7 @@ public class ServiceDelegateUtil {
 
 		// prepare httpDTO except rquest type and uri build
 		requestHTTPDTO = prepareRequest(requestHTTPDTO, serviceName, object);
-		
+
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegistrationConstants.SERVICE_URL);
 		URI uri = getUri(null, url);
@@ -210,8 +221,10 @@ public class ServiceDelegateUtil {
 	/**
 	 * URI creation
 	 * 
-	 * @param requestParams params need to add along with url
-	 * @param url           url to be invoked
+	 * @param requestParams
+	 *            params need to add along with url
+	 * @param url
+	 *            url to be invoked
 	 * @return URI uri created by url
 	 */
 	public URI getUri(Map<String, String> requestParams, String url) {
@@ -231,10 +244,14 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of Auth Headers
 	 * 
-	 * @param httpHeaders  http headers
-	 * @param authRequired whether auth required or not
-	 * @param authHeader   auth header
-	 * @param authDetails  auth details
+	 * @param httpHeaders
+	 *            http headers
+	 * @param authRequired
+	 *            whether auth required or not
+	 * @param authHeader
+	 *            auth header
+	 * @param authDetails
+	 *            auth details
 	 */
 	private void setAuthHeaders(HttpHeaders httpHeaders, boolean authRequired, String authHeader, String authDetails) {
 		String[] arrayAuthHeaders = null;
@@ -253,8 +270,10 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of headers
 	 * 
-	 * @param httpHeaders http headers
-	 * @param headers     headers
+	 * @param httpHeaders
+	 *            http headers
+	 * @param headers
+	 *            headers
 	 */
 	private void setHeaders(HttpHeaders httpHeaders, String headers) {
 
@@ -271,9 +290,12 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param requestHTTPDTO create requestedHTTPDTO
-	 * @param serviceName    service name to be called
-	 * @param object         object to be included in HTTP entities
+	 * @param requestHTTPDTO
+	 *            create requestedHTTPDTO
+	 * @param serviceName
+	 *            service name to be called
+	 * @param object
+	 *            object to be included in HTTP entities
 	 * @return
 	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object) {
@@ -287,8 +309,7 @@ public class ServiceDelegateUtil {
 		HttpMethod httpMethod = HttpMethod
 				.valueOf(environment.getProperty(serviceName + "." + RegistrationConstants.HTTPMETHOD));
 		// Headers
-		
-		
+
 		String headers = environment.getProperty(serviceName + "." + RegistrationConstants.HEADERS);
 		setHeaders(httpHeaders, headers);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
@@ -308,23 +329,27 @@ public class ServiceDelegateUtil {
 		// HTTP entity
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		HttpEntity<?> httpEntity = new HttpEntity(object, httpHeaders);
-		
+
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setHttpEntity(httpEntity);
+		// set timeout
+		setTimeout(requestHTTPDTO);
+
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
 				" prepare request method  called");
 
 		return requestHTTPDTO;
 
 	}
-	
+
 	/**
-	 * Method to set the request timeout 
+	 * Method to set the request timeout
+	 * 
 	 * @param requestHTTPDTO
 	 */
-	private void  setTimeout(RequestHTTPDTO requestHTTPDTO) {
+	private void setTimeout(RequestHTTPDTO requestHTTPDTO) {
 		// Timeout in milli second
-		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
+		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 		requestFactory.setReadTimeout(readTimeout);
 		requestFactory.setConnectTimeout(connectTimeout);
 		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
