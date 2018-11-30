@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
  *
  */
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
