@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
@@ -39,14 +40,14 @@ public class DocumentTypeController {
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("documentcategorycode") String documentcategoryCode) {
-		List<DocumentTypeDto> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentcategoryCode,
+		List<DocumentTypeData> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentcategoryCode,
 				langCode);
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);
 
 	}
 
 	@PostMapping("/documenttypes")
-	public ResponseEntity<CodeAndLanguageCodeID> addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
+	public ResponseEntity<CodeAndLanguageCodeID> addDocumentTypeList(@RequestBody RequestDto<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
 	}
 }

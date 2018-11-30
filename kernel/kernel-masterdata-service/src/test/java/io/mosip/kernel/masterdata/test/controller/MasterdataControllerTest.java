@@ -37,7 +37,7 @@ import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -124,7 +124,7 @@ public class MasterdataControllerTest {
 
 	ValidDocumentTypeResponseDto validDocumentTypeResponseDto = null;
 
-	List<DocumentTypeDto> documentTypeDtos = null;
+	List<DocumentTypeData> documentTypeDtos = null;
 
 	@MockBean
 	private IdTypeRepository repository;
@@ -307,15 +307,15 @@ public class MasterdataControllerTest {
 	}
 
 	private void documentTypeSetup() {
-		documentTypeDtos = new ArrayList<DocumentTypeDto>();
-		DocumentTypeDto documentType = new DocumentTypeDto();
+		documentTypeDtos = new ArrayList<DocumentTypeData>();
+		DocumentTypeData documentType = new DocumentTypeData();
 		documentType.setCode("addhar");
 		documentType.setName("adhar card");
 		documentType.setDescription("Uid");
 		documentType.setLangCode("eng");
 		// documentType.setIsActive(true);
 		documentTypeDtos.add(documentType);
-		DocumentTypeDto documentType1 = new DocumentTypeDto();
+		DocumentTypeData documentType1 = new DocumentTypeData();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_prof");
 		documentType1.setDescription("document for residential prof");

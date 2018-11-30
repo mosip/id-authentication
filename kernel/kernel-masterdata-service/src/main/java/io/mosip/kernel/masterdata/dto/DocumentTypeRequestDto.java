@@ -7,5 +7,5 @@ public class DocumentTypeRequestDto {
 	private String id;
 	private String ver;
 	private String timestamp;
-	private DocumentTypeListDto request;
+	private DocumentTypeDto request;
 }
