@@ -93,7 +93,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		List<KeyAlias> keyAliases;
 		PublicKeyResponseDto keyResponseDto = new PublicKeyResponseDto();
 
-		if (referenceId.isPresent()) {
+		if (referenceId.isPresent() && !referenceId.get().trim().isEmpty()) {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId.get());
 		} else {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, null);
@@ -147,7 +147,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			KeyAlias keyAlias = new KeyAlias();
 			keyAlias.setAlias(alias);
 			keyAlias.setApplicationId(applicationId);
-			if (referenceId.isPresent()) {
+			if (referenceId.isPresent() && !referenceId.get().trim().isEmpty()) {
 				keyAlias.setReferenceId(referenceId.get());
 			} else {
 				keyAlias.setReferenceId(null);
@@ -159,7 +159,6 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		}
 		System.out.println(alias);
 		PublicKey publicKey = keyStore.getPublicKey(alias);
-		// System.out.println(keyStore.getCertificate(alias).toString());
 		keyResponseDto.setPublicKey(Base64.encodeBase64URLSafeString(publicKey.getEncoded()));
 		return keyResponseDto;
 	}
@@ -180,7 +179,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		String referenceId = symmetricKeyRequestDto.getReferenceId();
 		String applicationId = symmetricKeyRequestDto.getApplicationId();
 
-		if (referenceId == null) {
+		if (referenceId == null || referenceId.trim().isEmpty()) {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, null);
 		} else {
 			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId);
