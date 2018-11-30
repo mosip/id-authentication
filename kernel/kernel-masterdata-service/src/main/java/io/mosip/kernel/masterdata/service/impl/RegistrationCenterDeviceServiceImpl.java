@@ -59,7 +59,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()
-							+ ": " + ExceptionUtils.parseException(e));
+							+ ": " + ExceptionUtils.getRootCauseMessage(e));
 		}
  
 		return registrationCenterDeviceDto;

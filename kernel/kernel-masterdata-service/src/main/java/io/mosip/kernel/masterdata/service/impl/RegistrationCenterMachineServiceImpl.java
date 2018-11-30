@@ -60,7 +60,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
-							+ ": " + ExceptionUtils.parseException(e));
+							+ ": " + ExceptionUtils.getRootCauseMessage(e));
 		}
 
 		return responseRrgistrationCenterMachineDto;

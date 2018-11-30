@@ -65,7 +65,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
-							.getErrorMessage() + ": " + ExceptionUtils.parseException(e));
+							.getErrorMessage() + ": " + ExceptionUtils.getRootCauseMessage(e));
 		}
 
 		return responseRrgistrationCenterMachineDeviceDto;
