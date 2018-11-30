@@ -70,9 +70,9 @@ public class DocumentCategoryController {
 	 * @return {@link PostResponseDto}
 	 */
 	@PostMapping("/documentcategories")
-	public ResponseEntity<CodeAndLanguageCodeID> addDocumentCategories(
+	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategories(
 			@RequestBody RequestDto<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.addDocumentCategoriesData(category), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentCategoryService.createDocumentCategoriesData(category), HttpStatus.CREATED);
 
 	}
 }

@@ -186,7 +186,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * DocumentCategoryRequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryDto> category) {
+	public CodeAndLanguageCodeID createDocumentCategoriesData(RequestDto<DocumentCategoryDto> category) {
 		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest().getDocumentCategory(),
 				DocumentCategory.class);
 		DocumentCategory documentCategory;

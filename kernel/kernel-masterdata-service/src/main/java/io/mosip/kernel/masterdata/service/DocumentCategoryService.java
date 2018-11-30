@@ -49,5 +49,5 @@ public interface DocumentCategoryService {
 	 *            dto with document categories list.
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryDto> category);
+	public CodeAndLanguageCodeID createDocumentCategoriesData(RequestDto<DocumentCategoryDto> category);
 }
