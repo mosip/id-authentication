@@ -409,7 +409,7 @@ public class MasterdataIntegrationTest {
 		genderType.setCreatedDateTime(null);
 		genderType.setIsDeleted(true);
 		genderType.setDeletedDateTime(null);
-		genderType.setLanguageCode("ENG");
+		genderType.setLangCode("ENG");
 		genderType.setUpdatedBy("Dom");
 		genderType.setUpdatedDateTime(null);
 		genderTypes.add(genderType);
@@ -503,7 +503,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -514,7 +514,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -544,8 +544,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeTest() throws Exception {
 
-		Mockito.when(
-				genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype/{languageCode}", "ENG")).andExpect(status().isOk());
 
@@ -1140,17 +1139,18 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addGenderTypeTest() throws Exception {
-		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
-		when(genderTypeRepository.save(Mockito.any())).thenReturn(genderType);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\":\"true\", \"langCode\": \"ENG\"}}";
+		when(genderTypeRepository.create(Mockito.any())).thenReturn(genderType);
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addGenderTypeExceptionTest() throws Exception {
 
-		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
-		when(genderTypeRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\": \"true\", \"langCode\": \"ENG\"}}";
+		when(genderTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 

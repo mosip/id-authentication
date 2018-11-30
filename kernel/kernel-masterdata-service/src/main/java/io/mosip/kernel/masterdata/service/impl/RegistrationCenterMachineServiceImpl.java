@@ -57,10 +57,10 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 					savedRegistrationCenterMachine.getRegistrationCenterMachinePk(),
 					ResponseRrgistrationCenterMachineDto.class);
 		} catch (DataAccessLayerException e) {
-			new MasterDataServiceException(
+			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
-							+ ": " + ExceptionUtils.parseException(e));
+							+ " " + ExceptionUtils.parseException(e));
 		}
 
 		return responseRrgistrationCenterMachineDto;
