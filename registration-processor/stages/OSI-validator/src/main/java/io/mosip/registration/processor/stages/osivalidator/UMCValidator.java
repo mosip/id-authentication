@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
@@ -22,20 +23,25 @@ public class UMCValidator {
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
 
-	private boolean validateRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate) {
+	private boolean validateRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate)
+			throws ApisResourceAccessException {
 		return umcClient.getRegistrationCentersHistory(registrationCenterId, langCode, effectiveDate)
 				.getRegistrationCenters().get(0).getIsActive();
+
 	}
 
-	private boolean validateMachine(String machineId, String langCode, String effdatetimes) {
+	private boolean validateMachine(String machineId, String langCode, String effdatetimes)
+			throws ApisResourceAccessException {
 		return umcClient.getMachineHistoryIdLangEff(machineId, langCode, effdatetimes).getMachineHistoryDetails().get(0)
 				.getIsActive();
+
 	}
 
 	private boolean validateUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
-			String superviserId, String officerId) {
+			String superviserId, String officerId) throws ApisResourceAccessException {
 		boolean t = false;
 		boolean supervisorActive = umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
+
 				registrationCenterId, machineId, superviserId).getRegistrationCenters().get(0).getIsActive();
 		boolean officerActive = umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
 				registrationCenterId, machineId, officerId).getRegistrationCenters().get(0).getIsActive();
@@ -45,8 +51,9 @@ public class UMCValidator {
 		return t;
 	}
 
-	public boolean isValidUMC(String registrationId) {
+	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException {
 		RegistrationCenterMachineDto rcmDto = packetInfoManager.getRegistrationCenterMachine(registrationId);
+
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
 		boolean umc = false;
 		if (validateRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,

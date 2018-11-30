@@ -25,51 +25,42 @@ public class RegCenterMachineHistoryClientBuilder {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
-	public MachineHistoryResponseDto getMachineHistoryIdLangEff(String machineId, String langCode,String effdatetimes) {
-		MachineHistoryResponseDto dto=null;
+	public MachineHistoryResponseDto getMachineHistoryIdLangEff(String machineId, String langCode,String effdatetimes)
+			throws ApisResourceAccessException {
+		
 		List<String> pathsegments=new ArrayList<>();
 		pathsegments.add(machineId);
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
-		try {
-			dto= (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
-					pathsegments,"","",MachineHistoryResponseDto.class);
-		} catch (ApisResourceAccessException e) {
-			logger.error(e.getMessage());
-		}
-		return dto;
+		
+		return (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
+				pathsegments,"","",MachineHistoryResponseDto.class);
 	}
 	
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
-			 String effectiveTimestamp,String registrationCenterId,String machineId,String userId) {
-		RegistrationCenterUserMachineMappingHistoryResponseDto dto=null;
+			 String effectiveTimestamp,String registrationCenterId,String machineId,String userId) throws ApisResourceAccessException {
+		
 		List<String> pathsegments=new ArrayList<>();
 		pathsegments.add(effectiveTimestamp);
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(machineId);
 		pathsegments.add(userId);
-		try {
-			dto= (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService.
-					getApi(ApiName.CENTERUSERMACHINEHISTORY,pathsegments,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-		} catch (ApisResourceAccessException e) {
-			logger.error(e.getMessage());
-		}
-		return dto;
+	
+			
+		
+		return (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService.
+				getApi(ApiName.CENTERUSERMACHINEHISTORY,pathsegments,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class);
 	}
 	
 	public RegistrationCenterResponseDto getRegistrationCentersHistory(String registrationCenterId,String langCode,
-			String effectiveDate) {
-		RegistrationCenterResponseDto dto=null;
+			String effectiveDate) throws ApisResourceAccessException {
+		
 		List<String> pathsegments=new ArrayList<>();
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(langCode);
 		pathsegments.add(effectiveDate);
-		try {
-			dto= (RegistrationCenterResponseDto) registrationProcessorRestService.
-					getApi(ApiName.CENTERHISTORY,pathsegments,"","",RegistrationCenterResponseDto.class);
-		} catch (ApisResourceAccessException e) {
-			logger.error(e.getMessage());
-		}
-		return dto;
+			
+		return (RegistrationCenterResponseDto) registrationProcessorRestService.
+				getApi(ApiName.CENTERHISTORY,pathsegments,"","",RegistrationCenterResponseDto.class);
 	}
 }
