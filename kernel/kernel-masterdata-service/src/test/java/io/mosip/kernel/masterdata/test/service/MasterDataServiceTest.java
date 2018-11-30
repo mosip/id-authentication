@@ -653,7 +653,7 @@ public class MasterDataServiceTest {
 	public void addApplicationDataSuccess() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.createApplication(applicationRequestDto);
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
 				codeAndLanguageCodeId.getCode());
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
@@ -663,7 +663,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void addApplicationDataFetchException() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		applicationService.addApplicationData(applicationRequestDto);
+		applicationService.createApplication(applicationRequestDto);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
