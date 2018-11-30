@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -81,29 +82,17 @@ public class AckReceiptController extends BaseController implements Initializabl
 		this.registrationData = registrationData;
 	}
 
-	/**
-	 * @return the stringWriter
-	 */
-	public Writer getStringWriter() {
-		return stringWriter;
-	}
-
-	/**
-	 * @param stringWriter
-	 *            the stringWriter to set
-	 */
-	public void setStringWriter(Writer stringWriter) {
-		this.stringWriter = stringWriter;
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		try {
+			
+			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
+			stringWriter = templateGenerator.generateTemplate(ackTemplateText, getRegistrationData(), templateManagerBuilder);
+			
 			// network availability check
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {							
 				// get the mode of communication
-
 				String notificationServiceName = String.valueOf(ApplicationContext.getInstance().getApplicationMap()
 						.get(RegistrationConstants.MODE_OF_COMMUNICATION));
 
