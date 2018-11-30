@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +64,8 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder ;
 
+	@Mock
+	RidValidator<String> ridValidator;
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -193,18 +197,35 @@ public class RegistrationStatusServiceTest {
 
 	@Test
 	public void testGetByIdsSuccess() {
+		Mockito.when(ridValidator.validateId("23456678970000120181129091130")).thenReturn(true);
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
-		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
+		List<RegistrationStatusDto> list = registrationStatusService.getByIds("23456678970000120181129091130");
 		assertEquals("PROCESSING", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(true);
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
-		registrationStatusService.getByIds("1001,1000");
+		registrationStatusService.getByIds("2345667897000012018112909134130");
+	}
+	
+	@Test
+	public void getByIdsInvalidIDFailureTest() {
+	//	Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(false);
+	
+	InvalidIDException iie=new InvalidIDException("23443", "dffdfdfdsad");
+	Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenThrow(iie);
+	registrationStatusService.getByIds("2345667897000012018112909134130");
+		
+	}
+	
+	@Test
+	public void getByIdsInvalidIDTest() {
+	Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(false);
+	registrationStatusService.getByIds("2345667897000012018112909134130");
+		
 	}
 
 }
