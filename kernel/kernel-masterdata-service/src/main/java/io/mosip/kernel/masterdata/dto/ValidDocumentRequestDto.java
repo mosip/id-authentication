@@ -25,5 +25,5 @@ public class ValidDocumentRequestDto {
 	/**
 	 * 
 	 */
-	private ValidDocumentData request;
+	private ValidDocumentDto request;
 }

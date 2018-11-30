@@ -8,6 +8,6 @@ import lombok.Data;
  *
  */
 @Data
-public class ValidDocumentData {
-private ValidDataDto validDocument;
+public class ValidDocumentDto {
+private ValidDataData validDocument;
 }

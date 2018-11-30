@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValidDataDto {
+public class ValidDataData {
 	
 	private String docTypeCode;
 	
