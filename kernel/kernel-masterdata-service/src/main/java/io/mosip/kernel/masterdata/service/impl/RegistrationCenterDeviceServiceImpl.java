@@ -61,7 +61,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()
 							+ ": " + ExceptionUtils.parseException(e));
 		}
- 
+
 		return registrationCenterDeviceDto;
 	}
 

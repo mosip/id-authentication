@@ -1,21 +1,26 @@
 
 package io.mosip.kernel.masterdata.utils;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.persistence.EmbeddedId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.converter.MachineHistroyConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
-import io.mosip.kernel.masterdata.converter.RegistrationCenterHistoryConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -34,39 +39,126 @@ import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 @Component
+@SuppressWarnings("unchecked")
 public class MapperUtils {
 
 	@Autowired
 	private DataMapper dataMapperImpl;
 
-	public <E, D> D map(final E entity, D object) {
-		dataMapperImpl.map(entity, object, true, null, null, true);
-		return object;
+	public <S, D> D map(final S source, D destination) {
+		mapValues(source, destination);
+		return destination;
 	}
 
-	public <D, T> D map(final T entity, Class<D> outCLass) {
-		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
+	public <S, D> D map(final S source, Class<D> destinationClass) {
+		Object destination;
+		try {
+			destination = destinationClass.newInstance();
+		} catch (Exception e) {
+			throw new DataAccessLayerException("KER-MSD-991", "Error while mapping source object to destination", e);
+		}
+		return (D) map(source, destination);
+	}
+
+	public <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
+		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
+	}
+
+	private <S, D> void mapValues(S source, D destination) {
+		Field[] sourceFields = source.getClass().getDeclaredFields();
+		boolean isIdMapped = false;
+		boolean isSuperMapped = false;
+		try {
+			for (Field sfield : sourceFields) {
+				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+					setFieldValue(sfield.get(source), destination);
+					isIdMapped = true;
+				} else if (!isSuperMapped) {
+					setBaseFieldValue(source, destination);
+					isSuperMapped = true;
+				} else {
+					setFieldValue(source, destination);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			throw new DataAccessLayerException("KER-MSD-992", "Error while mapping local date or time", e);
+		}
+	}
+
+	private <S, D> void setBaseFieldValue(S source, D destination) {
+		if (!source.getClass().getSuperclass().getName().equals(Object.class.getName())) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			setFieldValues(source, destination, sourceFields, destinationFields);
+		}
 
 	}
 
-	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
-		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
+	private <S, D> void setFieldValue(S source, D destination) {
+
+		Field[] sourceFields = source.getClass().getDeclaredFields();
+		Field[] destinationFields = destination.getClass().getDeclaredFields();
+
+		setFieldValues(source, destination, sourceFields, destinationFields);
+
 	}
 
-	public List<RegistrationCenterDto> mapRegistrationCenterHistory(List<RegistrationCenterHistory> list) {
-		List<RegistrationCenterDto> responseDto = new ArrayList<>();
-		list.forEach(p -> {
-			RegistrationCenterDto dto = new RegistrationCenterDto();
-			dataMapperImpl.map(p, dto, new RegistrationCenterHistoryConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
+	private <D, S> void setFieldValues(S source, D destination, Field[] sourceFields, Field[] destinationFields) {
+		try {
+			for (Field sfield : sourceFields) {
+				sfield.setAccessible(true);
+				for (Field dfield : destinationFields) {
+					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
+						dfield.setAccessible(true);
+						setFieldValue(source, destination, sfield, dfield);
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new DataAccessLayerException("KER-MSD-993", "Error while mapping source object to destination", e);
+		}
+	}
 
-		return responseDto;
+	public <D, S> void mapLocalDateTimeField(S source, D destination) {
+		Field[] sourceFields = source.getClass().getDeclaredFields();
+		Field[] destinationFields = destination.getClass().getDeclaredFields();
+		try {
+			sourceLoop: for (Field sfield : sourceFields) {
+				sfield.setAccessible(true);
+				for (Field dfield : destinationFields) {
+					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
+						dfield.setAccessible(true);
+
+						if (sfield.getType().isAssignableFrom(LocalDate.class)) {
+							setFieldValue(source, destination, sfield, dfield);
+							continue sourceLoop;
+						}
+						if (sfield.getType().isAssignableFrom(LocalTime.class)) {
+							setFieldValue(source, destination, sfield, dfield);
+							continue sourceLoop;
+						}
+						if (sfield.getType().isAssignableFrom(LocalDateTime.class)) {
+							setFieldValue(source, destination, sfield, dfield);
+							continue sourceLoop;
+						}
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new DataAccessLayerException("KER-MSD-994", "Error while mapping source object to destination", e);
+		}
+	}
+
+	private <S, D> void setFieldValue(S source, D destination, Field ef, Field dtf) throws IllegalAccessException {
+		dtf.set(destination, ef.get(source));
+		dtf.setAccessible(false);
+		ef.setAccessible(false);
 	}
 
 	public List<MachineHistoryDto> mapMachineHistory(List<MachineHistory> machineHistoryList) {

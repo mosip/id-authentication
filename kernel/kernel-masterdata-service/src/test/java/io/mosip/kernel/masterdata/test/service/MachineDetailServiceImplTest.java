@@ -69,7 +69,7 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setLangCode("ENG");
 		machineDetail.setIsActive(true);
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDto.class)).thenReturn(machineDetailDto);
 		MachineResponseIdDto actual = machineDetailServiceImpl.getMachineIdLangcode(Mockito.anyString(),
@@ -82,7 +82,7 @@ public class MachineDetailServiceImplTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getMachineDetailIdLangThrowsMachineNotFoundExceptionTest() {
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		machineDetailServiceImpl.getMachineIdLangcode("1000", "ENG");
 
@@ -91,7 +91,7 @@ public class MachineDetailServiceImplTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void getMachineDetailIdLangThrowsDataAccessExceptionTest() {
 		Mockito.when(machineDetailsRepository
-				.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineIdLangcode("1000", "ENG");
 

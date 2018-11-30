@@ -33,7 +33,7 @@ public class MetaDataUtils {
 	
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 
-		Field fields[] = entity.getClass().getDeclaredFields();
+		Field[] fields = entity.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
 				try {

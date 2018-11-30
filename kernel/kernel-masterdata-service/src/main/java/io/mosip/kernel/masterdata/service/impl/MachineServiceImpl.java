@@ -88,7 +88,7 @@ public class MachineServiceImpl implements MachineService {
 		MachineDto machineDto = null;
 		MachineResponseIdDto machineResponseIdDto = new MachineResponseIdDto();
 		try {
-			machine = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(id, langCode);
+			machine = machineRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(id, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));

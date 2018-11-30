@@ -35,7 +35,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	Machine findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
+	Machine findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given language
