@@ -1,31 +1,8 @@
-Technical Design for the Registration Screen
+Design - Registration Screen
 
 Table of Contents:
 
-I.  Functional Background
-
-    a.  Target users
-
-    b.  Key requirements
-
-    c.  Non-functional requirements
-
-II. Technical Approach
-
-    d.  Service
-
-    e.  UI
-
-    f.  Classes
-
-    g.  Class Diagram
-
-    h.  Sequence Diagram
-
-III. Request and Response
-
-**[Functional Background]{.underline}**
-=======================================
+**Functional Background**
 
 On login successful, we show off "New Registration" screen. The
 Registration screen is of two widgets based on User language and Local
@@ -50,103 +27,28 @@ List of **Data** on Registration screen
 
 -   Exception
 
-List of **Fields** to be taken care for the each section
-
--   Demographic data
-
-    -   Full name
-
-    -   Date of Birth/Age
-
-    -   Local Administrative Authority
-
-    -   Mobile Number
-
-    -   Email ID
-
-    -   CNIE Number / PIN Number
-
-    -   Gender -- Male / Female/ Others\... (Dropdown)
-
-    -   Address -- 1. Registration center address 2. Individual address
-
-        -   3 fields -- with Address Line 1,2,3 text field
-
-        -   Extra fields for the address is
-
-            1.  Address L1
-
-            2.  Address L2
-
-            3.  Address L3
-
-            4.  Region
-
-            5.  Province
-
-            6.  City
-
-    -   Parent / Child -- If age is \< 5 years -- then Text field for
-        Parent Name and Parent UIN has to appear.
-
-        -   Parent/Guardian Full Name
-
-        -   Parent/Guardian RID/UIN
-
--   Biometric data
-
-    -   Left/Right thumb
-
-    -   Left/Right Palm
-
-    -   Iris - Left/Right eye
-
--   Introducer
-
-    -   Parent
-
-    -   HOF
-
-    -   Introducer
-
--   Documents
-
-    -   POA -- Proof of address
-
-    -   POI -- Proof of Identity
-
-    -   POR -- Proof of reference
-
 The **target users** are
 
 -   Individual
-
 -   Registration officer
-
 -   Registration Supervisor
 
 The key **requirements** are
 
 -   On successful login, show the "Registration Screen"
 
--   Build UI with , WRT the requirement
+-	Capture the individuals demographic, biometric and documents information.
+-   The demographic information should be capture in two languages.	  
+    -   Application specific primary language
+    -   Center specific local language
+-   Provide the preview features for the captured detail before submitting the application.
+-   Application should be authenticated by the officer before submitting the application.
+-   Supervisor should authenticate the application if any exception applicable to the user.
 
--   Registration page is divided into two
-
-    -   User language
-
-    -   Local language
-
--   Capture the data from Registration UI
-
--   Map data into Registration DTO
 
 -   Send an Alert message (say) "Data captured successfully" or an error
     message.
 
-<!-- -->
-
--   Registration DTO for packet save and other operations.
 
 The key **non-functional requirements** are
 
@@ -178,12 +80,14 @@ The key **non-functional requirements** are
         it along with the request to authenticate the request by the
         server.
 
- **[Technical Approach]{.underline}**
-=====================================
+**Solution**
 
-The key solution considerations are --
+Refer the 'Registration Packet creation' design document to get the detail understanding of the Registration packet structure 
+and the respective creation methodology.
 
-**Service **
+Refer the 'Registration Device Integration' design document for detail understanding of biometric and other device integration.
+
+As per the ID defination specification the demographic detail captured from individual is structured and stored in to the packet.
 
 -   Create **RegistrationService** and create DTO for the same.
 
@@ -197,35 +101,5 @@ The key solution considerations are --
 -   Handle exceptions in using custom Exception handler and send correct
     response to client.
 
-> **UI **
-
--   Build the screen based on the UI requirement, as the fields
-    mentioned above.
-
--   Create the proper alert success/error to intimate the user.
-
-> **Apply the below common criteria**
-
--   Audit
-
--   Log
-
--   Java Documentation
-
--   Junit
-
-**Classes**:
-
-**Controller**: RegistrationController
-
-**Service**: RegistrationService
-
-**DTO**: RegistrationDTO / UIDTO
-
-Class Diagram:
-
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-registrationscreen-classDiagram.png>
-
-Sequence Diagram:
-
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-registrationscreen-sequenceDiagram.png>
+Class and Sequence Diagram:
+![Registration Sequence diagram](_images/registration-new-registration.png)
