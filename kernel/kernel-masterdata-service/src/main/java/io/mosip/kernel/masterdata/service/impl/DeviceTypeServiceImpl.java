@@ -34,7 +34,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	private DataMapper dataMapper;
 
 	@Override
-	public CodeAndLanguageCodeID saveDeviceTypes(DeviceTypeRequestDto deviceType) {
+	public CodeAndLanguageCodeID createDeviceTypes(DeviceTypeRequestDto deviceType) {
 		DeviceType renDeviceType = null;
 
 		DeviceType entity = metaUtils.setCreateMetaData(deviceType.getRequest().getDeviceTypeDto(),

@@ -27,7 +27,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	private DataMapper dataMapper;
 
 	@Override
-	public CodeAndLanguageCodeID saveMachineType(MachineTypeRequestDto machineType) {
+	public CodeAndLanguageCodeID  createMachineType(MachineTypeRequestDto machineType) {
 		MachineType renMachineType= null;
 
 		MachineType entity = metaUtils.setCreateMetaData(machineType.getRequest().getMachineTypeDto(),

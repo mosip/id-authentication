@@ -89,7 +89,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public DeviceTypeCodeAndLanguageCodeAndId saveDeviceSpecification(DeviceSpecificationRequestDto deviceSpecifications) {
+	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(DeviceSpecificationRequestDto deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
 		DeviceSpecification entity = metaUtils

@@ -26,7 +26,7 @@ public class MachineSpecificationController {
 	 * @return {@link MachineTypeCodeAndLanguageCodeAndId}
 	 */
 	@PostMapping("/machinespecification")
-	public ResponseEntity<MachineTypeCodeAndLanguageCodeAndId> saveMachineSpecification(
+	public ResponseEntity<MachineTypeCodeAndLanguageCodeAndId> createMachineSpecification(
 			@RequestBody MachineSpecificationRequestDto machineSpecification) {
 
 		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification), HttpStatus.CREATED);

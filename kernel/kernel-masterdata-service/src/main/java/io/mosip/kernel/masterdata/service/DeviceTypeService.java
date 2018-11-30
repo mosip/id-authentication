@@ -20,6 +20,6 @@ public interface DeviceTypeService {
 	 * 
 	 * @return {@link PostResponseDto}
 	 */
-	public CodeAndLanguageCodeID saveDeviceTypes(DeviceTypeRequestDto deviceTypes);
+	public CodeAndLanguageCodeID createDeviceTypes(DeviceTypeRequestDto deviceTypes);
 
 }

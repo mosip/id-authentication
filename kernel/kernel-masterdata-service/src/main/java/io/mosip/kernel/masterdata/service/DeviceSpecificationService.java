@@ -49,6 +49,6 @@ public interface DeviceSpecificationService {
 	 * 
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	public DeviceTypeCodeAndLanguageCodeAndId saveDeviceSpecification(DeviceSpecificationRequestDto deviceSpecification);
+	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(DeviceSpecificationRequestDto deviceSpecification);
 
 }
