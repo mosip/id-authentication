@@ -173,7 +173,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		// List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		documentCategoryDtoList.add(documentCategoryDto);
 		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
 		return documentCategoryResponseDto;
