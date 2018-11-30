@@ -3,8 +3,8 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_RSA_INVALID_DATA;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_RSA_INVALID_KEY;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_RSA_INVALID_DATA;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_RSA_INVALID_KEY;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

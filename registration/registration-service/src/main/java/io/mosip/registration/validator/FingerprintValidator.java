@@ -51,8 +51,7 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 
 	private boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
 			RegistrationUserDetail registrationUserDetail) {
-		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-				.convert(fingerprintDetailsDTO.getFingerPrint());
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().create(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
 		return registrationUserDetail.getUserBiometric().stream().anyMatch(
 				bio -> fingerPrintConnector.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);

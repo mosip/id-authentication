@@ -26,8 +26,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 
 /**
  * This is a helper class .it invokes with different classes to get the response
@@ -81,8 +81,8 @@ public class ServiceDelegateUtil {
 			requestDto = prepareGETRequest(serviceName, requestParams);
 
 		} catch (RegBaseCheckedException baseCheckedException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
-					RegistrationExceptions.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
 		}
 
 		responseBody = restClientUtil.invoke(requestDto);
@@ -162,8 +162,8 @@ public class ServiceDelegateUtil {
 		try {
 			responseClass = Class.forName(responseClassName);
 		} catch (ClassNotFoundException classNotFoundException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
 		}
 
 		requestHTTPDTO.setClazz(responseClass);
@@ -205,8 +205,8 @@ public class ServiceDelegateUtil {
 		try {
 			requestClass = Class.forName(requestClassName);
 		} catch (ClassNotFoundException classNotFoundException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
 		}
 
 		requestHTTPDTO.setUri(uri);

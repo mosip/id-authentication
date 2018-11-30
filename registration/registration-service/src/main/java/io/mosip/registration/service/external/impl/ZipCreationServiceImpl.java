@@ -4,7 +4,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 import static java.io.File.separator;
 
 import java.io.ByteArrayOutputStream;

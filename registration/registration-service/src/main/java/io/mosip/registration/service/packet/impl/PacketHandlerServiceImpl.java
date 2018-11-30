@@ -5,7 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.INTERNAL_SERVER_ERROR;
 import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_PACKET_CREATION_ERROR_CODE;
 
 import java.util.ArrayList;
 import java.util.List;

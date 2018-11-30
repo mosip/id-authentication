@@ -23,7 +23,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.json.metadata.Audit;
@@ -34,6 +33,7 @@ import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
@@ -133,8 +133,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			return packetZipBytes;
 		} catch (JsonProcessingException mosipJsonProcessingException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
-					RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());

@@ -22,7 +22,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RestClientUtil;
@@ -57,7 +57,7 @@ public class ServiceDelegateUtilTest {
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_validator.service.httpmethod")).thenReturn("GET");
 		when(environment.getProperty("otp_validator.service.url")).thenReturn("http://localhost:8080/otpmanager/otps");
-		when(environment.getProperty("otp_validator.service.responseType")).thenReturn("io.mosip.registration.dto.OtpValidatorResponseDto");
+		when(environment.getProperty("otp_validator.service.responseType")).thenReturn("io.mosip.registration.dto.OtpValidatorResponseDTO");
 		when(environment.getProperty("otp_validator.service.headers")).thenReturn("Content-Type:APPLICATION/JSON");
 		when(environment.getProperty("otp_validator.service.authrequired")).thenReturn("false");
 		when(environment.getProperty("otp_validator.service.authheader")).thenReturn("Authorization:BASIC");
@@ -75,13 +75,13 @@ public class ServiceDelegateUtilTest {
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_generator.service.httpmethod")).thenReturn("POST");
 		when(environment.getProperty("otp_generator.service.url")).thenReturn("http://localhost:8080/otpmanager/otps");
-		when(environment.getProperty("otp_generator.service.requestType")).thenReturn("io.mosip.registration.dto.OtpGeneratorResponseDto");
+		when(environment.getProperty("otp_generator.service.requestType")).thenReturn("io.mosip.registration.dto.OtpGeneratorResponseDTO");
 		when(environment.getProperty("otp_generator.service.headers")).thenReturn("Content-Type:APPLICATION/JSON");
 		when(environment.getProperty("otp_generator.service.authrequired")).thenReturn("false");
 		when(environment.getProperty("otp_generator.service.authheader")).thenReturn("Authorization:BASIC");
 		
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(response);
-		OtpGeneratorRequestDto generatorRequestDto=new OtpGeneratorRequestDto();
+		OtpGeneratorRequestDTO generatorRequestDto=new OtpGeneratorRequestDTO();
 		generatorRequestDto.setKey("yashReddy");
 		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));		
 	}

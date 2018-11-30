@@ -27,7 +27,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.impl.SyncManagerImpl;
+import io.mosip.registration.jobs.impl.SyncManagerImpl;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 

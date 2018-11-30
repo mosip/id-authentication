@@ -11,11 +11,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.impl.PacketHandlerServiceImpl;
@@ -51,7 +51,7 @@ public class PacketHandlerServiceTest {
 	public void testCreationException() throws RegBaseCheckedException {
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
 		ResponseDTO actualResponse = packetHandlerServiceImpl.handle(new RegistrationDTO());
-		Assert.assertEquals(RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
+		Assert.assertEquals(RegistrationExceptionConstants.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
 				actualResponse.getErrorResponseDTOs().get(0).getCode());
 	}
 

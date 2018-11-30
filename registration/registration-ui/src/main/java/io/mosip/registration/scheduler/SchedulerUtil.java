@@ -2,8 +2,8 @@ package io.mosip.registration.scheduler;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_STATE_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_ARG_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_STATE_EXCEPTION;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -22,7 +22,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.LoginController;
+import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.application.Platform;
