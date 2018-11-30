@@ -174,13 +174,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println(keypair.getPrivate().toString());
 
 			try {
-				encryptedPrivateKey = encryptor.asymmetricPublicEncrypt(masterPublicKey,
-						keypair.getPrivate().getEncoded());
+				encryptedPrivateKey = keymanagerUtil.encryptKey(keypair.getPrivate(), masterPublicKey);
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException e) {
 				throw new CryptoException(KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorCode(),
 						KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorMessage());
 			}
+System.out.println(encryptedPrivateKey.length);
 
 			storeKeyInDBStore(alias, keypair, encryptedPrivateKey);
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
@@ -300,6 +300,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyDbStore.setAlias(alias);
 		keyDbStore.setPublicKey(keymanagerUtil.encodeBase64(keypair.getPublic().getEncoded()));
 		keyDbStore.setPrivateKey(keymanagerUtil.encodeBase64(encryptedPrivateKey));
+		System.out.println("base64private"+keymanagerUtil.encodeBase64(encryptedPrivateKey).length());
 		keyStoreRepository.save(keyDbStore);
 	}
 
