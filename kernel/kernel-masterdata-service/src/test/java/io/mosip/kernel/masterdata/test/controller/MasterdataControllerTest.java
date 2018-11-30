@@ -36,7 +36,7 @@ import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
@@ -109,10 +109,10 @@ public class MasterdataControllerTest {
 
 	private List<BiometricAttributeDto> biometricattributes;
 
-	private DocumentCategoryData documentCategoryDto1;
-	private DocumentCategoryData documentCategoryDto2;
+	private DocumentCategoryDto documentCategoryDto1;
+	private DocumentCategoryDto documentCategoryDto2;
 
-	private List<DocumentCategoryData> documentCategoryDtoList = new ArrayList<>();
+	private List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 
 	@MockBean
 	private DocumentCategoryService documentCategoryService;
@@ -326,12 +326,12 @@ public class MasterdataControllerTest {
 	}
 
 	private void documentCategorySetup() {
-		documentCategoryDto1 = new DocumentCategoryData();
+		documentCategoryDto1 = new DocumentCategoryDto();
 		documentCategoryDto1.setCode("101");
 		documentCategoryDto1.setName("POI");
 		documentCategoryDto1.setLangCode("ENG");
 
-		documentCategoryDto2 = new DocumentCategoryData();
+		documentCategoryDto2 = new DocumentCategoryDto();
 		documentCategoryDto2.setCode("102");
 		documentCategoryDto2.setName("POR");
 		documentCategoryDto2.setLangCode("ENG");

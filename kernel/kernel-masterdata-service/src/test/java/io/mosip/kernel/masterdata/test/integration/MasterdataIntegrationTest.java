@@ -1105,8 +1105,8 @@ public class MasterdataIntegrationTest {
 	// ----------------------------------------document-category----------------------------------------
 
 	@Test
-	public void addDocumentCategoryListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+	public void addDocumentCategoryTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1114,7 +1114,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentCategoryRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
