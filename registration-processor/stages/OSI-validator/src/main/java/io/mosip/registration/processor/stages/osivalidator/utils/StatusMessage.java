@@ -61,7 +61,7 @@ public class StatusMessage {
 	
 	public static final String SUPERVISOR_NOT_ACTIVE="The Supervisor was not active when Registration ID was created";
 	
-	public static final String CENTER_MACHINE_USER_MAPPING_NOT_FOUND="The Center-Machine-User Mapping for Center, Machine & User was not found";
+	public static final String CENTER_MACHINE_USER_MAPPING_NOT_FOUND="The Center-Machine-User Mapping for Center, Machine & supervisor/officer was not found";
 	
 	public static final String GPS_DATA_NOT_PRESENT= "The GPS Details for the Packet is Not Present";
 
