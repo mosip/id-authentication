@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -17,6 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -70,7 +70,7 @@ public class DeviceServiceImpl implements DeviceService {
 			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()+ "  "+ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
 			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
@@ -112,9 +112,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
 		try {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()+ "  "+ExceptionUtils.parseException(e));
 		}
 		if (objectList != null && !objectList.isEmpty()) {
 			deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);

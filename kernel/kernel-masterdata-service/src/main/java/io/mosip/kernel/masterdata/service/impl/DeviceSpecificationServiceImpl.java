@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -30,16 +31,16 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Service
 public class DeviceSpecificationServiceImpl implements DeviceSpecificationService {
-	
+
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
-	
+
 	@Autowired
 	MapperUtils objMapper;
 
 	@Autowired
 	private MetaDataUtils metaUtils;
-	
+
 	@Autowired
 	private DataMapper dataMapper;
 
@@ -48,12 +49,12 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationList = deviceSpecificationRepository
-					.findByLangCodeAndIsDeletedFalse(languageCode);
+			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
 			deviceSpecificationDtoList = objMapper.mapDeviceSpecification(deviceSpecificationList);
@@ -76,7 +77,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
 			deviceSpecificationDtoList = objMapper.mapDeviceSpecification(deviceSpecificationList);
@@ -89,22 +91,23 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(DeviceSpecificationRequestDto deviceSpecifications) {
+	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(
+			DeviceSpecificationRequestDto deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = metaUtils
-				.setCreateMetaData(deviceSpecifications.getRequest().getDeviceSpecificationDto(), DeviceSpecification.class);
+		DeviceSpecification entity = metaUtils.setCreateMetaData(
+				deviceSpecifications.getRequest().getDeviceSpecificationDto(), DeviceSpecification.class);
 		try {
-			 renDeviceSpecification = deviceSpecificationRepository.create(entity);
+			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText());
+					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
 		}
-			DeviceTypeCodeAndLanguageCodeAndId deviceTypeCodeAndLanguageCodeId = new DeviceTypeCodeAndLanguageCodeAndId();
-				dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCodeId, true, null, null, true);
-			
-		return deviceTypeCodeAndLanguageCodeId;	
+		DeviceTypeCodeAndLanguageCodeAndId deviceTypeCodeAndLanguageCodeId = new DeviceTypeCodeAndLanguageCodeAndId();
+		dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCodeId, true, null, null, true);
+
+		return deviceTypeCodeAndLanguageCodeId;
 	}
 
 }

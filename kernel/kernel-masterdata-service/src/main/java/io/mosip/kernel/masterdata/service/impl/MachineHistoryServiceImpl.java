@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -95,9 +96,9 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		try {
 			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(id, langCode,
 					lDateAndTime);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());
+					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
 			machineHistoryDtoList = objectMapperUtil.mapMachineHistory(macHistoryList);

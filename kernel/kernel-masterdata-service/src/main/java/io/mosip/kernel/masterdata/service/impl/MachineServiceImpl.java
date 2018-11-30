@@ -9,11 +9,10 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
-
-import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -22,6 +21,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -87,9 +87,9 @@ public class MachineServiceImpl implements MachineService {
 		MachineResponseIdDto machineDetailResponseIdDto = new MachineResponseIdDto();
 		try {
 			machineDetail = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(id, langCode);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage());
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineDetail != null) {
 			machineDetailDto = objectMapperUtil.map(machineDetail, MachineDto.class);
@@ -130,9 +130,9 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			machineDetailList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage());
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineDetailList != null && !machineDetailList.isEmpty()) {
 			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDto.class);
@@ -173,9 +173,9 @@ public class MachineServiceImpl implements MachineService {
 		List<MachineDto> machineDetailDtoList = null;
 		try {
 			machineDetailList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage());
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineDetailList != null && !machineDetailList.isEmpty()) {
 			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDto.class);
