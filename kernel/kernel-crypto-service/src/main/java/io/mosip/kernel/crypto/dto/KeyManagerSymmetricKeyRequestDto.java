@@ -21,20 +21,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeyManagerSymmetricKeyRequestDto {
-/**
- * 
- */
-private String applicationId;
-/**
- * 
- */
-private String referenceId;
-/**
- * 
- */
-private LocalDateTime timeStamp;
-/**
- * 
- */
-private byte[] encryptedSymmetricKey;
+	private String applicationId;
+
+	private LocalDateTime timeStamp;
+
+	private String referenceId;
+
+	private String encryptedSymmetricKey;
 }

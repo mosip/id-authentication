@@ -20,5 +20,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeyManagerSymmetricKeyResponseDto {
 	
-	private byte[] symmetricKey;
+	private String symmetricKey;
 }
