@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.controller.MachineController;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 
 import io.mosip.kernel.masterdata.service.MachineService;
 
@@ -40,7 +40,7 @@ public class MachineDetailControllerTest {
 
 	@Test
 	public void getMachineDetailIdLangTest() {
-		MachineDetailResponseIdDto machineDetailResponseIdDto =  new MachineDetailResponseIdDto();
+		MachineResponseIdDto machineDetailResponseIdDto =  new MachineResponseIdDto();
 		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");
 		machineDetailDto.setName("HP");
@@ -50,9 +50,9 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setIsActive(true);
 
 		machineDetailResponseIdDto.setMachineDto(machineDetailDto);
-		Mockito.when(macService.getMachineDetailIdLang(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(macService.getMachineIdLangcode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetailResponseIdDto);
-		MachineDetailResponseIdDto actual = machineDetailController.getMachineDetailIdLang(Mockito.anyString(),
+		MachineResponseIdDto actual = machineDetailController.getMachineIdLangcode(Mockito.anyString(),
 				Mockito.anyString());
 
 		Assert.assertNotNull(actual);
@@ -73,8 +73,8 @@ public class MachineDetailControllerTest {
 		machineDetailDtoList.add(machineDetailDto);
 		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
-		Mockito.when(macService.getMachineDetailAll()).thenReturn(machineDetailResponseDto);
-		MachineResponseDto actual = machineDetailController.getMachineDetailAll();
+		Mockito.when(macService.getMachineAll()).thenReturn(machineDetailResponseDto);
+		MachineResponseDto actual = machineDetailController.getMachineAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -94,9 +94,9 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
-		Mockito.when(macService.getMachineDetailLang(Mockito.anyString()))
+		Mockito.when(macService.getMachineLangcode(Mockito.anyString()))
 				.thenReturn(machineDetailResponseDto);
-		MachineResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
+		MachineResponseDto actual = machineDetailController.getMachineLangcode(Mockito.anyString());
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);

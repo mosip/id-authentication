@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineDetailResponseIdDto {
+public class MachineResponseIdDto {
 	private MachineDto machineDto;
 }

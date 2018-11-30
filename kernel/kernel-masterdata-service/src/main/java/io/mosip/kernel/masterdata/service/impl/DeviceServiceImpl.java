@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -67,7 +68,7 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
 			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalse(langCode);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
