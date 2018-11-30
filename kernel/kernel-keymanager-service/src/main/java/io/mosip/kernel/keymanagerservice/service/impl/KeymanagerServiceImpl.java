@@ -11,10 +11,15 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.crypto.exception.NullKeyException;
+import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
@@ -26,13 +31,14 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyDbStore;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
+import io.mosip.kernel.keymanagerservice.exception.CryptoException;
 import io.mosip.kernel.keymanagerservice.exception.InvalidApplicationIdException;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
-import io.mosip.kernel.keymanagerservice.util.MetadataUtil;
+import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
 /**
  * This class provides the implementation for the methods of KeymanagerService
@@ -43,7 +49,6 @@ import io.mosip.kernel.keymanagerservice.util.MetadataUtil;
  *
  */
 @Service
-// @Transactional
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
@@ -92,7 +97,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Utility to generate Metadata
 	 */
 	@Autowired
-	MetadataUtil metadataUtil;
+	KeymanagerUtil keymanagerUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -101,6 +106,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * io.mosip.kernel.keymanager.service.KeymanagerService#getPublicKey(java.lang.
 	 * String, java.time.LocalDateTime, java.util.Optional)
 	 */
+	@Override
+	@Transactional
 	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
 			Optional<String> referenceId) {
 
@@ -113,7 +120,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			publicKeyResponse.setKeyExpiryTime(dbPublicKey.getKeyExpiryTime());
 		} else {
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
-			publicKeyResponse.setPublicKey(Base64.encodeBase64URLSafeString(hsmPublicKey.getPublicKey().getEncoded()));
+			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
 			publicKeyResponse.setKeyGenerationTime(hsmPublicKey.getKeyGenerationTime());
 			publicKeyResponse.setKeyExpiryTime(hsmPublicKey.getKeyExpiryTime());
 		}
@@ -153,20 +160,27 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 						KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
 			}
 		} else if (currentKeyAlias.isEmpty()) {
+			byte[] encryptedPrivateKey;
 			String alias = UUID.randomUUID().toString();
 			KeyPair keypair = keyGenerator.getAsymmetricKey();
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
 			PublicKey masterPublicKey = hsmPublicKey.getPublicKey();
-			
-			keyFromDB = Base64.encodeBase64URLSafeString(keypair.getPublic().getEncoded());
+
+			keyFromDB = keymanagerUtil.encodeBase64(keypair.getPublic().getEncoded());
 			generationDateTime = timeStamp;
 			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime);
-			
+
 			System.out.println(masterPublicKey.toString());
 			System.out.println(keypair.getPrivate().toString());
-			
-			byte[] encryptedPrivateKey = encryptor.asymmetricPublicEncrypt(masterPublicKey,
-					keypair.getPrivate().getEncoded());
+
+			try {
+				encryptedPrivateKey = encryptor.asymmetricPublicEncrypt(masterPublicKey,
+						keypair.getPrivate().getEncoded());
+			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
+					| NullMethodException e) {
+				throw new CryptoException(KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorMessage());
+			}
 
 			storeKeyInDBStore(alias, keypair, encryptedPrivateKey);
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
@@ -273,7 +287,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyAlias.setKeyGenerationTime(timeStamp);
 		keyAlias.setKeyExpiryTime(expiryDateTime);
 
-		keyAliasRepository.create(metadataUtil.setMetaData(keyAlias));
+		keyAliasRepository.create(keymanagerUtil.setMetaData(keyAlias));
 	}
 
 	/**
@@ -284,8 +298,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	private void storeKeyInDBStore(String alias, KeyPair keypair, byte[] encryptedPrivateKey) {
 		KeyDbStore keyDbStore = new KeyDbStore();
 		keyDbStore.setAlias(alias);
-		keyDbStore.setPublicKey(Base64.encodeBase64URLSafeString(keypair.getPublic().getEncoded()));
-		keyDbStore.setPrivateKey(Base64.encodeBase64URLSafeString(encryptedPrivateKey));
+		keyDbStore.setPublicKey(keymanagerUtil.encodeBase64(keypair.getPublic().getEncoded()));
+		keyDbStore.setPrivateKey(keymanagerUtil.encodeBase64(encryptedPrivateKey));
 		keyStoreRepository.save(keyDbStore);
 	}
 
@@ -297,6 +311,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
 	 */
 	@Override
+	@Transactional
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
 		List<KeyAlias> keyAliases;
@@ -337,10 +352,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			System.out.println(privateKey);
 
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
-					Base64.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
+					keymanagerUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
 
 			System.out.println("SymmetricKey: " + decryptedSymmetricKey);
-			keyResponseDto.setSymmetricKey(Base64.encodeBase64URLSafeString(decryptedSymmetricKey));
+			keyResponseDto.setSymmetricKey(keymanagerUtil.encodeBase64(decryptedSymmetricKey));
 
 		}
 		return keyResponseDto;
