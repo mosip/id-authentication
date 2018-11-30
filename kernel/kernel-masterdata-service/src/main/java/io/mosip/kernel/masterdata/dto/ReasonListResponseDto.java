@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.entity.CodeLangCodeAndRsnCatCode;
+import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ReasonListResponseDto  {
 	
 	
-	private List<CodeLangCodeAndRsnCatCode> reasonList;
+	private List<CodeLangCodeAndRsnCatCodeID> reasonList;
 	
 
 }

@@ -10,13 +10,14 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -70,11 +71,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * 
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DocumentTypeService#addDocumentTypes(io.
-	 * mosip.kernel.masterdata.dto.DocumentTypeRequestDto)
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeId addDocumentTypes(DocumentTypeRequestDto documentTypeDto) {
-		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest().getDocumentType(),
+	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
+		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(),
 				DocumentType.class);
 		DocumentType documentType;
 		try {
@@ -82,10 +83,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),e.getErrorText());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
 		}
 
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
 
 		return codeLangCodeId;

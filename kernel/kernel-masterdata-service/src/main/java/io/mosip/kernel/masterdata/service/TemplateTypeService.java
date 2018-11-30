@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.TemplateTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 /**
  * 
  * @author Uday Kumar
@@ -15,9 +15,9 @@ public interface TemplateTypeService {
 	/**
 	 * Method to create template type based on  provided
 	 * 
-	 * @param category
+	 * @param tempalteType
 	 *            dto with Template Type .
-	 * @return {@linkplain CodeAndLanguageCodeId}
+	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeId createTemplateType(TemplateTypeRequestDto tempalteType);
+	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType);
 }

@@ -7,8 +7,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DeviceType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
@@ -34,7 +34,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	private DataMapper dataMapper;
 
 	@Override
-	public CodeAndLanguageCodeId saveDeviceTypes(DeviceTypeRequestDto deviceType) {
+	public CodeAndLanguageCodeID saveDeviceTypes(DeviceTypeRequestDto deviceType) {
 		DeviceType renDeviceType = null;
 
 		DeviceType entity = metaUtils.setCreateMetaData(deviceType.getRequest().getDeviceTypeDto(),
@@ -47,7 +47,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 					e.getErrorText());
 		}
 		
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
 		return codeLangCodeId;
 	}

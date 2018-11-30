@@ -33,19 +33,17 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.entity.GenderType;
-import io.mosip.kernel.masterdata.entity.GenderTypeId;
+import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -54,10 +52,12 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 import io.mosip.kernel.masterdata.entity.Title;
-import io.mosip.kernel.masterdata.entity.TitleId;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.GenderID;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
@@ -125,11 +125,11 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private GenderTypeRepository genderTypeRepository;
 
-	private List<GenderType> genderTypes;
+	private List<Gender> genderTypes;
 
-	private List<GenderType> genderTypesNull;
+	private List<Gender> genderTypesNull;
 
-	private GenderTypeId genderId;
+	private GenderID genderId;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -178,7 +178,7 @@ public class MasterdataIntegrationTest {
 
 	RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory;
 
-	RegistrationCenterUserMachineHistoryId registrationCenterUserMachineHistoryId;
+	RegistrationCenterMachineUserID registrationCenterUserMachineHistoryId;
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
@@ -189,7 +189,7 @@ public class MasterdataIntegrationTest {
 
 	private List<Title> titlesNull;
 
-	private TitleId titleId;
+	private CodeAndLanguageCodeID titleId;
 
 	@MockBean
 	private LanguageRepository languageRepository;
@@ -198,7 +198,7 @@ public class MasterdataIntegrationTest {
 
 	private Language language;
 
-	private GenderType genderType;
+	private Gender genderType;
 
 	private ValidDocument validDocument;
 
@@ -278,9 +278,9 @@ public class MasterdataIntegrationTest {
 	private void titleIntegrationSetup() {
 		titleList = new ArrayList<>();
 		Title title = new Title();
-		titleId = new TitleId();
-		titleId.setLanguageCode("ENG");
-		titleId.setTitleCode("ABC");
+		titleId = new CodeAndLanguageCodeID();
+		titleId.setLangCode("ENG");
+		titleId.setCode("ABC");
 		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
 		title.setCreatedDateTime(null);
@@ -293,7 +293,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void registrationCenterUserMachineSetup() {
-		registrationCenterUserMachineHistoryId = new RegistrationCenterUserMachineHistoryId("1", "1", "1");
+		registrationCenterUserMachineHistoryId = new RegistrationCenterMachineUserID("1", "1", "1");
 		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory();
 		registrationCenterUserMachineHistory.setId(registrationCenterUserMachineHistoryId);
 		registrationCenterUserMachineHistory.setEffectivetimes(LocalDateTime.now().minusDays(1));
@@ -371,7 +371,7 @@ public class MasterdataIntegrationTest {
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holidays = new ArrayList<>();
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -379,7 +379,7 @@ public class MasterdataIntegrationTest {
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayId(1, "KAH", date, "ENG"));
+		holiday2.setHolidayId(new HolidayID(1, "KAH", date, "ENG"));
 		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
 		holiday2.setCreatedDateTime(specificDate);
@@ -393,8 +393,8 @@ public class MasterdataIntegrationTest {
 	private void genderTypeSetup() {
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
-		genderType = new GenderType();
-		genderId = new GenderTypeId();
+		genderType = new Gender();
+		genderId = new GenderID();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
 		genderType.setIsActive(true);
@@ -402,7 +402,7 @@ public class MasterdataIntegrationTest {
 		genderType.setCreatedDateTime(null);
 		genderType.setIsDeleted(true);
 		genderType.setDeletedDateTime(null);
-		genderType.setLanguageCode("ENG");
+		genderType.setLangCode("ENG");
 		genderType.setUpdatedBy("Dom");
 		genderType.setUpdatedDateTime(null);
 		genderTypes.add(genderType);
@@ -496,7 +496,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -507,7 +507,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -518,7 +518,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getAllGenderFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenThrow(DataAccessLayerException.class);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -528,7 +528,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getAllGenderNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenReturn(genderTypesNull);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 
@@ -537,8 +537,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeTest() throws Exception {
 
-		Mockito.when(
-				genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		Mockito.when(genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype/{languageCode}", "ENG")).andExpect(status().isOk());
 
@@ -546,7 +545,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllGendersTest() throws Exception {
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenReturn(genderTypes);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype")).andExpect(status().isOk());
 
 	}
@@ -1105,8 +1104,8 @@ public class MasterdataIntegrationTest {
 	// ----------------------------------------document-category----------------------------------------
 
 	@Test
-	public void addDocumentCategoryListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+	public void addDocumentCategoryTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1114,7 +1113,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategory\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentCategoryRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -1124,7 +1123,7 @@ public class MasterdataIntegrationTest {
 	// -----------------------------------document-type----------------------------------------
 	@Test
 	public void addDocumentTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentType\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentTypeRepository.create(Mockito.any())).thenReturn(type);
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1132,7 +1131,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentTypesDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentType\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
 		when(documentTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -1160,17 +1159,18 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addGenderTypeTest() throws Exception {
-		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
-		when(genderTypeRepository.save(Mockito.any())).thenReturn(genderType);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\":\"true\", \"langCode\": \"ENG\"}}";
+		when(genderTypeRepository.create(Mockito.any())).thenReturn(genderType);
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addGenderTypeExceptionTest() throws Exception {
 
-		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
-		when(genderTypeRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\": \"true\", \"langCode\": \"ENG\"}}";
+		when(genderTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 
@@ -1179,7 +1179,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void insertValidDocumentTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
 		when(validDocumentRepository.create(Mockito.any())).thenReturn(validDocument);
 		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1187,7 +1187,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void insertValidDocumentExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
 		when(validDocumentRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))

@@ -3,8 +3,8 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 
 /**
  * blacklisted words service

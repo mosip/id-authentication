@@ -9,6 +9,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
  *
  */
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +38,5 @@ public class RegistrationCenterMachineDevice extends BaseEntity implements Seria
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")),
 			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")) })
-	private RegistrationCenterMachineDevicePk registrationCenterMachineDevicePk;
+	private RegistrationCenterMachineDeviceID registrationCenterMachineDevicePk;
 }

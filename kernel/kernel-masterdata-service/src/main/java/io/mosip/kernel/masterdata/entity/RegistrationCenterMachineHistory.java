@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
  *
  */
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class RegistrationCenterMachineHistory extends BaseEntity implements Seri
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")) })
-	private RegistrationCenterMachineHistoryPk registrationCenterMachineHistoryPk;
+	private RegistrationCenterMachineID registrationCenterMachineHistoryPk;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;

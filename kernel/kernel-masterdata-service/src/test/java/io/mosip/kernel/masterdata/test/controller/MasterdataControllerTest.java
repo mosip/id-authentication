@@ -31,31 +31,31 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
@@ -170,7 +170,7 @@ public class MasterdataControllerTest {
 	@MockBean
 	private TemplateService templateService;
 
-	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
 	@MockBean
 	private BlacklistedWordsService blacklistedWordsService;
@@ -220,7 +220,7 @@ public class MasterdataControllerTest {
 	}
 
 	private void templateFileFormatSetup() {
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("xml");
 		codeAndLanguageCodeId.setLangCode("FRE");
 	}
@@ -249,7 +249,7 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -365,7 +365,7 @@ public class MasterdataControllerTest {
 
 		applicationDtoList.add(applicationDto);
 		
-		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
 	}
@@ -477,7 +477,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		Mockito.when(applicationService.addApplicationData(Mockito.any()))
+		Mockito.when(applicationService.createApplication(Mockito.any()))
 				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
@@ -739,7 +739,7 @@ public class MasterdataControllerTest {
 	// -----------------------------TemplateFileFormatControllerTest------------------------
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
-		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+		Mockito.when(templateFileFormatService.createTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-11-29T09:32:01.911Z\",\n" + "  \"request\": {\n"

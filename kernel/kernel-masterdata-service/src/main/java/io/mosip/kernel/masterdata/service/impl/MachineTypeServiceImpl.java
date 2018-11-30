@@ -7,8 +7,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.MachineType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
@@ -27,7 +27,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	private DataMapper dataMapper;
 
 	@Override
-	public CodeAndLanguageCodeId saveMachineType(MachineTypeRequestDto machineType) {
+	public CodeAndLanguageCodeID saveMachineType(MachineTypeRequestDto machineType) {
 		MachineType renMachineType= null;
 
 		MachineType entity = metaUtils.setCreateMetaData(machineType.getRequest().getMachineTypeDto(),
@@ -40,7 +40,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 					e.getErrorText());
 		}
 		
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(renMachineType, codeLangCodeId, true, null, null, true);
 		return codeLangCodeId;
 	}

@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;

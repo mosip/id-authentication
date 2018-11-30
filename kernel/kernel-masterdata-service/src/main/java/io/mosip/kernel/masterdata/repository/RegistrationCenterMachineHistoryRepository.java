@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistoryPk;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 
 /**
  * Repository to perform CRUD operations on RegistrationCenterMachineHistory.
@@ -17,5 +17,5 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistoryPk;
  */
 @Repository
 public interface RegistrationCenterMachineHistoryRepository
-		extends BaseRepository<RegistrationCenterMachineHistory, RegistrationCenterMachineHistoryPk> {
+		extends BaseRepository<RegistrationCenterMachineHistory, RegistrationCenterMachineID> {
 }

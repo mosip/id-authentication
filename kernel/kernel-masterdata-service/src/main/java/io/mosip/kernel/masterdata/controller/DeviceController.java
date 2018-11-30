@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
 
 /**
