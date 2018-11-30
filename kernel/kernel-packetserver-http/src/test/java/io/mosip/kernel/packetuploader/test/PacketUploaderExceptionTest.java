@@ -45,7 +45,7 @@ public class PacketUploaderExceptionTest {
 				Files.readAllBytes(new ClassPathResource("/packet4.zip").getFile().toPath()));
 		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0].code", isA(String.class)));
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class PacketUploaderExceptionTest {
 				Files.readAllBytes(new ClassPathResource("/aa.txt").getFile().toPath()));
 		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0].code", isA(String.class)));
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class PacketUploaderExceptionTest {
 		when(service.upload(packet)).thenThrow(new DirectoryNotEmptyException(PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorCode(),
 				PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage(),null));
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
-				.andExpect(jsonPath("$.errors[0].code", isA(String.class)));
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class PacketUploaderExceptionTest {
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
 		when(service.upload(packet)).thenThrow( new PacketLocationSecurityException(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION, null));
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
-				.andExpect(jsonPath("$.errors[0].code", isA(String.class)));
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 }
