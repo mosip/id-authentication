@@ -1,8 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.IdTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * Interface that provides the method for id types operations.
@@ -28,5 +29,5 @@ public interface IdTypeService {
 	 *            the request dto that holds the idtypes to be added.
 	 * @return the idtypes added.
 	 */
-	PostResponseDto addIdType(IdTypeRequestDto idTypeRequestDto);
+	CodeAndLanguageCodeID createIdType(RequestDto<IdTypeDto> idTypeRequestDto);
 }

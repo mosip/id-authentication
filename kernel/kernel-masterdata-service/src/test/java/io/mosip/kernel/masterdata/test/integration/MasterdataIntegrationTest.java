@@ -611,7 +611,7 @@ public class MasterdataIntegrationTest {
 	// -----------------------------IdTypeTest----------------------------------
 	@Test
 	public void getIdTypesByLanguageCodeFetchExceptionTest() throws Exception {
-		when(idTypeRepository.findByLangCodeAndIsDeletedFalse("ENG")).thenThrow(DataAccessLayerException.class);
+		when(idTypeRepository.findByLangCode("ENG")).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
@@ -620,7 +620,7 @@ public class MasterdataIntegrationTest {
 	public void getIdTypesByLanguageCodeNotFoundExceptionTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		when(idTypeRepository.findByLangCodeAndIsDeletedFalse("ENG")).thenReturn(idTypeList);
+		when(idTypeRepository.findByLangCode("ENG")).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/HIN").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 	}
 
@@ -628,7 +628,7 @@ public class MasterdataIntegrationTest {
 	public void getIdTypesByLanguageCodeTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		when(idTypeRepository.findByLangCodeAndIsDeletedFalse("ENG")).thenReturn(idTypeList);
+		when(idTypeRepository.findByLangCode("ENG")).thenReturn(idTypeList);
 		MvcResult result = mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
@@ -638,17 +638,20 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void addIdTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idtypes\":[{\"name\":\"IDTEST\",\"langCode\":\"ICT\",\"code\":\"IDT001\",\"descr\":\"ID Type  Test 1\"}]}}";
-		when(idTypeRepository.saveAll(Mockito.any())).thenReturn(idTypes);
+	public void createIdTypeListTest() throws Exception {
+		IdType idType = new IdType();
+		idType.setCode("IDT001");
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idType\":{\"code\":\"ttt\",\"descr\":\"ddd\",\"name\":\"nnn\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
 		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
-	public void addIdTypeListTestExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idtypes\":[{\"name\":\"IDTEST\",\"langCode\":\"ICT\",\"code\":\"IDT001\",\"descr\":\"ID Type  Test 1\"}]}}";
-		when(idTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+	public void createIdTypeExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idType\":{\"code\":\"ttt\",\"descr\":\"ddd\",\"name\":\"nnn\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(idTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}

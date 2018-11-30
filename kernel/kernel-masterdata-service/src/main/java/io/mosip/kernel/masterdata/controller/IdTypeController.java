@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.IdTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.IdTypeService;
 
 /**
@@ -50,7 +51,7 @@ public class IdTypeController {
 	 * @return the list of added id types as response.
 	 */
 	@PostMapping("/idtypes")
-	public ResponseEntity<PostResponseDto> addIdType(@RequestBody IdTypeRequestDto idTypeRequestDto) {
-		return new ResponseEntity<>(idService.addIdType(idTypeRequestDto), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> addIdType(@RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
+		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);
 	}
 }

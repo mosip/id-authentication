@@ -562,7 +562,7 @@ public class MasterdataControllerTest {
 	public void testIdTypeController() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		Mockito.when(repository.findByLangCodeAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
+		Mockito.when(repository.findByLangCode(anyString())).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/{languagecode}", "ENG")).andExpect(status().isOk());
 	}
 
