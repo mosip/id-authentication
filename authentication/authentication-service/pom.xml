@@ -59,6 +59,13 @@
 			<artifactId>kernel-idvalidator</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		
+		<!-- Kernel Data Validator -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-datavalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 
 		<!-- Postgres -->
 		<dependency>
