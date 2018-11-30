@@ -1,5 +1,7 @@
 package io.mosip.registration.validator;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,21 +26,34 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
+	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		for (FingerprintDetailsDTO fingerprintDetailsDTO : authenticationValidatorDTO.getFingerPrintDetails()) {
-			if (oneToManyValidation(authenticationValidatorDTO.getUserId(), fingerprintDetailsDTO)) {
-				return true;
-			}
+		if (fingerPrintType.equals("single")) {
+			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
+					authenticationValidatorDTO.getFingerPrintDetails().get(0));
+		} else if (fingerPrintType.equals("multiple")) {
+			return validateManyToManyFP(authenticationValidatorDTO.getFingerPrintDetails());
 		}
 		return false;
 	}
 
-	private boolean oneToManyValidation(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
+	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
+		registrationUserDetail = userDataService.getUserDetail(userId);
+		return validateFP(fingerprintDetailsDTO, registrationUserDetail);
+	}
 
+	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		List<RegistrationUserDetail> registrationUserDetails = userDataService.getAllActiveUsers();
+		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> registrationUserDetails.stream()
+				.anyMatch(userDetails -> validateFP(fingerprintDetailsDTO, userDetails)));
+
+	}
+
+	private boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
+			RegistrationUserDetail registrationUserDetail) {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-				.create(fingerprintDetailsDTO.getFingerPrint());
+				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
-		RegistrationUserDetail registrationUserDetail = userDataService.getUserDetail(userId);
 		return registrationUserDetail.getUserBiometric().stream().anyMatch(
 				bio -> fingerPrintConnector.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}

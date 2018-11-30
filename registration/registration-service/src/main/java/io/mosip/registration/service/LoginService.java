@@ -1,5 +1,6 @@
 package io.mosip.registration.service;
 
+import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.AuthorizationDTO;
@@ -78,6 +79,8 @@ public interface LoginService {
 	 *            user details
 	 */
 	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+	
+	List<RegistrationUserDetail> getAllActiveUsers();
 		
 }
 
