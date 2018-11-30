@@ -22,21 +22,23 @@ public enum KeymanagerErrorConstants {
 	 * 
 	 */
 	NO_UNIQUE_ALIAS("KER-KMS-003", "No unique alias is found"),
-	 
+
 	/**
 	 * 
 	 */
-	NO_SUCH_ALGORITHM_EXCEPTION("KER-KMS-004", "No Such algorithm is supported"), 
+	NO_SUCH_ALGORITHM_EXCEPTION("KER-KMS-004", "No Such algorithm is supported"),
 	/**
 	 * 
 	 */
-	INVALID_REQUEST("KER-KMS-005","Invalid request"),
+	INVALID_REQUEST("KER-KMS-005", "Invalid request"),
 	/**
 	 * 
 	 */
-	DATE_TIME_PARSE_EXCEPTION("KER-CRY-00","timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ (e.g. 2019-04-05T14:30)")
-	;
-	
+	DATE_TIME_PARSE_EXCEPTION("KER-KMS-006",
+			"timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ (e.g. 2019-04-05T14:30)"),
+
+	CRYPTO_EXCEPTION("KER-KMS-007", "Exception occured in cypto library: ");
+
 	/**
 	 * The error code.
 	 */
