@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
+import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ServiceError;
 
 /**
  * Class for handling API exceptions
@@ -34,19 +36,18 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse<Error>> methodArgumentNotValidException(
+	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentNotValidException(
 			final MethodArgumentNotValidException e) {
-
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		BindingResult bindingResult = e.getBindingResult();
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
-			Error error = new Error(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
+			ServiceError error = new ServiceError(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
 					Character.toUpperCase(x.getField().charAt(0)) + x.getField().substring(1) + WHITESPACE
 							+ x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
-
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
@@ -59,13 +60,12 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<ErrorResponse<Error>> methodArgumentFormatException(InvalidFormatException e) {
-
-		Error error = new Error(AuditErrorCode.INVALIDFORMAT.getErrorCode(),
+	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentFormatException(InvalidFormatException e) {
+		ServiceError error = new ServiceError(AuditErrorCode.INVALIDFORMAT.getErrorCode(),
 				AuditErrorCode.INVALIDFORMAT.getErrorMessage());
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
-
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
