@@ -55,10 +55,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
@@ -83,10 +85,9 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
+		TemplateManagerBuilderImpl.class })
 public class AuthFacadeImplTest {
-
-
 
 	private static final String STATUS_SUCCESS = "Y";
 	/** The auth facade impl. */
@@ -105,26 +106,28 @@ public class AuthFacadeImplTest {
 	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthServiceImpl otpAuthServiceImpl;
+	/** The IdAuthService */
 	@Mock
 	private IdAuthService idAuthService;
-
+	/** The KycService **/
 	@Mock
 	private KycService kycService;
-
+	/** The IdInfoHelper **/
 	@Mock
 	private IdInfoHelper demoHelper;
-
+	/** The IdRepoService **/
 	@Mock
 	private IdRepoService idInfoService;
+	/** The DemoAuthService **/
 	@Mock
 	private DemoAuthService demoAuthService;
 
 	@InjectMocks
 	private IdTemplateManager idTemplateManager;
-	
+
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-	
+
 	@Mock
 	private IDAMappingConfig idMappingConfig;
 
@@ -136,12 +139,17 @@ public class AuthFacadeImplTest {
 
 	@InjectMocks
 	private RestHelper restHelper;
-	
+
 	@Mock
 	private MessageSource messageSource;
-	
+
 	@Mock
 	private OTPManager otpManager;
+
+	@Mock
+	private BioAuthService bioAuthService;
+	@Mock
+	private AuditHelper auditHelper;
 
 	/**
 	 * Before.
@@ -151,6 +159,8 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthServiceImpl);
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
+		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
+		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "demoHelper", demoHelper);
@@ -160,10 +170,8 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", messageSource);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationManager", notificationManager);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
-		ReflectionTestUtils.setField(idTemplateManager, "templateManager", templateManagerBuilder.enableCache(false).build());
-
-
-
+		ReflectionTestUtils.setField(idTemplateManager, "templateManager",
+				templateManagerBuilder.enableCache(false).build());
 
 	}
 
@@ -175,14 +183,11 @@ public class AuthFacadeImplTest {
 	 *             the id authentication business exception
 	 * @throws IdAuthenticationDaoException
 	 */
-	
+
 	@Test
 	public void authenticateApplicantTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-	//	String refId = "1234";
 		String refId = "8765";
 		boolean authStatus = true;
-		//AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-	//	authResponseDTO.setStatus("Y");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
@@ -194,7 +199,6 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId))
 				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(authStatus).build());
-		
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
@@ -203,17 +207,13 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 
-		String ismaskRequired = env.getProperty("uin.masking.required");
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
 		Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 
-		String email = "abcd";
-		String mobileNumber = "7890754";
-
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setStatus("y");
-		
+
 		authResponseDTO.setResTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		ReflectionTestUtils.setField(notificationManager, "environment", env);
@@ -237,10 +237,10 @@ public class AuthFacadeImplTest {
 		identityValue.setLanguage("en");
 		identityValue.setValue("1234567890");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
-		
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, 
-				 refId, authResponseDTO,idInfo);
-		
+
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
+				idInfo);
+
 		authFacadeImpl.authenticateApplicant(authRequestDTO);
 	}
 
@@ -251,14 +251,20 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	
+
 	@Test
 	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.getAuthType().setOtp(false);
-		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, null, "1233");
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, idInfo, "1233");
 
 		assertTrue(authStatusList.stream().noneMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) || status.isStatus()));
@@ -271,16 +277,37 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	
+
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
+		authTypeDTO.setBio(true);
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, "1242")).thenReturn(AuthStatusInfoBuilder
 				.newInstance().setStatus(true).addAuthUsageDataBits(AuthUsageDataBit.USED_OTP).build());
-		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, null, "1242");
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, idInfo, "1242");
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
@@ -291,7 +318,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	
+
 	@Test
 	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -308,7 +335,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	
+
 	@Test
 	public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -326,17 +353,14 @@ public class AuthFacadeImplTest {
 	 *             the id authentication business exception
 	 */
 
-	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		String refId = "1234";
 		IdValidationFailedException idException = new IdValidationFailedException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenThrow(idException);
-		String referenceId = authFacadeImpl.processIdType(authRequestDTO);
-		// assertEquals(referenceId,refId);
+		authFacadeImpl.processIdType(authRequestDTO);
 	}
 
 	/**
@@ -346,12 +370,10 @@ public class AuthFacadeImplTest {
 	 *             the id authentication business exception
 	 */
 
-	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
-		String refId = "1234";
 		IdValidationFailedException idException = new IdValidationFailedException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenThrow(idException);
@@ -359,8 +381,6 @@ public class AuthFacadeImplTest {
 
 	}
 
-	 
-	
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -408,10 +428,8 @@ public class AuthFacadeImplTest {
 		KycInfo info = new KycInfo();
 		info.setEPrint("y");
 		info.setIdvId("234567890123");
-		info.setIdentity(null); 
+		info.setIdentity(null);
 		String refId = "12343457";
-		//Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
-		//Mockito.when(idAuthService.getUIN(refId)).thenReturn( Optional.of("426789089018"));
 		Mockito.when(kycService.retrieveKycInfo(refId, KycType.LIMITED, kycAuthRequestDTO.isEPrintReq(),
 				kycAuthRequestDTO.isConsentReq(), null)).thenReturn(info);
 
@@ -428,10 +446,10 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTtl("2");
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		AuthResponseDTO authResponseDTO=new AuthResponseDTO();
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO));
-		
+
 	}
 
 	/**
@@ -485,16 +503,12 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 
-		String ismaskRequired = env.getProperty("uin.masking.required");
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
 		Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 
-		String email = "abcd";
-		String mobileNumber = "7890754";
-
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("y");
+		authResponseDTO.setStatus("N");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		ReflectionTestUtils.setField(notificationManager, "environment", env);
 		ReflectionTestUtils.setField(notificationManager, "idTemplateManager", idTemplateManager);
@@ -518,12 +532,10 @@ public class AuthFacadeImplTest {
 		identityValue.setValue("8056365346");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, 
-				refId, authResponseDTO,idInfo);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
+				idInfo);
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * 
@@ -532,7 +544,7 @@ public class AuthFacadeImplTest {
 	 */
 	@Test
 	public void testAuthenticateTsp() {
-		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setTxnID("2345678");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
@@ -544,6 +556,44 @@ public class AuthFacadeImplTest {
 		authResponseTspDto.setResTime(resTime);
 		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());
 		assertNotNull(authFacadeImpl.authenticateTsp(authRequestDTO));
+	}
+
+	/**
+	 * Test Case for getIdentity method Success case
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationDaoException
+	 */
+	@Test
+	public void testGetIdEntity() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		String refId = "863537";
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		authFacadeImpl.getIdEntity(refId);
+	}
+
+	/**
+	 * Test Case for getIdEntity method Exception case
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationDaoException
+	 */
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testGetIdEntityException() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		String refId = "863537";
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+
+		Mockito.when(idInfoService.getIdInfo(refId)).thenThrow(new IdAuthenticationDaoException());
+		authFacadeImpl.getIdEntity(refId);
 	}
 
 }
