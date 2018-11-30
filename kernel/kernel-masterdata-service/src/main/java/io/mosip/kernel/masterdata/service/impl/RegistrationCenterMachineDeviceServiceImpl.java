@@ -58,14 +58,14 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
 
-			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(savedRegistrationCenterMachineDevice,
+			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					ResponseRrgistrationCenterMachineDeviceDto.class);
 		} catch (DataAccessLayerException e) {
-			new MasterDataServiceException(
+			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
-							.getErrorMessage() + ": " + ExceptionUtils.parseException(e));
+							.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 
 		return responseRrgistrationCenterMachineDeviceDto;

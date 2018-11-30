@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;

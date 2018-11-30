@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 
 /**
  * Interface that provides methods for RegistrationCenterType operations.

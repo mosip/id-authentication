@@ -9,7 +9,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum DocumentCategoryErrorCode {
 	DOCUMENT_CATEGORY_FETCH_EXCEPTION("KER-MSD-013","Error occured while fetching Device Specifications"),
-	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-444","Exception during inserting data into db"),
+	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-113","Exception during inserting data into db"),
 	DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION("KER-MSD-014","Document Category not found");
 
 	private final String errorCode;

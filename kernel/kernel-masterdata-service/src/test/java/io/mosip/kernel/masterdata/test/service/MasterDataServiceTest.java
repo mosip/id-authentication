@@ -28,10 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
@@ -40,16 +37,19 @@ import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationRequestDto;
-import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -653,7 +653,7 @@ public class MasterDataServiceTest {
 	public void addApplicationDataSuccess() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.createApplication(applicationRequestDto);
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
 				codeAndLanguageCodeId.getCode());
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
@@ -663,7 +663,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void addApplicationDataFetchException() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		applicationService.addApplicationData(applicationRequestDto);
+		applicationService.createApplication(applicationRequestDto);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1260,7 +1260,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatSuccess() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
 		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
@@ -1269,7 +1269,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatInsertExceptionTest() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 	}
 	
 	// ----------------------------------DocumentTypeServiceTest-------------------------
