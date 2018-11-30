@@ -16,8 +16,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.JobManager;
-import io.mosip.registration.manager.SyncManager;
 
 /**
  * The class BaseJob was a quartzJobBean which gives the information of job and

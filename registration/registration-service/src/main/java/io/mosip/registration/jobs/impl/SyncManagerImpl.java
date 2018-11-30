@@ -1,4 +1,4 @@
-package io.mosip.registration.manager.impl;
+package io.mosip.registration.jobs.impl;
 
 import java.sql.Timestamp;
 import java.util.Random;
@@ -15,7 +15,7 @@ import io.mosip.registration.dao.SyncJobTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.SyncManager;
+import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**

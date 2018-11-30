@@ -1,4 +1,4 @@
-package io.mosip.registration.manager;
+package io.mosip.registration.jobs;
 
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;

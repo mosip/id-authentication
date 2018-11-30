@@ -13,9 +13,9 @@ import org.quartz.JobExecutionException;
 
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.JobProcessListener;
-import io.mosip.registration.manager.JobManager;
-import io.mosip.registration.manager.SyncManager;
+import io.mosip.registration.jobs.SyncManager;
 
 public class JobProcessorListenerTest {
 	

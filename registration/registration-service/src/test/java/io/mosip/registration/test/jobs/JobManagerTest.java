@@ -19,7 +19,7 @@ import org.quartz.JobKey;
 import org.quartz.Trigger;
 
 import io.mosip.registration.entity.SyncJobDef;
-import io.mosip.registration.manager.impl.JobManagerImpl;
+import io.mosip.registration.jobs.impl.JobManagerImpl;
 
 public class JobManagerTest {
 

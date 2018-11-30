@@ -1,4 +1,4 @@
-package io.mosip.registration.manager;
+package io.mosip.registration.jobs;
 
 import java.util.Map;
 
