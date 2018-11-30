@@ -11,7 +11,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.OtpValidatorResponseDto;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -28,7 +28,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 		// Create Response to Return to UI layer
 		ResponseDTO response = new ResponseDTO();
 		SuccessResponseDTO successResponse;
-		OtpValidatorResponseDto otpValidatorResponseDto = null;
+		OtpValidatorResponseDTO otpValidatorResponseDto = null;
 
 		// prepare request params to pass through URI
 		Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -37,7 +37,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 
 		try {
 			// Obtain otpValidatorResponseDto from service delegate util
-			otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil
+			otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
 					.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
 			if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
 					&& otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
