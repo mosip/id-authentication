@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
-import io.mosip.kernel.masterdata.dto.ValidDocumentRequestDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -43,15 +45,15 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * ValidDocumentRequestDto)
 	 */
 	@Override
-	public ValidDocumentID insertValidDocument(ValidDocumentRequestDto document) {
+	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document) {
 
-		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest().getValidDocument(),
+		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest(),
 				ValidDocument.class);
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText());
+					ExceptionUtils.parseException(e));
 		}
 
 		ValidDocumentID validDocumentId = new ValidDocumentID();

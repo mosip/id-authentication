@@ -38,6 +38,13 @@ public interface ApplicationService {
 	 */
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
 
-	public CodeAndLanguageCodeID addApplicationData(RequestDto<ApplicationData> application);
+	/**
+	 * To create an Application
+	 * 
+	 * @param application
+	 *			the application data
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> application);
 
 }
