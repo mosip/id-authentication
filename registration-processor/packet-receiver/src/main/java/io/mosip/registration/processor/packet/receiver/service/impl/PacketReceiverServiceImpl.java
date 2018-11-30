@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -24,7 +25,6 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidE
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -47,7 +47,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	private static final String USER = "MOSIP_SYSTEM";
 
 	public static final String LOG_FORMATTER = "{} - {}";
-	
+
 	/** The file extension. */
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
@@ -85,13 +85,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		boolean storageFlag = false;
 		boolean isTransactionSuccessful = false;
 		SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-		if (regEntity==null) {
+		if (regEntity == null) {
 			logger.info("Registration Packet is Not yet sync in Sync table");
 			throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 		}
 
 		if (file.getSize() > getMaxFileSize()) {
-			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+			throw new FileSizeExceedException(
+					PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 		}
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
 			throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
@@ -109,7 +110,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				dto.setIsActive(true);
 				dto.setCreatedBy(USER);
 				dto.setIsDeleted(false);
-				dto.setApplicantType("NEW");
 				registrationStatusService.addRegistrationStatus(dto);
 				storageFlag = true;
 				isTransactionSuccessful = true;
@@ -131,7 +131,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						registrationId);
 			}
 		} else {
-			throw new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+			throw new DuplicateUploadRequestException(
+					PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 		}
 
 		return storageFlag;
