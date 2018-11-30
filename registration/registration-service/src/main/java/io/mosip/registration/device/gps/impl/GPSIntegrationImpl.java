@@ -1,4 +1,4 @@
-package io.mosip.registration.device;
+package io.mosip.registration.device.gps.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.GPSUtill;
+import io.mosip.registration.device.gps.IGPSConnector;
+import io.mosip.registration.device.gps.IGPSIntegrator;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**

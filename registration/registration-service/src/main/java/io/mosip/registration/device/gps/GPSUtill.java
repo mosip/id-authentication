@@ -1,4 +1,4 @@
-package io.mosip.registration.device;
+package io.mosip.registration.device.gps;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;

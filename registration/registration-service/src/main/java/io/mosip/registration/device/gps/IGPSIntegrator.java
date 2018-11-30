@@ -1,4 +1,4 @@
-package io.mosip.registration.device;
+package io.mosip.registration.device.gps;
 
 import java.util.Map;
 

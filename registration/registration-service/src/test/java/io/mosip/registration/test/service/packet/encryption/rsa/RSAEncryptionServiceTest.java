@@ -1,6 +1,6 @@
 package io.mosip.registration.test.service.packet.encryption.rsa;
 
-import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 import static org.mockito.Mockito.when;
 
 import java.security.KeyPair;

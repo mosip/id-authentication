@@ -1,6 +1,6 @@
-package io.mosip.registration.device;
+package io.mosip.registration.device.gps;
 
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**

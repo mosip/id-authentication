@@ -22,9 +22,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 
 /**
@@ -69,8 +69,8 @@ public class AESKeyManagerImpl implements AESKeyManager {
 					APPLICATION_ID, "Generating AES Encryption had been ended");
 			return aesKeyGenerator.generateKey();
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.AES_KEY_MANAGER, runtimeException.toString());
 		}

@@ -24,9 +24,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.AESSeedGenerator;
 import io.mosip.registration.service.RSAEncryptionService;
@@ -106,11 +106,11 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			
 			return concat(rsaEncryptedKey, encryptedData);
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
 		} catch (MosipInvalidKeyException mosipInvalidKeyException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.AES_ENCRYPTION_MANAGER,
 					runtimeException.toString());

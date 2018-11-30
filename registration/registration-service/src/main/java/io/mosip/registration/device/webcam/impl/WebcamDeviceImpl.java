@@ -1,4 +1,4 @@
-package io.mosip.registration.util.webcam;
+package io.mosip.registration.device.webcam.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -11,6 +11,7 @@ import com.github.sarxos.webcam.Webcam;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.device.webcam.WebcamDevice;
 
 /**
  * Class to access the webcam device and its functionalities.

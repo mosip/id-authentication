@@ -1,4 +1,4 @@
-package io.mosip.registration.device;
+package io.mosip.registration.device.gps.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,9 @@ import gnu.io.UnsupportedCommOperationException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.GPSUtill;
+import io.mosip.registration.device.gps.IGPSConnector;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 

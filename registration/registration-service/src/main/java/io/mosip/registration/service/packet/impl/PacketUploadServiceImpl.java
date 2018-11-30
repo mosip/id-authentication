@@ -26,11 +26,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
@@ -105,8 +105,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		} catch (RuntimeException e) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CONNECTION_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 					e.getMessage() + "Runtime error while pushing packets to the server");
-			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
-					RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
+			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		} catch (SocketTimeoutException e) {
 			LOGGER.error("REGISTRATION - PUSH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");

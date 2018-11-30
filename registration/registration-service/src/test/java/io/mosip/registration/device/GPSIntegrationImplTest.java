@@ -23,7 +23,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.GPSUtill;
+import io.mosip.registration.device.gps.IGPSConnector;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.impl.GPSBU343Connector;
+import io.mosip.registration.device.gps.impl.GPSIntegrationImpl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 @Ignore
@@ -67,7 +71,7 @@ public class GPSIntegrationImplTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * {@link io.mosip.registration.device.gps.impl.GPSIntegrationImpl#getLatLongDtls(double, double)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -122,7 +126,7 @@ public class GPSIntegrationImplTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * {@link io.mosip.registration.device.gps.impl.GPSIntegrationImpl#getLatLongDtls(double, double)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -161,7 +165,7 @@ public class GPSIntegrationImplTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * {@link io.mosip.registration.device.gps.impl.GPSIntegrationImpl#getLatLongDtls(double, double)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
