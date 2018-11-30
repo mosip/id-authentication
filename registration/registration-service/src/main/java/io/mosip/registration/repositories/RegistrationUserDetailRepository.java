@@ -29,10 +29,10 @@ public interface RegistrationUserDetailRepository extends BaseRepository<Registr
 	 * To get the list of {@link RegistrationUserDetail} based on the center id
 	 * 
 	 * @param cntrId
-	 * @param userStatus
+	 * @param statusCode
 	 * @param id
 	 * @return the list of {@link RegistrationUserDetail}
-	 */
-	List<RegistrationUserDetail> findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(String cntrId, String userStatus,String userId);
+	 */	
+	List<RegistrationUserDetail> findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(String cntrId, String statusCode,String userId);
 
 }

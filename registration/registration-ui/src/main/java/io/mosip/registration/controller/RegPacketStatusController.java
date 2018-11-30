@@ -17,6 +17,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.service.JobConfigurationService;
 import io.mosip.registration.service.RegPacketStatusService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,16 +54,19 @@ public class RegPacketStatusController extends BaseController implements Initial
 	@FXML
 	TableColumn<RegPacketStatusDTO, String> syncStatus;
 
+	@Autowired
+	JobConfigurationService jobConfigurationService;
+
 	/**
 	 * Building Sync Data Screen after sync with the server
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Page loading has been started");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Page loading has been started");
 		packetSyncStatus();
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Registration Packet status sync has been done");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Registration Packet status sync has been done");
 	}
 
 	/**
@@ -70,15 +74,20 @@ public class RegPacketStatusController extends BaseController implements Initial
 	 */
 	@SuppressWarnings("unchecked")
 	private void packetSyncStatus() {
-		ResponseDTO response = regPacketStatusService.packetSyncStatus();
+		
+		ResponseDTO response = jobConfigurationService.executeJob(RegistrationAppInitialization.getApplicationContext(),
+				"RPS_J00006");
+		
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
-					.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
+					.getSuccessResponseDTO().getOtherAttributes()
+					.get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
 
 			ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
 			for (LinkedHashMap<String, String> registration : registrations) {
-				packetStatus.add(new RegPacketStatusDTO(registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-								registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+				packetStatus.add(new RegPacketStatusDTO(
+						registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
+						registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
 			}
 
 			regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));

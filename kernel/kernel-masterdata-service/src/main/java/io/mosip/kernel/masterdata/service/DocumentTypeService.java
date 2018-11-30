@@ -2,9 +2,10 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * This interface have methods to fetch list of valid document types and to
@@ -28,15 +29,15 @@ public interface DocumentTypeService {
 	 * 
 	 * 
 	 */
-	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode);
+	public List<DocumentTypeData> getAllValidDocumentType(String code, String langCode);
 
 	/**
 	 * Method to create list of document types .
 	 * 
 	 * @param documentTypeDto
-	 *            dto with documents type list.
-	 * @return {@link CodeAndLanguageCodeId}.
+	 *            dto with documents type.
+	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	public CodeAndLanguageCodeId addDocumentTypes(DocumentTypeRequestDto documentTypeDto);
+	public CodeAndLanguageCodeID addDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto);
 
 }

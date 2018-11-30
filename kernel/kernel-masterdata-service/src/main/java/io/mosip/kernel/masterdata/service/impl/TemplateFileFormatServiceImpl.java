@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
@@ -27,7 +28,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	private DataMapper dataMapper;
 
 	@Override
-	public CodeAndLanguageCodeId addTemplateFileFormat(TemplateFileFormatRequestDto templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeID addTemplateFileFormat(RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
 		TemplateFileFormat entity = metaUtils.setCreateMetaData(
 				templateFileFormatRequestDto.getRequest().getTemplateFileFormat(), TemplateFileFormat.class);
 		TemplateFileFormat templateFileFormat;
@@ -37,7 +38,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
 		return codeLangCodeId;
 	}

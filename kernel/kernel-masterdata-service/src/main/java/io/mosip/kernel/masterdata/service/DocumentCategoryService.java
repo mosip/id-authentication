@@ -1,10 +1,10 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * This interface have methods to fetch list of document category and to create
@@ -20,7 +20,7 @@ public interface DocumentCategoryService {
 	/**
 	 * To fetch all Document Category
 	 * 
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategory();
 
@@ -29,7 +29,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param langCode
 	 *            the language code
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode);
 
@@ -38,7 +38,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param code
 	 * @param langCode
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
 
@@ -47,7 +47,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param category
 	 *            dto with document categories list.
-	 * @return {@linkplain CodeAndLanguageCodeId}
+	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeId addDocumentCategoriesData(DocumentCategoryRequestDto category);
+	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryDto> category);
 }

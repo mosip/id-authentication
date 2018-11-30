@@ -1,5 +1,7 @@
 package io.mosip.registration.dto;
 
+import java.sql.Time;
+
 /**
  * This class contains the Registration Center details.
  * 
@@ -20,6 +22,12 @@ public class RegistrationCenterDetailDTO {
 	private String registrationCenterLocationCode;
 	private int registrationCenterNumberOfStations;
 	private String registrationCenterWorkingHours;
+	private String registrationCenterContactPhone;
+	private Integer registrationCenterNumberOfKiosks;
+	private Time registrationCenterPerKioskProcessTime;
+	private Time registrationCenterProcessStartTime;
+	private Time registrationCenterProcessEndTime;
+	private String registrationCenterHolidayLocCode;
 
 	/**
 	 * @return the registrationCenterId
@@ -184,6 +192,96 @@ public class RegistrationCenterDetailDTO {
 	 */
 	public void setRegistrationCenterWorkingHours(String registrationCenterWorkingHours) {
 		this.registrationCenterWorkingHours = registrationCenterWorkingHours;
+	}
+
+	/**
+	 * @return the registrationCenterContactPhone
+	 */
+	public String getRegistrationCenterContactPhone() {
+		return registrationCenterContactPhone;
+	}
+
+	/**
+	 * @param registrationCenterContactPhone
+	 *            the registrationCenterContactPhone to set
+	 */
+	public void setRegistrationCenterContactPhone(String registrationCenterContactPhone) {
+		this.registrationCenterContactPhone = registrationCenterContactPhone;
+	}
+
+	/**
+	 * @return the registrationCenterNumberOfKiosks
+	 */
+	public Integer getRegistrationCenterNumberOfKiosks() {
+		return registrationCenterNumberOfKiosks;
+	}
+
+	/**
+	 * @param registrationCenterNumberOfKiosks
+	 *            the registrationCenterNumberOfKiosks to set
+	 */
+	public void setRegistrationCenterNumberOfKiosks(Integer registrationCenterNumberOfKiosks) {
+		this.registrationCenterNumberOfKiosks = registrationCenterNumberOfKiosks;
+	}
+
+	/**
+	 * @return the registrationCenterPerKioskProcessTime
+	 */
+	public Time getRegistrationCenterPerKioskProcessTime() {
+		return registrationCenterPerKioskProcessTime;
+	}
+
+	/**
+	 * @param registrationCenterPerKioskProcessTime
+	 *            the registrationCenterPerKioskProcessTime to set
+	 */
+	public void setRegistrationCenterPerKioskProcessTime(Time registrationCenterPerKioskProcessTime) {
+		this.registrationCenterPerKioskProcessTime = registrationCenterPerKioskProcessTime;
+	}
+
+	/**
+	 * @return the registrationCenterProcessStartTime
+	 */
+	public Time getRegistrationCenterProcessStartTime() {
+		return registrationCenterProcessStartTime;
+	}
+
+	/**
+	 * @param registrationCenterProcessStartTime
+	 *            the registrationCenterProcessStartTime to set
+	 */
+	public void setRegistrationCenterProcessStartTime(Time registrationCenterProcessStartTime) {
+		this.registrationCenterProcessStartTime = registrationCenterProcessStartTime;
+	}
+
+	/**
+	 * @return the registrationCenterProcessEndTime
+	 */
+	public Time getRegistrationCenterProcessEndTime() {
+		return registrationCenterProcessEndTime;
+	}
+
+	/**
+	 * @param registrationCenterProcessEndTime
+	 *            the registrationCenterProcessEndTime to set
+	 */
+	public void setRegistrationCenterProcessEndTime(Time registrationCenterProcessEndTime) {
+		this.registrationCenterProcessEndTime = registrationCenterProcessEndTime;
+	}
+
+	/**
+	 * @return the registrationCenterHolidayLocCode
+	 */
+	public String getRegistrationCenterHolidayLocCode() {
+		return registrationCenterHolidayLocCode;
+	}
+
+	/**
+	 * @param registrationCenterHolidayLocCode
+	 *            the registrationCenterHolidayLocCode to set
+	 */
+	public void setRegistrationCenterHolidayLocCode(String registrationCenterHolidayLocCode) {
+		this.registrationCenterHolidayLocCode = registrationCenterHolidayLocCode;
 	}
 
 }

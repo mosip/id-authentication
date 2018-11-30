@@ -11,6 +11,7 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
  */
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "Title.getThroughLanguageCode", query = "select code, name, descr , lang_code , is_active , cr_by , cr_dtimes , upd_by , upd_dtimes ,is_deleted , del_dtimes from master.title where lang_code = ?1 and is_deleted = 'f' or is_deleted IS NULL ", resultClass = Title.class) })
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,10 +38,10 @@ public class Title extends BaseEntity implements Serializable {
 
 	@EmbeddedId
 	@AttributeOverrides({
-			@AttributeOverride(name = "titleCode", column = @Column(name = "code", nullable = false, length = 16)),
-			@AttributeOverride(name = "languageCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 16)),
+			@AttributeOverride(name = "lang_code", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	@Column(name = "code", unique = true, nullable = false, length = 16)
-	private TitleId id;
+	private CodeAndLanguageCodeID id;
 
 	@Column(name = "name", unique = true, nullable = false, length = 64)
 	private String titleName;

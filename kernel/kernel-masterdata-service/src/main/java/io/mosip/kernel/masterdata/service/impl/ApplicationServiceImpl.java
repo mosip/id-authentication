@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
@@ -111,7 +112,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public CodeAndLanguageCodeId addApplicationData(ApplicationRequestDto applicationRequestDto) {
+	public CodeAndLanguageCodeID addApplicationData(RequestDto<ApplicationData> applicationRequestDto) {
 		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
 				Application.class);
 		Application application;
@@ -121,7 +122,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(application, codeLangCodeId, true, null, null, true);
 		return codeLangCodeId;
 	}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
+
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
@@ -123,6 +124,7 @@ public class MachineServiceImpl implements MachineService {
 	@Override
 	public MachineResponseDto getMachineDetailAll() {
 		List<Machine> machineDetailList = null;
+
 		List<MachineDto> machineDetailDtoList = null;
 		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		try {

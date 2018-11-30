@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +27,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "template_file_format", schema = "master")
-@EqualsAndHashCode(callSuper = false)
-@IdClass(CodeAndLanguageCodeId.class)
+@EqualsAndHashCode(callSuper = true)
+@IdClass(CodeAndLanguageCodeID.class)
 public class TemplateFileFormat extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1051422672381211978L;

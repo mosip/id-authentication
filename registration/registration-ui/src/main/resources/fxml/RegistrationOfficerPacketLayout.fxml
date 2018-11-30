@@ -9,7 +9,7 @@
 
 <AnchorPane fx:id="optionRoot" prefHeight="244.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationOfficerPacketController">
    <children>
-      <Button layoutX="61.0" layoutY="32.0" mnemonicParsing="false" onAction="#createPacket" prefHeight="127.0" prefWidth="231.0" text="Create Packet" />
+      <Button layoutX="61.0" layoutY="32.0" mnemonicParsing="false" onAction="#createPacket" prefHeight="127.0" prefWidth="231.0" text="New Registration" />
       <Button layoutX="347.0" layoutY="32.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="127.0" prefWidth="251.0" text="Approve Packet" />
       <Button layoutX="640.0" layoutY="32.0" mnemonicParsing="false" onAction="#uploadPacket" prefHeight="127.0" prefWidth="231.0" text="Upload Packet" />
 <!--       <Button layoutX="61.0" layoutY="183.0" mnemonicParsing="false" prefHeight="127.0" prefWidth="231.0" text="Lost UIN" /> -->

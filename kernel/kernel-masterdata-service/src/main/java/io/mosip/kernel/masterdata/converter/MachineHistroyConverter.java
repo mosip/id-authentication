@@ -8,11 +8,11 @@ public class MachineHistroyConverter implements  DataConverter<MachineHistory, M
 
 	@Override
 	public void convert(MachineHistory source, MachineHistoryDto destination) {	
-		destination.setCreatedtimes(source.getCreatedtimes());
-		destination.setUpdatedtimes(source.getUpdatedtimes());
+		destination.setCreatedtimes(source.getCreatedDateTime());
+		destination.setUpdatedtimes(source.getUpdatedDateTime());
 		destination.setEffectDtimes(source.getEffectDtimes());
 		destination.setValEndDtimes(source.getValEndDtimes());	
-		destination.setDeletedtimes(source.getDeletedtimes());
+		destination.setDeletedtimes(source.getDeletedDateTime());
 	}
 
 }

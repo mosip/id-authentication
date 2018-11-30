@@ -3,7 +3,6 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -16,7 +15,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  *
  */
 public interface RegistrationDAO {
-
 	/**
 	 * Saves the Registration entity
 	 * 
@@ -29,30 +27,18 @@ public interface RegistrationDAO {
 	void save(String zipFileName, String individualName) throws RegBaseCheckedException;
 
 	/**
-	 * This methods is used to approve the packet
-	 * 
-	 * @return List of Registration Packets which are in created state.
-	 */
-	List<Registration> approvalList();
-
-	/**
 	 * This method updates the status of the packet
 	 * 
-	 * @param id
+	 * @param registrationID
 	 *            the id of the {@link Registration} entity to be updated
-	 * @param clientStatus_code
+	 * @param clientStatusCode
 	 *            the status to be updated
-	 * @param approverUsrId
-	 *            the user id of the approver
 	 * @param statusComments
 	 *            the status comments to be updated
-	 * @param approverRoleCode
-	 *            the approver role code
 	 * 
 	 * @return the updated {@link Registration} entity
 	 */
-	Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
-			String approverRoleCode);
+	Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode);
 
 	/**
 	 * This method retrieves the list of Registrations by status.
@@ -92,4 +78,11 @@ public interface RegistrationDAO {
 	 * @return
 	 */
 	Registration updatePacketSyncStatus(Registration packet);
+	
+	/**
+	 * Get all the Re-Registration packets
+	 * @param status
+	 * @return
+	 */
+	List<Registration> getAllReRegistrationPackets(String[] status);
 }

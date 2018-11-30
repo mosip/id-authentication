@@ -15,9 +15,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.masterdata.controller.MachineController;
+
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+
 import io.mosip.kernel.masterdata.service.MachineService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -80,6 +83,7 @@ public class MachineDetailControllerTest {
 	@Test
 	public void getMachineDetailLangTest() {
 		MachineResponseDto machineDetailResponseDto =  new MachineResponseDto();
+
 		List<MachineDto> machineDetailDtoList = new ArrayList<>();
 		MachineDto machineDetailDto = new MachineDto();
 		machineDetailDto.setId("1000");

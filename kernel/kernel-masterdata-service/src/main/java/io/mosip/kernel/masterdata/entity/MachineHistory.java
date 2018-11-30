@@ -12,18 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.IdAndEffectDtimesID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_master_h", schema = "master")
-@IdClass(IdAndEffectDtimes.class)
+@IdClass(IdAndEffectDtimesID.class)
 public class MachineHistory extends BaseEntity implements Serializable {
 	/**
 	 * 

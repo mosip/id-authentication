@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+
+<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="950.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.DemographicPreviewController">
+  <content>
+    <AnchorPane id="anchor-pane-registration" fx:id="anchor_pane_registration" minHeight="0.0" minWidth="0.0" prefHeight="950.0" prefWidth="917.0">
+         <children>
+            <AnchorPane layoutX="43.0" layoutY="14.0" prefHeight="803.0" prefWidth="848.0">
+               <children>
+                   <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+                  	 <image>
+            			<Image url="@../images/Home.png" />
+         			 </image>
+                  </ImageView>
+                  <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
+                  <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                  	<image>
+            			<Image url="@../images/Pre-Registration.png" />
+         			 </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="49.0" layoutY="120.0" text="PREVIEW">
+               <content>
+                  <TitledPane fx:id="demographicPreview" collapsible="false" layoutX="80.0" layoutY="120.0" text="Demographic Details                                                                              Demographic Details">
+                     <content>
+                        <VBox fx:id="demoGraphicVbox" />
+                     </content>
+                  </TitledPane>
+               </content>
+            </TitledPane>
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
+            <Button fx:id="editBtn" layoutX="645.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
+             </children>
+    </AnchorPane>
+  </content>
+</ScrollPane>

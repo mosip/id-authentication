@@ -20,17 +20,21 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private static final long serialVersionUID = 8686723876595925323L;
 
 	@EmbeddedId
-	@Column(name = "pk_cntrum_usr_id")
+	@Column(name = "pk_cntrmusr_usr_id")
 	private UserMachineMappingID userMachineMappingId;
 
 	@ManyToOne
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private RegistrationUserDetail registrationUserDetail;
 
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	@ManyToOne
+	@JoinColumn(name = "machine_id", nullable = false, insertable = false, updatable = false)
+	private MachineMaster machineMaster;
 
-	@Column(name = "del_dtimesz")
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+
+	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 
 	/**
@@ -64,9 +68,24 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	}
 
 	/**
+	 * @return the machineMaster
+	 */
+	public MachineMaster getMachineMaster() {
+		return machineMaster;
+	}
+
+	/**
+	 * @param machineMaster
+	 *            the machineMaster to set
+	 */
+	public void setMachineMaster(MachineMaster machineMaster) {
+		this.machineMaster = machineMaster;
+	}
+
+	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -74,7 +93,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

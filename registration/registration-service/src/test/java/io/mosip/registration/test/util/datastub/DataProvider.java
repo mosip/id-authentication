@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -72,7 +73,7 @@ public class DataProvider {
 		biometricDTO.setApplicantBiometricDTO(DataProvider.buildBioMerticDTO(DataProvider.APPLICANT));
 		biometricDTO.setIntroducerBiometricDTO(DataProvider.buildBioMerticDTO("introducer"));
 		biometricDTO.setSupervisorBiometricDTO(DataProvider.buildBioMerticDTO("supervisor"));
-		biometricDTO.setOperatorBiometricDTO(DataProvider.buildBioMerticDTO("registrationOfficer"));
+		biometricDTO.setOperatorBiometricDTO(DataProvider.buildBioMerticDTO("officer"));
 		return biometricDTO;
 	}
 
@@ -101,7 +102,7 @@ public class DataProvider {
 					"rightSlap", 2));
 		} else {
 			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType + "LeftThumb.jpg", 0, false,
-					"LeftThumb", 0));
+					"leftThumb", 0));
 		}
 
 		return fingerList;
@@ -254,6 +255,7 @@ public class DataProvider {
 		OSIDataDTO osiDataDTO = new OSIDataDTO();
 		osiDataDTO.setOperatorID("op0r0s12");
 		osiDataDTO.setSupervisorID("s9ju2jhu");
+		osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 		return osiDataDTO;
 	}
 
