@@ -38,9 +38,9 @@ public class ApplicantDocumentValidation {
 
 		}
 
-		if (applicantType.equalsIgnoreCase(SyncTypeDto.NEW.name())) {
+		if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.name())) {
 
-			if (registrationType.equalsIgnoreCase(ApplicantType.CHILD.name())
+			if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
 					&& checkDocumentAvailability(DocumentCategory.POR.name(), identity))
 				isApplicantDocumentVerified = true;
 
@@ -52,7 +52,8 @@ public class ApplicantDocumentValidation {
 
 			}
 
-		}
+		} else
+			return true;
 
 		return isApplicantDocumentVerified;
 	}
