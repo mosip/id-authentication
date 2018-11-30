@@ -1,18 +1,15 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
@@ -31,25 +28,19 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	private DataMapper dataMapper;
 
 	@Override
-	public PostResponseDto addTemplateFileFormat(TemplateFileFormatRequestDto templateFileFormatRequestDto) {
-		List<TemplateFileFormat> entities = metaUtils.setCreateMetaData(
-				templateFileFormatRequestDto.getRequest().getTemplateFileFormatDtos(), TemplateFileFormat.class);
-		List<TemplateFileFormat> templateFileFormats;
+	public CodeAndLanguageCodeID addTemplateFileFormat(RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
+		TemplateFileFormat entity = metaUtils.setCreateMetaData(
+				templateFileFormatRequestDto.getRequest().getTemplateFileFormat(), TemplateFileFormat.class);
+		TemplateFileFormat templateFileFormat;
 		try {
-			templateFileFormats = templateFileFormatRepository.saveAll(entities);
+			templateFileFormat = templateFileFormatRepository.create(entity);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		templateFileFormats.forEach(templateFileFormat -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
 	}
 
 }

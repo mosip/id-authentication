@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.exception;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,8 @@ import lombok.Data;
  */
 @Data
 public class ErrorResponse<T> {
-
+	private int status;
+	private long timestamp = Instant.now().toEpochMilli();
 	private List<T> errors = new ArrayList<>();
 
 }

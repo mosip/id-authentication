@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeviceSpecPostResponseDto {
-	private List<DeviceTypeCodeAndLanguageCode> results;
+	private List<DeviceTypeCodeAndLanguageCodeAndId> results;
 
 }

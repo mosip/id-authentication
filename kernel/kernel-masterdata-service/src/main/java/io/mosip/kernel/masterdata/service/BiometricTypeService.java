@@ -1,9 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
+import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * @author Neha
@@ -16,7 +18,7 @@ public interface BiometricTypeService {
 	 * 
 	 * @return {@linkplain BiometricTypeDto}
 	 */
-	List<BiometricTypeDto> getAllBiometricTypes();
+	public BiometricTypeResponseDto getAllBiometricTypes();
 	
 	/**
 	 * To fetch all biometric types using language code
@@ -25,7 +27,7 @@ public interface BiometricTypeService {
 	 		the language code
 	 * @return {@linkplain BiometricTypeDto}
 	 */
-	List<BiometricTypeDto> getAllBiometricTypesByLanguageCode(String langCode);
+	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(String langCode);
 
 	/**
 	 * To fetch biometric type using id and language code
@@ -34,5 +36,7 @@ public interface BiometricTypeService {
 	 * @param langCode
 	 * @return {@linkplain BiometricType}
 	 */
-	BiometricTypeDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
+	
+	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto);
 }

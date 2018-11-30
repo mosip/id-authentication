@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,10 +26,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "id_type", schema = "master")
-@IdClass(CodeAndLanguageCodeId.class)
+@IdClass(CodeAndLanguageCodeID.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class IdType extends BaseEntity implements Serializable {
 
 	/**

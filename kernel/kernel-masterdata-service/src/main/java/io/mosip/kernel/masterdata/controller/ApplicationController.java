@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 
-/**
+/** 
+ * Controller APIs to get Application types details
  * 
  * @author Neha
  * @since 1.0.0
@@ -62,7 +64,7 @@ public class ApplicationController {
 	 * @return PostResponseDto
 	 */
 	@PostMapping
-	public PostResponseDto addApplication(@RequestBody ApplicationRequestDto application) {
+	public CodeAndLanguageCodeID addApplication(@RequestBody RequestDto<ApplicationData> application) {
 		return applicationService.addApplicationData(application);
 		
 	}

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
@@ -94,8 +94,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
-					languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
@@ -113,24 +112,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public PostResponseDto addApplicationData(ApplicationRequestDto application) {
-		List<Application> entities = metaUtils.setCreateMetaData(application.getRequest().getApplicationtypes(),
+	public CodeAndLanguageCodeID addApplicationData(RequestDto<ApplicationData> applicationRequestDto) {
+		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
 				Application.class);
-		List<Application> applications;
+		Application application;
 		try {
-			applications = applicationRepository.saveAll(entities);
+			application = applicationRepository.create(entity);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		applications.forEach(app -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(app, codeLangCodeId, true, null, null, true);
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(application, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
 	}
 }

@@ -41,10 +41,10 @@ public class MachineHistoryController {
 	 * @return returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
-	@GetMapping(value = "/{code}/{langcode}/{effdatetimes}")
-	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("code") String machineId,
-			@PathVariable("langCode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
+	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
+	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("id") String id,
+			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
-		return macHistoryService.getMachineHistroyIdLangEffDTime(machineId, langCode, dateAndTime);
+		return macHistoryService.getMachineHistroyIdLangEffDTime(id, langCode, dateAndTime);
 	}
 }

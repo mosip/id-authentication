@@ -3,13 +3,17 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.swagger.annotations.ApiOperation;
@@ -17,11 +21,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * controller with api's for blacklisted words
+ * Controller that provides with methods for operations on blacklisted words.
  * 
  * @author Abhishek Kumar
- * @since 06-11-2018
- * @version 1.0.0
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  */
 @RestController
 public class BlacklistedWordsController {
@@ -29,7 +33,7 @@ public class BlacklistedWordsController {
 	private BlacklistedWordsService blacklistedWordsService;
 
 	/**
-	 * fetch the list of blacklisted words based on language code
+	 * Fetch the list of blacklisted words based on language code.
 	 * 
 	 * @param langCode
 	 * @return {@link BlacklistedWordsResponseDto}
@@ -59,4 +63,18 @@ public class BlacklistedWordsController {
 		return isValid;
 	}
 
+	/**
+	 * Method to add blacklisted word.
+	 * 
+	 * @param blackListedWordsRequestDto
+	 *            the request dto that holds the blacklisted word to be added.
+	 * @return the response entity i.e. the word and language code of the word
+	 *         added.
+	 */
+	@PostMapping(path = "/blacklistedwords")
+	public ResponseEntity<BlackListedWordsResponse> addBlackListedWord(
+			@RequestBody BlackListedWordsRequestDto blackListedWordsRequestDto) {
+		return new ResponseEntity<>(blacklistedWordsService.addBlackListedWord(blackListedWordsRequestDto),
+				HttpStatus.CREATED);
+	}
 }

@@ -1,9 +1,10 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * 
@@ -12,7 +13,7 @@ import io.mosip.kernel.masterdata.dto.PostResponseDto;
  * 
  */
 public interface ApplicationService {
-	
+
 	/**
 	 * Get All Applications
 	 * 
@@ -21,7 +22,7 @@ public interface ApplicationService {
 	public ApplicationResponseDto getAllApplication();
 
 	/**
-	 * Get All Applications by language  code
+	 * Get All Applications by language code
 	 * 
 	 * @param languageCode
 	 * @return {@link List<ApplicationDto>}
@@ -29,7 +30,7 @@ public interface ApplicationService {
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode);
 
 	/**
-	 * Get An Application by code and language  code
+	 * Get An Application by code and language code
 	 * 
 	 * @param code
 	 * @param languageCode
@@ -37,6 +38,6 @@ public interface ApplicationService {
 	 */
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
 
-	public PostResponseDto addApplicationData(ApplicationRequestDto application);
+	public CodeAndLanguageCodeID addApplicationData(RequestDto<ApplicationData> application);
 
 }

@@ -8,8 +8,10 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum BiometricAttributeErrorCode {
-	BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION("KER-MSD-004", "BiometricAttribute not found"), BIOMETRIC_TYPE_FETCH_EXCEPTION(
-			"KER-MSD-003", "Error occurred while fetching BiometricAttributes");
+	BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION("KER-MSD-004",
+			"BiometricAttribute not found"), BIOMETRIC_TYPE_FETCH_EXCEPTION("KER-MSD-003",
+					"Error occurred while fetching BiometricAttributes"), BIOMETRICATTRIBUTE_INSERT_EXCEPTION(
+							"KER-APP-000000", "Error occurred while inserting BiometricAttributes");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.GenderRequestDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
@@ -43,10 +42,8 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.entity.GenderType;
-import io.mosip.kernel.masterdata.entity.GenderTypeId;
+import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -55,9 +52,12 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 import io.mosip.kernel.masterdata.entity.Title;
-import io.mosip.kernel.masterdata.entity.TitleId;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.GenderID;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
@@ -72,6 +72,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
+import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 
 /**
  * 
@@ -91,7 +92,6 @@ import io.mosip.kernel.masterdata.repository.TitleRepository;
 public class MasterdataIntegrationTest {
 	@Autowired
 	private MockMvc mockMvc;
-
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
 
@@ -100,6 +100,9 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private DocumentCategoryRepository documentCategoryRepository;
+
+	@MockBean
+	private ValidDocumentRepository validDocumentRepository;
 
 	List<DocumentType> documentTypes;
 
@@ -122,11 +125,11 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private GenderTypeRepository genderTypeRepository;
 
-	private List<GenderType> genderTypes;
+	private List<Gender> genderTypes;
 
-	private List<GenderType> genderTypesNull;
+	private List<Gender> genderTypesNull;
 
-	private GenderTypeId genderId;
+	private GenderID genderId;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -175,7 +178,7 @@ public class MasterdataIntegrationTest {
 
 	RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory;
 
-	RegistrationCenterUserMachineHistoryId registrationCenterUserMachineHistoryId;
+	RegistrationCenterMachineUserID registrationCenterUserMachineHistoryId;
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
@@ -186,17 +189,18 @@ public class MasterdataIntegrationTest {
 
 	private List<Title> titlesNull;
 
-	private TitleId titleId;
+	private CodeAndLanguageCodeID titleId;
 
 	@MockBean
 	private LanguageRepository languageRepository;
 
 	private LanguageDto languageDto;
-	private GenderRequestDto genderTypeRequestDto;
 
 	private Language language;
-	
-	private GenderType genderType;
+
+	private Gender genderType;
+
+	private ValidDocument validDocument;
 
 	@Before
 	public void setUp() {
@@ -225,6 +229,14 @@ public class MasterdataIntegrationTest {
 		registrationCenterTypeSetUp();
 
 		languageTestSetup();
+
+		addValidDocumentSetUp();
+	}
+
+	private void addValidDocumentSetUp() {
+		validDocument = new ValidDocument();
+		validDocument.setDocTypeCode("ttt");
+		validDocument.setDocCategoryCode("ddd");
 	}
 
 	private void languageTestSetup() {
@@ -266,22 +278,22 @@ public class MasterdataIntegrationTest {
 	private void titleIntegrationSetup() {
 		titleList = new ArrayList<>();
 		Title title = new Title();
-		titleId = new TitleId();
-		titleId.setLanguageCode("ENG");
-		titleId.setTitleCode("ABC");
+		titleId = new CodeAndLanguageCodeID();
+		titleId.setLangCode("ENG");
+		titleId.setCode("ABC");
 		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
-		title.setCreatedtimes(null);
+		title.setCreatedDateTime(null);
 		title.setId(titleId);
 		title.setTitleDescription("AAAAAAAAAAAA");
 		title.setTitleName("HELLO");
 		title.setUpdatedBy("XYZ");
-		title.setUpdatedtimes(null);
+		title.setUpdatedDateTime(null);
 		titleList.add(title);
 	}
 
 	private void registrationCenterUserMachineSetup() {
-		registrationCenterUserMachineHistoryId = new RegistrationCenterUserMachineHistoryId("1", "1", "1");
+		registrationCenterUserMachineHistoryId = new RegistrationCenterMachineUserID("1", "1", "1");
 		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory();
 		registrationCenterUserMachineHistory.setId(registrationCenterUserMachineHistoryId);
 		registrationCenterUserMachineHistory.setEffectivetimes(LocalDateTime.now().minusDays(1));
@@ -359,18 +371,18 @@ public class MasterdataIntegrationTest {
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holidays = new ArrayList<>();
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtimes(specificDate);
+		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayId(1, "KAH", date, "ENG"));
+		holiday2.setHolidayId(new HolidayID(1, "KAH", date, "ENG"));
 		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
-		holiday2.setCreatedtimes(specificDate);
+		holiday2.setCreatedDateTime(specificDate);
 		holiday2.setHolidayDesc("Diwali");
 		holiday2.setIsActive(true);
 
@@ -381,18 +393,18 @@ public class MasterdataIntegrationTest {
 	private void genderTypeSetup() {
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
-		genderType = new GenderType();
-		genderId = new GenderTypeId();
+		genderType = new Gender();
+		genderId = new GenderID();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
 		genderType.setIsActive(true);
 		genderType.setCreatedBy("John");
-		genderType.setCreatedtimes(null);
+		genderType.setCreatedDateTime(null);
 		genderType.setIsDeleted(true);
-		genderType.setDeletedtimes(null);
+		genderType.setDeletedDateTime(null);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Dom");
-		genderType.setUpdatedtimes(null);
+		genderType.setUpdatedDateTime(null);
 		genderTypes.add(genderType);
 	}
 
@@ -405,6 +417,9 @@ public class MasterdataIntegrationTest {
 		blacklistedWords.setDescription("no description available");
 
 		words.add(blacklistedWords);
+		blacklistedWords.setLangCode("TST");
+		blacklistedWords.setIsActive(true);
+		blacklistedWords.setWord("testword");
 	}
 
 	// -----------------------------LanguageImplementationTest----------------------------------
@@ -457,12 +472,31 @@ public class MasterdataIntegrationTest {
 	public void getAllWordsBylangCodeNullArgExceptionTest() throws Exception {
 		mockMvc.perform(get("/blacklistedwords/{langcode}", " ")).andExpect(status().isNotFound());
 	}
+	// TODO: asdfghjk
+
+	@Test
+	public void addBlackListedWordTest() throws Exception {
+		BlacklistedWords blacklistedWords = new BlacklistedWords();
+		blacklistedWords.setLangCode("TST");
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
+		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
+		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addBlackListedWordExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
+		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
 
 	// -----------------------------GenderTypeTest----------------------------------
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG"))
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -473,7 +507,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse("ENG")).thenReturn(genderTypesNull);
+		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull("ENG"))
+				.thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -483,7 +518,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getAllGenderFetchExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenThrow(DataAccessLayerException.class);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -493,7 +528,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getAllGenderNotFoundExceptionTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenReturn(genderTypesNull);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenReturn(genderTypesNull);
 
 		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 
@@ -502,7 +537,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getGenderByLanguageCodeTest() throws Exception {
 
-		Mockito.when(genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(
+				genderTypeRepository.findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype/{languageCode}", "ENG")).andExpect(status().isOk());
 
@@ -510,7 +546,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllGendersTest() throws Exception {
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenReturn(genderTypes);
+		Mockito.when(genderTypeRepository.findAll(Gender.class)).thenReturn(genderTypes);
 		mockMvc.perform(get("/gendertype")).andExpect(status().isOk());
 
 	}
@@ -620,57 +656,63 @@ public class MasterdataIntegrationTest {
 	// -----------------------------PacketRejectionTest----------------------------------
 	@Test
 	public void getAllRjectionReasonTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(reasoncategories);
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull())
+				.thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(reasoncategories);
+		Mockito.when(
+				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRjectionReasonFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse())
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(
+				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRjectionReasonRecordsNotFoundTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(null);
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(null);
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(null);
+		Mockito.when(
+				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(null);
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(
+				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getAllRjectionReasonRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalse()).thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull())
+				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 
@@ -820,7 +862,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG")).thenReturn(null);
+		when(registrationCenterRepository.findByIdAndLanguageCode("1", "ENG")).thenReturn(null);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -830,7 +872,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG"))
+		when(registrationCenterRepository.findByIdAndLanguageCode("1", "ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -893,7 +935,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAll(RegistrationCenter.class))
+		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
@@ -902,7 +944,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTestSuccessTest() throws Exception {
-		when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse("1", "ENG")).thenReturn(banglore);
+		when(registrationCenterRepository.findByIdAndLanguageCode("1", "ENG")).thenReturn(banglore);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -960,8 +1002,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRegistrationCenterTest() throws Exception {
-		when(registrationCenterRepository.findAll(RegistrationCenter.class))
-				.thenReturn(registrationCenters);
+		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(registrationCenters);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
@@ -1083,16 +1124,17 @@ public class MasterdataIntegrationTest {
 	// -----------------------------------document-type----------------------------------------
 	@Test
 	public void addDocumentTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentTypes\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentTypeRepository.saveAll(Mockito.any())).thenReturn(documentTypes);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentType\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentTypeRepository.create(Mockito.any())).thenReturn(type);
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addDocumentTypesDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentTypes\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
-		when(documentTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentType\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}}}";
+		when(documentTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
@@ -1113,7 +1155,9 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
+	// -----------------------------------gender-type----------------------------------------
+
 	@Test
 	public void addGenderTypeTest() throws Exception {
 		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
@@ -1121,6 +1165,33 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
-	
+
+	@Test
+	public void addGenderTypeExceptionTest() throws Exception {
+
+		String json = "{ \"genderList\": [ { \"genderCode\": \"234\", \"genderName\": \"Raju\", \"isActive\": true, \"languageCode\": \"ENG\" } ] }";
+		when(genderTypeRepository.save(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+
+	}
+	// ------------------------------------------valid-document-------------------------------------------
+
+	@Test
+	public void insertValidDocumentTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(validDocumentRepository.create(Mockito.any())).thenReturn(validDocument);
+		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void insertValidDocumentExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"validDocument\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		when(validDocumentRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
+
 }

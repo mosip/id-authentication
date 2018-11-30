@@ -1,25 +1,24 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCode;
+import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * Service class has methods to save and fetch DeviceSpecification Details
@@ -90,28 +89,22 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public DeviceSpecPostResponseDto saveDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecifications) {
-		DeviceSpecPostResponseDto respDto = new DeviceSpecPostResponseDto();
-		List<DeviceSpecification> renDeviceSpecificationList = null;
+	public DeviceTypeCodeAndLanguageCodeAndId saveDeviceSpecification(DeviceSpecificationRequestDto deviceSpecifications) {
+		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		List<DeviceSpecification> entities = metaUtils
-				.setCreateMetaData(deviceSpecifications.getRequest().getDeviceSpecificationDtos(), DeviceSpecification.class);
+		DeviceSpecification entity = metaUtils
+				.setCreateMetaData(deviceSpecifications.getRequest().getDeviceSpecificationDto(), DeviceSpecification.class);
 		try {
-			renDeviceSpecificationList = deviceSpecificationRepository.saveAll(entities);
-		} catch (DataAccessException e) {
+			 renDeviceSpecification = deviceSpecificationRepository.create(entity);
+		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage());
+					e.getErrorText());
 		}
-		List<DeviceTypeCodeAndLanguageCode> deviceTypeCodeLangCodes = new ArrayList<>();
-		renDeviceSpecificationList.forEach(renDeviceSpecification -> {
-			DeviceTypeCodeAndLanguageCode deviceTypeCodeAndLanguageCode = new DeviceTypeCodeAndLanguageCode();
-				dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCode, true, null, null, true);
+			DeviceTypeCodeAndLanguageCodeAndId deviceTypeCodeAndLanguageCodeId = new DeviceTypeCodeAndLanguageCodeAndId();
+				dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCodeId, true, null, null, true);
 			
-			deviceTypeCodeLangCodes.add(deviceTypeCodeAndLanguageCode);
-		});
-		respDto.setResults(deviceTypeCodeLangCodes);
-		return respDto;	
+		return deviceTypeCodeAndLanguageCodeId;	
 	}
 
 }
