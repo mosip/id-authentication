@@ -36,8 +36,8 @@ import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
+import io.mosip.kernel.masterdata.dto.DocumentTypeData;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -109,10 +109,10 @@ public class MasterdataControllerTest {
 
 	private List<BiometricAttributeDto> biometricattributes;
 
-	private DocumentCategoryDto documentCategoryDto1;
-	private DocumentCategoryDto documentCategoryDto2;
+	private DocumentCategoryData documentCategoryDto1;
+	private DocumentCategoryData documentCategoryDto2;
 
-	private List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
+	private List<DocumentCategoryData> documentCategoryDtoList = new ArrayList<>();
 
 	@MockBean
 	private DocumentCategoryService documentCategoryService;
@@ -124,7 +124,7 @@ public class MasterdataControllerTest {
 
 	ValidDocumentTypeResponseDto validDocumentTypeResponseDto = null;
 
-	List<DocumentTypeDto> documentTypeDtos = null;
+	List<DocumentTypeData> documentTypeDtos = null;
 
 	@MockBean
 	private IdTypeRepository repository;
@@ -307,15 +307,15 @@ public class MasterdataControllerTest {
 	}
 
 	private void documentTypeSetup() {
-		documentTypeDtos = new ArrayList<DocumentTypeDto>();
-		DocumentTypeDto documentType = new DocumentTypeDto();
+		documentTypeDtos = new ArrayList<DocumentTypeData>();
+		DocumentTypeData documentType = new DocumentTypeData();
 		documentType.setCode("addhar");
 		documentType.setName("adhar card");
 		documentType.setDescription("Uid");
 		documentType.setLangCode("eng");
 		// documentType.setIsActive(true);
 		documentTypeDtos.add(documentType);
-		DocumentTypeDto documentType1 = new DocumentTypeDto();
+		DocumentTypeData documentType1 = new DocumentTypeData();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_prof");
 		documentType1.setDescription("document for residential prof");
@@ -326,12 +326,12 @@ public class MasterdataControllerTest {
 	}
 
 	private void documentCategorySetup() {
-		documentCategoryDto1 = new DocumentCategoryDto();
+		documentCategoryDto1 = new DocumentCategoryData();
 		documentCategoryDto1.setCode("101");
 		documentCategoryDto1.setName("POI");
 		documentCategoryDto1.setLangCode("ENG");
 
-		documentCategoryDto2 = new DocumentCategoryDto();
+		documentCategoryDto2 = new DocumentCategoryData();
 		documentCategoryDto2.setCode("102");
 		documentCategoryDto2.setName("POR");
 		documentCategoryDto2.setLangCode("ENG");

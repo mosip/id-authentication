@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -20,7 +20,7 @@ public interface DocumentCategoryService {
 	/**
 	 * To fetch all Document Category
 	 * 
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategory();
 
@@ -29,7 +29,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param langCode
 	 *            the language code
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode);
 
@@ -38,7 +38,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param code
 	 * @param langCode
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return {@linkplain DocumentCategoryData}
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
 
@@ -49,5 +49,5 @@ public interface DocumentCategoryService {
 	 *            dto with document categories list.
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryData> category);
+	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryDto> category);
 }
