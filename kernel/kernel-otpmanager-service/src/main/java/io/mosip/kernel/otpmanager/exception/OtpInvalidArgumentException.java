@@ -3,6 +3,7 @@ package io.mosip.kernel.otpmanager.exception;
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ServiceError;
 
 /**
  * Class to handle exceptions for invalid OTP validation inputs.
@@ -21,13 +22,13 @@ public class OtpInvalidArgumentException extends BaseUncheckedException {
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<Error> list;
+	private final List<ServiceError> list;
 
 	/**
 	 * @param list
 	 *            The error list.
 	 */
-	public OtpInvalidArgumentException(List<Error> list) {
+	public OtpInvalidArgumentException(List<ServiceError> list) {
 		this.list = list;
 	}
 
@@ -36,7 +37,7 @@ public class OtpInvalidArgumentException extends BaseUncheckedException {
 	 * 
 	 * @return The error list.
 	 */
-	public List<Error> getList() {
+	public List<ServiceError> getList() {
 		return list;
 	}
 }

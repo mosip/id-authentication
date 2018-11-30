@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
@@ -49,5 +48,5 @@ public interface DocumentCategoryService {
 	 *            dto with document categories list.
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID addDocumentCategoriesData(RequestDto<DocumentCategoryData> category);
+	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category);
 }

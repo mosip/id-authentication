@@ -477,7 +477,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		Mockito.when(applicationService.addApplicationData(Mockito.any()))
+		Mockito.when(applicationService.createApplication(Mockito.any()))
 				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)

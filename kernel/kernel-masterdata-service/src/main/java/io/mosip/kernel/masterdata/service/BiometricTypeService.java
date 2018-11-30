@@ -8,6 +8,8 @@ import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
+ * Service APIs to get Biometric types details
+ * 
  * @author Neha
  * @since 1.0.0
  */
