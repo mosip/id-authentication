@@ -1,4 +1,4 @@
-package io.mosip.registration.controller.auth;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -13,7 +13,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.controller.reg.RegistrationOfficerPacketController;
 import io.mosip.registration.dto.RegistrationDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
