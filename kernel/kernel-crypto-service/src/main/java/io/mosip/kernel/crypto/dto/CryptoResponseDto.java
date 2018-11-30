@@ -22,5 +22,5 @@ public class CryptoResponseDto {
 /**
  * 
  */
-private byte[] data;
+private String data;
 }

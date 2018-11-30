@@ -23,7 +23,7 @@ public class KeyManagerSymmetricKeyConverter implements DataConverter<CryptoRequ
 		destination.setApplicationId(source.getApplicationId());
 		destination.setReferenceId(source.getReferenceId());
 		destination.setTimeStamp(source.getTimeStamp());
-		destination.setEncryptedSymmetricKey(Base64.encodeBase64URLSafeString(source.getData()));
+		destination.setEncryptedSymmetricKey(source.getData());
 	}
 
 	

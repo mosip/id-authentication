@@ -103,10 +103,11 @@ public class CryptoUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptoRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp());
-		if(cryptoRequestDto.getReferenceId()!=null) {
+		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
+		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
+		/*if(cryptoRequestDto.getReferenceId()!=null) {
 			builder.queryParam("referenceId", cryptoRequestDto.getReferenceId());
-		}
+		}*/
 		System.out.println("uri"+builder.buildAndExpand(uriParams).toUri());
 		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
 		try {
@@ -161,12 +162,12 @@ public class CryptoUtil {
 	 * @param keySplitterFirstByte
 	 * @return
 	 */
-	public int getSplitterIndex(CryptoRequestDto cryptoRequestDto, int keyDemiliterIndex,
+	public int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex,
 			 final int keySplitterLength, final byte keySplitterFirstByte) {
 		
-		for (byte data:cryptoRequestDto.getData()) {
+		for (byte data:encryptedData) {
 			if (data == keySplitterFirstByte) {
-				final String keySplit = new String(copyOfRange(cryptoRequestDto.getData(), keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
+				final String keySplit = new String(copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
 				if (keySplitter.equals(keySplit)) {
 					break;
 				}

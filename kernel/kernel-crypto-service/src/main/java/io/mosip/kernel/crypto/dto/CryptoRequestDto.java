@@ -42,5 +42,5 @@ private LocalDateTime timeStamp;
  * 
  */
 @NotNull
-private byte[] data; 
+private String data; 
 }
