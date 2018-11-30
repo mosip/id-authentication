@@ -88,7 +88,7 @@ public class MachineController {
 	public ResponseEntity<MachineSpecIdAndId> saveMachine(
 			@RequestBody MachineRequestDto machine) {
 
-		return new ResponseEntity<>(machineService.saveMachine(machine), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
 
 }

@@ -29,7 +29,7 @@ public class MachineSpecificationController {
 	public ResponseEntity<MachineTypeCodeAndLanguageCodeAndId> saveMachineSpecification(
 			@RequestBody MachineSpecificationRequestDto machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.saveMachineSpecification(machineSpecification), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification), HttpStatus.CREATED);
 	}
 
 }
