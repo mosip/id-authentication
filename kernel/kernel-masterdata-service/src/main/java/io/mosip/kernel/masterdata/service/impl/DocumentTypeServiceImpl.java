@@ -74,7 +74,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID addDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
+	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
 		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest().getDocumentType(),
 				DocumentType.class);
 		DocumentType documentType;

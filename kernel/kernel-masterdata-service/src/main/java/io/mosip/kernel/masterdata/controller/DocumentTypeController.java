@@ -47,7 +47,7 @@ public class DocumentTypeController {
 	}
 
 	@PostMapping("/documenttypes")
-	public ResponseEntity<CodeAndLanguageCodeID> addDocumentTypeList(@RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(@RequestBody RequestDto<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.createDocumentTypes(types), HttpStatus.CREATED);
 	}
 }
