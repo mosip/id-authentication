@@ -27,7 +27,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	private DataMapper dataMapper;
 
 	@Override
-	public MachineTypeCodeAndLanguageCodeAndId saveMachineSpecification(
+	public MachineTypeCodeAndLanguageCodeAndId createMachineSpecification(
 			MachineSpecificationRequestDto machineSpecification) {
 		
 		MachineSpecification renMachineSpecification = new MachineSpecification();

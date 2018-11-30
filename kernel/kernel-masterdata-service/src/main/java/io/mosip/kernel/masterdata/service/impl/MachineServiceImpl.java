@@ -186,7 +186,7 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	@Override
-	public MachineSpecIdAndId saveMachine(MachineRequestDto machine) {
+	public MachineSpecIdAndId createMachine(MachineRequestDto machine) {
 		Machine crtMachine;
 
 		Machine entity = metaUtils.setCreateMetaData(machine.getRequest().getMachineDto(), Machine.class);

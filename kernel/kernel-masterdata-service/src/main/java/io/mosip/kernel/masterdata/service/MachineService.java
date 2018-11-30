@@ -52,6 +52,6 @@ public interface MachineService {
 	 * @return {@link MachineSpecIdAndId}
 	 */
 	
-	 public MachineSpecIdAndId saveMachine(MachineRequestDto machine);
+	 public MachineSpecIdAndId createMachine(MachineRequestDto machine);
 
 }
