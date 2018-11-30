@@ -63,7 +63,6 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	 * )
 	 */
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Registration> fetchPacketsToBeSynched() {
 		LOGGER.debug("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,

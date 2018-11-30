@@ -23,7 +23,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
@@ -49,8 +48,6 @@ import io.mosip.registration.util.json.JSONConverter;
 @Service
 public class PacketCreationServiceImpl implements PacketCreationService {
 
-	@Autowired
-	private AuditDAO auditDAO;
 	@Autowired
 	private ZipCreationService zipCreationService;
 	private static final Logger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);

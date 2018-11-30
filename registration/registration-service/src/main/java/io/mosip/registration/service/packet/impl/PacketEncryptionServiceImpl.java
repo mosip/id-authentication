@@ -13,7 +13,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -51,8 +50,6 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	 */
 	@Autowired
 	private StorageService storageService;
-	@Autowired
-	private AuditDAO auditDAO;
 	/**
 	 * Object for Logger
 	 */

@@ -4,7 +4,6 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,11 +42,6 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 	@Autowired
 	PreRegistrationDAO preRegistrationDAO;
 
-	/**
-	 * To calculate toDate to retrieve pre reg Ids
-	 */
-	private int noOfDays = 5;
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseDTO getPreRegistrationIds() {
@@ -55,20 +49,18 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 		// prepare request DTO to pass on through REST call
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareRequestDTO();
 
-		ResponseDTO responseDTO = new ResponseDTO();
-
 		try {
 			// REST call
 			PreRegistrationResponseDTO<PreRegistrationResponseDataSyncDTO> preRegistrationResponseDTO = (PreRegistrationResponseDTO<PreRegistrationResponseDataSyncDTO>) delegateUtil
 					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
 
 			// Get List of responses (Pre-Reg Response)
-			ArrayList preRegistrationResponseList = (ArrayList) preRegistrationResponseDTO.getResponse();
+			ArrayList<?> preRegistrationResponseList = (ArrayList<?>) preRegistrationResponseDTO.getResponse();
 
 			HashMap<String, Object> map = (HashMap<String, Object>) preRegistrationResponseList.get(0);
 			ArrayList<String> preregIds = (ArrayList<String>) map.get("preRegistrationIds");
 
-			List<PreRegistration> preRegistrations = getPreRegistrations(preregIds);
+			getPreRegistrations(preregIds);
 
 		} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
 				| RegBaseCheckedException e) {

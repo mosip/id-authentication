@@ -1,8 +1,6 @@
 package io.mosip.registration.repositories;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.CenterMachineId;
 import io.mosip.registration.entity.PreRegistration;
 
 /**
