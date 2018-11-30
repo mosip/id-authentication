@@ -218,7 +218,7 @@ public class BaseController {
 	 * @param capturedImage BufferedImage that is captured using webcam
 	 * @param imageType     Type of image that is to be saved
 	 */
-	protected void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
 	}
 
@@ -227,7 +227,7 @@ public class BaseController {
 	 * 
 	 * @param imageType Type of image that is to be cleared
 	 */
-	protected void clearPhoto(String imageType) {
+	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
 	}
 

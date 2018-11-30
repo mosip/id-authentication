@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="onBoardRoot" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.UserClientMachineMappingController">
+<AnchorPane fx:id="onBoardRoot" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.admin.UserClientMachineMappingController">
 	<children>
 		<TableView fx:id="mapTable" layoutX="66.0" layoutY="63.0" onMouseClicked="#showSelectedUserDetails" prefHeight="150.0" prefWidth="800.0">
 			<columns>
