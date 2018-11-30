@@ -28,9 +28,9 @@ public class KeyDbStore extends BaseEntity {
 	private String alias;
 
 	@Column(name = "public_key")
-	private byte[] publicKey;
+	private String publicKey;
 
 	@Column(name = "private_key")
-	private byte[] privateKey;
+	private String privateKey;
 
 }

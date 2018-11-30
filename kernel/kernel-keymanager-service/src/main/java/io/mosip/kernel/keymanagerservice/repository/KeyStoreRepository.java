@@ -18,6 +18,6 @@ import io.mosip.kernel.keymanagerservice.entity.KeyDbStore;
 @Repository
 public interface KeyStoreRepository extends BaseRepository<KeyDbStore, String> {
 
-	Optional<KeyDbStore> findByAlias(String alias);
+	Optional<String> findPublicKeyByAlias(String alias);
 
 }

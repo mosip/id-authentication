@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponseDto;
+import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
@@ -34,7 +34,7 @@ public class KeymanagerController {
 	KeymanagerService keymanagerService;
 
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponseDto> getPublicKey(@PathVariable("applicationId") String applicationId,
+	public ResponseEntity<PublicKeyResponse> getPublicKey(@PathVariable("applicationId") String applicationId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
 			@RequestParam("referenceId") Optional<String> referenceId) {
 

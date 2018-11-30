@@ -3,7 +3,7 @@ package io.mosip.kernel.keymanagerservice.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponseDto;
+import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 
@@ -31,6 +31,6 @@ public interface KeymanagerService {
 	 * @param referenceId
 	 * @return
 	 */
-	public PublicKeyResponseDto getPublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> referenceId);
+	public PublicKeyResponse getPublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> referenceId);
 
 }

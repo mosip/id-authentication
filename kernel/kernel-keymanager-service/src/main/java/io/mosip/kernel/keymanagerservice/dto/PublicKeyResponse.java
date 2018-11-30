@@ -17,11 +17,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublicKeyResponseDto {
+public class PublicKeyResponse<T> {
 
-//	private byte[] publicKey;
-
-	private String publicKey;
+	private T publicKey;
 
 	private LocalDateTime keyGenerationTime;
 
