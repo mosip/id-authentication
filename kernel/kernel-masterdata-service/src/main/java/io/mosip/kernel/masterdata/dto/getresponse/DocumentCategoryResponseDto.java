@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocumentCategoryResponseDto {
-	private List<DocumentCategoryDto> documentcategories;
+	private List<DocumentCategoryData> documentcategories;
 }
