@@ -259,7 +259,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private Label biometrics;
 	@FXML
-	protected AnchorPane biometricsPane;
+	private AnchorPane biometricsPane;
 	@FXML
 	protected ImageView applicantImage;
 	@FXML
@@ -313,7 +313,7 @@ public class RegistrationController extends BaseController {
 				defaultImage = applicantImage.getImage();
 				biometrics.setVisible(false);
 				biometricsNext.setVisible(false);
-				biometricsPane.setVisible(true);
+				getBiometricsPane().setVisible(true);
 				if (!isEditPage) {
 					applicantImageCaptured = false;
 					exceptionBufferedImage = null;
@@ -322,7 +322,7 @@ public class RegistrationController extends BaseController {
 
 				biometrics.setVisible(true);
 				biometricsNext.setVisible(true);
-				biometricsPane.setVisible(false);
+				getBiometricsPane().setVisible(false);
 				biometricsNext.setDisable(false);
 			}
 
@@ -1574,5 +1574,13 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
+	}
+
+	public AnchorPane getBiometricsPane() {
+		return biometricsPane;
+	}
+
+	public void setBiometricsPane(AnchorPane biometricsPane) {
+		this.biometricsPane = biometricsPane;
 	}
 }

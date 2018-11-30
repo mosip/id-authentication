@@ -16,7 +16,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationOfficerPacketController;
-import io.mosip.registration.controller.reg.RegistrationPendingActionController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

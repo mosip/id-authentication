@@ -1,4 +1,4 @@
-package io.mosip.registration.controller.reg;
+package io.mosip.registration.controller.eodapproval;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
