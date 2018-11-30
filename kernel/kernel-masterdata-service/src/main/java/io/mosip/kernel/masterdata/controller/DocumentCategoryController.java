@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +73,7 @@ public class DocumentCategoryController {
 	 */
 	@PostMapping("/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategories(
-			@RequestBody RequestDto<DocumentCategoryDto> category) {
+			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategoriesData(category), HttpStatus.CREATED);
 
 	}
