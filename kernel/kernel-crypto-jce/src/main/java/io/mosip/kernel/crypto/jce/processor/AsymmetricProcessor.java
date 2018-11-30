@@ -97,7 +97,7 @@ public class AsymmetricProcessor {
 		} catch (BadPaddingException | IllegalStateException | IllegalBlockSizeException e) {
 			throw new InvalidDataException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage(),e);
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage(),e.getCause());
 		}
 
 	}

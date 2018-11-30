@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.mosip.kernel.crypto.constant.CryptoConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class CryptoRequestDto {
 /**
  * 
  */
-@NotBlank
+@NotBlank(message=CryptoConstant.INVALID_REQUEST)
 private String applicationId;
 /**
  * 
@@ -41,6 +42,6 @@ private LocalDateTime timeStamp;
 /**
  * 
  */
-@NotBlank
+@NotBlank(message=CryptoConstant.INVALID_REQUEST)
 private String data; 
 }

@@ -29,7 +29,7 @@ public enum CryptoErrorCode {
 	/**
 	 * 
 	 */
-	INVALID_REQUEST("KER-CRY-004","Invalid request"),
+	INVALID_REQUEST("KER-CRY-004","should not be null or empty"),
 	/**
 	 * 
 	 */
@@ -41,7 +41,7 @@ public enum CryptoErrorCode {
 	/**
 	 * 
 	 */
-	DATE_TIME_PARSE_EXCEPTION("KER-CRY-00","timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ (e.g. 2019-04-05T14:30)")
+	DATE_TIME_PARSE_EXCEPTION("KER-CRY-007","timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ (e.g. 2019-04-05T14:30)")
 	;
 
 	/**

@@ -60,7 +60,7 @@ public class CryptoExceptionHandler {
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<ErrorResponse<Error>> dateTimeParseException(
+	public ResponseEntity<ErrorResponse<Error>> invalidFormatException(
 			final InvalidFormatException e) {
 		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+CryptoConstant.WHITESPACE+CryptoErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
@@ -77,12 +77,12 @@ public class CryptoExceptionHandler {
 	
 	@ExceptionHandler(HttpClientErrorException.class)
 	public ResponseEntity<ErrorResponse<Error>> httpClientErrorException(final HttpClientErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getLocalizedMessage()), e.getStatusCode());
+		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getResponseBodyAsString()), e.getStatusCode());
 	}
 	
 	@ExceptionHandler(HttpServerErrorException.class)
 	public ResponseEntity<ErrorResponse<Error>> httpServerErrorException(final HttpServerErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getLocalizedMessage()), e.getStatusCode());
+		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptoErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptoConstant.WHITESPACE+e.getResponseBodyAsString()), e.getStatusCode());
 	}
 	
     @ExceptionHandler(MethodArgumentNotValidException.class)
