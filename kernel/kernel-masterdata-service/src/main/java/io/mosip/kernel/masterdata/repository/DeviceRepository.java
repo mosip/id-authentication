@@ -29,7 +29,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device Details fetched from database
 	 */
 
-	List<Device> findByLangCodeAndIsDeletedFalse(String langCode);
+	List<Device> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
 	 * This method trigger query to fetch the Device detail for the given language

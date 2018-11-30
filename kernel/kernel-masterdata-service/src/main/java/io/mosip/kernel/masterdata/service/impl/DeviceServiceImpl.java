@@ -67,7 +67,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<DeviceDto> deviceDtoList = null;
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
-			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalse(langCode);
+			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()+ "  "+ExceptionUtils.parseException(e));
