@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.device;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -18,6 +18,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.service.device.PhotoCaptureService;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.controller.reg.RegistrationOfficerDetailsController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Application;
 import javafx.stage.Stage;

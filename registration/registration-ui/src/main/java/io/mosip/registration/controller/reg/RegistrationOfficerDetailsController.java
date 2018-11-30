@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -14,6 +14,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RegistrationAppInitialization;
+import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;

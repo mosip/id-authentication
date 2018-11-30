@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -22,6 +22,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;

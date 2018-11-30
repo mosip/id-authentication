@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.admin;
 
 import java.net.URL;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;

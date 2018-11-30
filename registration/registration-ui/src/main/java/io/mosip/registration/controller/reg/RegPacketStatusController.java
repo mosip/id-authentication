@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;

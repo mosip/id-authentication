@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.eodapproval;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_EOD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.reg.RegistrationOfficerPacketController;
+import io.mosip.registration.controller.reg.RegistrationPendingActionController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

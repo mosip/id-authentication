@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import javafx.collections.FXCollections;

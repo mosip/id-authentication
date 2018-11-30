@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.admin;
 
 import static io.mosip.registration.constants.LoggerConstants.DEVICE_ONBOARD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -26,6 +26,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.DeviceDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;

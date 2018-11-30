@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_PENDING_ACTION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -23,6 +23,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RegistrationAppInitialization;
+import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;

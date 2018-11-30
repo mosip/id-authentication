@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_ONHOLD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -17,6 +17,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

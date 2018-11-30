@@ -22,7 +22,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.LoginController;
+import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.application.Platform;
