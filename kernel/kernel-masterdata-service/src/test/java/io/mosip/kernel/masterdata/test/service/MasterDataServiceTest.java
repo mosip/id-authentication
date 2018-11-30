@@ -35,7 +35,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeData;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -1260,7 +1260,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatSuccess() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
 		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
@@ -1269,7 +1269,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatInsertExceptionTest() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 	}
 	
 	// ----------------------------------DocumentTypeServiceTest-------------------------
@@ -1282,7 +1282,7 @@ public class MasterDataServiceTest {
 		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode))
 				.thenReturn(documents);
 
-		List<DocumentTypeData> documentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
+		List<DocumentTypeDto> documentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
 				langCode);
 		Assert.assertEquals(documentTypes.get(0).getCode(), documents.get(0).getCode());
 		Assert.assertEquals(documentTypes.get(0).getName(), documents.get(0).getName());

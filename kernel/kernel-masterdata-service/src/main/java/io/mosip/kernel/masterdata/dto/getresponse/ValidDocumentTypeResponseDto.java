@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.DocumentTypeData;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ValidDocumentTypeResponseDto {
-	private List<DocumentTypeData> documents;
+	private List<DocumentTypeDto> documents;
 
 }
