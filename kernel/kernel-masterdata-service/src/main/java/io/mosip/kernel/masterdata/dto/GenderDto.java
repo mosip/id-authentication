@@ -11,7 +11,7 @@ public class GenderDto {
 	
 	private String genderCode;
 	private String genderName;
-	private String languageCode;
+	
 	private Boolean isActive;
 
 }

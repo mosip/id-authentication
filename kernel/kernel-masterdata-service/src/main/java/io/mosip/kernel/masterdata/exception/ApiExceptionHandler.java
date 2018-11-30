@@ -12,6 +12,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
@@ -25,28 +27,28 @@ import io.mosip.kernel.masterdata.constant.RequestErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
-public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(MasterDataServiceException.class)
-	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final MasterDataServiceException e) {
+	public ResponseEntity<ErrorResponse<ServiceError>> controlDataServiceException(final MasterDataServiceException e) {
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
-	public ResponseEntity<ErrorResponse<Error>> controlDataNotFoundException(final DataNotFoundException e) {
+	public ResponseEntity<ErrorResponse<ServiceError>> controlDataNotFoundException(final DataNotFoundException e) {
 		return getErrorResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(RequestException.class)
-	public ResponseEntity<ErrorResponse<Error>> controlRequestException(final RequestException e) {
+	public ResponseEntity<ErrorResponse<ServiceError>> controlRequestException(final RequestException e) {
 		return getErrorResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(DateTimeParseException.class)
-	public ResponseEntity<ErrorResponse<Error>> numberFormatException(final DateTimeParseException e) {
-		Error error = new Error(RegistrationCenterUserMappingHistoryErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+	public ResponseEntity<ErrorResponse<ServiceError>> numberFormatException(final DateTimeParseException e) {
+		ServiceError error = new ServiceError(RegistrationCenterUserMappingHistoryErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + MasterDataConstant.DATETIMEFORMAT);
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
@@ -58,19 +60,19 @@ public class MasterDataControllerAdvice extends ResponseEntityExceptionHandler {
 	}
 
 	private ResponseEntity<Object> getErrorResponseEntity(MethodArgumentNotValidException ex, HttpStatus httpStatus) {
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		ex.getBindingResult().getFieldErrors().stream().forEach(e -> {
-			Error error = new Error(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 					e.getField() + ": " + e.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, httpStatus);
 	}
 
-	private ResponseEntity<ErrorResponse<Error>> getErrorResponseEntity(BaseUncheckedException e,
+	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
 			HttpStatus httpStatus) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(httpStatus.value());
 		return new ResponseEntity<>(errorResponse, httpStatus);

@@ -67,7 +67,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @param category
 	 *            The request DocumentCategory Dto.
-	 *            
+	 * 
 	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
 	 */
 	@PostMapping("/documentcategories")
