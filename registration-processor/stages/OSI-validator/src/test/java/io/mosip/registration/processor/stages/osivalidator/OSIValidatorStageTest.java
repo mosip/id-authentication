@@ -73,9 +73,11 @@ public class OSIValidatorStageTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The o SI validator. */
 	@Mock
 	private OSIValidator oSIValidator;
 
+	/** The umc validator. */
 	@Mock
 	UMCValidator umcValidator;
 
@@ -160,6 +162,12 @@ public class OSIValidatorStageTest {
 
 	}
 
+	/**
+	 * Data access exception test.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void dataAccessExceptionTest() throws Exception {
 		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
@@ -170,6 +178,12 @@ public class OSIValidatorStageTest {
 
 	}
 
+	/**
+	 * Exception test.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void exceptionTest() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(null);
