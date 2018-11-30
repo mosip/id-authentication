@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -102,12 +103,14 @@ public class CryptoUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptoRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
-		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
+		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp());
+		if(cryptoRequestDto.getReferenceId()!=null) {
+			builder.queryParam("referenceId", cryptoRequestDto.getReferenceId());
+		}
 		System.out.println("uri"+builder.buildAndExpand(uriParams).toUri());
 		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
 		try {
-			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getPublicKey()));
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
 					CryptoErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
@@ -129,9 +132,11 @@ public class CryptoUtil {
 		
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
+		System.out.println(keyManagerSymmetricKeyRequestDto.getEncryptedSymmetricKey());
 		KeyManagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerSymmetricKeyResponseDto.class);
-		return new SecretKeySpec(keyManagerSymmetricKeyResponseDto.getSymmetricKey(), 0,
-				keyManagerSymmetricKeyResponseDto.getSymmetricKey().length, symmetricAlgorithmName);
+		byte[] symmetricKey=Base64.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
+		return new SecretKeySpec(symmetricKey, 0,
+				symmetricKey.length, symmetricAlgorithmName);
 	}
 
 	/**

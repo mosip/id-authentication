@@ -22,9 +22,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeyManagerPublicKeyResponseDto {
     
-	private byte[] publicKey;
-	
-	private LocalDateTime keyExpiryTime;
-	
+	private String publicKey;
+
 	private LocalDateTime keyGenerationTime;
+
+	private LocalDateTime keyExpiryTime;
+
 }

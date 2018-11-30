@@ -1,5 +1,7 @@
 package io.mosip.kernel.crypto.utils;
 
+import org.apache.commons.codec.binary.Base64;
+
 import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.crypto.dto.CryptoRequestDto;
 import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyRequestDto;
@@ -21,7 +23,7 @@ public class KeyManagerSymmetricKeyConverter implements DataConverter<CryptoRequ
 		destination.setApplicationId(source.getApplicationId());
 		destination.setReferenceId(source.getReferenceId());
 		destination.setTimeStamp(source.getTimeStamp());
-		destination.setEncryptedSymmetricKey(source.getData());
+		destination.setEncryptedSymmetricKey(Base64.encodeBase64URLSafeString(source.getData()));
 	}
 
 	

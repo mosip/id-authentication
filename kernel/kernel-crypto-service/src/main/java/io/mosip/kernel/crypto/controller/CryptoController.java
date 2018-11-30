@@ -51,6 +51,7 @@ public class CryptoController {
 	 */
 	@PostMapping(value = "/decrypt")
 	public CryptoResponseDto decrypt(@RequestBody @Valid CryptoRequestDto cryptoRequestDto) {
+		System.out.println(cryptoRequestDto.getTimeStamp());
 		return cryptoService.decrypt(cryptoRequestDto);
 	}
 }
