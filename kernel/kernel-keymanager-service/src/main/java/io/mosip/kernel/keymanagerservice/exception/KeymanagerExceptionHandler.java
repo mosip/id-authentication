@@ -51,7 +51,7 @@ public class KeymanagerExceptionHandler {
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<ErrorResponse<Error>> dateTimeParseException(
+	public ResponseEntity<ErrorResponse<Error>> invalidFormatException(
 			final InvalidFormatException e) {
 		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+KeyManagerConstants.WHITESPACE+KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
