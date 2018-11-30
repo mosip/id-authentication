@@ -1,4 +1,4 @@
-package io.mosip.registration.constants;
+package io.mosip.registration.exception;
 
 import static io.mosip.registration.constants.RegistrationConstants.PACKET_CREATION_EXP_CODE;
 import static io.mosip.registration.constants.RegistrationConstants.PACKET_UPLOAD_EXP_CODE;
@@ -11,7 +11,7 @@ import static io.mosip.registration.constants.RegistrationConstants.REG_ACK_EXP_
  * @since 1.0.0
  *
  */
-public enum RegistrationExceptions {
+public enum RegistrationExceptionConstants {
 
 	REG_SOCKET_ERROR_CODE(PACKET_CREATION_EXP_CODE +"SMA-001", "No socket is available"),
 	REG_NO_SUCH_ALGORITHM_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AKM-001", "No such algorithm available for input"),
@@ -50,7 +50,7 @@ public enum RegistrationExceptions {
 	/**
 	 * The constructor
 	 */
-	private RegistrationExceptions(String errorCode, String errorMessage) {
+	private RegistrationExceptionConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

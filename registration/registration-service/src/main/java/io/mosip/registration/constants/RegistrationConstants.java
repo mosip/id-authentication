@@ -214,6 +214,10 @@ public class RegistrationConstants {
 	public static final String ADDRESS_KEY = "PrevAddress";
 	public static final String REGISTRATION_CONTROLLER = "REGISTRATION_CONTROLLER";
 	public static final String REGISTRATION_DATA = "registrationDTOContent";
+	public static final String REGISTRATION_AGE_DATA = "ageDatePickerContent";
+	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
+	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
+	public static final String REGISTRATION_ISEDIT = "isEditPage";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";

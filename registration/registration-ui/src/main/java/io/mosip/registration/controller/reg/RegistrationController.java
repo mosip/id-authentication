@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
@@ -235,19 +234,11 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private Button prevAddressButton;
 
-	private static AnchorPane demoGraphicPane1Content;
-
-	private static AnchorPane demoGraphicPane2Content;
-
-	private static DatePicker ageDatePickerContent;
-
 	private boolean toggleAgeOrDobField;
 
 	private boolean toggleBiometricException;
 
 	private boolean isChild;
-
-	private static boolean isEditPage;
 
 	Node keyboardNode;
 
@@ -296,9 +287,6 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private TitledPane authenticationTitlePane;
 
-	@Autowired
-	private RegistrationOfficerPacketController registrationOfficerPacketController;
-
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -314,7 +302,7 @@ public class RegistrationController extends BaseController {
 				biometrics.setVisible(false);
 				biometricsNext.setVisible(false);
 				getBiometricsPane().setVisible(true);
-				if (!isEditPage) {
+				if (!isEditPage()) {
 					applicantImageCaptured = false;
 					exceptionBufferedImage = null;
 				}
@@ -369,7 +357,7 @@ public class RegistrationController extends BaseController {
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
-			if (isEditPage && getRegistrationDtoContent() != null) {
+			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
@@ -393,8 +381,8 @@ public class RegistrationController extends BaseController {
 			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
 			LocationDTO locationDTO = addressDTO.getLocationDTO();
 			fullName.setText(demographicInfoDTO.getFullName());
-			if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
-				ageDatePicker.setValue(ageDatePickerContent.getValue());
+			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null) {
+				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
 				switchedOn.set(true);
 				ageDatePicker.setDisable(true);
@@ -442,7 +430,7 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
-			isEditPage = false;
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
 
@@ -619,8 +607,7 @@ public class RegistrationController extends BaseController {
 						registrationDTO);
 
 				if (ageDatePicker.getValue() != null) {
-					ageDatePickerContent = new DatePicker();
-					ageDatePickerContent.setValue(ageDatePicker.getValue());
+					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
 				}
 
 				biometricTitlePane.setExpanded(true);
@@ -669,7 +656,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -788,8 +776,8 @@ public class RegistrationController extends BaseController {
 		poiScanBtn.setVisible(false);
 		porScanBtn.setVisible(false);
 		prevAddressButton.setVisible(false);
-		demoGraphicPane1Content = demoGraphicPane1;
-		demoGraphicPane2Content = demoGraphicPane2;
+		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
+		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
 	}
 
 	private boolean validateApplicantImage() {
@@ -1160,10 +1148,10 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		try {
-			isEditPage = false;
-			demoGraphicPane1Content = null;
-			demoGraphicPane2Content = null;
-			ageDatePickerContent = null;
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_ISEDIT);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
 			SessionContext.getInstance().getMapObject().remove("LEFT_PALM_PATH");
 			SessionContext.getInstance().getMapObject().remove("RIGHT_PALM_PATH");
@@ -1450,25 +1438,18 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public static AnchorPane getDemoGraphicContent() {
-		return demoGraphicPane1Content;
-	}
-
-	public static AnchorPane getDemoGraphicPane2Content() {
-		return demoGraphicPane2Content;
-	}
-
-	public static boolean isEditPage() {
-		return isEditPage;
-	}
-
-	public static void setEditPage(boolean isEditPage) {
-		RegistrationController.isEditPage = isEditPage;
-	}
-
 	private RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
+	}
+
+	private DatePicker getAgeDatePickerContent() {
+		return (DatePicker) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_AGE_DATA);
+	}
+
+	private Boolean isEditPage() {
+		return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
 	}
 
 	public void clickMe() {
@@ -1546,14 +1527,18 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void submitRegistration() {
-		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
+	public AnchorPane getBiometricsPane() {
+		return biometricsPane;
 	}
 
+	public void setBiometricsPane(AnchorPane biometricsPane) {
+		this.biometricsPane = biometricsPane;
+	}
+
+	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
-			setEditPage(true);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 
 			accord.setExpandedPane(authenticationTitlePane);
@@ -1562,18 +1547,9 @@ public class RegistrationController extends BaseController {
 			biometricTitlePane.setDisable(true);
 			demoGraphicTitlePane.setDisable(true);
 			authenticationTitlePane.setDisable(false);
-
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
-	}
-
-	public AnchorPane getBiometricsPane() {
-		return biometricsPane;
-	}
-
-	public void setBiometricsPane(AnchorPane biometricsPane) {
-		this.biometricsPane = biometricsPane;
 	}
 }

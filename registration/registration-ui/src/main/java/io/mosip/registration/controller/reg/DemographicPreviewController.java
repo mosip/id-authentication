@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -54,7 +56,7 @@ public class DemographicPreviewController extends BaseController {
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
 		isInPane1 = true;
 		demographicPreview.setDisable(true);
-		demoGraphicVbox.getChildren().add(RegistrationController.getDemoGraphicContent());
+		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
 	}
 
@@ -63,7 +65,7 @@ public class DemographicPreviewController extends BaseController {
 	 */
 	public void handleEdit() {
 		try {
-			RegistrationController.setEditPage(true);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			RegistrationController.loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
@@ -78,8 +80,8 @@ public class DemographicPreviewController extends BaseController {
 		try {
 			if (isInPane1) {
 				demoGraphicVbox.getChildren().clear();
-				RegistrationController.getDemoGraphicPane2Content().setVisible(true);
-				demoGraphicVbox.getChildren().add(RegistrationController.getDemoGraphicPane2Content());
+				getDemoGraphicPane2Content().setVisible(true);
+				demoGraphicVbox.getChildren().add(getDemoGraphicPane2Content());
 				isInPane1 = false;
 			} else {
 				isInPane1 = true;
@@ -96,6 +98,16 @@ public class DemographicPreviewController extends BaseController {
 	 */
 	public void goToHomePage() {
 		registrationController.goToHomePage();
+	}
+	
+	private AnchorPane getDemoGraphicPane1Content() {
+		return (AnchorPane) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_PANE1_DATA);
+	}
+
+	private AnchorPane getDemoGraphicPane2Content() {
+		return (AnchorPane) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_PANE2_DATA);
 	}
 
 }

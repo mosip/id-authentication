@@ -11,9 +11,9 @@ import com.github.sarxos.webcam.Webcam;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.device.webcam.WebcamDevice;
+import io.mosip.registration.device.webcam.impl.WebcamDeviceImpl;
 import io.mosip.registration.service.device.PhotoCaptureService;
-import io.mosip.registration.util.webcam.WebcamDevice;
-import io.mosip.registration.util.webcam.WebcamDeviceImpl;
 
 /**
  * Service class to access the webcam and its functionalities.

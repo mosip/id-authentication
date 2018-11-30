@@ -9,7 +9,6 @@ import java.util.Map;
 
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
@@ -17,6 +16,7 @@ import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 
 /**
  * Class to convert the {@link DemographicDTO} into MOSIP ID JSON format
@@ -101,8 +101,8 @@ public class JSONConverter {
 			}
 
 		} catch (NoSuchFieldException | SecurityException exception) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_ID_JSON_ERROR.getErrorCode(),
-					RegistrationExceptions.REG_ID_JSON_ERROR.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_ID_JSON_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_ID_JSON_ERROR.getErrorMessage());
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			throw regBaseCheckedException;
 		} catch (RuntimeException exception) {
@@ -132,8 +132,8 @@ public class JSONConverter {
 
 			languagesSpecificObjects.add(languagesSpecificObject);
 		} catch (IllegalArgumentException | IllegalAccessException exception) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_ID_JSON_FIELD_ACCESS_ERROR.getErrorCode(),
-					RegistrationExceptions.REG_ID_JSON_FIELD_ACCESS_ERROR.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_ID_JSON_FIELD_ACCESS_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_ID_JSON_FIELD_ACCESS_ERROR.getErrorMessage());
 		} catch (RuntimeException exception) {
 			throw new RegBaseUncheckedException(RegistrationConstants.ID_JSON_FIELD_ACCESS_EXCEPTION,
 					exception.getLocalizedMessage());

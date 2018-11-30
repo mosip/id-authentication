@@ -21,7 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.GPSUtill;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -60,7 +61,7 @@ public class GPSUtillTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSUtill#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -76,7 +77,7 @@ public class GPSUtillTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSUtill#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -92,7 +93,7 @@ public class GPSUtillTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSUtill#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */

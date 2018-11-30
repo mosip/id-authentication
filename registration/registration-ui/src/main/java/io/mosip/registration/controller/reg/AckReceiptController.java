@@ -20,7 +20,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -29,6 +28,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
@@ -171,8 +171,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 					byteArrayOutputStream);
 			acknowledgement = byteArrayOutputStream.toByteArray();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
-					RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
 		}
 
 		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);

@@ -1,4 +1,4 @@
-package io.mosip.registration.manager.impl;
+package io.mosip.registration.jobs.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.entity.SyncJobDef;
-import io.mosip.registration.manager.JobManager;
+import io.mosip.registration.jobs.JobManager;
 
 @Component
 public class JobManagerImpl implements JobManager {

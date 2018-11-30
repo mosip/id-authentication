@@ -20,7 +20,6 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
@@ -28,6 +27,7 @@ import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import javafx.collections.FXCollections;
@@ -143,8 +143,8 @@ public class PacketUploadController extends BaseController {
 					APPLICATION_ID, "Error while Synching packets to the server");
 			if (e instanceof RegBaseUncheckedException) {
 
-				throw new RegBaseCheckedException(RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
-						RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 			} else {
 				syncErrorStatus = e.getMessage();
 			}

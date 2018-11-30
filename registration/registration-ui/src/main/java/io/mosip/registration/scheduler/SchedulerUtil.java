@@ -2,8 +2,8 @@ package io.mosip.registration.scheduler;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_STATE_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_ARG_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_STATE_EXCEPTION;
 
 import java.io.IOException;
 import java.math.BigInteger;

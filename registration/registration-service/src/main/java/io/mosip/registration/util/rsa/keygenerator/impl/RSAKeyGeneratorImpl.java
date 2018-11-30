@@ -1,7 +1,7 @@
 package io.mosip.registration.util.rsa.keygenerator.impl;
 
-import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_ERROR_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 
 import java.io.File;
 import java.security.KeyPair;

@@ -17,8 +17,8 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.manager.JobManager;
-import io.mosip.registration.manager.SyncManager;
+import io.mosip.registration.jobs.JobManager;
+import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**
