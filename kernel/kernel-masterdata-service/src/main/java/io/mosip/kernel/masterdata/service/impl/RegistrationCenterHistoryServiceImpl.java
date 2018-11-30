@@ -67,7 +67,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
 			registrationCenterDto
-					.setRegistrationCenters(objectMapperUtil.mapAll(registrationCenters, RegistrationCenterDto.class));
+					.setRegistrationCenters(objectMapperUtil.mapAllNew(registrationCenters, RegistrationCenterDto.class));
 		}
 		return registrationCenterDto;
 	}
