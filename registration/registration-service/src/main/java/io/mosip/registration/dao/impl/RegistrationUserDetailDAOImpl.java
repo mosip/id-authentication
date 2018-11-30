@@ -75,4 +75,9 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 				APPLICATION_NAME, APPLICATION_ID, "Updated Login params successfully");
 
 	}
+	
+	public List<RegistrationUserDetail> getAllActiveUsers() {
+		return registrationUserDetailRepository.findByIsActiveTrue();
+		
+	}
 }

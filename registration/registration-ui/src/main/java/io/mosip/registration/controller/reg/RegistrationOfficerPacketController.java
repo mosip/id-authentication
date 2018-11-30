@@ -1,11 +1,9 @@
 package io.mosip.registration.controller.reg;
 
-import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -23,8 +20,6 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.template.TemplateService;
-import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,14 +50,6 @@ public class RegistrationOfficerPacketController extends BaseController {
 
 	@Autowired
 	private AckReceiptController ackReceiptController;
-
-	@Autowired
-	private TemplateService templateService;
-	
-	@Autowired
-	private TemplateManagerBuilder templateManagerBuilder; 
-
-	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
@@ -111,13 +98,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 
 		try {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
-			ackReceiptController.setRegistrationData(registrationDTO);
-
-			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			Writer writer = templateGenerator.generateTemplate(ackTemplateText, registrationDTO, templateManagerBuilder);
-			ackReceiptController.setStringWriter(writer);
-
-			
+			ackReceiptController.setRegistrationData(registrationDTO);			
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
 			LoginController.getScene().setRoot(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {

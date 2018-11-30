@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -18,6 +19,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,6 +65,9 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	private ImageView availableIcon;
 
 	private static Timer timer;
+	
+	@Autowired
+	PreRegistrationDataSyncService preRegistrationDataSyncService;
 
 	/**
 	 * Mapping Registration Officer details
@@ -238,6 +243,11 @@ public class RegistrationOfficerDetailsController extends BaseController {
 
 	public static Timer getTimer() {
 		return timer;
+	}
+	
+	@FXML
+	public void downloadPreRegData(ActionEvent event) {
+		preRegistrationDataSyncService.getPreRegistrationIds();
 	}
 
 }

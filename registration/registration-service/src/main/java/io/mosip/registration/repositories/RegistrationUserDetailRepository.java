@@ -34,5 +34,7 @@ public interface RegistrationUserDetailRepository extends BaseRepository<Registr
 	 * @return the list of {@link RegistrationUserDetail}
 	 */	
 	List<RegistrationUserDetail> findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(String cntrId, String statusCode,String userId);
-
+	
+	
+	List<RegistrationUserDetail> findByIsActiveTrue();
 }

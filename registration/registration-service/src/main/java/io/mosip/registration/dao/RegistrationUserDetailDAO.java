@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.util.List;
+
 import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
@@ -26,5 +28,7 @@ public interface RegistrationUserDetailDAO {
 	 *            user details
 	 */
 	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+	
+	List<RegistrationUserDetail> getAllActiveUsers();
 
 }

@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -324,5 +325,9 @@ public class LoginServiceImpl implements LoginService {
 		response.setErrorResponseDTOs(errorResponses);
 		return response;
 
+	}
+
+	public List<RegistrationUserDetail> getAllActiveUsers() {
+		return registrationUserDetailDAO.getAllActiveUsers();
 	}
 }

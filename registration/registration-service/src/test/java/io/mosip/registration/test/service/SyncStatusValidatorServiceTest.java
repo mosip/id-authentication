@@ -29,6 +29,7 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
@@ -56,6 +57,8 @@ public class SyncStatusValidatorServiceTest {
 
 	@Mock
 	private AuditFactory auditFactory;
+	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -76,6 +79,8 @@ public class SyncStatusValidatorServiceTest {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		
+		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test
@@ -127,7 +132,7 @@ public class SyncStatusValidatorServiceTest {
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
 		assertEquals(
-				"Your client machine’s location is outside the registration centre. Please note that registration can be done only from within the registration centre",
+				"Your client machine location is outside the registration center. Please note that registration can be done only from within the registration centre",
 				errorResponseDTOs.get(3).getMessage());
 
 	}
@@ -218,7 +223,7 @@ public class SyncStatusValidatorServiceTest {
 				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again.",
+		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again",
 				errorResponseDTOs.get(3).getMessage());
 
 	}

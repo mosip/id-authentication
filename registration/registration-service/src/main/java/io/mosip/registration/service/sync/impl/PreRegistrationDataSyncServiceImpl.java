@@ -2,10 +2,13 @@ package io.mosip.registration.service.sync.impl;
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +46,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
            // TODO prepare required DTO to send through API
            PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
-           /*Timestamp reqTime=null;
+          Timestamp reqTime=null;
            try {
                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                   dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));           
@@ -52,9 +55,9 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
                   reqTime = new Timestamp(parsedDate.getTime());
                   System.out.println();
                   } catch(Exception e) { e.printStackTrace();
-                  }*/
+                  }
            
-           Timestamp reqTime = new Timestamp(System.currentTimeMillis());
+           //Timestamp reqTime = new Timestamp(System.currentTimeMillis());
            preRegistrationDataSyncDTO.setId(getId());
            preRegistrationDataSyncDTO.setReqTime(reqTime);
            preRegistrationDataSyncDTO.setVer(getVer());
@@ -134,7 +137,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
      }
 
      private Timestamp getToDate(Timestamp fromDate) {
-           /*
+           
            Timestamp toDate=null;
            try {
                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -144,14 +147,14 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
                   toDate = new Timestamp(parsedDate.getTime());
                   } catch(Exception e) { e.printStackTrace();
                   }
-           return toDate;*/
+           return toDate;
            
-           Calendar cal = Calendar.getInstance();
-           cal.setTime(fromDate);
-           cal.add(Calendar.DATE, noOfDays);
-           
-           //To-Date
-           return new Timestamp(cal.getTime().getTime());
+//           Calendar cal = Calendar.getInstance();
+//           cal.setTime(fromDate);
+//           cal.add(Calendar.DATE, noOfDays);
+//           
+//           //To-Date
+//           return new Timestamp(cal.getTime().getTime());
 
      }
      

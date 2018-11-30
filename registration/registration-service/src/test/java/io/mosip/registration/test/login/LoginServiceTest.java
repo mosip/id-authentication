@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +29,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
@@ -87,11 +91,17 @@ public class LoginServiceTest {
 	@Mock
 	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
 	
-	@Test
-	public void getModesOfLoginTest() {
-
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	@Before
+	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		applicationContext.setApplicationMessagesBundle();
+	}
+	
+	@Test
+	public void getModesOfLoginTest() {
 
 		RegistrationAppLoginMethod registrationAppLoginMethod = new RegistrationAppLoginMethod();
 		RegistrationAppLoginMethodId registrationAppLoginMethodID = new RegistrationAppLoginMethodId();
@@ -111,9 +121,6 @@ public class LoginServiceTest {
 	@Test
 	public void getUserDetailTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
@@ -127,9 +134,6 @@ public class LoginServiceTest {
 
 	@Test
 	public void getRegistrationCenterDetailsTest() {
-
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationCenter registrationCenter = new RegistrationCenter();
 
@@ -145,9 +149,6 @@ public class LoginServiceTest {
 
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
-
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationScreenAuthorization registrationScreenAuthorization = new RegistrationScreenAuthorization();
 		RegistrationScreenAuthorizationId registrationScreenAuthorizationId = new RegistrationScreenAuthorizationId();

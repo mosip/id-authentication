@@ -128,24 +128,21 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 				if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 					// if FP data fetched then retrieve the user specific detail from db.
-					AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-					List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<FingerprintDetailsDTO>();
-					FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
+					FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
 					fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 					fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 					authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 					authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
-					AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-							.getValidator("Fingerprint");
-					/*
-					 * RegistrationUserDetail registrationUserDetail = userDataService
-					 * .getUserDetail("mosip");
-					 * 
-					 * boolean isValidFingerPrint =
-					 * registrationUserDetail.getUserBiometric().stream() .anyMatch(bio ->
-					 * fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
-					 * bio.getBioMinutia()) > fingerPrintScore);
-					 */
+					AuthenticationValidatorImplementation authenticationValidatorImplementation=validator.getValidator("Fingerprint");
+					authenticationValidatorImplementation.setFingerPrintType("single");
+					/*RegistrationUserDetail registrationUserDetail = userDataService
+							.getUserDetail("mosip");
+
+					boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
+							.anyMatch(bio -> fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
+									bio.getBioMinutia()) > fingerPrintScore);*/
 
 					if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
 						baseController.getFingerPrintStatus(primaryStage);
