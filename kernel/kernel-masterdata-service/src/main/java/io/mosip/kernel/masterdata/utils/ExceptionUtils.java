@@ -1,11 +1,12 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * This class is used to get the Exception related functionalities.
  * 
+ * @author Urvil Joshi
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
@@ -22,23 +23,10 @@ public final class ExceptionUtils {
 	 *            is of type {@link Throwable}
 	 * @return the root cause message.
 	 */
-	public static String getRootCauseMessage(Throwable ex) {
-		String detailedMessage = null;
-
-		final List<Throwable> list = new ArrayList<>();
-
-		while (!EmptyCheckUtils.isNullEmpty(ex) && !list.contains(ex)) {
-			list.add(ex);
-			ex = ex.getCause();
-		}
-
-		Throwable rootCause = list.isEmpty() ? null : list.get(list.size() - 1);
-
-		rootCause = rootCause == null ? ex : rootCause;
-
-		detailedMessage = rootCause.getMessage();
-
-		return detailedMessage;
+	public static String parseException(Throwable ex) {
+		Optional<Throwable> cause = Stream.iterate(ex, Throwable::getCause)
+				.filter(element -> element.getCause() == null).findFirst();
+		return cause.isPresent() ? cause.get().getMessage() : ex.getMessage();
 	}
 
 }

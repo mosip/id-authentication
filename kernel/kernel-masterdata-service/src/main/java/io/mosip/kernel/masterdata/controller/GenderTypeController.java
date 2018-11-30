@@ -1,14 +1,20 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.getresponse.GenderRequestDto;
+import io.mosip.kernel.masterdata.dto.GenderTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 
 /**
@@ -37,12 +43,12 @@ public class GenderTypeController {
 	 * Get API to fetch all gender types for a particular language code
 	 * 
 	 * @param langCode
-	 *            the laguage code whose gender is to be returned
+	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
 	@GetMapping(value = "/gendertype/{langcode}")
 	public GenderTypeResponseDto getGenderBylangCode(@PathVariable("langcode") String langCode) {
-		return genderTypeService.getGenderTypeByLanguageCode(langCode);
+		return genderTypeService.getGenderTypeByLangCode(langCode);
 	}
 
 	/**
@@ -53,8 +59,10 @@ public class GenderTypeController {
 	 * @return added row of gender type
 	 */
 	@PostMapping("/gendertype")
-	public GenderTypeResponseDto saveGenderType(@RequestBody GenderRequestDto genderRequestDto) {
-		return genderTypeService.saveGenderType(genderRequestDto);
+	public ResponseEntity<CodeAndLanguageCodeID> createGenderType(
+			@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
+		return new ResponseEntity<>(genderTypeService.createGenderType(gender), HttpStatus.CREATED);
+
 	}
 
 }

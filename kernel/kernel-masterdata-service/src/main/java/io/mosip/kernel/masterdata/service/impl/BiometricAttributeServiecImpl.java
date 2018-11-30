@@ -10,13 +10,13 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricAttributeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeRequestDto;
-import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -54,7 +54,8 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
+					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (attributes != null && !attributes.isEmpty()) {
 			attributesDto = mapperUtil.mapAll(attributes, BiometricAttributeDto.class);
@@ -67,20 +68,20 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 	}
 
 	@Override
-	public BioTypeCodeAndLangCodeAndAttributeCode createBiometricAttribute(
-			BiometricAttributeRequestDto biometricAttribute) {
-		BiometricAttribute entity = metaUtils.setCreateMetaData(biometricAttribute.getBiometricAttribute(),
-				BiometricAttribute.class);
+	public CodeAndLanguageCodeID createBiometricAttribute(BiometricAttributeDto biometricAttribute) {
+		BiometricAttribute entity = metaUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
 		try {
 			entity = biometricAttributeRepository.create(entity);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(), e.getErrorText());
+					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
+					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
-		BioTypeCodeAndLangCodeAndAttributeCode bioTypeCodeAndLangCodeAndAttributeCode = dataMapper.map(entity,
-				BioTypeCodeAndLangCodeAndAttributeCode.class, true, null, null, true);
+		CodeAndLanguageCodeID codeAndLanguageCodeID = dataMapper.map(entity, CodeAndLanguageCodeID.class, true, null,
+				null, true);
 
-		return bioTypeCodeAndLangCodeAndAttributeCode;
+		return codeAndLanguageCodeID;
 	}
 
 }

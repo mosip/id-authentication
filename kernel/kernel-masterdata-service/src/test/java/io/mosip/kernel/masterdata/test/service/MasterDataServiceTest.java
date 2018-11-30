@@ -653,7 +653,7 @@ public class MasterDataServiceTest {
 	public void addApplicationDataSuccess() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.addApplicationData(applicationRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.createApplication(applicationRequestDto);
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
 				codeAndLanguageCodeId.getCode());
 		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
@@ -663,7 +663,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void addApplicationDataFetchException() {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		applicationService.addApplicationData(applicationRequestDto);
+		applicationService.createApplication(applicationRequestDto);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1260,7 +1260,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatSuccess() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
 
-		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 		assertEquals(templateFileFormat.getCode(), codeAndLanguageCodeId.getCode());
 		assertEquals(templateFileFormat.getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
@@ -1269,7 +1269,7 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatInsertExceptionTest() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 	}
 	
 	// ----------------------------------DocumentTypeServiceTest-------------------------

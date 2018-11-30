@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.TemplateTypeErrorCode;
-import io.mosip.kernel.masterdata.dto.TemplateTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.entity.TemplateType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -34,16 +35,16 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	private TemplateTypeRepository templateTypeRepository;
 
 	@Override
-	public CodeAndLanguageCodeID createTemplateType(TemplateTypeRequestDto tempalteType) {
-		TemplateType entity = metaUtils.setCreateMetaData(tempalteType.getRequest().getTemplateTypeDto(),
-				TemplateType.class);
+	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType) {
+		TemplateType entity = metaUtils.setCreateMetaData(tempalteType, TemplateType.class);
 		TemplateType templateType;
 		try {
 			templateType = templateTypeRepository.create(entity);
 
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText());
+					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();

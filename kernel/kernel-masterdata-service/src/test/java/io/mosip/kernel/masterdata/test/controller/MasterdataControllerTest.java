@@ -477,7 +477,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		Mockito.when(applicationService.addApplicationData(Mockito.any()))
+		Mockito.when(applicationService.createApplication(Mockito.any()))
 				.thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
@@ -739,7 +739,7 @@ public class MasterdataControllerTest {
 	// -----------------------------TemplateFileFormatControllerTest------------------------
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
-		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+		Mockito.when(templateFileFormatService.createTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-11-29T09:32:01.911Z\",\n" + "  \"request\": {\n"
