@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.service.impl.indauth.service.bio;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +13,11 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
+import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
