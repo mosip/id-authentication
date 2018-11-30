@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
 import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 
 /**
@@ -60,7 +60,7 @@ public class MachineController {
 	 */
 
 	@GetMapping(value = "/{langcode}")
-	public MachineDetailResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
+	public MachineResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
 		return machineService.getMachineDetailLang(langCode);
 
 	}
@@ -72,7 +72,7 @@ public class MachineController {
 	 */
 
 	@GetMapping
-	public MachineDetailResponseDto getMachineDetailAll() {
+	public MachineResponseDto getMachineDetailAll() {
 		return machineService.getMachineDetailAll();
 
 	}

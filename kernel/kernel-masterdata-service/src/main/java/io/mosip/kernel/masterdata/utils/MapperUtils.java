@@ -28,11 +28,11 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 @Component
 public class MapperUtils {
@@ -91,12 +91,24 @@ public class MapperUtils {
 		return responseDto;
 	}
 
+	public List<RegistrationCenterDto> mapRegistrationCenter(RegistrationCenter entity) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(entity, dto, new RegistrationCenterConverter());
+			dataMapperImpl.map(entity, dto, true, null, null, true);
+			responseDto.add(dto);
+		
+
+		return responseDto;
+	}
+	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
 		holidays.forEach(holiday -> {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
-			HolidayId holidayId = holiday.getHolidayId();
+			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
 			dto.setHolidayId(String.valueOf(holidayId.getId()));
 			dto.setHolidayDate(String.valueOf(date));
@@ -196,8 +208,8 @@ public class MapperUtils {
 			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
 			machineHistoryDto.setId(machineHistory.getId());
 			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
-			machineHistoryDto.setCreatedtime(machineHistory.getCreatedtimes());
-			machineHistoryDto.setDeletedtime(machineHistory.getDeletedtimes());
+			machineHistoryDto.setCreatedtime(machineHistory.getCreatedDateTime());
+			machineHistoryDto.setDeletedtime(machineHistory.getDeletedDateTime());
 			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
 			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
 			machineHistoryDto.setIsActive(machineHistory.getIsActive());
@@ -208,7 +220,7 @@ public class MapperUtils {
 			machineHistoryDto.setName(machineHistory.getName());
 			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
 			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
-			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedtimes());
+			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedDateTime());
 			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
 			machineHistoryDtoList.add(machineHistoryDto);
 

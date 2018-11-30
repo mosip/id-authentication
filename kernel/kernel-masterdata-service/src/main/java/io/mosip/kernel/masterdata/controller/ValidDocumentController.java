@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.ValidDocumentRequestDto;
-import io.mosip.kernel.masterdata.entity.ValidDocumentId;
+import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 
 /**
@@ -25,7 +25,7 @@ public class ValidDocumentController {
 	ValidDocumentService documentService;
 
 	@PostMapping("/validdocuments")
-	public ResponseEntity<ValidDocumentId> createValidDocument(@RequestBody ValidDocumentRequestDto document) {
+	public ResponseEntity<ValidDocumentID> createValidDocument(@RequestBody ValidDocumentRequestDto document) {
 		return new ResponseEntity<>(documentService.insertValidDocument(document), HttpStatus.CREATED);
 	}
 }

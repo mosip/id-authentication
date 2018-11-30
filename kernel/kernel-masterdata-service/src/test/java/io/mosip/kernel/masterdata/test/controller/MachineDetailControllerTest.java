@@ -16,8 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.masterdata.controller.MachineController;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,10 +68,10 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
-		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
+		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
 		Mockito.when(macService.getMachineDetailAll()).thenReturn(machineDetailResponseDto);
-		MachineDetailResponseDto actual = machineDetailController.getMachineDetailAll();
+		MachineResponseDto actual = machineDetailController.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -79,7 +79,7 @@ public class MachineDetailControllerTest {
 	
 	@Test
 	public void getMachineDetailLangTest() {
-		MachineDetailResponseDto machineDetailResponseDto =  new MachineDetailResponseDto();
+		MachineResponseDto machineDetailResponseDto =  new MachineResponseDto();
 		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
 		MachineDetailDto machineDetailDto = new MachineDetailDto();
 		machineDetailDto.setId("1000");
@@ -92,7 +92,7 @@ public class MachineDetailControllerTest {
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
 		Mockito.when(macService.getMachineDetailLang(Mockito.anyString()))
 				.thenReturn(machineDetailResponseDto);
-		MachineDetailResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
+		MachineResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);

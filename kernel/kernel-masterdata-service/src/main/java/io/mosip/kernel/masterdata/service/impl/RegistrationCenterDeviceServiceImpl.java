@@ -42,16 +42,14 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
-			// enter data into RegistrationCenterDevice
 			RegistrationCenterDevice registrationCenterDevice = metadataUtils.setCreateMetaData(requestDto.getRequest(),
 					RegistrationCenterDevice.class);
 			RegistrationCenterDevice savedRegistrationCenterDevice = registrationCenterDeviceRepository
 					.create(registrationCenterDevice);
 
-			// enter data into RegistrationCenterDeviceHistory
 			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = metadataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDevice.class);
-			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedtimes());
+			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
 
 			registrationCenterDeviceDto = mapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),
@@ -63,7 +61,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()
 							+ ": " + ExceptionUtils.parseException(e));
 		}
-
+ 
 		return registrationCenterDeviceDto;
 	}
 

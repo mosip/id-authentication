@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.ValidDocumentRequestDto;
-import io.mosip.kernel.masterdata.entity.ValidDocumentId;
+import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 
 /**
  * This interface contains methods to create valid document.
@@ -16,7 +16,7 @@ public interface ValidDocumentService {
 	 * 
 	 * @param document
 	 *            the dto.
-	 * @return {@link ValidDocumentId}
+	 * @return {@link ValidDocumentID}
 	 */
-	public ValidDocumentId insertValidDocument(ValidDocumentRequestDto document);
+	public ValidDocumentID insertValidDocument(ValidDocumentRequestDto document);
 }

@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.TitleResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 
 /**
  * Service class to fetch titles from master db

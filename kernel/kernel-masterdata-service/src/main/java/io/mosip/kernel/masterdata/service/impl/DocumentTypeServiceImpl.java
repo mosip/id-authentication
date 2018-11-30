@@ -11,8 +11,8 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DocumentType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
@@ -73,7 +73,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.DocumentTypeRequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeId addDocumentTypes(DocumentTypeRequestDto documentTypeDto) {
+	public CodeAndLanguageCodeID addDocumentTypes(DocumentTypeRequestDto documentTypeDto) {
 		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest().getDocumentType(),
 				DocumentType.class);
 		DocumentType documentType;
@@ -85,7 +85,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),e.getErrorText());
 		}
 
-		CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
 
 		return codeLangCodeId;

@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +40,7 @@ public class RegistrationCenterMachineDeviceHistory extends BaseEntity implement
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")),
 			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")) })
-	private RegistrationCenterMachineDeviceHistoryPk registrationCenterMachineDeviceHistoryPk;
+	private RegistrationCenterMachineDeviceID registrationCenterMachineDeviceHistoryPk;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;

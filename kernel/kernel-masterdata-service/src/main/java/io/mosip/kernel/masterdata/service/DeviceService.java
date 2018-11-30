@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Device Details

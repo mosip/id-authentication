@@ -17,6 +17,8 @@ public class BiometricAttributeDto {
 	private String code;
 	private String name;
 	private String description;
+	private String biometricTypeCode;
+	private String langCode;
 	private Boolean isActive;
 
 }

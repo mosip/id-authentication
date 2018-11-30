@@ -11,10 +11,10 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
@@ -164,7 +164,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	}
 
 	@Override
-	public CodeAndLanguageCodeId addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
+	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
 		BiometricType entity = metaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
 				BiometricType.class);
 		BiometricType biometricType;
@@ -174,7 +174,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(biometricType, codeAndLanguageCodeId, true, null, null, true);
 		return codeAndLanguageCodeId;
 	}

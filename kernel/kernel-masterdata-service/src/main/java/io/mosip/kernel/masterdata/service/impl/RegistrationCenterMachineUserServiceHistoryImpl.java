@@ -11,7 +11,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryE
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -55,7 +55,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
 					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
-							new RegistrationCenterUserMachineHistoryId(registrationCenterId, userId, machineId),
+							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId),
 							LocalDateTime.parse(effectiveTimestamp));
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(

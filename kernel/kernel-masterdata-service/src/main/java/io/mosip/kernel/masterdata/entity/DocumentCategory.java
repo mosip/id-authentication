@@ -11,6 +11,7 @@ import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(CodeAndLanguageCodeId.class)
+@IdClass(CodeAndLanguageCodeID.class)
 public class DocumentCategory extends BaseEntity implements Serializable {
 
 	/**
