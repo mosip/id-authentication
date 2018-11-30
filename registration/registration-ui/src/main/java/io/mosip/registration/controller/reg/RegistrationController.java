@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
@@ -295,9 +294,6 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane authenticationTitlePane;
-
-	@Autowired
-	private RegistrationOfficerPacketController registrationOfficerPacketController;
 
 	@FXML
 	private void initialize() {
@@ -676,7 +672,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1553,11 +1550,15 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	public void submitRegistration() {
-		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
+	public AnchorPane getBiometricsPane() {
+		return biometricsPane;
 	}
 
+	public void setBiometricsPane(AnchorPane biometricsPane) {
+		this.biometricsPane = biometricsPane;
+	}
+
+	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
 			setEditPage(true);
@@ -1569,18 +1570,9 @@ public class RegistrationController extends BaseController {
 			biometricTitlePane.setDisable(true);
 			demoGraphicTitlePane.setDisable(true);
 			authenticationTitlePane.setDisable(false);
-
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
-	}
-
-	public AnchorPane getBiometricsPane() {
-		return biometricsPane;
-	}
-
-	public void setBiometricsPane(AnchorPane biometricsPane) {
-		this.biometricsPane = biometricsPane;
 	}
 }

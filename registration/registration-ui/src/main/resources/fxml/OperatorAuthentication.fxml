@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.OperatorAuthenticationController">
+   <children>
+      <AnchorPane fx:id="temporaryLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+         <children>
+           	<Button layoutX="709.0" layoutY="99.0" mnemonicParsing="false" onAction="#submitRegistration" text="Submit" />
+            <Label layoutX="58.0" layoutY="41.0" text="To-Do" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="pwdBasedROLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+         <children>
+            <Button layoutX="385.0" layoutY="236.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
+            <TextField fx:id="username" layoutX="314.0" layoutY="125.0" promptText="Username" />
+            <TextField fx:id="password" layoutX="314.0" layoutY="177.0" promptText="Password" />
+            <Label layoutX="388.0" layoutY="86.0" text="RO Login" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="otpBasedROLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+         <children>
+            <Button layoutX="313.0" layoutY="217.0" mnemonicParsing="false" text="Get OTP" />
+            <Label layoutX="388.0" layoutY="56.0" text="RO Login" />
+            <Button layoutX="456.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
+            <TextField layoutX="313.0" layoutY="108.0" promptText="Username" />
+            <TextField layoutX="313.0" layoutY="159.0" promptText="Enter OTP" />
+            <Label fx:id="otpValidity" layoutX="313.0" layoutY="267.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="fingerprintBasedROLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+         <children>
+            <Button layoutX="730.0" layoutY="463.0" mnemonicParsing="false" onAction="#submitRegistration" text="Submit" />
+            <Label layoutX="36.0" layoutY="32.0" text="RO Fingerprint Authentication">
+            	<font>
+					<Font size="13.0" />
+				</font>
+			</Label>
+            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="36.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
+            	<image>
+					<Image url="@../images/fingerprint.jpg" />
+				</image>
+			</ImageView>
+            <Button layoutX="177.0" layoutY="146.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
