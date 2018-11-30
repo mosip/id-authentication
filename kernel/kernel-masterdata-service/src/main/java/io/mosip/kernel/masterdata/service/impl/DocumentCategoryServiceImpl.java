@@ -45,10 +45,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private DocumentCategoryRepository documentCategoryRepository;
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
-
-	// private List<DocumentCategoryDto> documentCategoryDtoList = new
-	// ArrayList<>();
-
+	
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
 
 	/**
@@ -187,7 +184,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * DocumentCategoryRequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentCategoriesData(RequestDto<DocumentCategoryDto> category) {
+	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
 		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest().getDocumentCategory(),
 				DocumentCategory.class);
 		DocumentCategory documentCategory;

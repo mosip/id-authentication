@@ -38,7 +38,7 @@ public class DocumentCategoryController {
 	 * @return All Document categories
 	 */
 	@GetMapping("/documentcategories")
-	public DocumentCategoryResponseDto fetchAllDocumentCategory() {
+	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
 
@@ -48,8 +48,7 @@ public class DocumentCategoryController {
 	 * @return All Document categories of a specific language
 	 */
 	@GetMapping("/documentcategories/{langcode}")
-	public DocumentCategoryResponseDto fetchAllDocumentCategoryUsingLangCode(
-			@PathVariable("langcode") String langCode) {
+	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
 
@@ -59,22 +58,23 @@ public class DocumentCategoryController {
 	 * @return A Document category
 	 */
 	@GetMapping("/documentcategories/{code}/{langcode}")
-	public DocumentCategoryResponseDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("code") String code,
+	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
 	}
 
 	/**
-	 * This method creates document categories based on list provided.
+	 * API to create document category
 	 * 
 	 * @param category
-	 *            the request dto.
-	 * @return {@link PostResponseDto}
+	 *            The request DocumentCategory Dto.
+	 *            
+	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
 	 */
 	@PostMapping("/documentcategories")
-	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategories(
+	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.createDocumentCategoriesData(category), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
 
 	}
 }
