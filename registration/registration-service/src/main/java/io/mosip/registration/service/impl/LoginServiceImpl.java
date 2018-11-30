@@ -26,9 +26,9 @@ import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
-import io.mosip.registration.dto.OtpGeneratorResponseDto;
-import io.mosip.registration.dto.OtpValidatorResponseDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpGeneratorResponseDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -176,29 +176,29 @@ public class LoginServiceImpl implements LoginService {
 
           // Create Response to return to UI layer
           ResponseDTO response = new ResponseDTO();
-          OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-          OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
+          OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+          OtpGeneratorResponseDTO otpGeneratorResponseDTO = new OtpGeneratorResponseDTO();
 
           SuccessResponseDTO successResponse = null;
 
           // prepare otpGeneratorRequestDto with specified key(EO Username) obtained from
-          otpGeneratorRequestDto.setKey(key);
+          otpGeneratorRequestDTO.setKey(key);
 
           try {
 
                  // obtain otpGeneratorResponseDto from serviceDelegateUtil
-                 otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
-                              .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
-                 if (otpGeneratorResponseDto != null && otpGeneratorResponseDto.getOtp() != null) {
+                 otpGeneratorResponseDTO = (OtpGeneratorResponseDTO) serviceDelegateUtil
+                              .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDTO);
+                 if (otpGeneratorResponseDTO != null && otpGeneratorResponseDTO.getOtp() != null) {
 
                        // create Success Response
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
                        successResponse
-                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDTO.getOtp());
 
                        Map<String, Object> otherAttributes = new HashMap<String, Object>();
-                     otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
+                     otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDTO);
 
                         successResponse.setOtherAttributes(otherAttributes);
                         response.setSuccessResponseDTO(successResponse);
@@ -243,7 +243,7 @@ public class LoginServiceImpl implements LoginService {
           // Create Response to Return to UI layer
           ResponseDTO response = new ResponseDTO();
           SuccessResponseDTO successResponse;
-          OtpValidatorResponseDto otpValidatorResponseDto = null;
+          OtpValidatorResponseDTO otpValidatorResponseDTO = null;
 
           // prepare request params to pass through URI
           Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -252,9 +252,9 @@ public class LoginServiceImpl implements LoginService {
 
           try {
                  // Obtain otpValidatorResponseDto from service delegate util
-                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
-                 if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
-                              && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
+                 otpValidatorResponseDTO = (OtpValidatorResponseDTO) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
+                 if (otpValidatorResponseDTO != null && otpValidatorResponseDTO.getStatus() != null
+                              && otpValidatorResponseDTO.getStatus().equalsIgnoreCase("true")) {
 
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();

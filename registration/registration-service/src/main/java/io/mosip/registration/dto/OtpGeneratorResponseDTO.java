@@ -1,6 +1,6 @@
 package io.mosip.registration.dto;
 
-public class OtpGeneratorResponseDto {
+public class OtpGeneratorResponseDTO {
 	
 	private String otp;
 

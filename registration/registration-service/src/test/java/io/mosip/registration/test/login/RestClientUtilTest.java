@@ -18,8 +18,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
-import io.mosip.registration.dto.OtpGeneratorResponseDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpGeneratorResponseDTO;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
@@ -36,14 +36,14 @@ public class RestClientUtilTest {
 	
 	@Test
 	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorResponseDto generatorResponseDto=new OtpGeneratorResponseDto();
+		OtpGeneratorResponseDTO generatorResponseDto=new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");
-		OtpGeneratorRequestDto otpGeneratorRequestDto=new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("tutuy");
-		HttpEntity<?> httpEntity=new HttpEntity<OtpGeneratorRequestDto>(otpGeneratorRequestDto);
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO=new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("tutuy");
+		HttpEntity<?> httpEntity=new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
 		URI uri=new URI("http://localhost:8080/otpmanager/otps");
 		RequestHTTPDTO requestHTTPDTO=new RequestHTTPDTO();
-		requestHTTPDTO.setClazz(OtpGeneratorResponseDto.class);
+		requestHTTPDTO.setClazz(OtpGeneratorResponseDTO.class);
 		
 		requestHTTPDTO.setHttpEntity(httpEntity);
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);

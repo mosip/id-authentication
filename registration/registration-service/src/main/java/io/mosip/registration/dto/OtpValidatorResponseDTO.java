@@ -8,7 +8,7 @@ package io.mosip.registration.dto;
  * @since 1.0.0
  * 
  */
-public class OtpValidatorResponseDto {
+public class OtpValidatorResponseDTO {
 	
 	/**
 	 * Variable to hold the otp response status.

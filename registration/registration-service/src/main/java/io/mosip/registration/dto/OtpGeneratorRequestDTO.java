@@ -8,7 +8,7 @@ package io.mosip.registration.dto;
  * @since 1.0.0
  */
 
-public class OtpGeneratorRequestDto {
+public class OtpGeneratorRequestDTO {
 
 	/**
 	 * the key against which the otp needs to be generated.

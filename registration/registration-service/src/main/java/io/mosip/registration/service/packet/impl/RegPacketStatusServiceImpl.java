@@ -94,7 +94,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		requestParamMap.put(RegistrationConstants.PACKET_STATUS_SYNC_URL_PARAMETER, packetIdList);
 
 		try {
-			/** Obtain RegistrationStatusDto from service delegate util */
+			/** Obtain RegistrationStatusDTO from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME,
 					requestParamMap);
 			if (!registrations.isEmpty()) {

@@ -31,9 +31,9 @@ import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
-import io.mosip.registration.dto.OtpGeneratorResponseDto;
-import io.mosip.registration.dto.OtpValidatorResponseDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpGeneratorResponseDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.RegistrationAppLoginMethod;
 import io.mosip.registration.entity.RegistrationAppLoginMethodId;
@@ -172,33 +172,33 @@ public class LoginServiceTest {
 
 	@Test
 	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("yash");
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setOtp("09876");
-		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
-				.thenReturn(otpGeneratorResponseDto);
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("yash");
+		OtpGeneratorResponseDTO otpGeneratorResponseDTO = new OtpGeneratorResponseDTO();
+		otpGeneratorResponseDTO.setOtp("09876");
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenReturn(otpGeneratorResponseDTO);
 
-		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDto.getKey()).getSuccessResponseDTO());
+		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDTO.getKey()).getSuccessResponseDTO());
 
 	}
 
 	@Test
 	public void getOTPFailureResponseTest() throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("ya");
-		OtpGeneratorResponseDto otpGeneratorResponseDto = null;
-		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
-				.thenReturn(otpGeneratorResponseDto);
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("ya");
+		OtpGeneratorResponseDTO otpGeneratorResponseDTO = null;
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenReturn(otpGeneratorResponseDTO);
 
-		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDto.getKey()).getErrorResponseDTOs());
+		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDTO.getKey()).getErrorResponseDTOs());
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void validateOTPSuccessTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
-		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
+		OtpValidatorResponseDTO otpGeneratorRequestDto = new OtpValidatorResponseDTO();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("true");
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
@@ -209,7 +209,7 @@ public class LoginServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void validateOTPFailureTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
-		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
+		OtpValidatorResponseDTO otpGeneratorRequestDto = new OtpValidatorResponseDTO();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("false");
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
