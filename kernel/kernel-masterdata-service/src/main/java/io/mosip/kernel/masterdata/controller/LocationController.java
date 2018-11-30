@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,9 +48,9 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public LocationCodeDto createLocationHierarchyDetails(@RequestBody RequestDto<LocationDto> locationRequestDto) {
+	public LocationCodeDto createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
 		
-		return locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+		return locationHierarchyService.createLocationHierarchy(locationRequestDto);
 	}
 
 	/**

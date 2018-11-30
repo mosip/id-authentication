@@ -270,8 +270,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
 		locationDto.setLanguageCode("HIN");
-		locationDto.setCreatedBy("dfs");
-		locationDto.setUpdatedBy("sdfsd");
+		
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationDto.setCode("KAR");
@@ -280,8 +279,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
-		locationDto.setCreatedBy("dfs");
-		locationDto.setUpdatedBy("sdfsd");
+		
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
@@ -667,14 +665,14 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
+		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	public void testNegativeSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.saveLocationHierarchy(Mockito.any()))
+		Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST))
