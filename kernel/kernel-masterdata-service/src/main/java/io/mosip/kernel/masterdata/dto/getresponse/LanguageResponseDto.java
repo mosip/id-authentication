@@ -1,10 +1,11 @@
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import io.mosip.kernel.masterdata.dto.LanguageDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 
 /**
  * This interface contains methods that provides registration centers details

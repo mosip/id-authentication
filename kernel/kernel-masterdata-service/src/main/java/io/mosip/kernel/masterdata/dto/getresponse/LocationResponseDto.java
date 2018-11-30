@@ -1,7 +1,8 @@
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

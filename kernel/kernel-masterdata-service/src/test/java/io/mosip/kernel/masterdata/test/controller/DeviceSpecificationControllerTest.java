@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.masterdata.controller.DeviceSpecificationController;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 
 @RunWith(MockitoJUnitRunner.class)

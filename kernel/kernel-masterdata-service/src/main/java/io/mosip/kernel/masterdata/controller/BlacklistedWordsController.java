@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsResponse;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeRequestDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.swagger.annotations.ApiOperation;

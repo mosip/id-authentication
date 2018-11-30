@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.GenderRequestDto;
-import io.mosip.kernel.masterdata.dto.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.GenderRequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 
 /**
  * This class contains methods to getch gender types

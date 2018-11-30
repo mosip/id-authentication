@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.masterdata.dto.postresponse;
 
 import java.util.List;
 

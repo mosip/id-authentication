@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
