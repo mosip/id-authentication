@@ -1,7 +1,5 @@
 package io.mosip.kernel.crypto.utils;
 
-import org.apache.commons.codec.binary.Base64;
-
 import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.crypto.dto.CryptoRequestDto;
 import io.mosip.kernel.crypto.dto.KeyManagerSymmetricKeyRequestDto;

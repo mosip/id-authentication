@@ -97,20 +97,15 @@ public class CryptoUtil {
 	 * @param cryptoRequestDto
 	 * @return
 	 */
-	public PublicKey getPublicKey(
-			CryptoRequestDto cryptoRequestDto) {
+	public PublicKey getPublicKey(CryptoRequestDto cryptoRequestDto) {
 		PublicKey key = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptoRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 		        .queryParam("timeStamp", cryptoRequestDto.getTimeStamp())
 		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
-		/*if(cryptoRequestDto.getReferenceId()!=null) {
-			builder.queryParam("referenceId", cryptoRequestDto.getReferenceId());
-		}*/
-		System.out.println("uri"+builder.buildAndExpand(uriParams).toUri());
-		KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
 		try {
+			KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
@@ -133,11 +128,9 @@ public class CryptoUtil {
 		
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
-		System.out.println(keyManagerSymmetricKeyRequestDto.getEncryptedSymmetricKey());
 		KeyManagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerSymmetricKeyResponseDto.class);
 		byte[] symmetricKey=Base64.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
-		return new SecretKeySpec(symmetricKey, 0,
-				symmetricKey.length, symmetricAlgorithmName);
+		return new SecretKeySpec(symmetricKey, 0,symmetricKey.length, symmetricAlgorithmName);
 	}
 
 	/**
