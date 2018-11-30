@@ -1,6 +1,5 @@
 Design - Registration Screen
 
-Table of Contents:
 
 **Functional Background**
 
