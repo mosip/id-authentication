@@ -48,7 +48,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					.create(registrationCenterDevice);
 
 			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = metadataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDevice.class);
+					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
 			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
 

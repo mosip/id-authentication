@@ -58,7 +58,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
 
-			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(savedRegistrationCenterMachineDevice,
+			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					ResponseRrgistrationCenterMachineDeviceDto.class);
 		} catch (DataAccessLayerException e) {
 			new MasterDataServiceException(
