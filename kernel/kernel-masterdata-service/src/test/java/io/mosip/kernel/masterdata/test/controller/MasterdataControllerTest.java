@@ -146,7 +146,7 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"request\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"id\": \"string\", \"request\": { \"code\": \"string\", \"hierarchyLevel\": 0, \"hierarchyName\": \"string\", \"isActive\": true, \"languageCode\": \"str\", \"name\": \"string\", \"parentLocCode\": \"string\" }, \"timestamp\": \"2018-11-30T11:05:49.799Z\", \"ver\": \"string\" }";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -667,7 +667,7 @@ public class MasterdataControllerTest {
 	public void testSaveLocationHierarchy() throws Exception {
 		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isCreated());
 	}
 
 	@Test

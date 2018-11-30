@@ -193,7 +193,11 @@ public class LocationServiceImpl implements LocationService {
 
 		return parentHierarchyList;
 	}
-
+    
+	/**
+	 * Method creates location hierarchy data into the table based on the request parameter sent
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
@@ -201,7 +205,7 @@ public class LocationServiceImpl implements LocationService {
 		Location locationResultantEntity = null;
 		LocationCodeDto locationCodeDto = null;
 
-		location = metaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
+		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
 		} catch (DataAccessLayerException ex) {

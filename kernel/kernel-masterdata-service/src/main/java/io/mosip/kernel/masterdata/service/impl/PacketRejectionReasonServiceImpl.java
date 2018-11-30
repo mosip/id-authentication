@@ -1,21 +1,18 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
-import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -29,7 +26,13 @@ import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-
+/**
+ * 
+ * @author Srinivasan
+ * This class implements PacketRejectionReasonService has all the logics to store and retrieve 
+ * data from database
+ *
+ */
 @Service
 public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonService {
 
@@ -47,7 +50,10 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 	@Autowired
 	DataMapper dataMapper;
-
+   /**
+    * Method fetches all the reasons from Database irrespective of code or languagecode
+    * {@inheritDoc}
+    */
 	@Override
 	public PacketRejectionReasonResponseDto getAllReasons() {
 		List<ReasonCategory> reasonCategories = null;
@@ -74,7 +80,10 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		return reasonResponseDto;
 	}
-
+    /**
+     * Method fetchs reason based on reasonCategorycode and langCode
+     * {@inheritDoc}  
+     */
 	@Override
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,
 			String langCode) {
@@ -103,85 +112,70 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		return reasonResponseDto;
 	}
-
+    /**
+     * Method creates Reason Category data based on the request sent.
+     * {@inheritDoc} 
+     */
 	@Override
-	public PostResponseDto createReasonCategories(RequestDto<List<PostReasonCategoryDto>> reasonRequestDto) {
-		List<ReasonCategory> reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto, ReasonCategory.class);
-		List<CodeAndLanguageCodeID> reasonCategoryIds = new ArrayList<>();
-		PostResponseDto reasonResponseDto = new PostResponseDto();
+	public CodeAndLanguageCodeID createReasonCategories(RequestDto<ReasonCategoryDto> reasonRequestDto) {
+		ReasonCategory reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonCategory.class);
+		
+		
 		CodeAndLanguageCodeID reasonCategoryId = new CodeAndLanguageCodeID();
-		List<ReasonCategory> resultantReasonCategory = null;
-		if (!reasonCategories.isEmpty()) {
+		ReasonCategory resultantReasonCategory = null;
+		
 			try {
 
-				resultantReasonCategory = reasonRepository.saveAll(reasonCategories);
+				resultantReasonCategory = reasonRepository.create(reasonCategories);
 
-			} catch (DataAccessException e) {
+			} catch (DataAccessLayerException e) {
 
 				throw new MasterDataServiceException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
 								+ ExceptionUtils.parseException(e));
 			}
-			if (!resultantReasonCategory.isEmpty()) {
-				resultantReasonCategory.parallelStream().forEach(reasonCategory -> {
+			
 
-					dataMapper.map(reasonCategory, reasonCategoryId, true, null, null, true);
+				dataMapper.map(resultantReasonCategory, reasonCategoryId, true, null, null, true);
 
-					reasonCategoryIds.add(reasonCategoryId);
-				});
-			} else {
-				throw new DataNotFoundException(
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
-			}
-			reasonResponseDto.setResults(reasonCategoryIds);
-		} else {
-			throw new DataNotFoundException(
-					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
-					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
-		}
-		return reasonResponseDto;
+					
+				
+			
+		return reasonCategoryId;
 
 	}
-
+    /**
+     * Method creates ReasonList with the parameter that is sent in Request.
+     * {@inheritDoc}
+     */
 	@Override
-	public ReasonListResponseDto createReasonList(RequestDto<List<ReasonListDto>> reasonRequestDto) {
-		List<ReasonList> reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto, ReasonList.class);
-		List<CodeLangCodeAndRsnCatCodeID> reasonListIds = new ArrayList<>();
-		ReasonListResponseDto reasonResponseDto = new ReasonListResponseDto();
+	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
+		ReasonList reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
+
+		
 		CodeLangCodeAndRsnCatCodeID reasonListId = new CodeLangCodeAndRsnCatCodeID();
-		List<ReasonList> resultantReasonList = null;
-		if (!reasonList.isEmpty()) {
+		ReasonList resultantReasonList;
+		
 			try {
 
-				resultantReasonList = reasonListRepository.saveAll(reasonList);
+				resultantReasonList = reasonListRepository.create(reasonList);
 
-			} catch (DataAccessException e) {
+			} catch (DataAccessLayerException e) {
 				throw new MasterDataServiceException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
 								+ ExceptionUtils.parseException(e));
 			}
-			if (!resultantReasonList.isEmpty()) {
-				resultantReasonList.parallelStream().forEach(reasonListObj -> {
+			
+				
 
-					dataMapper.map(reasonListObj, reasonListId, true, null, null, true);
+					dataMapper.map(resultantReasonList, reasonListId, true, null, null, true);
 
-					reasonListIds.add(reasonListId);
-				});
-			} else {
-				throw new DataNotFoundException(
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
-			}
-		} else {
-			throw new DataNotFoundException(
-					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
-					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
-		}
-		reasonResponseDto.setReasonList(reasonListIds);
-		return reasonResponseDto;
+					
+				
+			
+		return reasonListId;
 
 	}
 
