@@ -17,6 +17,6 @@ import io.mosip.kernel.masterdata.entity.Gender;
 @Repository
 public interface GenderTypeRepository extends BaseRepository<Gender, String> {
 
-	List<Gender> findGenderByLanguageCodeAndIsDeletedFalseOrIsDeletedIsNull(String languageCode);
+	List<Gender> findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 }
