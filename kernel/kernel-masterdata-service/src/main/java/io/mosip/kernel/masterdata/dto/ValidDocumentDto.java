@@ -9,5 +9,5 @@ import lombok.Data;
  */
 @Data
 public class ValidDocumentDto {
-private ValidDataData validDocument;
+private ValidDocumentData validDocument;
 }

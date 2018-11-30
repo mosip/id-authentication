@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,8 @@ public class ValidDocumentController {
 	ValidDocumentService documentService;
 
 	@PostMapping("/validdocuments")
-	public ResponseEntity<ValidDocumentID> createValidDocument(@RequestBody RequestDto<ValidDocumentDto> document) {
+	public ResponseEntity<ValidDocumentID> createValidDocument(
+			@Valid @RequestBody RequestDto<ValidDocumentDto> document) {
 		return new ResponseEntity<>(documentService.createValidDocument(document), HttpStatus.CREATED);
 	}
 }

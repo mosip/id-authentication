@@ -1,5 +1,8 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,13 +15,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValidDataData {
-	
+public class ValidDocumentData {
+
+	@NotNull
+	@Size(min = 1, max = 36)
 	private String docTypeCode;
-	
+
+	@NotNull
+	@Size(min = 1, max = 36)
 	private String docCategoryCode;
-	
+
+	@NotNull
+	@Size(min = 1, max = 3)
 	private String langCode;
-	
+
+	@NotNull
 	private Boolean isActive;
 }
