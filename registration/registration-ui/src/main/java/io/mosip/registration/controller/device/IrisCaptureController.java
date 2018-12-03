@@ -2,15 +2,14 @@ package io.mosip.registration.controller.device;
 
 import java.io.IOException;
 
-import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -57,12 +56,43 @@ public class IrisCaptureController extends BaseController {
 	private Label rightIrisQualityScore;
 	@FXML
 	private ImageView rightIrisImage;
+	@FXML
+	private Button scanIris;
 
 	@Autowired
 	private RegistrationController registrationController;
 	@Autowired
 	private FingerPrintScanController fingerPrintScanController;
 
+	private Pane selectedIris;
+
+	/**
+	 * Gets the selected iris.
+	 *
+	 * @return the selected iris
+	 */
+	public Pane getSelectedIris() {
+		return selectedIris;
+	}
+
+	/**
+	 * @return the leftIrisImage
+	 */
+	public ImageView getLeftIrisImage() {
+		return leftIrisImage;
+	}
+
+	/**
+	 * @return the rightIrisImage
+	 */
+	public ImageView getRightIrisImage() {
+		return rightIrisImage;
+	}
+
+	/**
+	 * This method is invoked when IrisCapture FXML page is loaded. This method
+	 * initializes the Iris Capture page.
+	 */
 	@FXML
 	public void initialize() {
 
@@ -70,16 +100,26 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration");
 
-			// Create ChangeListener object for Focus Property
-			ChangeListener<Boolean> irisPaneFocusListener = (observable, oldValue, newValue) -> System.out
-					.println("focus Called");
-			ChangeListener<? super EventHandler<? super MouseEvent>> irisPaneClickListener = (observable, oldValue,
-					newValue) -> System.out.println("click Called");
+			// Set Threshold
+			leftIrisThreshold.setText(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD));
+			rightIrisThreshold.setText(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD));
 
-			// Add listener to focused property
-			leftIrisPane.onMouseClickedProperty().addListener(irisPaneClickListener);
-			leftIrisPane.focusedProperty().addListener(irisPaneFocusListener);
-			rightIrisPane.focusedProperty().addListener(irisPaneFocusListener);
+			// Disable Scan button
+			scanIris.setDisable(true);
+
+			// Create EventHandler object for Mouse Click
+			EventHandler<Event> mouseClick = event -> {
+				if (event.getSource() instanceof Pane) {
+					Pane sourcePane = (Pane) event.getSource();
+					sourcePane.requestFocus();
+					selectedIris = sourcePane;
+					scanIris.setDisable(false);
+				}
+			};
+
+			// Add event handler object to mouse click event
+			rightIrisPane.setOnMouseClicked(mouseClick);
+			leftIrisPane.setOnMouseClicked(mouseClick);
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration completed");
@@ -95,18 +135,23 @@ public class IrisCaptureController extends BaseController {
 
 	}
 
+	/**
+	 * This method displays the Biometric Scan pop-up window. This method will be
+	 * invoked when Scan button is clicked.
+	 */
 	@FXML
-	private void scan(ActionEvent actionEvent) {
+	private void scan() {
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to capture Iris for user registration");
 
 			Stage popupStage = new Stage();
 			popupStage.initStyle(StageStyle.UNDECORATED);
-			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
+			Parent biometricScanPopup = BaseController
+					.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
 			fingerPrintScanController.setPopupTitle("Iris");
 			popupStage.setResizable(false);
-			Scene scene = new Scene(ackRoot);
+			Scene scene = new Scene(biometricScanPopup);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
@@ -122,17 +167,23 @@ public class IrisCaptureController extends BaseController {
 					RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, ioException.getMessage(),
 					ioException.getCause()));
 
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
 
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
 
+	/**
+	 * This method will be invoked when Next button is clicked. The next section
+	 * will be displayed.
+	 */
 	@FXML
-	private void nextSection(ActionEvent actionEvent) {
+	private void nextSection() {
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Photo capture page for user registration");
@@ -148,11 +199,16 @@ public class IrisCaptureController extends BaseController {
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP,
 							runtimeException.getMessage()));
 
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_NAVIGATE_NEXT_SECTION_ERROR);
 		}
 	}
 
+	/**
+	 * This method will be invoked when Previous button is clicked. The previous
+	 * section will be displayed.
+	 */
 	@FXML
-	private void previousSection(ActionEvent actionEvent) {
+	private void previousSection() {
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration");
@@ -168,7 +224,29 @@ public class IrisCaptureController extends BaseController {
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP,
 							runtimeException.getMessage()));
 
+			generateAlert(RegistrationConstants.ALERT_ERROR,
+					RegistrationConstants.IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR);
 		}
+	}
+
+	/**
+	 * Sets the quality score for Left Iris
+	 * 
+	 * @param qualityScore
+	 *            the leftIrisQualityScore to set
+	 */
+	public void setLeftIrisQualityScore(double qualityScore) {
+		this.leftIrisQualityScore.setText(String.valueOf(qualityScore));
+	}
+
+	/**
+	 * Sets the quality score for Right Iris
+	 * 
+	 * @param qualityScore
+	 *            the rightIrisQualityScore to set
+	 */
+	public void setRightIrisQualityScore(double qualityScore) {
+		this.rightIrisQualityScore.setText(String.valueOf(qualityScore));
 	}
 
 }

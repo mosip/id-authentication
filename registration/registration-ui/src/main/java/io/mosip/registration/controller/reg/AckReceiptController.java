@@ -178,7 +178,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
 
 		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
-				registrationData.getRegistrationId() + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
+				"RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 
 		generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);

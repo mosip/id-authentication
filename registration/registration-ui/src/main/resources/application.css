@@ -288,3 +288,11 @@
 	-fx-border-color: #d3d3d3;
 	-fx-border-width: 2;
 }
+
+/* Registration - Biometric - Iris Capture */
+.irisImagePane {
+	-fx-border-color: lightgrey;
+}
+.irisImagePane:focused {
+	-fx-border-color: black;
+}

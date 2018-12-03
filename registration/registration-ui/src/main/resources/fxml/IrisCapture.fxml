@@ -9,9 +9,9 @@
 <AnchorPane prefHeight="480.0" prefWidth="777.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
    <children>
       <Label layoutX="29.0" layoutY="27.0" text="Iris Scan" />
-      <Pane fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" prefHeight="165.0" prefWidth="235.0" style="-fx-border-color: black;">
+      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" prefHeight="165.0" prefWidth="235.0" styleClass="irisImagePane">
          <children>
-            <ImageView fx:id="leftIrisImage" fitHeight="150.0" fitWidth="200.0" layoutX="18.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="leftIrisImage" fitHeight="165.0" fitWidth="235.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/leftIris.png" />
                </image>
@@ -24,9 +24,9 @@
       <Label layoutX="29.0" layoutY="280.0" text="Threshold %" />
       <Label layoutX="146.0" layoutY="280.0" text=":" />
       <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="280.0" />
-      <Pane fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" prefHeight="165.0" prefWidth="235.0" style="-fx-border-color: black;">
+      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" prefHeight="165.0" prefWidth="235.0" styleClass="irisImagePane">
          <children>
-            <ImageView fx:id="rightIrisImage" fitHeight="150.0" fitWidth="200.0" layoutX="15.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="rightIrisImage" fitHeight="165.0" fitWidth="235.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/rightIris.png" />
                </image>
@@ -39,7 +39,7 @@
       <Label layoutX="378.0" layoutY="280.0" text="Threshold %" />
       <Label layoutX="495.0" layoutY="280.0" text=":" />
       <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="280.0" />
-      <Button layoutX="29.0" layoutY="341.0" mnemonicParsing="false" onAction="#scan" text="Scan" />
+      <Button fx:id="scanIris" layoutX="29.0" layoutY="341.0" mnemonicParsing="false" onAction="#scan" text="Scan" />
       <Button layoutX="701.0" layoutY="427.0" mnemonicParsing="false" onAction="#nextSection" text="Next" />
       <Button layoutX="586.0" layoutY="427.0" mnemonicParsing="false" onAction="#previousSection" text="Previous" />
    </children>

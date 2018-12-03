@@ -186,6 +186,13 @@ public class RegistrationConstants {
 	public static final String UNABLE_LOAD_APPROVAL_PAGE = bundle.getString("UNABLE_LOAD_APPROVAL_PAGE");
 	public static final String UNABLE_LOAD_REG_PAGE = bundle.getString("UNABLE_LOAD_REG_PAGE");
 
+	// Individual Registartion - Iris Capture
+	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");
+	public static final String IRIS_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_NEXT_SECTION_ERROR");
+	public static final String IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR");
+	public static final String BIOMETRIC_SCANNING_ERROR = bundle.getString("BIOMETRIC_SCANNING_ERROR");
+	public static final String IRIS_SCANNING_ERROR = bundle.getString("IRIS_SCANNING_ERROR");
+
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
 	public static final String LOGIN_METHOD_OTP = "OTP";
@@ -381,7 +388,7 @@ public class RegistrationConstants {
 	public static final String REG_ACK_EXP_CODE = "ACK-";
 	public static final String DEVICE_ONBOARD_EXP_CODE = "DVO-";
 	public static final String SYNC_JOB_EXP_CODE = "SYN-";
-	private static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
+	public static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -553,6 +560,16 @@ public class RegistrationConstants {
 	public static final String DEMOGRAPHIC_DOB = "01-01-";
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
+	
+	// Iris Capture for Individual Registration
+	public static final String IRIS_THRESHOLD = "iris_threshold";
+	public static final String IMAGE_FORMAT_KEY = "imageFormat";
+	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
+	public static final String IMAGE_SCORE_KEY = "imageScore";
+	public static final String LEFT = "Left";
+	public static final String RIGHT = "Right";
+	public static final String EYE = "Eye";
+	public static final String DOT = ".";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -639,6 +656,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-002";
 	public static final String USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-003";
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
+	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "FSC-002";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
