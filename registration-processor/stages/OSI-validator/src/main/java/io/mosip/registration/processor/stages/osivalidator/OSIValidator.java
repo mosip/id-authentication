@@ -518,17 +518,32 @@ public class OSIValidator {
 	 */
 	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
-
+		String fingerPrint = "";
+		String iris = "";
+		String face = "";
 		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
 				&& (regOsi.getIntroducerPhotoName() == null)) {
 			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 			return false;
 		} else {
-			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName();
+			if (regOsi.getIntroducerFingerpImageName() != null) {
+				fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
+			} else {
+				return true;
+			}
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName();
+			if (regOsi.getIntroducerIrisImageName() != null) {
+				iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
+			} else {
+				return true;
+			}
+
 			String irisType = regOsi.getIntroducerIrisType();
-			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName();
+			if (regOsi.getIntroducerPhotoName() != null) {
+				face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
+			} else {
+				return true;
+			}
 
 			if ((validateUIN(introducerUin))
 					&& (validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId))
