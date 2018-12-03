@@ -1436,7 +1436,9 @@ public class RegistrationController extends BaseController {
 	}
 
 	private Boolean isEditPage() {
-		return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		if(SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT)!=null)
+			return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		return false;
 	}
 
 	public void clickMe() {
