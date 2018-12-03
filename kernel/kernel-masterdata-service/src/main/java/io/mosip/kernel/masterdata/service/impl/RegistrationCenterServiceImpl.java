@@ -175,7 +175,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
 			registrationCentersList = registrationCenterRepository
-					.findByLocationCodeAndLanguageCodeAndIsDeletedFalse(locationCode, langCode);
+					.findByLocationCodeAndLanguageCode(locationCode, langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(

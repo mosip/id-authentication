@@ -676,8 +676,6 @@ public class MasterdataIntegrationTest {
 				IdTypeResponseDto.class);
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
 	}
-
-	// TODO:
 	@Test
 	public void createIdTypeTest() throws Exception {
 		IdType idType = new IdType();
@@ -921,7 +919,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("ENG", "BLR"))
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("ENG", "BLR"))
 				.thenReturn(null);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
@@ -932,7 +930,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("BLR", "ENG"))
 				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
@@ -991,7 +989,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getLocationSpecificRegistrationCentersTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("BLR", "ENG"))
 				.thenReturn(registrationCenters);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
@@ -1005,7 +1003,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getLocationSpecificMultipleRegistrationCentersTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCodeAndIsDeletedFalse("BLR", "ENG"))
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("BLR", "ENG"))
 				.thenReturn(registrationCenters);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
@@ -1157,7 +1155,6 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -----------------------------------registration-center-type----------------------------------------
-	// TODO
 	@Test
 	public void addRegistrationCenterTypeListTest() throws Exception {
 		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
