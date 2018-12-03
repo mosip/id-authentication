@@ -47,5 +47,11 @@
             <Font size="10.0" />
          </font>
       </Button>
+      <Label fx:id="leftSlapQualityScore" layoutX="137.0" layoutY="309.0" />
+      <Label fx:id="leftSlapThresholdScoreLbl" layoutX="137.0" layoutY="336.0" />
+      <Label fx:id="rightSlapQualityScore" layoutX="405.0" layoutY="308.0" />
+      <Label fx:id="rightSlapThresholdScoreLbl" layoutX="405.0" layoutY="335.0" />
+      <Label fx:id="thumbsQualityScore" layoutX="674.0" layoutY="309.0" />
+      <Label fx:id="thumbsThresholdScoreLbl" layoutX="674.0" layoutY="335.0" />
    </children>
 </AnchorPane>

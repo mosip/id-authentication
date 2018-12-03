@@ -146,7 +146,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 	private void scanFinger() {
 		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has started");
 
-		if (selectedAnchorPane.getId() == fpCaptureController.leftHandPalmPane.getId()) {
+		if (selectedAnchorPane.getId() == fpCaptureController.getLeftHandPalmPane().getId()) {
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/LEFT HAND");
 
@@ -154,9 +154,6 @@ public class FingerPrintScanController extends BaseController implements Initial
 					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/LeftPalm.jpg")));
 
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
-			primarystage.close();
-			fpCaptureController.leftHandPalmImageview.setImage(img);
 
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
@@ -166,19 +163,21 @@ public class FingerPrintScanController extends BaseController implements Initial
 			fpDetailsDTO.setForceCaptured(false);
 			fpDetailsDTO.setNumRetry(2);
 			fpDetailsDTO.setQualityScore(85.0);
+
 			fingerprintDTOs.add(fpDetailsDTO);
 
-		} else if (selectedAnchorPane.getId() == fpCaptureController.rightHandPalmPane.getId()) {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
+			primarystage.close();
+			fpCaptureController.getLeftHandPalmImageview().setImage(img);
+			fpCaptureController.getLeftSlapQualityScore().setText(String.valueOf(fpDetailsDTO.getQualityScore()) + "%");
+
+		} else if (selectedAnchorPane.getId() == fpCaptureController.getRightHandPalmPane().getId()) {
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/RIGHT HAND");
 
 			Image img = new Image(
 					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/rightPalm.jpg")));
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
-			primarystage.close();
-			fpCaptureController.rightHandPalmImageview.setImage(img);
-
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
 			fpDetailsDTO.setFingerPrint(getImageBytes("src/main/resources/FINGER PRINTS/rightPalm.jpg"));
@@ -189,16 +188,20 @@ public class FingerPrintScanController extends BaseController implements Initial
 			fpDetailsDTO.setQualityScore(85.0);
 
 			fingerprintDTOs.add(fpDetailsDTO);
-		} else if (selectedAnchorPane.getId() == fpCaptureController.thumbPane.getId()) {
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
+			primarystage.close();
+			fpCaptureController.getRightHandPalmImageview().setImage(img);
+			fpCaptureController.getRightSlapQualityScore()
+					.setText(String.valueOf(fpDetailsDTO.getQualityScore()) + "%");
+
+		} else if (selectedAnchorPane.getId() == fpCaptureController.getThumbPane().getId()) {
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/THUMB");
 
 			Image img = new Image(
 					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/thumb.jpg")));
 			fingerPrintScanImage.setImage(img);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
-			primarystage.close();
-			fpCaptureController.thumbImageview.setImage(img);
 
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
@@ -210,6 +213,12 @@ public class FingerPrintScanController extends BaseController implements Initial
 			fpDetailsDTO.setQualityScore(85.0);
 
 			fingerprintDTOs.add(fpDetailsDTO);
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
+			primarystage.close();
+			fpCaptureController.getThumbImageview().setImage(img);
+			fpCaptureController.getThumbsQualityScore().setText(String.valueOf(fpDetailsDTO.getQualityScore()) + "%");
+
 		}
 		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
 	}
