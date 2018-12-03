@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class HolidayResponseDto {
 	private List<HolidayDto> holidays;
 }

@@ -11,14 +11,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ReasonCategoryDto {
-	
+
 	@NotNull
 	@Size(min = 1, max = 36)
 	private String code;
-    
+
 	@NotNull
 	@Size(min = 1, max = 64)
 	private String name;
@@ -29,10 +28,10 @@ public class ReasonCategoryDto {
 	@NotNull
 	@Size(min = 1, max = 3)
 	private String langCode;
-	
+
 	@NotNull
 	private Boolean isActive;
-	
+
 	private Boolean isDeleted;
 
 	private List<ReasonListDto> reasonList = new ArrayList<>();

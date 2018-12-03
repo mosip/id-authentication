@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Blacklisted word DTO.
@@ -11,8 +9,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class BlacklistedWordsDto {
 	/**
 	 * The blacklisted word.

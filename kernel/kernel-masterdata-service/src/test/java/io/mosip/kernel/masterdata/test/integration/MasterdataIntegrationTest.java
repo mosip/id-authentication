@@ -158,7 +158,7 @@ public class MasterdataIntegrationTest {
 	private List<ReasonCategory> reasoncategories;
 
 	private List<ReasonList> reasonList;
-	
+
 	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
 	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }}";
@@ -774,9 +774,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void createReasonCateogryFetchExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(
-				   REASON_CATEGORY_REQUEST.getBytes()))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
+				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -785,8 +784,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
 				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isInternalServerError());
 	}
-
-	
 
 	// -----------------------------RegistrationCenterTest----------------------------------
 

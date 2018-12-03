@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class TemplateDto {
 
 	private String id;
