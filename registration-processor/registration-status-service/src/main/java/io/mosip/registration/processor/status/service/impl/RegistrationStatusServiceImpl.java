@@ -2,14 +2,10 @@ package io.mosip.registration.processor.status.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,8 +65,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	@Autowired
-	private RidValidator<String> ridValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -265,41 +259,13 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Override
 	public List<RegistrationStatusDto> getByIds(String ids) {
 		boolean isTransactionSuccessful = false;
-		List<RegistrationStatusDto> list=new ArrayList<>();
-		List<String> registrationIds;
-		List<String> registrationIdsSuceess=new ArrayList<>();
 		try {
 			String[] registrationIdArray = ids.split(",");
-			registrationIds =Arrays.asList(registrationIdArray);
-			for (int i = 0; i < registrationIds.size(); i++) {
-				try {
-					if(!(ridValidator.validateId(registrationIds.get(i)))) {
-						RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
-						registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
-						registrationIdFailureDto.setStatusCode("RegistartionId Is Not correct");
-						list.add(registrationIdFailureDto);
-					}	else {
-						registrationIdsSuceess.add(registrationIds.get(i));
-					}
-
-				}catch(InvalidIDException iie) {
-					RegistrationStatusDto registrationIdFailureDto=new RegistrationStatusDto();
-					registrationIdFailureDto.setRegistrationId(registrationIds.get(i));
-					registrationIdFailureDto.setStatusCode(iie.getErrorText());
-					list.add(registrationIdFailureDto);
-
-				}
-
-			}
-
-			if(!(registrationIdsSuceess.isEmpty())) {
-				List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao.getByIds(registrationIdsSuceess);
-				isTransactionSuccessful = true;
-				list=convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList,list);
-
-			}
-
-			return list;
+			List<String> registrationIds = Arrays.asList(registrationIdArray);
+			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
+					.getByIds(registrationIds);
+			isTransactionSuccessful = true;
+			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
@@ -312,18 +278,19 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get list of registration status by registration id successfully"
-							: "Get list of registration status by registration id unsuccessfully";
+					: "Get list of registration status by registration id unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
 
-	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities,List<RegistrationStatusDto> list) {
-
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities) {
+		List<RegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
 			for (RegistrationStatusEntity entity : entities) {
 				list.add(convertEntityToDtoAndGetExternalStatus(entity));
 			}
+
 		}
 		return list;
 	}

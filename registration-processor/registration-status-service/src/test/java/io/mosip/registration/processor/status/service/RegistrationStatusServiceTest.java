@@ -1,14 +1,11 @@
 package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -64,8 +55,6 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder ;
 
-	@Mock
-	RidValidator<String> ridValidator;
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -197,35 +186,18 @@ public class RegistrationStatusServiceTest {
 
 	@Test
 	public void testGetByIdsSuccess() {
-		Mockito.when(ridValidator.validateId("23456678970000120181129091130")).thenReturn(true);
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
-		List<RegistrationStatusDto> list = registrationStatusService.getByIds("23456678970000120181129091130");
+		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
 		assertEquals("PROCESSING", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
-		Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(true);
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage", new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
+				new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
-		registrationStatusService.getByIds("2345667897000012018112909134130");
-	}
-	
-	@Test
-	public void getByIdsInvalidIDFailureTest() {
-	//	Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(false);
-	
-	InvalidIDException iie=new InvalidIDException("23443", "dffdfdfdsad");
-	Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenThrow(iie);
-	registrationStatusService.getByIds("2345667897000012018112909134130");
-		
-	}
-	
-	@Test
-	public void getByIdsInvalidIDTest() {
-	Mockito.when(ridValidator.validateId("2345667897000012018112909134130")).thenReturn(false);
-	registrationStatusService.getByIds("2345667897000012018112909134130");
-		
+		registrationStatusService.getByIds("1001,1000");
 	}
 
 }
