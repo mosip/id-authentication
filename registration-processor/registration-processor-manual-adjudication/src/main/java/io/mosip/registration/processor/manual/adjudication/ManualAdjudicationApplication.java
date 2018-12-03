@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * The Class ManualAdjudicationApplication
  */
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver" })
-
+@SpringBootApplication(scanBasePackages = {"io.mosip.registration.processor.packet.receiver", "io.mosip.registration.processor.manual.adjudication", "io.mosip.registration.processor.filesystem.ceph.adapter.impl"})
 public class ManualAdjudicationApplication {
 
 	/**
