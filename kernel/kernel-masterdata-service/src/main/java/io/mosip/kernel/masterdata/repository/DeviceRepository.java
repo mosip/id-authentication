@@ -22,10 +22,10 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * This method trigger query to fetch the Device detail for the given language
 	 * code.
 	 * 
-
+	 * 
 	 * @param langCode
 	 *            languageCode provided by user
-	 *            
+	 * 
 	 * @return Device Details fetched from database
 	 */
 
@@ -35,10 +35,10 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * This method trigger query to fetch the Device detail for the given language
 	 * code and Device Type code.
 	 * 
-
+	 * 
 	 * @param langCode
-	 *            languageCode provided by user           
-	 *@param deviceTypeCode
+	 *            languageCode provided by user
+	 * @param deviceTypeCode
 	 *            device Type Code provided by user
 	 * @return Device Details fetched from database
 	 * 

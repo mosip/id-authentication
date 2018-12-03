@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
@@ -104,7 +103,7 @@ public class MasterdataIntegrationTest {
 	private MockMvc mockMvc;
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
-	
+
 	@MockBean
 	private DeviceRepository deviceRepository;
 
@@ -257,7 +256,7 @@ public class MasterdataIntegrationTest {
 		languageTestSetup();
 
 		addValidDocumentSetUp();
-		
+
 		deviceSetup();
 
 		registrationCenterDeviceSetup();
@@ -279,7 +278,7 @@ public class MasterdataIntegrationTest {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private void deviceSetup() {
 		List<Device> deviceList = new ArrayList<>();
 		device = new Device();
@@ -1228,7 +1227,9 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
+	// ------------------------------------------device -------------------------------------------
+
 	@Test
 	public void addDeviceTypeTest() throws Exception {
 		String json = "{ \"id\": \"string\", \"request\": { \"code\": \"1234rf\", \"deviceSpecId\": \"1011\", \"ipAddress\": \"string\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"string\", \"name\": \"string\", \"serialNum\": \"string\" }, \"timestamp\": \"2018-12-03T09:46:53.033Z\", \"ver\": \"string\"}";

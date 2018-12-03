@@ -45,10 +45,10 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	MapperUtils objectMapperUtil;
-	
+
 	@Autowired
 	MetaDataUtils metaDataUtils;
-	
+
 	@Autowired
 	DataMapper dataMapper;
 
@@ -81,7 +81,7 @@ public class DeviceServiceImpl implements DeviceService {
 			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()+ "  "+ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
 			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
@@ -125,7 +125,7 @@ public class DeviceServiceImpl implements DeviceService {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()+ "  "+ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (objectList != null && !objectList.isEmpty()) {
 			deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);
@@ -136,7 +136,7 @@ public class DeviceServiceImpl implements DeviceService {
 		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
 		return deviceLangCodeResponseDto;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

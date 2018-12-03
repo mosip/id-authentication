@@ -25,7 +25,7 @@ public interface DeviceService {
 	public DeviceResponseDto getDeviceLangCode(String langCode);
 
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
-	
+
 	/**
 	 * This method is used to add a new Device to master data
 	 * 

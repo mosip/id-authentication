@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.service.DeviceService;
  * Controller with api to get Device Details
  * 
  * @author Megha Tanga
+ * @author Sidhant Agarwal	
  * @since 1.0.0
  *
  */
@@ -56,7 +57,7 @@ public class DeviceController {
 		return deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType);
 
 	}
-	
+
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
