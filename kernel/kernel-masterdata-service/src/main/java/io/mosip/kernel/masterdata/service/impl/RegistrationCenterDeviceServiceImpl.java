@@ -37,6 +37,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private MapperUtils mapperUtils;
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see RegistrationCenterDeviceService#mapRegistrationCenterAndDevice(RequestDto)
+	 */
 	@Override
 	public ResponseRegistrationCenterDeviceDto mapRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
