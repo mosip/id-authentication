@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MachineResponseDto {
-	private List<MachineDto> machineDetails;
+	private List<MachineDto> machines;
 }
 

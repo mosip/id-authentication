@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MachineResponseIdDto {
-	private MachineDto machineDto;
+	private MachineDto machine;
 }

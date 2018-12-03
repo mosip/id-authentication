@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,11 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
-import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
 import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 
 /**
@@ -83,9 +86,9 @@ public class MachineController {
 	 */
 	@PostMapping("/machines")
 	public ResponseEntity<MachineSpecIdAndId> saveMachine(
-			@RequestBody MachineRequestDto machine) {
+			@Valid  @RequestBody RequestDto<MachineDto> machine) {
 
-		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineService.createMachine(machine.getRequest()), HttpStatus.CREATED);
 	}
 
 }

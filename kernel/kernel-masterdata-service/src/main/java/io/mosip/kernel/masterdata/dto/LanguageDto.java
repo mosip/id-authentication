@@ -1,13 +1,9 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
