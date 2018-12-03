@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class IdTypeResponseDto {
 	/**
 	 * List of id types.
