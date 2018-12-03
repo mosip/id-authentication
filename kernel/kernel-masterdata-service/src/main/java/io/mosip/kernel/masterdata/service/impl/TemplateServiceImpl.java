@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -34,9 +33,6 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private DataMapper dataMapper;
 
 	@Autowired
 	private MetaDataUtils metaUtils;
@@ -131,7 +127,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(templateEntity, idResponseDto, true, null, null, true);
+		objectMapperUtil.mapNew(templateEntity, idResponseDto);
 
 		return idResponseDto;
 	}
