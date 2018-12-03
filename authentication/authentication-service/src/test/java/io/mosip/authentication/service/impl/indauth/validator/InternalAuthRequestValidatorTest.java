@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.Validator;
+package io.mosip.authentication.service.impl.indauth.validator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

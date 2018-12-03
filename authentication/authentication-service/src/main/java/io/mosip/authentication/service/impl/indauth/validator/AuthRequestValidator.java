@@ -39,10 +39,10 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.kernel.core.datavalidator.spi.EmailValidator;
-import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
+import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -151,11 +151,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** email Validator */
 	@Autowired
-	EmailValidator<String> emailValidatorImpl;
+	EmailValidatorImpl emailValidatorImpl;
 
 	/** phone Validator */
 	@Autowired
-	PhoneValidator<String> phoneValidatorImpl;
+	PhoneValidatorImpl phoneValidatorImpl;
 
 	/*
 	 * (non-Javadoc)
@@ -358,8 +358,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			checkDOBType(authRequest, errors);
 			checkAge(authRequest, errors);
 			checkGender(authRequest, errors);
-			validateEmail(authRequest);
-			validatePhone(authRequest);
+			validateEmail(authRequest, errors);
+			validatePhone(authRequest, errors);
 		}
 	}
 
@@ -688,13 +688,19 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * 
 	 * @param authRequest authRequest
 	 */
-	private void validateEmail(AuthRequestDTO authRequest) {
+	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
 
 		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoFunction()
 				.apply(authRequest.getRequest().getIdentity());
 		if (emailId != null) {
 			for (IdentityInfoDTO email : emailId) {
-				emailValidatorImpl.validateEmail(email.getValue());
+				boolean isValidEmail = emailValidatorImpl.validateEmail(email.getValue());
+
+				if (!isValidEmail) {
+					errors.rejectValue("emailId", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "emailId" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
 			}
 		}
 
@@ -705,13 +711,19 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * 
 	 * @param authRequest authRequest
 	 */
-	private void validatePhone(AuthRequestDTO authRequest) {
+	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
 
 		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoFunction()
 				.apply(authRequest.getRequest().getIdentity());
 		if (phoneNumber != null) {
 			for (IdentityInfoDTO phone : phoneNumber) {
-				phoneValidatorImpl.validatePhone(phone.getValue());
+				boolean isValidPhone = phoneValidatorImpl.validatePhone(phone.getValue());
+				if (!isValidPhone) {
+					errors.rejectValue("phoneNumber",
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "phoneNumber" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
 			}
 		}
 

@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.Validator;
+package io.mosip.authentication.service.impl.indauth.validator;
 
 import org.junit.Ignore;
 import org.junit.runner.RunWith;

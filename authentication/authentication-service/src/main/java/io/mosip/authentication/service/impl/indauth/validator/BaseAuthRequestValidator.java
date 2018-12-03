@@ -158,9 +158,9 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if ((isContainBioInfo(bioInfo, BioType.FGRMIN) && isDuplicateBioRequest(authRequestDTO, BioType.FGRMIN))
-				|| (isContainBioInfo(bioInfo, BioType.FGRIMG)
-						&& isDuplicateBioRequest(authRequestDTO, BioType.FGRIMG))) {
+		if ((isAvailableBioType(bioInfo, BioType.FGRMIN) && isDuplicateBioType(authRequestDTO, BioType.FGRMIN))
+				|| (isAvailableBioType(bioInfo, BioType.FGRIMG)
+						&& isDuplicateBioType(authRequestDTO, BioType.FGRIMG))) {
 
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
 
@@ -176,7 +176,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if (isContainBioInfo(bioInfo, BioType.IRISIMG) && isDuplicateBioRequest(authRequestDTO, BioType.IRISIMG)) {
+		if (isAvailableBioType(bioInfo, BioType.IRISIMG) && isDuplicateBioType(authRequestDTO, BioType.IRISIMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 
@@ -193,7 +193,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 
-		if (isContainBioInfo(bioInfo, BioType.FACEIMG) && isDuplicateBioRequest(authRequestDTO, BioType.FACEIMG)) {
+		if (isAvailableBioType(bioInfo, BioType.FACEIMG) && isDuplicateBioType(authRequestDTO, BioType.FACEIMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 		}
@@ -259,7 +259,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
+	boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
 			Function<IdentityDTO, List<IdentityInfoDTO>>... functions) {
 		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions)
 				.anyMatch(func -> Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
@@ -273,7 +273,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param bioType
 	 * @return
 	 */
-	private boolean isContainBioInfo(List<BioInfo> bioInfoList, BioType bioType) {
+	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
 				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
 	}
@@ -297,7 +297,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param bioType
 	 * @return
 	 */
-	private boolean isDuplicateBioRequest(AuthRequestDTO authRequestDTO, BioType bioType) {
+	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioType bioType) {
 		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
 		Long bioTypeCount = Optional.ofNullable(bioInfo).map(List::parallelStream)
 				.map(stream -> stream
