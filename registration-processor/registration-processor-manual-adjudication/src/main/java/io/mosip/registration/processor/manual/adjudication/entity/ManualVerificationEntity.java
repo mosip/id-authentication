@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "reg_manual_verification", schema = "regprc")
-public class ManualVerificationEntity extends BasePacketEntity<ManualVerificationPKEntity> implements Serializable {
+public class ManualVerificationEntity extends ManualVerificationPKEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
