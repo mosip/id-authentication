@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.OperatorAuthenticationController">
    <children>
-      <AnchorPane fx:id="pwdBasedLogin" prefHeight="550.0" prefWidth="850.0">
+      <AnchorPane fx:id="pwdBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
             <Button layoutX="385.0" layoutY="236.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
             <TextField fx:id="username" layoutX="314.0" layoutY="125.0" promptText="Username" />
