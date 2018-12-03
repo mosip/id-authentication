@@ -7,9 +7,11 @@
 alter table master.admin_param add constraint fk_admparm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.appl_form_type add constraint fk_applftyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.app_detail add constraint fk_appdtl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
-alter table master.app_login_method add constraint fk_applogm_appdtl foreign key (app_id) references master.app_detail(id) on delete no action on update no action ;
-alter table master.app_login_method add constraint fk_applogm_logmeth foreign key (login_method_code, lang_code) references master.login_method(code, lang_code) on delete no action on update no action ;
-alter table master.app_login_method add constraint fk_applogm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
+
+alter table master.app_authentication_method add constraint fk_appauthm_appdtl foreign key (app_id) references master.app_detail(id) on delete no action on update no action ;
+alter table master.app_authentication_method add constraint fk_appauthm_authmeth foreign key (auth_method_code, lang_code) references master.authentication_method(code, lang_code) on delete no action on update no action ;
+alter table master.app_authentication_method add constraint fk_appauthm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
+
 alter table master.module_detail add constraint fk_moddtl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.authentication_type add constraint fk_authtyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.biometric_attribute add constraint fk_bmattr_bmtyp foreign key (bmtyp_code, lang_code) references master.biometric_type(code , lang_code) on delete no action on update no action ;

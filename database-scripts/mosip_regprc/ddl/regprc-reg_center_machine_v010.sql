@@ -16,8 +16,9 @@ create table regprc.reg_center_machine (
 
 	prereg_id  		character varying(64) ,				-- no fk.  only populate.
 	
-	machine_id 		character varying (36) not null,	-- no fk.  only populate.
-	regcntr_id 		character varying (36) not null,	-- no fk.  only populate.
+	machine_id 			character varying (36) not null,	-- no fk.  only populate.
+	regcntr_id 			character varying (36) not null,	-- no fk.  only populate.
+	packet_cr_dtimes 	timestamp ,
 
 	latitude  		character varying(32) ,
 	longitude 		character varying(32) ,

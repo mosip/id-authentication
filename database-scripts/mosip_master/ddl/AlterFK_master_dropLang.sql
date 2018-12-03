@@ -4,7 +4,7 @@
 alter table master.admin_param drop constraint fk_admparm_lang   ;
 alter table master.appl_form_type drop constraint fk_applftyp_lang   ;
 alter table master.app_detail drop constraint fk_appdtl_lang   ;
-alter table master.app_login_method drop constraint fk_applogm_lang   ;
+alter table master.app_authentication_method drop constraint fk_appauthm_lang ;
 alter table master.module_detail drop constraint fk_moddtl_lang   ;
 alter table master.authentication_type drop constraint fk_authtyp_lang   ;
 alter table master.biometric_attribute drop constraint fk_bmattr_lang   ;

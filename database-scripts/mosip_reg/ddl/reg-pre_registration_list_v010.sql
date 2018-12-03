@@ -12,11 +12,13 @@ create schema if not exists reg
 -- table section ---------------------------------------------------------
 create table reg.pre_registration_list (
 
-	id character varying(36) not null,
-
-	prereg_id character varying(64) not null,		-- no fk.  data populate.
+	id 			character varying(36) not null,
+	prereg_id 	character varying(64) not null,		-- no fk.  data populate.
 	prereg_type character varying(64),				-- no fk.  data populate.
 	parent_prereg_id character varying(64),			-- no fk.  data populate.
+	
+	appointment_date 	 date,
+	packet_symmetric_key character varying(256),
 
 	status_code character varying(36),				-- no fk.  data populate.
 	status_comment character varying(256),			-- no fk.  data populate.
@@ -24,7 +26,7 @@ create table reg.pre_registration_list (
 	packet_path character varying(256),
 
 	sjob_id character varying(36),					-- no fk.  data populate.
-	trn_id character varying (36),					-- no fk.  data populate.
+	synctrn_id character varying (36),				-- no fk.  data populate.
 
 	lang_code character varying(3) not null,		-- no fk.  data populate.
 

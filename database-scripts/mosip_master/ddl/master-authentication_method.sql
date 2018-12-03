@@ -1,7 +1,7 @@
 -- create table section -------------------------------------------------
 -- schema 		: master	    - Master reference Module
--- table 		: login_method		- List of login methods used across the MOSIP applications
--- table alias  : logmeth	
+-- table 		: authentication_method		- List of login methods used across the MOSIP applications
+-- table alias  : authm	
 
 -- schemas section -------------------------------------------------
  
@@ -10,7 +10,7 @@ create schema if not exists master
 ; 
 
 -- table section -------------------------------------------------
-create table master.login_method (
+create table master.authentication_method (
 
 	code		character varying (36) not null,  
 	
@@ -30,15 +30,15 @@ create table master.login_method (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.login_method add constraint pk_logmeth_login_method primary key (code, lang_code)
+ alter table master.authentication_method add constraint pk_authm_code primary key (code, lang_code)
  ;
 
 
 -- indexes section -------------------------------------------------
--- create index idx_logmeth_<colX> on master.login_method (colX )
+-- create index idx_logmeth_<colX> on master.authentication_method (colX )
 -- ;
 
 -- comments section ------------------------------------------------- 
-comment on table master.login_method is 'table to store list of login methods used across the MOSIP applications'
+comment on table master.authentication_method is 'Table to store list of Authentication methods used across the MOSIP applications'
 ;
 
