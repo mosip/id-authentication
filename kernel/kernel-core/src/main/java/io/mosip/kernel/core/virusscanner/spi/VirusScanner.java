@@ -4,6 +4,9 @@
  */
 package io.mosip.kernel.core.virusscanner.spi;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * @author Mukul Puspam
  *
@@ -33,4 +36,24 @@ public interface VirusScanner<U, V> {
 	 * @return the u
 	 */
 	U scanFolder(V folderPath);
+
+	/**
+	 * Scan byte array.
+	 *
+	 * @param byte[]
+	 *            array
+	 * 
+	 * @return the u
+	 */
+	U scanDocument(byte[] array) throws IOException;
+
+	/**
+	 * Scan File.
+	 *
+	 * @param File
+	 *            object
+	 * 
+	 * @return the u
+	 */
+	U scanDocument(File doc) throws IOException;
 }
