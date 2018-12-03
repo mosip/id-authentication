@@ -2,6 +2,7 @@ package io.mosip.registration.processor.manual.adjudication.service;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.manual.adjudication.dto.ApplicantDetailsDto;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 /**
  * 
@@ -11,7 +12,7 @@ import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 @Service
 public interface ManualAdjudicationService {
 	
-	public UserDto assignStatus(UserDto dto);
+	public ApplicantDetailsDto assignStatus(UserDto dto);
 	public byte[] getApplicantPhoto(String regId);
 	public byte[] getApplicantExceptionPhoto(String regId);
 	public byte[] getApplicantProofOfAddress(String regId);
