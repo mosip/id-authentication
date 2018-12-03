@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -17,12 +18,19 @@ import lombok.NoArgsConstructor;
  * Entity for Device Details
  * 
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+/**
+ * @author Sidhant Agarwal
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @Table(name = "device_master", schema = "master")
-public class Device  implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Device extends BaseEntity implements Serializable {
 
 	/**
 	 * 
@@ -34,7 +42,7 @@ public class Device  implements Serializable {
 	 */
 	@Id
 	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;
+	private String code;
 
 	/**
 	 * Field for device name
@@ -72,33 +80,7 @@ public class Device  implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
+	 
 
 	
-	/**
-	 * Field to hold date and time for Validity of the Device
-	 */
-	@Column(name="validity_end_dtimes")
-	private LocalDateTime validityEndDateTime; 
-	
-	@Column(name = "is_active")
-	private Boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdDateTime;
-
-	@Column(name = "upd_by")
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedDateTime;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
-
 }

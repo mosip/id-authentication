@@ -49,14 +49,14 @@ public class DeviceControllerTest {
 	public void getDeviceLangTest() {
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
 		DeviceDto deviceDto = new DeviceDto();
-		deviceDto.setId("1001");
+		deviceDto.setCode("1001");
 		deviceDto.setName("laptop");
 		deviceDto.setSerialNum("1234567890");
 		deviceDto.setIpAddress("100.100.100.80");
 		deviceDto.setMacAddress("100.100.100.80");
 		deviceDto.setDeviceSpecId("laptop_id");
 		deviceDto.setLangCode("ENG");
-		deviceDto.setActive(true);
+		deviceDto.setIsActive(true);
 		deviceDtoList.add(deviceDto);
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		deviceResponseDto.setDevices(deviceDtoList);

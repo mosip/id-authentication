@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -18,6 +22,7 @@ import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This class have methods to fetch a Device Details
@@ -40,6 +45,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	MapperUtils objectMapperUtil;
+	
+	@Autowired
+	MetaDataUtils metaDataUtils;
+	
+	@Autowired
+	DataMapper dataMapper;
 
 	/**
 	 * Method used for fetch all Device details based on given language code
@@ -124,6 +135,31 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
 		return deviceLangCodeResponseDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#saveDevice(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
+		Device device;
+
+		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		try {
+			device = deviceRepository.create(entity);
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_CREATE_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		CodeResponseDto codeResponseDto = new CodeResponseDto();
+		dataMapper.map(device, codeResponseDto, true, null, null, true);
+
+		return codeResponseDto;
+
 	}
 
 }

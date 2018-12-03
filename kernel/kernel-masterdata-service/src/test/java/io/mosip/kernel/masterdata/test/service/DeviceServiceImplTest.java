@@ -53,14 +53,14 @@ public class DeviceServiceImplTest {
 	public void getDeviceLangCodeTest() {
 
 		Device device = new Device();
-		device.setId("1001");
+		device.setCode("1001");
 		device.setName("Laptop");
 		device.setLangCode("ENG");
 		List<Device> deviceList = new ArrayList<>();
 		deviceList.add(device);
 
 		DeviceDto deviceDto = new DeviceDto();
-		deviceDto.setId("1001");
+		deviceDto.setCode("1001");
 		deviceDto.setName("Laptop");
 		deviceDto.setName("ENG");
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
