@@ -82,6 +82,9 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * The Keystore instance
 	 */
 	private final KeyStore keyStore;
+	
+	
+
 
 	/**
 	 * Constructor to initialize Softhsm Keystore
@@ -101,6 +104,13 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 		addProvider(provider);
 		this.keyStore = getKeystoreInstance(keystoreType, provider);
 		this.keystorePass = keystorePass;
+		loadKeystore();
+	}
+	
+
+	public KeyStoreImpl(KeyStore keyStore,String keystorePass) {
+		this.keyStore=keyStore;
+		this.keystorePass=keystorePass;
 		loadKeystore();
 	}
 
