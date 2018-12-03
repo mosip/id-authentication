@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegistrationCenterDto {
 
 	private String id;
