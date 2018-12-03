@@ -221,13 +221,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @return
 	 */
 	private List<KeyAlias> getCurrentKeyAlias(String applicationId, String referenceId, LocalDateTime timeStamp) {
-		return keyAliasRepository
-				.findByApplicationIdAndReferenceId(applicationId, referenceId).stream().filter(
-						keyAlias -> timeStamp.isEqual(keyAlias.getKeyGenerationTime())
-								|| timeStamp.isEqual(keyAlias.getKeyExpiryTime())
-								|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
-										&& timeStamp.isBefore(keyAlias.getKeyExpiryTime())))
-				.collect(Collectors.toList());
+		return keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId).stream()
+				.peek(e -> System.out.println("Key aliases: " + e))
+				.filter(keyAlias -> timeStamp.isEqual(keyAlias.getKeyGenerationTime())
+						|| timeStamp.isEqual(keyAlias.getKeyExpiryTime())
+						|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
+								&& timeStamp.isBefore(keyAlias.getKeyExpiryTime())))
+				.peek(e -> System.out.println("Current Key Aliases: " + e)).collect(Collectors.toList());
 	}
 
 	/**
