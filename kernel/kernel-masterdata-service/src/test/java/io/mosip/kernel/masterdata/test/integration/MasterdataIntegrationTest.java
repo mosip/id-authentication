@@ -34,6 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
@@ -67,7 +70,10 @@ import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -202,6 +208,16 @@ public class MasterdataIntegrationTest {
 
 	private ValidDocument validDocument;
 
+	@MockBean
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+	private RegistrationCenterDeviceDto registrationCenterDeviceDto;
+	@MockBean
+	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
+	private RegistrationCenterMachineDto registrationCenterMachineDto;
+	@MockBean
+	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+	private RegistrationCenterMachineDeviceDto registrationCenterMachineDeviceDto;
+
 	@Before
 	public void setUp() {
 		blacklistedSetup();
@@ -231,6 +247,25 @@ public class MasterdataIntegrationTest {
 		languageTestSetup();
 
 		addValidDocumentSetUp();
+
+		registrationCenterDeviceSetup();
+		registrationCenterMachineSetup();
+		registrationCenterMachineDeviceSetup();
+	}
+
+	private void registrationCenterDeviceSetup() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void registrationCenterMachineSetup() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void registrationCenterMachineDeviceSetup() {
+		// TODO Auto-generated method stub
+
 	}
 
 	private void addValidDocumentSetUp() {
