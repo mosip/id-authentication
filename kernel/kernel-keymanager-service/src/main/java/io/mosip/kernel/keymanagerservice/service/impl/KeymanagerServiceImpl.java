@@ -49,6 +49,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
  *
  */
 @Service
+@Transactional
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
@@ -107,7 +108,6 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * String, java.time.LocalDateTime, java.util.Optional)
 	 */
 	@Override
-	@Transactional
 	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
 			Optional<String> referenceId) {
 
@@ -148,11 +148,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
 
 		} else if (currentKeyAlias.size() == 1) {
-			Optional<byte[]> keyFromDBStore = keyStoreRepository
-					.findPublicKeyByAlias(currentKeyAlias.get(0).getAlias());
+			Optional<KeyDbStore> keyFromDBStore = keyStoreRepository.findByAlias(currentKeyAlias.get(0).getAlias());
 			if (keyFromDBStore.isPresent()) {
 				KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
-				keyFromDB = keyFromDBStore.get();
+				keyFromDB = keyFromDBStore.get().getPublicKey();
 				generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
 				expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
 			} else {
@@ -182,7 +181,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			}
 			System.out.println(encryptedPrivateKey.length);
 
-			storeKeyInDBStore(alias, keypair, encryptedPrivateKey);
+			storeKeyInDBStore(alias, keypair.getPublic().getEncoded(), encryptedPrivateKey);
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
 		}
 
@@ -292,15 +291,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
 	 * @param alias
-	 * @param keypair
+	 * @param bs
 	 * @param encryptedPrivateKey
 	 */
-	private void storeKeyInDBStore(String alias, KeyPair keypair, byte[] encryptedPrivateKey) {
+	private void storeKeyInDBStore(String alias, byte[] publicKey, byte[] encryptedPrivateKey) {
 		KeyDbStore keyDbStore = new KeyDbStore();
 		keyDbStore.setAlias(alias);
-		keyDbStore.setPublicKey(keypair.getPublic().getEncoded());
+		keyDbStore.setPublicKey(publicKey);
 		keyDbStore.setPrivateKey(encryptedPrivateKey);
-		System.out.println("base64private" + keymanagerUtil.encodeBase64(encryptedPrivateKey).length());
+
 		keyStoreRepository.save(keyDbStore);
 	}
 
@@ -312,7 +311,6 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
 	 */
 	@Override
-	@Transactional
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
 		List<KeyAlias> keyAliases;
