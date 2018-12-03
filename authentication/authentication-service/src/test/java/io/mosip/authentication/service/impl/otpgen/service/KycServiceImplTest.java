@@ -28,6 +28,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
@@ -79,8 +80,10 @@ public class KycServiceImplTest {
 	@Value("${sample.demo.entity}")
 	String value;
 	
+	Map<String, List<IdentityInfoDTO>> idInfo;
+	
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationDaoException {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("eKycPDFTemplate");
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", source);
@@ -93,6 +96,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(demoHelper, "environment", environment);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
+		idInfo = idInfoService.getIdInfo("12232323121");
 		
 	}
 	
@@ -100,13 +104,6 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN() {
 		try {
-
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -117,12 +114,6 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN1() {
 		try {
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);		
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -133,13 +124,7 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN2() {
 		try {
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);	
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, true, idInfo);	
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -149,14 +134,8 @@ public class KycServiceImplTest {
 	
 	@Test
 	public void validUIN3() {
-		try {			
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
+		try {
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -165,14 +144,8 @@ public class KycServiceImplTest {
 	
 	@Test
 	public void validUIN4() {
-		try {			
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);		
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
+		try {	
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, false, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -180,15 +153,9 @@ public class KycServiceImplTest {
 	}
 	
 	@Test
-	public void validUIN5() {
-		try {			
-			List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-			list.add(new IdentityInfoDTO("en", "mosip"));
-			Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-			idInfo.put("name", list);
-			idInfo.put("email", list);
-			idInfo.put("phone", list);	
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
+	public void validUIN5() throws IdAuthenticationDaoException {
+		try {
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, true, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();

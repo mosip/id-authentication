@@ -26,7 +26,13 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.service.factory.AuditRequestFactory;
+import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
+import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
+import io.mosip.authentication.service.repository.UinRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -34,7 +40,7 @@ import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 public class InternalAuthControllerTest {
 
 	@InjectMocks
-	InternelAuthController authController;
+	InternalAuthController authController;
 
 	@Mock
 	WebDataBinder binder;
@@ -45,23 +51,36 @@ public class InternalAuthControllerTest {
 	@Mock
 	private KycService kycService;
 
+	@Mock
+	private RestHelper restHelper;
+
 	@Autowired
 	Environment env;
 
+	@InjectMocks
+	private RestRequestFactory restFactory;
+
+	@InjectMocks
+	private AuditRequestFactory auditFactory;
+	
+	@Mock
+	private UinRepository uinRepository;
+	
+	@InjectMocks
+	private InternalAuthRequestValidator internalAuthRequestValidator;
+
+	@InjectMocks
+	private DateHelper datehelper;
+	
+	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
+
 	@Before
 	public void before() {
-
-		// ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder",
-		// binder);
+		ReflectionTestUtils.setField(auditFactory, "env", env);
+		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
-
-		// ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
-		// ReflectionTestUtils.setField(authfacade, "kycService", kycService);
 		ReflectionTestUtils.setField(authfacade, "env", env);
-		// ReflectionTestUtils.setField(dateHelper, "env", env);
-		// ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator",
-		// authRequestValidator);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -78,29 +97,34 @@ public class InternalAuthControllerTest {
 	public void auhtenticationTspSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false)).thenReturn(new AuthResponseDTO());
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
 		authController.authenticateTsp(authReqestDTO, error);
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
-	public void auhtenticationTspInvalid()
+	@Test
+	public void auhtenticationTspvalid()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
-		Errors error = new BindException(authReqestDTO, "authReqDTO");
-		error.rejectValue("id", "errorCode", "defaultMessage");
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false)).thenReturn(new AuthResponseDTO());
 		authController.authenticateTsp(authReqestDTO, error);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void TestAuthIdException()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
-		Mockito.when(authfacade.authenticateApplicant(Mockito.any()))
-				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Errors error = new BindException(authReqestDTO, "authReqDTO");
-		error.rejectValue("id", "errorCode", "defaultMessage");
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false))
+				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
+		authController.authenticateTsp(authReqestDTO, error);
+	}
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void TestAuthIdException2()
+		throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException{
+		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 		authController.authenticateTsp(authReqestDTO, error);
 	}
 

@@ -291,7 +291,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 
-			notificationManager.sendNotification(values, email, mobileNumber, SenderType.OTP);
+			notificationManager.sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}

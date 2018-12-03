@@ -239,9 +239,9 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
-				idInfo);
+				idInfo, false);
 
-		authFacadeImpl.authenticateApplicant(authRequestDTO);
+		authFacadeImpl.authenticateApplicant(authRequestDTO, true);
 	}
 
 	/**
@@ -533,7 +533,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
-				idInfo);
+				idInfo, true);
 	}
 
 	/**

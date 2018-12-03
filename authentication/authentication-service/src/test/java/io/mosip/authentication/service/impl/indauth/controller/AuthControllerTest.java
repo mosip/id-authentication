@@ -141,7 +141,7 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO))
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateApplication(authReqDTO, error);
 
@@ -151,7 +151,7 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenReturn(new AuthResponseDTO());
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true)).thenReturn(new AuthResponseDTO());
 		authController.authenticateApplication(authReqDTO, error);
 
 	}
@@ -162,7 +162,7 @@ public class AuthControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest());
+		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest(), true);
 		authController.processKyc(kycAuthReqDTO, errors);
 	}
 	
@@ -226,7 +226,7 @@ public class AuthControllerTest {
 		authTypeDTOs.setOtp(true);
 		authRequestDTOs.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest())).thenReturn(authResponseDTO);
+		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true)).thenReturn(authResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -258,7 +258,7 @@ public class AuthControllerTest {
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest())).thenReturn(authResponseDTO);
+		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true)).thenReturn(authResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");

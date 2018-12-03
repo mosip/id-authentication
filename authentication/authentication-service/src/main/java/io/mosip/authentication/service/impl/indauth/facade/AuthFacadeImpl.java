@@ -144,7 +144,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
+	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
 			throws IdAuthenticationBusinessException {
 
 		String refId = processIdType(authRequestDTO);
@@ -164,16 +164,15 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
 			if(idInfo != null) {
-				sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo);
+				sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, isAuth);
 			}
-			auditData();
 		}
 
 		return authResponseDTO;
 
 	}
 
-	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO, Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
+	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO, Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
@@ -220,8 +219,15 @@ public class AuthFacadeImpl implements AuthFacade {
 		String email = null;
 		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue();
 		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
+		String notificationType = null;
+		if(isAuth) {
+			notificationType = env.getProperty("auth.notification.type");
+		}else  {
+			notificationType = env.getProperty("internal.auth.notification.type");
+		}
+		
 
-		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH);
+		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
 	}
 
 	/**
@@ -251,6 +257,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = otpValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
+				// TODO Update audit details
+				auditData();
 			}
 			// TODO log authStatus - authType, response
 
@@ -265,6 +273,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = demoValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
+				// TODO Update audit details
+				auditData();
 			}
 			// TODO log authStatus - authType, response
 
@@ -280,11 +290,12 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = bioValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
+				// TODO Update audit details
+				auditData();
 			}
 		}
 
-		// TODO Update audit details
-		auditData();
+		
 		return authStatusList;
 	}
 
@@ -317,7 +328,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 		}
 
-		auditData();
 		return refId;
 	}
 

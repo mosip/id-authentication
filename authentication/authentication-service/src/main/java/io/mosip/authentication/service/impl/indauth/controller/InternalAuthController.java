@@ -16,6 +16,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
@@ -32,7 +33,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Prem Kumar
  */
 @RestController
-public class InternelAuthController {
+public class InternalAuthController {
 
 	/** The auth facade. */
 	@Autowired
@@ -60,6 +61,7 @@ public class InternelAuthController {
 
 	/**
 	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationDaoException 
 	 * 
 	 * 
 	 * 
@@ -69,15 +71,17 @@ public class InternelAuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e)
-			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateTsp(authRequestDTO);
+			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, null, null, e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
-
+		} catch (IdAuthenticationBusinessException e1) {
+			mosipLogger.error(SESSION_ID, null, null, e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e1);
 		}
 
 		return authResponseDTO;

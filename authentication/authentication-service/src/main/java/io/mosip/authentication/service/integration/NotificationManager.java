@@ -33,11 +33,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class NotificationManager {
 
-	private static final String EMAIL = "email";
-
-	private static final String SMS = "sms";
-
-	private static final String NOTIFICATION_TYPE = "mosip.notification.type";
 
 	/** ID Template manager */
 	@Autowired
@@ -84,24 +79,24 @@ public class NotificationManager {
 	 * @param emailId          - sender E-Mail ID
 	 * @param phoneNumber      - sender Phone Number
 	 * @param sender           - to specify the sender type
+	 * @param notificationProperty 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender)
+	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender, String notificationProperty)
 			throws IdAuthenticationBusinessException {
 		String contentTemplate = null;
 		String subjectTemplate = null;
-		Set<NotificationType> notificationtype = new HashSet<>();
-		String notificationtypeconfig = environment.getProperty(NOTIFICATION_TYPE);
-		
-		
+		String notificationtypeconfig = environment.getProperty(notificationProperty);				
 		
 		String notificationMobileNo = phoneNumber;
 		//FIXME Taking from configuration for testing purpose.
 		if(isNotNullorEmpty(phoneNumber)) {
 			notificationMobileNo = environment.getProperty("test.notification.mobile.no");
 		}
+		
+		Set<NotificationType> notificationtype = new HashSet<>();
 
-		if (isNotNullorEmpty(notificationtypeconfig)) {
+		if (isNotNullorEmpty(notificationtypeconfig) && !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
 			if (notificationtypeconfig.contains(",")) {
 				String value[] = notificationtypeconfig.split(",");
 				for (int i = 0; i < 2; i++) {
@@ -184,8 +179,8 @@ public class NotificationManager {
 
 	private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
 			String notificationtypeconfig) {
-		String type = notificationtypeconfig.toLowerCase();
-		if (type.equals(SMS)) {
+		String type = notificationtypeconfig;
+		if (type.equalsIgnoreCase(NotificationType.SMS.getName())) {
 			if (isNotNullorEmpty(phoneNumber)) {
 				notificationtype.add(NotificationType.SMS);
 			} else {
@@ -195,7 +190,7 @@ public class NotificationManager {
 			}
 		}
 
-		if (type.equals(EMAIL)) {
+		if (type.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
 			if (isNotNullorEmpty(emailId)) {
 				notificationtype.add(NotificationType.EMAIL);
 			} else {

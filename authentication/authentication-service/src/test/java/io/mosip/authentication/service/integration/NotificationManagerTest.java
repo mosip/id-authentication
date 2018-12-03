@@ -108,7 +108,7 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, null, "1234567890", SenderType.AUTH);
+		notificationManager.sendNotification(values, null, "1234567890", SenderType.AUTH, "otp.notification.type");
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, null, "1234567890", SenderType.OTP);
+		notificationManager.sendNotification(values, null, "1234567890", SenderType.OTP, "otp.notification.type");
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
 	}
 
 	@Test
@@ -144,7 +144,7 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
 	}
 
 	@Test
@@ -162,7 +162,7 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
 
 	}
 
@@ -176,7 +176,7 @@ public class NotificationManagerTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-		notificationManager.sendNotification(values, null, "9750185759", SenderType.AUTH);
+		notificationManager.sendNotification(values, null, "9750185759", SenderType.AUTH, "otp.notification.type");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -189,7 +189,7 @@ public class NotificationManagerTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -202,7 +202,7 @@ public class NotificationManagerTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
 	}
 
 	@Test
@@ -218,6 +218,6 @@ public class NotificationManagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP);
+		notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
 	}
 }

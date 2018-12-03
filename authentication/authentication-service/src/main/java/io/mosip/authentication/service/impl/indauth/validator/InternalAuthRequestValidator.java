@@ -5,10 +5,10 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -22,7 +22,7 @@ import io.mosip.authentication.service.helper.DateHelper;
  *
  */
 @Component
-public class InternalAuthRequestValidator implements Validator {
+public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String IDV_ID = "idvId";
 
@@ -47,7 +47,31 @@ public class InternalAuthRequestValidator implements Validator {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
 			validateIdvId(requestDTO, errors);
 			validateDate(requestDTO, errors);
+			validateRequest(requestDTO, errors);
 		}
+	}
+
+	/**
+	 * Method to validate auth type
+	 * 
+	 * @param requestDTO
+	 * @param errors
+	 */
+	private void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
+		AuthTypeDTO authTypeDTO = requestDTO.getAuthType();
+		if (authTypeDTO != null) {			
+			if(authTypeDTO.isOtp() || authTypeDTO.isPersonalIdentity() 
+					|| authTypeDTO.isAddress() || authTypeDTO.isFullAddress()) { //config file
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			}
+			validateBioDetails(requestDTO, errors);
+		}else {
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+		}
+		
+		
 	}
 
 	/** validation for UIN and VIN */
@@ -79,6 +103,13 @@ public class InternalAuthRequestValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Validate uin vin.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param refId the ref id
+	 * @param errors the errors
+	 */
 	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors) {
 		String idvIdType = authRequestDTO.getIdvIdType();
 		if (idvIdType.equals(IdType.UIN.getType())) {

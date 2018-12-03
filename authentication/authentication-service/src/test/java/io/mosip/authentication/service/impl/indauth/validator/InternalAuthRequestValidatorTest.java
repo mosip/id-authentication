@@ -30,6 +30,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -107,7 +109,17 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setPersonalIdentity(false);
+		authTypeDTO.setBio(true);
+		BioInfo bioInfo = new BioInfo();
+		DeviceInfo dInfo = new DeviceInfo();
+		bioInfo.setBioType("fgrImg");
+		dInfo.setModel("Mantra");
+		dInfo.setDeviceId("1234");
+		bioInfo.setDeviceInfo(dInfo);		
+		List<BioInfo> lb = new ArrayList<>();
+		lb.add(bioInfo);
+		authRequestDTO.setBioInfo(lb);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -133,7 +145,6 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -164,7 +175,6 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
