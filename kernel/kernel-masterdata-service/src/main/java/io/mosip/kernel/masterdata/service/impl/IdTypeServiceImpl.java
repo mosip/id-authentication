@@ -64,6 +64,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 */
 	@Override
 	public IdTypeResponseDto getIdTypesByLanguageCode(String languageCode) {
+		IdTypeResponseDto idTypeResponseDto = new IdTypeResponseDto();
 		List<IdTypeDto> idDtoList = null;
 		List<IdType> idList = null;
 		try {
@@ -79,7 +80,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 			throw new DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
 					IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		return new IdTypeResponseDto(idDtoList);
+		idTypeResponseDto.setIdtypes(idDtoList);
+		return idTypeResponseDto;
 	}
 
 	/*
