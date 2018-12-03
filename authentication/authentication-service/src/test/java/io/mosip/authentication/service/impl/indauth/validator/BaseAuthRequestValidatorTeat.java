@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,6 +29,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
@@ -55,26 +55,48 @@ public class BaseAuthRequestValidatorTeat {
 	@Mock
 	AuthRequestDTO authRequestDTO;
 
-	@Mock
-	Errors error;
-
 	@Autowired
 	Environment env;
 
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
 
-	Errors errors;
+	Errors error;
 
 	@Before
 	public void before() {
-		errors = new BeanPropertyBindingResult(AuthRequestDTO.class, "authRequestDTO");
+		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+	}
+
+
+	
+	
+	@Test
+	public void testValidateBioDetails_hasError() {
+
+		authRequestDTO = getAuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setAuthType(authType);
+
+		BioInfo bioinfo = new BioInfo();
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+
 	}
 
 	@Test
 	public void testValidateBioDetails() {
 
 		authRequestDTO = getAuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setAuthType(authType);
 
 		IdentityInfoDTO fingerValue = new IdentityInfoDTO();
 		fingerValue.setValue("finger img");
@@ -104,17 +126,24 @@ public class BaseAuthRequestValidatorTeat {
 
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioInfo(bioInfoList);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, errors);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
 
 	@Test
-	public void testValidateFinger() {
+	public void testValidateFinger_NoErrors() {
 		authRequestDTO = getAuthRequestDTO();
 
 		IdentityInfoDTO fingerValue = new IdentityInfoDTO();
@@ -136,16 +165,8 @@ public class BaseAuthRequestValidatorTeat {
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioInfo(bioInfoList);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-
-		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
-			@Override
-			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftThumb();
-			}
-		};
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, errors);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFinger", authRequestDTO, bioInfoList,
+				error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -172,16 +193,7 @@ public class BaseAuthRequestValidatorTeat {
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioInfo(bioInfoList);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-
-		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
-			@Override
-			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftEye();
-			}
-		};
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, errors);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -210,14 +222,22 @@ public class BaseAuthRequestValidatorTeat {
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioInfo(bioInfoList);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, errors);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
 
 	}
 
-	// TODO for false case
+	@Test
+	public void testCheckAtleastOneFingerRequestAvailable_hasError() {
+		authRequestDTO = getAuthRequestDTO();
+
+		authRequestDTO.setRequest(null);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneFingerRequestAvailable",
+				authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
 	@Test
 	public void testCheckAtleastOneFingerRequestAvailable() {
 		authRequestDTO = getAuthRequestDTO();
@@ -244,44 +264,22 @@ public class BaseAuthRequestValidatorTeat {
 		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
 		assertTrue(checkAnyIdInfoAvailable);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneFingerRequestAvailable",
-				authRequestDTO, errors);
+				authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
-	// FIXEME for has error
-	@Ignore
 	@Test
 	public void testNoIrisRequestAvailable_HasError() {
 
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityDTO identitydto = new IdentityDTO();
-		RequestDTO request = new RequestDTO();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue(null);
-		List<IdentityInfoDTO> iris = new ArrayList<IdentityInfoDTO>();
-		// iris.add(identityInfoDTO);
-		identitydto.setLeftEye(iris);
-		request.setIdentity(identitydto);
-		authRequestDTO.setRequest(request);
+		authRequestDTO.setRequest(null);
 
-		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
-			@Override
-			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftEye();
-			}
-		};
-		@SuppressWarnings("unchecked")
-		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
-		// assertFalse(checkAnyIdInfoAvailable);
-
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneIrisRequestAvailable",
-				authRequestDTO, errors);
+				authRequestDTO, error);
 
-		assertFalse(error.hasErrors());
+		assertTrue(error.hasErrors());
 
 	}
 
@@ -300,45 +298,21 @@ public class BaseAuthRequestValidatorTeat {
 		request.setIdentity(identitydto);
 		authRequestDTO.setRequest(request);
 
-		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
-			@Override
-			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftEye();
-			}
-		};
-		@SuppressWarnings("unchecked")
-		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
-		assertTrue(checkAnyIdInfoAvailable);
-
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneIrisRequestAvailable",
-				authRequestDTO, errors);
+				authRequestDTO, error);
 
 		assertFalse(error.hasErrors());
 
 	}
 
-	@Ignore // FIXME for null
 	@Test
 	public void test_NoFaceRequestAvailable() {
 		authRequestDTO = getAuthRequestDTO();
 
-		// IdentityInfoDTO faceValue =new IdentityInfoDTO();
-		// faceValue.setValue("face");
-		// List<IdentityInfoDTO> face = new ArrayList<IdentityInfoDTO>();
-		// face.add(faceValue);
-
-		// IdentityDTO faceIdentity = new IdentityDTO();
-		// faceIdentity.setFace(face);
-
-		// RequestDTO requestDTO = new RequestDTO();
-		// requestDTO.setIdentity(faceIdentity);
-
 		authRequestDTO.setRequest(null);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneFaceRequestAvailable",
-				authRequestDTO, errors);
+				authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -359,9 +333,8 @@ public class BaseAuthRequestValidatorTeat {
 
 		authRequestDTO.setRequest(requestDTO);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneFaceRequestAvailable",
-				authRequestDTO, errors);
+				authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -432,11 +405,12 @@ public class BaseAuthRequestValidatorTeat {
 
 	}
 
-	// TODO
-	@Ignore
 	@Test
 	public void testIsContainDeviceInfo_DeviceNotAvailable_ReturnFalse() {
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setDeviceInfo(null);
 		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
+		deviceInfoList.add(bioinfo);
 
 		boolean isDeviceAvailableForBio = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
 				"isContainDeviceInfo", deviceInfoList);
@@ -444,7 +418,6 @@ public class BaseAuthRequestValidatorTeat {
 
 	}
 
-	// TODO for false case
 	@Test
 	public void testIsDuplicateBioType_True() {
 		authRequestDTO = getAuthRequestDTO();
@@ -489,7 +462,6 @@ public class BaseAuthRequestValidatorTeat {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
@@ -511,7 +483,6 @@ public class BaseAuthRequestValidatorTeat {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -543,7 +514,6 @@ public class BaseAuthRequestValidatorTeat {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		Errors error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -579,6 +549,7 @@ public class BaseAuthRequestValidatorTeat {
 
 	}
 
+	// ----------- Supporting method ---------------
 	private AuthRequestDTO getAuthRequestDTO() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
