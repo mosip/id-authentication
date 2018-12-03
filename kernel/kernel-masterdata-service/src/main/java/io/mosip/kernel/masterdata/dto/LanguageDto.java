@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @ApiModel(value = "Language", description = "Language resource representation")
 public class LanguageDto {
 

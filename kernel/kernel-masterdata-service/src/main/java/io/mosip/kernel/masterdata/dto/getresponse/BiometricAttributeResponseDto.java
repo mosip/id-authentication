@@ -5,7 +5,6 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class BiometricAttributeResponseDto {
 	List<BiometricAttributeDto> biometricattributes;
 }

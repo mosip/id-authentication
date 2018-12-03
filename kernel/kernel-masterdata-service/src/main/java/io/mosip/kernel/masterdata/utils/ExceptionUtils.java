@@ -8,27 +8,32 @@ import java.util.stream.Stream;
  * 
  * @author Urvil Joshi
  * @author Bal Vikash Sharma
+ * @author Sagar Mahapatra
+ * @author Ritesh Sinha
+ * @author Dharmesh Khandelwal
+ * 
  * @since 1.0.0
  */
 public final class ExceptionUtils {
-
+	/**
+	 * Constructor for ExceptionUtils class.
+	 */
 	private ExceptionUtils() {
 		super();
 	}
 
 	/**
-	 * This message is used to get the root cause message of the exception.
+	 * Method to find the root cause of the exception.
 	 * 
-	 * @param ex
-	 *            is of type {@link Throwable}
-	 * @return the root cause message.
+	 * @param exception
+	 *            the exception.
+	 * @return the root cause.
 	 */
-	public static String parseException(Throwable ex) {
-		Optional<Throwable> cause = Stream.iterate(ex, Throwable::getCause)
+	public static String parseException(Throwable exception) {
+		Optional<Throwable> rootCause = Stream.iterate(exception, Throwable::getCause)
 				.filter(element -> element.getCause() == null).findFirst();
-		return cause.isPresent() ? cause.get().getMessage() : ex.getMessage();
+		return rootCause.isPresent() ? rootCause.get().getMessage() : exception.getMessage();
 	}
-
 }
 
 
