@@ -1,5 +1,7 @@
 package io.mosip.registration.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,21 +14,32 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "pre_registration", schema = "reg")
-public class PreRegistration extends RegistrationCommonFields{
+@Table(name = "pre_registration_list", schema = "reg")
+public class PreRegistrationList extends RegistrationCommonFields{
 	@Id
-	@Column(name = "pre_reg_id", length = 36, nullable = false)	
+	@Column(name = "id", length = 36, nullable = false)	
 	private String id;
-	@Column(name = "reg_id", length = 36, nullable = true)
-	private String regId;
-	@Column(name = "file_path", length = 128, nullable = true)
-	private String filePath;
-	@Column(name = "session_key", length = 128, nullable = true)
-	private String sessionKey;
+	@Column(name = "pre_reg_id", length = 64, nullable = false)	
+	private String preRegId;
+	@Column(name = "pre_reg_type", length = 64, nullable = true)
+	private String preRegType;
+	@Column(name = "parent_pre_reg_id", length = 64, nullable = true)
+	private String parentPreRegId;
+	@Column(name = "appointment_date",nullable = true)
+	private Date appointmentDate;
+	@Column(name = "packet_symmetric_key", length = 256, nullable = true)
+	private Date packetSymmetricKey;
 	@Column(name = "status_code", length = 36, nullable = false)
 	private String statusCode;
-	@Column(name = "status_comments", length = 1024, nullable = true)
-	private String statusComments;
+	@Column(name = "status_comment", length = 256, nullable = true)
+	private String statusComment;
+	@Column(name = "packet_path", length = 256, nullable = true)
+	private String packetPath;
+	@Column(name = "sjob_id", length = 36, nullable = true)
+	private String sJobId;
+	@Column(name = "synctrn_id", length = 36, nullable = true)
+	private String synctrnId;
+	
 	@Column(name = "lang_code", length = 3, nullable = false)
 	private String langCode;
 	@Column(name = "is_deleted", nullable = true)
@@ -34,29 +47,42 @@ public class PreRegistration extends RegistrationCommonFields{
 	@Column(name = "del_dtimes", nullable = true)
 	private String delDtimes;
 	
+	
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getRegId() {
-		return regId;
+	public String getPreRegId() {
+		return preRegId;
 	}
-	public void setRegId(String regId) {
-		this.regId = regId;
+	public void setPreRegId(String preRegId) {
+		this.preRegId = preRegId;
 	}
-	public String getFilePath() {
-		return filePath;
+	public String getPreRegType() {
+		return preRegType;
 	}
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setPreRegType(String preRegType) {
+		this.preRegType = preRegType;
 	}
-	public String getSessionKey() {
-		return sessionKey;
+	public String getParentPreRegId() {
+		return parentPreRegId;
 	}
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
+	public void setParentPreRegId(String parentPreRegId) {
+		this.parentPreRegId = parentPreRegId;
+	}
+	public Date getAppointmentDate() {
+		return appointmentDate;
+	}
+	public void setAppointmentDate(Date appointmentDate) {
+		this.appointmentDate = appointmentDate;
+	}
+	public Date getPacketSymmetricKey() {
+		return packetSymmetricKey;
+	}
+	public void setPacketSymmetricKey(Date packetSymmetricKey) {
+		this.packetSymmetricKey = packetSymmetricKey;
 	}
 	public String getStatusCode() {
 		return statusCode;
@@ -64,11 +90,29 @@ public class PreRegistration extends RegistrationCommonFields{
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
-	public String getStatusComments() {
-		return statusComments;
+	public String getStatusComment() {
+		return statusComment;
 	}
-	public void setStatusComments(String statusComments) {
-		this.statusComments = statusComments;
+	public void setStatusComment(String statusComment) {
+		this.statusComment = statusComment;
+	}
+	public String getPacketPath() {
+		return packetPath;
+	}
+	public void setPacketPath(String packetPath) {
+		this.packetPath = packetPath;
+	}
+	public String getsJobId() {
+		return sJobId;
+	}
+	public void setsJobId(String sJobId) {
+		this.sJobId = sJobId;
+	}
+	public String getSynctrnId() {
+		return synctrnId;
+	}
+	public void setSynctrnId(String synctrnId) {
+		this.synctrnId = synctrnId;
 	}
 	public String getLangCode() {
 		return langCode;
@@ -88,6 +132,5 @@ public class PreRegistration extends RegistrationCommonFields{
 	public void setDelDtimes(String delDtimes) {
 		this.delDtimes = delDtimes;
 	}
-	
 
 }

@@ -1,7 +1,7 @@
-package io.mosip.registration.manager;
+package io.mosip.registration.jobs;
 
-import io.mosip.registration.entity.PreRegistration;
-import io.mosip.registration.entity.PreregistrationTransaction;
+import io.mosip.registration.entity.PreRegistrationList;
+import io.mosip.registration.entity.SyncTransaction;
 
 /**
  * PreRegistartionManager  is a manager
@@ -16,6 +16,6 @@ public interface PreRegistartionManager {
 	 * @param preRegistration is a entity
 	 * @return saved transaction entity
 	 */
-	public PreregistrationTransaction saveTransaction(PreRegistration preRegistration);
+	public SyncTransaction saveTransaction(PreRegistrationList preRegistration);
 
 }
