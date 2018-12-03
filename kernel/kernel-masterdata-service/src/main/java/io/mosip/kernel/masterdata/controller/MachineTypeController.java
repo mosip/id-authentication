@@ -31,7 +31,7 @@ public class MachineTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
-	@PostMapping("/machinetype")
+	@PostMapping("/machinetypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createMachineType(@RequestBody MachineTypeRequestDto machineType) {
 		return new ResponseEntity<>( machinetypeService.createMachineType(machineType), HttpStatus.CREATED);
 	}

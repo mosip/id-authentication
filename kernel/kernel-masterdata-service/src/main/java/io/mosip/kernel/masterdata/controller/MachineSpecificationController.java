@@ -25,7 +25,7 @@ public class MachineSpecificationController {
 	 *            input from user Machine specification DTO
 	 * @return {@link MachineTypeCodeAndLanguageCodeAndId}
 	 */
-	@PostMapping("/machinespecification")
+	@PostMapping("/machinespecifications")
 	public ResponseEntity<MachineTypeCodeAndLanguageCodeAndId> createMachineSpecification(
 			@RequestBody MachineSpecificationRequestDto machineSpecification) {
 

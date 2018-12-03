@@ -29,7 +29,7 @@ public class DeviceTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
-	@PostMapping("/devicetype")
+	@PostMapping("/devicetypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
 		return new ResponseEntity<>( deviceTypeService.createDeviceTypes(deviceTypes), HttpStatus.CREATED);
 	}

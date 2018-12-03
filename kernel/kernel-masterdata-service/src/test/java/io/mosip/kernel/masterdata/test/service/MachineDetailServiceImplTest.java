@@ -123,7 +123,7 @@ public class MachineDetailServiceImplTest {
 		MachineResponseDto actual = machineDetailServiceImpl.getMachineAll();
 
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.getMachineDetails().size() > 0);
+		Assert.assertTrue(actual.getMachines().size() > 0);
 
 	}
 
@@ -178,7 +178,7 @@ public class MachineDetailServiceImplTest {
 		MachineResponseDto actual = machineDetailServiceImpl.getMachineLangcode("ENG");
 
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.getMachineDetails().size() > 0);
+		Assert.assertTrue(actual.getMachines().size() > 0);
 
 	}
 	
