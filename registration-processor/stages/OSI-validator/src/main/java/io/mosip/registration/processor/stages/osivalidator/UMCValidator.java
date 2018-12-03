@@ -84,10 +84,13 @@ public class UMCValidator {
 				if(dto.getId()==machineId) {
 					isActiveMachine=dto.getIsActive();
 					if(!isActiveMachine)this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
+					break;
 				}
-				
+				else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+				}
 			}
-			isActiveMachine=dtos.get(0).getIsActive();
+			
 		}else {
 			this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
 		}
@@ -107,11 +110,29 @@ public class UMCValidator {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos=umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
 				registrationCenterId, machineId, officerId).getRegistrationCenters();
 		
-		if(!supervisordtos.isEmpty() || !officerdtos.isEmpty()) {
-			 supervisorActive = supervisordtos.get(0).getIsActive();
-			 officerActive = officerdtos.get(0).getIsActive();
+		if(!supervisordtos.isEmpty()) {
+			for(RegistrationCenterUserMachineMappingHistoryDto dto: officerdtos) {
+				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==officerId) {
+					supervisorActive = officerdtos.get(0).getIsActive();
+					break;
+				}
+				else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
+				}
+		} 
 		}
-		else {
+		if(!officerdtos.isEmpty()) {
+			for(RegistrationCenterUserMachineMappingHistoryDto dto: officerdtos) {
+				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==officerId) {
+					officerActive = officerdtos.get(0).getIsActive();
+					break;
+				}
+				else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
+				}
+		}
+		}
+		if(supervisordtos.isEmpty() && officerdtos.isEmpty()) {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
 		}
 		
