@@ -4,8 +4,8 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_BIOMETRIC_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import javafx.event.ActionEvent;
@@ -106,10 +105,12 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 * @param stage
 	 * @param detailsDTOs
 	 */
-	public void init(AnchorPane selectedPane, Stage stage, List<FingerprintDetailsDTO> detailsDTOs) {
+	public void init(AnchorPane selectedPane, Stage stage, List<FingerprintDetailsDTO> fpDetailsDTOs,
+			List<FingerprintDetailsDTO> fpDTOs) {
 		selectedAnchorPane = selectedPane;
 		primarystage = stage;
-		fingerprintDetailsDTOs = detailsDTOs;
+		fingerprintDetailsDTOs = fpDetailsDTOs;
+		fingerprintDTOs = fpDTOs;
 		popupTitle.setText("Fingerprint");
 	}
 
@@ -149,15 +150,14 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/LEFT HAND");
 
-			Image img = loadImage("src/main/resources/FINGER PRINTS/LeftPalm.jpg");
+			Image img = new Image(
+					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/LeftPalm.jpg")));
+
 			fingerPrintScanImage.setImage(img);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpCaptureController.leftHandPalmImageview.setImage(img);
-			
-			  SessionContext.getInstance().getMapObject().put("LEFT_PALM_PATH",
-			  "src/main/resources/FINGER PRINTS/LeftPalm.jpg");
-			 
+
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
 			fpDetailsDTO.setFingerPrint(getImageBytes("src/main/resources/FINGER PRINTS/LeftPalm.jpg"));
@@ -172,14 +172,12 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/RIGHT HAND");
 
-			Image img = loadImage("src/main/resources/FINGER PRINTS/rightPalm.jpg");
-
+			Image img = new Image(
+					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/rightPalm.jpg")));
 			fingerPrintScanImage.setImage(img);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpCaptureController.rightHandPalmImageview.setImage(img);
-			 SessionContext.getInstance().getMapObject().put("RIGHT_PALM_PATH",
-			 "src/main/resources/FINGER PRINTS/rightPalm.jpg");
 
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
@@ -195,13 +193,12 @@ public class FingerPrintScanController extends BaseController implements Initial
 
 			readFingerPrints("src/main/resources/FINGER PRINTS/THUMB");
 
-			Image img = loadImage("src/main/resources/FINGER PRINTS/thumb.jpg");
+			Image img = new Image(
+					new ByteArrayInputStream(getImageBytes("src/main/resources/FINGER PRINTS/thumb.jpg")));
 			fingerPrintScanImage.setImage(img);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 			primarystage.close();
 			fpCaptureController.thumbImageview.setImage(img);
-			 SessionContext.getInstance().getMapObject().put("THUMB_PATH",
-			 "src/main/resources/FINGER PRINTS/thumb.jpg");
 
 			FingerprintDetailsDTO fpDetailsDTO = new FingerprintDetailsDTO();
 
@@ -215,7 +212,6 @@ public class FingerPrintScanController extends BaseController implements Initial
 			fingerprintDTOs.add(fpDetailsDTO);
 		}
 		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
-
 	}
 
 	/**
@@ -260,27 +256,6 @@ public class FingerPrintScanController extends BaseController implements Initial
 	}
 
 	/**
-	 * {@code loadImage} is to load the scanned image.
-	 * 
-	 * @param imgPath
-	 * @return Image
-	 */
-	protected Image loadImage(String imgPath) {
-		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Loading scanned image started");
-		Image img = null;
-		try (FileInputStream file = new FileInputStream(new File(imgPath))) {
-			img = new Image(file);
-		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-		}
-		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Loading scanned image ended");
-		return img;
-	}
-
-	/**
 	 * event class to exit from present pop up window.
 	 * 
 	 * @param event
@@ -316,7 +291,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 		byte[] fileContent = null;
 		try {
 			fileContent = Files.readAllBytes(fi.toPath());
-		}  catch (IOException ioException) {
+		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 
 		}
