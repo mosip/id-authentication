@@ -43,6 +43,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Gender;
@@ -63,6 +64,7 @@ import io.mosip.kernel.masterdata.entity.id.GenderID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
@@ -101,6 +103,9 @@ public class MasterdataIntegrationTest {
 	private MockMvc mockMvc;
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
+
+	@MockBean
+	private DeviceRepository deviceRepository;
 
 	@MockBean
 	private DocumentTypeRepository documentTypeRepository;
@@ -170,6 +175,7 @@ public class MasterdataIntegrationTest {
 	RegistrationCenterHistoryRepository repository;
 
 	RegistrationCenterHistory center;
+	Device device;
 
 	List<RegistrationCenterHistory> centers = new ArrayList<>();
 
@@ -251,6 +257,8 @@ public class MasterdataIntegrationTest {
 
 		addValidDocumentSetUp();
 
+		deviceSetup();
+
 		registrationCenterDeviceSetup();
 		registrationCenterMachineSetup();
 		registrationCenterMachineDeviceSetup();
@@ -269,6 +277,20 @@ public class MasterdataIntegrationTest {
 	private void registrationCenterMachineDeviceSetup() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void deviceSetup() {
+		List<Device> deviceList = new ArrayList<>();
+		device = new Device();
+		device.setCode("1001");
+		device.setName("laptop");
+		device.setSerialNum("1234567890");
+		device.setIpAddress("100.100.100.80");
+		device.setMacAddress("100.100.100.80");
+		device.setDeviceSpecId("laptop_id");
+		device.setLangCode("ENG");
+		device.setIsActive(true);
+		deviceList.add(device);
 	}
 
 	private void addValidDocumentSetUp() {
@@ -1206,6 +1228,27 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
+	}
+
+	// ------------------------------------------device -------------------------------------------
+
+	@Test
+	public void addDeviceTypeTest() throws Exception {
+		String json = "{ \"id\": \"string\", \"request\": { \"code\": \"1234rf\", \"deviceSpecId\": \"1011\", \"ipAddress\": \"string\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"string\", \"name\": \"string\", \"serialNum\": \"string\" }, \"timestamp\": \"2018-12-03T09:46:53.033Z\", \"ver\": \"string\"}";
+		when(deviceRepository.create(Mockito.any())).thenReturn(device);
+		mockMvc.perform(post("/devices/device").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addDeviceTypeExceptionTest() throws Exception {
+
+		String json = "{ \"id\": \"string\", \"request\": { \"code\": \"1234rf\", \"deviceSpecId\": \"1011\", \"ipAddress\": \"string\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"string\", \"name\": \"string\", \"serialNum\": \"string\" }, \"timestamp\": \"2018-12-03T09:46:53.033Z\", \"ver\": \"string\"}";
+		when(deviceRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
+		mockMvc.perform(post("/devices/device").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 }
