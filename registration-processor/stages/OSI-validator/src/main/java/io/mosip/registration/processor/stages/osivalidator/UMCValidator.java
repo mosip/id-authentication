@@ -39,35 +39,43 @@ public class UMCValidator {
 		List<RegistrationCenterDto> dtos= umcClient.getRegistrationCentersHistory(registrationCenterId, langCode, effectiveDate)
 				.getRegistrationCenters();
 		
+		if( latitude==null || longitude==null) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+		}
+		else if(latitude.trim().isEmpty() || longitude.trim().isEmpty()) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+		}
+		else {
 		if(!dtos.isEmpty()) {
-			if( latitude==null || longitude==null) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-			}
-			else if(latitude.trim().isEmpty() || longitude.trim().isEmpty()) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-			}
-			else {
+			
 				for(RegistrationCenterDto dto: dtos) {
 					if(registrationCenterId==dto.getId()) {
-					if(dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
+						if(dto.getLatitude()==null || dto.getLongitude()==null) {
+							this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+						}
+						else if(dto.getLatitude().trim().isEmpty() || dto.getLongitude().trim().isEmpty()) {
+							this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+						}else {
+							if(dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
 				
-						activeRegCenter=dto.getIsActive();
-						if(!activeRegCenter)this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-						break;
-					}
-					else {
-						this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-					}
+								activeRegCenter=dto.getIsActive();
+								if(!activeRegCenter)this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+								break;
+							}
+							else {
+								this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+							}
+						}
 					}
 					else {
 						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
 					}
 				}
 			}
-		}else {
+		else {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
 		}
-		
+		}
 		
 		return activeRegCenter;
 
@@ -160,7 +168,7 @@ public class UMCValidator {
 	}
 
 	public InternalRegistrationStatusDto getRegistrationStatusDto() {
-		return registrationStatusDto;
+		return this.registrationStatusDto;
 	}
 
 	public void setRegistrationStatusDto(InternalRegistrationStatusDto registrationStatusDto) {
