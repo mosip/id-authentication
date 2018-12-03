@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -42,13 +43,15 @@ import javafx.stage.StageStyle;
  * fingerprints.
  * 
  * @author Mahesh Kumar
- * @since 1.0
+ * @since  1.0
  */
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
 
-	@Value("${capture_photo_using_device}")
-	public String capturePhotoUsingDevice;
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(FingerPrintCaptureController.class);
 
 	/** The finger print scan controller. */
 	@Autowired
@@ -158,7 +161,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				selectedPane.requestFocus();
 				Stage primaryStage = new Stage();
 				primaryStage.initStyle(StageStyle.UNDECORATED);
-				Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
+				Parent ackRoot = BaseController
+						.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
 				fingerPrintScanController.init(selectedPane, primaryStage, fingerprintDetailsDTOs);
 				primaryStage.setResizable(false);
 				Scene scene = new Scene(ackRoot);
@@ -174,7 +178,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						ioException.getMessage());
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,  "Please select a pane to continue scan.");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Please select a pane to continue scan.");
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Scanning of fingersplaced ended");
@@ -187,38 +191,30 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	public void saveBiometricDetails() {
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Saving and Validating of captured fingerprints has started");
-		
-		// FIXME left palm is not shown after being captured
-		if(null==leftHandPalmImageview.getImage() && null!=rightHandPalmImageview.getImage() && null!=thumbImageview.getImage()) {
-			
+
+		if (null != leftHandPalmImageview.getImage() && null != rightHandPalmImageview.getImage()
+				&& null != thumbImageview.getImage()) {
+
 			RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA);
+					.get(RegistrationConstants.REGISTRATION_DATA);
 
-		BiometricDTO biometricDTO = new BiometricDTO();
-		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+			BiometricDTO biometricDTO = new BiometricDTO();
+			BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 
-		biometricInfoDTO.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-		biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
+			biometricInfoDTO.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+			biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
 
-		fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs);
+			fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs);
 
-		/*if (capturePhotoUsingDevice.equals("Y")) {
-			registrationController.getBiometricsPane().setVisible(true);
+			registrationController.toggleFingerprintCaptureVisibility(false);
+			registrationController.toggleIrisCaptureVisibility(true);
+
+			if (null != registrationDTOContent) {
+				registrationDTOContent.setBiometricDTO(biometricDTO);
+			}
+
 		} else {
-			registrationController.getBiometricsPane().setVisible(false);
-		}*/
-
-		// Hide FingerprintCapture pane and show IrisCapture pane
-		registrationController.toggleFingerprintCaptureVisibility(false);
-		registrationController.toggleIrisCaptureVisibility(true);
-
-		if (null != registrationDTOContent) {
-			registrationDTOContent.setBiometricDTO(biometricDTO);
-		}
-
-		//fingerPrintCapturePane.setVisible(false);
-		}else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,  "Please scan your Fingers to continue.");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Please scan your Fingers to continue.");
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Saving and Validating of captured fingerprints has ended");
