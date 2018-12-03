@@ -5,5 +5,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface SyncConfigDetailsService {
 
 	public JsonNode getEnrolmentClientConfigDetails();
-	public JsonNode  getAdminConfigDetails();
+	public JsonNode  getAdminConfigDetails(String regId);
 }
