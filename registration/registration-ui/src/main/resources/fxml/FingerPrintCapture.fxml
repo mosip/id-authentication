@@ -42,5 +42,10 @@
       <Label layoutX="288.0" layoutY="309.0" text="Quality %       :" />
       <Label layoutX="559.0" layoutY="336.0" text="Threshold %   :" />
       <Label layoutX="559.0" layoutY="309.0" text="Quality %       :" />
+      <Button fx:id="biometricsNext1" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#saveBiometricDetails" prefHeight="23.0" prefWidth="55.0" text="Previous">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
