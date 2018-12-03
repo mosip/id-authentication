@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MachineResponseDto {
-	private List<MachineDetailDto> machineDetails;
+	private List<MachineDto> machines;
 }
 

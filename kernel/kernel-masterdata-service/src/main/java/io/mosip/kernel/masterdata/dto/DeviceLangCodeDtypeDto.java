@@ -4,7 +4,12 @@
  */
 package io.mosip.kernel.masterdata.dto;
 
+
+import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Device Details for given Language code and device type
@@ -15,6 +20,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeviceLangCodeDtypeDto {
 
 	/**
@@ -49,10 +56,14 @@ public class DeviceLangCodeDtypeDto {
 	 * Field for is active
 	 */
 	private boolean isActive;
+	
 	/**
 	 * Field for device type
 	 */
-
 	private String deviceTypeCode;
+	/**
+	 * Field to hold date and time for Validity of the Device
+	 */
+	private LocalDateTime validityEndDateTime; 
 
 }

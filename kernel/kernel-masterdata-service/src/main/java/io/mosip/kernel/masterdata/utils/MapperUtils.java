@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.converter.MachineHistroyConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
@@ -33,6 +35,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -45,23 +48,41 @@ public class MapperUtils {
 	@Autowired
 	private DataMapper dataMapperImpl;
 
-	public <S, D> D map(final S source, D destination) {
-		mapValues(source, destination);
+	public <E, D> D map(final E entity, D object) {
+		dataMapperImpl.map(entity, object, true, null, null, true);
+		return object;
+	}
+
+	public <D, T> D map(final T entity, Class<D> outCLass) {
+		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
+
+	}
+
+	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
+		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
+	}
+
+	// ----------------------------------------------------------------------------------------------------------------------------
+	public <S, D> D mapNew(final S source, D destination) {
+		if (!EmptyCheckUtils.isNullEmpty(source) && !EmptyCheckUtils.isNullEmpty(destination)) {
+			mapValues(source, destination);
+		}
 		return destination;
 	}
 
-	public <S, D> D map(final S source, Class<D> destinationClass) {
+	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
 		Object destination;
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-991", "Error while mapping source object to destination", e);
+
+			throw new DataAccessLayerException("KER-MSD-991", e.getMessage(), e);
 		}
-		return (D) map(source, destination);
+		return (D) mapNew(source, destination);
 	}
 
-	public <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
-		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
+	public <S, D> List<D> mapAllNew(final Collection<S> sourceList, Class<D> destinationClass) {
+		return sourceList.stream().map(entity -> mapNew(entity, destinationClass)).collect(Collectors.toList());
 	}
 
 	private <S, D> void mapValues(S source, D destination) {
@@ -70,8 +91,10 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
+				sfield.setAccessible(true);
 				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
 					setFieldValue(sfield.get(source), destination);
+					sfield.setAccessible(false);
 					isIdMapped = true;
 				} else if (!isSuperMapped) {
 					setBaseFieldValue(source, destination);
@@ -82,7 +105,8 @@ public class MapperUtils {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-992", "Error while mapping local date or time", e);
+
+			throw new DataAccessLayerException("KER-MSD-992", e.getMessage(), e);
 		}
 	}
 
@@ -117,7 +141,8 @@ public class MapperUtils {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-993", "Error while mapping source object to destination", e);
+
+			throw new DataAccessLayerException("KER-MSD-993", e.getMessage(), e);
 		}
 	}
 
@@ -157,16 +182,19 @@ public class MapperUtils {
 		dtf.setAccessible(false);
 		ef.setAccessible(false);
 	}
+	// ----------------------------------------------------------------------------------------------------------------------------
 
-	/*
-	 * public List<RegistrationCenterDto>
-	 * mapRegistrationCenterHistory(List<RegistrationCenterHistory> list) {
-	 * List<RegistrationCenterDto> responseDto = new ArrayList<>(); list.forEach(p
-	 * -> { RegistrationCenterDto dto = new RegistrationCenterDto();
-	 * dataMapperImpl.map(p, dto, true, null, null, true); responseDto.add(dto); });
-	 * 
-	 * return responseDto; }
-	 */
+	public List<MachineHistoryDto> mapMachineHistory(List<MachineHistory> machineHistoryList) {
+		List<MachineHistoryDto> responseDto = new ArrayList<>();
+		machineHistoryList.forEach(p -> {
+			MachineHistoryDto dto = new MachineHistoryDto();
+			dataMapperImpl.map(p, dto, new MachineHistroyConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
 
 	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
 			List<RegistrationCenter> list) {
@@ -262,25 +290,55 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[8]);
+			//deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
+			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
+			
+			
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
 
 	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
 		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
-		DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
-
+		
 		for (DeviceType deviceType : deviceTypes) {
+			DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
 			deviceTypeDto.setName(deviceType.getName());
 			deviceTypeDto.setDescription(deviceType.getDescription());
 			deviceTypeDto.setCode(deviceType.getCode());
 			deviceTypeDto.setLangCode(deviceType.getLangCode());
+			deviceTypeDtoList.add(deviceTypeDto);
 		}
-		deviceTypeDtoList.add(deviceTypeDto);
+		
 		return deviceTypeDtoList;
 	}
+	
+	
+	
+	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
+		List<MachineDto> machineDtoList = new ArrayList<>();
+
+		for (Machine machine : machines) {		
+			MachineDto machineDto = mapMachineDto(machine);
+			machineDtoList.add(machineDto);
+		}
+		return machineDtoList;
+	}
+	
+	public MachineDto mapMachineDto(Machine machine) {
+		MachineDto machineDto = new MachineDto();
+		machineDto.setName(machine.getName());
+		machineDto.setId(machine.getName());
+		machineDto.setSerialNum(machine.getSerialNum());
+		machineDto.setIsActive(machine.getIsActive());
+		machineDto.setMachineSpecId(machine.getMachineSpecId());
+		machineDto.setValidityDateTime(machine.getValidityDateTime());
+		machineDto.setIpAddress(machine.getIpAddress());
+		machineDto.setLangCode(machine.getLangCode());
+		return machineDto;
+	}
+
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
@@ -301,32 +359,4 @@ public class MapperUtils {
 		return deviceSpecificationDtoList;
 	}
 
-	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList) {
-		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
-
-		for (MachineHistory machineHistory : machineHistoryList) {
-			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
-			machineHistoryDto.setId(machineHistory.getId());
-			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
-			machineHistoryDto.setCreatedtime(machineHistory.getCreatedDateTime());
-			machineHistoryDto.setDeletedtime(machineHistory.getDeletedDateTime());
-			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
-			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
-			machineHistoryDto.setIsActive(machineHistory.getIsActive());
-			machineHistoryDto.setIsDeleted(machineHistory.getIsDeleted());
-			machineHistoryDto.setLangCode(machineHistory.getLangCode());
-			machineHistoryDto.setMacAddress(machineHistory.getMacAddress());
-			machineHistoryDto.setMspecId(machineHistory.getMspecId());
-			machineHistoryDto.setName(machineHistory.getName());
-			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
-			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
-			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedDateTime());
-			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
-			machineHistoryDtoList.add(machineHistoryDto);
-
-		}
-
-		return machineHistoryDtoList;
-
-	}
 }

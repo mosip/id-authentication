@@ -1,9 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
-import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Machine Details
@@ -25,7 +25,7 @@ public interface MachineService {
 	 * @return Machine Detail for given machine id and language code
 	 *
 	 */
-	MachineDetailResponseIdDto getMachineDetailIdLang(String id, String langCode);
+	MachineResponseIdDto getMachineIdLangcode(String id, String langCode);
 
 	/**
 	 * This abstract method to fetch all machines details
@@ -33,7 +33,7 @@ public interface MachineService {
 	 * @return Returning all Machines Details
 	 *
 	 */
-	MachineResponseDto getMachineDetailAll();
+	MachineResponseDto getMachineAll();
 
 	/**
 	 * This abstract method to fetch machine details for given language code
@@ -43,7 +43,7 @@ public interface MachineService {
 	 * @return Machine Detail for given machine id and language code
 	 *
 	 */
-	MachineResponseDto getMachineDetailLang(String langCode);
+	MachineResponseDto getMachineLangcode(String langCode);
 	/**
 	 * Abstract method to save Machine Details to the Database
 	 * 
@@ -52,6 +52,6 @@ public interface MachineService {
 	 * @return {@link MachineSpecIdAndId}
 	 */
 	
-	 public MachineSpecIdAndId saveMachine(MachineRequestDto machine);
+	 public MachineSpecIdAndId createMachine(MachineRequestDto machine);
 
 }

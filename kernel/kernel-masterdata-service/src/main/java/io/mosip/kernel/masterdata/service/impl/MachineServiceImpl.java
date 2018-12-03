@@ -9,16 +9,19 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
-import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -38,20 +41,22 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 
+	@Autowired
+	MachineHistoryRepository machineHistoryRepository;
+	
+	
+
 	/**
 	 * Field to hold ObjectMapperUtil object
 	 */
 	@Autowired
 	MapperUtils objectMapperUtil;
-	
 
 	@Autowired
 	private MetaDataUtils metaUtils;
-	
 
 	@Autowired
 	private DataMapper dataMapper;
-	
 
 	/**
 	 * Method used for retrieving Machine details based on given Machine ID and
@@ -78,27 +83,26 @@ public class MachineServiceImpl implements MachineService {
 	 * 
 	 */
 	@Override
-	public MachineDetailResponseIdDto getMachineDetailIdLang(String id, String langCode) {
-		Machine machineDetail = null;
-		MachineDetailDto machineDetailDto = null;
-		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
+	public MachineResponseIdDto getMachineIdLangcode(String id, String langCode) {
+		Machine machine = null;
+		MachineDto machineDto = null;
+		MachineResponseIdDto machineResponseIdDto = new MachineResponseIdDto();
 		try {
-			machineDetail = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalse(id,
-					langCode);
-		} catch (DataAccessException dataAccessLayerException) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			machine = machineRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(id, langCode);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
-		if (machineDetail != null) {
-			machineDetailDto = objectMapperUtil.map(machineDetail, MachineDetailDto.class);
+		if (machine != null) {
+			machineDto = objectMapperUtil.mapMachineDto(machine);
 		} else {
 
-			throw new DataNotFoundException(MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 		}
-		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
-		return machineDetailResponseIdDto;
+		machineResponseIdDto.setMachineDto(machineDto);
+		return machineResponseIdDto;
 
 	}
 
@@ -120,26 +124,27 @@ public class MachineServiceImpl implements MachineService {
 	 */
 
 	@Override
-	public MachineResponseDto getMachineDetailAll() {
-		List<Machine> machineDetailList = null;
-		List<MachineDetailDto> machineDetailDtoList = null;
-		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
-		try {
-			machineDetailList = machineRepository.findAllByIsDeletedFalse();
+	public MachineResponseDto getMachineAll() {
+		List<Machine> machineList = null;
 
-		} catch (DataAccessException dataAccessLayerException) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+		List<MachineDto> machineDtoList = null;
+		MachineResponseDto machineResponseDto = new MachineResponseDto();
+		try {
+			machineList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
+
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
-		if (machineDetailList != null && !machineDetailList.isEmpty()) {
-			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
+		if (machineList != null && !machineList.isEmpty()) {
+			machineDtoList = objectMapperUtil.mapMachineListDto(machineList);
 
 		} else {
-			throw new DataNotFoundException(MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
-		return machineDetailResponseDto;
+		machineResponseDto.setMachineDetails(machineDtoList);
+		return machineResponseDto;
 	}
 
 	/**
@@ -164,43 +169,45 @@ public class MachineServiceImpl implements MachineService {
 	 */
 
 	@Override
-	public MachineResponseDto getMachineDetailLang(String langCode) {
-		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
-		List<Machine> machineDetailList = null;
-		List<MachineDetailDto> machineDetailDtoList = null;
+	public MachineResponseDto getMachineLangcode(String langCode) {
+		MachineResponseDto machineResponseDto = new MachineResponseDto();
+		List<Machine> machineList = null;
+		List<MachineDto> machineDtoList = null;
 		try {
-			machineDetailList = machineRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
-		} catch (DataAccessException dataAccessLayerException) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
-		if (machineDetailList != null && !machineDetailList.isEmpty()) {
-			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
+		if (machineList != null && !machineList.isEmpty()) {
+			machineDtoList = objectMapperUtil.mapMachineListDto(machineList);
+	
 		} else {
-			throw new DataNotFoundException(MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
-		return machineDetailResponseDto;
+		machineResponseDto.setMachineDetails(machineDtoList);
+		return machineResponseDto;
 	}
 
 	@Override
-	public MachineSpecIdAndId saveMachine(MachineRequestDto machine) {
-		Machine renMachine = new Machine();
+	public MachineSpecIdAndId createMachine(MachineRequestDto machine) {
+		Machine crtMachine;
 
-		Machine entity = metaUtils
-				.setCreateMetaData(machine.getRequest().getMachineDto(), Machine.class);
+		Machine entity = metaUtils.setCreateMetaData(machine.getRequest().getMachineDto(), Machine.class);
+		MachineHistory entityHistory = metaUtils.createdMachineHistory(entity);
+
 		try {
-			 renMachine = machineRepository.create(entity);
+			crtMachine = machineRepository.create(entity);
+			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException e) {
-			throw new MasterDataServiceException(
-					MachineErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					e.getErrorText());
 		}
 		MachineSpecIdAndId machineSpecIdAndId = new MachineSpecIdAndId();
-				dataMapper.map(renMachine, machineSpecIdAndId, true, null, null, true);
-			
-		return machineSpecIdAndId;	
+		dataMapper.map(crtMachine, machineSpecIdAndId, true, null, null, true);
+
+		return machineSpecIdAndId;
 	}
 
 }

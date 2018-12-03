@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineHistory;
 
 @Component
 @SuppressWarnings("unchecked")
@@ -28,7 +30,7 @@ public class MetaDataUtils {
 	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
-
+	
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 
 		Field[] fields = entity.getClass().getDeclaredFields();
@@ -62,7 +64,7 @@ public class MetaDataUtils {
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
-
+		
 		return entities;
 
 	}
@@ -71,5 +73,32 @@ public class MetaDataUtils {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
 	}
+	
+	
+public MachineHistory createdMachineHistory(Machine machine) {
+		
+		LocalDateTime etime = LocalDateTime.now(ZoneId.of("UTC"));
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		String contextUser = authN.getName();
+		
+		MachineHistory machineHistory = new MachineHistory() ;
+		machineHistory.setId(machine.getId());
+		machineHistory.setName(machine.getName());
+		machineHistory.setMacAddress(machine.getMacAddress());
+		machineHistory.setSerialNum(machine.getSerialNum());
+		machineHistory.setIpAddress(machine.getIpAddress());
+		machineHistory.setMspecId(machine.getMachineSpecId());
+		machineHistory.setLangCode(machine.getLangCode());
+		machineHistory.setIsActive(machine.getIsActive());
+		machineHistory.setValEndDtimes(machine.getValidityDateTime());
+		
+		setCreatedDateTime(contextUser,machineHistory);
+		machineHistory.setEffectDtimes(etime);
+		
+		
+		return machineHistory;
+		
+	}
 
 }
+

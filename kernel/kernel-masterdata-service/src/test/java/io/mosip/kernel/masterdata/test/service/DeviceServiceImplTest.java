@@ -65,7 +65,7 @@ public class DeviceServiceImplTest {
 		deviceDto.setName("ENG");
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
 		deviceDtoList.add(deviceDto);
-		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(deviceList);
 		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
 		DeviceResponseDto actual = deviceServiceImpl.getDeviceLangCode("ENG");
@@ -75,14 +75,14 @@ public class DeviceServiceImplTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getDeviceLangCodeThrowsDeviceNotFoundExceptionTest() {
-		doReturn(null).when(deviceRepository).findByLangCodeAndIsDeletedFalse(Mockito.anyString());
+		doReturn(null).when(deviceRepository).findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString());
 		deviceServiceImpl.getDeviceLangCode("ENG");
 
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getMachineDetailAllThrowsDataAccessExcetionTest() {
-		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		deviceServiceImpl.getDeviceLangCode("ENG");
 

@@ -21,7 +21,7 @@ public interface MachineSpecificationService {
 	 * 
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	public MachineTypeCodeAndLanguageCodeAndId saveMachineSpecification(MachineSpecificationRequestDto machineSpecification);
+	public MachineTypeCodeAndLanguageCodeAndId createMachineSpecification(MachineSpecificationRequestDto machineSpecification);
 
 
 }
