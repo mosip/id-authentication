@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PublicKeyResponse<T> {
+	
+	private String alias;
 
 	private T publicKey;
 
