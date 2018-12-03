@@ -55,8 +55,8 @@ public class MachineControllerTest1 {
                                 machineDto.setLangCode("ENG");
                                 machineDto.setIsActive(true);
                                 machineDtoList.add(machineDto);
-                                machineResponseIdDto.setMachineDto(machineDto);
-                                machineResponseDto.setMachineDetails(machineDtoList);
+                                machineResponseIdDto.setMachine(machineDto);
+                                machineResponseDto.setMachines(machineDtoList);
                 }
                 
                 @Test
