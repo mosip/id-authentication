@@ -44,7 +44,7 @@ public class ApplicantDocumentValidation {
 					&& checkDocumentAvailability(DocumentCategory.POR.name(), identity))
 				isApplicantDocumentVerified = true;
 
-			else if (registrationType.equalsIgnoreCase(ApplicantType.ADULT.name())
+			else if (applicantType.equalsIgnoreCase(ApplicantType.ADULT.name())
 					&& checkDocumentAvailability(DocumentCategory.POI.name(), identity)
 					&& checkDocumentAvailability(DocumentCategory.POA.name(), identity)) {
 

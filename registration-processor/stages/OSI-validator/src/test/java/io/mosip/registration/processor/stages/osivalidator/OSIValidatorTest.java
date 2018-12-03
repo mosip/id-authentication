@@ -36,14 +36,16 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 
 /**
- * @author M1022006
+ * The Class OSIValidatorTest.
  *
+ * @author M1022006
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class OSIValidatorTest {
 
+	/** The input stream. */
 	@Mock
 	private InputStream inputStream;
 
@@ -67,20 +69,32 @@ public class OSIValidatorTest {
 	@Mock
 	private TransactionService<TransactionDto> transcationStatusService;
 
+	/** The auth response DTO. */
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
+	/** The data. */
 	byte[] data = "1234567890".getBytes();
 
+	/** The reg osi dto. */
 	private RegOsiDto regOsiDto = new RegOsiDto();
 
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
+	/** The transaction dto. */
 	TransactionDto transactionDto = new TransactionDto();
 
+	/** The osi validator. */
 	@InjectMocks
 	OSIValidator osiValidator;
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 		osiValidator.registrationStatusDto = registrationStatusDto;
@@ -127,6 +141,12 @@ public class OSIValidatorTest {
 
 	}
 
+	/**
+	 * Testis valid OSI success.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidOSISuccess() throws Exception {
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
@@ -139,6 +159,12 @@ public class OSIValidatorTest {
 
 	}
 
+	/**
+	 * Test officer details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testOfficerDetailsNull() throws Exception {
 		regOsiDto.setOfficerFingerpImageName(null);
@@ -152,6 +178,12 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Test introducer details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testIntroducerDetailsNull() throws Exception {
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -168,6 +200,12 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Testis valid OSI failure.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testisValidOSIFailure() throws Exception {
 		authResponseDTO.setStatus("N");
@@ -181,6 +219,12 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Test supervisor details null.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testSupervisorDetailsNull() throws Exception {
 		regOsiDto.setOfficerfingerType("RIGHTTHUMB");
@@ -197,6 +241,12 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Test invalid iris.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testInvalidIris() throws Exception {
 		authResponseDTO.setStatus("N");
