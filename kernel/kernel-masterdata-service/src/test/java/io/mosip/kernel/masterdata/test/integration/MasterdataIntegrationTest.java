@@ -34,6 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
@@ -55,6 +58,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.entity.id.GenderID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -67,7 +71,10 @@ import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -151,11 +158,13 @@ public class MasterdataIntegrationTest {
 	private List<ReasonCategory> reasoncategories;
 
 	private List<ReasonList> reasonList;
+	
+	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
-	private static final String REASON_LIST_REQUEST = "{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
-	private static final String REASON_EMPTY_LIST_REQUEST = "{ \"reasonList\": [] }";
-	private static final String REASON_CATEGORY_REQUEST = "{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }";
-	private static final String REASON_EMPTY_CATEGORY_LIST = "{ \"reasonCategories\": [] }";
+	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }}";
+	private static final String REASON_EMPTY_LIST_REQUEST = "{ \"request\": }";
+	private static final String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true ,\"deleted\": false} }";
+	private static final String REASON_EMPTY_CATEGORY_LIST = "{ \"request\": }";
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -202,6 +211,16 @@ public class MasterdataIntegrationTest {
 
 	private ValidDocument validDocument;
 
+	@MockBean
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+	private RegistrationCenterDeviceDto registrationCenterDeviceDto;
+	@MockBean
+	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
+	private RegistrationCenterMachineDto registrationCenterMachineDto;
+	@MockBean
+	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+	private RegistrationCenterMachineDeviceDto registrationCenterMachineDeviceDto;
+
 	@Before
 	public void setUp() {
 		blacklistedSetup();
@@ -231,6 +250,25 @@ public class MasterdataIntegrationTest {
 		languageTestSetup();
 
 		addValidDocumentSetUp();
+
+		registrationCenterDeviceSetup();
+		registrationCenterMachineSetup();
+		registrationCenterMachineDeviceSetup();
+	}
+
+	private void registrationCenterDeviceSetup() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void registrationCenterMachineSetup() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void registrationCenterMachineDeviceSetup() {
+		// TODO Auto-generated method stub
+
 	}
 
 	private void addValidDocumentSetUp() {
@@ -342,17 +380,21 @@ public class MasterdataIntegrationTest {
 		reasonList = new ArrayList<>();
 		reasonListObj.setCode("RL1");
 		reasonListObj.setLangCode("ENG");
+		reasonListObj.setRsnCatCode("RC1");
 		reasonListObj.setDescription("reasonList");
 		reasonList.add(reasonListObj);
 		reasonCategory.setReasonList(reasonList);
 		reasonCategory.setCode("RC1");
-		reasonCategory.setName("reasonCategory");
-		reasonCategory.setDescription("reason_category");
 		reasonCategory.setLangCode("ENG");
-		reasonCategory.setIsActive(true);
-		reasonCategory.setIsDeleted(false);
 		reasoncategories = new ArrayList<>();
 		reasoncategories.add(reasonCategory);
+		titleId = new CodeAndLanguageCodeID();
+		titleId.setCode("RC1");
+		titleId.setLangCode("ENG");
+		reasonListId = new CodeLangCodeAndRsnCatCodeID();
+		reasonListId.setCode("RL1");
+		reasonListId.setLangCode("ENG");
+		reasonListId.setRsnCatCode("RC1");
 	}
 
 	private void idTypeSetup() {
@@ -720,61 +762,34 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void createReasonCateogryTest() throws Exception {
-		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
+		Mockito.when(reasonRepository.create(Mockito.any())).thenReturn(reasoncategories.get(0));
 		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isOk());
+				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createReasonListTest() throws Exception {
-		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
+		Mockito.when(reasonListRepository.create(Mockito.any())).thenReturn(reasonList.get(0));
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isOk());
+				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createReasonCateogryFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(reasonRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(
-				"{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }"
-						.getBytes()))
+				   REASON_CATEGORY_REQUEST.getBytes()))
 				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
-	public void createReasonCateogryDataNotFoundTest() throws Exception {
-		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_EMPTY_CATEGORY_LIST.getBytes())).andExpect(status().isNotFound());
-	}
-
-	@Test
-	public void createReasonCateogryDataNotFoundInDbTest() throws Exception {
-		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isNotFound());
-	}
-
-	@Test
 	public void createReasonListFetchExceptionTest() throws Exception {
-		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(reasonListRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
 				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isInternalServerError());
 	}
 
-	@Test
-	public void createReasonListDataNotFoundTest() throws Exception {
-		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_EMPTY_LIST_REQUEST.getBytes())).andExpect(status().isNotFound());
-	}
-
-	@Test
-	public void createReasonListDataNotFoundInDbTest() throws Exception {
-		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonList>());
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isNotFound());
-	}
+	
 
 	// -----------------------------RegistrationCenterTest----------------------------------
 
