@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class MachineResponseIdDto {
 	private MachineDto machineDto;
 }

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class CodeResponseDto {
 
 	private String code;

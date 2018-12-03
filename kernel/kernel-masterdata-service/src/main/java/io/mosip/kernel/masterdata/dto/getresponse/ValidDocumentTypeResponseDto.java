@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ValidDocumentTypeResponseDto {
 	private List<DocumentTypeDto> documents;

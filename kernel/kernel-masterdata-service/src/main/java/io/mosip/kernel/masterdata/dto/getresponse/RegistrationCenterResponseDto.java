@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
  * @since 23-10-2016
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class RegistrationCenterResponseDto {
 	private List<RegistrationCenterDto> registrationCenters;
 }

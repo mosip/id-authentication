@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
  * @since 23-10-2016
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class HolidayDto {
 	private String holidayId;
 	private String holidayDate;

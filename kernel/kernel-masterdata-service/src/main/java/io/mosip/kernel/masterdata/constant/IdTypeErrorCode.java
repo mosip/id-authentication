@@ -12,7 +12,7 @@ import io.mosip.kernel.masterdata.service.impl.IdTypeServiceImpl;
 public enum IdTypeErrorCode {
 	ID_TYPE_FETCH_EXCEPTION("KER-MSD-021", "Error occured while fetching Id Types"), ID_TYPE_INSERT_EXCEPTION(
 			"KER-MSD-444",
-			"Exception during inserting data into db"), ID_TYPE_NOT_FOUND("KER-MSD-022", "Id Type found");
+			"Exception during inserting data into db"), ID_TYPE_NOT_FOUND("KER-MSD-022", "Id Type not found");
 
 	/**
 	 * The error code.

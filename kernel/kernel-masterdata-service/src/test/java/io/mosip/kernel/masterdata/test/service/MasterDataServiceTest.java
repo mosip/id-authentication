@@ -1165,13 +1165,13 @@ public class MasterDataServiceTest {
 	@Test
 	public void locationHierarchySaveTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
-		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
+		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 	
 	@Test(expected=MasterDataServiceException.class)
 	public void locationHierarchySaveNegativeTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
-		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
+		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 	
 	
