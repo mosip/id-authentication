@@ -31,6 +31,6 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 * @return List<MachineHistory> fetched from database
 	 */
 	//@Query("from MachineHistory where id =?1 langCode=?2 and effectDtimes <= ?3 and ( isDeleted =false or isDeleted is null)")
-	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(String id, String langCode,
+	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode,
 			LocalDateTime effectDtimes);
 }

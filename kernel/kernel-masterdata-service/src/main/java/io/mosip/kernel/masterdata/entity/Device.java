@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
  * Entity for Device Details
  * 
  */
-@Table(name = "device_master", schema = "master")
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Device implements Serializable {
+@Entity
+@Table(name = "device_master", schema = "master")
+public class Device  implements Serializable {
 
 	/**
 	 * 
@@ -72,46 +72,33 @@ public class Device implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
-	/**
-	 * Field for is active
-	 */
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
 
+	
 	/**
-	 * Field to hold creator name
+	 * Field to hold date and time for Validity of the Device
 	 */
-	@Column(name = "cr_by", nullable = false, length = 32)
+	@Column(name="validity_end_dtimes")
+	private LocalDateTime validityEndDateTime; 
+	
+	@Column(name = "is_active")
+	private Boolean isActive;
+
+	@Column(name = "cr_by", nullable = false, length = 24)
 	private String createdBy;
 
-	/**
-	 * Field to hold created dated and time
-	 */
 	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtime;
+	private LocalDateTime createdDateTime;
 
-	/**
-	 * Field to hold updater name
-	 */
-	@Column(name = "upd_by", length = 32)
+	@Column(name = "upd_by")
 	private String updatedBy;
 
-	/**
-	 * Field to hold updated name and date
-	 */
 	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtime;
+	private LocalDateTime updatedDateTime;
 
-	/**
-	 * Field to hold true or false for is deleted
-	 */
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	/**
-	 * Field to hold deleted date and time
-	 */
 	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtime;
+	private LocalDateTime deletedDateTime;
 
 }

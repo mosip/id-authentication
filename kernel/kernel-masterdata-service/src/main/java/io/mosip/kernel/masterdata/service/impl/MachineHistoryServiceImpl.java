@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -38,16 +39,19 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	 */
 	@Autowired
 	MachineHistoryRepository macRepo;
+	
+	/**
+	 * Field to hold ObjectMapperUtil object
+	 */
+	@Autowired
+	private MapperUtils objectMapperUtil;
 
 	/**
 	 * Field to hold ModelMapper object
 	 */
 
-	/**
-	 * Field to hold ObjectMapperUtil object
-	 */
-	@Autowired
-	MapperUtils objMapper;
+	
+	
 
 	/**
 	 * Method used for retrieving Machine history details based on given Machine ID
@@ -90,14 +94,14 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		List<MachineHistoryDto> machineHistoryDtoList = null;
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
-			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(id, langCode,
+			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id, langCode,
 					lDateAndTime);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());
+					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
-			machineHistoryDtoList = objMapper.mapMachineHistroy(macHistoryList);
+			machineHistoryDtoList = objectMapperUtil.mapMachineHistory(macHistoryList);
 		} else {
 			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());

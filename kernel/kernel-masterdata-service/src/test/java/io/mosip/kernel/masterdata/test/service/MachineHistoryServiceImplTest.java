@@ -57,7 +57,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistoryDto.setLangCode("ENG");
 		machineHistoryDto.setIsActive(true);
 		machineHistoryDto.setCreatedBy("Admin");
-		machineHistoryDto.setCreatedtime(localDateTime);
+		machineHistoryDto.setCreatedtimes(localDateTime);
 		machineHistoryDto.setUpdatedBy("Admin");
 		machineHistoryDto.setIsDeleted(false);
 		machineHistoryDto.setIpAddress("100.10.01.01");
@@ -81,7 +81,7 @@ public class MachineHistoryServiceImplTest {
 		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
 		machineHistoryList.add(machineHistory);
 		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
-		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 				Mockito.anyString(), Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.thenReturn(machineHistoryList);
 		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class)).thenReturn(machineHistoryDtoList);

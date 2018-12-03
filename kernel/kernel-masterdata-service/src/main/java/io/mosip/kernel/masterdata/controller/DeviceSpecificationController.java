@@ -81,10 +81,10 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
 	@PostMapping("/devicespecification")
-	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> saveDeviceSpecification(
+	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> createDeviceSpecification(
 			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
 
-		return new ResponseEntity<>(deviceSpecificationService.saveDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
 	}
 
 }

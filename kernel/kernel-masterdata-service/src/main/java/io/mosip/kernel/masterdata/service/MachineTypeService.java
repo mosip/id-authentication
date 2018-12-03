@@ -20,6 +20,6 @@ public interface MachineTypeService {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-   public CodeAndLanguageCodeID saveMachineType(MachineTypeRequestDto machineType);
+   public CodeAndLanguageCodeID createMachineType(MachineTypeRequestDto machineType);
 
 }

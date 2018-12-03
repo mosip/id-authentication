@@ -1,14 +1,20 @@
+
 package io.mosip.kernel.masterdata.dto;
+
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Response dto for Machine Detail
  * 
  * @author Megha Tanga
- * @version 1.0.0
+ * @since 1.0.0
+ *
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,5 +52,9 @@ public class MachineDto {
 	 * Field for is active
 	 */
 	private Boolean isActive;
+	/**
+	 * Field for is validity of the Device
+	 */
+	private LocalDateTime validityDateTime;
 
 }

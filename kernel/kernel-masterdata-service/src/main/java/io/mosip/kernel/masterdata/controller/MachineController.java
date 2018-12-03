@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
 import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
-import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 
 /**
@@ -31,7 +31,7 @@ import io.mosip.kernel.masterdata.service.MachineService;
 public class MachineController {
 
 	/**
-	 * Reference to MachineDetailService.
+	 * Reference to MachineService.
 	 */
 	@Autowired
 	private MachineService machineService;
@@ -45,9 +45,9 @@ public class MachineController {
 	 * @return machine detail based on given Machine ID and Language code
 	 */
 	@GetMapping(value = "/{id}/{langcode}")
-	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
+	public MachineResponseIdDto getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
-		return machineService.getMachineDetailIdLang(machineId, langCode);
+		return machineService.getMachineIdLangcode(machineId, langCode);
 
 	}
 
@@ -60,8 +60,8 @@ public class MachineController {
 	 */
 
 	@GetMapping(value = "/{langcode}")
-	public MachineResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
-		return machineService.getMachineDetailLang(langCode);
+	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
+		return machineService.getMachineLangcode(langCode);
 
 	}
 
@@ -72,8 +72,8 @@ public class MachineController {
 	 */
 
 	@GetMapping
-	public MachineResponseDto getMachineDetailAll() {
-		return machineService.getMachineDetailAll();
+	public MachineResponseDto getMachineAll() {
+		return machineService.getMachineAll();
 
 	}
 	
@@ -88,7 +88,7 @@ public class MachineController {
 	public ResponseEntity<MachineSpecIdAndId> saveMachine(
 			@RequestBody MachineRequestDto machine) {
 
-		return new ResponseEntity<>(machineService.saveMachine(machine), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
 
 }

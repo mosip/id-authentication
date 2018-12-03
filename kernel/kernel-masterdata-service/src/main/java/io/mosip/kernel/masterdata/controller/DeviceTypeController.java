@@ -30,8 +30,8 @@ public class DeviceTypeController {
 	 */
 
 	@PostMapping("/devicetype")
-	public ResponseEntity<CodeAndLanguageCodeID> saveDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
-		return new ResponseEntity<>( deviceTypeService.saveDeviceTypes(deviceTypes), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> createDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
+		return new ResponseEntity<>( deviceTypeService.createDeviceTypes(deviceTypes), HttpStatus.CREATED);
 	}
 
 }

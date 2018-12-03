@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
@@ -27,7 +28,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	private DataMapper dataMapper;
 
 	@Override
-	public MachineTypeCodeAndLanguageCodeAndId saveMachineSpecification(
+	public MachineTypeCodeAndLanguageCodeAndId createMachineSpecification(
 			MachineSpecificationRequestDto machineSpecification) {
 		
 		MachineSpecification renMachineSpecification = new MachineSpecification();
@@ -39,7 +40,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText(), e);
+					e.getErrorText()+ "  " + ExceptionUtils.parseException(e));
 		}
 		MachineTypeCodeAndLanguageCodeAndId machineTypeCodeAndLanguageCodeAndId = new MachineTypeCodeAndLanguageCodeAndId();
 				dataMapper.map(renMachineSpecification, machineTypeCodeAndLanguageCodeAndId, true, null, null, true);
