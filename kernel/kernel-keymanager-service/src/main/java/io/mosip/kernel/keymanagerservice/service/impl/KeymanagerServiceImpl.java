@@ -32,7 +32,6 @@ import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
-import io.mosip.kernel.keymanagerservice.entity.KeyDbStore;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.exception.CryptoException;
 import io.mosip.kernel.keymanagerservice.exception.InvalidApplicationIdException;
@@ -179,7 +178,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
 					KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
 		} else if (currentKeyAlias.size() == 1) {
-			Optional<KeyDbStore> keyFromDBStore = keyStoreRepository.findByAlias(currentKeyAlias.get(0).getAlias());
+			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyFromDBStore = keyStoreRepository
+					.findByAlias(currentKeyAlias.get(0).getAlias());
 			if (!keyFromDBStore.isPresent()) {
 				throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
@@ -269,7 +269,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @param encryptedPrivateKey
 	 */
 	private void storeKeyInDBStore(String alias, String masterAlias, byte[] publicKey, byte[] encryptedPrivateKey) {
-		KeyDbStore keyDbStore = new KeyDbStore();
+		io.mosip.kernel.keymanagerservice.entity.KeyStore keyDbStore = new io.mosip.kernel.keymanagerservice.entity.KeyStore();
 		keyDbStore.setAlias(alias);
 		keyDbStore.setMasterAlias(masterAlias);
 		keyDbStore.setPublicKey(publicKey);
@@ -324,7 +324,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		if (referenceId == null || referenceId.trim().isEmpty()) {
 			return keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
 		} else {
-			Optional<KeyDbStore> keyDbStore = keyStoreRepository.findByAlias(fetchedKeyAlias.getAlias());
+			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyDbStore = keyStoreRepository
+					.findByAlias(fetchedKeyAlias.getAlias());
 			if (!keyDbStore.isPresent()) {
 				throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
