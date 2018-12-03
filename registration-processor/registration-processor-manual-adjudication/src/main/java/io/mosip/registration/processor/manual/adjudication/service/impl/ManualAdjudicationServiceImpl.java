@@ -1,19 +1,12 @@
 package io.mosip.registration.processor.manual.adjudication.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
 import io.mosip.registration.processor.manual.adjudication.dto.ApplicantDetailsDto;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 
 /**
@@ -24,36 +17,30 @@ import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudic
 @Service
 public class ManualAdjudicationServiceImpl implements ManualAdjudicationService {
 
-	@Autowired
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
-
 	ManualVerificationEntity manualAdjudicationEntity = new ManualVerificationEntity();
 	@Autowired
 	ManualAdjudicationDao manualAdjudicationDao;
+
 	@Override
 	public ApplicantDetailsDto assignStatus(UserDto dto) {
-		ApplicantDetailsDto adto=new ApplicantDetailsDto();
-		
-		if(dto.getStatus()!=null &&dto.getStatus().equalsIgnoreCase("PENDING")) {
-			
-		String regid=manualAdjudicationDao.getFirstApplicantDetails().get(0).getRegId();
-		manualAdjudicationEntity.setStatusCode(dto.getStatus());
-		manualAdjudicationEntity.setMvUserId(dto.getUserId());
-		manualAdjudicationEntity.setRegId(regid);
-		manualAdjudicationDao.update(manualAdjudicationEntity);
+		ApplicantDetailsDto adto = new ApplicantDetailsDto();
+
+		if (dto.getStatus() != null && dto.getStatus().equalsIgnoreCase("PENDING")) {
+
+			String regid = manualAdjudicationDao.getFirstApplicantDetails().get(0).getId().getRegId();
+			manualAdjudicationEntity.setStatusCode(dto.getStatus());
+			manualAdjudicationEntity.setMvUserId(dto.getUserId());
+			manualAdjudicationEntity.getId().setRegId(regid);
+			manualAdjudicationDao.update(manualAdjudicationEntity);
 		}
-		
+
 		return adto;
 	}
 
 	@Override
 	public byte[] getApplicantPhoto(String regId) {
-		InputStream applicantPhoto = filesystemCephAdapterImpl.getFile(regId, PacketFiles.APPLICANTPHOTO.name());
-		try {
-			return IOUtils.toByteArray(applicantPhoto);
-		} catch (IOException e) {
-			throw new FileNotPresentException();
-		}
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -121,5 +108,4 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

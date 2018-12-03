@@ -11,6 +11,8 @@ public class ManualVerificationPKEntity implements Serializable {
 	@Column(name = "reg_id", nullable = false)
 	private String regId;
 
+	
+	
 	public String getRegId() {
 		return regId;
 	}

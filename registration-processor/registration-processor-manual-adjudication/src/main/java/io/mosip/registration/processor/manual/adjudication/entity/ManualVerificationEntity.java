@@ -2,13 +2,13 @@ package io.mosip.registration.processor.manual.adjudication.entity;
 
 import java.io.Serializable;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 @Entity
 @Table(name = "reg_manual_verification", schema = "regprc")
-public class ManualVerificationEntity extends ManualVerificationPKEntity implements Serializable {
+public class ManualVerificationEntity extends  BasePacketEntity<ManualVerificationPKEntity> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class ManualVerificationEntity extends ManualVerificationPKEntity impleme
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 	
-	@Column(name = "deltimes")
+	@Column(name = "del_dtimes")
 	private String deletedDateTime;
 	
 	public String getMatchedRefId() {
