@@ -21,7 +21,7 @@
               </mat-form-field>
               <span class="inlineSpacer"></span>
               <mat-form-field>
-                  <input matInput placeholder="Search Registration Centre" [(ngModel)]="text" value="">     
+                  <input matInput placeholder="Search Registration Center" [(ngModel)]="text" value="">     
               </mat-form-field>
               <span class="img-spacer"><i class="material-icons" (click)="showResults()">search</i></span>
               <span class="inlineSpacer"></span>
@@ -49,27 +49,27 @@
               </ng-container>
             
               <!-- Address Column -->
-              <ng-container matColumnDef="address">
+              <ng-container matColumnDef="addressLine1">
                 <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.addressLine1}} </mat-cell>
               </ng-container>
             
               <!-- Contact Person Column -->
-              <ng-container matColumnDef="contact_person">
+              <ng-container matColumnDef="contactPerson">
                 <mat-header-cell *matHeaderCellDef> Contact Person </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.contact_person}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.contactPerson}} </mat-cell>
               </ng-container>
             
               <!-- Center type Column -->
-              <ng-container matColumnDef="centre_type">
+              <ng-container matColumnDef="centerTypeCode">
                 <mat-header-cell *matHeaderCellDef> Center Type </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.centre_type}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.centerTypeCode}} </mat-cell>
               </ng-container>
 
               <!-- Contact Number Column -->
-              <ng-container matColumnDef="contact">
+              <ng-container matColumnDef="contactPhone">
                 <mat-header-cell *matHeaderCellDef> Contact Number </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.contact}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.contactPhone}} </mat-cell>
               </ng-container>
             
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -78,10 +78,12 @@
               </mat-row>
             </mat-table>
           </div>
+          <div *ngIf="showMessage">
+            <p>No registration centers found</p>
+          </div>
           <br />
-          <div *ngIf="showMap">
-            <p>Map will go here</p>
-            <p>{{selectedCentre.name}} will be plotted on the map</p>
+          <div class="map-placer" *ngIf="showMap">
+            <app-map [mapProvider]="mapProvider"></app-map>
           </div>
           <mat-action-row>
             <button mat-button color="primary" [disabled]="!enableNextButton" (click)="nextStep()">Next</button>

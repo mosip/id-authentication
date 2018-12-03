@@ -1,4 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { SharedService } from 'src/app/shared/shared.service';
+import { NameList } from '../demographic/name-list.modal';
+import { MatDialog } from '@angular/material';
+import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 
 @Component({
   selector: 'app-time-selection',
@@ -14,14 +18,15 @@ export class TimeSelectionComponent implements OnInit {
   selectedTile = null;
   limit = 3;
   showAddButton = false;
-  names: number[];
+  names: NameList[];
   deletedNames = [];
 
-  constructor() { }
+  constructor(private sharedService: SharedService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.numbers = Array(10).fill(0).map((x, i) => i); // [0,1,2,3,4]
-    this.names = this.numbers;
+    this.names = this.sharedService.getNameList();
+    console.log(this.names);
   }
 
   public scrollRight(): void {
@@ -48,6 +53,7 @@ export class TimeSelectionComponent implements OnInit {
 
   cardSelected(index: number): void {
     this.selectedCard = index;
+    console.log(this.selectedCard);
   }
 
   changeLimit(): void {
@@ -59,6 +65,17 @@ export class TimeSelectionComponent implements OnInit {
     this.names.splice(index, 1);
     console.log(index, 'item to be deleted from card', this.deletedNames);
     this.showAddButton = true;
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '400px',
+      data: {
+        case: 'SLOTS',
+        title: 'Select names for the Slot',
+        names: this.deletedNames
+      }
+    });
   }
 
 }

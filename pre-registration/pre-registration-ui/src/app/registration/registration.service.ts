@@ -9,12 +9,12 @@ export class RegistrationService {
   private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
 
-  getUsers() {
-    return this.users.slice();
+  getUser(index: number) {
+    return this.users[index];
   }
 
-  getUsersByIndex(index: number) {
-    return this.users[index];
+  getUsers() {
+    return this.users.slice();
   }
 
   addUser(user: UserModel) {

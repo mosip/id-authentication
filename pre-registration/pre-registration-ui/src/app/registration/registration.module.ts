@@ -8,13 +8,13 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
 import { TimeSelectionComponent } from './time-selection/time-selection.component';
 import { CenterSelectionComponent } from './center-selection/center-selection.component';
 import { RegistrationRoutingModule } from './registration-routing.module';
-import { DialougComponent } from './dialoug/dialoug.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DashBoardComponent } from './dashboard/dashboard.component';
 import { ParentComponent } from './parent/parent.component';
-import { EscapeHtmlPipe } from '../shared/keep-html.pipe';
+import { DialougComponent } from '../shared/dialoug/dialoug.component';
+import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
 
 @NgModule({
@@ -25,7 +25,8 @@ import { DraggableDirective } from './file-upload/draggable.directive';
     RegistrationRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    SharedModule
   ],
   exports: [],
   entryComponents: [DialougComponent],
@@ -34,10 +35,8 @@ import { DraggableDirective } from './file-upload/draggable.directive';
     FileUploadComponent,
     TimeSelectionComponent,
     CenterSelectionComponent,
-    DialougComponent,
     DashBoardComponent,
     ParentComponent,
-    EscapeHtmlPipe,
     DraggableDirective
   ]
 })

@@ -1,9 +1,28 @@
-/* .navbar-nav > li{
-    padding-left:30px;
-    padding-right:30px;
-  } */
+mat-sidenav-container,
+mat-sidenav-content {
+  height: 100%;
+}
 
-  .nav{
-    font-size:16px;
-    cursor: pointer;
-  }
+mat-sidenav {
+  width: 250px;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover,
+a:active {
+  color: lightgrey;
+}
+
+.navigation-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+mat-toolbar {
+  margin-bottom: 10px;
+}

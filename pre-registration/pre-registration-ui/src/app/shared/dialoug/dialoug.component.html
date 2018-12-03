@@ -49,3 +49,10 @@
     >
   </div>
 </div>
+<div *ngIf="input.case === 'SLOTS'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions><button mat-button (click)="onNoClick()" cdkFocusInitial>Dismiss</button></div>
+</div>
