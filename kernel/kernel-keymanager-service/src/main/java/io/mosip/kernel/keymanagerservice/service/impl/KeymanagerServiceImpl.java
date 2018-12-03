@@ -1,8 +1,12 @@
 package io.mosip.kernel.keymanagerservice.service.impl;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +25,6 @@ import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstants;
@@ -71,12 +74,6 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	/**
-	 * Encryptor instance to decrypt data
-	 */
-	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-
-	/**
 	 * 
 	 */
 	@Autowired
@@ -112,81 +109,19 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			Optional<String> referenceId) {
 
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
-		if (referenceId.isPresent() && !referenceId.get().trim().isEmpty()) {
+		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
+			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
+			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
+			publicKeyResponse.setKeyGenerationTime(hsmPublicKey.getKeyGenerationTime());
+			publicKeyResponse.setKeyExpiryTime(hsmPublicKey.getKeyExpiryTime());
+		} else {
 			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, timeStamp,
 					referenceId.get());
 			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(dbPublicKey.getPublicKey()));
 			publicKeyResponse.setKeyGenerationTime(dbPublicKey.getKeyGenerationTime());
 			publicKeyResponse.setKeyExpiryTime(dbPublicKey.getKeyExpiryTime());
-		} else {
-			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
-			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
-			publicKeyResponse.setKeyGenerationTime(hsmPublicKey.getKeyGenerationTime());
-			publicKeyResponse.setKeyExpiryTime(hsmPublicKey.getKeyExpiryTime());
 		}
-
 		return publicKeyResponse;
-	}
-
-	/**
-	 * @param applicationId
-	 * @param timeStamp
-	 * @param referenceId
-	 * @return
-	 * @throws NoUniqueAliasException
-	 */
-	private PublicKeyResponse<byte[]> getPublicKeyFromDBStore(String applicationId, LocalDateTime timeStamp,
-			String referenceId) {
-
-		byte[] keyFromDB = null;
-		LocalDateTime generationDateTime = null;
-		LocalDateTime expiryDateTime = null;
-		List<KeyAlias> currentKeyAlias = getCurrentKeyAlias(applicationId, referenceId, timeStamp);
-
-		if (currentKeyAlias.size() > 1) {
-			throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
-					KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
-
-		} else if (currentKeyAlias.size() == 1) {
-			Optional<KeyDbStore> keyFromDBStore = keyStoreRepository.findByAlias(currentKeyAlias.get(0).getAlias());
-			if (keyFromDBStore.isPresent()) {
-				KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
-				keyFromDB = keyFromDBStore.get().getPublicKey();
-				generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
-				expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
-			} else {
-				throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
-						KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
-			}
-		} else if (currentKeyAlias.isEmpty()) {
-			byte[] encryptedPrivateKey;
-			String alias = UUID.randomUUID().toString();
-			KeyPair keypair = keyGenerator.getAsymmetricKey();
-			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
-			PublicKey masterPublicKey = hsmPublicKey.getPublicKey();
-
-			keyFromDB = keypair.getPublic().getEncoded();
-			generationDateTime = timeStamp;
-			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime);
-
-			System.out.println(masterPublicKey.toString());
-			System.out.println(keypair.getPrivate().toString());
-
-			try {
-				encryptedPrivateKey = keymanagerUtil.encryptKey(keypair.getPrivate(), masterPublicKey);
-			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
-					| NullMethodException e) {
-				throw new CryptoException(KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorMessage());
-			}
-			System.out.println(encryptedPrivateKey.length);
-
-			storeKeyInDBStore(alias, keypair.getPublic().getEncoded(), encryptedPrivateKey);
-			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
-		}
-
-		return new PublicKeyResponse<>(keyFromDB, generationDateTime, expiryDateTime);
-
 	}
 
 	/**
@@ -225,7 +160,70 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			keyStore.storeAsymmetricKey(keyGenerator.getAsymmetricKey(), alias, generationDateTime, expiryDateTime);
 			storeKeyInAlias(applicationId, generationDateTime, null, alias, expiryDateTime);
 		}
-		return new PublicKeyResponse<>(keyStore.getPublicKey(alias), generationDateTime, expiryDateTime);
+		return new PublicKeyResponse<>(alias, keyStore.getPublicKey(alias), generationDateTime, expiryDateTime);
+	}
+
+	/**
+	 * @param applicationId
+	 * @param timeStamp
+	 * @param referenceId
+	 * @return
+	 * @throws NoUniqueAliasException
+	 */
+	private PublicKeyResponse<byte[]> getPublicKeyFromDBStore(String applicationId, LocalDateTime timeStamp,
+			String referenceId) {
+
+		String alias = null;
+		byte[] keyFromDB = null;
+		LocalDateTime generationDateTime = null;
+		LocalDateTime expiryDateTime = null;
+		List<KeyAlias> currentKeyAlias = getCurrentKeyAlias(applicationId, referenceId, timeStamp);
+
+		if (currentKeyAlias.size() > 1) {
+			throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
+
+		} else if (currentKeyAlias.size() == 1) {
+			Optional<KeyDbStore> keyFromDBStore = keyStoreRepository.findByAlias(currentKeyAlias.get(0).getAlias());
+			if (keyFromDBStore.isPresent()) {
+				KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
+				keyFromDB = keyFromDBStore.get().getPublicKey();
+				generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
+				expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
+			} else {
+				throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
+						KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorMessage());
+			}
+		} else if (currentKeyAlias.isEmpty()) {
+			byte[] encryptedPrivateKey;
+			alias = UUID.randomUUID().toString();
+			KeyPair keypair = keyGenerator.getAsymmetricKey();
+			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
+			PublicKey masterPublicKey = hsmPublicKey.getPublicKey();
+			String masterAlias = hsmPublicKey.getAlias();
+
+			keyFromDB = keypair.getPublic().getEncoded();
+			generationDateTime = timeStamp;
+			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime);
+
+			System.out.println(masterPublicKey.toString());
+			System.out.println(keypair.getPrivate().toString());
+
+			try {
+				encryptedPrivateKey = keymanagerUtil.encryptKey(keypair.getPrivate(), masterPublicKey);
+			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
+					| NullMethodException e) {
+				throw new CryptoException(KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorMessage());
+			}
+			System.out.println(encryptedPrivateKey.length);
+
+			storeKeyInDBStore(alias, masterAlias, keypair.getPublic().getEncoded(), encryptedPrivateKey);
+			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
+		}
+
+		return new PublicKeyResponse<>(alias, keyFromDB, generationDateTime, expiryDateTime);
+
 	}
 
 	/**
@@ -286,7 +284,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyAlias.setKeyGenerationTime(timeStamp);
 		keyAlias.setKeyExpiryTime(expiryDateTime);
 
-		keyAliasRepository.create(keymanagerUtil.setMetaData(keyAlias));
+		keyAliasRepository.save(keymanagerUtil.setMetaData(keyAlias));
 	}
 
 	/**
@@ -294,13 +292,14 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @param bs
 	 * @param encryptedPrivateKey
 	 */
-	private void storeKeyInDBStore(String alias, byte[] publicKey, byte[] encryptedPrivateKey) {
+	private void storeKeyInDBStore(String alias, String masterAlias, byte[] publicKey, byte[] encryptedPrivateKey) {
 		KeyDbStore keyDbStore = new KeyDbStore();
 		keyDbStore.setAlias(alias);
+		keyDbStore.setMasterAlias(masterAlias);
 		keyDbStore.setPublicKey(publicKey);
 		keyDbStore.setPrivateKey(encryptedPrivateKey);
 
-		keyStoreRepository.save(keyDbStore);
+		keyStoreRepository.save(keymanagerUtil.setMetaData(keyDbStore));
 	}
 
 	/*
@@ -313,32 +312,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Override
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
-		List<KeyAlias> keyAliases;
-		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
+		List<KeyAlias> currentKeyAlias;
 		LocalDateTime timeStamp = symmetricKeyRequestDto.getTimeStamp();
 		String referenceId = symmetricKeyRequestDto.getReferenceId();
 		String applicationId = symmetricKeyRequestDto.getApplicationId();
+		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
 
 		if (referenceId == null || referenceId.trim().isEmpty()) {
-			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, null);
+			currentKeyAlias = getCurrentKeyAlias(applicationId, null, timeStamp);
 		} else {
-			keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId);
+			currentKeyAlias = getCurrentKeyAlias(applicationId, referenceId, timeStamp);
 		}
-
-		System.out.println("############keyAliases");
-		keyAliases.forEach(System.out::println);
-
-		List<KeyAlias> currentKeyAlias = keyAliases
-				.stream().filter(
-						keyAlias -> timeStamp.isEqual(keyAlias.getKeyGenerationTime())
-								|| timeStamp.isEqual(keyAlias.getKeyExpiryTime())
-								|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
-										&& timeStamp.isBefore(keyAlias.getKeyExpiryTime())))
-				.collect(Collectors.toList());
-
-		System.out.println("############currentKeyAlias");
-		currentKeyAlias.forEach(System.out::println);
-
+		
 		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
 
 			throw new NoUniqueAliasException(KeymanagerErrorConstants.NO_UNIQUE_ALIAS.getErrorCode(),
@@ -346,17 +331,53 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		} else if (currentKeyAlias.size() == 1) {
 
 			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
-
-			PrivateKey privateKey = keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
+			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
 			System.out.println(privateKey);
-
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
 					keymanagerUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-
 			System.out.println("SymmetricKey: " + decryptedSymmetricKey);
 			keyResponseDto.setSymmetricKey(keymanagerUtil.encodeBase64(decryptedSymmetricKey));
-
 		}
 		return keyResponseDto;
+	}
+
+	/**
+	 * @param privateKey
+	 * @param referenceId
+	 * @param fetchedKeyAlias
+	 * @return
+	 * @throws CryptoException
+	 */
+	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
+		PrivateKey privateKey;
+		if (referenceId == null || referenceId.trim().isEmpty()) {
+			privateKey = keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
+		} else {
+			KeyDbStore dbStore = getKeyDbStore(fetchedKeyAlias);
+			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbStore.getMasterAlias());
+			try {
+				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(dbStore.getPrivateKey(), masterPrivateKey);
+				privateKey = KeyFactory.getInstance("RSA")
+						.generatePrivate(new PKCS8EncodedKeySpec(decryptedPrivateKey));
+			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
+					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+				throw new CryptoException(KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstants.CRYPTO_EXCEPTION.getErrorMessage());
+			}
+		}
+		return privateKey;
+	}
+
+	/**
+	 * @param fetchedKeyAlias
+	 * @return
+	 */
+	private KeyDbStore getKeyDbStore(KeyAlias fetchedKeyAlias) {
+		Optional<KeyDbStore> keyDbStore = keyStoreRepository.findByAlias(fetchedKeyAlias.getAlias());
+		if (!keyDbStore.isPresent()) {
+			throw new InvalidApplicationIdException(KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorCode(),
+					KeymanagerErrorConstants.APPLICATIONID_NOT_VALID.getErrorMessage());
+		}
+		return keyDbStore.get();
 	}
 }
