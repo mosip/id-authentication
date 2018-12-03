@@ -849,7 +849,7 @@ public class LoginController extends BaseController implements Initializable {
 				.concat(String.valueOf(invalidLoginTime).concat(" ")
 						.concat(RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES));
 
-		if (loginCount > invalidLoginCount) {
+		if (loginCount >= invalidLoginCount) {
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"validating login count and time ");
@@ -878,7 +878,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				loginService.updateLoginParams(registrationUserDetail);
 
-				if (loginCount == invalidLoginCount) {
+				if (loginCount >= invalidLoginCount) {
 
 					generateAlert(RegistrationConstants.ALERT_ERROR, unlockMessage);
 
