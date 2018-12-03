@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
@@ -27,7 +26,6 @@ import io.mosip.kernel.masterdata.service.MachineService;
  */
 
 @RestController
-@RequestMapping(value = "/machines")
 public class MachineController {
 
 	/**
@@ -44,7 +42,7 @@ public class MachineController {
 	 * @param langcode
 	 * @return machine detail based on given Machine ID and Language code
 	 */
-	@GetMapping(value = "/{id}/{langcode}")
+	@GetMapping(value = "/machines/{id}/{langcode}")
 	public MachineResponseIdDto getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
 		return machineService.getMachineIdLangcode(machineId, langCode);
@@ -59,7 +57,7 @@ public class MachineController {
 	 * @return machine detail based on given Language code
 	 */
 
-	@GetMapping(value = "/{langcode}")
+	@GetMapping(value = "/machines/{langcode}")
 	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
 		return machineService.getMachineLangcode(langCode);
 
@@ -70,8 +68,7 @@ public class MachineController {
 	 * 
 	 * @return all machines details
 	 */
-
-	@GetMapping
+	@GetMapping(value = "/machines")
 	public MachineResponseDto getMachineAll() {
 		return machineService.getMachineAll();
 
@@ -84,7 +81,7 @@ public class MachineController {
 	 *            input from user Machine  DTO
 	 * @return {@link MachineTypeCodeAndLanguageCodeAndId}
 	 */
-	@PostMapping("/")
+	@PostMapping("/machines")
 	public ResponseEntity<MachineSpecIdAndId> saveMachine(
 			@RequestBody MachineRequestDto machine) {
 

@@ -80,7 +80,7 @@ public class DeviceSpecificationController {
 	 *            input from user Device specification DTO
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	@PostMapping("/devicespecification")
+	@PostMapping("/devicespecifications")
 	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> createDeviceSpecification(
 			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
 
