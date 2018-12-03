@@ -20,7 +20,7 @@ public interface IdTypeService {
 	 *            the language code.
 	 * @return the response dto.
 	 */
-	IdTypeResponseDto getIdTypeByLanguageCode(String languageCode);
+	IdTypeResponseDto getIdTypesByLanguageCode(String languageCode);
 
 	/**
 	 * This method adds the idtypes.

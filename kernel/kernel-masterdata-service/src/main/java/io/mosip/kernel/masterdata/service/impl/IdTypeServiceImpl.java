@@ -13,10 +13,12 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.service.IdTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -29,18 +31,26 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class IdTypeServiceImpl implements IdTypeService {
 
+	/**
+	 * Autowired reference for {@link MetaDataUtils}
+	 */
 	@Autowired
 	private MetaDataUtils metaUtils;
 
+	/**
+	 * Autowired reference for {@link MapperUtils}
+	 */
+	@Autowired
+	private MapperUtils mapperUtils;
+
+	/**
+	 * Autowired reference for {@link DataMapper}
+	 */
 	@Autowired
 	private DataMapper dataMapper;
 
 	/**
-	 * Reference to {@link ModelMapper}
-	 */
-
-	/**
-	 * Reference to RegistrationCenterRepository.
+	 * Autowired reference for {@link IdTypeRepository}
 	 */
 	@Autowired
 	private IdTypeRepository idRepository;
@@ -53,27 +63,24 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * .lang.String)
 	 */
 	@Override
-	public IdTypeResponseDto getIdTypeByLanguageCode(String languageCode) {
+	public IdTypeResponseDto getIdTypesByLanguageCode(String languageCode) {
+		List<IdTypeDto> idDtoList = null;
 		List<IdType> idList = null;
 		try {
 			idList = idRepository.findByLangCode(languageCode);
-
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorMessage());
+					IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
-
-		IdTypeResponseDto idTypeResponseDto = new IdTypeResponseDto();
-		dataMapper.map(idList, idTypeResponseDto, true, null, null, true);
-		idTypeResponseDto.setIdtypes(idList);
-		return idTypeResponseDto;
-
-		/*
-		 * if (idList != null && !idList.isEmpty()) { idFetchList =
-		 * objectMapperUtil.mapAll(idList, IdTypeDto.class); } else { throw new
-		 * DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
-		 * IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorMessage()); } return idFetchList;
-		 */}
+		if (idList != null && !idList.isEmpty()) {
+			idDtoList = mapperUtils.mapAll(idList, IdTypeDto.class);
+		} else {
+			throw new DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
+					IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorMessage());
+		}
+		return new IdTypeResponseDto(idDtoList);
+	}
 
 	/*
 	 * (non-Javadoc)

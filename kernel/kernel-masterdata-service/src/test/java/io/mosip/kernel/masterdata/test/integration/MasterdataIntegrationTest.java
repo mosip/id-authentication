@@ -472,7 +472,6 @@ public class MasterdataIntegrationTest {
 	public void getAllWordsBylangCodeNullArgExceptionTest() throws Exception {
 		mockMvc.perform(get("/blacklistedwords/{langcode}", " ")).andExpect(status().isNotFound());
 	}
-	// TODO: asdfghjk
 
 	@Test
 	public void addBlackListedWordTest() throws Exception {
@@ -636,11 +635,12 @@ public class MasterdataIntegrationTest {
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
 	}
 
+	// TODO:
 	@Test
-	public void createIdTypeListTest() throws Exception {
+	public void createIdTypeTest() throws Exception {
 		IdType idType = new IdType();
 		idType.setCode("IDT001");
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idType\":{\"code\":\"ttt\",\"descr\":\"ddd\",\"name\":\"nnn\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
 		when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
 		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -648,7 +648,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void createIdTypeExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idType\":{\"code\":\"ttt\",\"descr\":\"ddd\",\"name\":\"nnn\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
 		when(idTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -1142,18 +1142,20 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -----------------------------------registration-center-type----------------------------------------
+	// TODO
 	@Test
 	public void addRegistrationCenterTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"regcentertypes\":[{\"name\":\"RCTEST\",\"langCode\":\"LCT\",\"code\":\"RCT001\",\"descr\":\"Registration Center Type  Test 1\"}]}}";
-		when(registrationCenterTypeRepository.saveAll(Mockito.any())).thenReturn(regCenterTypes);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
+		when(registrationCenterTypeRepository.create(Mockito.any())).thenReturn(regCenterType);
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"regcentertypes\":[{\"name\":\"RCTEST\",\"langCode\":\"LCT\",\"code\":\"RCT001\",\"descr\":\"Registration Center Type  Test 1\"}]}}";
-		when(registrationCenterTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
+		when(registrationCenterTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}

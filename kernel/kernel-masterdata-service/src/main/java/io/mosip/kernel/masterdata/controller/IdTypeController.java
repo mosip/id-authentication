@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,19 +41,20 @@ public class IdTypeController {
 	 * @return the list of id types.
 	 */
 	@GetMapping("/idtypes/{langcode}")
-	public IdTypeResponseDto getIdTypeDetailsBylangCode(@PathVariable("langcode") String langCode) {
-		return idService.getIdTypeByLanguageCode(langCode);
+	public IdTypeResponseDto getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
+		return idService.getIdTypesByLanguageCode(langCode);
 	}
 
 	/**
-	 * This method adds a list of id types.
+	 * This method creates id types.
 	 * 
 	 * @param idTypeRequestDto
-	 *            the request of list of id types to be added.
-	 * @return the list of added id types as response.
+	 *            the request of idtype to be added.
+	 * @return the response.
 	 */
 	@PostMapping("/idtypes")
-	public ResponseEntity<CodeAndLanguageCodeID> addIdType(@RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
+	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
+			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
 		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);
 	}
 }
