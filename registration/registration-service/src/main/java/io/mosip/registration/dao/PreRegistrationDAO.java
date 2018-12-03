@@ -1,6 +1,6 @@
 package io.mosip.registration.dao;
 
-import io.mosip.registration.entity.PreRegistration;
+import io.mosip.registration.entity.PreRegistrationList;
 
 /**
  * pre registartion DAO
@@ -14,7 +14,7 @@ public interface PreRegistrationDAO {
 	 * @param preRegId is a id 
 	 * @return pre registartion entity
 	 */
-	public PreRegistration getPreRegistration(String preRegId);
+	public PreRegistrationList getPreRegistration(String preRegId);
 	
 	
 	/**
@@ -22,5 +22,5 @@ public interface PreRegistrationDAO {
 	 * @param preRegistration is a entity
 	 * @return saved pre registartion
 	 */
-	public PreRegistration savePreRegistration(PreRegistration preRegistration);
+	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration);
 }

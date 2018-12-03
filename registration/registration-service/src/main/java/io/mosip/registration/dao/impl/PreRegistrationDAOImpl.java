@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.dao.PreRegistrationDAO;
-import io.mosip.registration.entity.PreRegistration;
+import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationRepository;
 
 
@@ -27,8 +27,8 @@ public class PreRegistrationDAOImpl implements PreRegistrationDAO {
 	 * @see io.mosip.registration.dao.PreRegistrationDAO#getPreRegistration(java.lang.String)
 	 */
 	@Override
-	public PreRegistration getPreRegistration(String preRegId) {
-		return preRegistrationRepository.findById(PreRegistration.class, preRegId);
+	public PreRegistrationList getPreRegistration(String preRegId) {
+		return preRegistrationRepository.findById(PreRegistrationList.class, preRegId);
 		
 	}
 
@@ -36,7 +36,7 @@ public class PreRegistrationDAOImpl implements PreRegistrationDAO {
 	 * @see io.mosip.registration.dao.PreRegistrationDAO#savePreRegistration(io.mosip.registration.entity.PreRegistration)
 	 */
 	@Override
-	public PreRegistration savePreRegistration(PreRegistration preRegistration) {
+	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration) {
 		return preRegistrationRepository.save(preRegistration);
 		
 	}

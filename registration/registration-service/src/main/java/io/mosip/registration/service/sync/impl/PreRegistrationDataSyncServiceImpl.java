@@ -26,7 +26,7 @@ import io.mosip.registration.dto.PreRegistrationResponseDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDataSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.entity.PreRegistration;
+import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -122,6 +122,8 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 	private Timestamp getToDate(Timestamp fromDate) {
 
 		Timestamp toDate = null;
+		toDate = new Timestamp(System.currentTimeMillis());
+		
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -162,7 +164,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 			e.printStackTrace();
 		}
 
-		// Timestamp reqTime = new Timestamp(System.currentTimeMillis());
+//		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
 		preRegistrationDataSyncDTO.setId(getId());
 		preRegistrationDataSyncDTO.setReqTime(reqTime);
 		preRegistrationDataSyncDTO.setVer(getVer());
@@ -179,15 +181,15 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
 	}
 
-	private List<PreRegistration> getPreRegistrations(List<String> preRegIds) {
+	private List<PreRegistrationList> getPreRegistrations(List<String> preRegIds) {
 
 		// List of pre registartions
-		LinkedList<PreRegistration> preRegistrations = new LinkedList<>();
+		LinkedList<PreRegistrationList> preRegistrations = new LinkedList<>();
 
 		preRegIds.forEach(preRegId -> {
 
 			try {
-				PreRegistration preRegistration = preRegistrationDAO.getPreRegistration(preRegId);
+				PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegId);
 				if (preRegistration == null) {
 					byte[] packet = getPreRegistration(preRegId);
 
