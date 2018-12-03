@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
  * @since 06-11-2018
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class BlacklistedWordsResponseDto {
 	private List<BlacklistedWordsDto> blacklistedwords;

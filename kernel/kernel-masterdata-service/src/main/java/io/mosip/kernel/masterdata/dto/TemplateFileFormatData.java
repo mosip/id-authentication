@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class TemplateFileFormatData {
 
 	private TemplateFileFormatDto templateFileFormat;

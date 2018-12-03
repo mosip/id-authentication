@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class ApplicationResponseDto {
 
 	private List<ApplicationDto> applicationtypes;

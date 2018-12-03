@@ -8,14 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Response DTO class for Device specification get operation 
+ * Response DTO class for Device specification get operation
  * 
  * @author Uday
  * @version 1.0.0
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+
 public class DeviceSpecificationResponseDto {
 	private List<DeviceSpecificationDto> devicespecifications;
 }

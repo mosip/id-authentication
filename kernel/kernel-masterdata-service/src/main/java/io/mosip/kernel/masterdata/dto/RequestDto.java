@@ -24,7 +24,13 @@ public class RequestDto<T> {
 	private LocalDateTime timestamp;
 	@NotNull
 	@Valid
+<<<<<<< HEAD
 	private T request; 
 	
 } 
  
+=======
+	private T request;
+
+}
+>>>>>>> branch 'DEV_SPRINT5_MASTERDATA_SERVICE_2' of https://github.com/mosip/mosip
