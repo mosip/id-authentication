@@ -226,7 +226,7 @@ public class FingerPrintScanController extends BaseController implements Initial
 		try (Stream<Path> paths = Files.walk(Paths.get(path))) {
 			paths.filter(Files::isRegularFile).forEach(e -> {
 				File file = e.getFileName().toFile();
-				if (file.getName().equals("FingerImage.bmp")) {
+				if (file.getName().equals("ISOTemplate.iso")) {
 					try {
 
 						FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
