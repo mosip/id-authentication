@@ -52,12 +52,15 @@ import javafx.stage.StageStyle;
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
 
+	/** The left hand slap threshold score. */
 	@Value("${leftHand_Slap_Threshold_Score}")
 	private double leftHandSlapThresholdScore;
 
+	/** The right hand slap threshold score. */
 	@Value("${rightHand_Slap_Threshold_Score}")
 	private double rightHandSlapThresholdScore;
 
+	/** The thumbs threshold score. */
 	@Value("${thumbs_Threshold_Score}")
 	private double thumbsThresholdScore;
 	/**
@@ -105,21 +108,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@FXML
 	private ImageView thumbImageview;
 
+	/** The left slap quality score. */
 	@FXML
 	private Label leftSlapQualityScore;
 
+	/** The right slap quality score. */
 	@FXML
 	private Label rightSlapQualityScore;
 
+	/** The thumbs quality score. */
 	@FXML
 	private Label thumbsQualityScore;
 
+	/** The left slap threshold score lbl. */
 	@FXML
 	private Label leftSlapThresholdScoreLbl;
 
+	/** The right slap threshold score lbl. */
 	@FXML
 	private Label rightSlapThresholdScoreLbl;
 
+	/** The thumbs threshold score lbl. */
 	@FXML
 	private Label thumbsThresholdScoreLbl;
 
