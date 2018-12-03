@@ -30,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
@@ -68,8 +69,52 @@ public class BaseAuthRequestValidatorTeat {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 	}
 
-
 	
+	@Test
+	public void testValidateVersionAndId() {
+		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
+		baseAuthRequestDTO.setId("123456");
+		baseAuthRequestDTO.setVer("1.0");
+		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
+		assertFalse(error.hasErrors());
+	}
+	
+	@Test
+	public void testValidateId_HasId_NoError() {
+
+		String id = "12345678";
+		baseAuthRequestValidator.validateId(id, error);
+		assertFalse(error.hasErrors());
+	}
+
+	@Test
+	public void testValidateId_NoId_HasError() {
+
+		String id = null;
+		baseAuthRequestValidator.validateId(id, error);
+		assertTrue(error.hasErrors());
+	}
+	
+	@Test
+	public void testValidateVersion_ValidVersion_NoError() {
+		String ver = "1.0";
+		baseAuthRequestValidator.validateVer(ver, error);
+		assertFalse(error.hasErrors());
+	}
+
+	@Test
+	public void testValidateVersion_InvalidVersion_hasError() {
+		String ver = "1.00";
+		baseAuthRequestValidator.validateVer(ver, error);
+		assertTrue(error.hasErrors());
+	}
+	
+	@Test
+	public void testValidateVersion_NoVersion_hasError() {
+		String ver = null;
+		baseAuthRequestValidator.validateVer(ver, error);
+		assertTrue(error.hasErrors());
+	}
 	
 	@Test
 	public void testValidateBioDetails_hasError() {
