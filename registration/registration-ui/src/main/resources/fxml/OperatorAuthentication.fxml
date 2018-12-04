@@ -11,22 +11,22 @@
    <children>
       <AnchorPane fx:id="pwdBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Button layoutX="385.0" layoutY="236.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
-            <TextField fx:id="username" layoutX="314.0" layoutY="125.0" promptText="Username" />
-            <Label fx:id="passwdLabel" layoutX="388.0" layoutY="86.0" text="RO Login" />
-            <PasswordField fx:id="password" layoutX="313.0" layoutY="176.0" promptText="Password" />
+            <Button layoutX="388.0" layoutY="244.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
+            <TextField fx:id="username" layoutX="291.0" layoutY="122.0" prefHeight="39.0" prefWidth="274.0" promptText="Username" />
+            <Label fx:id="passwdLabel" layoutX="316.0" layoutY="79.0" text="Registration Officer Verification" />
+            <PasswordField fx:id="password" layoutX="291.0" layoutY="178.0" prefHeight="39.0" prefWidth="274.0" promptText="Password" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="otpBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Button layoutX="313.0" layoutY="217.0" mnemonicParsing="false" text="Get OTP" />
-            <Label fx:id="otpLabel" layoutX="388.0" layoutY="56.0" text="RO Login" />
-            <Button layoutX="456.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
-            <TextField fx:id="otpUserId" layoutX="313.0" layoutY="108.0" promptText="Username" />
-            <TextField fx:id="otp" layoutX="313.0" layoutY="159.0" promptText="Enter OTP" />
-            <Label fx:id="otpValidity" layoutX="313.0" layoutY="267.0">
+            <Button layoutX="288.0" layoutY="237.0" mnemonicParsing="false" text="Get OTP" />
+            <Label fx:id="otpLabel" layoutX="316.0" layoutY="72.0" text="Registration Officer Verification" />
+            <Button layoutX="481.0" layoutY="237.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
+            <TextField fx:id="otpUserId" layoutX="288.0" layoutY="120.0" prefHeight="39.0" prefWidth="274.0" promptText="Username" />
+            <TextField fx:id="otp" layoutX="288.0" layoutY="173.0" prefHeight="39.0" prefWidth="274.0" promptText="Enter OTP" />
+            <Label fx:id="otpValidity" layoutX="288.0" layoutY="284.0">
                <font>
-                  <Font size="10.0" />
+                  <Font size="11.0" />
                </font>
             </Label>
          </children>

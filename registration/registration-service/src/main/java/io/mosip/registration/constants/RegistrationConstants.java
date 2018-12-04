@@ -74,7 +74,7 @@ public class RegistrationConstants {
 	public static final String FINGER_PRINT_MATCH = bundle.getString("FINGER_PRINT_MATCH");
 
 	//Authentication
-	public static final String SUPERVISOR_LOGIN = "Supervisor Login";
+	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
 	public static final String SUPERVISOR_NAME = "Supervisor";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 
