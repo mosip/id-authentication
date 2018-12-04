@@ -18,7 +18,6 @@ public class DemographicDedupeDto implements Serializable {
 	private String langCode;
 
 	private String name;
-
 	private Date dob;
 	private String genderCode;
 	private String phoneticName;
