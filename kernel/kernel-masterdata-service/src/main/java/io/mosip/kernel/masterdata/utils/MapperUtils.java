@@ -71,12 +71,12 @@ public class MapperUtils {
 	}
 
 	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
-		Object destination;
+		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
-
-			throw new DataAccessLayerException("KER-MSD-991", e.getMessage(), e);
+			throw new DataAccessLayerException("KER-MSD-991",
+					"Exception in mapping source object to class : " + e.getMessage(), e);
 		}
 		return (D) mapNew(source, destination);
 	}
@@ -106,7 +106,8 @@ public class MapperUtils {
 			}
 		} catch (Exception e) {
 
-			throw new DataAccessLayerException("KER-MSD-992", e.getMessage(), e);
+			throw new DataAccessLayerException("KER-MSD-992",
+					"Exception in mapping source object to destination object : " + e.getMessage(), e);
 		}
 	}
 
@@ -290,18 +291,17 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			//deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
+			// deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
-			
-			
+
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
 
 	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
 		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
-		
+
 		for (DeviceType deviceType : deviceTypes) {
 			DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
 			deviceTypeDto.setName(deviceType.getName());
@@ -310,22 +310,20 @@ public class MapperUtils {
 			deviceTypeDto.setLangCode(deviceType.getLangCode());
 			deviceTypeDtoList.add(deviceTypeDto);
 		}
-		
+
 		return deviceTypeDtoList;
 	}
-	
-	
-	
+
 	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
 		List<MachineDto> machineDtoList = new ArrayList<>();
 
-		for (Machine machine : machines) {		
+		for (Machine machine : machines) {
 			MachineDto machineDto = mapMachineDto(machine);
 			machineDtoList.add(machineDto);
 		}
 		return machineDtoList;
 	}
-	
+
 	public MachineDto mapMachineDto(Machine machine) {
 		MachineDto machineDto = new MachineDto();
 		machineDto.setName(machine.getName());
@@ -339,7 +337,6 @@ public class MapperUtils {
 		machineDto.setMacAddress(machine.getMacAddress());
 		return machineDto;
 	}
-
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();

@@ -8,10 +8,8 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceErrorC
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -47,13 +45,13 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 
 		try {
 			RegistrationCenterMachineDevice registrationCenterMachineDevice = metadataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachine.class);
+					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDevice.class);
 
 			RegistrationCenterMachineDevice savedRegistrationCenterMachineDevice = registrationCenterMachineDeviceRepository
 					.create(registrationCenterMachineDevice);
 
 			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = metadataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineHistory.class);
+					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDeviceHistory.class);
 			registrationCenterMachineDeviceHistory
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
