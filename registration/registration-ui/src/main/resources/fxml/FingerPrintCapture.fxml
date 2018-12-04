@@ -42,10 +42,16 @@
       <Label layoutX="288.0" layoutY="309.0" text="Quality %       :" />
       <Label layoutX="559.0" layoutY="336.0" text="Threshold %   :" />
       <Label layoutX="559.0" layoutY="309.0" text="Quality %       :" />
-      <Button fx:id="biometricsNext1" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#saveBiometricDetails" prefHeight="23.0" prefWidth="55.0" text="Previous">
+      <Button fx:id="biometricsNext1" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="23.0" prefWidth="55.0" text="Previous">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
+      <Label fx:id="leftSlapQualityScore" layoutX="137.0" layoutY="309.0" />
+      <Label fx:id="leftSlapThresholdScoreLbl" layoutX="137.0" layoutY="336.0" />
+      <Label fx:id="rightSlapQualityScore" layoutX="405.0" layoutY="308.0" />
+      <Label fx:id="rightSlapThresholdScoreLbl" layoutX="405.0" layoutY="335.0" />
+      <Label fx:id="thumbsQualityScore" layoutX="674.0" layoutY="309.0" />
+      <Label fx:id="thumbsThresholdScoreLbl" layoutX="674.0" layoutY="335.0" />
    </children>
 </AnchorPane>

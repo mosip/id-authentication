@@ -42,7 +42,6 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -1144,9 +1143,6 @@ public class RegistrationController extends BaseController {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-			SessionContext.getInstance().getMapObject().remove("LEFT_PALM_PATH");
-			SessionContext.getInstance().getMapObject().remove("RIGHT_PALM_PATH");
-			SessionContext.getInstance().getMapObject().remove("THUMB_PATH");
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
@@ -1440,7 +1436,9 @@ public class RegistrationController extends BaseController {
 	}
 
 	private Boolean isEditPage() {
-		return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		if(SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT)!=null)
+			return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		return false;
 	}
 
 	public void clickMe() {
@@ -1526,6 +1524,20 @@ public class RegistrationController extends BaseController {
 		this.biometricsPane = biometricsPane;
 	}
 
+	/**
+	 * @return the demoGraphicTitlePane
+	 */
+	public TitledPane getDemoGraphicTitlePane() {
+		return demoGraphicTitlePane;
+	}
+
+	/**
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 */
+	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
+		this.demoGraphicTitlePane = demoGraphicTitlePane;
+	}
+	
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {

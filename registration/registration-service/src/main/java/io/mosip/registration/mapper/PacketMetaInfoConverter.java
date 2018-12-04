@@ -1,5 +1,6 @@
 package io.mosip.registration.mapper;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,7 +66,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			biometric.setIntroducer(introducer);
 
 			// Load from ApplicationContext
-			String language = "language";
+			String language = "en";
 
 			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
 
@@ -278,9 +279,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Geo-location Longitude
 		metaData.add(buildFieldValue("geoLoclongitude", String.valueOf(metaDataDTO.getGeoLongitudeLoc())));
 		// Add Registration Type
-		metaData.add(buildFieldValue("registrationType", metaDataDTO.getApplicationType()));
+		metaData.add(buildFieldValue("registrationType", metaDataDTO.getRegistrationCategory()));
 		// Add Applicant Type
-		metaData.add(buildFieldValue("applicantType", metaDataDTO.getRegistrationCategory()));
+		metaData.add(buildFieldValue("applicantType", metaDataDTO.getApplicationType()));
 		// Add Pre-Registration ID
 		metaData.add(buildFieldValue("preRegistrationId", registrationDTO.getPreRegistrationId()));
 		// Add Registration ID
@@ -315,6 +316,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Introducer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), "introducer",
 				RegistrationConstants.BIOMETRIC_TYPE));
+		// Add Registration Creation Date
+		metaData.add(buildFieldValue("creationDate", String.valueOf(LocalDateTime.now())));
+		// Add DOB Verified
+		metaData.add(buildFieldValue("isVerified", String.valueOf(false)));
 
 		return metaData;
 	}

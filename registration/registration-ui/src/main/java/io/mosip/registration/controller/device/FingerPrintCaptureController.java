@@ -3,6 +3,7 @@ package io.mosip.registration.controller.device;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -28,6 +30,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -43,11 +47,22 @@ import javafx.stage.StageStyle;
  * fingerprints.
  * 
  * @author Mahesh Kumar
- * @since  1.0
+ * @since 1.0
  */
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
 
+	/** The left hand slap threshold score. */
+	@Value("${leftHand_Slap_Threshold_Score}")
+	private double leftHandSlapThresholdScore;
+
+	/** The right hand slap threshold score. */
+	@Value("${rightHand_Slap_Threshold_Score}")
+	private double rightHandSlapThresholdScore;
+
+	/** The thumbs threshold score. */
+	@Value("${thumbs_Threshold_Score}")
+	private double thumbsThresholdScore;
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -71,36 +86,60 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The left hand palm pane. */
 	@FXML
-	protected AnchorPane leftHandPalmPane;
+	private AnchorPane leftHandPalmPane;
 
 	/** The right hand palm pane. */
 	@FXML
-	protected AnchorPane rightHandPalmPane;
+	private AnchorPane rightHandPalmPane;
 
 	/** The thumb pane. */
 	@FXML
-	protected AnchorPane thumbPane;
+	private AnchorPane thumbPane;
 
 	/** The left hand palm imageview. */
 	@FXML
-	protected ImageView leftHandPalmImageview;
+	private ImageView leftHandPalmImageview;
 
 	/** The right hand palm imageview. */
 	@FXML
-	protected ImageView rightHandPalmImageview;
+	private ImageView rightHandPalmImageview;
 
 	/** The thumb imageview. */
 	@FXML
-	protected ImageView thumbImageview;
+	private ImageView thumbImageview;
+
+	/** The left slap quality score. */
+	@FXML
+	private Label leftSlapQualityScore;
+
+	/** The right slap quality score. */
+	@FXML
+	private Label rightSlapQualityScore;
+
+	/** The thumbs quality score. */
+	@FXML
+	private Label thumbsQualityScore;
+
+	/** The left slap threshold score lbl. */
+	@FXML
+	private Label leftSlapThresholdScoreLbl;
+
+	/** The right slap threshold score lbl. */
+	@FXML
+	private Label rightSlapThresholdScoreLbl;
+
+	/** The thumbs threshold score lbl. */
+	@FXML
+	private Label thumbsThresholdScoreLbl;
 
 	/** The selected pane. */
 	private AnchorPane selectedPane = null;
 
-	/** List of FingerprintDetailsDTO */
+	/** List of FingerprintDetailsDTOs */
 	private List<FingerprintDetailsDTO> fingerprintDetailsDTOs;
 
-	private final Border border = new Border(new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null, null));
-	private final Border focusedBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null));
+	/** List of FingerprintDTOs */
+	private List<FingerprintDetailsDTO> fingerprintDTOs;
 
 	/*
 	 * (non-Javadoc)
@@ -113,23 +152,36 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		fingerprintDetailsDTOs = new ArrayList<>();
+		fingerprintDTOs = new ArrayList<>();
 		selectAnchorPane();
 
-		if (SessionContext.getInstance().getMapObject().get("LEFT_PALM_PATH") != null
-				|| SessionContext.getInstance().getMapObject().get("RIGHT_PALM_PATH") != null
-				|| SessionContext.getInstance().getMapObject().get("THUMB_PATH") != null) {
-			leftHandPalmImageview.setImage(fingerPrintScanController
-					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("LEFT_PALM_PATH"))));
-			rightHandPalmImageview.setImage(fingerPrintScanController
-					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("RIGHT_PALM_PATH"))));
-			thumbImageview.setImage(fingerPrintScanController
-					.loadImage(String.valueOf(SessionContext.getInstance().getMapObject().get("THUMB_PATH"))));
-		} else {
-			leftHandPalmImageview.setImage(null);
-			rightHandPalmImageview.setImage(null);
-			thumbImageview.setImage(null);
-		}
+		leftSlapThresholdScoreLbl.setText(String.valueOf(leftHandSlapThresholdScore) + "%");
+		rightSlapThresholdScoreLbl.setText(String.valueOf(rightHandSlapThresholdScore) + "%");
+		thumbsThresholdScoreLbl.setText(String.valueOf(thumbsThresholdScore) + "%");
 
+		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
+		if (null != registrationDTOContent) {
+			if (null != registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+					.getFingerprintDetailsDTO()) {
+				registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+						.forEach(item -> {
+							if (item.getFingerType().equals("LeftPalm")) {
+								leftHandPalmImageview
+										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							} else if (item.getFingerType().equals("RightPalm")) {
+								rightHandPalmImageview
+										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							} else if (item.getFingerType().equals("BothThumbs")) {
+								thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							}
+						});
+			} else {
+				leftHandPalmImageview.setImage(null);
+				rightHandPalmImageview.setImage(null);
+				thumbImageview.setImage(null);
+			}
+		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen ended");
 	}
@@ -141,6 +193,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private void selectAnchorPane() {
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Selection of Anchorpane for fingerprint capture started");
+		Border border = new Border(new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null, null));
+		Border focusedBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null));
+
 		fingerPrintCapturePane.getChildren().stream().filter(obj -> obj instanceof AnchorPane)
 				.map(obj -> (AnchorPane) obj).forEach(anchorPane -> anchorPane.setOnMouseClicked(e -> {
 					anchorPane.requestFocus();
@@ -163,7 +218,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				primaryStage.initStyle(StageStyle.UNDECORATED);
 				Parent ackRoot = BaseController
 						.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
-				fingerPrintScanController.init(selectedPane, primaryStage, fingerprintDetailsDTOs);
+				fingerPrintScanController.init(selectedPane, primaryStage, fingerprintDetailsDTOs, fingerprintDTOs);
 				primaryStage.setResizable(false);
 				Scene scene = new Scene(ackRoot);
 				ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -185,12 +240,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	/**
-	 * {@code saveBiometricDetails} is to save the captured fingerprints to session
-	 * context and check the deduplication
+	 * {@code saveBiometricDetails} is to check the deduplication of captured finger
+	 * prints
 	 */
 	public void saveBiometricDetails() {
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Saving and Validating of captured fingerprints has started");
+				"Validating captured fingerprints has started");
 
 		if (null != leftHandPalmImageview.getImage() && null != rightHandPalmImageview.getImage()
 				&& null != thumbImageview.getImage()) {
@@ -201,23 +256,161 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			BiometricDTO biometricDTO = new BiometricDTO();
 			BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 
-			biometricInfoDTO.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+			biometricInfoDTO.setFingerprintDetailsDTO(fingerprintDTOs);
 			biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
+
+			if (null != registrationDTOContent) {
+				registrationDTOContent.setBiometricDTO(biometricDTO);
+			}
 
 			fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs);
 
 			registrationController.toggleFingerprintCaptureVisibility(false);
 			registrationController.toggleIrisCaptureVisibility(true);
 
-			if (null != registrationDTOContent) {
-				registrationDTOContent.setBiometricDTO(biometricDTO);
-			}
-
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Please scan your Fingers to continue.");
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Saving and Validating of captured fingerprints has ended");
+				"Validating captured fingerprints has ended");
+	}
+
+	/**
+	 * {@code saveBiometricDetails} is to check the deduplication of captured finger
+	 * prints
+	 */
+	public void goToPreviousPage() {
+		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"going to previous page started");
+		registrationController.getDemoGraphicTitlePane().setExpanded(true);
+		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"going to previous page ended");
+	}
+
+	/**
+	 * @return the leftHandPalmPane
+	 */
+	public AnchorPane getLeftHandPalmPane() {
+		return leftHandPalmPane;
+	}
+
+	/**
+	 * @param leftHandPalmPane the leftHandPalmPane to set
+	 */
+	public void setLeftHandPalmPane(AnchorPane leftHandPalmPane) {
+		this.leftHandPalmPane = leftHandPalmPane;
+	}
+
+	/**
+	 * @return the rightHandPalmPane
+	 */
+	public AnchorPane getRightHandPalmPane() {
+		return rightHandPalmPane;
+	}
+
+	/**
+	 * @param rightHandPalmPane the rightHandPalmPane to set
+	 */
+	public void setRightHandPalmPane(AnchorPane rightHandPalmPane) {
+		this.rightHandPalmPane = rightHandPalmPane;
+	}
+
+	/**
+	 * @return the thumbPane
+	 */
+	public AnchorPane getThumbPane() {
+		return thumbPane;
+	}
+
+	/**
+	 * @param thumbPane the thumbPane to set
+	 */
+	public void setThumbPane(AnchorPane thumbPane) {
+		this.thumbPane = thumbPane;
+	}
+
+	/**
+	 * @return the leftHandPalmImageview
+	 */
+	public ImageView getLeftHandPalmImageview() {
+		return leftHandPalmImageview;
+	}
+
+	/**
+	 * @param leftHandPalmImageview the leftHandPalmImageview to set
+	 */
+	public void setLeftHandPalmImageview(ImageView leftHandPalmImageview) {
+		this.leftHandPalmImageview = leftHandPalmImageview;
+	}
+
+	/**
+	 * @return the rightHandPalmImageview
+	 */
+	public ImageView getRightHandPalmImageview() {
+		return rightHandPalmImageview;
+	}
+
+	/**
+	 * @param rightHandPalmImageview the rightHandPalmImageview to set
+	 */
+	public void setRightHandPalmImageview(ImageView rightHandPalmImageview) {
+		this.rightHandPalmImageview = rightHandPalmImageview;
+	}
+
+	/**
+	 * @return the thumbImageview
+	 */
+	public ImageView getThumbImageview() {
+		return thumbImageview;
+	}
+
+	/**
+	 * @param thumbImageview the thumbImageview to set
+	 */
+	public void setThumbImageview(ImageView thumbImageview) {
+		this.thumbImageview = thumbImageview;
+	}
+
+	/**
+	 * @return the leftSlapQualityScore
+	 */
+	public Label getLeftSlapQualityScore() {
+		return leftSlapQualityScore;
+	}
+
+	/**
+	 * @param leftSlapQualityScore the leftSlapQualityScore to set
+	 */
+	public void setLeftSlapQualityScore(Label leftSlapQualityScore) {
+		this.leftSlapQualityScore = leftSlapQualityScore;
+	}
+
+	/**
+	 * @return the rightSlapQualityScore
+	 */
+	public Label getRightSlapQualityScore() {
+		return rightSlapQualityScore;
+	}
+
+	/**
+	 * @param rightSlapQualityScore the rightSlapQualityScore to set
+	 */
+	public void setRightSlapQualityScore(Label rightSlapQualityScore) {
+		this.rightSlapQualityScore = rightSlapQualityScore;
+	}
+
+	/**
+	 * @return the thumbsQualityScore
+	 */
+	public Label getThumbsQualityScore() {
+		return thumbsQualityScore;
+	}
+
+	/**
+	 * @param thumbsQualityScore the thumbsQualityScore to set
+	 */
+	public void setThumbsQualityScore(Label thumbsQualityScore) {
+		this.thumbsQualityScore = thumbsQualityScore;
 	}
 
 }

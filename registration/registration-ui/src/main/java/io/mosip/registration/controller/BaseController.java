@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,6 +37,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -260,5 +262,9 @@ public class BaseController {
 			}
 			counter++;
 		}
+	}
+	
+	protected Image convertBytesToImage(byte[] imageBytes) {
+		return new Image(new ByteArrayInputStream(imageBytes));
 	}
 }

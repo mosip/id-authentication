@@ -126,7 +126,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				fingerPrintConnector.uninitFingerPrintDevice();
 				fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
 
-				if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 					// if FP data fetched then retrieve the user specific detail from db.
 					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
