@@ -22,8 +22,8 @@
             <Button layoutX="313.0" layoutY="217.0" mnemonicParsing="false" text="Get OTP" />
             <Label fx:id="otpLabel" layoutX="388.0" layoutY="56.0" text="RO Login" />
             <Button layoutX="456.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
-            <TextField layoutX="313.0" layoutY="108.0" promptText="Username" />
-            <TextField layoutX="313.0" layoutY="159.0" promptText="Enter OTP" />
+            <TextField fx:id="otpUserId" layoutX="313.0" layoutY="108.0" promptText="Username" />
+            <TextField fx:id="otp" layoutX="313.0" layoutY="159.0" promptText="Enter OTP" />
             <Label fx:id="otpValidity" layoutX="313.0" layoutY="267.0">
                <font>
                   <Font size="10.0" />

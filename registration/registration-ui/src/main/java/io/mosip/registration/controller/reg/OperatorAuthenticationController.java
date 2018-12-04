@@ -72,6 +72,10 @@ public class OperatorAuthenticationController extends BaseController implements 
 	private TextField password;
 	@FXML
 	private Label passwdLabel;
+	@FXML
+	private TextField otpUserId;
+	@FXML
+	private TextField otp;
 
 	private FingerprintFacade fingerprintFacade = null;
 
@@ -98,15 +102,15 @@ public class OperatorAuthenticationController extends BaseController implements 
 
 	@Autowired
 	private LoginService loginService;
-	
+
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
 
 	private int count = 1;
 
-	private boolean isSupervisior = false;
+	private boolean isSupervisor = false;
 
-	private Map<String, Object> userAuthenticationTypeMap=new LinkedHashMap<>();
+	private Map<String, Object> userAuthenticationTypeMap = new LinkedHashMap<>();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -119,7 +123,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 	}
 
 	public void validatePwd() {
-
 		if (username.getText().isEmpty() && password.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (username.getText().isEmpty()) {
@@ -150,58 +153,52 @@ public class OperatorAuthenticationController extends BaseController implements 
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
 				if (!serverStatus) {
-
 					if (userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) {
 						loadNextScreen();
 					} else {
-						
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
 					}
 				}
-				/*if (serverStatus || offlineStatus) {
-					if (validateUserStatus(username.getText())) {
-
-						LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-								"Validating user status");
-
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
-					} else {
-						try {
-
-							LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
-									APPLICATION_ID, "Loading next login screen");
-
-							SessionContext sessionContext = SessionContext.getInstance();
-							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-
-						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-
-							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
-									APPLICATION_ID, exception.getMessage());
-
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
-						}
-					}
-				}*/
+				/*
+				 * if (serverStatus || offlineStatus) { if
+				 * (validateUserStatus(username.getText())) {
+				 * 
+				 * LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
+				 * APPLICATION_NAME, APPLICATION_ID, "Validating user status");
+				 * 
+				 * generateAlert(RegistrationConstants.ALERT_ERROR,
+				 * RegistrationConstants.BLOCKED_USER_ERROR); } else { try {
+				 * 
+				 * LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
+				 * APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
+				 * 
+				 * SessionContext sessionContext = SessionContext.getInstance();
+				 * loadNextScreen(userDetail, sessionContext,
+				 * RegistrationConstants.LOGIN_METHOD_PWORD);
+				 * 
+				 * } catch (IOException | RuntimeException | RegBaseCheckedException exception)
+				 * {
+				 * 
+				 * LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
+				 * APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+				 * 
+				 * generateAlert(RegistrationConstants.ALERT_ERROR,
+				 * RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN); } } }
+				 */
 			}
 		}
-
-	
-	
 	}
-	
-	private boolean getConnectionCheck(LoginUserDTO userObj) {
 
+	private boolean getConnectionCheck(LoginUserDTO userObj) {
 		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
 		ResponseEntity<String> tokenId = null;
 		boolean serverStatus = false;
-
 		try {
 			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
 			if (tokenId.getStatusCode().is2xxSuccessful()) {
 				serverStatus = true;
 			}
 		} catch (RestClientException resourceAccessException) {
-
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
 					resourceAccessException.getMessage());
 		}
@@ -214,34 +211,31 @@ public class OperatorAuthenticationController extends BaseController implements 
 	}
 
 	public void validateFingerprint() {
-		if (isSupervisior) {
+		if (isSupervisor) {
 			if (fpUserId.getText() != null) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
 						loadNextScreen();
 					} else {
-
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
 					}
 				} else {
-
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 				}
 			} else {
-
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
-
 			if (captureAndValidateFP(fpUserId.getText())) {
 				loadNextScreen();
 			} else {
-
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
 			}
-		
 		}
 	}
-	
+
 	private void getAuthenticationModes() {
-//		userAuthenticationTypeMap.clear();
-		count=1;
+		count = 1;
 		userAuthenticationTypeMap = loginService.getModesOfLogin();
 		userAuthenticationTypeMap.remove(RegistrationConstants.LOGIN_SEQUENCE);
 		loadNextScreen();
@@ -254,14 +248,17 @@ public class OperatorAuthenticationController extends BaseController implements 
 			count++;
 			loadAuthenticationScreen(authenticationType);
 		} else {
-			if (!isSupervisior) {
-				isSupervisior = true;
-				getAuthenticationModes();
+			if (!isSupervisor) {
+				if (RegistrationController.toggleBiometricException) {
+					isSupervisor = true;
+					getAuthenticationModes();
+				} else {
+					submitRegistration();
+				}
 			} else {
 				submitRegistration();
 			}
 		}
-
 	}
 
 	public void loadAuthenticationScreen(String loginMode) {
@@ -281,12 +278,20 @@ public class OperatorAuthenticationController extends BaseController implements 
 	}
 
 	private void enableOTP() {
-		/*
-		 * if(authenticator.equals("supervisor")) {
-		 * otpLabel.setText("Supervisor Login"); otpBasedLogin.setVisible(true); } else
-		 * if(authenticator.equals("RO")) { otpLabel.setText("RO Login");
-		 * otpBasedLogin.setVisible(true); }
-		 */
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(true);
+		fingerprintBasedLogin.setVisible(false);
+		otp.clear();
+		otpUserId.clear();
+		if (isSupervisor) {
+			otpLabel.setText(RegistrationConstants.SUPERVISOR_LOGIN);
+			otpLabel.setLayoutX(359);
+			otpLabel.setLayoutY(56);
+			otpUserId.setEditable(true);
+		} else {
+			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+			otpUserId.setEditable(false);
+		}
 	}
 
 	private void enablePWD() {
@@ -295,8 +300,10 @@ public class OperatorAuthenticationController extends BaseController implements 
 		fingerprintBasedLogin.setVisible(false);
 		username.clear();
 		password.clear();
-		if(isSupervisior) {
-			passwdLabel.setText("Supervisor Login");
+		if (isSupervisor) {
+			passwdLabel.setText(RegistrationConstants.SUPERVISOR_LOGIN);
+			passwdLabel.setLayoutX(360);
+			passwdLabel.setLayoutY(86);
 			username.setEditable(true);
 		} else {
 			username.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -309,9 +316,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		otpBasedLogin.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
-		if (isSupervisior) {
+		if (isSupervisor) {
 			fpUserId.setEditable(true);
-			fingerPrintLabel.setText("Supervisior Fingerprint Authentication");
+			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 			fpUserId.setEditable(false);
@@ -321,8 +328,8 @@ public class OperatorAuthenticationController extends BaseController implements 
 	private boolean fetchUserRole(String userId) {
 		RegistrationUserDetail registrationUserDetail = loginService.getUserDetail(userId);
 		if (registrationUserDetail != null) {
-			return registrationUserDetail.getUserRole().stream().anyMatch(
-					userRole -> userRole.getRegistrationUserRoleID().getRoleCode().equalsIgnoreCase("SUPERVISOR"));
+			return registrationUserDetail.getUserRole().stream().anyMatch(userRole -> userRole
+					.getRegistrationUserRoleID().getRoleCode().equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
 		}
 		return false;
 	}
@@ -332,17 +339,14 @@ public class OperatorAuthenticationController extends BaseController implements 
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
 		int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
 		if (statusCode != 0) {
-
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_FP_NOT_FOUND);
-
 		} else {
-
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
 			// error code or success code the respective action will be taken care.
 			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-
 			LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
 					"Fingerprint scan done");
+
 			fingerPrintConnector.uninitFingerPrintDevice();
 			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 				// if FP data fetched then retrieve the user specific detail from db.
@@ -357,7 +361,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 						.getValidator("Fingerprint");
 				authenticationValidatorImplementation.setFingerPrintType("single");
 				fpMatchStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
-
 			}
 		}
 		return fpMatchStatus;

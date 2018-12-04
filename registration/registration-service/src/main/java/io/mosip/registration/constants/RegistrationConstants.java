@@ -73,6 +73,11 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = bundle.getString("OTP_VALIDATION_ERROR_MESSAGE");
 	public static final String FINGER_PRINT_MATCH = bundle.getString("FINGER_PRINT_MATCH");
 
+	//Authentication
+	public static final String SUPERVISOR_LOGIN = "Supervisor Login";
+	public static final String SUPERVISOR_NAME = "Supervisor";
+	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
+
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
 	public static final String MACHINE_MAPPING_ERROR = bundle.getString("MACHINE_MAPPING_ERROR");

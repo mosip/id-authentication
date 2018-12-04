@@ -235,7 +235,7 @@ public class RegistrationController extends BaseController {
 
 	private boolean toggleAgeOrDobField;
 
-	private boolean toggleBiometricException;
+	protected static boolean toggleBiometricException = false;
 
 	private boolean isChild;
 
@@ -326,7 +326,6 @@ public class RegistrationController extends BaseController {
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleAgeOrDobField = false;
-			toggleBiometricException = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
