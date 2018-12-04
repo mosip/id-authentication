@@ -162,8 +162,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
-	private RegOsiDto regOsiDto;
-
 	/** The meta data. */
 	private List<FieldValue> metaData;
 	private String regId;
@@ -535,12 +533,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
 					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
-
-			// Set<String>duplicateRefIds=packetInfoDao.getDedupeRefIds("2018782130000103122018100224");
-			// for(String regId:duplicateRefIds) {
-			// System.out.println(regId +" ***********");
-			// }
-
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
 				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> DemographicDedupeData SAVED");
@@ -611,9 +603,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public RegOsiDto getOsi(String regid) {
-
-		regOsiDto = packetInfoDao.getEntitiesforRegOsi(regid);
-		return regOsiDto;
+		return packetInfoDao.getEntitiesforRegOsi(regid);
 	}
 
 	@Override
@@ -622,35 +612,35 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
 
-	private Set<String> performDedupe(String refId) {
+	public Set<String> performDedupe(String refId) {
 		int score = 0;
 		int threshold = 60;
 		Set<String> duplicateRegIds = new HashSet<>();
 		List<DemographicDedupeDto> idsWithUin = packetInfoDao.getAllDemoWithUIN();
 
-		List<DemographicDedupeDto> dedupeWithOutUin = packetInfoDao.findDemoById(refId);
+		List<DemographicDedupeDto> idWithOutUin = packetInfoDao.findDemoById(refId);
 
-		for (DemographicDedupeDto demo : idsWithUin) {
+		for (DemographicDedupeDto dtoWithUin : idsWithUin) {
 
-			for (DemographicDedupeDto compareDemo : dedupeWithOutUin) {
+			for (DemographicDedupeDto dtoWithOutUin : idWithOutUin) {
 
-				if (demo.getLangCode().equals(compareDemo.getLangCode())) {
+				if (dtoWithUin.getLangCode().equals(dtoWithOutUin.getLangCode())) {
 
-					if (demo.getName().equals(compareDemo.getName())) {
+					if (dtoWithUin.getName().equals(dtoWithOutUin.getName())) {
 						score = score + regProcessorIdentityJson.getIdentity().getName().getWeight();
 					}
-					if (demo.getGenderCode().equals(compareDemo.getGenderCode())) {
+					if (dtoWithUin.getGenderCode().equals(dtoWithOutUin.getGenderCode())) {
 						score = score + regProcessorIdentityJson.getIdentity().getGender().getWeight();
 					}
-					if (demo.getDob().equals(compareDemo.getDob())) {
+					if (dtoWithUin.getDob().equals(dtoWithOutUin.getDob())) {
 						score = score + regProcessorIdentityJson.getIdentity().getDob().getWeight();
 					}
-//					if (demo.getPhoneticName().equals(compareDemo.getPhoneticName())) {
-//						score = score + regProcessorIdentityJson.getIdentity().getPheoniticName().getWeight();
-//					}
+					if (dtoWithUin.getPhoneticName().equals(dtoWithOutUin.getPhoneticName())) {
+						score = score + regProcessorIdentityJson.getIdentity().getPheoniticName().getWeight();
+					}
 
 					if (score > threshold) {
-						duplicateRegIds.add(demo.getRegId());
+						duplicateRegIds.add(dtoWithUin.getRegId());
 						score = 0;
 						break;
 					}

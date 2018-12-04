@@ -1,9 +1,7 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +18,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 
 @Component
 public class PacketInfoDao {
@@ -30,8 +26,6 @@ public class PacketInfoDao {
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 	@Autowired
 	private BasePacketRepository<RegCenterMachineEntity, RegCenterMachinePKEntity> regCenterMachineRepository;
-
-
 
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
@@ -84,8 +78,9 @@ public class PacketInfoDao {
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
 		regCenterMachinePKEntity.setRegId(regid);
-		RegCenterMachineEntity regCenterMachineEntity=regCenterMachineRepository.findById(RegCenterMachineEntity.class, regCenterMachinePKEntity);
-		RegistrationCenterMachineDto dto=new RegistrationCenterMachineDto();
+		RegCenterMachineEntity regCenterMachineEntity = regCenterMachineRepository
+				.findById(RegCenterMachineEntity.class, regCenterMachinePKEntity);
+		RegistrationCenterMachineDto dto = new RegistrationCenterMachineDto();
 		dto.setIsActive(regCenterMachineEntity.getIsActive());
 		dto.setLatitude(regCenterMachineEntity.getLatitude());
 		dto.setLongitude(regCenterMachineEntity.getLongitude());
@@ -95,6 +90,7 @@ public class PacketInfoDao {
 		dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
 		return dto;
 	}
+
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
 		RegOsiDto regOsiDto = new RegOsiDto();
 		regOsiDto.setRegId(regOsiEntity.getId().getRegId());
@@ -161,32 +157,33 @@ public class PacketInfoDao {
 
 		return demo;
 	}
-	
+
 	public List<DemographicDedupeDto> getAllDemoWithUIN() {
 		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository.getAllDemoWithUIN();
+		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
+				.getAllDemoWithUIN();
 		if (individualDemographicDedupeEntityList != null) {
 			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
-					demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
-				}
+				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
+			}
 
 			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
 	}
-	
+
 	public List<DemographicDedupeDto> findDemoById(String regId) {
 		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository.findDemoById(regId);
+		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
+				.findDemoById(regId);
 		if (individualDemographicDedupeEntityList != null) {
 			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
-					demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
-				}
+				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
+			}
 
 			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
 	}
 
-	
 }
