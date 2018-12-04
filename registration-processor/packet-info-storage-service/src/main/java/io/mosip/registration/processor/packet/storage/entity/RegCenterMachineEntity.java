@@ -42,6 +42,7 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	private String longitude;
 	
 	/** The packet creation time. */
+	@Column(name = "packet_cr_dtimes")
 	private LocalDateTime packetCreationDate;
 	
 	/** The is active. */
