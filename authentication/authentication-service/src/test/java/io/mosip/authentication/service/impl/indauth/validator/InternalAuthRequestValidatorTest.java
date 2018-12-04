@@ -83,6 +83,7 @@ public class InternalAuthRequestValidatorTest {
 	public void before() {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idAuthService", idAuthService);
 	}
 
@@ -172,7 +173,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test

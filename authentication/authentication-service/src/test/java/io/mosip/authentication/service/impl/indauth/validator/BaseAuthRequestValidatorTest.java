@@ -38,6 +38,8 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
+import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
 /**
  * Test class for {@link BaseAuthRequestValidator}.
@@ -48,7 +50,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class BaseAuthRequestValidatorTeat {
+public class BaseAuthRequestValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -61,12 +63,21 @@ public class BaseAuthRequestValidatorTeat {
 
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
+	
+	@Mock
+	EmailValidatorImpl emailValidatorImpl;
+	
+	@Mock
+	PhoneValidatorImpl phoneValidatorImpl;
 
 	Errors error;
 
 	@Before
 	public void before() {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "emailValidatorImpl", emailValidatorImpl);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
 	}
 
 	

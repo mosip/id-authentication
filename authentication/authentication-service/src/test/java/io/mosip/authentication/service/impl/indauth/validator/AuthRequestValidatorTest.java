@@ -54,7 +54,7 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class AuthRequestValidatorTest {
+public class AuthRequestValidatorTest{
 
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -92,8 +92,8 @@ public class AuthRequestValidatorTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
-		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
-		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
+		/*ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
+		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);*/
 	}
 
 	@Test
