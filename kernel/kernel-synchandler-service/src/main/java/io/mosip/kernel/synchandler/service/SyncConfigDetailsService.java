@@ -1,9 +1,9 @@
 package io.mosip.kernel.synchandler.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import net.minidev.json.JSONObject;
 
 public interface SyncConfigDetailsService {
 
-	public JsonNode getEnrolmentClientConfigDetails();
-	public JsonNode  getAdminConfigDetails(String regId);
+	public JSONObject getEnrolmentClientConfigDetails();
+	public JSONObject  getAdminConfigDetails(String regId);
 }

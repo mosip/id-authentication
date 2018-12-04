@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
+
 
 import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 /**
  * 
  * @author Srinivasan
@@ -26,7 +27,7 @@ public class SyncConfigDetailsController {
 	 * @return JSONNode - global config response 
 	 */
 	@GetMapping(value="/globalconfigs")
-	public JsonNode getGlobalConfigDetails() {
+	public JSONObject getGlobalConfigDetails() {
 		return syncConfigDetailsService.getEnrolmentClientConfigDetails();
 	}
 	/**
@@ -34,7 +35,7 @@ public class SyncConfigDetailsController {
 	 * @return
 	 */
 	@GetMapping(value="/registrationcenterconfig/{registrationcenterid}")
-	public JsonNode getRegistrationCentreConfig(@PathVariable(value="registrationcenterid") String regId) {
+	public JSONObject getRegistrationCentreConfig(@PathVariable(value="registrationcenterid") String regId) {
 		return syncConfigDetailsService.getAdminConfigDetails(regId);
 	}
 	

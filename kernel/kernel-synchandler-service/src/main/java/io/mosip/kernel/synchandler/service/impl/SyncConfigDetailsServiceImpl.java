@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
@@ -14,34 +13,34 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	RestTemplate restTemplate = null;
 
 	@Override
-	public JsonNode getEnrolmentClientConfigDetails() {
+	public JSONObject getEnrolmentClientConfigDetails() {
 		
 
-		Object jsonObject= getConfigDetailsResponse(
+		JSONObject jsonObject= getConfigDetailsResponse(
 				"http://104.211.212.28:51000/*/default/DEV_SPRINT6_SYNC_HANDLER/global-config.json");
 		
-		System.out.println(jsonObject);
-		return null;
+		
+		return jsonObject;
 		
 	}
 
 	@Override
-	public JsonNode getAdminConfigDetails(String regId) {
+	public JSONObject getAdminConfigDetails(String regId) {
 
-		Object jsonObject= getConfigDetailsResponse(
+		JSONObject jsonObject= getConfigDetailsResponse(
 				"http://104.211.212.28:51000/*/default/DEV_SPRINT6_SYNC_HANDLER/registration-centre-config.json");
-		System.out.println(jsonObject);
-		return null;
+		
+		return jsonObject;
 
 	}
 
-	private Object getConfigDetailsResponse(String jsonFileUri) {
+	private JSONObject getConfigDetailsResponse(String jsonFileUri) {
 
 		StringBuilder uriBuilder = new StringBuilder().append(jsonFileUri);
-		Object result = null;
+		JSONObject result = null;
 		try {
 			restTemplate = new RestTemplate();
-			result = restTemplate.getForObject(uriBuilder.toString(), Object.class);
+			result = restTemplate.getForObject(uriBuilder.toString(), JSONObject.class);
 		} catch (RestClientException e) {
 			// throw appropriate error
 			
