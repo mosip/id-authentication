@@ -24,14 +24,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.util.biometric.LogietchPhotoProvider;
+import io.mosip.registration.util.biometric.LogitechPhotoProvider;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Webcam.class })
-public class LogietchPhotoProviderTest {
+public class LogitechPhotoProviderTest {
 	
 	@InjectMocks
-	LogietchPhotoProvider logietchPhotoProvider;
+	LogitechPhotoProvider logitechPhotoProvider;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -47,7 +47,7 @@ public class LogietchPhotoProviderTest {
 		List<Webcam> webcams = new ArrayList<>();
 		when(Webcam.getWebcams()).thenReturn(webcams);
 		webcam = null;
-		assertThat(logietchPhotoProvider.connect(640, 480), is(webcam));		
+		assertThat(logitechPhotoProvider.connect(640, 480), is(webcam));		
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class LogietchPhotoProviderTest {
 		when(Webcam.getWebcams()).thenReturn(webcams);
 		when(Webcam.getDiscoveryService()).thenReturn(discoveryService);
 		discoveryService.stop();
-		assertThat(logietchPhotoProvider.connect(640, 480), is(webcam));		
+		assertThat(logitechPhotoProvider.connect(640, 480), is(webcam));		
 	}
 	
 	@Test
@@ -73,8 +73,8 @@ public class LogietchPhotoProviderTest {
 		when(Webcam.getDefault()).thenReturn(webcam);
 		BufferedImage image = null;		
 		when(webcam.getImage()).thenReturn(image);
-		assertThat(logietchPhotoProvider.captureImage(webcam), is(image));
-		logietchPhotoProvider.close(webcam);
+		assertThat(logitechPhotoProvider.captureImage(webcam), is(image));
+		logitechPhotoProvider.close(webcam);
 	}
 	
 }

@@ -20,11 +20,11 @@ import io.mosip.registration.config.AppConfig;
  * @author Himaja Dhanyamraju
  */
 @Component
-public class LogietchPhotoProvider extends PhotoProvider {
+public class LogitechPhotoProvider extends PhotoProvider {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(LogietchPhotoProvider.class);
+	private static final Logger LOGGER = AppConfig.getLogger(LogitechPhotoProvider.class);
 
 	@Override
 	public Webcam connect(int width, int height) {

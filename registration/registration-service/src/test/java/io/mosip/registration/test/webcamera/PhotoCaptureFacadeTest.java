@@ -24,7 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.util.biometric.LogietchPhotoProvider;
+import io.mosip.registration.util.biometric.LogitechPhotoProvider;
 import io.mosip.registration.util.biometric.PhotoCaptureFacade;
 
 @RunWith(PowerMockRunner.class)
@@ -38,7 +38,7 @@ public class PhotoCaptureFacadeTest {
 	PhotoCaptureFacade photoCaptureServiceImpl;
 	
 	@Mock
-	LogietchPhotoProvider logietchPhotoProvider;
+	LogitechPhotoProvider logitechPhotoProvider;
 	
 	@Mock
 	WebcamDiscoveryService webcamDiscoveryService;
@@ -54,7 +54,7 @@ public class PhotoCaptureFacadeTest {
 		when(Webcam.getWebcams()).thenReturn(webcams);
 		when(Webcam.getDiscoveryService()).thenReturn(webcamDiscoveryService);
 		webcamDiscoveryService.stop();
-		when(logietchPhotoProvider.connect(640, 480)).thenReturn(webcam);
+		when(logitechPhotoProvider.connect(640, 480)).thenReturn(webcam);
 		assertThat(photoCaptureServiceImpl.connect(640, 480), is(webcam));
 	}
 	
@@ -67,7 +67,7 @@ public class PhotoCaptureFacadeTest {
 		when(Webcam.getDefault()).thenReturn(webcam);
 		BufferedImage image = null;		
 		when(webcam.getImage()).thenReturn(image);
-		when(logietchPhotoProvider.captureImage(webcam)).thenReturn(image);
+		when(logitechPhotoProvider.captureImage(webcam)).thenReturn(image);
 		assertThat(photoCaptureServiceImpl.captureImage(webcam), is(image));
 		photoCaptureServiceImpl.close(webcam);
 	}

@@ -14,7 +14,7 @@ import com.github.sarxos.webcam.Webcam;
  * @author Himaja Dhanyamraju
  */
 @Component
-public class PhotoCaptureFacade extends LogietchPhotoProvider {
+public class PhotoCaptureFacade extends LogitechPhotoProvider {
 
 	@Autowired
 	private MosipWebcamProvider mosipWebcamProvider;
@@ -22,7 +22,7 @@ public class PhotoCaptureFacade extends LogietchPhotoProvider {
 	public MosipWebcamProvider getPhotoProviderFactory(String make) {
 		mosipWebcamProvider = null;
 		if (make.equals("Logitech")) {
-			mosipWebcamProvider = new LogietchPhotoProvider();
+			mosipWebcamProvider = new LogitechPhotoProvider();
 		}
 		return mosipWebcamProvider;
 	}
