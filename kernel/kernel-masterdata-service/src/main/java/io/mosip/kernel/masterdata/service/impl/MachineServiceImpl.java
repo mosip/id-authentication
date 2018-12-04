@@ -10,10 +10,10 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -120,10 +120,10 @@ public class MachineServiceImpl implements MachineService {
 	 */
 
 	@Override
-	public MachineDetailResponseDto getMachineDetailAll() {
+	public MachineResponseDto getMachineDetailAll() {
 		List<Machine> machineDetailList = null;
 		List<MachineDetailDto> machineDetailDtoList = null;
-		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
+		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		try {
 			machineDetailList = machineRepository.findAllByIsDeletedFalse();
 
@@ -164,8 +164,8 @@ public class MachineServiceImpl implements MachineService {
 	 */
 
 	@Override
-	public MachineDetailResponseDto getMachineDetailLang(String langCode) {
-		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
+	public MachineResponseDto getMachineDetailLang(String langCode) {
+		MachineResponseDto machineDetailResponseDto = new MachineResponseDto();
 		List<Machine> machineDetailList = null;
 		List<MachineDetailDto> machineDetailDtoList = null;
 		try {

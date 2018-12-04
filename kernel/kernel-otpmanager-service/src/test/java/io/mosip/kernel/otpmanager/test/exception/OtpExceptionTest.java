@@ -22,9 +22,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
-import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
@@ -52,8 +52,8 @@ public class OtpExceptionTest {
 
 	@Test
 	public void testForExceptionWhenKeyNotFound() throws Exception {
-		List<Error> validationErrorsList = new ArrayList<>();
-		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
 				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
@@ -63,8 +63,8 @@ public class OtpExceptionTest {
 
 	@Test
 	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
-		List<Error> validationErrorsList = new ArrayList<>();
-		validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
 				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));

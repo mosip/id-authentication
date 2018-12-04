@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.ApplicationData;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 
@@ -34,7 +36,7 @@ public class ApplicationController {
 	 * @return All Application details
 	 */
 	@GetMapping
-	public ApplicationResponseDto fetchAllApplication() {
+	public ApplicationResponseDto getAllApplication() {
 		return applicationService.getAllApplication();
 	}
 	
@@ -44,7 +46,7 @@ public class ApplicationController {
 	 * @return All Application details of specific language
 	 */
 	@GetMapping("/{langcode}")
-	public ApplicationResponseDto fetchAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
+	public ApplicationResponseDto getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
 		return applicationService.getAllApplicationByLanguageCode(langCode);
 	}
 	
@@ -54,7 +56,7 @@ public class ApplicationController {
 	 * @return An Application
 	 */
 	@GetMapping("/{code}/{langcode}")
-	public ApplicationResponseDto fetchAllApplicationByCodeAndLanguageCode(@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
+	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
 		return applicationService.getApplicationByCodeAndLanguageCode(code, langCode);
 	}
 	
@@ -64,8 +66,8 @@ public class ApplicationController {
 	 * @return PostResponseDto
 	 */
 	@PostMapping
-	public CodeAndLanguageCodeID addApplication(@RequestBody RequestDto<ApplicationData> application) {
-		return applicationService.addApplicationData(application);
+	public CodeAndLanguageCodeID createApplication(@Valid @RequestBody RequestDto<ApplicationData> application) {
+		return applicationService.createApplication(application);
 		
 	}
 }
