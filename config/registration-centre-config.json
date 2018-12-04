@@ -1,5 +1,3 @@
-
-
 {
 		"loginMode":"bootable dongle",
 		"languages":{
@@ -37,7 +35,7 @@
 			"loginCredentialsSync":3,
 			"policySyncServerToClient":3,
 			"clientStateServerToClient":3,
-			"userRoleRightsServerToClient":3,
+			"userRoleRightsServerToClient":3
 		},
 		"automaticSyncFreqServerToClient":25,
 		"blockRegistrationIfNotSynced":10,
