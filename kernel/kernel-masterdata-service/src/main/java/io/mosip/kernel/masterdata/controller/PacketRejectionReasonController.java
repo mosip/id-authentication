@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
@@ -39,7 +39,7 @@ public class PacketRejectionReasonController {
 	 * @return CodeAndLanguageCodeId-
 	 */
 	@PostMapping("/reasoncategory")
-	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestDto<ReasonCategoryDto> requestDto) {
+	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestDto<PostReasonCategoryDto> requestDto) {
                 
 		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto),HttpStatus.CREATED);
 	}

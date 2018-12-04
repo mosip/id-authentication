@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -133,11 +134,11 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * Method creates Reason Category data based on the request sent. {@inheritDoc}
 	 */
 	@Override
-	public CodeAndLanguageCodeID createReasonCategories(RequestDto<ReasonCategoryDto> reasonRequestDto) {
+	public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto) {
 		ReasonCategory reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
 				ReasonCategory.class);
 
-		CodeAndLanguageCodeID reasonCategoryId = new CodeAndLanguageCodeID();
+		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		ReasonCategory resultantReasonCategory = null;
 
 		try {
@@ -151,10 +152,12 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
+		
+		objectMapperUtil.mapNew(resultantReasonCategory, CodeAndLanguageCodeID.class);
 
-		dataMapper.map(resultantReasonCategory, reasonCategoryId, true, null, null, true);
+		//dataMapper.map(resultantReasonCategory, codeAndLanguageCodeId, true, null, null, true);
 
-		return reasonCategoryId;
+		return codeAndLanguageCodeId;
 
 	}
 
@@ -166,7 +169,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
 		ReasonList reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
 
-		CodeLangCodeAndRsnCatCodeID reasonListId = new CodeLangCodeAndRsnCatCodeID();
+		CodeLangCodeAndRsnCatCodeID codeLangCodeAndRsnCatCodeId = new CodeLangCodeAndRsnCatCodeID();
 		ReasonList resultantReasonList;
 
 		try {
@@ -180,9 +183,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 
-		dataMapper.map(resultantReasonList, reasonListId, true, null, null, true);
+		dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
 
-		return reasonListId;
+		return codeLangCodeAndRsnCatCodeId;
 
 	}
 
