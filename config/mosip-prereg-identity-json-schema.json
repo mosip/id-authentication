@@ -53,6 +53,9 @@
 				},
 				"CNEOrPINNumber": {
 					"$ref": "#/definitions/values"
+				},
+				"age": {
+					"$ref": "#/definitions/values"
 				}
 			}
 		}
