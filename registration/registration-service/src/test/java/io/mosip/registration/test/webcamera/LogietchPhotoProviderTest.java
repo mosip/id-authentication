@@ -24,27 +24,34 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.device.webcam.impl.WebcamDeviceImpl;
-import io.mosip.registration.service.device.impl.PhotoCaptureServiceImpl;
+import io.mosip.registration.util.biometric.LogietchPhotoProvider;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Webcam.class })
-public class PhotoCaptureServiceTest {
+public class LogietchPhotoProviderTest {
+	
+	@InjectMocks
+	LogietchPhotoProvider logietchPhotoProvider;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
-	@InjectMocks
-	PhotoCaptureServiceImpl photoCaptureServiceImpl;
-	
-	@Mock
-	WebcamDeviceImpl webcamDeviceImpl;
-	
 	@Mock
 	WebcamDiscoveryService discoveryService;
 	
+	
 	@Test
-	public void connectTest() {
+	public void connectFailureTest() {
+		PowerMockito.mockStatic(Webcam.class);
+		Webcam webcam = Mockito.mock(Webcam.class);
+		List<Webcam> webcams = new ArrayList<>();
+		when(Webcam.getWebcams()).thenReturn(webcams);
+		webcam = null;
+		assertThat(logietchPhotoProvider.connect(640, 480), is(webcam));		
+	}
+	
+	@Test
+	public void connectSuccessTest() {
 		PowerMockito.mockStatic(Webcam.class);
 		Webcam webcam = Mockito.mock(Webcam.class);
 		List<Webcam> webcams = new ArrayList<>();
@@ -54,8 +61,7 @@ public class PhotoCaptureServiceTest {
 		when(Webcam.getWebcams()).thenReturn(webcams);
 		when(Webcam.getDiscoveryService()).thenReturn(discoveryService);
 		discoveryService.stop();
-		when(webcamDeviceImpl.connect(640, 480)).thenReturn(webcam);
-		assertThat(photoCaptureServiceImpl.connect(640, 480), is(webcam));
+		assertThat(logietchPhotoProvider.connect(640, 480), is(webcam));		
 	}
 	
 	@Test
@@ -67,9 +73,8 @@ public class PhotoCaptureServiceTest {
 		when(Webcam.getDefault()).thenReturn(webcam);
 		BufferedImage image = null;		
 		when(webcam.getImage()).thenReturn(image);
-		when(webcamDeviceImpl.captureImage(webcam)).thenReturn(image);
-		assertThat(photoCaptureServiceImpl.captureImage(webcam), is(image));
-		photoCaptureServiceImpl.close(webcam);
+		assertThat(logietchPhotoProvider.captureImage(webcam), is(image));
+		logietchPhotoProvider.close(webcam);
 	}
 	
 }
