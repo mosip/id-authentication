@@ -201,6 +201,7 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_SCANNING_ERROR = bundle.getString("FINGERPRINT_SCANNING_ERROR");
 	public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
 	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
+	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -581,7 +582,7 @@ public class RegistrationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
 
-// Iris & Fingerprint Capture for Individual Registration	
+	// Iris & Fingerprint Capture for Individual Registration	
 	public static final String IRIS_THRESHOLD = "iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
@@ -602,6 +603,7 @@ public class RegistrationConstants {
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightPalm.jpg";
 	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumb.jpg";
+	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -690,6 +692,8 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
 	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "FSC-002";
 	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
+	public static final String USER_REG_IRIS_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-005";
+	public static final String USER_REG_IRIS_SCORE_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-006";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";

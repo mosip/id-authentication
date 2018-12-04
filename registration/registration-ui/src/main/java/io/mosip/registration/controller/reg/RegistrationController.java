@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -34,6 +35,9 @@ import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
@@ -299,6 +303,9 @@ public class RegistrationController extends BaseController {
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 			
+			// Create RegistrationDTO Object
+			createRegistrationDTOObject();
+			
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
 				exceptionBufferedImage = null;
@@ -532,7 +539,7 @@ public class RegistrationController extends BaseController {
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			RegistrationDTO registrationDTO = new RegistrationDTO();
+			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
@@ -591,9 +598,6 @@ public class RegistrationController extends BaseController {
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
-
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-						registrationDTO);
 
 				if (ageDatePicker.getValue() != null) {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
@@ -1424,7 +1428,7 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	private RegistrationDTO getRegistrationDtoContent() {
+	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
@@ -1599,6 +1603,47 @@ public class RegistrationController extends BaseController {
 			biometricsNext.setVisible(visibility);
 			getBiometricsPane().setVisible(visibility);
 		}
+	}
+
+	private void createRegistrationDTOObject() {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		
+		// Create objects for Biometric DTOS
+		BiometricDTO biometricDTO = new BiometricDTO();
+		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setSupervisorBiometricDTO(createBiometricInfoDTO());
+		registrationDTO.setBiometricDTO(biometricDTO);
+		
+		// Create object for Demographic DTOS
+		DemographicDTO demographicDTO = new DemographicDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
+		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
+		demographicDTO.setDemoInLocalLang(new DemographicInfoDTO());
+		demographicDTO.setDemoInUserLang(new DemographicInfoDTO());
+		registrationDTO.setDemographicDTO(demographicDTO);
+		
+		// Create object for OSIData DTO
+		registrationDTO.setOsiDataDTO(new OSIDataDTO());
+		
+		// Create object for RegistrationMetaData DTO
+		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+		
+		// Put the RegistrationDTO object to SessionContext Map
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
+				registrationDTO);
+	}
+	
+	private BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		
+		return biometricInfoDTO;
 	}
 
 }

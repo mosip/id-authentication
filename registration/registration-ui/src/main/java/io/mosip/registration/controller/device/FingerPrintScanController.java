@@ -78,7 +78,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 	private Label popupTitle;
 
 	/**
-	 * @param popupTitle the popupTitle to set
+	 * @param popupTitle
+	 *            the popupTitle to set
 	 */
 	public void setPopupTitle(String popupTitle) {
 		this.popupTitle.setText(popupTitle);
@@ -91,6 +92,14 @@ public class FingerPrintScanController extends BaseController implements Initial
 	private List<FingerprintDetailsDTO> fingerprintDetailsDTOs;
 	/** The fingerprint details DTOs. */
 	private List<FingerprintDetailsDTO> fingerprintDTOs;
+
+	/**
+	 * @param primarystage
+	 *            the primarystage to set
+	 */
+	public void setPrimarystage(Stage primarystage) {
+		this.primarystage = primarystage;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -376,9 +385,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				irisDetailsDTO.setForceCaptured(false);
 				irisDetailsDTO.setQualityScore(qualityScore);
-				irisDetailsDTO
-						.setIrisImageName(irisType.concat(RegistrationConstants.EYE).concat(RegistrationConstants.DOT)
-								.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
+				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
+						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
 				irisDetailsDTO.setIrisType(irisType);
 
 				// Get RegistrationDTO object from SessionContext
@@ -386,18 +394,6 @@ public class FingerPrintScanController extends BaseController implements Initial
 						.get(RegistrationConstants.REGISTRATION_DATA);
 
 				// Add the captured iris to RegistrationDTO
-				if (registrationDTO.getBiometricDTO() == null) {
-					registrationDTO.setBiometricDTO(new BiometricDTO());
-				}
-
-				if (registrationDTO.getBiometricDTO().getApplicantBiometricDTO() == null) {
-					registrationDTO.getBiometricDTO().setApplicantBiometricDTO(new BiometricInfoDTO());
-				}
-
-				if (registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO() == null) {
-					registrationDTO.getBiometricDTO().getApplicantBiometricDTO().setIrisDetailsDTO(new ArrayList<>());
-				}
-
 				registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().add(irisDetailsDTO);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, "Iris captured successfully");
