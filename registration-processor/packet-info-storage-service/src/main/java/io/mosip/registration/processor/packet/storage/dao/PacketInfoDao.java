@@ -20,6 +20,8 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 
 @Component
 public class PacketInfoDao {
@@ -157,6 +159,32 @@ public class PacketInfoDao {
 		demo.setDob(object.getDob());
 
 		return demo;
+	}
+	
+	public List<DemographicDedupeDto> getAllDemoWithUIN() {
+		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository.getAllDemoWithUIN();
+		if (individualDemographicDedupeEntityList != null) {
+			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
+					demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
+				}
+
+			return demographicDedupeDtoList;
+		}
+		return demographicDedupeDtoList;
+	}
+	
+	public List<DemographicDedupeDto> findDemoById(String regId) {
+		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository.findDemoById(regId);
+		if (individualDemographicDedupeEntityList != null) {
+			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
+					demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
+				}
+
+			return demographicDedupeDtoList;
+		}
+		return demographicDedupeDtoList;
 	}
 
 	public Set<String> getDedupeRefIds(String refId) {
