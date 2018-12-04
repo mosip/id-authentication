@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -47,12 +47,11 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Override
 	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document) {
 
-		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest(),
-				ValidDocument.class);
+		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest(), ValidDocument.class);
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException e) {
-			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_INSERT_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 

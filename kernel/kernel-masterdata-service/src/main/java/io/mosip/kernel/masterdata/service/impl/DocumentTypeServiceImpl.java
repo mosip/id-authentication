@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -75,15 +76,13 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
-		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(),
-				DocumentType.class);
+		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
 		DocumentType documentType;
 		try {
 			documentType = documentTypeRepository.create(entity);
 
 		} catch (DataAccessLayerException e) {
-			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 

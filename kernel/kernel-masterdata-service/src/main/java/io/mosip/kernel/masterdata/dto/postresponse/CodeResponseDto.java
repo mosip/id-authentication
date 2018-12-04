@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.dto.postresponse;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,8 +8,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-
-
 public class CodeResponseDto {
 
 	private String code;

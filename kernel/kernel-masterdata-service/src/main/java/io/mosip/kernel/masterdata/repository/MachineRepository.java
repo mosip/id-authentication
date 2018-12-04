@@ -50,6 +50,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
+	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false)")
 	List<Machine> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 }

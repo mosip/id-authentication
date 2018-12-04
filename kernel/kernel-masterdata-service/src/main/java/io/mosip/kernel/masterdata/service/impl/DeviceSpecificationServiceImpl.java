@@ -10,8 +10,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -91,12 +91,12 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(
-			DeviceSpecificationRequestDto deviceSpecifications) {
+	public IdResponseDto createDeviceSpecification(
+			RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
 		DeviceSpecification entity = metaUtils.setCreateMetaData(
-				deviceSpecifications.getRequest().getDeviceSpecificationDto(), DeviceSpecification.class);
+				deviceSpecifications.getRequest(), DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException e) {
@@ -104,10 +104,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
 		}
-		DeviceTypeCodeAndLanguageCodeAndId deviceTypeCodeAndLanguageCodeId = new DeviceTypeCodeAndLanguageCodeAndId();
-		dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCodeId, true, null, null, true);
+		IdResponseDto idResponseDto = new IdResponseDto();
+		dataMapper.map(renDeviceSpecification, idResponseDto, true, null, null, true);
 
-		return deviceTypeCodeAndLanguageCodeId;
+		return idResponseDto;
 	}
 
 }

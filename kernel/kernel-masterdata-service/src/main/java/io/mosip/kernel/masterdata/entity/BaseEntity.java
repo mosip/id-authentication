@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class BaseEntity {
 	
 
-	@Column(name = "is_active")
+	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 
 	@Column(name = "cr_by", nullable = false, length = 24)

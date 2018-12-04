@@ -31,7 +31,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
@@ -50,6 +49,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -234,7 +234,6 @@ public class MasterDataServiceTest {
 	private List<DeviceSpecification> deviceSpecificationList ;
 	private DeviceSpecification deviceSpecification;
 	
-	private DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
 	private DeviceSpecificationListDto deviceSpecificationListDto;
 	private List<DeviceSpecificationDto> deviceSpecificationDtos ;
 	private DeviceSpecificationDto deviceSpecificationDto ;
@@ -454,17 +453,10 @@ public class MasterDataServiceTest {
 		deviceSpecification.setDeviceTypeCode("Laptop");
 		deviceSpecification.setLangCode("ENG");
 		deviceSpecificationList.add(deviceSpecification);
+				
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId("1111");
 		
-		deviceSpecificationRequestDto = new DeviceSpecificationRequestDto();
-		deviceSpecificationListDto = new DeviceSpecificationListDto();
-		deviceSpecificationDtos = new ArrayList<>();
-		deviceSpecificationDto = new DeviceSpecificationDto();
-		deviceSpecificationDto.setId("100");
-		deviceSpecificationDto.setDeviceTypeCode("Laptop");
-		deviceSpecificationDto.setLangCode("ENG");
-		deviceSpecificationDtos.add(deviceSpecificationDto);
-		// deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
-		deviceSpecificationRequestDto.setRequest(deviceSpecificationListDto);
 	}
 
 	private void blackListedSetup() {

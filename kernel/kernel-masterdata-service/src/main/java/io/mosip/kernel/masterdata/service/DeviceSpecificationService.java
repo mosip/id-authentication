@@ -3,8 +3,8 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
  * This interface has abstract methods to fetch and save Device Specification
@@ -49,6 +49,6 @@ public interface DeviceSpecificationService {
 	 * 
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	public DeviceTypeCodeAndLanguageCodeAndId createDeviceSpecification(DeviceSpecificationRequestDto deviceSpecification);
+	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 
 }
