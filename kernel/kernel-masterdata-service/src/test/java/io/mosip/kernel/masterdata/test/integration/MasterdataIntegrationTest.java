@@ -541,7 +541,7 @@ public class MasterdataIntegrationTest {
 	public void addBlackListedWordTest() throws Exception {
 		BlacklistedWords blacklistedWords = new BlacklistedWords();
 		blacklistedWords.setLangCode("TST");
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
 		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
 		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -549,7 +549,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addBlackListedWordExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
 		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
@@ -698,6 +698,7 @@ public class MasterdataIntegrationTest {
 				IdTypeResponseDto.class);
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
 	}
+
 	@Test
 	public void createIdTypeTest() throws Exception {
 		IdType idType = new IdType();
@@ -938,8 +939,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("ENG", "BLR"))
-				.thenReturn(null);
+		when(registrationCenterRepository.findByLocationCodeAndLanguageCode("ENG", "BLR")).thenReturn(null);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -1230,7 +1230,8 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	// ------------------------------------------device -------------------------------------------
+	// ------------------------------------------device
+	// -------------------------------------------
 
 	@Test
 	public void addDeviceTypeTest() throws Exception {
