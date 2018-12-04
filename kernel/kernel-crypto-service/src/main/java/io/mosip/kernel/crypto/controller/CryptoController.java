@@ -41,7 +41,6 @@ public class CryptoController {
 	 */
 	@PostMapping(value = "/encrypt")
 	public CryptoResponseDto encrypt(@RequestBody @Valid CryptoRequestDto cryptoRequestDto) {
-		System.out.println(cryptoRequestDto.getApplicationId()+cryptoRequestDto.getData()+cryptoRequestDto.getReferenceId()+cryptoRequestDto.getTimeStamp());
 		return cryptoService.encrypt(cryptoRequestDto);
 	}
 
@@ -52,7 +51,6 @@ public class CryptoController {
 	 */
 	@PostMapping(value = "/decrypt")
 	public CryptoResponseDto decrypt(@RequestBody @Valid CryptoRequestDto cryptoRequestDto) {
-		System.out.println(cryptoRequestDto.getTimeStamp());
 		return cryptoService.decrypt(cryptoRequestDto);
 	}
 }

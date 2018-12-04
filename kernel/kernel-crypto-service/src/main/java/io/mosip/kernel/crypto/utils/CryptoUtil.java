@@ -106,7 +106,7 @@ public class CryptoUtil {
 		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
 		try {
 			KeyManagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeyManagerPublicKeyResponseDto.class);
-			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(keyManagerResponseDto.getPublicKey())));
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
 					CryptoErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
@@ -129,7 +129,7 @@ public class CryptoUtil {
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
 		KeyManagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerSymmetricKeyResponseDto.class);
-		byte[] symmetricKey=Base64.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
+		byte[] symmetricKey=decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0,symmetricKey.length, symmetricAlgorithmName);
 	}
 
@@ -168,6 +168,22 @@ public class CryptoUtil {
 			keyDemiliterIndex++;
 		}
 		return keyDemiliterIndex;
+	}
+	
+	/**
+	 * @param data
+	 * @return
+	 */
+	public static String encodeBase64(byte[] data) {
+		return Base64.encodeBase64URLSafeString(data);
+	}
+	
+	/**
+	 * @param data
+	 * @return
+	 */
+	public static byte[] decodeBase64(String data) {
+		return Base64.decodeBase64(data);
 	}
 
 }
