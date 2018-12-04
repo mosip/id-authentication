@@ -547,6 +547,11 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
+	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
+	public static final String PRE_REG_GET_ID_SUCCESS_MESSAGE = "Got Pre registartion ID's for given time";
+	
+	
 
 	// UI Date Format
 	public static final String DEMOGRAPHIC_DOB_FORMAT = "dd-MM-yyyy";
