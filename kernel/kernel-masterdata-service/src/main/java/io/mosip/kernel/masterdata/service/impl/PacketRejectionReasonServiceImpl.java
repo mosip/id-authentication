@@ -26,34 +26,50 @@ import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+
 /**
  * 
- * @author Srinivasan
- * This class implements PacketRejectionReasonService has all the logics to store and retrieve 
- * data from database
+ * @author Srinivasan 
+ * 
+ * This class implements PacketRejectionReasonService has all
+ *         the logics to store and retrieve data from database
+ *         {@link ReasonCategoryRepository} and {@link ReasonListRepository}
  *
  */
 @Service
 public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonService {
 
+	/** 
+	 * reason repository instance
+	 */
 	@Autowired
 	ReasonCategoryRepository reasonRepository;
-
+ 
+	/**
+	 * reason list repository instance
+	 */
 	@Autowired
 	ReasonListRepository reasonListRepository;
 
+	/**
+	 * objetMapperUtil instance
+	 */
 	@Autowired
 	MapperUtils objectMapperUtil;
 
+	/**
+	 * metadataUtil instance
+	 */
 	@Autowired
 	MetaDataUtils metaDataUtils;
 
 	@Autowired
 	DataMapper dataMapper;
-   /**
-    * Method fetches all the reasons from Database irrespective of code or languagecode
-    * {@inheritDoc}
-    */
+
+	/**
+	 * Method fetches all the reasons from Database irrespective of code or
+	 * languagecode {@inheritDoc}
+	 */
 	@Override
 	public PacketRejectionReasonResponseDto getAllReasons() {
 		List<ReasonCategory> reasonCategories = null;
@@ -80,10 +96,10 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		return reasonResponseDto;
 	}
-    /**
-     * Method fetchs reason based on reasonCategorycode and langCode
-     * {@inheritDoc}  
-     */
+
+	/**
+	 * Method fetchs reason based on reasonCategorycode and langCode {@inheritDoc}
+	 */
 	@Override
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,
 			String langCode) {
@@ -112,69 +128,60 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		return reasonResponseDto;
 	}
-    /**
-     * Method creates Reason Category data based on the request sent.
-     * {@inheritDoc} 
-     */
+
+	/**
+	 * Method creates Reason Category data based on the request sent. {@inheritDoc}
+	 */
 	@Override
 	public CodeAndLanguageCodeID createReasonCategories(RequestDto<ReasonCategoryDto> reasonRequestDto) {
-		ReasonCategory reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonCategory.class);
-		
-		
+		ReasonCategory reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
+				ReasonCategory.class);
+
 		CodeAndLanguageCodeID reasonCategoryId = new CodeAndLanguageCodeID();
 		ReasonCategory resultantReasonCategory = null;
-		
-			try {
 
-				resultantReasonCategory = reasonRepository.create(reasonCategories);
+		try {
 
-			} catch (DataAccessLayerException e) {
+			resultantReasonCategory = reasonRepository.create(reasonCategories);
 
-				throw new MasterDataServiceException(
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
-								+ ExceptionUtils.parseException(e));
-			}
-			
+		} catch (DataAccessLayerException e) {
 
-				dataMapper.map(resultantReasonCategory, reasonCategoryId, true, null, null, true);
+			throw new MasterDataServiceException(
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
 
-					
-				
-			
+		dataMapper.map(resultantReasonCategory, reasonCategoryId, true, null, null, true);
+
 		return reasonCategoryId;
 
 	}
-    /**
-     * Method creates ReasonList with the parameter that is sent in Request.
-     * {@inheritDoc}
-     */
+
+	/**
+	 * Method creates ReasonList with the parameter that is sent in Request.
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
 		ReasonList reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
 
-		
 		CodeLangCodeAndRsnCatCodeID reasonListId = new CodeLangCodeAndRsnCatCodeID();
 		ReasonList resultantReasonList;
-		
-			try {
 
-				resultantReasonList = reasonListRepository.create(reasonList);
+		try {
 
-			} catch (DataAccessLayerException e) {
-				throw new MasterDataServiceException(
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
-								+ ExceptionUtils.parseException(e));
-			}
-			
-				
+			resultantReasonList = reasonListRepository.create(reasonList);
 
-					dataMapper.map(resultantReasonList, reasonListId, true, null, null, true);
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
 
-					
-				
-			
+		dataMapper.map(resultantReasonList, reasonListId, true, null, null, true);
+
 		return reasonListId;
 
 	}
