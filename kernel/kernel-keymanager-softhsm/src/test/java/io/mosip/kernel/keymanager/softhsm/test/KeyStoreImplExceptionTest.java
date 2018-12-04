@@ -94,11 +94,8 @@ public class KeyStoreImplExceptionTest{
 		keyStoreImpl.getSymmetricKey("alias");
 	}
 
-	/*@Test
-	public void testStoreSymmetricKey() {
-		fail("Not yet implemented");
-	}
-*/
+	
+
 	
 
 }
