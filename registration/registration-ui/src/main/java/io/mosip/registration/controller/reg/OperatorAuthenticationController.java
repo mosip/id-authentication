@@ -102,6 +102,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+	private AuthenticationValidatorImplementation authenticationValidatorImplementation;
 
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
@@ -147,13 +150,18 @@ public class OperatorAuthenticationController extends BaseController implements 
 			userDTO.setPassword(hashPassword);
 			// Server connection check
 			boolean serverStatus = getConnectionCheck(userDTO);
-			RegistrationUserDetail userDetail = loginService.getUserDetail(username.getText());
+			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO.setUserId(username.getText());
+			authenticationValidatorDTO.setPassword(hashPassword);
+			String userStatus = authenticationValidatorImplementation.validatePassword(authenticationValidatorDTO);
+			
 
-			if (userDetail == null) {
+			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
 				if (!serverStatus) {
-					if (userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) {
+
+					if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
@@ -187,18 +195,22 @@ public class OperatorAuthenticationController extends BaseController implements 
 				 */
 			}
 		}
+
 	}
 
 	private boolean getConnectionCheck(LoginUserDTO userObj) {
+
 		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
 		ResponseEntity<String> tokenId = null;
 		boolean serverStatus = false;
+
 		try {
 			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
 			if (tokenId.getStatusCode().is2xxSuccessful()) {
 				serverStatus = true;
 			}
 		} catch (RestClientException resourceAccessException) {
+
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
 					resourceAccessException.getMessage());
 		}

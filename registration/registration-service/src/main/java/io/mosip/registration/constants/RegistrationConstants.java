@@ -269,6 +269,10 @@ public class RegistrationConstants {
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
+	
+	//Supervisor Authentication
+	public static final String PWD_MATCH = "Username and Password Match";
+	public static final String PWD_MISMATCH = "Username and Password Not Match";
 
 	// RSA
 	public static final String RSA_ALG = "RSA";
