@@ -2,6 +2,7 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -89,6 +90,9 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
+				if (Modifier.isStatic(sfield.getModifiers()) || Modifier.isFinal(sfield.getModifiers())) {
+					continue;
+				}
 				sfield.setAccessible(true);
 				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
 					setFieldValue(sfield.get(source), destination);
