@@ -25,18 +25,16 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public List<E> findByUserId(@Param("qcuserId") String qcuserId);
 
 	@Query("SELECT ape,ide FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ide"
-			+ " WHERE ide.id.refId=:refId")
-	public List<Object[]> getApplicantInfo(@Param("refId") String regId);
+			+ " WHERE ide.id.regId=:regId")
+	public List<Object[]> getApplicantInfo(@Param("regId") String regId);
 
 	@Query("SELECT osi FROM RegOsiEntity osi WHERE osi.id.regId=:regId")
 	public List<E> findByRegOsiId(@Param("regId") String regId);
 	
-	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.refId=:refId")
-	public List<E> findDemoById(@Param("refId") String refId);
+	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
+	public List<E> findDemoById(@Param("regId") String regId);
 	
 	@Query("SELECT  demo FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL")
 	public List<E> getAllDemoWithUIN();
-	
-	@Query("SELECT  demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.refId =:refId and demo.id.langCode=:langCode")
-	public List<E> findDemoByRegIdAndLangCode(@Param("langCode") String langCode,@Param("refId") String refId);
+
 }

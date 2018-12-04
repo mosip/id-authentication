@@ -187,49 +187,48 @@ public class PacketInfoDao {
 		return demographicDedupeDtoList;
 	}
 
-	public Set<String> getDedupeRefIds(String refId) {
-		int score = 0;
-		int threshold = 60;
-		Set<String> duplicateRegIds = new HashSet<>();
-		List<IndividualDemographicDedupeEntity> idsWithUin = demographicDedupeRepository.getAllDemoWithUIN();
-
-		List<IndividualDemographicDedupeEntity> dedupeWithOutUin = demographicDedupeRepository.findDemoById(refId);
-
-
-		for(IndividualDemographicDedupeEntity demo : idsWithUin) {
-
-			for(IndividualDemographicDedupeEntity compareDemo :dedupeWithOutUin ) {
-
-				if(demo.getId().getLangCode().equals(compareDemo.getId().getLangCode())) {
-
-					if(demo.getName().equals(compareDemo.getName())) {
-						score = score+30;
-					}
-					if(demo.getGender().equals(compareDemo.getGender())) {
-						score = score+30;
-					}
-					if(demo.getDob().equals(compareDemo.getDob())) {
-						score = score+30;
-					}
-					if(demo.getPhoneticName().equals(compareDemo.getPhoneticName())) {
-						score = score+30;
-					}
-
-					if(score > threshold) {
-						duplicateRegIds.add(demo.getId().getRegId());
-						score = 0;
-						break;
-					}
-				}
-
-
-			}
-
-
-
-		}
-		return duplicateRegIds;
-
-
-	}
+//	public Set<String> getDedupeRefIds(String refId) {
+//		int score = 0;
+//		int threshold = 60;
+//		Set<String> duplicateRegIds = new HashSet<>();
+//		List<IndividualDemographicDedupeEntity> idsWithUin = demographicDedupeRepository.getAllDemoWithUIN();
+//
+//		List<IndividualDemographicDedupeEntity> dedupeWithOutUin = demographicDedupeRepository.findDemoById(refId);
+//
+//
+//		for(IndividualDemographicDedupeEntity demo : idsWithUin) {
+//
+//			for(IndividualDemographicDedupeEntity compareDemo :dedupeWithOutUin ) {
+//
+//				if(demo.getId().getLangCode().equals(compareDemo.getId().getLangCode())) {
+//
+//					if(demo.getName().equals(compareDemo.getName())) {
+//						score = score+30;
+//					}
+//					if(demo.getGender().equals(compareDemo.getGender())) {
+//						score = score+30;
+//					}
+//					if(demo.getDob().equals(compareDemo.getDob())) {
+//						score = score+30;
+//					}
+//					if(demo.getPhoneticName().equals(compareDemo.getPhoneticName())) {
+//						score = score+30;
+//					}
+//
+//					if(score > threshold) {
+//						duplicateRegIds.add(demo.getId().getRegId());
+//						score = 0;
+//						break;
+//					}
+//				}
+//
+//
+//			}
+//
+//
+//
+//		}
+//		return duplicateRegIds;
+//
+//	}
 }

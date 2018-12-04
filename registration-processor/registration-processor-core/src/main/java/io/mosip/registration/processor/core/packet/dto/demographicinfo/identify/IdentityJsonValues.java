@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class IdentityJsonValues {
 	private String value;
-	private String weight;
+	private int weight;
 }

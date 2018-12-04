@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -39,6 +41,7 @@ import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -532,6 +535,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
 					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
+
+			// Set<String>duplicateRefIds=packetInfoDao.getDedupeRefIds("2018782130000103122018100224");
+			// for(String regId:duplicateRefIds) {
+			// System.out.println(regId +" ***********");
+			// }
+
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
 				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> DemographicDedupeData SAVED");
@@ -609,8 +618,48 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
-		
+
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
 
+	private Set<String> performDedupe(String refId) {
+		int score = 0;
+		int threshold = 60;
+		Set<String> duplicateRegIds = new HashSet<>();
+		List<DemographicDedupeDto> idsWithUin = packetInfoDao.getAllDemoWithUIN();
+
+		List<DemographicDedupeDto> dedupeWithOutUin = packetInfoDao.findDemoById(refId);
+
+		for (DemographicDedupeDto demo : idsWithUin) {
+
+			for (DemographicDedupeDto compareDemo : dedupeWithOutUin) {
+
+				if (demo.getLangCode().equals(compareDemo.getLangCode())) {
+
+					if (demo.getName().equals(compareDemo.getName())) {
+						score = score + regProcessorIdentityJson.getIdentity().getName().getWeight();
+					}
+					if (demo.getGenderCode().equals(compareDemo.getGenderCode())) {
+						score = score + regProcessorIdentityJson.getIdentity().getGender().getWeight();
+					}
+					if (demo.getDob().equals(compareDemo.getDob())) {
+						score = score + regProcessorIdentityJson.getIdentity().getDob().getWeight();
+					}
+//					if (demo.getPhoneticName().equals(compareDemo.getPhoneticName())) {
+//						score = score + regProcessorIdentityJson.getIdentity().getPheoniticName().getWeight();
+//					}
+
+					if (score > threshold) {
+						duplicateRegIds.add(demo.getRegId());
+						score = 0;
+						break;
+					}
+				}
+
+			}
+
+		}
+		return duplicateRegIds;
+
+	}
 }

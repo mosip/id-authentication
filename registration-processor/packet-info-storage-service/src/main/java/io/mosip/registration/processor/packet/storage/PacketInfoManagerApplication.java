@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -25,7 +24,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 		"io.mosip.registration.processor.auditmanager", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client" })
 
-public class PacketInfoManagerApplication implements CommandLineRunner{
+public class PacketInfoManagerApplication implements CommandLineRunner {
 
 	@Autowired
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -45,7 +44,7 @@ public class PacketInfoManagerApplication implements CommandLineRunner{
 		List<FieldValue> metaDataList = new ArrayList<>();
 		FieldValue regId = new FieldValue();
 		regId.setLabel("registrationId");
-		regId.setValue("2018782130000116102018124324");
+		regId.setValue("2018782130000103122018100224");
 
 		FieldValue preRegId = new FieldValue();
 		preRegId.setLabel("preRegistrationId");
@@ -57,7 +56,6 @@ public class PacketInfoManagerApplication implements CommandLineRunner{
 		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
 		InputStream demoJsonStream = new FileInputStream(jsonFile);
 		packetInfoManager.saveDemographicInfoJson(demoJsonStream, metaDataList);
-
 
 	}
 }
