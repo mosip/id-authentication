@@ -1,11 +1,11 @@
 package io.mosip.pregistration.datasync.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,13 +17,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonPropertyOrder(value={ "id", "ver", "reqTime", "request"})
 public class DataSyncDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@JsonProperty("id")
 	private String id;
+	
+	@JsonProperty("ver")
 	private String ver;
-	private Timestamp reqTime;
+	
+	@JsonProperty("reqTime")
+	private Date reqTime;
 	
 	/**
 	 * object to accept json

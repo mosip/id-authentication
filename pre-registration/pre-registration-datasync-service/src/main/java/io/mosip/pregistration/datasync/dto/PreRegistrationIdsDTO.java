@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ResponseDataSyncDTO implements Serializable {
+public class PreRegistrationIdsDTO implements Serializable {
 
 	private static final long serialVersionUID = 6402670047109104959L;
 
