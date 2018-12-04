@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.TemplateTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.entity.TemplateType;
@@ -13,6 +12,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -29,7 +29,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	private MetaDataUtils metaUtils;
 
 	@Autowired
-	private DataMapper dataMapper;
+	private MapperUtils objectMapperUtil;
 
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
@@ -48,7 +48,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(templateType, codeLangCodeId, true, null, null, true);
+		objectMapperUtil.mapNew(templateType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

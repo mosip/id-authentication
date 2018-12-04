@@ -10,7 +10,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
@@ -88,7 +87,7 @@ public class MachineServiceImpl implements MachineService {
 		MachineDto machineDto = null;
 		MachineResponseIdDto machineResponseIdDto = new MachineResponseIdDto();
 		try {
-			machine = machineRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(id, langCode);
+			machine = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
@@ -101,7 +100,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 		}
-		machineResponseIdDto.setMachineDto(machineDto);
+		machineResponseIdDto.setMachine(machineDto);
 		return machineResponseIdDto;
 
 	}
@@ -143,7 +142,7 @@ public class MachineServiceImpl implements MachineService {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		machineResponseDto.setMachineDetails(machineDtoList);
+		machineResponseDto.setMachines(machineDtoList);
 		return machineResponseDto;
 	}
 
@@ -186,15 +185,15 @@ public class MachineServiceImpl implements MachineService {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		machineResponseDto.setMachineDetails(machineDtoList);
+		machineResponseDto.setMachines(machineDtoList);
 		return machineResponseDto;
 	}
 
 	@Override
-	public MachineSpecIdAndId createMachine(MachineRequestDto machine) {
+	public MachineSpecIdAndId createMachine(MachineDto machine) {
 		Machine crtMachine;
 
-		Machine entity = metaUtils.setCreateMetaData(machine.getRequest().getMachineDto(), Machine.class);
+		Machine entity = metaUtils.setCreateMetaData(machine, Machine.class);
 		MachineHistory entityHistory = metaUtils.createdMachineHistory(entity);
 
 		try {

@@ -336,6 +336,7 @@ public class MapperUtils {
 		machineDto.setValidityDateTime(machine.getValidityDateTime());
 		machineDto.setIpAddress(machine.getIpAddress());
 		machineDto.setLangCode(machine.getLangCode());
+		machineDto.setMacAddress(machine.getMacAddress());
 		return machineDto;
 	}
 

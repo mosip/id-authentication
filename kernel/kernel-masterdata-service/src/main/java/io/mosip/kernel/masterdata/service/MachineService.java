@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
-import io.mosip.kernel.masterdata.dto.MachineRequestDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
 
 /**
@@ -52,6 +52,6 @@ public interface MachineService {
 	 * @return {@link MachineSpecIdAndId}
 	 */
 	
-	 public MachineSpecIdAndId createMachine(MachineRequestDto machine);
+	 public MachineSpecIdAndId createMachine(MachineDto machine);
 
 }
