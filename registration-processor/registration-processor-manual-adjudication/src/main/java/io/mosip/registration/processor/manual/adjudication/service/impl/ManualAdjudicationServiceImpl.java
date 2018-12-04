@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
@@ -27,99 +28,78 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
-	ManualVerificationEntity manualAdjudicationEntity = new ManualVerificationEntity();
+	@Autowired
+	ManualVerificationEntity manualVerificationEntity;
+
 	@Autowired
 	ManualAdjudicationDao manualAdjudicationDao;
+
 	@Override
 	public ApplicantDetailsDto assignStatus(UserDto dto) {
-		ApplicantDetailsDto adto=new ApplicantDetailsDto();
-		
-		if(dto.getStatus()!=null &&dto.getStatus().equalsIgnoreCase("PENDING")) {
-			
-		String regid=manualAdjudicationDao.getFirstApplicantDetails().get(0).getRegId();
-		manualAdjudicationEntity.setStatusCode(dto.getStatus());
-		manualAdjudicationEntity.setMvUserId(dto.getUserId());
-		manualAdjudicationEntity.setRegId(regid);
-		manualAdjudicationDao.update(manualAdjudicationEntity);
+		ApplicantDetailsDto adto = new ApplicantDetailsDto();
+
+		if (dto.getStatus() != null && dto.getStatus().equalsIgnoreCase("PENDING")) {
+
+			String regid = manualAdjudicationDao.getFirstApplicantDetails().get(0).getRegId();
+			manualVerificationEntity.setStatusCode(dto.getStatus());
+			manualVerificationEntity.setMvUserId(dto.getUserId());
+			manualVerificationEntity.setRegId(regid);
+			manualAdjudicationDao.update(manualVerificationEntity);
 		}
-		
+
 		return adto;
 	}
 
 	@Override
-	public byte[] getApplicantPhoto(String regId) {
-		InputStream applicantPhoto = filesystemCephAdapterImpl.getFile(regId, PacketFiles.APPLICANTPHOTO.name());
-		try {
-			return IOUtils.toByteArray(applicantPhoto);
-		} catch (IOException e) {
-			throw new FileNotPresentException();
+	public byte[] getApplicantFile(String regId, String fileName) {
+		byte[] file = null;
+		InputStream fileInStream = null;
+		if (fileName.equals(PacketFiles.APPLICANTPHOTO.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTPHOTO);
+		} else if (fileName.equals(PacketFiles.PROOFOFADDRESS.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PROOFOFADDRESS);
+		} else if (fileName.equals(PacketFiles.PROOFOFIDENTITY.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PROOFOFIDENTITY);
+		} else if (fileName.equals(PacketFiles.EXCEPTIONPHOTO.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.EXCEPTIONPHOTO);
+		} else if (fileName.equals(PacketFiles.RIGHTPALM.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTPALM);
+		} else if (fileName.equals(PacketFiles.LEFTPALM.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.LEFTPALM);
+		} else if (fileName.equals(PacketFiles.BOTHTHUMBS.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.BOTHTHUMBS);
+		} else if (fileName.equals(PacketFiles.LEFTEYE.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.LEFTEYE);
+		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
+		} else {
+			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
 		}
+		try {
+			file = IOUtils.toByteArray(fileInStream);
+		} catch (IOException e) {
+			// TODO
+		}
+		return file;
 	}
 
 	@Override
-	public byte[] getApplicantExceptionPhoto(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantProofOfAddress(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantProofOfIdentity(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantProofOfBirth(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantDetails(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantLeftEye(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantRightEye(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantBothThumbs(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantLeftPalm(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getApplicantRightPalm(String regId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] getPacketInfo(String regId) {
-		// TODO Auto-generated method stub
-		return null;
+	public byte[] getApplicantData(String regId, String fileName) {
+		byte[] file = null;
+		InputStream fileInStream = null;
+		if (fileName.equals(PacketFiles.DEMOGRAPHICINFO.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.DEMOGRAPHICINFO);
+		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
+			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
+		} else {
+			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
+		}
+		try {
+			file = IOUtils.toByteArray(fileInStream);
+		} catch (IOException e) {
+			// TODO
+		}
+		return file;
 	}
 
 }

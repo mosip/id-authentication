@@ -13,7 +13,7 @@ public class FileNotPresentException extends BaseUncheckedException {
 		// TODO Auto-generated constructor stub
 	}
 	
-	FileNotPresentException(String message){
+	public FileNotPresentException(String message){
 		super(message, message);
 		//TODO
 	}
