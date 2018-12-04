@@ -1642,6 +1642,7 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setSegmentedFingerprints(new ArrayList<>());
 		
 		return biometricInfoDTO;
 	}

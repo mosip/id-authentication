@@ -7,15 +7,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +24,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.BiometricDTO;
-import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -37,7 +31,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -54,7 +47,7 @@ import javafx.stage.Stage;
  * @since 1.0
  */
 @Controller
-public class FingerPrintScanController extends BaseController implements Initializable {
+public class FingerPrintScanController extends BaseController{
 
 	/**
 	 * Instance of {@link Logger}
@@ -77,47 +70,21 @@ public class FingerPrintScanController extends BaseController implements Initial
 	@FXML
 	private Label popupTitle;
 
+	/** The primary stage. */
+	private Stage primarystage;
+
 	/**
-	 * @param popupTitle
-	 *            the popupTitle to set
+	 * @param popupTitle the popupTitle to set
 	 */
 	public void setPopupTitle(String popupTitle) {
 		this.popupTitle.setText(popupTitle);
 	}
 
-	/** The primary stage. */
-	private Stage primarystage;
-
-	/** The fingerprint details DTOs for validation. */
-	private List<FingerprintDetailsDTO> fingerprintDetailsDTOs;
-	/** The fingerprint details DTOs. */
-	private List<FingerprintDetailsDTO> fingerprintDTOs;
-
 	/**
-	 * @param primarystage
-	 *            the primarystage to set
+	 * @param primarystage the primarystage to set
 	 */
 	public void setPrimarystage(Stage primarystage) {
 		this.primarystage = primarystage;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
-	 * java.util.ResourceBundle)
-	 */
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Loading of FingerprintCapture screen started");
-
-		fingerprintDetailsDTOs = new ArrayList<>();
-		fingerprintDTOs = new ArrayList<>();
-
-		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Loading of FingerprintCapture screen ended");
-
 	}
 
 	/**
@@ -128,12 +95,9 @@ public class FingerPrintScanController extends BaseController implements Initial
 	 * @param stage
 	 * @param detailsDTOs
 	 */
-	public void init(AnchorPane selectedPane, Stage stage, List<FingerprintDetailsDTO> fpDetailsDTOs,
-			List<FingerprintDetailsDTO> fpDTOs) {
+	public void init(AnchorPane selectedPane, Stage stage) {
 		selectedAnchorPane = selectedPane;
 		primarystage = stage;
-		fingerprintDetailsDTOs = fpDetailsDTOs;
-		fingerprintDTOs = fpDTOs;
 		popupTitle.setText(RegistrationConstants.FINGERPRINT);
 	}
 
@@ -197,7 +161,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 				fpDetailsDTO.setNumRetry(2);
 				fpDetailsDTO.setQualityScore(qualityScore);
 
-				fingerprintDTOs.add(fpDetailsDTO);
+				fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+						.getApplicantBiometricDTO().getFingerprintDetailsDTO().add(fpDetailsDTO);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 				primarystage.close();
@@ -229,7 +194,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 				fpDetailsDTO.setNumRetry(2);
 				fpDetailsDTO.setQualityScore(qualityScore);
 
-				fingerprintDTOs.add(fpDetailsDTO);
+				fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+						.getApplicantBiometricDTO().getFingerprintDetailsDTO().add(fpDetailsDTO);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 				primarystage.close();
@@ -262,7 +228,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 				fpDetailsDTO.setNumRetry(1);
 				fpDetailsDTO.setQualityScore(qualityScore);
 
-				fingerprintDTOs.add(fpDetailsDTO);
+				fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+						.getApplicantBiometricDTO().getFingerprintDetailsDTO().add(fpDetailsDTO);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 				primarystage.close();
@@ -310,8 +277,8 @@ public class FingerPrintScanController extends BaseController implements Initial
 						fingerprintDetailsDTO.setForceCaptured(false);
 						fingerprintDetailsDTO.setQualityScore(90);
 
-						fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-
+						fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+								.getApplicantBiometricDTO().getSegmentedFingerprints().add(fingerprintDetailsDTO);
 					} catch (IOException ioException) {
 						LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 								ioException.getMessage());

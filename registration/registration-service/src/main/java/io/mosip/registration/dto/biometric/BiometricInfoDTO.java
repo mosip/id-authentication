@@ -25,6 +25,9 @@ public class BiometricInfoDTO extends BaseDTO {
 	/** The iris biometric exception DTO. */
 	private List<BiometricExceptionDTO> irisBiometricExceptionDTO;
 
+	/** The segmented fingerprints. */
+	private List<FingerprintDetailsDTO> segmentedFingerprints;
+
 	/**
 	 * Gets the fingerprint details DTO.
 	 *
@@ -37,8 +40,7 @@ public class BiometricInfoDTO extends BaseDTO {
 	/**
 	 * Sets the fingerprint details DTO.
 	 *
-	 * @param fingerprintDetailsDTO
-	 *            the new fingerprint details DTO
+	 * @param fingerprintDetailsDTO the new fingerprint details DTO
 	 */
 	public void setFingerprintDetailsDTO(List<FingerprintDetailsDTO> fingerprintDetailsDTO) {
 		this.fingerprintDetailsDTO = fingerprintDetailsDTO;
@@ -56,8 +58,8 @@ public class BiometricInfoDTO extends BaseDTO {
 	/**
 	 * Sets the finger print biometric exception DTO.
 	 *
-	 * @param fingerPrintBiometricExceptionDTO
-	 *            the new finger print biometric exception DTO
+	 * @param fingerPrintBiometricExceptionDTO the new finger print biometric
+	 *                                         exception DTO
 	 */
 	public void setFingerPrintBiometricExceptionDTO(List<BiometricExceptionDTO> fingerPrintBiometricExceptionDTO) {
 		this.fingerPrintBiometricExceptionDTO = fingerPrintBiometricExceptionDTO;
@@ -75,8 +77,7 @@ public class BiometricInfoDTO extends BaseDTO {
 	/**
 	 * Sets the iris details DTO.
 	 *
-	 * @param irisDetailsDTO
-	 *            the new iris details DTO
+	 * @param irisDetailsDTO the new iris details DTO
 	 */
 	public void setIrisDetailsDTO(List<IrisDetailsDTO> irisDetailsDTO) {
 		this.irisDetailsDTO = irisDetailsDTO;
@@ -94,10 +95,23 @@ public class BiometricInfoDTO extends BaseDTO {
 	/**
 	 * Sets the iris biometric exception DTO.
 	 *
-	 * @param irisBiometricExceptionDTO
-	 *            the new iris biometric exception DTO
+	 * @param irisBiometricExceptionDTO the new iris biometric exception DTO
 	 */
 	public void setIrisBiometricExceptionDTO(List<BiometricExceptionDTO> irisBiometricExceptionDTO) {
 		this.irisBiometricExceptionDTO = irisBiometricExceptionDTO;
+	}
+
+	/**
+	 * @return the segmentedFingerprints
+	 */
+	public List<FingerprintDetailsDTO> getSegmentedFingerprints() {
+		return segmentedFingerprints;
+	}
+
+	/**
+	 * @param segmentedFingerprints the segmentedFingerprints to set
+	 */
+	public void setSegmentedFingerprints(List<FingerprintDetailsDTO> segmentedFingerprints) {
+		this.segmentedFingerprints = segmentedFingerprints;
 	}
 }
