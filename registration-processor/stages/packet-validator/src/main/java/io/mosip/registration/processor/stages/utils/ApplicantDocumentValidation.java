@@ -16,6 +16,7 @@ public class ApplicantDocumentValidation {
 
 	public static final String APPLICANT_TYPE = "applicantType";
 	public static final String REGISTRATION_TYPE = "registrationType";
+	public static final String IS_VERIFIED = "isVerified";
 	InternalRegistrationStatusDto registrationStatusDto;
 
 	boolean isApplicantDocumentVerified = false;

@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyString;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -30,6 +31,8 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.packet.dto.Document;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -60,6 +63,7 @@ public class PacketValidatorStageTest {
 
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	MessageDTO dto = new MessageDTO();
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
@@ -84,13 +88,32 @@ public class PacketValidatorStageTest {
 
 	private PacketMetaInfo packetMetaInfo;
 
-	// private Demographic demographicinfo;
+	Identity identity = new Identity();
 
 	@Before
 	public void setUp() throws Exception {
+
+		dto.setRid("2018701130000410092018110735");
+
 		MockitoAnnotations.initMocks(this);
 		packetMetaInfo = new PacketMetaInfo();
-		Identity identity = new Identity();
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("New");
+
+		FieldValue applicantType = new FieldValue();
+		applicantType.setLabel("applicantType");
+		applicantType.setValue("Child");
+
+		identity.setMetaData(Arrays.asList(registrationType, applicantType));
+
+		Document document = new Document();
+		List<Document> documents = new ArrayList<Document>();
+		document.setDocumentCategory("poR");
+		document.setDocumentName("ProofOfRelation");
+		documents.add(document);
+		identity.setDocuments(documents);
 
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -111,19 +134,19 @@ public class PacketValidatorStageTest {
 		List<String> applicantDemographicValues = new ArrayList<String>();
 		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfRelation");
+		applicantDemographicValues.add("ProofOfAddress");
+		applicantDemographicValues.add("ProofOfIdentity");
 		applicantDemographic.setValue(applicantDemographicValues);
 		fieldValueArrayList.add(applicantDemographic);
 		identity.setHashSequence(fieldValueArrayList);
 		packetMetaInfo.setIdentity(identity);
+
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase");
 
-	}
-
-	@Test
-	public void testStructuralValidationSuccess() throws Exception {
 		String test = "1234567890";
 		byte[] data = "1234567890".getBytes();
 
@@ -131,9 +154,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -151,8 +171,133 @@ public class PacketValidatorStageTest {
 		Mockito.doNothing().when(packetInfoManager).saveDemographicInfoJson(inputStream,
 				packetMetaInfo.getIdentity().getMetaData());
 
+	}
+
+	@Test
+	public void testStructuralValidationSuccess() throws Exception {
+
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+
+	}
+
+	@Mock
+	Document doc;
+
+	@Test
+	public void testStructuralDocumentValidationFailure() throws Exception {
+		packetMetaInfo = new PacketMetaInfo();
+		Identity identity = new Identity();
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("New");
+
+		FieldValue applicantType = new FieldValue();
+		applicantType.setLabel("applicantType");
+		applicantType.setValue("Child");
+
+		identity.setMetaData(Arrays.asList(registrationType, applicantType));
+
+		Document document = new Document();
+		List<Document> documents = new ArrayList<Document>();
+		document.setDocumentCategory("poR");
+		document.setDocumentName("ProofOfRelation");
+		documents.add(document);
+		identity.setDocuments(documents);
+
+		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
+
+		FieldValueArray applicantBiometric = new FieldValueArray();
+		applicantBiometric.setLabel(PacketFiles.APPLICANTBIOMETRICSEQUENCE.name());
+		List<String> applicantBiometricValues = new ArrayList<String>();
+		applicantBiometricValues.add(PacketFiles.BOTHTHUMBS.name());
+		applicantBiometric.setValue(applicantBiometricValues);
+		fieldValueArrayList.add(applicantBiometric);
+		FieldValueArray introducerBiometric = new FieldValueArray();
+		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
+		List<String> introducerBiometricValues = new ArrayList<String>();
+		introducerBiometricValues.add("introducerLeftThumb");
+		introducerBiometric.setValue(introducerBiometricValues);
+		fieldValueArrayList.add(introducerBiometric);
+		FieldValueArray applicantDemographic = new FieldValueArray();
+		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
+		List<String> applicantDemographicValues = new ArrayList<String>();
+		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfIdentity");
+		applicantDemographicValues.add("ProofOfAddress");
+		applicantDemographicValues.add("ProofOfIdentity");
+		applicantDemographic.setValue(applicantDemographicValues);
+		fieldValueArrayList.add(applicantDemographic);
+		identity.setHashSequence(fieldValueArrayList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 
+		assertFalse(messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void testStructuralValidationSuccessForAdult() throws Exception {
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("New");
+
+		FieldValue applicantType = new FieldValue();
+		applicantType.setLabel("applicantType");
+		applicantType.setValue("Adult");
+
+		identity.setMetaData(Arrays.asList(registrationType, applicantType));
+
+		Document document = new Document();
+		document.setDocumentCategory("poA");
+		document.setDocumentName("ProofOfAddress");
+
+		Document document2 = new Document();
+		document2.setDocumentCategory("poI");
+		document2.setDocumentName("ProofOfIdentity");
+
+		List<Document> documents = new ArrayList<Document>();
+		documents.add(document);
+		documents.add(document2);
+		identity.setDocuments(documents);
+
+		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
+
+		FieldValueArray applicantBiometric = new FieldValueArray();
+		applicantBiometric.setLabel(PacketFiles.APPLICANTBIOMETRICSEQUENCE.name());
+		List<String> applicantBiometricValues = new ArrayList<String>();
+		applicantBiometricValues.add(PacketFiles.BOTHTHUMBS.name());
+		applicantBiometric.setValue(applicantBiometricValues);
+		fieldValueArrayList.add(applicantBiometric);
+		FieldValueArray introducerBiometric = new FieldValueArray();
+		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
+		List<String> introducerBiometricValues = new ArrayList<String>();
+		introducerBiometricValues.add("introducerLeftThumb");
+		introducerBiometric.setValue(introducerBiometricValues);
+		fieldValueArrayList.add(introducerBiometric);
+		FieldValueArray applicantDemographic = new FieldValueArray();
+		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
+		List<String> applicantDemographicValues = new ArrayList<String>();
+		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfRelation");
+		applicantDemographicValues.add("ProofOfAddress");
+		applicantDemographicValues.add("ProofOfIdentity");
+		applicantDemographic.setValue(applicantDemographicValues);
+		fieldValueArrayList.add(applicantDemographic);
+		identity.setHashSequence(fieldValueArrayList);
+		packetMetaInfo.setIdentity(identity);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -166,9 +311,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -192,11 +334,9 @@ public class PacketValidatorStageTest {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
+
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -216,9 +356,6 @@ public class PacketValidatorStageTest {
 				.thenReturn(packetMetaInfo);
 
 		packetMetaInfo.getIdentity().setHashSequence(null);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -242,9 +379,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
 
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
-
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
@@ -265,9 +399,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setRetryCount(1);
