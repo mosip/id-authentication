@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TspResponseDTO {
 	
-private String tspId;
+private int tspId;
 
 }
