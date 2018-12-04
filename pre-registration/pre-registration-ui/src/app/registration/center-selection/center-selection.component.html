@@ -101,7 +101,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
         <div *ngIf="selectedCentre !== null">
-          <app-time-selection></app-time-selection>
+          <app-time-selection [registrationCenter]="selectedCentre"></app-time-selection>
         </div>
         <div *ngIf="selectedCentre === null">
           <p>Please select the centre first</p>

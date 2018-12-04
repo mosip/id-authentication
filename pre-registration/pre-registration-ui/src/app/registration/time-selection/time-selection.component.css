@@ -124,6 +124,7 @@
 
   .list {
       list-style-type: none;
+      margin: 0 0 0 -30px;
   }
 
   .list-container {

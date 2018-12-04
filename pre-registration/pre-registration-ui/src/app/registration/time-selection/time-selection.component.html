@@ -3,11 +3,11 @@
       <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
   </div>
   <div #widgetsContent class="middle">
-    <mat-card *ngFor="let number of numbers; let i = index" 
-              [ngClass]="number % 3 === 0 ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
+    <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index" 
+              [ngClass]="data.holiday ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
               (click)="dateSelected(i)">
-      <p>26th Oct</p>
-      <p>{{number}} spots</p>
+      <p>{{data.displayDate}}</p>
+      <p>{{data.TotalAvailable}} spots</p>
     </mat-card>
   </div>
   <div class="right-button">
@@ -31,8 +31,7 @@
                     <li *ngIf="limit <= names.length" (click)="changeLimit()">more...</li>
                   </ul>
                 </div>
-                <!-- *ngIf="showAddButton" -->
-                <div class="add-button-container">
+                <div class="add-button-container" *ngIf="showAddButton">
                   <button mat-fab color="primary" (click)="openDialog()"><i class="material-icons add-icon">add</i></button>
                 </div>
               </mat-card>
