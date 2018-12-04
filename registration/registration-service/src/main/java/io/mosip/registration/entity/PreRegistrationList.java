@@ -28,7 +28,7 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	@Column(name = "appointment_date",nullable = true)
 	private Date appointmentDate;
 	@Column(name = "packet_symmetric_key", length = 256, nullable = true)
-	private Date packetSymmetricKey;
+	private String packetSymmetricKey;
 	@Column(name = "status_code", length = 36, nullable = false)
 	private String statusCode;
 	@Column(name = "status_comment", length = 256, nullable = true)
@@ -78,10 +78,10 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	public void setAppointmentDate(Date appointmentDate) {
 		this.appointmentDate = appointmentDate;
 	}
-	public Date getPacketSymmetricKey() {
+	public String getPacketSymmetricKey() {
 		return packetSymmetricKey;
 	}
-	public void setPacketSymmetricKey(Date packetSymmetricKey) {
+	public void setPacketSymmetricKey(String packetSymmetricKey) {
 		this.packetSymmetricKey = packetSymmetricKey;
 	}
 	public String getStatusCode() {

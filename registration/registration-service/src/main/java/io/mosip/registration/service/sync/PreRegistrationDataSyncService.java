@@ -4,7 +4,7 @@ import io.mosip.registration.dto.ResponseDTO;
 
 public interface PreRegistrationDataSyncService {
 
-	public ResponseDTO getPreRegistrationIds();
+	public ResponseDTO getPreRegistrationIds(String syncJobId);
 	
-	public byte[] getPreRegistration(String preRegistrationId);
+	public ResponseDTO getPreRegistration(String preRegistrationId);
 }

@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +21,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.PreRegistrationDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncRequestDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
@@ -27,7 +30,9 @@ import io.mosip.registration.dto.PreRegistrationResponseDataSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
+import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -42,9 +47,18 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 	@Autowired
 	PreRegistrationDAO preRegistrationDAO;
 
+	@Autowired
+	SyncManager syncManager;
+
+	private String noOfDays = "5";
+
+	private ResponseDTO responseDTO;
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseDTO getPreRegistrationIds() {
+	public ResponseDTO getPreRegistrationIds(String jobId) {
+
+		responseDTO = new ResponseDTO();
 
 		// prepare request DTO to pass on through REST call
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareRequestDTO();
@@ -62,31 +76,111 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
 			getPreRegistrations(preregIds);
 
+			setSuccessMessage(responseDTO, RegistrationConstants.PRE_REG_GET_ID_SUCCESS_MESSAGE);
+
 		} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
 				| RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			setErrorMessage(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR);
 		}
 
-		return null;
+		return responseDTO;
 	}
 
 	@Override
-	public byte[] getPreRegistration(String preRegistrationId) {
+	public ResponseDTO getPreRegistration(String preRegistrationId) {
+		
+		PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegistrationId);
+		PreRegistrationDTO preRegistrationDTO=null;
+		
+		if(preRegistration==null) {
+			
+			// prepare request params to pass through URI
+			Map<String, String> requestParamMap = new HashMap<>();
+			requestParamMap.put(RegistrationConstants.PRE_REGISTRATION_ID, preRegistrationId);
 
-		// prepare request params to pass through URI
-		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegistrationConstants.PRE_REGISTRATION_ID, preRegistrationId);
+			byte[] packet = null;
+			
+			try {
+				packet = (byte[]) delegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
+				
+				if(packet!=null) {
+					// see Bala : Get PreRegistrationDTO by taking packet Information
+					
+				}
+				
+				
+				
+			} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException e) {
 
-		byte[] packet = null;
-		try {
-			packet = (byte[]) delegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
+				setErrorMessage(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR);
+			} 
+		} else {
+			preRegistrationDTO =new PreRegistrationDTO();
+			preRegistrationDTO.setAppointmentDate(preRegistration.getAppointmentDate());
+			preRegistrationDTO.setPacketPath(preRegistration.getPacketPath());
+			preRegistrationDTO.setPreRegId(preRegistrationDTO.getPreRegId());
+			preRegistrationDTO.setSymmetricKey(preRegistration.getPacketSymmetricKey());
+			
+		}
+		if(preRegistrationDTO!=null) {
+			setSuccessMessage(responseDTO, null);
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException e) {
-			e.printStackTrace();
+			Map<String, Object> attributes = new HashMap<>();
+			attributes.put("pre_reg_dto", preRegistrationDTO);
+			successResponseDTO.setOtherAttributes(attributes);
 		}
 
-		return packet;
+		return responseDTO;
+	}
+
+	private void getPreRegistrations(List<String> preRegIds) {
+
+		// List of pre registartions
+		LinkedList<PreRegistrationList> preRegistrations = new LinkedList<>();
+
+		preRegIds.forEach(preRegId -> {
+
+			PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegId);
+			if (preRegistration == null) {
+				ResponseDTO responseDTO = getPreRegistration(preRegId);
+				
+				
+				// String statusComment = (responseDTO.getSuccessResponseDTO()!=null) ?
+
+				// TODO save packet
+
+				if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+					// TODO save pre-reg transaction
+					// TODO save pre-reg
+					// TODO add preReg to preRegistrations list
+				}
+			}
+
+		});
+
+	}
+
+	private PreRegistrationDataSyncDTO prepareRequestDTO() {
+
+		// TODO prepare required DTO to send through API
+		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
+
+		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
+		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
+		preRegistrationDataSyncDTO.setReqTime(reqTime);
+		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER);
+
+		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
+		preRegistrationDataSyncRequestDTO.setFromDate(reqTime);
+		preRegistrationDataSyncRequestDTO.setRegClientId(RegistrationConstants.REGISTRATION_CLIENT_ID);
+		preRegistrationDataSyncRequestDTO.setToDate(getToDate(preRegistrationDataSyncRequestDTO.getFromDate()));
+		preRegistrationDataSyncRequestDTO.setUserId(getUserId());
+
+		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
+
+		return preRegistrationDataSyncDTO;
+
 	}
 
 	private void setSuccessMessage(ResponseDTO responseDTO, String message) {
@@ -98,10 +192,9 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
 	private void setErrorMessage(ResponseDTO responseDTO, String message) {
 
-	}
-
-	private String getId() {
-		return RegistrationConstants.PRE_REGISTRATION_DUMMY_ID;
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(message);
+		errorResponseDTO.setCode(RegistrationConstants.ERROR);
 	}
 
 	private String getUserId() {
@@ -114,101 +207,36 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 		return userId;
 	}
 
-	private String getRegistrationClientId() {
-
-		return RegistrationConstants.REGISTRATION_CLIENT_ID;
-	}
-
 	private Timestamp getToDate(Timestamp fromDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fromDate);
+		cal.add(Calendar.DATE, Integer.valueOf(noOfDays));
 
-		Timestamp toDate = null;
-		toDate = new Timestamp(System.currentTimeMillis());
+		// To-Date
+		return new Timestamp(cal.getTime().getTime());
+
+	}
+	
+	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction, PreRegistrationDTO preRegistrationDTO,String parentPreRegId,String status) {
 		
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-			Date parsedDate = dateFormat.parse("2018-11-17T07:22:57.086+0000");
-			toDate = new Timestamp(parsedDate.getTime());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return toDate;
-
-		// Calendar cal = Calendar.getInstance();
-		// cal.setTime(fromDate);
-		// cal.add(Calendar.DATE, noOfDays);
-		//
-		// //To-Date
-		// return new Timestamp(cal.getTime().getTime());
-
-	}
-
-	private String getVer() {
-		return RegistrationConstants.VER;
-	}
-
-	private PreRegistrationDataSyncDTO prepareRequestDTO() {
-
-		// TODO prepare required DTO to send through API
-		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
-		Timestamp reqTime = null;
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-			Date parsedDate = dateFormat.parse("2018-01-17T07:22:57.086+0000");
-			reqTime = new Timestamp(parsedDate.getTime());
-			System.out.println();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-//		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
-		preRegistrationDataSyncDTO.setId(getId());
-		preRegistrationDataSyncDTO.setReqTime(reqTime);
-		preRegistrationDataSyncDTO.setVer(getVer());
-
-		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
-		preRegistrationDataSyncRequestDTO.setFromDate(reqTime);
-		preRegistrationDataSyncRequestDTO.setRegClientId(getRegistrationClientId());
-		preRegistrationDataSyncRequestDTO.setToDate(getToDate(preRegistrationDataSyncRequestDTO.getFromDate()));
-		preRegistrationDataSyncRequestDTO.setUserId(getUserId());
-
-		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
-
-		return preRegistrationDataSyncDTO;
-
-	}
-
-	private List<PreRegistrationList> getPreRegistrations(List<String> preRegIds) {
-
-		// List of pre registartions
-		LinkedList<PreRegistrationList> preRegistrations = new LinkedList<>();
-
-		preRegIds.forEach(preRegId -> {
-
-			try {
-				PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegId);
-				if (preRegistration == null) {
-					byte[] packet = getPreRegistration(preRegId);
-
-					// TODO save packet
-
-					if (packet != null) {
-						// TODO save pre-reg transaction
-						// TODO save pre-reg
-						// TODO add preReg to preRegistrations list
-					}
-				}
-
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			
-		});
-
-		return preRegistrations;
+		PreRegistrationList preRegistrationList=new PreRegistrationList();
+		
+		preRegistrationList.setId("Random Id");
+		preRegistrationList.setPreRegId(preRegistrationDTO.getPreRegId());
+		preRegistrationList.setAppointmentDate(preRegistrationDTO.getAppointmentDate());
+		preRegistrationList.setPacketSymmetricKey(preRegistrationDTO.getSymmetricKey());
+		preRegistrationList.setStatusCode(syncTransaction.getStatusCode());
+		preRegistrationList.setStatusComment(syncTransaction.getStatusComment());
+		preRegistrationList.setPacketPath(preRegistrationDTO.getPacketPath());
+		preRegistrationList.setsJobId(syncTransaction.getSyncJobId());
+		preRegistrationList.setSynctrnId(syncTransaction.getId());
+		preRegistrationList.setLangCode(syncTransaction.getLangCode());
+		preRegistrationList.setIsActive(true);
+		preRegistrationList.setCrBy(syncTransaction.getCrBy());
+		preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		
+		return null;
+		
 	}
 
 }
