@@ -90,20 +90,19 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
-				if (Modifier.isStatic(sfield.getModifiers()) || Modifier.isFinal(sfield.getModifiers())) {
-					continue;
-				}
-				sfield.setAccessible(true);
-				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
-					setFieldValue(sfield.get(source), destination);
-					sfield.setAccessible(false);
-					isIdMapped = true;
-				} else if (!isSuperMapped) {
-					setBaseFieldValue(source, destination);
-					isSuperMapped = true;
-				} else {
-					setFieldValue(source, destination);
-					break;
+				if (!Modifier.isStatic(sfield.getModifiers()) || !Modifier.isFinal(sfield.getModifiers())) {
+					sfield.setAccessible(true);
+					if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+						setFieldValue(sfield.get(source), destination);
+						sfield.setAccessible(false);
+						isIdMapped = true;
+					} else if (!isSuperMapped) {
+						setBaseFieldValue(source, destination);
+						isSuperMapped = true;
+					} else {
+						setFieldValue(source, destination);
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -114,7 +113,9 @@ public class MapperUtils {
 	}
 
 	private <S, D> void setBaseFieldValue(S source, D destination) {
-		if (!source.getClass().getSuperclass().getName().equals(Object.class.getName())) {
+		String sourceSupername = source.getClass().getSuperclass().getName();
+		String objectClassName = Object.class.getName();
+		if (!sourceSupername.equals(objectClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getDeclaredFields();
 			setFieldValues(source, destination, sourceFields, destinationFields);
