@@ -662,4 +662,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return duplicateRegIds;
 
 	}
+
+	@Override
+	public List<DemographicDedupeDto> findDemoById(String regId) {
+				return packetInfoDao.findDemoById(regId);
+	}
 }

@@ -6,14 +6,16 @@ import java.util.List;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface PacketInfoManager.
  *
  * @author Horteppa (M1048399)
  * @param <T> PacketInfoDto
- * @param <D> DemographicInfo
+ * @param <A> the generic type
  */
 public interface PacketInfoManager<T,/** D, M,*/ A> {
 
@@ -30,7 +32,8 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	/**
 	 * Save demographic data.
 	 *
-	 * @param demograficData the demografic data
+	 * @param demographicJsonStream the demographic json stream
+	 * @param metaData the meta data
 	 */
 	public void saveDemographicInfoJson(InputStream demographicJsonStream,List<FieldValue> metaData);
 	
@@ -43,7 +46,7 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	public RegOsiDto getOsi(String regid);
 	
 	/**
-	 * Gets the RegistrationCenterMachine deatils for registration id
+	 * Gets the RegistrationCenterMachine deatils for registration id.
 	 *
 	 * @param regid the registration id
 	 * @return RegistrationCenterMachineDto for the registration id
@@ -56,4 +59,14 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	 * @return the packetsfor QC user
 	 */
 	public List<A> getPacketsforQCUser(String qcUserId);
+	
+	/**
+	 * Find demo by id.
+	 *
+	 * @param regId the reg id
+	 * @return the list
+	 */
+	public List<DemographicDedupeDto> findDemoById(String regId);
+	
+	
 }
