@@ -1,7 +1,6 @@
 package io.kernel.idrepo.util;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -9,8 +8,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
 import io.kernel.idrepo.dto.IdRequestDTO;
-import io.kernel.idrepo.exception.IdRepoDataValidationException;
-import io.kernel.idrepo.util.DataValidationUtil;
+import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 
 /**
  * The Class DataValidationUtilTest.

@@ -1,7 +1,7 @@
-package io.kernel.idrepo.exception;
+package io.mosip.kernel.core.idrepo.exception;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
  * The Class IdRepoAppException.

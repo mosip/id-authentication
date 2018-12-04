@@ -5,8 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,12 +21,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "uin")
-public class Uin {
+@IdClass(HistoryPK.class)
+@Table(name = "uin_h", schema = "uin")
+public class UinHistory {
 
 	/** The uin ref id. */
 	@Id
 	private String uinRefId;
+	
+	@Id
+	@Column(name = "eff_dtimes")
+	private Date effectiveDateTime;
 	
 	/** The uin. */
 	private String uin;
@@ -57,9 +61,4 @@ public class Uin {
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private Date deletedDateTime;
-	
-	/** The uin detail. */
-	@PrimaryKeyJoinColumn
-	@OneToOne
-	private UinDetail uinDetail;
 }

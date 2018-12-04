@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.kernel.idrepo.shard.impl.DefaultShardResolver;
+import io.kernel.idrepo.service.impl.DefaultShardResolver;
 
 /**
  * The Class DefaultShardResolverTest.

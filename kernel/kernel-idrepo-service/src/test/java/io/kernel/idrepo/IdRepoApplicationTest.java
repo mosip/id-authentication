@@ -9,8 +9,6 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.kernel.idrepo.IdRepoApplication;
-
 /**
  * The Class IdRepoApplicationTest.
  *

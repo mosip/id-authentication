@@ -25,11 +25,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
+import io.kernel.idrepo.config.IdRepoLogger;
 import io.kernel.idrepo.dto.ErrorDTO;
 import io.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class IdRepoExceptionHandler.
@@ -38,6 +42,8 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
  */
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
 
 	/** The env. */
 	@Autowired
@@ -58,6 +64,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleAllExceptions - \n"
+				+ ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -68,6 +76,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleExceptionInternal - \n"
+				+ ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
@@ -93,6 +103,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
+		
+		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleIdAppException - \n"
+				+ ExceptionUtils.getStackTrace(ex));
 
 		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -104,8 +117,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
-		
-		System.err.println(ExceptionUtils.getStackTrace(ex));
 		
 		IdResponseDTO response = new IdResponseDTO();
 

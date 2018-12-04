@@ -1,9 +1,6 @@
 package io.kernel.idrepo.service;
 
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -33,12 +30,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.kernel.idrepo.dao.impl.IdRepoDaoImpl;
 import io.kernel.idrepo.dto.IdRequestDTO;
 import io.kernel.idrepo.entity.Uin;
 import io.kernel.idrepo.entity.UinDetail;
-import io.kernel.idrepo.exception.IdRepoAppException;
 import io.kernel.idrepo.service.impl.IdRepoServiceImpl;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 
 /**
  * The Class IdRepoServiceTest.
@@ -72,11 +68,15 @@ public class IdRepoServiceTest {
 	private Map<String, String> id;
 
 	/** The id repo. */
-	@Mock
-	private IdRepoDaoImpl idRepo;
+//	@Mock
+//	private IdRepoDaoImpl idRepo;
 
 	/** The uin. */
-	Uin uin = new Uin();
+	@InjectMocks
+	Uin uin;
+	
+	@InjectMocks
+	UinDetail uinDetail;
 
 	/** The request. */
 	IdRequestDTO request = new IdRequestDTO();
@@ -104,9 +104,8 @@ public class IdRepoServiceTest {
 		request.setRequest(null);
 		uin.setUin("1234");
 		uin.setUinRefId("uinRefId");
-		UinDetail uinDetail = new UinDetail();
 		uinDetail.setUinData(mapper.writeValueAsBytes(request));
-		uin.setUinDetail(uinDetail);
+//		uin.setUinDetail(uinDetail);
 		uin.setStatusCode(env.getProperty("mosip.idrepo.status.registered"));
 	}
 
@@ -121,7 +120,7 @@ public class IdRepoServiceTest {
 	@Test
 	public void testAddIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
-		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(uin);
+//		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(uin);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
 				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.addIdentity(request);
@@ -138,7 +137,7 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testAddIdentityException() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
-		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IdRepoAppException());
+//		when(idRepo.addIdentity(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IdRepoAppException());
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
 				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.addIdentity(request);
@@ -155,7 +154,7 @@ public class IdRepoServiceTest {
 	@Test
 	public void testRetrieveIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
-		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(uin);
+//		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(uin);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
 				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.retrieveIdentity("1234");
@@ -164,7 +163,7 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityNullUinOject() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
-		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(null);
+//		when(idRepo.retrieveIdentity(Mockito.anyString())).thenReturn(null);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class))
 				.thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 		service.retrieveIdentity("1234");

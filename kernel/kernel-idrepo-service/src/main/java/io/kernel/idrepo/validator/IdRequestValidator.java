@@ -1,7 +1,9 @@
 package io.kernel.idrepo.validator;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
@@ -89,13 +91,17 @@ public class IdRequestValidator implements Validator {
 			validateId(request.getId(), errors);
 			validateVer(request.getVer(), errors);
 			validateStatus(request.getStatus(), errors);
-			validateRegId(request.getRegistrationId(), errors);
 			validateRequest(request.getRequest(), errors);
 		}
 
 		if (!errors.hasErrors()
 				&& (request.getId().equals(id.get("update")) || request.getId().equals(id.get("read")))) {
 			validateUin(request.getUin(), errors);
+		}
+		
+		if (!errors.hasErrors()
+				&& (request.getId().equals(id.get("read")) || request.getId().equals(id.get("create")))) {
+			validateRegId(request.getRegistrationId(), errors);
 		}
 	}
 
@@ -220,10 +226,12 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 		} else {
 			try {
-				SimpleDateFormat timestampFormat = new SimpleDateFormat(env.getProperty("datetime.pattern"));
-				timestampFormat.setLenient(false);
-				timestampFormat.parse(timestamp);
-			} catch (ParseException e) {
+				DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"));
+				if (!ZonedDateTime.parse(timestamp, timestampFormat).getZone().equals(ZoneId.of("Z"))) {
+					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "TimeZone"));
+				}
+			} catch (DateTimeParseException e) {
 				errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 			}

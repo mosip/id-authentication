@@ -3,20 +3,34 @@ package io.kernel.idrepo.config;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
+import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 
 /**
  * The Class IdRepoConfig.
@@ -25,7 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Configuration
 @ConfigurationProperties("mosip.idrepo")
-public class IdRepoConfig {
+@EnableTransactionManagement
+public class IdRepoConfig implements WebMvcConfigurer {
 
 	/** The mapper. */
 	@Autowired
@@ -107,6 +122,31 @@ public class IdRepoConfig {
 	@PostConstruct
 	public void setup() {
 		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
+		mapper.setTimeZone(TimeZone.getTimeZone("GMT"));
+	}
+
+	/**
+	 * Gets the shard data source resolver.
+	 *
+	 * @return the shard data source resolver
+	 */
+	@Bean
+	public ShardDataSourceResolver getShardDataSourceResolver() {
+		ShardDataSourceResolver resolver = new ShardDataSourceResolver();
+		resolver.setLenientFallback(false);
+		resolver.setTargetDataSources(db.entrySet().parallelStream()
+				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
+		return resolver;
+	}
+
+	/**
+	 * Rest template.
+	 *
+	 * @return the rest template
+	 */
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 	/**
@@ -130,15 +170,49 @@ public class IdRepoConfig {
 	}
 
 	/**
-	 * Data sources.
+	 * Entity manager factory.
 	 *
-	 * @return the map
+	 * @param dataSource the data source
+	 * @return the local container entity manager factory bean
 	 */
 	@Bean
-	public Map<Object, Object> dataSources() {
-		Map<String, DataSource> dataSourceMap = db.entrySet().parallelStream()
-				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue())));
-		return Collections.unmodifiableMap(dataSourceMap);
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(dataSource);
+		em.setPackagesToScan("io.kernel.idRepo.*");
+
+		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		em.setJpaVendorAdapter(vendorAdapter);
+		em.setJpaProperties(additionalProperties());
+
+		return em;
+	}
+
+	/**
+	 * Transaction manager.
+	 *
+	 * @param emf the emf
+	 * @return the platform transaction manager
+	 */
+	@Bean
+	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(emf);
+		return transactionManager;
+	}
+
+	/**
+	 * Additional properties.
+	 *
+	 * @return the properties
+	 */
+	Properties additionalProperties() {
+		Properties properties = new Properties();
+		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+		properties.setProperty("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
+		properties.setProperty("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
+
+		return properties;
 	}
 
 	/**

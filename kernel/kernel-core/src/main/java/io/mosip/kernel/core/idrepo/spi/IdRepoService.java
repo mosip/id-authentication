@@ -1,43 +1,43 @@
-package io.kernel.idrepo.service;
+package io.mosip.kernel.core.idrepo.spi;
 
-import io.kernel.idrepo.dto.IdRequestDTO;
-import io.kernel.idrepo.dto.IdResponseDTO;
-import io.kernel.idrepo.entity.Uin;
-import io.kernel.idrepo.exception.IdRepoAppException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 
 /**
  * The Interface IdRepoService.
  *
  * @author Manoj SP
+ * @param <REQUEST> the Request Object
+ * @param <RESPONSE> the Response Object
+ * @param <UIN> the Uin Object
  */
-public interface IdRepoService {
+public interface IdRepoService<REQUEST, RESPONSE, UIN> {
 
 	/**
 	 * Adds the identity.
 	 *
 	 * @param request the request
-	 * @return the id response DTO
+	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	IdResponseDTO addIdentity(IdRequestDTO request) throws IdRepoAppException;
+	RESPONSE addIdentity(REQUEST request) throws IdRepoAppException;
 
 	/**
 	 * Retrieve identity.
 	 *
 	 * @param uin the uin
-	 * @return the id response DTO
+	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	IdResponseDTO retrieveIdentity(String uin) throws IdRepoAppException;
+	RESPONSE retrieveIdentity(String uin) throws IdRepoAppException;
 
 	/**
 	 * Update identity.
 	 *
 	 * @param request the request
-	 * @return the id response DTO
+	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	IdResponseDTO updateIdentity(IdRequestDTO request) throws IdRepoAppException;
+	RESPONSE updateIdentity(REQUEST request) throws IdRepoAppException;
 
 	/**
 	 * Generate UIN.
@@ -46,23 +46,23 @@ public interface IdRepoService {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	String generateUIN() throws IdRepoAppException;
-
+	
 	/**
 	 * Check UIN.
 	 *
 	 * @param uin the uin
-	 * @return the boolean
+	 * @return true, if successful
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	Boolean checkUIN(String uin) throws IdRepoAppException;
+	void checkUIN(String uin) throws IdRepoAppException;
 
 	/**
 	 * Construct id response.
 	 *
 	 * @param id the id
 	 * @param uin the uin
-	 * @return the id response DTO
+	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	IdResponseDTO constructIdResponse(String id, Uin uin) throws IdRepoAppException;
+	RESPONSE constructIdResponse(String id, UIN uin) throws IdRepoAppException;
 }

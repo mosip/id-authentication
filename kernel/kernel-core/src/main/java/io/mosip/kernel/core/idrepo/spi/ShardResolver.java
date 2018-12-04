@@ -1,6 +1,4 @@
-package io.kernel.idrepo.shard;
-
-import javax.sql.DataSource;
+package io.mosip.kernel.core.idrepo.spi;
 
 /**
  * The Interface ShardResolver.
@@ -15,5 +13,5 @@ public interface ShardResolver {
 	 * @param id the id
 	 * @return the shrad
 	 */
-	DataSource getShrad(String id);
+	String getShrad(String id);
 }

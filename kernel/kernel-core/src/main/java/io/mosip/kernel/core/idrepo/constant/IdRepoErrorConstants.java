@@ -1,4 +1,4 @@
-package io.kernel.idrepo.constant;
+package io.mosip.kernel.core.idrepo.constant;
 
 /**
  * The Enum IdRepoErrorConstants.

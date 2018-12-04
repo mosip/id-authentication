@@ -41,7 +41,7 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("io.kernel.core.idrepo.controller"))
+				.apis(RequestHandlerSelectors.basePackage("io.kernel.idrepo.controller"))
 				.paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
 				.build()
 				.apiInfo(getApiInfo());

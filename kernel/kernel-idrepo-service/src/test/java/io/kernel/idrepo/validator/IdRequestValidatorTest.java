@@ -34,9 +34,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.idrepo.dto.IdRequestDTO;
-import io.kernel.idrepo.validator.IdRequestValidator;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 

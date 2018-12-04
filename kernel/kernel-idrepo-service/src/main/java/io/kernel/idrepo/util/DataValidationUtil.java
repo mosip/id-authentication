@@ -2,7 +2,7 @@ package io.kernel.idrepo.util;
 
 import org.springframework.validation.Errors;
 
-import io.kernel.idrepo.exception.IdRepoDataValidationException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 
 /**
  * The Class DataValidationUtil.

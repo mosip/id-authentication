@@ -17,14 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.idrepo.dto.IdRequestDTO;
 import io.kernel.idrepo.dto.IdResponseDTO;
-import io.kernel.idrepo.exception.IdRepoAppException;
-import io.kernel.idrepo.exception.IdRepoDataValidationException;
-import io.kernel.idrepo.service.IdRepoService;
+import io.kernel.idrepo.entity.Uin;
 import io.kernel.idrepo.util.DataValidationUtil;
 import io.kernel.idrepo.validator.IdRequestValidator;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
+import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import springfox.documentation.annotations.ApiIgnore;
@@ -39,7 +40,7 @@ public class IdRepoController {
 
 	/** The id repo service. */
 	@Autowired
-	private IdRepoService idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
 
 	/** The validator. */
 	@Autowired
@@ -116,9 +117,11 @@ public class IdRepoController {
 	 *             the id repo app exception
 	 */
 	@PatchMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
+	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin, @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
+			request.setUin(uin);
+			validator.validate(request, errors);
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {

@@ -2,9 +2,9 @@ package io.kernel.idrepo.exception;
 
 import org.junit.Test;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
-import io.kernel.idrepo.exception.IdRepoAppException;
-import io.kernel.idrepo.exception.IdRepoUnknownException;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
 
 /**
  * The Class IdRepoUnknownExceptionTest.

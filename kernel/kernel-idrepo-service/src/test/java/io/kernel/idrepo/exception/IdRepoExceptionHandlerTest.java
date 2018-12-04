@@ -25,11 +25,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.kernel.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.idrepo.dto.ErrorDTO;
 import io.kernel.idrepo.dto.IdResponseDTO;
-import io.kernel.idrepo.exception.IdRepoAppException;
-import io.kernel.idrepo.exception.IdRepoExceptionHandler;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 
 /**
  * The Class IdRepoExceptionHandlerTest.
