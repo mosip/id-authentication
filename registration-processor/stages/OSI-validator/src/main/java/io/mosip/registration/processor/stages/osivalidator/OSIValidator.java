@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -20,22 +22,31 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
+import io.mosip.registration.processor.status.code.ApplicantType;
+import io.mosip.registration.processor.status.code.IntroducerType;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
+import io.mosip.registration.processor.status.dto.TransactionDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.mosip.registration.processor.status.service.TransactionService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
+@Service
 public class OSIValidator {
 
 	/** The packet info manager. */
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	@Autowired
+	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -43,11 +54,21 @@ public class OSIValidator {
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
 
+	/** The registration status service. */
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
 	/** The adapter. */
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	@Autowired
+	FilesystemCephAdapterImpl adapter;
 
 	/** The rest client service. */
-	private RegistrationProcessorRestClientService<Object> restClientService;
+	@Autowired
+	RegistrationProcessorRestClientService<Object> restClientService;
+
+	/** The transcation status service. */
+	@Autowired
+	private TransactionService<TransactionDto> transcationStatusService;
 
 	/** The message. */
 	private String message = null;
@@ -72,24 +93,6 @@ public class OSIValidator {
 
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
-
-	/**
-	 * Instantiates a new OSI validator.
-	 *
-	 * @param adapter
-	 *            the adapter
-	 * @param restClientService
-	 *            the rest client service
-	 * @param packetInfoManager
-	 *            the packet info manager
-	 */
-	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
-			RegistrationProcessorRestClientService<Object> restClientService,
-			PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager) {
-		this.packetInfoManager = packetInfoManager;
-		this.adapter = adapter;
-		this.restClientService = restClientService;
-	}
 
 	/**
 	 * Checks if is valid OSI.
@@ -214,31 +217,33 @@ public class OSIValidator {
 	 */
 	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
-		String uin = regOsi.getIntroducerUin();
-		if (uin == null)
-			return true;
 
-		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
-				&& (regOsi.getIntroducerPhotoName() == null)) {
-			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-			return false;
-		} else {
-			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName();
-			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName();
-			String irisType = regOsi.getIntroducerIrisType();
-			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName();
+		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
+				&& registrationStatusDto.getApplicantType().equalsIgnoreCase(ApplicantType.CHILD.name())
+				&& regOsi.getIntroducerTyp().equalsIgnoreCase(IntroducerType.PARENT.name())) {
+			String introducerUin = regOsi.getIntroducerUin();
+			String introducerRid = regOsi.getIntroducerRegId();
+			if (introducerUin == null && introducerRid == null) {
+				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+				return false;
+			}
+			if (introducerUin == null) {
+				if (validateIntroducerRid(introducerRid, registrationId)) {
+					// To do get parent UIN from UIN Master DB
+					introducerUin = getUIN() + regOsi.getIntroducerRegId();
+					return validateIntroducer(regOsi, registrationId, introducerUin);
+				} else {
+					return false;
+				}
 
-			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(uin, iris, irisType, registrationId)
-							&& (validateFace(uin, face, registrationId)))) {
-				return true;
+			} else {
+				return validateIntroducer(regOsi, registrationId, introducerUin);
 			}
 
+		} else {
+			return true;
 		}
 
-		registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-		return false;
 	}
 
 	/**
@@ -494,6 +499,102 @@ public class OSIValidator {
 			isValidBiometric = true;
 
 		return isValidBiometric;
+	}
+
+	/**
+	 * Validate introducer.
+	 *
+	 * @param regOsi
+	 *            the reg osi
+	 * @param registrationId
+	 *            the registration id
+	 * @param introducerUin
+	 *            the introducer uin
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
+			throws ApisResourceAccessException, IOException {
+		String fingerPrint = "";
+		String iris = "";
+		String face = "";
+		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
+				&& (regOsi.getIntroducerPhotoName() == null)) {
+			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+			return false;
+		} else {
+			if (regOsi.getIntroducerFingerpImageName() != null) {
+				fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
+			} else {
+				return true;
+			}
+			String fingerPrintType = regOsi.getIntroducerFingerpType();
+			if (regOsi.getIntroducerIrisImageName() != null) {
+				iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
+			} else {
+				return true;
+			}
+
+			String irisType = regOsi.getIntroducerIrisType();
+			if (regOsi.getIntroducerPhotoName() != null) {
+				face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
+			} else {
+				return true;
+			}
+
+			if ((validateUIN(introducerUin))
+					&& (validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId))
+					&& (validateIris(introducerUin, iris, irisType, registrationId)
+							&& (validateFace(introducerUin, face, registrationId)))) {
+				return true;
+			} else {
+				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
+				return false;
+			}
+
+		}
+
+	}
+
+	/**
+	 * Validate introducer rid.
+	 *
+	 * @param introducerRid
+	 *            the introducer rid
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if successful
+	 */
+	private boolean validateIntroducerRid(String introducerRid, String registrationId) {
+		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
+				.getRegistrationStatus(introducerRid);
+		if (introducerRegistrationStatusDto != null) {
+			TransactionDto transactionDto = transcationStatusService.getTransactionByRegIdAndStatusCode(introducerRid,
+					RegistrationStatusCode.UIN_GENERATED.toString());
+			if (transactionDto != null) {
+				return true;
+			} else {
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
+				return false;
+			}
+
+		} else {
+			registrationStatusDto.setStatusComment(StatusMessage.PARENT_RID_NOT_IN_REGISTRATION_TABLE + registrationId);
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the uin.
+	 *
+	 * @return the uin
+	 */
+	private String getUIN() {
+		// TO do handle Parent UIN not found in UIN Master DB
+		return "";
 	}
 
 }

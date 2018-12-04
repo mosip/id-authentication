@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -19,6 +20,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -27,6 +29,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
@@ -58,6 +61,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
+
+	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
 	@Autowired
@@ -111,19 +116,26 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			FilesValidation filesValidation = new FilesValidation(adapter);
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 			boolean isCheckSumValidated = false;
+			boolean isApplicantDocumentValidation = false;
 			if (isFilesValidated) {
 
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 						packetMetaInfo.getIdentity());
 
-				if (!isCheckSumValidated) {
+				if (isCheckSumValidated) {
+					ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+							registrationStatusDto);
+					isApplicantDocumentValidation = applicantDocumentValidation
+							.documentValidation(packetMetaInfo.getIdentity(), registrationId);
+
+				} else {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
 			} else {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
 			}
-			if (isFilesValidated && isCheckSumValidated) {
+			if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
@@ -152,10 +164,21 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				description = "Packet validation successful for registration id : " + registrationId;
 			}
 			registrationStatusDto.setUpdatedBy(USER);
+			for (FieldValue field : packetMetaInfo.getIdentity().getMetaData()) {
+				if (field.getLabel().matches(APPLICANT_TYPE)) {
+					registrationStatusDto.setApplicantType(field.getValue());
+					break;
+				}
+			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
-		} catch (IOException e) {
+		} catch (DataAccessException e) {
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
+			object.setInternalError(Boolean.TRUE);
+			description = "Data voilation in reg packet : " + registrationId;
+
+		} catch (IOException exc) {
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), exc);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 

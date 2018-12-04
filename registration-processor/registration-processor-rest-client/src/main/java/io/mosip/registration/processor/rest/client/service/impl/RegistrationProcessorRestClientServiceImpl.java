@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.rest.client.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +44,22 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * java.lang.String, java.lang.Class)
 	 */
 	@Override
-	public Object getApi(ApiName apiName, String queryParamName, String queryParamValue,
+	public Object getApi(ApiName apiName,List<String> pathsegments, String queryParamName, String queryParamValue,
 			Class<?> responseType)throws ApisResourceAccessException {
 		Object obj =null;
 		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort );
+		
+		if(!((pathsegments == null) || (pathsegments.isEmpty()))) {
+			for(String segment:pathsegments) {
+				if(!((segment == null) || (("").equals(segment))))
+				{
+					builder.pathSegment(segment);
+				}
+			}
+			
+		}
+		
 		if (!((queryParamName == null) || (("").equals(queryParamName)))) {
 
 			String[] queryParamNameArr = queryParamName.split(",");

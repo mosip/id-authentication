@@ -8,7 +8,7 @@ package io.mosip.registration.processor.status.dto;
 public enum SyncTypeDto {
 
 	/** The new registration. */
-	NEW_REGISTRATION,
+	NEW,
 	/** The correction. */
 	CORRECTION,
 	/** The update uin. */

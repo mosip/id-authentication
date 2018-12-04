@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.storage.mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -288,12 +289,9 @@ public class PacketInfoMapper {
 			} else if (field.getLabel().matches(PRE_REGISTRATION_ID)) {
 				regOsiEntity.setPreregId(field.getValue());
 			} else if (field.getLabel().matches("introducerRID")) {
-				regOsiEntity.setIntroducerId(field.getValue());
+				regOsiEntity.setIntroducerRegId(field.getValue());
 			} else if (field.getLabel().matches("introducerUIN")) {
-				regOsiEntity.setIntroducerRegId(field.getValue());
 				regOsiEntity.setIntroducerUin(field.getValue());
-			} else if (field.getLabel().matches("introducerRIDHash")) {
-				regOsiEntity.setIntroducerRegId(field.getValue());
 			} else if (field.getLabel().matches("introducerType")) {
 				regOsiEntity.setIntroducerTyp(field.getValue());
 			} else if (field.getLabel().matches("supervisorFingerprintType")) {
@@ -348,7 +346,6 @@ public class PacketInfoMapper {
 		if (introducer.getIntroducerImage() != null)
 			regOsiEntity.setIntroducerPhotoName(introducer.getIntroducerImage().getImageName());
 
-
 		regOsiEntity.setId(regOsiPkEntity);
 
 		regOsiEntity.setIsActive(true);
@@ -370,13 +367,17 @@ public class PacketInfoMapper {
 				regCenterMachineEntity.setLatitude(field.getValue());
 			} else if (field.getLabel().matches("geoLoclongitude")) {
 				regCenterMachineEntity.setLongitude(field.getValue());
-
+			} else if (field.getLabel().matches("centerId")) {
+				regCenterMachineEntity.setCntrId(field.getValue());
+			} else if (field.getLabel().matches("machineId")) {
+				regCenterMachineEntity.setMachineId(field.getValue());
+			} else if (field.getLabel().matches("creationDate")) {
+				regCenterMachineEntity.setPacketCreationDate(LocalDateTime.parse(field.getValue()));
 			}
-
 		}
 
-		regCenterMachineEntity.setCntrId("Center 1");
-		regCenterMachineEntity.setMachineId("Machine 1");
+		regCenterMachineEntity.setId(regCenterMachinePKEntity);
+		regCenterMachineEntity.setIsActive(true);
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
 

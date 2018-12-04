@@ -2,6 +2,7 @@ package io.mosip.registration.processor.status.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,5 +34,11 @@ public class RegistrationStatusExceptionHandler {
 		log.error(e.getErrorCode(), e.getCause());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
-
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ExceptionJSONInfo> dataExceptionHandler(final DataIntegrityViolationException e, WebRequest request) {
+		ExceptionJSONInfo exe = new ExceptionJSONInfo( "RPR-DBE-001","Data Integrity Violation Exception");
+		log.error( "RPR-DBE-001 Data integrity violation exception",e.getMessage());
+		return new ResponseEntity<>(exe, HttpStatus.BAD_REQUEST);
+	}
 }

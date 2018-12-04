@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.spi.restclient;
 
+import java.util.List;
+
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 
@@ -16,13 +18,13 @@ public interface RegistrationProcessorRestClientService<T> {
 	 * Gets the api.
 	 *
 	 * @param apiName the api name
-	 * @param uri the uri
+	 * @param pathsegments pathsegments of the uri
 	 * @param queryParam the query param
 	 * @param queryParamValue the query param value
 	 * @param responseType the response type
 	 * @return the api
 	 */
-	public T getApi(ApiName apiName, String queryParam, String queryParamValue, Class<?> responseType)throws ApisResourceAccessException;
+	public T getApi(ApiName apiName,List<String> pathsegments, String queryParam, String queryParamValue, Class<?> responseType)throws ApisResourceAccessException;
 	
 	
 	/**

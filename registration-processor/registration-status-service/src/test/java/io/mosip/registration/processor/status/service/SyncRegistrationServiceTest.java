@@ -84,7 +84,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto.setParentRegistrationId("1234");
 		syncRegistrationDto.setStatusComment("NEW");
 		syncRegistrationDto.setSyncStatus(SyncStatusDto.PRE_SYNC);
-		syncRegistrationDto.setSyncType(SyncTypeDto.NEW_REGISTRATION);
+		syncRegistrationDto.setSyncType(SyncTypeDto.NEW);
 		entities.add(syncRegistrationDto);
 
 		syncRegistrationEntity = new SyncRegistrationEntity();
