@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeyDbStore extends BaseEntity {
+public class KeyStore extends BaseEntity {
 
 	@Id
 	@Column(name = "id", nullable = false, length = 36)

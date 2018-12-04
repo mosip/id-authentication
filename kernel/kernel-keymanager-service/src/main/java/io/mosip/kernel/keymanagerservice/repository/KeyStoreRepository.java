@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.keymanagerservice.entity.KeyDbStore;
+import io.mosip.kernel.keymanagerservice.entity.KeyStore;
 
 /**
  * This interface extends BaseRepository which provides with the methods for
@@ -16,8 +16,8 @@ import io.mosip.kernel.keymanagerservice.entity.KeyDbStore;
  *
  */
 @Repository
-public interface KeyStoreRepository extends BaseRepository<KeyDbStore, String> {
+public interface KeyStoreRepository extends BaseRepository<KeyStore, String> {
 
-	Optional<KeyDbStore> findByAlias(String alias);
+	Optional<KeyStore> findByAlias(String alias);
 
 }
