@@ -32,8 +32,8 @@ public class KeyStore extends BaseEntity {
 
 	@Column(name = "private_key")
 	private byte[] privateKey;
-	
-	@Column(name = "master_id")
-	private  String masterAlias;
+
+	@Column(name = "master_key")
+	private String masterAlias;
 
 }
