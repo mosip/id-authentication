@@ -1,49 +1,68 @@
 package io.mosip.registration.processor.manual.adjudication.entity;
 
 import java.io.Serializable;
+import javax.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+/**
+ * The primary key class for the reg_manual_verification database table.
+ * 
+ */
 @Embeddable
 public class ManualVerificationPKEntity implements Serializable {
-	private static final long serialVersionUID = 8916394292563999805L;
+	//default serial version id, required for serializable classes.
+	private static final long serialVersionUID = 1L;
 
-	@Column(name = "reg_id", nullable = false)
+	@Column(name="reg_id")
 	private String regId;
 
-	public String getRegId() {
-		return regId;
-	}
+	@Column(name="matched_ref_id")
+	private String matchedRefId;
 
+	@Column(name="matched_ref_type")
+	private String matchedRefType;
+
+	public ManualVerificationPKEntity() {
+	}
+	public String getRegId() {
+		return this.regId;
+	}
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
+	public String getMatchedRefId() {
+		return this.matchedRefId;
+	}
+	public void setMatchedRefId(String matchedRefId) {
+		this.matchedRefId = matchedRefId;
+	}
+	public String getMatchedRefType() {
+		return this.matchedRefType;
+	}
+	public void setMatchedRefType(String matchedRefType) {
+		this.matchedRefType = matchedRefType;
+	}
 
-	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof ManualVerificationPKEntity)) {
+			return false;
+		}
+		ManualVerificationPKEntity castOther = (ManualVerificationPKEntity)other;
+		return 
+			this.regId.equals(castOther.regId)
+			&& this.matchedRefId.equals(castOther.matchedRefId)
+			&& this.matchedRefType.equals(castOther.matchedRefType);
+	}
+
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((regId == null) ? 0 : regId.hashCode());
-		return result;
+		int hash = 17;
+		hash = hash * prime + this.regId.hashCode();
+		hash = hash * prime + this.matchedRefId.hashCode();
+		hash = hash * prime + this.matchedRefType.hashCode();
+		
+		return hash;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ManualVerificationPKEntity other = (ManualVerificationPKEntity) obj;
-		if (regId == null) {
-			if (other.regId != null)
-				return false;
-		} else if (!regId.equals(other.regId))
-			return false;
-		return true;
-	}
-
-
-
 }

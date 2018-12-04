@@ -40,10 +40,9 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 
 		if (dto.getStatus() != null && dto.getStatus().equalsIgnoreCase("PENDING")) {
 
-			String regid = manualAdjudicationDao.getFirstApplicantDetails().get(0).getRegId();
+			String regid = manualAdjudicationDao.getFirstApplicantDetails().get(0).getId().getRegId();
 			manualVerificationEntity.setStatusCode(dto.getStatus());
-			manualVerificationEntity.setMvUserId(dto.getUserId());
-			manualVerificationEntity.setRegId(regid);
+			manualVerificationEntity.getId().setRegId(regid);
 			manualAdjudicationDao.update(manualVerificationEntity);
 		}
 
