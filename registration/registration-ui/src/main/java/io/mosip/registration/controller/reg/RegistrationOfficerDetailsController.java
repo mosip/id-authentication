@@ -247,7 +247,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		preRegistrationDataSyncService.getPreRegistrationIds();
+		preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
 	}
 
 }
