@@ -24,7 +24,6 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 		"io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.core",
 		"io.mosip.registration.processor.auditmanager", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client" })
-@PropertySource({ "classpath:packet-meta-application.properties" })
 
 public class PacketInfoManagerApplication implements CommandLineRunner{
 

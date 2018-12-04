@@ -438,8 +438,7 @@ public class PacketInfoMapper {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
 
-			applicantDemographicPKEntity.setRefId(regId);
-			applicantDemographicPKEntity.setRefIdType(preRegId);
+			applicantDemographicPKEntity.setRegId(regId);
 			applicantDemographicPKEntity.setLangCode(languageArray[i]);
 
 			entity.setId(applicantDemographicPKEntity);
@@ -457,14 +456,7 @@ public class PacketInfoMapper {
 			String encodedInputString = phoneticEngine.encode(getName(demoDto.getName(), languageArray[i]),
 					Languages.LanguageSet.from(languageSet));
 			Soundex soundex = new Soundex();
-			entity.setPheoniticName(soundex.encode(encodedInputString));
-			System.out.println("--------------------------------------------------------");
-
-			System.out.println(getName(demoDto.getName(), languageArray[i])+ " Before Encoding ");
-			System.out.println(encodedInputString+ " After Pheonitic Representation ");
-			System.out.println(soundex.encode(encodedInputString)+ " After Soundex Alogorithm ");
-			
-			System.out.println("--------------------------------------------------------");
+			entity.setPhoneticName(soundex.encode(encodedInputString));
 
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
@@ -476,7 +468,7 @@ public class PacketInfoMapper {
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
-			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));
+			entity.setGender(getJsonValues(demoDto.getGender(), languageArray[i]));
 			demogrphicDedupeEntities.add(entity);
 
 		}

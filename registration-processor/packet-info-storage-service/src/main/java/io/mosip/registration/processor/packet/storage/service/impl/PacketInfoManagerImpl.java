@@ -326,7 +326,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
 
-		String fileName = "";
+		String fileName;
 		if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
 			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
 		} else {
@@ -397,7 +397,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 		try {
-			LOGGER.info(LOG_FORMATTER, "Packet-Name : " + registrationId + " FilePath " + documentName);
+			LOGGER.info("{}{} - {}{} ", "Packet-Name : ", registrationId, " FilePath: ", documentName);
 			@Cleanup
 			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 			byte[] buffer = new byte[1024];
@@ -474,36 +474,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			/*
-			 * String getIdentityJsonString =
-			 * Utilities.getJson(utility.getConfigServerFileStorageURL(),
-			 * utility.getGetRegProcessorIdentityJson());
-			 */
-			String getIdentityJsonString = "{\r\n" +
-					"	\"identity\": {\r\n" +
-					"		\"name\": {\r\n" +
-					"			\"value\": \"firstName+lastName\",\r\n" +
-					"			\"weight\": 10\r\n" +
-					"		},\r\n" +
-					"		\"pheoniticName\": {\r\n" +
-					"			\"value\": \"firstName+lastName\",\r\n" +
-					"			\"weight\": 10\r\n" +
-					"		},\r\n" +
-					"		\"gender\": {\r\n" +
-					"			\"language\": \"eng\",\r\n" +
-					"			\"value\": \"gender\",\r\n" +
-					"			\"weight\": 10,\r\n" +
-					"			\"matchType\": \"exact\"\r\n" +
-					"		},\r\n" +
-					"		\"dob\": {\r\n" +
-					"			\"language\": \"eng\",\r\n" +
-					"			\"value\": \"dateOfBirth\",\r\n" +
-					"			\"weight\": 10,\r\n" +
-					"			\"matchType\": \"exact\"\r\n" +
-					"		}\r\n" +
-					"	}\r\n" +
-					"}\r\n" +
-					"";
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetRegProcessorIdentityJson());
+
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -516,7 +489,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			List<JsonValue[]> jsonNameList = new ArrayList<>();
 
 			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
-			for(int i =0;i<nameArray.length;i++) {
+			for (int i = 0; i < nameArray.length; i++) {
 				jsonNameList.add(getJsonValues(nameArray[i]));
 			}
 
@@ -556,12 +529,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
 		boolean isTransactionSuccessful = false;
 		try {
-
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
 					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
-				LOGGER.info(applicantDemographicEntity.getId().getRefId() + " --> DemographicDedupeData SAVED");
+				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> DemographicDedupeData SAVED");
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {

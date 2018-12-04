@@ -4,9 +4,6 @@ import lombok.Data;
 
 @Data
 public class IdentityJsonValues {
-	private String language;
 	private String value;
 	private String weight;
-	private String matchType;
-
 }

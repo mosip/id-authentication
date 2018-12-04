@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,10 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
+	
+
+	@Autowired
+	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
@@ -123,13 +129,59 @@ public class PacketInfoDao {
 
 	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicDedupeDto demo = new DemographicDedupeDto();
-		demo.setRegId(object.getId().getRefId());
-		demo.setPreRegId(object.getId().getRefId());
+		demo.setRegId(object.getId().getRegId());
+		demo.setPreRegId(object.getId().getRegId());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
-		demo.setGenderCode(object.getGenderCode());
+		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
 
 		return demo;
+	}
+	
+	public Set<String> getDedupeRefIds(String refId) {
+		int score = 0;
+		int threshold = 60;
+		Set<String> duplicateRegIds = new HashSet<>();
+		List<IndividualDemographicDedupeEntity> idsWithUin = demographicDedupeRepository.getAllDemoWithUIN();
+		
+		List<IndividualDemographicDedupeEntity> dedupeWithOutUin = demographicDedupeRepository.findDemoById(refId);
+
+		
+		for(IndividualDemographicDedupeEntity demo : idsWithUin) {
+			
+			for(IndividualDemographicDedupeEntity compareDemo :dedupeWithOutUin ) {
+				
+				if(demo.getId().getLangCode().equals(compareDemo.getId().getLangCode())) {
+					
+					if(demo.getName().equals(compareDemo.getName())) {
+						score = score+30;
+					}
+					if(demo.getGender().equals(compareDemo.getGender())) {
+						score = score+30;
+					}
+					if(demo.getDob().equals(compareDemo.getDob())) {
+						score = score+30;
+					}
+					if(demo.getPhoneticName().equals(compareDemo.getPhoneticName())) {
+						score = score+30;
+					}
+
+					if(score > threshold) {
+						duplicateRegIds.add(demo.getId().getRegId());
+						score = 0;
+						break;
+					}
+				}
+				
+				
+			}
+			
+			
+			
+		}
+		return duplicateRegIds;
+		
+
 	}
 }

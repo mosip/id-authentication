@@ -14,13 +14,20 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author Girish Yarru
+ *
+ */
 @Entity
 @Table(name = "individual_demographic_dedup", schema = "regprc")
 public class IndividualDemographicDedupeEntity extends BasePacketEntity<IndividualDemographicDedupePKEntity>
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	@Column(name = "uin_ref_id")
+	private String uinRefId ;
+	
 	@Column(name = "name")
 	private String name;
 
@@ -28,10 +35,10 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	private Date dob;
 
 	@Column(name = "gender", nullable = false)
-	private String genderCode;
+	private String gender;
 	
-	@Column(name = "pheonitic_name")
-	private String pheoniticName;
+	@Column(name = "phonetic_name")
+	private String phoneticName;
 
 	
 	@Column(name = "is_active")
@@ -78,12 +85,12 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.dob = dob;
 	}
 
-	public String getGenderCode() {
-		return genderCode;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
+	public void setGender(String genderCode) {
+		this.gender = genderCode;
 	}
 
 	public Boolean getIsActive() {
@@ -142,12 +149,20 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.delDtimes = delDtimes;
 	}
 
-	public String getPheoniticName() {
-		return pheoniticName;
+	public String getPhoneticName() {
+		return phoneticName;
 	}
 
-	public void setPheoniticName(String pheoniticName) {
-		this.pheoniticName = pheoniticName;
+	public void setPhoneticName(String pheoniticName) {
+		this.phoneticName = pheoniticName;
+	}
+
+	public String getUinRefId() {
+		return uinRefId;
+	}
+
+	public void setUinRefId(String uinRefId) {
+		this.uinRefId = uinRefId;
 	}
 
 	
