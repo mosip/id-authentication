@@ -33,6 +33,7 @@ import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -320,7 +321,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then validate bioinfo is available or not.
+	 * If DemoAuthType is Bio, then validate bioinfo is available or not.
 	 * 
 	 * @param bioInfoList
 	 * @param bioType
@@ -332,7 +333,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then validate device information is available or not.
+	 * If DemoAuthType is Bio, then validate device information is available or not.
 	 * 
 	 * @param deviceInfoList
 	 * @return
@@ -343,7 +344,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then check same bio request type should not be requested
+	 * If DemoAuthType is Bio, then check same bio request type should not be requested
 	 * again.
 	 * 
 	 * @param authRequestDTO
@@ -363,7 +364,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, Then check duplicate request of finger and number finger
+	 * If DemoAuthType is Bio, Then check duplicate request of finger and number finger
 	 * of request should not exceed to 10.
 	 * 
 	 * @param authRequestDTO
@@ -428,7 +429,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param errors      the errors
 	 */
 	protected void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {
-		AuthType[] authTypes = AuthType.values();
+		AuthType[] authTypes = DemoAuthType.values();
 		boolean hasMatch = false;
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest)) {

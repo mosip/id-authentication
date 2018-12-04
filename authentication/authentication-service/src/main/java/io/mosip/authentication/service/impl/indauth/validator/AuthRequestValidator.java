@@ -244,8 +244,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	
-
 	/**
 	 * Adding IdAuthValidator Methods in AuthRequestValidator Class *.
 	 *

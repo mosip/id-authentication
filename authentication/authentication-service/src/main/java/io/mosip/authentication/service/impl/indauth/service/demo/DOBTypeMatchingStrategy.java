@@ -1,8 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.Map;
 import java.util.function.ToIntBiFunction;
-
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -11,9 +10,9 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum DOBTypeMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String) {
-			return MatcherUtil.doExactMatch((String) reqInfo, entityInfo.getValue());
+			return MatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}
@@ -21,10 +20,9 @@ public enum DOBTypeMatchingStrategy implements MatchingStrategy {
 
 	private final MatchingStrategyType matchStrategyType;
 
-	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
+	private final MatchFunction matchFunction;
 
-	private DOBTypeMatchingStrategy(MatchingStrategyType matchStrategyType,
-			ToIntBiFunction<Object, IdentityValue> matchFunction) {
+	private DOBTypeMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchStrategyType = matchStrategyType;
 		this.matchFunction = matchFunction;
 	}
@@ -35,7 +33,7 @@ public enum DOBTypeMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
+	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 

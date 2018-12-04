@@ -1,19 +1,18 @@
-Design - Packet Creation
+**Design - Packet Creation**
 
 **Background**
 
 As part of the registration process,RO will capture all the details of the 
 individual and the infomration called as packet should be stored in desired location. 
 The packet should be encrypted before saving into the location. 
-This docomuent illustrtaes about the which information we are capturing as part 
-of the packet and the encryption logic which we are using to encrypt the packet.
+This docomuent illustrtaes about the information we are capturing as part 
+of the packet and the encryption logic we are using to encrypt the packet.
 
 
 The **target users** are
 
 -   Supervisor
 -   Officer
--   Registrtaion Processor
 
 The key **requirements** are
 
@@ -23,17 +22,11 @@ The key **requirements** are
 -   Packet should have the detail of:
 
     -   Applicant -- Demo and Bio-metric
-
     -   Introducer -- Demo and Bio-metric
-
     -   HOF -- Demo and Bio-metric
-
     -   Officer / Supervisor -- Bio-Metric
-
     -   Registration Id.
-
     -   Packet Metadata.
-
     -   Registration Acknowledgement form.
 
 -   Registration packet should be stored in encrypted format in the local
@@ -217,9 +210,8 @@ provided below:
     REST service. If the status is UIN generated /Updated, we need to
     update the same info to the database and clean the packet. 
 
-Packet Structure 
-
-	_images/packet_creation_overview.png
+**Packet Structure**
+	![Packet Design view](_images/packet_creation_overview.png)
 
 -   Create date wise folder, if not exists. \[Sample: 12-SEP-2018 \]
 
@@ -227,36 +219,27 @@ Packet Structure
     structure.
 
     -   Applicant
-
     -   Introducer
-
     -   HOF
+    
+    **Biometric File :**
 
-	**Biometric File: **
-
-    _images/bioMetric_folder.png
+    ![BioMetric Files](_images/bioMetric_folder.png)
 
    **Demographic :**
+   ![Demographic Files](_images/demographic_folder.png)
 
-    _images/demographic_folder.png
-
-### Folder level Data: 
+Folder level Data: 
 
 1.  **Biometric**
-
 
 a.  Applicant
 
     -   LetThumb.jpg/png
-
     -   RightThumb.jpg/png
-
     -   LeftPalm.jpg/png
-
     -   RightPalm.jpg/png
-
     -   LeftEye.jpg/png
-
     -   RightEye.jpg/png
 
 b.  HOF
@@ -267,24 +250,18 @@ c.  Introducer
 
     -   **LeftThumb.jpg/png**
 
-
-2.  **Demographic **
+2.  **Demographic**
 
     a.  Applicant
 
         -   ProofOfIdentity.docx
-
         -   ProofOfResidenty.docx
-
         -   ProofOfAddress.docx
-
         -   ApplicantPhoto.jpg/png
-
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
-
         -   Registration Acknowledgement.jpg
 
-    b.  Demographic\_info.json
+    b.  Demographic\_info.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
 	
 					{
 				"identity": {
@@ -497,9 +474,9 @@ c.  Introducer
 
 3.  **RegistrationID.txt**
 
-4.  **HMAC File.txt **
+4.  **HMAC File.txt**
 
-5.  **Packet\_MetaInfo.json **
+5.  **Packet\_MetaInfo.json**
 	
 				{
 			  "identity" : {
@@ -718,7 +695,8 @@ c.  Introducer
 				  "value" : [ "introducerLeftThumb" ]
 				}, {
 				  "label" : "applicantDemographicSequence",
-				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
+				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", 
+							  "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
 				} ],
 				"checkSum" : [ {
 				  "label" : "registration-service.jar",
@@ -736,8 +714,7 @@ c.  Introducer
 7.  **Registration Supervisor Bio Image\[JPEG\]**
 
 **Packet DTO Structure**
-
-	_images/PacketCreation.jpg
+    ![Packet DTO Structure](_images/PacketCreation.jpg)
 
 Validations:
 
@@ -751,19 +728,14 @@ Validations:
 -   The packet name should be unique and the name of the packet
     is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
 
-Class Diagram
--------------
-	_images/\_class\_diagram/registration-packetcreation-classDiagram.png
+**Class Diagram**
+	![Packet Creation Class Diagram](_images/_class_diagram/registration-packetcreation-classDiagram.png)
+	
 
-Sequence Diagram
-----------------
-	_images/\_sequence\_diagram/registration-packetcreation-sequenceDiagram.png
+**Sequence Diagram**
+	![Packet Creation Sequence Diagram](_images/_sequence_diagram/registration-packetcreation-sequenceDiagram.png)
 
-User Story References
-=====================
+**User Story References**
 
-  **User Story No.**   **Reference Link**
-  -------------------- -----------------------------------------------
-  **MOS-64**           <https://mosipid.atlassian.net/browse/MOS-64>
-  **MOS-65**           <https://mosipid.atlassian.net/browse/MOS-65>
-
+1.  **MOS-64** - <https://mosipid.atlassian.net/browse/MOS-64>
+2.  **MOS-65** - <https://mosipid.atlassian.net/browse/MOS-65>

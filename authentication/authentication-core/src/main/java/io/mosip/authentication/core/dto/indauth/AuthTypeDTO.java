@@ -30,8 +30,8 @@ public class AuthTypeDTO {
 	/** For pin Authentication */
 	private boolean pin;
 	
-//	/** For FingerPrint Authentication */
-//	private boolean fingerPrint;
+	/** For FingerPrint Authentication */
+	private boolean fingerPrint;
 //	
 //	/** For Iris Authentication */
 //	private boolean iris;

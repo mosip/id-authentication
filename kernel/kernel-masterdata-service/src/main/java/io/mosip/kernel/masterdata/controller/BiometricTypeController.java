@@ -1,14 +1,19 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.BiometricTypeData;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 
 /**
@@ -31,7 +36,7 @@ public class BiometricTypeController {
 	 * @return All Biometric types
 	 */
 	@GetMapping
-	public List<BiometricTypeDto> fetchAllBioMetricType() {
+	public BiometricTypeResponseDto getAllBiometricTypes() {
 		return biometricTypeService.getAllBiometricTypes();
 	}
 
@@ -41,7 +46,7 @@ public class BiometricTypeController {
 	 * @return All Biometric types of specific language
 	 */
 	@GetMapping("/{langcode}")
-	public List<BiometricTypeDto> fetchAllBiometricTypeUsingLangCode(@PathVariable("langcode") String langCode) {
+	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
@@ -51,8 +56,20 @@ public class BiometricTypeController {
 	 * @return A Biometric type
 	 */
 	@GetMapping("/{code}/{langcode}")
-	public BiometricTypeDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("code") String code,
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode);
+	}
+	
+	/**
+	 * API to create a Biometric type
+	 * 
+	 * @param biometricType
+	 * 
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	@PostMapping
+	public CodeAndLanguageCodeID addBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return biometricTypeService.addBiometricType(biometricType);
 	}
 }

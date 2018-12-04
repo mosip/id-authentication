@@ -120,7 +120,7 @@ public enum BioMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<String, String> getEntityInfoFetcher() {
+	public Function<String, String> getEntityInfoMapper() {
 		return entityInfoFetcher;
 	}
 
@@ -164,5 +164,10 @@ public enum BioMatchType implements MatchType {
 
 	private static Logger getLogger() {
 		return mosipLogger;
+	}
+
+	@Override
+	public LanguageType getLanguageType() {
+		return LanguageType.PRIMARY_LANG;
 	}
 }

@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.HolidayResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 
 /**
  * @author Abhishek Kumar

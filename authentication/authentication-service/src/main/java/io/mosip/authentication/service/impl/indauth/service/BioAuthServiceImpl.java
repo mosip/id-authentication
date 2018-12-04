@@ -9,6 +9,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 
 /**
@@ -19,12 +20,23 @@ import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
 
+	@Override
+	public AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,
+			String refId) {
 
+		return null;
+	}
 
 	@Override
 	public boolean validateDevice(DeviceInfo deviceInfo) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public MosipBiometricProvider validateDevice(String bioType, DeviceInfo deviceInfo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -37,13 +49,6 @@ public class BioAuthServiceImpl implements BioAuthService {
 	public double getMatchScore(byte[] inputImage, String storedMinutiae) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,
-			String refId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

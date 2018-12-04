@@ -7,6 +7,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 
 /**
  * 
@@ -18,9 +19,12 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 
 public interface BioAuthService {
 
-	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String refId);
+	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,
+			String refId);
 
 	boolean validateDevice(DeviceInfo deviceInfo);
+
+	MosipBiometricProvider validateDevice(String bioType, DeviceInfo deviceInfo);
 
 	double getMatchScore(String inputMinutiae, String storedTemplate);
 

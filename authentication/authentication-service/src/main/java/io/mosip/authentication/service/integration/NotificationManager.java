@@ -89,11 +89,6 @@ public class NotificationManager {
 		String notificationtypeconfig = environment.getProperty(notificationProperty);				
 		
 		String notificationMobileNo = phoneNumber;
-		//FIXME Taking from configuration for testing purpose.
-		if(isNotNullorEmpty(phoneNumber)) {
-			notificationMobileNo = environment.getProperty("test.notification.mobile.no");
-		}
-		
 		Set<NotificationType> notificationtype = new HashSet<>();
 
 		if (isNotNullorEmpty(notificationtypeconfig) && !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {

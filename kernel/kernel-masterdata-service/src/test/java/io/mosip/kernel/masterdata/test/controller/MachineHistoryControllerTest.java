@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.controller.MachineHistoryController;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;

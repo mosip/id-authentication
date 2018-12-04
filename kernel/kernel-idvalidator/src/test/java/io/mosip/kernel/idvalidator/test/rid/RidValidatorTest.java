@@ -82,4 +82,40 @@ public class RidValidatorTest {
 		String rid = "2784765736000252018120818305";
 		ridValidatorImpl.validateId(rid, centerId, dongleId);
 	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidRidLengthTest() {
+		String rid = "2784765736000252018120818305";
+		ridValidatorImpl.validateId(rid);
+	}
+
+	@Test
+	public void validRidIsNumericTest() {
+		String rid = "27847657360002520181208183059";
+		assertThat(ridValidatorImpl.validateId(rid), is(true));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidRidTimestampTest() {
+		String rid = "27847657360002520181308183059";
+		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidRidDateTest() {
+		String rid = "27847657360002520181232183059";
+		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidRidTimeTest() {
+		String rid = "27847657360002520181208253059";
+		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void nonNumericRidTest() {
+		String rid = "278476573600A2520181208183050";
+		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
 }

@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.AuditManagerService;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 

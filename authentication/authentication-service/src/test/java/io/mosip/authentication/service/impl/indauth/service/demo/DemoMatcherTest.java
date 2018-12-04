@@ -18,7 +18,7 @@ public class DemoMatcherTest {
 //		demoEntity.setMiddleName("Rajiv");
 //		demoEntity.setLastName("Samuel");
 //		Collection<MatchInput> listMatchInputs = new ArrayList<>();
-//		DemoMatcher demoMatcher = new DemoMatcher();
+//		IdInfoMatcher demoMatcher = new IdInfoMatcher();
 //		List<MatchOutput> listMatchOutput = new ArrayList<MatchOutput>();
 //		LocationInfoFetcher locationInfoFetcher = null;
 //		Function<LanguageType, String> languageNameFetcher = null;
@@ -42,8 +42,8 @@ public class DemoMatcherTest {
 //		demoEntity.setLastName("Samuel");
 //		MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, null, 100);
 //		MatchOutput matchOutputExpect = new MatchOutput(100, true, null, matchInput.getDemoMatchType());
-//		DemoMatcher demoMatcher = new DemoMatcher();
-//		Method matchTypeMethod = DemoMatcher.class.getDeclaredMethod("matchType", DemoDTO.class, DemoEntity.class,
+//		IdInfoMatcher demoMatcher = new IdInfoMatcher();
+//		Method matchTypeMethod = IdInfoMatcher.class.getDeclaredMethod("matchType", DemoDTO.class, DemoEntity.class,
 //				MatchInput.class, LocationInfoFetcher.class);
 //		matchTypeMethod.setAccessible(true);
 //		LocationInfoFetcher locationInfoFetcher = null;
@@ -59,10 +59,10 @@ public class DemoMatcherTest {
 //		DemoDTO demoDTO = new DemoDTO();
 //		DemoEntity demoEntity = new DemoEntity();
 //		MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, "A", 100);
-////		Method matchTypeMethod = DemoMatcher.class.getDeclaredMethod("matchType", IdentityDTO.class, DemoEntity.class,
+////		Method matchTypeMethod = IdInfoMatcher.class.getDeclaredMethod("matchType", IdentityDTO.class, DemoEntity.class,
 ////				MatchInput.class, LocationInfoFetcher.class, LanguageFetcher.class);
 ////		matchTypeMethod.setAccessible(true);
-//		DemoMatcher demoMatcher = new DemoMatcher();
+//		IdInfoMatcher demoMatcher = new IdInfoMatcher();
 //		LocationInfoFetcher locationInfoFetcher = null;
 //		IdentityDTO identityDTO = new IdentityDTO();
 ////		LanguageFetcher languageFetcher = null;

@@ -18,7 +18,7 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
-import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
 
 /**
@@ -232,8 +232,8 @@ public class AuthResponseBuilderTest {
 //		
 //		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 //		AuthStatusInfo authStatusInfo = authStatusInfoBuilder
-//				.addMessageInfo(AuthType.PI_PRI.getType(), "P", 60)
-//				.addMessageInfo(AuthType.FAD_PRI.getType(), "E", 100)
+//				.addMessageInfo(DemoAuthType.PI_PRI.getType(), "P", 60)
+//				.addMessageInfo(DemoAuthType.FAD_PRI.getType(), "E", 100)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
 //				.addErrors(new AuthError("101", "Error1"))
@@ -308,13 +308,13 @@ public class AuthResponseBuilderTest {
 //		
 //		
 ////		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-////				.addMessageInfo(AuthType.PI_PRI.getType(), "P", 60)
+////				.addMessageInfo(DemoAuthType.PI_PRI.getType(), "P", 60)
 ////				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 ////				.addErrors(new AuthError("101", "Error1"))
 ////				.build();
 //		
 //		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder.newInstance()
-//				.addMessageInfo(AuthType.FAD_PRI.getType(), "E", 100)
+//				.addMessageInfo(DemoAuthType.FAD_PRI.getType(), "E", 100)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
 //				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
@@ -326,8 +326,8 @@ public class AuthResponseBuilderTest {
 //				.addAuthStatusInfo(authStatusInfo2)
 //				.build();
 //		
-//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), AuthType.PI_PRI.getType());
-//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), AuthType.FAD_PRI.getType());
+//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PI_PRI.getType());
+//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FAD_PRI.getType());
 //		assertEquals(authResponseDTO2.getInfo().getUsageData(), "0x3400000034000000");
 //		
 //		assertEquals(3, authResponseDTO2.getErr().size());

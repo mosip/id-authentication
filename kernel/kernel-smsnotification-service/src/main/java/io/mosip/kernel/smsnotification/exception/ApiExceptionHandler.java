@@ -22,11 +22,6 @@ import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
  */
 @RestControllerAdvice
 public class ApiExceptionHandler {
-
-	/**
-	 * This variable represents the errors.
-	 */
-	String err = "errors";
 	private static final String WHITESPACE = " ";
 
 	/**

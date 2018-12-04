@@ -1,8 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.util.function.ToIntBiFunction;
+import java.util.Map;
 
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -13,10 +12,10 @@ import io.mosip.authentication.core.util.MatcherUtil;
 public enum AddressMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
-		if (reqInfo instanceof String) {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
+		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeAddress(entityInfo.getValue());
+			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
@@ -24,7 +23,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	});
 
 	/** The match function. */
-	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
+	private final MatchFunction matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -35,8 +34,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType the match strategy type
 	 * @param matchFunction     the match function
 	 */
-	AddressMatchingStrategy(MatchingStrategyType matchStrategyType,
-			ToIntBiFunction<Object, IdentityValue> matchFunction) {
+	AddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -61,7 +59,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	 * getMatchFunction()
 	 */
 	@Override
-	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
+	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 }
