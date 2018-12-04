@@ -4,9 +4,10 @@ node {
  def buildInfo
  def branch = 'DEV'
  def projectToBuild = 'pre-registration'
- def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
- def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
-
+ def registryUrl = 'http://docker-registry.mosip.io:5000'
+ def registryName = 'docker-registry.mosip.io:5000'
+ def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26' 
+ 
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
   dir(branch) {
@@ -71,7 +72,7 @@ stage('-----------Docker image push and cleanup-----------') {
 			sh "dirname $currentModule > parentDirectoryPath"
 			parentDirectoryPath = readFile('parentDirectoryPath').trim()
 			sh "rm -f parentDirectoryPath"
-			docker.withRegistry(registryUrl) {
+			docker.withRegistry(registryUrl,registryCredentials) {
 			echo "$currentModule"
 			echo "$parentDirectoryName"
 			echo "$parentDirectoryPath"
