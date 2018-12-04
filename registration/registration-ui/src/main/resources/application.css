@@ -46,8 +46,12 @@
 }
 
 #registrationAccordian.accordion >.titled-pane:collapsed > .title {	
+ 
+ 
     -fx-border-width : 1 1 1 1;
     -fx-border-color: black;
+	
+
 }
 
 #doc_label{
@@ -284,15 +288,10 @@
 	-fx-border-color: black;
 	-fx-border-width: 2;
 }
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane{
-	-fx-border-color: #d3d3d3;
-	-fx-border-width: 2;
-}
-
 /* Registration - Biometric - Iris Capture */
-.irisImagePane {
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
 	-fx-border-color: lightgrey;
 }
-.irisImagePane:focused {
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
 	-fx-border-color: black;
 }

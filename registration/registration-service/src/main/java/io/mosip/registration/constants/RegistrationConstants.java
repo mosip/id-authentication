@@ -73,7 +73,7 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = bundle.getString("OTP_VALIDATION_ERROR_MESSAGE");
 	public static final String FINGER_PRINT_MATCH = bundle.getString("FINGER_PRINT_MATCH");
 
-	//Authentication
+	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
 	public static final String SUPERVISOR_NAME = "Supervisor";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
@@ -194,9 +194,13 @@ public class RegistrationConstants {
 	// Individual Registartion - Iris Capture
 	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");
 	public static final String IRIS_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_NEXT_SECTION_ERROR");
-	public static final String IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR");
+	public static final String IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle
+			.getString("IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR");
 	public static final String BIOMETRIC_SCANNING_ERROR = bundle.getString("BIOMETRIC_SCANNING_ERROR");
 	public static final String IRIS_SCANNING_ERROR = bundle.getString("IRIS_SCANNING_ERROR");
+	public static final String FINGERPRINT_SCANNING_ERROR = bundle.getString("FINGERPRINT_SCANNING_ERROR");
+	public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
+	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -269,8 +273,8 @@ public class RegistrationConstants {
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
-	
-	//Supervisor Authentication
+
+	// Supervisor Authentication
 	public static final String PWD_MATCH = "Username and Password Match";
 	public static final String PWD_MISMATCH = "Username and Password Not Match";
 
@@ -398,6 +402,7 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_EXP_CODE = "DVO-";
 	public static final String SYNC_JOB_EXP_CODE = "SYN-";
 	public static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_EXP_CODE = "FPC-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -515,8 +520,7 @@ public class RegistrationConstants {
 	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
 	public static final String RETRIEVED_PRE_REG_ID = "Retrieved Pre Registration";
 	public static final String UNABLE_TO_RETRIEVE_PRE_REG_ID = "Unable to retrieve pre registration";
-	
-	
+
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
@@ -570,17 +574,14 @@ public class RegistrationConstants {
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
 	public static final String PRE_REG_GET_ID_SUCCESS_MESSAGE = "Got Pre registartion ID's for given time";
-	
-	
 
 	// UI Date Format
 	public static final String DEMOGRAPHIC_DOB_FORMAT = "dd-MM-yyyy";
 	public static final String DEMOGRAPHIC_DOB = "01-01-";
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
-	
-	// Iris Capture for Individual Registration
-	public static final String IRIS_THRESHOLD = "iris_threshold";
+
+// Iris & Fingerprint Capture for Individual Registration	public static final String IRIS_THRESHOLD = "iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
@@ -588,6 +589,18 @@ public class RegistrationConstants {
 	public static final String RIGHT = "Right";
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
+	public static final String FINGERPRINT = "Fingerprint";
+	public static final String LEFTPALM = "LeftPalm";
+	public static final String RIGHTPALM = "RightPalm";
+	public static final String THUMBS = "BothThumbs";
+	public static final String PERCENTAGE = "%";
+	public static final String ISO_FILE = "ISOTemplate.iso";
+	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
+	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/LeftPalm.jpg";
+	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
+	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightPalm.jpg";
+	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
+	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumb.jpg";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -668,13 +681,13 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_FILTER_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-012";
 	public static final String DEVICE_ONBOARD_FILTER_LIST_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-013";
 	public static final String DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-014";
-	
-	// Exceptions for User Registration - Iris Capture
-	public static final String USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001";
+
+// Exceptions for User Registration - Iris & FingerPrint Capture	public static final String USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001";
 	public static final String USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-002";
 	public static final String USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-003";
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
 	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "FSC-002";
+	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";

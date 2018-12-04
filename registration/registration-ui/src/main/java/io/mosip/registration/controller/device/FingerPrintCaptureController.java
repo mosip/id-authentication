@@ -25,19 +25,17 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
-import javafx.beans.binding.Bindings;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -120,15 +118,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@FXML
 	private Label thumbsQualityScore;
 
-	/** The left slap threshold score lbl. */
+	/** The left slap threshold score label. */
 	@FXML
 	private Label leftSlapThresholdScoreLbl;
 
-	/** The right slap threshold score lbl. */
+	/** The right slap threshold score label. */
 	@FXML
 	private Label rightSlapThresholdScoreLbl;
 
-	/** The thumbs threshold score lbl. */
+	/** The thumbs threshold score label. */
 	@FXML
 	private Label thumbsThresholdScoreLbl;
 
@@ -140,6 +138,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** List of FingerprintDTOs */
 	private List<FingerprintDetailsDTO> fingerprintDTOs;
+
+	/** The scan btn. */
+	@FXML
+	private Button scanBtn;
 
 	/*
 	 * (non-Javadoc)
@@ -153,11 +155,25 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				"Loading of FingerprintCapture screen started");
 		fingerprintDetailsDTOs = new ArrayList<>();
 		fingerprintDTOs = new ArrayList<>();
-		selectAnchorPane();
+		scanBtn.setDisable(true);
 
-		leftSlapThresholdScoreLbl.setText(String.valueOf(leftHandSlapThresholdScore) + "%");
-		rightSlapThresholdScoreLbl.setText(String.valueOf(rightHandSlapThresholdScore) + "%");
-		thumbsThresholdScoreLbl.setText(String.valueOf(thumbsThresholdScore) + "%");
+		EventHandler<Event> mouseClick = event -> {
+			if (event.getSource() instanceof AnchorPane) {
+				AnchorPane sourcePane = (AnchorPane) event.getSource();
+				sourcePane.requestFocus();
+				selectedPane = sourcePane;
+				scanBtn.setDisable(false);
+			}
+		};
+
+		// Add event handler object to mouse click event
+		leftHandPalmPane.setOnMouseClicked(mouseClick);
+		rightHandPalmPane.setOnMouseClicked(mouseClick);
+		thumbPane.setOnMouseClicked(mouseClick);
+
+		leftSlapThresholdScoreLbl.setText(String.valueOf(leftHandSlapThresholdScore) + RegistrationConstants.PERCENTAGE);
+		rightSlapThresholdScoreLbl.setText(String.valueOf(rightHandSlapThresholdScore) + RegistrationConstants.PERCENTAGE);
+		thumbsThresholdScoreLbl.setText(String.valueOf(thumbsThresholdScore) + RegistrationConstants.PERCENTAGE);
 
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
@@ -166,13 +182,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					.getFingerprintDetailsDTO()) {
 				registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 						.forEach(item -> {
-							if (item.getFingerType().equals("LeftPalm")) {
+							if (item.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
 								leftHandPalmImageview
 										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-							} else if (item.getFingerType().equals("RightPalm")) {
+							} else if (item.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
 								rightHandPalmImageview
 										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-							} else if (item.getFingerType().equals("BothThumbs")) {
+							} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
 								thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
 							}
 						});
@@ -184,27 +200,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen ended");
-	}
-
-	/**
-	 * {@code selectAnchorPane} to select the anchorpane and to highlight the
-	 * selected pane
-	 */
-	private void selectAnchorPane() {
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Selection of Anchorpane for fingerprint capture started");
-		Border border = new Border(new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null, null));
-		Border focusedBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null));
-
-		fingerPrintCapturePane.getChildren().stream().filter(obj -> obj instanceof AnchorPane)
-				.map(obj -> (AnchorPane) obj).forEach(anchorPane -> anchorPane.setOnMouseClicked(e -> {
-					anchorPane.requestFocus();
-					selectedPane = anchorPane;
-					anchorPane.borderProperty()
-							.bind(Bindings.when(anchorPane.focusedProperty()).then(focusedBorder).otherwise(border));
-				}));
-		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Selection of Anchorpane for fingerprint capture ended");
 	}
 
 	public void scan() {
@@ -233,7 +228,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						ioException.getMessage());
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Please select a pane to continue scan.");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FINGERPRINT_SELECTION_PANE_ALERT);
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Scanning of fingersplaced ended");
@@ -269,7 +264,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			registrationController.toggleIrisCaptureVisibility(true);
 
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Please scan your Fingers to continue.");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FINGERPRINT_SCAN_ALERT);
 		}
 		LOGGER.debug("REGISTRATION - FINGER_PRINT_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Validating captured fingerprints has ended");
