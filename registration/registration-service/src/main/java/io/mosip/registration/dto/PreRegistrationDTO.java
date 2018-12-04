@@ -8,6 +8,7 @@ public class PreRegistrationDTO {
 	private Date appointmentDate;
 	private String packetPath;
 	private String symmetricKey;
+	
 	public String getPreRegId() {
 		return preRegId;
 	}
