@@ -1,4 +1,4 @@
-## kernel-auditmanager-service
+## kernel-auditmanager-service:
 This service can be used to audit events and operations. Service has REST API exposed to save event details as audit in database.
 
 1. [Background & Design](../../design/kernel/kernel-auditmanager.md)

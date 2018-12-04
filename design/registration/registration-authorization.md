@@ -1,7 +1,6 @@
-Technical Design for the Registration -- Authorization Module
+Design for the Registration -- Authorization Module
 
-**[Functional Background]{.underline}**
-=======================================
+**Background**
 
 Registration client application should provide the facility to control
 the user role based authorization across the application in all the
@@ -65,8 +64,7 @@ The key **non-functional requirements** are
 
     -   All connection should be closed once db process completed.
 
-**[Technical Approach]{.underline}**
-====================================
+**Solution**
 
 **The key solution considerations are --**
 
@@ -87,7 +85,7 @@ The key **non-functional requirements** are
 -   Load the list of valid screen ids and role to the UserContext object
     by invoking setSessionContext() method.
 
-> **Screen Render Validation:**
+ **Screen Render Validation:**
 
 -   BaseController.validateScreenAuthorization() - Implement the logic
     to validate the current screen id against the data in the User
@@ -99,11 +97,11 @@ The key **non-functional requirements** are
     invoke the method 'validateScreenAuthorization' to validate the
     screen accessibility permissions.
 
-> **UI **
+ **UI **
 
 Create the proper alert success/error to intimate the user.
 
-> Apply the below common criteria
+ Apply the below common criteria
 
 -   Audit
 
@@ -115,8 +113,7 @@ Create the proper alert success/error to intimate the user.
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-authorization-classDiagram.png>
+![Registration Authorization Class Diagram](_images/_class_diagram/registration-authorization-classDiagram.png)
 
 Sequence Diagram:
-
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-authorization-sequenceDiagram.png>
+![Registration Authorization Sequence Diagram](_images/_sequence_diagram/registration-authorization-sequenceDiagram.png)

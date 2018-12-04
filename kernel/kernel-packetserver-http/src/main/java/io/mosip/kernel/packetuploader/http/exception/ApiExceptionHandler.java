@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartException;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
+import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 
 /**
@@ -29,8 +31,8 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(DirectoryNotEmptyException.class)
-	public ResponseEntity<ErrorResponse<Error>> handle(DirectoryNotEmptyException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ErrorResponse<ServiceError>> handle(DirectoryNotEmptyException e) {
+		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -41,12 +43,11 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(IOException.class)
-	public ResponseEntity<ErrorResponse<Error>> handle(IOException e) {
-		 ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-		Error error = new Error();
-		error.setMessage(e.getErrorText());
-		error.setCode(e.getErrorCode());
+	public ResponseEntity<ErrorResponse<ServiceError>> handle(IOException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -58,8 +59,8 @@ public class ApiExceptionHandler {
 	 * @return The Response entity with error response
 	 */
 	@ExceptionHandler(PacketLocationSecurityException.class)
-	public ResponseEntity<ErrorResponse<Error>> handle(PacketLocationSecurityException e) {
-		return new ResponseEntity<>(getErrorResponse(e) , HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ErrorResponse<ServiceError>> handle(PacketLocationSecurityException e) {
+		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -70,22 +71,23 @@ public class ApiExceptionHandler {
 	 * @return The Response entity with error response
 	 */
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<ErrorResponse<Error>> handle(MultipartException e) {
-       ErrorResponse<Error> errorResponse = new ErrorResponse<>();
-	    Error error = new Error();
-		error.setMessage(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION
-						.getErrorMessage());
-		error.setCode(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION
-						.getErrorCode());
+	public ResponseEntity<ErrorResponse<ServiceError>> handle(MultipartException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(
+				PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION.getErrorCode(),
+				PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION.getErrorMessage());
 		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
-	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
-		Error error = new Error(e.getErrorCode(), e.getErrorText());
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
+			HttpStatus httpStatus) {
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
-		return errorResponse;
+		errorResponse.setStatus(httpStatus.value());
+		return new ResponseEntity<>(errorResponse, httpStatus);
 	}
 
 }

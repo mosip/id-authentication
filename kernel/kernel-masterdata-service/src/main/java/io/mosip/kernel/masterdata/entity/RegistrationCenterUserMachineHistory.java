@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,7 +44,7 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 			@AttributeOverride(name = "cntrId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)) })
-	private RegistrationCenterUserMachineHistoryId id;
+	private RegistrationCenterMachineUserID id;
 
 	/**
 	 * Effective TimeStamp

@@ -12,18 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
+import io.mosip.kernel.masterdata.converter.RegistrationCenterHistoryConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.HolidayId;
+import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 @Component
 public class MapperUtils {
@@ -38,18 +47,68 @@ public class MapperUtils {
 
 	public <D, T> D map(final T entity, Class<D> outCLass) {
 		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
+
 	}
 
 	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
 		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
 	}
 
+	public List<RegistrationCenterDto> mapRegistrationCenterHistory(List<RegistrationCenterHistory> list) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterHistoryConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+
+	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
+			List<RegistrationCenter> list) {
+		List<RegistrationCenterHierarchyLevelDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterHierarchyLevelDto dto = new RegistrationCenterHierarchyLevelDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterHierarchyLevelConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+
+	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		list.forEach(p -> {
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(p, dto, new RegistrationCenterConverter());
+			dataMapperImpl.map(p, dto, true, null, null, true);
+			responseDto.add(dto);
+		});
+
+		return responseDto;
+	}
+
+	public List<RegistrationCenterDto> mapRegistrationCenter(RegistrationCenter entity) {
+		List<RegistrationCenterDto> responseDto = new ArrayList<>();
+		
+			RegistrationCenterDto dto = new RegistrationCenterDto();
+			dataMapperImpl.map(entity, dto, new RegistrationCenterConverter());
+			dataMapperImpl.map(entity, dto, true, null, null, true);
+			responseDto.add(dto);
+		
+
+		return responseDto;
+	}
+	
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
 		holidays.forEach(holiday -> {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
-			HolidayId holidayId = holiday.getHolidayId();
+			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
 			dto.setHolidayId(String.valueOf(holidayId.getId()));
 			dto.setHolidayDate(String.valueOf(date));
@@ -140,5 +199,34 @@ public class MapperUtils {
 			deviceSpecificationDtoList.add(deviceSpecificationDto);
 		}
 		return deviceSpecificationDtoList;
+	}
+
+	public List<MachineHistoryDto> mapMachineHistroy(List<MachineHistory> machineHistoryList) {
+		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
+
+		for (MachineHistory machineHistory : machineHistoryList) {
+			MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
+			machineHistoryDto.setId(machineHistory.getId());
+			machineHistoryDto.setCreatedBy(machineHistory.getCreatedBy());
+			machineHistoryDto.setCreatedtime(machineHistory.getCreatedDateTime());
+			machineHistoryDto.setDeletedtime(machineHistory.getDeletedDateTime());
+			machineHistoryDto.setEffectDtimes(machineHistory.getEffectDtimes());
+			machineHistoryDto.setIpAddress(machineHistory.getIpAddress());
+			machineHistoryDto.setIsActive(machineHistory.getIsActive());
+			machineHistoryDto.setIsDeleted(machineHistory.getIsDeleted());
+			machineHistoryDto.setLangCode(machineHistory.getLangCode());
+			machineHistoryDto.setMacAddress(machineHistory.getMacAddress());
+			machineHistoryDto.setMspecId(machineHistory.getMspecId());
+			machineHistoryDto.setName(machineHistory.getName());
+			machineHistoryDto.setSerialNum(machineHistory.getSerialNum());
+			machineHistoryDto.setUpdatedBy(machineHistory.getUpdatedBy());
+			machineHistoryDto.setUpdatedtime(machineHistory.getUpdatedDateTime());
+			machineHistoryDto.setValEndDtimes(machineHistory.getValEndDtimes());
+			machineHistoryDtoList.add(machineHistoryDto);
+
+		}
+
+		return machineHistoryDtoList;
+
 	}
 }

@@ -6,14 +6,13 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 
 /**
- * repository for blacklisted words
+ * Repository for Blacklisted words.
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 06-11-2018
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  */
 public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWords, String> {
-
 	/**
 	 * method to fetch list of blacklisted words by language code
 	 * 

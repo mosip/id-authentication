@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -68,7 +67,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
 			registrationCenterDto.setRegistrationCenters(
-					objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
+					objectMapperUtil.mapRegistrationCenterHistory(registrationCenter));
 		}
 		return registrationCenterDto;
 	}

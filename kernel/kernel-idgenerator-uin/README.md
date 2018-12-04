@@ -1,4 +1,5 @@
-## Module kernel-idgenerator-uin
+## kernel-idgenerator-uin
+
 Uin generator functionality is to generate, store and provide uins.
 
 Rules of UIN generation:
@@ -15,6 +16,8 @@ Rules of UIN generation:
 11. The number should not contain '0' or '1' as the first digit.
 
 **Api Documentation**
+
+
 ```
 mvn javadoc:javadoc
 ```
@@ -33,9 +36,9 @@ Schema : ids
 
 Table : uin
 
-**Usage Sample**
+**Usage Sample:**
 
-  *Request*
+  *Request:*
   
 ```
 OkHttpClient client = new OkHttpClient();
@@ -49,9 +52,9 @@ Response response = client.newCall(request).execute();
 ```
 
 
-  *Response*
+  *Response:*
   
-  Status: 200 OK
+  HttpStatus: 200 OK
   
 ```
 {

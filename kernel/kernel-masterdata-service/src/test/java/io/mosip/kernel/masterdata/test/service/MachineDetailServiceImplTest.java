@@ -18,35 +18,35 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataRetrievalFailureException;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
-import io.mosip.kernel.masterdata.entity.MachineDetail;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.MachineDetailRepository;
-import io.mosip.kernel.masterdata.service.impl.MachineDetailServiceImpl;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
+import io.mosip.kernel.masterdata.service.impl.MachineServiceImpl;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MachineDetailServiceImplTest {
 
 	@InjectMocks
-	private MachineDetailServiceImpl machineDetailServiceImpl;
+	private MachineServiceImpl machineDetailServiceImpl;
 
 	@Mock
-	private MachineDetailRepository machineDetailsRepository;
+	private MachineRepository machineDetailsRepository;
 
 	@Mock
 	private MapperUtils objectMapperUtil;
 
 	@Before
 	public void setUp() {
-		machineDetailServiceImpl = new MachineDetailServiceImpl();
+		machineDetailServiceImpl = new MachineServiceImpl();
 		MockitoAnnotations.initMocks(this);
 	}
 
-	public MachineDetail machineDetail = new MachineDetail();
-	public List<MachineDetail> machineDetailList = new ArrayList<>();
+	public Machine machineDetail = new Machine();
+	public List<Machine> machineDetailList = new ArrayList<>();
 
 	@Test
 	public void getMachineDetailIdLangTest() {
@@ -58,7 +58,7 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setIsActive(true);
 
-		MachineDetail machineDetail = new MachineDetail();
+		Machine machineDetail = new Machine();
 		machineDetail.setId("1000");
 		machineDetail.setName("HP");
 		machineDetail.setSerialNum("1234567890");
@@ -106,7 +106,7 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
 
-		MachineDetail machineDetail = new MachineDetail();
+		Machine machineDetail = new Machine();
 		machineDetail.setId("1000");
 		machineDetail.setName("HP");
 		machineDetail.setSerialNum("1234567890");
@@ -114,12 +114,12 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setLangCode("ENG");
 		machineDetail.setIsActive(true);
 
-		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		List<Machine> machineDetailList = new ArrayList<Machine>();
 		machineDetailList.add(machineDetail);
 		Mockito.when(machineDetailsRepository.findAllByIsDeletedFalse()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
@@ -161,7 +161,7 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
 		
-		MachineDetail machineDetail = new MachineDetail();
+		Machine machineDetail = new Machine();
 		machineDetail.setId("1000");
 		machineDetail.setName("HP");
 		machineDetail.setSerialNum("1234567890");
@@ -169,12 +169,12 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setLangCode("ENG");
 		machineDetail.setIsActive(true);
 
-		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		List<Machine> machineDetailList = new ArrayList<Machine>();
 		machineDetailList.add(machineDetail);
 		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
-		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
+		MachineResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
 
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);

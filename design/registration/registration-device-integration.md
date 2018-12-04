@@ -39,6 +39,16 @@ Finger Print
 -   Capture the applicant fingerprint image.
 -   De-duplicate validation against the list of users or supervisor enrolled in the machine.
 
+IRIS
+-	Allow the user to login to the application using IRIS.
+-   Authenticate the registration process by capturing RO IRIS.
+-   Capture the applicant IRIS image.
+-   De-duplicate validation against the list of users or supervisor IRIS with the applicant IRIS.
+
+Scanner
+-  Allow the user to scan the applicant [POB, POI, POA, POR] documents and attach it to the application during 
+   Registration or other process.
+ 
 The key **non-functional requirements** are
 
 IO Connection:
@@ -146,7 +156,7 @@ None of the client classes should invoke the device specific classes directly.
 		      Interface which contains all the required 
           functionality that needs to be implemented by the vendor specific classes. 
           The client classes will work on this interface rather using the 
-          implementation [vendor specific] classes directly. 
+          implementation [vendor specific] classes directly . 
 					
 -    MantraFingerprintProvider –
           Vendor specific class to interact with their specific
@@ -154,8 +164,34 @@ None of the client classes should invoke the device specific classes directly.
           FP Device Driver     - which is provided by the third party device specific vendor 
           to capture the finger print and transfer to the invoking client application.
           It interface between client application and device.
+          
       
 **Sequence and Class Diagram**
 ![Device class diagram](_images/fingerprint-device-integration.png)
 
 
+**Solution - IRIS**
+
+Facade and Factory pattern should be introduced to invoke the IRIS device vendor specific implementation class
+at run time. The device specific code should be encapsulated within the device specific implementation code.
+None of the client classes should invoke the device specific classes directly . 
+
+The sequence flow and class level detail are provided in the respective diagram. 
+
+UI controller should wait for some time to capture the BIO image from device implementation class.
+
+**Sequence and Class Diagram**
+![IRIS device class diagram](_images/iris-device-integration.png)
+
+**Solution - Scanner**
+
+Facade and Factory pattern should be introduced to invoke the Scanner device vendor specific implementation class
+at run time. The device specific code should be encapsulated within the device specific implementation code.
+None of the client classes should invoke the device specific classes directly. 
+
+The sequence flow and class level detail are provided in the respective diagram. 
+
+UI controller should wait for some time to capture the Scanner image from device implementation class.
+
+**Sequence and Class Diagram**
+![Scanner device class diagram](_images/scanner-device-integration.png)

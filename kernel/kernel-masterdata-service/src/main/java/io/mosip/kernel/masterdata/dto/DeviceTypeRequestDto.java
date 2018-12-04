@@ -21,6 +21,6 @@ public class DeviceTypeRequestDto {
 	private String id;
 	private String ver;
 	private String timestamp;
-	private DeviceTypeListDto request;
+	private DeviceTypeDtoData request;
 
 }

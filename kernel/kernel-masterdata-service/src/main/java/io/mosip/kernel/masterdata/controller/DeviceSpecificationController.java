@@ -3,16 +3,18 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
 
@@ -72,16 +74,17 @@ public class DeviceSpecificationController {
 	}
 
 	/**
-	 * Save list of device specification details to the database table
+	 * Save device specification details to the database table
 	 * 
-	 * @param deviceSpecifications
+	 * @param deviceSpecification
 	 *            input from user Device specification DTO
-	 * @return {@link DeviceSpecificationRequestDto}
+	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	@PostMapping("/devicespecifications")
-	public DeviceSpecPostResponseDto addDeviceType(
-			@RequestBody DeviceSpecificationRequestDto deviceSpecifications) {
-		return deviceSpecificationService.saveDeviceSpecifications(deviceSpecifications);
+	@PostMapping("/devicespecification")
+	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> saveDeviceSpecification(
+			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
+
+		return new ResponseEntity<>(deviceSpecificationService.saveDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
 	}
 
 }

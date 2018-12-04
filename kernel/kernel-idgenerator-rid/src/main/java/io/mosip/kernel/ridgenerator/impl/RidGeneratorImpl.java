@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
@@ -48,10 +47,6 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	public String generateId(String centreId, String dongleId) {
 		validateInput(centreId, dongleId);
 
-		centreId = StringUtils.removeLeftChar(centreId, centerIdLength);
-
-		dongleId = StringUtils.removeLeftChar(dongleId, dongleIdLength);
-
 		String randomDigitRid = sequenceNumberGenerator(dongleId);
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, dongleId);
@@ -77,7 +72,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 			throw new EmptyInputException(RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
-		if (centreId.length() < centerIdLength || dongleId.length() < dongleIdLength) {
+		if (centreId.length() != centerIdLength || dongleId.length() != dongleIdLength) {
 
 			throw new InputLengthException(RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
