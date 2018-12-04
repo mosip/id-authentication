@@ -22,7 +22,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestValiddoExactMatch() {
-		int value = MatcherUtil.doExactMatch("dinesh karuppiah", "dinesh karuppiah");
+		int value = DemoMatcherUtil.doExactMatch("dinesh karuppiah", "dinesh karuppiah");
 		assertEquals(100, value);
 	}
 
@@ -31,7 +31,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestInvalidExactMatch() {
-		int value = MatcherUtil.doExactMatch("dinesh k", "dinesh karuppiah");
+		int value = DemoMatcherUtil.doExactMatch("dinesh k", "dinesh karuppiah");
 		assertNotEquals(100, value);
 	}
 
@@ -40,7 +40,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchwithEmpty() {
-		int value = MatcherUtil.doExactMatch("Dinesh", "Karuppiah");
+		int value = DemoMatcherUtil.doExactMatch("Dinesh", "Karuppiah");
 		assertEquals(0, value);
 	}
 
@@ -49,7 +49,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchwithEmptyvalue() {
-		int value = MatcherUtil.doExactMatch("", "Karuppiah");
+		int value = DemoMatcherUtil.doExactMatch("", "Karuppiah");
 		assertEquals(0, value);
 	}
 
@@ -58,7 +58,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestValidPartialMatch() {
-		int value = MatcherUtil.doPartialMatch("dinesh k", "dinesh karuppiah");
+		int value = DemoMatcherUtil.doPartialMatch("dinesh k", "dinesh karuppiah");
 		assertEquals(50, value);
 	}
 
@@ -67,7 +67,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestValidPartialMatchwithInvalidvalues() {
-		int value = MatcherUtil.doPartialMatch("dinesh k", "dinesh thiagarajan");
+		int value = DemoMatcherUtil.doPartialMatch("dinesh k", "dinesh thiagarajan");
 		assertEquals(33, value);
 	}
 
@@ -76,7 +76,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatch() {
-		int value = MatcherUtil.doPartialMatch("Dinesh Karuppiah", "Thiagarajan");
+		int value = DemoMatcherUtil.doPartialMatch("Dinesh Karuppiah", "Thiagarajan");
 		assertNotEquals(50, value);
 	}
 
@@ -86,7 +86,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestvalidLessThanEqualToMatch() {
-		int value = MatcherUtil.doLessThanEqualToMatch(18, 20);
+		int value = DemoMatcherUtil.doLessThanEqualToMatch(18, 20);
 		assertEquals(100, value);
 	}
 
@@ -95,7 +95,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestInvalidLessThanEqualToMatch() {
-		int value = MatcherUtil.doLessThanEqualToMatch(80, 20);
+		int value = DemoMatcherUtil.doLessThanEqualToMatch(80, 20);
 		assertNotEquals(100, value);
 	}
 
@@ -107,7 +107,7 @@ public class MatcherUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
 		String dateInString = "10/08/2018";
 		Date date = sdf.parse(dateInString);
-		int value = MatcherUtil.doExactMatch(date, date);
+		int value = DemoMatcherUtil.doExactMatch(date, date);
 		assertEquals(100, value);
 	}
 
@@ -119,7 +119,7 @@ public class MatcherUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
 		String dateInString = "10/08/2018";
 		Date date = sdf.parse(dateInString);
-		int value = MatcherUtil.doExactMatch(date, new Date());
+		int value = DemoMatcherUtil.doExactMatch(date, new Date());
 		assertNotEquals(100, value);
 	}
 	
@@ -128,7 +128,7 @@ public class MatcherUtilTest {
 		String refInfoName = "فاس-الدار البيضاء";
 		String entityInfoName = "فاس-الدار البيضاء";
 		String language = "arabic";
-		int value = MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+		int value = DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		assertEquals(100, value);
 	}
 	
@@ -137,7 +137,7 @@ public class MatcherUtilTest {
 		String refInfoName = "فاس-الدار البيضاء";
 		String entityInfoName = "-الدار البيضاء";
 		String language = "arabic";
-		int value = MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+		int value = DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		assertNotEquals(100, value);
 	}
 }

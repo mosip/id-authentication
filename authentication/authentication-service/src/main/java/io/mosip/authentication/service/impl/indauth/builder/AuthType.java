@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
@@ -44,7 +46,7 @@ public interface AuthType {
 
 	Optional<String> getMatchingStrategy(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher);
 
-	Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher);
+	Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment);
 
 	Set<MatchType> getAssociatedMatchTypes();
 

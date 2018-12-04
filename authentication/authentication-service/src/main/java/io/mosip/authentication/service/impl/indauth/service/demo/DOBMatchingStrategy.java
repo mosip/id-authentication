@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * The Enum DOBMatchingStrategy.
@@ -20,7 +20,7 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 			try {
 				Date entityInfoDate = getDateFormat().parse((String) entityInfo);
 				Date reqInfoDate = getDateFormat().parse((String) reqInfo);
-				return MatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
+				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				/** The match function. */
 				// FIXME

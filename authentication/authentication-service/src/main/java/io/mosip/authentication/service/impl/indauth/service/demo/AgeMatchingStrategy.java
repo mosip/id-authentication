@@ -2,7 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * The Enum AgeMatchingStrategy.
@@ -14,7 +14,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Integer && entityInfo instanceof Integer) {
-			return MatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) entityInfo);
+			return DemoMatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) entityInfo);
 		} else {
 			return 0;
 		}

@@ -2,7 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * @author Sanjay Murali
@@ -12,7 +12,7 @@ public enum EmailMatchingStrategy implements MatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return MatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}

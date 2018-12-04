@@ -125,30 +125,30 @@ public class IdInfoMatcher {
 	 *
 	 * @param demoAuthServiceImpl TODO
 	 * @param authRequestDTO      the auth request DTO
-	 * @param demoMatchType       TODO
-	 * @param demoAuthType        TODO
+	 * @param matchType       TODO
+	 * @param authType        TODO
 	 * @return the list
 	 */
-	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType demoMatchType,
-			AuthType demoAuthType) {
+	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
+			AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-		Optional<String> matchingStrategyOpt = demoAuthType.getMatchingStrategy(authRequestDTO,
+		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO,
 				demoHelper::getLanguageCode);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
 			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 					|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
-				Optional<Integer> matchThresholdOpt = demoAuthType.getMatchingThreshold(authRequestDTO,
-						demoHelper::getLanguageCode);
+				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
+						demoHelper::getLanguageCode, environment);
 				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE));
 				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
 			}
 		}
-		Map<String, Object> matchProperties = demoAuthType.getMatchProperties(authRequestDTO,
+		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO,
 				demoHelper::getLanguageCode);
 
-		return new MatchInput(demoAuthType, demoMatchType, matchingStrategy, matchValue, matchProperties);
+		return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties);
 	}
 
 	public AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,

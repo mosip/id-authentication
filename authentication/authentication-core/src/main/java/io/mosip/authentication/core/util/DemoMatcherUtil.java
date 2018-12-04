@@ -19,15 +19,15 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Dinesh Karuppiah
  */
 
-public final class MatcherUtil {
+public final class DemoMatcherUtil {
 
 	private static final String SPLIT_REGEX = "\\s+";
 	private static final Integer EXACT_MATCH_VALUE = 100;
 
-	private static Logger mosipLogger = IdaLogger.getLogger(MatcherUtil.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(DemoMatcherUtil.class);
 	private static final String SESSION_ID = "sessionId";
 
-	private MatcherUtil() {
+	private DemoMatcherUtil() {
 
 	}
 

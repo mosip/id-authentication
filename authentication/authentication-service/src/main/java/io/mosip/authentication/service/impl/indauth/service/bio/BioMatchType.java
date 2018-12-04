@@ -28,61 +28,57 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public enum BioMatchType implements MatchType {
 
 	// Left Finger Minutiea
-	FGRMIN_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftThumb,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftIndex,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftMiddle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_LEFT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftRing,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftLittle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftThumb,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftIndex,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftMiddle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_LEFT_RING(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftRing,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftLittle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
 	// Right Finger Minutiea
-	FGRMIN_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightThumb,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightIndex,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightMiddle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_RIGHT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightRing,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRMIN_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightLittle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
+	FGRMIN_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightThumb,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightIndex,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightMiddle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_RIGHT_RING(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightRing,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
+	FGRMIN_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightLittle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE),
 
 	// Left Finger Image FGRIMG
-	FGRIMG_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftThumb,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftIndex,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftMiddle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_LEFT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftRing,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getLeftLittle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	
+	FGRIMG_LEFT_THUMB(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftThumb,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_LEFT_INDEX(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftIndex,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_LEFT_MIDDLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftMiddle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_LEFT_RING(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftRing,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_LEFT_LITTLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getLeftLittle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+
 	// Right Finger Image
-	FGRIMG_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightThumb,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightIndex,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightMiddle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_RIGHT_RING(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightRing,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
-	FGRIMG_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getRightLittle,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity());
-	
-	
+	FGRIMG_RIGHT_THUMB(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightThumb,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_RIGHT_INDEX(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightIndex,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_RIGHT_MIDDLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightMiddle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_RIGHT_RING(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightRing,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	FGRIMG_RIGHT_LITTLE(IdMapping.FINGERPRINT, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightLittle,
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE);
+
 	/** The mosipLogger. */
 	private static final Logger mosipLogger = IdaLogger.getLogger(BioMatchType.class);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
-
-	/** The entity info. */
-	private Function<String, String> entityInfoFetcher;
 
 	/** The used bit. */
 	private AuthUsageDataBit usedBit;
@@ -96,11 +92,10 @@ public enum BioMatchType implements MatchType {
 
 	BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
-			AuthUsageDataBit matchedBit, Function<String, String> entityInfoFetcher) {
+			AuthUsageDataBit matchedBit) {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = identityInfoFunction;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
-		this.entityInfoFetcher = entityInfoFetcher;
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
 	}
@@ -121,7 +116,7 @@ public enum BioMatchType implements MatchType {
 	 * @return the entity info
 	 */
 	public Function<String, String> getEntityInfoMapper() {
-		return entityInfoFetcher;
+		return Function.identity();
 	}
 
 	/**

@@ -11,6 +11,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -181,7 +184,7 @@ public enum DemoAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher) {
+			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
 	}
 

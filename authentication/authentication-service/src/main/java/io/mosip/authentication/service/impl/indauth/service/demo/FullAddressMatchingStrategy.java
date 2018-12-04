@@ -2,7 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
@@ -10,7 +10,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
-			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
+			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
@@ -18,7 +18,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String)entityInfo);
-			return MatcherUtil.doPartialMatch(refInfoName, entityInfoName);
+			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
@@ -27,7 +27,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String)entityInfo);
 			String language = (String)props.get("language");
-			return MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {
 			return 0;
 		}

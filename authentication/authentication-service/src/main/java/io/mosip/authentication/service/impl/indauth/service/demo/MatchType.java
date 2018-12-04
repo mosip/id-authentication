@@ -10,23 +10,26 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 
 /**
- *  Base interface for the match type
+ * Base interface for the match type
  * 
  * @authour Loganathan Sekar
  */
 public interface MatchType {
-	public IdMapping getIdMapping();
-	
-    Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
-    
-    public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction();
 
-	public LanguageType getLanguageType();
+	public IdMapping getIdMapping();
+
+	Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
+
+	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction();
+
+	public default LanguageType getLanguageType() {
+		return LanguageType.PRIMARY_LANG;
+	}
 
 	public AuthUsageDataBit getUsedBit();
 
 	public AuthUsageDataBit getMatchedBit();
-	
+
 	public Function<String, String> getEntityInfoMapper();
 
 }

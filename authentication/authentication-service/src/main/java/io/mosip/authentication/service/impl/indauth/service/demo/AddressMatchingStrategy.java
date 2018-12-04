@@ -2,7 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * The Enum AddressMatchingStrategy.
@@ -16,7 +16,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
-			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
+			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
