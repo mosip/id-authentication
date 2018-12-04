@@ -7,7 +7,7 @@ package io.mosip.kernel.keymanagerservice.constant;
  * @version 1.0.0
  *
  */
-public enum KeymanagerErrorConstants {
+public enum KeymanagerErrorConstant {
 	/**
 	 * 
 	 */
@@ -55,7 +55,7 @@ public enum KeymanagerErrorConstants {
 	 * @param errorMessage
 	 *            The error message to be set.
 	 */
-	private KeymanagerErrorConstants(String errorCode, String errorMessage) {
+	private KeymanagerErrorConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

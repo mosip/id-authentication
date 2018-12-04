@@ -21,8 +21,8 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstants;
-import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstants;
+import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstant;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
 
 /**
  * Rest Controller Advice for Keymanager Service
@@ -53,7 +53,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<Error>> invalidFormatException(
 			final InvalidFormatException e) {
-		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+KeyManagerConstants.WHITESPACE+KeymanagerErrorConstants.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),e.getMessage()+KeyManagerConstant.WHITESPACE+KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(InvalidDataException.class)
@@ -67,7 +67,7 @@ public class KeymanagerExceptionHandler {
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			Error error = new Error(KeymanagerErrorConstants.INVALID_REQUEST.getErrorCode(),x.getField() + KeyManagerConstants.WHITESPACE + x.getDefaultMessage());
+			Error error = new Error(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(),x.getField() + KeyManagerConstant.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
