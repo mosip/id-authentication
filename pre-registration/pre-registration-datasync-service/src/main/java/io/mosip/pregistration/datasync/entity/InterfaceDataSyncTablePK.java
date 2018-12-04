@@ -3,6 +3,7 @@ package io.mosip.pregistration.datasync.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
@@ -19,12 +20,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Ipprlst_PK implements Serializable{
+public class InterfaceDataSyncTablePK implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2690916920321347697L;
-	protected String prereg_id;
-	protected Timestamp received_dtimes;
+	
+	@Column(name="prereg_id")
+	protected String preregId;
+	
+	@Column(name="received_dtimes")
+	protected Timestamp receivedDtimes;
 
 }
