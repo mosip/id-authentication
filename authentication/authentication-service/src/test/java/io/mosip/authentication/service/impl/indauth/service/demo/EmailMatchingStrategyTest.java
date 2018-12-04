@@ -5,15 +5,9 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.function.ToIntBiFunction;
-
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
-
 public class EmailMatchingStrategyTest {
-
-	private IdentityValue identityValue = new IdentityValue();
 
 	/**
 	 * Check for Exact type matched with Enum value of EMAIL Matching Strategy
@@ -44,7 +38,7 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -54,9 +48,8 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
-		identityValue.setValue("abc@mail.com");
-		int value = matchFunction.applyAsInt("abc@mail.com", identityValue);
+		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match("abc@mail.com", "abc@mail.com", null);
 		assertEquals(100, value);
 	}
 
@@ -67,17 +60,15 @@ public class EmailMatchingStrategyTest {
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
 
-		ToIntBiFunction<Object, IdentityValue> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
-		identityValue.setValue("abc@email.com");
-		int value = matchFunction.applyAsInt("abc@mail.com", identityValue);
+		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match("abc@mail.com", "abc@email.com", null);
 		assertEquals(0, value);
 
-		identityValue.setValue("2");
-		int value4 = matchFunction.applyAsInt(1, identityValue);
+		int value4 = matchFunction.match(1, "2", null);
 		assertEquals(0, value4);
 
-		identityValue.setValue("abc@mail.com");
-		int value5 = matchFunction.applyAsInt(1, identityValue);
+		int value5 = matchFunction.match(1, "abc@mail.com", null);
 		assertEquals(0, value5);
 
 	}

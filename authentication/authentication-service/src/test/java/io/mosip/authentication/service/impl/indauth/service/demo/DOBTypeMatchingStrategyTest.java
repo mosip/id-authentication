@@ -5,16 +5,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.function.ToIntBiFunction;
-
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
-
 public class DOBTypeMatchingStrategyTest {
-	
-	private IdentityValue identityValue = new IdentityValue();
-	
+
 	/**
 	 * Check for Exact type matched with Enum value of DOB Type Matching Strategy
 	 */
@@ -24,7 +18,8 @@ public class DOBTypeMatchingStrategyTest {
 	}
 
 	/**
-	 * Check for Exact type not matched with Enum value of DOB Type Matching Strategy
+	 * Check for Exact type not matched with Enum value of DOB Type Matching
+	 * Strategy
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategytype() {
@@ -44,42 +39,40 @@ public class DOBTypeMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
-	
+
 	/**
 	 * Tests doMatch function on Matching Strategy Function
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
 
-		identityValue.setValue("V");
-		value = matchFunction.applyAsInt("V", identityValue);
+		value = matchFunction.match("V", "V", null);
 
 		assertEquals(100, value);
 	}
-	
+
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
 
-		identityValue.setValue("V");
-		int value = matchFunction.applyAsInt(332, identityValue);
+		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match(332, "V", null);
 		assertEquals(0, value);
 
-		identityValue.setValue("V");
-		int value1 = matchFunction.applyAsInt("A", identityValue);
+		int value1 = matchFunction.match("A", "V", null);
 		assertEquals(0, value1);
 
-		int value3 = matchFunction.applyAsInt(null, null);
+		int value3 = matchFunction.match(null, null, null);
 		assertEquals(0, value3);
 
 	}

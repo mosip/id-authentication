@@ -14,10 +14,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.MessageFormat;
 import java.util.Base64;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -33,6 +31,11 @@ import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
+
+/**
+ * 
+ * @author Dinesh Karuppiah
+ */
 
 @RestController
 public class Encrypt {
@@ -53,14 +56,14 @@ public class Encrypt {
 
 	@GetMapping(path = "/sessionKey")
 	@ApiOperation(value = "Generate Session Key")
-	public String generateSessionKey() {
+	public String getSessionKey() {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		return Base64.getEncoder().encodeToString(symmetricKey.getEncoded());
 	}
 
 	@GetMapping(path = "/publicKey")
 	@ApiOperation(value = "Generate Public Key", response = String.class)
-	public String getpublicKey(String tspId, String date) {
+	public String getPublicKey(String tspId, String date) {
 		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
 		PublicKey publickey = asymmetricKey.getPublic();
 		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
@@ -76,12 +79,15 @@ public class Encrypt {
 		byte[] tmpPublicKey = decode(encryptionRequestDto.getPublicKey());
 		PublicKey publicKey = null;
 		SecretKeySpec secretKey = null;
-
 		try {
 			publicKey = preparePublicKey(tmpPublicKey);
 			secretKey = prepareSecretKey(sessionKey, "AES");
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeySpecException e) {
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		} catch (InvalidKeySpecException e2) {
+			e2.printStackTrace();
 		}
 
 		// Encrypt data with session key
@@ -93,7 +99,6 @@ public class Encrypt {
 		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
 		encryptionResponseDto.setEncryptedkey(encryptedsessionKey);
 
-		// Encrypt identity data with decoded session key
 		return encryptionResponseDto;
 	}
 

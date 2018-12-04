@@ -28,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -60,7 +59,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
+		TemplateManagerBuilderImpl.class })
 public class OTPFacadeImplTest {
 
 	OtpRequestDTO otpRequestDto;
@@ -83,10 +83,10 @@ public class OTPFacadeImplTest {
 	IdAuthService idAuthService;
 	@InjectMocks
 	IdTemplateManager idTemplateManager;
-	
+
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-	
+
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 	@InjectMocks
@@ -114,9 +114,10 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
-		
+
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
-		ReflectionTestUtils.setField(idTemplateManager, "templateManager", templateManagerBuilder.enableCache(false).build());
+		ReflectionTestUtils.setField(idTemplateManager, "templateManager",
+				templateManagerBuilder.enableCache(false).build());
 	}
 
 	@Test
@@ -151,15 +152,14 @@ public class OTPFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 
-		IdentityValue identityValue = new IdentityValue(language, name);
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage(language);
-		identityValue.setValue(emailId);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage(language);
-		identityValue.setValue(mobileNumber);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
+//		identityValue.setLanguage(language);
+//		identityValue.setValue(emailId);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
+//		identityValue.setLanguage(language);
+//		identityValue.setValue(mobileNumber);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 
 		Optional<String> uinOpt = Optional.of("426789089018");
 		Mockito.when(idAuthService.getUIN(refId)).thenReturn(uinOpt);
@@ -288,9 +288,8 @@ public class OTPFacadeImplTest {
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		idInfo.put("name", list);
 
-		IdentityValue identityValue = new IdentityValue("en", "mosip");
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
@@ -321,10 +320,8 @@ public class OTPFacadeImplTest {
 		list.add(new IdentityInfoDTO(language, eamilId));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		idInfo.put("email", list);
-
-		IdentityValue identityValue = new IdentityValue(language, eamilId);
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(eamilId);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getEmail", refId);
 	}
 
@@ -338,10 +335,8 @@ public class OTPFacadeImplTest {
 		list.add(new IdentityInfoDTO(language, eamilId));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		idInfo.put("phone", list);
-
-		IdentityValue identityValue = new IdentityValue(language, mobileNumber);
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getMobileNumber", refId);
 	}
 

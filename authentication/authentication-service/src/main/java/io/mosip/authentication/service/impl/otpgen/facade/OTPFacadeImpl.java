@@ -289,9 +289,10 @@ public class OTPFacadeImpl implements OTPFacade {
 			values.put(TIME, time);
 
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
-			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
+			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
 
-			notificationManager.sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
+			notificationManager.sendNotification(values, email, mobileNumber, SenderType.OTP,
+					env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
@@ -302,7 +303,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String email = null;
 		try {
 			idInfo = idInfoService.getIdInfo(refId);
-			email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
+			email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
 		} catch (IdAuthenticationDaoException e) {
 			mosipLogger.error(SESSION_ID, " email id : ", email, "and ");
 		}
@@ -314,7 +315,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String mobileNumber = null;
 		try {
 			idInfo = idInfoService.getIdInfo(refId);
-			mobileNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue();
+			mobileNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
 		} catch (IdAuthenticationDaoException e) {
 			mosipLogger.error(SESSION_ID, " mobile number id : ", mobileNumber, "and ");
 		}
@@ -324,7 +325,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private String[] getDateAndTime(String reqquestTime) {
 
 		String[] dateAndTime = new String[2];
-		
+
 		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqquestTime, isoPattern);

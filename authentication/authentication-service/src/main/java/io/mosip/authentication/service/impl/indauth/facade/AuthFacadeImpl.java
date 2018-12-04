@@ -54,6 +54,7 @@ import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -177,7 +178,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
+		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
 		String resTime = authResponseDTO.getResTime();
 
 		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
@@ -207,8 +208,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		values.put(UIN2, uin);
 		values.put(AUTH_TYPE,
 
-				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
-						.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
+				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
 		} else {
@@ -217,8 +218,8 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		String phoneNumber = null;
 		String email = null;
-		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue();
-		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
+		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
+		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if(isAuth) {
 			notificationType = env.getProperty("auth.notification.type");

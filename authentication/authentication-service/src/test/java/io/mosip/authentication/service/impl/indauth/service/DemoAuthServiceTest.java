@@ -39,8 +39,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.IdInfoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
@@ -63,7 +65,10 @@ public class DemoAuthServiceTest {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
-	private DemoMatcher demomatcher = new DemoMatcher();
+//	private IdInfoMatcher demomatcher = new IdInfoMatcher();
+
+	@Mock
+	private IdInfoMatcher idInfoMatcher;
 
 	@Mock
 	private IdRepoService idInfoService;
@@ -79,8 +84,9 @@ public class DemoAuthServiceTest {
 
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoHelper", demoHelper);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoMatcher", idInfoMatcher);
 
-		ReflectionTestUtils.setField(demomatcher, "demoHelper", demoHelper);
+//		ReflectionTestUtils.setField(demomatcher, "demoHelper", demoHelper);
 
 	}
 
@@ -141,11 +147,16 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setVer("1.0");
+		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_SEC, MatchingStrategyType.PARTIAL.getType(), 60));
+		AuthType demoAuthType = null;
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_SEC,
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
+		Mockito.when(idInfoMatcher.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertEquals(listMatchInputsExp, listMatchInputsActual);
@@ -237,20 +248,28 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE1_SEC, MatchingStrategyType.EXACT.getType(), 100));
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE2_SEC, MatchingStrategyType.EXACT.getType(), 100));
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE3_SEC, MatchingStrategyType.EXACT.getType(), 100));
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.LOCATION1_SEC, MatchingStrategyType.EXACT.getType(), 100));
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.LOCATION2_SEC, MatchingStrategyType.EXACT.getType(), 100));
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.LOCATION3_SEC, MatchingStrategyType.EXACT.getType(), 100));
+		AuthType demoAuthType = null;
+		Map<String, Object> matchProperties = new HashMap<>();
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
+		Mockito.when(idInfoMatcher.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
-		System.err.println(listMatchInputsActual);
-		System.err.println(listMatchInputsExp);
 		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
 		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
@@ -304,15 +323,25 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
-		listMatchInputsExp.add(new MatchInput(DemoMatchType.NAME_SEC, MatchingStrategyType.EXACT.getType(), 100));
-//		listMatchInputsExp.add(new MatchInput(DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(), 100));
-//		listMatchInputsExp.add(new MatchInput(DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(), 100));
-//		listMatchInputsExp.add(new MatchInput(DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(), 100));
-//		listMatchInputsExp.add(new MatchInput(DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(), 100));
-//		listMatchInputsExp.add(new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(), 100));
+		AuthType demoAuthType = null;
+		Map<String, Object> matchProperties = new HashMap<>();
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME_SEC,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
+		Mockito.when(idInfoMatcher.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
@@ -331,6 +360,9 @@ public class DemoAuthServiceTest {
 		authType.setPersonalIdentity(false);
 		authType.setPin(false);
 		authRequest.setAuthType(authType);
+		List<MatchInput> matchInputs = new ArrayList<>();
+		Mockito.when(idInfoMatcher.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(matchInputs);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -359,10 +391,11 @@ public class DemoAuthServiceTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		DemoAuthServiceImpl demoAuthService = Mockito.mock(DemoAuthServiceImpl.class);
-		Mockito.when(demoAuthService.getDemoStatus(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
+		Mockito.when(
+				demoAuthService.getDemoStatus(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		demoAuthService.getDemoStatus(authRequestDTO, "", idInfo);
 	}
 
@@ -370,7 +403,7 @@ public class DemoAuthServiceTest {
 	public void TestValidgetDemoStatus()
 			throws IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IdAuthenticationDaoException {
-		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoMatcher", idInfoMatcher);
 		Map<String, List<IdentityInfoDTO>> entityInfo = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
 		IdentityInfoDTO infoDTO = new IdentityInfoDTO();
@@ -386,6 +419,10 @@ public class DemoAuthServiceTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
+		AuthStatusInfo authStatusInfovalue = new AuthStatusInfo();
+		authStatusInfovalue.setStatus(false);
+		Mockito.when(idInfoMatcher.buildStatusInfo(Mockito.anyBoolean(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(authStatusInfovalue);
 		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", idInfo);
 		assertTrue(!authStatusInfo.isStatus());
 	}

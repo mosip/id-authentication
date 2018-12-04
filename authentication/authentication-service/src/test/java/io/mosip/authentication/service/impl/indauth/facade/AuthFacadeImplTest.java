@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -16,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,6 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -42,7 +42,6 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
@@ -65,6 +64,7 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.service.impl.indauth.service.DemoAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -177,15 +177,22 @@ public class AuthFacadeImplTest {
 
 	/**
 	 * This class tests the authenticateApplicant method where it checks the IdType
-	 * and AuthType.
+	 * and DemoAuthType.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 * @throws IdAuthenticationDaoException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
 
 	@Test
-	public void authenticateApplicantTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+	public void authenticateApplicantTest()
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String refId = "8765";
 		boolean authStatus = true;
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -221,35 +228,28 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
-
 		ReflectionTestUtils.setField(authFacadeImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(demoHelper, "environment", env);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationManager", notificationManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
-
-		IdentityValue identityValue = new IdentityValue("en", "mosip");
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage("en");
-		identityValue.setValue("Prem.Kumar4@mindtree.com");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage("en");
-		identityValue.setValue("1234567890");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Method demoImplMethod = AuthFacadeImpl.class.getDeclaredMethod("sendAuthNotification", AuthRequestDTO.class,
+				String.class, AuthResponseDTO.class, Map.class, boolean.class);
+		demoImplMethod.setAccessible(true);
+		demoImplMethod.invoke(authFacadeImpl, authRequestDTO, refId, authResponseDTO, idInfo, true);
 
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
-				idInfo, false);
-
-		authFacadeImpl.authenticateApplicant(authRequestDTO, true);
 	}
 
 	/**
 	 * This class tests the processAuthType (OTP) method where otp validation
 	 * failed.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -274,8 +274,8 @@ public class AuthFacadeImplTest {
 	 * This class tests the processAuthType (OTP) method where otp validation gets
 	 * successful.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -315,8 +315,8 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where UIN is passed and gets successful.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -332,8 +332,8 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where VID is passed and gets successful.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -349,8 +349,8 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where UIN is passed and gets failed.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -366,8 +366,8 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where VID is passed and gets failed.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -458,11 +458,17 @@ public class AuthFacadeImplTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 * @throws IdAuthenticationDaoException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
 
 	@Test
 	public void testSendAuthNotificationSuccess()
-			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
@@ -522,18 +528,18 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationManager", notificationManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 
-		IdentityValue identityValue = new IdentityValue("en", "mosip");
 		Mockito.when(idInfoService.getIdInfo(refId)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage("en");
-		identityValue.setValue("Prem.Kumar4@mindtree.com");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(identityValue);
-		identityValue.setLanguage("en");
-		identityValue.setValue("8056365346");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("Prem.Kumar4@mindtree.com");
+		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("8056365346");
 
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
-				idInfo, true);
+//		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, refId, authResponseDTO,
+//				idInfo);
+
+		Method demoImplMethod = AuthFacadeImpl.class.getDeclaredMethod("sendAuthNotification", AuthRequestDTO.class,
+				String.class, AuthResponseDTO.class, Map.class, boolean.class);
+		demoImplMethod.setAccessible(true);
+		demoImplMethod.invoke(authFacadeImpl, authRequestDTO, refId, authResponseDTO, idInfo, true);
 	}
 
 	/**

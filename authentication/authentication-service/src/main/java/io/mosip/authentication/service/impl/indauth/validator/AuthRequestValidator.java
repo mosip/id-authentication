@@ -33,6 +33,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -302,11 +303,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors      the errors
 	 */
 	private void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {
-		AuthType[] authTypes = AuthType.values();
+		AuthType[] authTypes = DemoAuthType.values();
 		boolean hasMatch = false;
-		for (AuthType authType : authTypes) {
-			if (authType.isAuthTypeEnabled(authRequest)) {
-				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
+		for (AuthType demoAuthType : authTypes) {
+			if (demoAuthType.isAuthTypeEnabled(authRequest)) {
+				Set<MatchType> associatedMatchTypes = demoAuthType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
 					List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoFunction()
 							.apply(authRequest.getRequest().getIdentity());

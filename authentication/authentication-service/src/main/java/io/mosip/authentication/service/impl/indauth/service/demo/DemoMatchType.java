@@ -241,7 +241,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<String, String> getEntityInfoFetcher() {
+	public Function<String, String> getEntityInfoMapper() {
 		return entityInfoFetcher;
 	}
 

@@ -5,11 +5,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.function.ToIntBiFunction;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
-
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 
 /**
  * 
@@ -20,8 +19,6 @@ public class NameMatchingStrategyTest {
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
 	 */
-
-	private IdentityValue identityValue = new IdentityValue();
 
 	@Test
 	public void TestValidExactMatchingStrategytype() {
@@ -49,7 +46,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -59,10 +56,9 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 
-		identityValue.setValue("dinesh karuppiah");
-		int value = matchFunction.applyAsInt("dinesh karuppiah", identityValue);
+		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", null);
 		assertEquals(100, value);
 	}
 
@@ -72,12 +68,12 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		identityValue.setValue("2");
-		int value = matchFunction.applyAsInt(2, identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", null);
 		assertEquals(0, value);
-		identityValue.setValue("dinesh");
-		int value1 = matchFunction.applyAsInt(2, identityValue);
+
+		int value1 = matchFunction.match(2, "dinesh", null);
 		assertEquals(0, value1);
 	}
 
@@ -110,7 +106,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPartialMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -120,9 +116,8 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		identityValue.setValue("dinesh karuppiah");
-		int value = matchFunction.applyAsInt("dinesh thiagarajan", identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", null);
 		assertEquals(33, value);
 	}
 
@@ -132,12 +127,12 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() {
 
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		identityValue.setValue("2");
-		int value = matchFunction.applyAsInt(2, identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", null);
 		assertEquals(0, value);
-		identityValue.setValue("dinesh");
-		int value1 = matchFunction.applyAsInt(2, identityValue);
+
+		int value1 = matchFunction.match(2, "dinesh", null);
 		assertEquals(0, value1);
 	}
 
@@ -162,23 +157,21 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchValueWithoutLanguageName_Return_NotMatched() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		identityValue.setValue("2");
-		int value = matchFunction.applyAsInt(2, identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match(2, "2", null);
 		assertEquals(0, value);
 
 	}
-	
 
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
 	 */
+
 	@Test
 	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		identityValue.setValue("2");
-		identityValue.setLanguage("ar");
-		int value = matchFunction.applyAsInt(2, identityValue);
+
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match(2, "ar", null);
 		assertEquals(0, value);
 
 	}
@@ -186,24 +179,23 @@ public class NameMatchingStrategyTest {
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
 	 */
+
 	@Test
 	public void TestPhoneticsMatchValueWithLanguageName_ReturnWithMatchValue() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		identityValue.setValue("misop*");
-		identityValue.setLanguage("arabic");
-		int value = matchFunction.applyAsInt("mos", identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		Map<String, Object> valueMap = new HashMap<>();
+		valueMap.put("language", "arabic");
+		int value = matchFunction.match("mos", "arabic", valueMap);
 		assertEquals(20, value);
 	}
-	
+
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
 	 */
 	@Test
 	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		identityValue.setValue("misop*");
-		identityValue.setLanguage("arabic");
-		int value = matchFunction.applyAsInt(5, identityValue);
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match(5, "arabic", null);
 		assertEquals(0, value);
 	}
 }

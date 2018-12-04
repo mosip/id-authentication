@@ -267,7 +267,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then validate bioinfo is available or not.
+	 * If DemoAuthType is Bio, then validate bioinfo is available or not.
 	 * 
 	 * @param bioInfoList
 	 * @param bioType
@@ -279,7 +279,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then validate device information is available or not.
+	 * If DemoAuthType is Bio, then validate device information is available or not.
 	 * 
 	 * @param deviceInfoList
 	 * @return
@@ -290,7 +290,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, then check same bio request type should not be requested
+	 * If DemoAuthType is Bio, then check same bio request type should not be requested
 	 * again.
 	 * 
 	 * @param authRequestDTO
@@ -310,7 +310,7 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If AuthType is Bio, Then check duplicate request of finger and number finger
+	 * If DemoAuthType is Bio, Then check duplicate request of finger and number finger
 	 * of request should not exceed to 10.
 	 * 
 	 * @param authRequestDTO
