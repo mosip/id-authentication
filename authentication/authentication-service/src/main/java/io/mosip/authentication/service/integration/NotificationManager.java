@@ -111,61 +111,84 @@ public class NotificationManager {
 		}
 
 		if (notificationtype.contains(NotificationType.SMS)) {
-			switch (sender) {
-			case AUTH:
-				contentTemplate = environment.getProperty(AUTH_SMS_TEMPLATE);
-				break;
-			case OTP:
-				contentTemplate = environment.getProperty(OTP_SMS_TEMPLATE);
-				break;
-			}
-
-			try {
-				String smsTemplate = applyTemplate(values, contentTemplate);
-				SmsRequestDto smsRequestDto = new SmsRequestDto();
-				smsRequestDto.setMessage(smsTemplate);
-				smsRequestDto.setNumber(notificationMobileNo);
-				RestRequestDTO restRequestDTO = null;
-				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
-						smsRequestDto, String.class);
-				restHelper.requestAsync(restRequestDTO);
-			} catch (IDDataValidationException e) {
-				logger.error("NA", "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
-			}
+			smsNotification(values, sender, contentTemplate, notificationMobileNo);
 
 		}
 		if (notificationtype.contains(NotificationType.EMAIL)) {
 
-			switch (sender) {
-			case AUTH:
-				subjectTemplate = environment.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
-				contentTemplate = environment.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-				break;
-			case OTP:
-				subjectTemplate = environment.getProperty(OTP_SUBJECT_TEMPLATE);
-				contentTemplate = environment.getProperty(OTP_CONTENT_TEMPLATE);
-				break;
-			}
-
-			try {
-				String mailSubject = applyTemplate(values, subjectTemplate);
-				String mailContent = applyTemplate(values, contentTemplate);
-				RestRequestDTO restRequestDTO = null;
-				MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();
-				mailRequestDto.add("mailContent", mailContent);
-				mailRequestDto.add("mailSubject", mailSubject);
-				mailRequestDto.add("mailTo", emailId);
-				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
-						mailRequestDto, String.class);
-				restHelper.requestAsync(restRequestDTO);
-			} catch (IDDataValidationException e) {
-				logger.error("NA", "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
-			}
+			emailNotification(values, emailId, sender, contentTemplate, subjectTemplate);
 
 		}
 
+	}
+
+	/**
+	 * Sms notification.
+	 *
+	 * @param values the values
+	 * @param sender the sender
+	 * @param contentTemplate the content template
+	 * @param notificationMobileNo the notification mobile no
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	private void smsNotification(Map<String, Object> values, SenderType sender, String contentTemplate,
+			String notificationMobileNo) throws IdAuthenticationBusinessException {
+		if (sender == SenderType.AUTH) {
+			contentTemplate = environment.getProperty(AUTH_SMS_TEMPLATE);
+		} else if (sender == SenderType.OTP) {
+			contentTemplate = environment.getProperty(OTP_SMS_TEMPLATE);
+		}
+
+		try {
+			String smsTemplate = applyTemplate(values, contentTemplate);
+			SmsRequestDto smsRequestDto = new SmsRequestDto();
+			smsRequestDto.setMessage(smsTemplate);
+			smsRequestDto.setNumber(notificationMobileNo);
+			RestRequestDTO restRequestDTO = null;
+			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
+					smsRequestDto, String.class);
+			restHelper.requestAsync(restRequestDTO);
+		} catch (IDDataValidationException e) {
+			logger.error("NA", "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+		}
+	}
+
+	/**
+	 * Email notification.
+	 *
+	 * @param values the values
+	 * @param emailId the email id
+	 * @param sender the sender
+	 * @param contentTemplate the content template
+	 * @param subjectTemplate the subject template
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	private void emailNotification(Map<String, Object> values, String emailId, SenderType sender,
+			String contentTemplate, String subjectTemplate) throws IdAuthenticationBusinessException {
+		if (sender == SenderType.AUTH) {
+			subjectTemplate = environment.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
+			contentTemplate = environment.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
+		} else if (sender == SenderType.OTP) {
+			subjectTemplate = environment.getProperty(OTP_SUBJECT_TEMPLATE);
+			contentTemplate = environment.getProperty(OTP_CONTENT_TEMPLATE);
+		}
+
+		try {
+			String mailSubject = applyTemplate(values, subjectTemplate);
+			String mailContent = applyTemplate(values, contentTemplate);
+			RestRequestDTO restRequestDTO = null;
+			MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();
+			mailRequestDto.add("mailContent", mailContent);
+			mailRequestDto.add("mailSubject", mailSubject);
+			mailRequestDto.add("mailTo", emailId);
+			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
+					mailRequestDto, String.class);
+			restHelper.requestAsync(restRequestDTO);
+		} catch (IDDataValidationException e) {
+			logger.error("NA", "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+		}
 	}
 
 	/**
