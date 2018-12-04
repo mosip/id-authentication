@@ -4,12 +4,19 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStore.SecretKeyEntry;
 import java.security.KeyStoreException;
 import java.security.KeyStoreSpi;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
+import java.time.LocalDateTime;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +37,14 @@ public class KeyStoreImplExceptionTest{
 	
 	private KeyStoreImpl keyStoreImpl;
 	
+	BouncyCastleProvider provider;
+	SecureRandom random;
 	
 	@Before
 	public void setUp() throws Exception  {
 		
 		KeyStoreSpi keyStoreSpiMock = mock(KeyStoreSpi.class);
 		keyStore = new java.security.KeyStore(keyStoreSpiMock, null, "test"){ };
-		
 		keyStoreImpl = new KeyStoreImpl();
 		keyStoreImpl.setKeyStore(keyStore);
 		ReflectionTestUtils.setField(keyStoreImpl, "configPath", "configPath");
@@ -47,6 +55,9 @@ public class KeyStoreImplExceptionTest{
 		ReflectionTestUtils.setField(keyStoreImpl, "organization", "organization");
 		ReflectionTestUtils.setField(keyStoreImpl, "country", "country");
 		keyStore.load(null);
+		provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
+		random = new SecureRandom();
 	}
 	/*@Test
 	public void testKeyStoreImpl() throws Exception {
@@ -94,6 +105,37 @@ public class KeyStoreImplExceptionTest{
 		keyStoreImpl.getSymmetricKey("alias");
 	}
 
+	
+	@Test(expected=NoSuchSecurityProviderException.class)
+	public void testAfterPropertiesSet() throws Exception {
+	    keyStoreImpl.afterPropertiesSet();
+	}
+	
+	@Test(expected=KeystoreProcessingException.class)
+	public void testDeleteKeyKeystoreProcessingException() throws Exception {
+	    keyStore=mock(KeyStore.class);
+	    keyStoreImpl.setKeyStore(keyStore);
+		keyStoreImpl.deleteKey("alias");
+	}
+	
+	@Test(expected=KeystoreProcessingException.class)
+	public void testStoreSymmetricKeyKeystoreProcessingException() throws Exception {
+	    keyStore=mock(KeyStore.class);
+	    keyStoreImpl.setKeyStore(keyStore);
+	    javax.crypto.KeyGenerator keyGenerator=  javax.crypto.KeyGenerator.getInstance("AES",provider);
+		   keyGenerator.init(256, random);
+		keyStoreImpl.storeSymmetricKey(keyGenerator.generateKey(), "alias");
+	}
+	
+	@Test(expected=KeystoreProcessingException.class)
+	public void testStoreAsymmetricKeyKeystoreProcessingException() throws Exception {
+	    keyStore=mock(KeyStore.class);
+	    keyStoreImpl.setKeyStore(keyStore);
+	    KeyPairGenerator keyGenerator= KeyPairGenerator.getInstance("RSA", provider);
+		   keyGenerator.initialize(2048, random);
+		 KeyPair keyPair=keyGenerator.generateKeyPair();
+		keyStoreImpl.storeAsymmetricKey(keyPair, "alias", LocalDateTime.now(), LocalDateTime.now().plusDays(365));
+	}
 	
 
 	
