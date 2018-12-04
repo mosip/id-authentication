@@ -12,11 +12,11 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="reg_manual_verification", schema="regprc")
-public class ManualVerificationEntity implements Serializable {
+public class ManualVerificationEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private ManualVerificationPKEntity id;
+	private ManualVerificationPKEntity pkId;
 
 	@Column(name="cr_by")
 	private String crBy;
@@ -57,15 +57,12 @@ public class ManualVerificationEntity implements Serializable {
 	@Column(name="upd_dtimes")
 	private Timestamp updDtimes;
 
-	public ManualVerificationEntity() {
-	}
-
 	public ManualVerificationPKEntity getId() {
-		return this.id;
+		return this.pkId;
 	}
 
 	public void setId(ManualVerificationPKEntity id) {
-		this.id = id;
+		this.pkId = id;
 	}
 
 	public String getCrBy() {

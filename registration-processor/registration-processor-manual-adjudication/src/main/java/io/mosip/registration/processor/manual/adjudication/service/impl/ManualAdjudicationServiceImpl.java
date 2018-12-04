@@ -11,7 +11,8 @@ import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
-import io.mosip.registration.processor.manual.adjudication.dto.ApplicantDetailsDto;
+import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
+import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
@@ -29,24 +30,25 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Autowired
-	ManualVerificationEntity manualVerificationEntity;
-
-	@Autowired
 	ManualAdjudicationDao manualAdjudicationDao;
 
 	@Override
-	public ApplicantDetailsDto assignStatus(UserDto dto) {
-		ApplicantDetailsDto adto = new ApplicantDetailsDto();
-
-		if (dto.getStatus() != null && dto.getStatus().equalsIgnoreCase("PENDING")) {
-
-			String regid = manualAdjudicationDao.getFirstApplicantDetails().get(0).getId().getRegId();
-			manualVerificationEntity.setStatusCode(dto.getStatus());
-			manualVerificationEntity.getId().setRegId(regid);
-			manualAdjudicationDao.update(manualVerificationEntity);
+	public ManualVerificationDTO assignStatus(UserDto dto) {
+		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
+		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getFirstApplicantDetails().get(0);
+		if (manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
+			manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
+			manualVerificationEntity.setMvUsrId(dto.getUserId());
+			ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao.update(manualVerificationEntity);
+			if(updatedManualVerificationEntity!=null) {
+				manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
+				manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
+				manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+				manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
+				manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+			}
 		}
-
-		return adto;
+		return manualVerificationDTO;
 	}
 
 	@Override
@@ -91,14 +93,21 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		} else {
+			//TODO Create a Error Code and Error message to remove Hard coded exception value
 			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO
+			// TODO Catch this exception
 		}
 		return file;
+	}
+
+	@Override
+	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
+		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
+		return null;
 	}
 
 }

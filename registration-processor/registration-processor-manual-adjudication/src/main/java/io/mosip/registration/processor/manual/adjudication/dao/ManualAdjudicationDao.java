@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.manual.adjudication.repository.ManualAdjudiacationRepository;
 
 
@@ -17,7 +18,7 @@ import io.mosip.registration.processor.manual.adjudication.repository.ManualAdju
 @Component
 public class ManualAdjudicationDao {
 	@Autowired
-	ManualAdjudiacationRepository<ManualVerificationEntity, String> manualAdjudiacationRepository;
+	ManualAdjudiacationRepository<ManualVerificationEntity, ManualVerificationPKEntity> manualAdjudiacationRepository;
 	/** The Constant AND. */
 	public static final String AND = "AND";
 

@@ -20,9 +20,7 @@ public class ManualVerificationPKEntity implements Serializable {
 
 	@Column(name="matched_ref_type")
 	private String matchedRefType;
-
-	public ManualVerificationPKEntity() {
-	}
+	
 	public String getRegId() {
 		return this.regId;
 	}
