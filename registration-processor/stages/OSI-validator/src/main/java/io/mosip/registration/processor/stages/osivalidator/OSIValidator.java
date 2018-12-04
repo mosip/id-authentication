@@ -22,6 +22,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -229,9 +230,16 @@ public class OSIValidator {
 			}
 			if (introducerUin == null) {
 				if (validateIntroducerRid(introducerRid, registrationId)) {
-					// To do get parent UIN from UIN Master DB
-					introducerUin = getUIN() + regOsi.getIntroducerRegId();
-					return validateIntroducer(regOsi, registrationId, introducerUin);
+
+					introducerUin = getIntroducerUIN(introducerRid);
+					if (introducerUin != null) {
+
+						return validateIntroducer(regOsi, registrationId, introducerUin);
+					} else {
+						registrationStatusDto
+								.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
+						return false;
+					}
 				} else {
 					return false;
 				}
@@ -592,9 +600,12 @@ public class OSIValidator {
 	 *
 	 * @return the uin
 	 */
-	private String getUIN() {
-		// TO do handle Parent UIN not found in UIN Master DB
-		return "";
+	private String getIntroducerUIN(String intoducerRid) {
+		List<DemographicDedupeDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
+		if (!demographicDedupeDtoList.isEmpty()) {
+			return demographicDedupeDtoList.get(0).getUin();
+		}
+		return null;
 	}
 
 }

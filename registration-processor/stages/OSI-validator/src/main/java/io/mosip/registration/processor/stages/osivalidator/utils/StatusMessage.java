@@ -64,5 +64,7 @@ public class StatusMessage {
 	public static final String CENTER_MACHINE_USER_MAPPING_NOT_FOUND="The Center-Machine-User Mapping for Center, Machine & supervisor/officer was not found";
 	
 	public static final String GPS_DATA_NOT_PRESENT= "The GPS Details for the Packet is Not Present";
+	
+	public static final String PARENT_UIN_NOT_FOUND_IN_TABLE= "The UIN of Parent is not present in individual_demographic_dedup for Packet";
 
 }
