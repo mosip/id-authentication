@@ -12,7 +12,7 @@ create schema if not exists regprc
 -- table section ---------------------------------------------------------
 create table regprc.qcuser_registration (
 
-	reg_id  character varying(28) not null,				-- regprc.registration.id
+	reg_id  character varying(39) not null,				-- regprc.registration.id
 	usr_id  character varying (36) not null,			-- master.user_detail.id
 
 	status_code    character varying(36),				-- master.status_list.code

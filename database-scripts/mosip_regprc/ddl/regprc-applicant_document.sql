@@ -13,8 +13,8 @@ create schema if not exists regprc
 	
 	create table regprc.applicant_document (
 	
-		reg_id 			character varying(64) not null ,		-- regprc.registration.id
-		prereg_id  		character varying(64) ,		-- no fk.  data populate.
+		reg_id 			character varying(39) not null ,		-- regprc.registration.id
+		prereg_id  		character varying(64) ,					-- no fk.  data populate.
 		
 		doc_name		character varying(128) not null ,		-- no fk.  data populate.
 		doc_cat_code 	character varying(36) not null ,		-- no fk.  data populate.

@@ -12,10 +12,10 @@ create schema if not exists regprc
 -- table section ---------------------------------------------------------
 create table regprc.registration (
 
-	id character varying(28) not null,
+	id character varying(39) not null,
 	
 	reg_type character varying(36) not null, 		-- master.appl_form_type.code
-	ref_reg_id character varying(28),				-- optional, id for reference, not foreign key.
+	ref_reg_id character varying(39),				-- optional, id for reference, not foreign key.
 	applicant_type  character varying(36),
 
 	status_code character varying(36) not null,		-- regprc.status_list.code

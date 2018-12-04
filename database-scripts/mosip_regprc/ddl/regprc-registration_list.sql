@@ -14,9 +14,9 @@ create table regprc.registration_list (
 
 	id character varying(36) not null,
 
-	reg_id character varying(28) not null,			-- no fk.  data populate.
+	reg_id character varying(39) not null,			-- no fk.  data populate.
 	reg_type character varying(64),					-- no fk.  data populate.
-	parent_reg_id character varying(28),			-- no fk.  data populate.
+	parent_reg_id character varying(39),			-- no fk.  data populate.
 
 	status_code character varying(36),				-- no fk.  data populate.
 	status_comment character varying(256),

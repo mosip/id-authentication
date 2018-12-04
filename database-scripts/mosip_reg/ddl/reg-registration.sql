@@ -13,10 +13,10 @@ create schema if not exists reg
 
 create table reg.registration (
 
-	id 			character varying(28) not null,
+	id 			character varying(39) not null,
 
 	reg_type 	character varying(64) not null,		-- master.appl_form_type.code
-	ref_reg_id 	character varying(28),
+	ref_reg_id 	character varying(39),
 	prereg_id 	character varying(64),
 
 	status_code 	character varying(36) not null,	-- reg.status_list.code

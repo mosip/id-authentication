@@ -12,7 +12,7 @@ create schema if not exists regprc
 -- table section ---------------------------------------------------------------------
 create table regprc.reg_osi (
 
-	reg_id 			character varying(28) not null,				--  regprc.registration.id
+	reg_id 			character varying(39) not null,				--  regprc.registration.id
 	prereg_id  		character varying(64) ,						--  no fk.  data populate
 
 	officer_id 					character varying(36) not null,	--  no fk.  data populate
@@ -37,7 +37,7 @@ create table regprc.reg_osi (
 
 	introducer_id 		character varying(36),		--  no fk.  data populate.
 	introducer_typ 		character varying(64),		--  no fk.  data populate.
-	introducer_reg_id 	character varying(28),		--  no fk.  data populate.
+	introducer_reg_id 	character varying(39),		--  no fk.  data populate.
 	introducer_uin 		character varying(28),		--  no fk.  data populate.
 	introducer_fingerp_image_name 	character varying(128),
 	introducer_iris_image_name 		character varying(128),

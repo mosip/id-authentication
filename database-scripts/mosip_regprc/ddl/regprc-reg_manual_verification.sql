@@ -12,8 +12,8 @@ create schema if not exists regprc
 -- table section ---------------------------------------------------------
 create table regprc.reg_manual_verification (
 	
-	reg_id				character varying(28) not null, 	-- regprc.registration.id
-	matched_ref_id		character varying(28) not null,
+	reg_id				character varying(39) not null, 	-- regprc.registration.id
+	matched_ref_id		character varying(39) not null,
 	matched_ref_type	character varying(36) not null,
 	mv_usr_id			character varying (36), 			-- master.user_detail.id
 	matched_score      	numeric(6,3) ,

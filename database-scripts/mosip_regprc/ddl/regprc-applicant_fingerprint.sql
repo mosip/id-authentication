@@ -12,7 +12,7 @@ create schema if not exists regprc
 -- table section -------------------------------------------------
 	create table regprc.applicant_fingerprint (
 			
-		reg_id 			character varying(28) not null,		--  regprc.registration.id
+		reg_id 			character varying(39) not null,		--  regprc.registration.id
 		prereg_id  		character varying(64)  ,			--  no fk.  data populate.
 		image_name		character varying(128) not null ,	
 		typ				character varying(36) not null ,

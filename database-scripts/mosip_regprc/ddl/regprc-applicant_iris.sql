@@ -12,7 +12,7 @@ create schema if not exists regprc
 -- table section -------------------------------------------------
 	create table regprc.applicant_iris (
 	
-		reg_id 			character varying(28) not null,			--  regprc.registration.id
+		reg_id 			character varying(39) not null,			--  regprc.registration.id
 		prereg_id  		character varying(64) ,					--  no fk.  data populate.
 		
 		image_name		character varying(128) not null ,
@@ -25,7 +25,7 @@ create schema if not exists regprc
 		cr_by 		character varying (32) not null ,
 		cr_dtimes 	timestamp not null ,
 		upd_by 		character varying (32) ,
-		upd_dtimes timestamp ,
+		upd_dtimes  timestamp ,
 		is_deleted 	boolean ,
 		del_dtimes	timestamp
 				

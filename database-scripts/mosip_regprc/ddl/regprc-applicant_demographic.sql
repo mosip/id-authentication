@@ -12,7 +12,7 @@ create schema if not exists regprc
 -- table section -------------------------------------------------
 	create table regprc.applicant_demographic (
 			
-		reg_id 			character varying(28) not null,		-- regprc.registration.id
+		reg_id 			character varying(39) not null,		-- regprc.registration.id
 		prereg_id  		character varying(64) ,		-- only populate, no fk. 
 			
 		demog_detail   bytea ,

@@ -14,7 +14,7 @@ create table regprc.registration_transaction (
 
 	id character varying(36) not null,
 
-	reg_id character varying(28) not null,			-- regprc.registration.id
+	reg_id character varying(39) not null,			-- regprc.registration.id
 
 	trn_type_code character varying(64) not null,	-- regprc.transaction_type.code
 	remarks character varying(256), 
