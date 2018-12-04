@@ -316,7 +316,7 @@ public class MapperUtils {
 	
 	
 	
-	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
+	/*public List<MachineDto> mapMachineListDto(List<Machine> machines) {
 		List<MachineDto> machineDtoList = new ArrayList<>();
 
 		for (Machine machine : machines) {		
@@ -329,7 +329,7 @@ public class MapperUtils {
 	public MachineDto mapMachineDto(Machine machine) {
 		MachineDto machineDto = new MachineDto();
 		machineDto.setName(machine.getName());
-		machineDto.setId(machine.getName());
+		machineDto.setId(machine.getId());
 		machineDto.setSerialNum(machine.getSerialNum());
 		machineDto.setIsActive(machine.getIsActive());
 		machineDto.setMachineSpecId(machine.getMachineSpecId());
@@ -338,7 +338,7 @@ public class MapperUtils {
 		machineDto.setLangCode(machine.getLangCode());
 		machineDto.setMacAddress(machine.getMacAddress());
 		return machineDto;
-	}
+	}*/
 
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.MachineTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.MachineTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -20,6 +21,6 @@ public interface MachineTypeService {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-   public CodeAndLanguageCodeID createMachineType(MachineTypeRequestDto machineType);
+   public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType);
 
 }

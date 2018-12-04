@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
@@ -28,13 +29,13 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	private DataMapper dataMapper;
 
 	@Override
-	public MachineTypeCodeAndLanguageCodeAndId createMachineSpecification(
-			MachineSpecificationRequestDto machineSpecification) {
+	public IdResponseDto createMachineSpecification(
+			RequestDto<MachineSpecificationDto> machineSpecification) {
 		
 		MachineSpecification renMachineSpecification = new MachineSpecification();
 
 		MachineSpecification entity = metaUtils
-				.setCreateMetaData(machineSpecification.getRequest().getMachineSpecificationDto(), MachineSpecification.class);
+				.setCreateMetaData(machineSpecification.getRequest(), MachineSpecification.class);
 		try {
 			 renMachineSpecification = machineSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException e) {
@@ -42,10 +43,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					e.getErrorText()+ "  " + ExceptionUtils.parseException(e));
 		}
-		MachineTypeCodeAndLanguageCodeAndId machineTypeCodeAndLanguageCodeAndId = new MachineTypeCodeAndLanguageCodeAndId();
-				dataMapper.map(renMachineSpecification, machineTypeCodeAndLanguageCodeAndId, true, null, null, true);
+		IdResponseDto idResponseDto = new IdResponseDto();
+				dataMapper.map(renMachineSpecification, idResponseDto, true, null, null, true);
 			
-		return machineTypeCodeAndLanguageCodeAndId;	
+		return idResponseDto;	
 	
 	}
 

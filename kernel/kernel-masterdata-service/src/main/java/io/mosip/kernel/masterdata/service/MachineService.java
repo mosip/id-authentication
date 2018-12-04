@@ -3,7 +3,8 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Machine Details
@@ -52,6 +53,6 @@ public interface MachineService {
 	 * @return {@link MachineSpecIdAndId}
 	 */
 	
-	 public MachineSpecIdAndId createMachine(MachineDto machine);
+	 public IdResponseDto createMachine(RequestDto<MachineDto> machine);
 
 }
