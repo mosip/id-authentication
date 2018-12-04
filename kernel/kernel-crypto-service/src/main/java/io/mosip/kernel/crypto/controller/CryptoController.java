@@ -41,6 +41,7 @@ public class CryptoController {
 	 */
 	@PostMapping(value = "/encrypt")
 	public CryptoResponseDto encrypt(@RequestBody @Valid CryptoRequestDto cryptoRequestDto) {
+		System.out.println(cryptoRequestDto.getApplicationId()+cryptoRequestDto.getData()+cryptoRequestDto.getReferenceId()+cryptoRequestDto.getTimeStamp());
 		return cryptoService.encrypt(cryptoRequestDto);
 	}
 

@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +48,7 @@ import sun.security.pkcs11.SunPKCS11;
  *
  */
 @Component
-public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore {
+public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore,InitializingBean {
 
 	/**
 	 * Common name for generating certificate
@@ -72,39 +73,30 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 */
 	@Value("${mosip.kernel.keymanager.softhsm.certificate.country}")
 	private String country;
+	
+	@Value("${mosip.kernel.keymanager.softhsm.config-path}") 
+	private String configPath;
+	
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") 
+	private String keystoreType;
+	
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") 
+	private String keystorePass;
 
-	/**
-	 * The keystore pass
-	 */
-	private final String keystorePass;
-
-	/**
+   /**
 	 * The Keystore instance
 	 */
-	private final KeyStore keyStore;
-
-	/**
-	 * Constructor to initialize Softhsm Keystore
-	 * 
-	 * @param configPath
-	 *            The config path
-	 * @param keystoreType
-	 *            The keystore pass
-	 * @param keystorePass
-	 *            The Keystore instance
-	 */
-	public KeyStoreImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
-			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
-			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
-
-		Provider provider = setupProvider(configPath);
-		addProvider(provider);
-		this.keyStore = getKeystoreInstance(keystoreType, provider);
-		this.keystorePass = keystorePass;
-		loadKeystore();
+	private KeyStore keyStore;
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		    Provider provider = setupProvider(configPath);
+			addProvider(provider);
+			this.keyStore = getKeystoreInstance(keystoreType, provider);
+			loadKeystore();
 	}
-
-	/**
+	
+   /**
 	 * Setup a new SunPKCS11 provider
 	 * 
 	 * @param configPath
@@ -383,5 +375,10 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
+	}
+	
+
+	public void setKeyStore(KeyStore keyStore) {
+		this.keyStore = keyStore;
 	}
 }
