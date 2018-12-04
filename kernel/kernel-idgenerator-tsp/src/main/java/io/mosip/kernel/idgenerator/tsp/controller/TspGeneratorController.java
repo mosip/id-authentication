@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 
+/**
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ *
+ */
 @RestController
 public class TspGeneratorController {
 

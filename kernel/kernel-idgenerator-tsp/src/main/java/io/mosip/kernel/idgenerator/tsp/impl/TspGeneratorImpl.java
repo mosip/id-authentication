@@ -12,6 +12,11 @@ import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 
+/**
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ *
+ */
 @Service
 public class TspGeneratorImpl implements TspIdGenerator<TspResponseDTO> {
 
@@ -27,6 +32,7 @@ public class TspGeneratorImpl implements TspIdGenerator<TspResponseDTO> {
 
 		if (entity == null) {
 			entity = new Tsp();
+			entity.setId(1);
 			entity.setTspId(initialValue);
 			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 			entity.setCreatedDateTime(time);
@@ -34,6 +40,8 @@ public class TspGeneratorImpl implements TspIdGenerator<TspResponseDTO> {
 		} else {
 
 			entity.setTspId(entity.getTspId() + 1);
+			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
+			entity.setCreatedDateTime(time);
 
 		}
 		tspRepository.save(entity);
