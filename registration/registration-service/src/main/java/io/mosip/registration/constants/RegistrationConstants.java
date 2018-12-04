@@ -513,6 +513,10 @@ public class RegistrationConstants {
 	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
 	public static final String JOB_TRIGGER_MIS_FIRED = "Trigger Mis-Fired";
 	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
+	public static final String RETRIEVED_PRE_REG_ID = "Retrieved Pre Registration";
+	public static final String UNABLE_TO_RETRIEVE_PRE_REG_ID = "Unable to retrieve pre registration";
+	
+	
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
