@@ -34,11 +34,12 @@ public class KeymanagerController {
 	KeymanagerService keymanagerService;
 
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse> getPublicKey(@PathVariable("applicationId") String applicationId,
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@PathVariable("applicationId") String applicationId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
 			@RequestParam("referenceId") Optional<String> referenceId) {
 
-		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId), HttpStatus.OK);
+		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId),
+				HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/symmetricKey")

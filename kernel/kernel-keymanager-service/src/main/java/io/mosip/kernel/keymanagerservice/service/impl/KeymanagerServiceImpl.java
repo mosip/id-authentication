@@ -114,14 +114,14 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
 			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
-			publicKeyResponse.setKeyGenerationTime(hsmPublicKey.getKeyGenerationTime());
-			publicKeyResponse.setKeyExpiryTime(hsmPublicKey.getKeyExpiryTime());
+			publicKeyResponse.setIssuedAt(hsmPublicKey.getIssuedAt());
+			publicKeyResponse.setExpiryAt(hsmPublicKey.getExpiryAt());
 		} else {
 			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, timeStamp,
 					referenceId.get());
 			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(dbPublicKey.getPublicKey()));
-			publicKeyResponse.setKeyGenerationTime(dbPublicKey.getKeyGenerationTime());
-			publicKeyResponse.setKeyExpiryTime(dbPublicKey.getKeyExpiryTime());
+			publicKeyResponse.setIssuedAt(dbPublicKey.getIssuedAt());
+			publicKeyResponse.setExpiryAt(dbPublicKey.getExpiryAt());
 		}
 		return publicKeyResponse;
 	}

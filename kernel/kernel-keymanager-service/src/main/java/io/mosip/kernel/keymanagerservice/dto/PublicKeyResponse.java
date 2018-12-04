@@ -26,8 +26,8 @@ public class PublicKeyResponse<T> {
 
 	private T publicKey;
 
-	private LocalDateTime keyGenerationTime;
+	private LocalDateTime issuedAt;
 
-	private LocalDateTime keyExpiryTime;
+	private LocalDateTime expiryAt;
 
 }
