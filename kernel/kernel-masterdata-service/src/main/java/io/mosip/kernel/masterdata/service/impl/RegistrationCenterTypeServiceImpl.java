@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
@@ -59,9 +59,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		try {
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new MasterDataServiceException(
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();

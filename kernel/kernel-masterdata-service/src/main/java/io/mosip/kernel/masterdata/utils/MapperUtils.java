@@ -26,7 +26,6 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
@@ -35,7 +34,6 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -314,29 +312,25 @@ public class MapperUtils {
 		return deviceTypeDtoList;
 	}
 
-	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
-		List<MachineDto> machineDtoList = new ArrayList<>();
-
-		for (Machine machine : machines) {
-			MachineDto machineDto = mapMachineDto(machine);
-			machineDtoList.add(machineDto);
-		}
-		return machineDtoList;
-	}
-
-	public MachineDto mapMachineDto(Machine machine) {
-		MachineDto machineDto = new MachineDto();
-		machineDto.setName(machine.getName());
-		machineDto.setId(machine.getName());
-		machineDto.setSerialNum(machine.getSerialNum());
-		machineDto.setIsActive(machine.getIsActive());
-		machineDto.setMachineSpecId(machine.getMachineSpecId());
-		machineDto.setValidityDateTime(machine.getValidityDateTime());
-		machineDto.setIpAddress(machine.getIpAddress());
-		machineDto.setLangCode(machine.getLangCode());
-		machineDto.setMacAddress(machine.getMacAddress());
-		return machineDto;
-	}
+	/*
+	 * public List<MachineDto> mapMachineListDto(List<Machine> machines) {
+	 * List<MachineDto> machineDtoList = new ArrayList<>();
+	 * 
+	 * for (Machine machine : machines) { MachineDto machineDto =
+	 * mapMachineDto(machine); machineDtoList.add(machineDto); } return
+	 * machineDtoList; }
+	 * 
+	 * public MachineDto mapMachineDto(Machine machine) { MachineDto machineDto =
+	 * new MachineDto(); machineDto.setName(machine.getName());
+	 * machineDto.setId(machine.getId());
+	 * machineDto.setSerialNum(machine.getSerialNum());
+	 * machineDto.setIsActive(machine.getIsActive());
+	 * machineDto.setMachineSpecId(machine.getMachineSpecId());
+	 * machineDto.setValidityDateTime(machine.getValidityDateTime());
+	 * machineDto.setIpAddress(machine.getIpAddress());
+	 * machineDto.setLangCode(machine.getLangCode());
+	 * machineDto.setMacAddress(machine.getMacAddress()); return machineDto; }
+	 */
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();

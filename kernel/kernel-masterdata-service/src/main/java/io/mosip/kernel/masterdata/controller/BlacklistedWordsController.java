@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,9 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -72,9 +75,9 @@ public class BlacklistedWordsController {
 	 *         added.
 	 */
 	@PostMapping(path = "/blacklistedwords")
-	public ResponseEntity<BlackListedWordsResponse> addBlackListedWord(
-			@RequestBody BlackListedWordsRequestDto blackListedWordsRequestDto) {
-		return new ResponseEntity<>(blacklistedWordsService.addBlackListedWord(blackListedWordsRequestDto),
+	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
+			@RequestBody @Valid RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
+		return new ResponseEntity<>(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto),
 				HttpStatus.CREATED);
 	}
 }

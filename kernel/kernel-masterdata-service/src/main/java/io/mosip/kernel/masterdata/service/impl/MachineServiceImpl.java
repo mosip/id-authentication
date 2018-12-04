@@ -12,7 +12,8 @@ import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -93,7 +94,8 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machine != null) {
-			machineDto = objectMapperUtil.mapMachineDto(machine);
+			machineDto = objectMapperUtil.mapNew(machine, MachineDto.class);
+					//mapMachineDto(machine);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -136,7 +138,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapMachineListDto(machineList);
+			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -179,7 +181,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapMachineListDto(machineList);
+			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
 	
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -190,10 +192,11 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	@Override
-	public MachineSpecIdAndId createMachine(MachineDto machine) {
+	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine;
 
-		Machine entity = metaUtils.setCreateMetaData(machine, Machine.class);
+		Machine entity = metaUtils.createdMachine(machine.getRequest());
+		//Machine entity = metaUtils.setMachineCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = metaUtils.createdMachineHistory(entity);
 
 		try {
@@ -201,12 +204,12 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText());
+					ExceptionUtils.parseException(e));
 		}
-		MachineSpecIdAndId machineSpecIdAndId = new MachineSpecIdAndId();
-		dataMapper.map(crtMachine, machineSpecIdAndId, true, null, null, true);
+		IdResponseDto idResponseDto = new IdResponseDto();
+		dataMapper.map(crtMachine, idResponseDto, true, null, null, true);
 
-		return machineSpecIdAndId;
+		return idResponseDto;
 	}
 
 }

@@ -3,9 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO class for holding the idtype request.
@@ -16,7 +14,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 
-
 public class IdTypeDto {
 	/**
 	 * The id code.
@@ -24,7 +21,7 @@ public class IdTypeDto {
 	@NotNull
 	@Size(min = 1, max = 36)
 	private String code;
-	
+
 	/**
 	 * The id description.
 	 */
@@ -37,7 +34,7 @@ public class IdTypeDto {
 	@NotNull
 	@Size(min = 1, max = 64)
 	private String name;
-	
+
 	/**
 	 * The language code.
 	 */

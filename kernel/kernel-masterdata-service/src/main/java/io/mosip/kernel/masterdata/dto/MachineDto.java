@@ -61,25 +61,24 @@ public class MachineDto {
 	 * Field for machine specification Id
 	 */
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "machineSpecId", required = true, dataType = "java.lang.String")
 	private String machineSpecId;
 	/**
 	 * Field for language code
 	 */
 	@NotNull
 	@Size(min = 1, max = 3)
-	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 	/**
 	 * Field for is active
 	 */
-	@NotNull
-	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
+	@NotNull	
 	private Boolean isActive;
 	/**
 	 * Field for is validity of the Device
 	 */
-	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.time.LocalDateTime")
 	private LocalDateTime validityDateTime;
+	
 
 }
