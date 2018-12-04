@@ -59,7 +59,7 @@ public class BookingService {
 		try {
 			restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
-			String date = LocalDate.now().getYear() + "/12/02";
+			String date = LocalDate.now().getYear() + "/12/31";
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			LocalDate endDate = LocalDate.parse(date, formatter);
 			HttpHeaders headers = new HttpHeaders();
