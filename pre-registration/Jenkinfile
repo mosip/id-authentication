@@ -6,7 +6,7 @@ node {
  def projectToBuild = 'pre-registration'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
- def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26' 
+ def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
  
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
