@@ -42,6 +42,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Class for Operator Authentication
+ *
+ */
 @Controller
 public class OperatorAuthenticationController extends BaseController implements Initializable {
 
@@ -125,6 +129,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		getAuthenticationModes();
 	}
 
+	/**
+	 * to validate the password in case of password based authentication
+	 */
 	public void validatePwd() {
 		if (username.getText().isEmpty() && password.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
@@ -137,7 +144,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 		} else if (password.getText().length() > usernamePwdLength) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
 		} else {
-
 			String hashPassword = null;
 
 			// password hashing
@@ -153,14 +159,12 @@ public class OperatorAuthenticationController extends BaseController implements 
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username.getText());
 			authenticationValidatorDTO.setPassword(hashPassword);
-			String userStatus = authenticationValidatorImplementation.validatePassword(authenticationValidatorDTO);
-			
+			String userStatus = authenticationValidatorImplementation.validatePassword(authenticationValidatorDTO);			
 
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
 				if (!serverStatus) {
-
 					if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 						loadNextScreen();
 					} else {
@@ -198,30 +202,39 @@ public class OperatorAuthenticationController extends BaseController implements 
 
 	}
 
+	/**
+	 * Checking server status
+	 * @param LoginUserDTO
+	 *            the UserDTO object
+	 * @return boolean
+	 */
 	private boolean getConnectionCheck(LoginUserDTO userObj) {
-
 		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
 		ResponseEntity<String> tokenId = null;
 		boolean serverStatus = false;
-
 		try {
 			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
 			if (tokenId.getStatusCode().is2xxSuccessful()) {
 				serverStatus = true;
 			}
 		} catch (RestClientException resourceAccessException) {
-
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
 					resourceAccessException.getMessage());
 		}
 		return serverStatus;
 	}
 
+	/**
+	 * to validate the OTP in case of OTP based authentication
+	 */
 	public void validateOTP() {
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(true);
 	}
 
+	/**
+	 * to validate the fingerprint in case of fingerprint based authentication
+	 */
 	public void validateFingerprint() {
 		if (isSupervisor) {
 			if (fpUserId.getText() != null) {
@@ -246,6 +259,10 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	
+	/**
+	 * to get the configured modes of authentication
+	 */
 	private void getAuthenticationModes() {
 		count = 1;
 		userAuthenticationTypeMap = loginService.getModesOfLogin();
@@ -253,6 +270,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		loadNextScreen();
 	}
 
+	/**
+	 * to load the respective screen with respect to the list of configured authentication modes
+	 */
 	private void loadNextScreen() {
 		if (!userAuthenticationTypeMap.isEmpty()) {
 			String authenticationType = String.valueOf(userAuthenticationTypeMap.get(String.valueOf(count)));
@@ -273,6 +293,10 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	/**
+	 * to enable the respective authentication mode
+	 * @param loginMode	- name of authentication mode
+	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		switch (loginMode) {
 		case RegistrationConstants.LOGIN_METHOD_OTP:
@@ -289,6 +313,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	/**
+	 * to enable the OTP based authentication mode and disable rest of modes
+	 */
 	private void enableOTP() {
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
@@ -306,6 +333,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	/**
+	 * to enable the password based authentication mode and disable rest of modes
+	 */
 	private void enablePWD() {
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
@@ -323,6 +353,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	/**
+	 * to enable the fingerprint based authentication mode and disable rest of modes
+	 */
 	private void enableFingerPrint() {
 		fingerprintBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
@@ -337,6 +370,12 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
+	
+	/**
+	 * to check the role of supervisor in case of biometric exception
+	 * @param userId - username entered by the supervisor in the authentication screen
+	 * @return boolean variable "true", if the person is authenticated as supervisor or "false", if not
+	 */
 	private boolean fetchUserRole(String userId) {
 		RegistrationUserDetail registrationUserDetail = loginService.getUserDetail(userId);
 		if (registrationUserDetail != null) {
@@ -346,6 +385,12 @@ public class OperatorAuthenticationController extends BaseController implements 
 		return false;
 	}
 
+	
+	/**
+	 * to capture and validate the fingerprint for authentication
+	 * @param userId - username entered in the textfield
+	 * @return true/false after validating fingerprint
+	 */
 	private boolean captureAndValidateFP(String userId) {
 		boolean fpMatchStatus = false;
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
@@ -378,6 +423,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		return fpMatchStatus;
 	}
 
+	/**
+	 * to submit the registration after successful authentication
+	 */
 	public void submitRegistration() {
 		registrationOfficerPacketController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);

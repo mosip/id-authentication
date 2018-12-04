@@ -8,13 +8,17 @@
 	-fx-background-color: #f8f9fa;
 }
 
-#demographicPane{
+#demographicPane {
  	-fx-padding: 10;
 	-fx-border-color: black;
     -fx-background-color : white;
     -fx-border-width: 0 0 0 0;
 	-fx-font-size : 12px;   
     
+}
+
+#operatorAuthenticationPane {
+	-fx-background-color : white;
 }
 
 #virtualKeyboard {
@@ -41,13 +45,9 @@
     -fx-border-width : 1 1 0 1;
 }
 
-#registrationAccordian.accordion >.titled-pane:collapsed > .title
-{
-	
+#registrationAccordian.accordion >.titled-pane:collapsed > .title {	
     -fx-border-width : 1 1 1 1;
     -fx-border-color: black;
-    
-
 }
 
 #doc_label{
