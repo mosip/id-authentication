@@ -106,12 +106,20 @@ public class PacketValidatorStageTest {
 		applicantType.setLabel("applicantType");
 		applicantType.setValue("Child");
 
-		identity.setMetaData(Arrays.asList(registrationType, applicantType));
+		FieldValue isVerified = new FieldValue();
+		isVerified.setLabel("isVerified");
+		isVerified.setValue("Verified");
 
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
+
+		Document documentPob = new Document();
+		documentPob.setDocumentCategory("pob");
+		documentPob.setDocumentName("ProofOfBirth");
 		Document document = new Document();
-		List<Document> documents = new ArrayList<Document>();
 		document.setDocumentCategory("poR");
 		document.setDocumentName("ProofOfRelation");
+		List<Document> documents = new ArrayList<Document>();
+		documents.add(documentPob);
 		documents.add(document);
 		identity.setDocuments(documents);
 
@@ -134,6 +142,7 @@ public class PacketValidatorStageTest {
 		List<String> applicantDemographicValues = new ArrayList<String>();
 		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");
 		applicantDemographicValues.add("ProofOfAddress");
 		applicantDemographicValues.add("ProofOfIdentity");
@@ -180,9 +189,6 @@ public class PacketValidatorStageTest {
 		assertTrue(messageDto.getIsValid());
 
 	}
-
-	@Mock
-	Document doc;
 
 	@Test
 	public void testStructuralDocumentValidationFailure() throws Exception {
@@ -253,7 +259,15 @@ public class PacketValidatorStageTest {
 		applicantType.setLabel("applicantType");
 		applicantType.setValue("Adult");
 
-		identity.setMetaData(Arrays.asList(registrationType, applicantType));
+		FieldValue isVerified = new FieldValue();
+		isVerified.setLabel("isVerified");
+		isVerified.setValue("Verified");
+
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
+
+		Document documentPob = new Document();
+		documentPob.setDocumentCategory("pob");
+		documentPob.setDocumentName("ProofOfBirth");
 
 		Document document = new Document();
 		document.setDocumentCategory("poA");
@@ -264,6 +278,7 @@ public class PacketValidatorStageTest {
 		document2.setDocumentName("ProofOfIdentity");
 
 		List<Document> documents = new ArrayList<Document>();
+		documents.add(documentPob);
 		documents.add(document);
 		documents.add(document2);
 		identity.setDocuments(documents);
@@ -287,6 +302,7 @@ public class PacketValidatorStageTest {
 		List<String> applicantDemographicValues = new ArrayList<String>();
 		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");
 		applicantDemographicValues.add("ProofOfAddress");
 		applicantDemographicValues.add("ProofOfIdentity");
