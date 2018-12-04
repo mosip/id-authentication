@@ -90,7 +90,7 @@ public class PacketInfoControllerTest {
 		DemographicDedupeDto demoDto = new DemographicDedupeDto();
 		List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
-		demoDto.setPreRegId("PEN1345T");
+		demoDto.setUin("PEN1345T");
 		demoDto.setName("firstName");
 		demoDto.setLangCode("ar");
 		demoDedupeList.add(demoDto);

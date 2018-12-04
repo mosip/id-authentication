@@ -14,12 +14,13 @@ public class DemographicDedupeDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String regId;
-	private String preRegId;
+	private String uin;
 	private String langCode;
 
 	private String name;
 
 	private Date dob;
 	private String genderCode;
+	private String phoneticName;
 
 }
