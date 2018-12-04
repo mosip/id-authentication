@@ -296,9 +296,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		otp.clear();
 		otpUserId.clear();
 		if (isSupervisor) {
-			otpLabel.setText(RegistrationConstants.SUPERVISOR_LOGIN);
-			otpLabel.setLayoutX(359);
-			otpLabel.setLayoutY(56);
+			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			otpLabel.setLayoutX(336);
+			otpLabel.setLayoutY(72);
 			otpUserId.setEditable(true);
 		} else {
 			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -313,9 +313,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 		username.clear();
 		password.clear();
 		if (isSupervisor) {
-			passwdLabel.setText(RegistrationConstants.SUPERVISOR_LOGIN);
-			passwdLabel.setLayoutX(360);
-			passwdLabel.setLayoutY(86);
+			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			passwdLabel.setLayoutX(336);
+			passwdLabel.setLayoutY(79);
 			username.setEditable(true);
 		} else {
 			username.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -363,7 +363,7 @@ public class OperatorAuthenticationController extends BaseController implements 
 			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 				// if FP data fetched then retrieve the user specific detail from db.
 				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<FingerprintDetailsDTO>();
+				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
