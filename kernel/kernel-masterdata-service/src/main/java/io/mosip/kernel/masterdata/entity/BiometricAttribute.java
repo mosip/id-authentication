@@ -37,7 +37,7 @@ public class BiometricAttribute extends BaseEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1302520630931393544L;
+	private static final long serialVersionUID = -1302520630931339354L;
 	@Id
 	@AttributeOverrides({
 			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),

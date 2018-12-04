@@ -75,8 +75,8 @@ public class TemplateController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping("/templates")
-	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = IdResponseDto.class)
+	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseEntity<IdResponseDto> createTemplate(
