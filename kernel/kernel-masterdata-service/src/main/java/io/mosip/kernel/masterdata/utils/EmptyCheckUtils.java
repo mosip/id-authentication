@@ -26,18 +26,6 @@ public final class EmptyCheckUtils {
 		return obj == null;
 	}
 
-	/**
-	 * This method used to check given <code>objectArray</code> is null or length of
-	 * it is Zero.
-	 * 
-	 * @param objectArray
-	 *            is an array of type java.lang.Object
-	 * @return true if given <code>objectArray</code> is null or length of it is
-	 *         Zero.
-	 */
-	public static boolean isNullEmpty(Object[] objectArray) {
-		return objectArray == null || objectArray.length == 0;
-	}
 
 	/**
 	 * This method is used to check if the given <code>str</code> is null or an

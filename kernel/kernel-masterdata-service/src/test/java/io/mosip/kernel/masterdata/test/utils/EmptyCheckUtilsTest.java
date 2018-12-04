@@ -38,14 +38,6 @@ public class EmptyCheckUtilsTest {
 		assertTrue(EmptyCheckUtils.isNullEmpty(d));
 	}
 
-	@Test
-	public void isNullEmptyObjectArrayTest() {
-		int[] rolls = null;
-		int[] stateCodes = new int[30];
-
-		assertTrue(EmptyCheckUtils.isNullEmpty(rolls));
-		assertFalse(EmptyCheckUtils.isNullEmpty(stateCodes));
-	}
 
 	@Test
 	public void isNullEmptyStringTest() {
