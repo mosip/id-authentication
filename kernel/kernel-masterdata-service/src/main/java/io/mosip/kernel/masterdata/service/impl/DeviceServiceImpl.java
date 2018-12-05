@@ -149,8 +149,8 @@ public class DeviceServiceImpl implements DeviceService {
 	public CodeResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device;
 
-		//Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
-		Device entity = metaDataUtils.setDeviceCreateMetaData(deviceDto.getRequest(), Device.class);
+		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		/*Device entity = metaDataUtils.setDeviceCreateMetaData(deviceDto.getRequest(), Device.class);*/
 		try {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException e) {
