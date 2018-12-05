@@ -26,26 +26,28 @@ public class ApplicantDocumentValidation {
 		this.registrationStatusDto = registrationStatusDto;
 	}
 
-	public boolean documentValidation(Identity identity, String registrationId) {
+	public boolean validateDocument(Identity identity, String registrationId) {
 		regId = registrationId;
 
-		isVerfied = identityIterator.forMetaData(identity.getMetaData(), JsonConstant.ISVERIFIED.name());
-		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED.name())
-				&& checkDocumentAvailability(DocumentCategory.POB.name(), identity)) {
+		isVerfied = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.ISVERIFIED.name());
 
-			registrationType = identityIterator.forMetaData(identity.getMetaData(),
+		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED.name())
+				&& checkDocumentAvailability(identity, DocumentCategory.POB.name())) {
+
+			registrationType = identityIterator.getFieldValue(identity.getMetaData(),
 					JsonConstant.REGISTRATIONTYPE.name());
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.name())) {
 
-				applicantType = identityIterator.forMetaData(identity.getMetaData(), JsonConstant.APPLICANTTYPE.name());
+				applicantType = identityIterator.getFieldValue(identity.getMetaData(),
+						JsonConstant.APPLICANTTYPE.name());
 
 				if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
-						&& checkDocumentAvailability(DocumentCategory.POR.name(), identity))
+						&& checkDocumentAvailability(identity, DocumentCategory.POR.name()))
 					isApplicantDocumentVerified = true;
 
 				else if (applicantType.equalsIgnoreCase(ApplicantType.ADULT.name())
-						&& checkDocumentAvailability(DocumentCategory.POI.name(), identity)
-						&& checkDocumentAvailability(DocumentCategory.POA.name(), identity)) {
+						&& checkDocumentAvailability(identity, DocumentCategory.POI.name())
+						&& checkDocumentAvailability(identity, DocumentCategory.POA.name())) {
 
 					isApplicantDocumentVerified = true;
 
@@ -58,18 +60,20 @@ public class ApplicantDocumentValidation {
 		return isApplicantDocumentVerified;
 	}
 
-	public boolean checkDocumentAvailability(String category, Identity identity) {
+	public boolean checkDocumentAvailability(Identity identity, String category) {
 
-		Document document = identityIterator.forDocument(identity.getDocuments(), category);
-		if (document != null) {
-			String documentname = document.getDocumentName();
-			List<String> hashSequence = identityIterator.forHashSequence(identity.getHashSequence(),
-					PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
-			if (hashSequence.contains(documentname))
-				return true;
+		for (Document doc : identity.getDocuments()) {
 
+			if (doc.getDocumentCategory().equalsIgnoreCase(category)) {
+				String documentname = doc.getDocumentName();
+
+				List<String> hashSequence = identityIterator.getHashSequence(identity.getHashSequence(),
+						PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
+				if (hashSequence != null && hashSequence.contains(documentname))
+					return true;
+
+			}
 		}
-
 		registrationStatusDto.setStatusComment(category + " Document was not available for " + regId);
 		return false;
 	}

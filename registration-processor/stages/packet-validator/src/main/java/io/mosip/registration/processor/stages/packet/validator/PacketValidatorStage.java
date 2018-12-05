@@ -127,7 +127,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 							registrationStatusDto);
 					isApplicantDocumentValidation = applicantDocumentValidation
-							.documentValidation(packetMetaInfo.getIdentity(), registrationId);
+							.validateDocument(packetMetaInfo.getIdentity(), registrationId);
 
 				} else {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);

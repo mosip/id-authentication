@@ -1,8 +1,8 @@
 package io.mosip.registration.processor.core.util;
 
+import java.util.Collections;
 import java.util.List;
 
-import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 
@@ -12,30 +12,19 @@ public class IdentityIteratorUtil {
 		super();
 	}
 
-	public Document forDocument(List<Document> documents, String DocLabel) {
-		for (Document doc : documents) {
-			if (doc.getDocumentCategory().equalsIgnoreCase(DocLabel)) {
-				return doc;
+	public List<String> getHashSequence(List<FieldValueArray> hashSequence, String field) {
+		for (FieldValueArray hash : hashSequence) {
+			if (hash.getLabel().equalsIgnoreCase(field)) {
+				return hash.getValue();
 			}
-
 		}
-		return null;
+		return Collections.emptyList();
 
 	}
 
-	public List<String> forHashSequence(List<FieldValueArray> hashSequence, String field) {
-		for (FieldValueArray dochash : hashSequence) {
-			if (dochash.getLabel().equalsIgnoreCase(field)) {
-				return dochash.getValue();
-			}
-		}
-		return null;
-
-	}
-
-	public String forMetaData(List<FieldValue> metaData, String label) {
+	public String getFieldValue(List<FieldValue> metaData, String label) {
 		for (FieldValue field : metaData) {
-			if (field.getLabel().matches(label))
+			if (field.getLabel().equalsIgnoreCase(label))
 				return field.getValue();
 
 		}
