@@ -27,9 +27,9 @@ public interface UinRepository extends BaseRepository<UinEntity, String> {
 	Optional<UinEntity> findByUinRefId(String uinRefId);
 	
 	
-	@Query("Select refId from UinEntity where uinRefId = : refId")
+	@Query("Select uinRefId from UinEntity where uinRefId = :refId")
 	Optional<String> findUinByRefId(@Param("refId") String refId);
 	
-	@Query("Select UinEntity.id from UinEntity INNER JOIN VIDEntity ON UinEntity.uinRefId = VIDEntity.refId where VIDEntity.id = :vidNumber")
+	@Query("Select uinEntity.id from UinEntity uinEntity INNER JOIN VIDEntity vidEntity ON uinEntity.uinRefId = vidEntity.refId where vidEntity.id = :vidNumber")
 	Optional<String> findUinFromUinTableByJoinTableUinAndVid(@Param("vidNumber") String vidNumber);
 }
