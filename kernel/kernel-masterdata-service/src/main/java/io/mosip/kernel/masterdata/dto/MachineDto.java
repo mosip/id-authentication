@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -78,6 +80,7 @@ public class MachineDto {
 	/**
 	 * Field for is validity of the Device
 	 */
+	//@DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ")
 	private LocalDateTime validityDateTime;
 	
 

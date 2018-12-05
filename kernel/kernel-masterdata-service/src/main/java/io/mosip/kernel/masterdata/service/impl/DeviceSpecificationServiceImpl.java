@@ -57,7 +57,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
-			deviceSpecificationDtoList = objMapper.mapDeviceSpecification(deviceSpecificationList);
+			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
 			return deviceSpecificationDtoList;
 		} else {
 			throw new DataNotFoundException(
@@ -81,7 +81,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
-			deviceSpecificationDtoList = objMapper.mapDeviceSpecification(deviceSpecificationList);
+			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
 			return deviceSpecificationDtoList;
 		} else {
 			throw new DataNotFoundException(

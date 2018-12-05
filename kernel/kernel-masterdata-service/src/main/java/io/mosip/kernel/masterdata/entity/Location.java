@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class Location extends BaseEntity implements Serializable {
 
 	/**
-	 * 
+	 *  generated serial Id 
 	 */
 
 	private static final long serialVersionUID = -5585825705521742941L;

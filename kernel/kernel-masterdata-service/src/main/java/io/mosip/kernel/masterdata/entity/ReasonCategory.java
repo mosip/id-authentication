@@ -51,10 +51,10 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "reasonCategory", cascade = CascadeType.ALL)
 	private List<ReasonList> reasonList = new ArrayList<>();
 
-	public void addReasonList(ReasonList list) {
-		list.setReasonCategory(this);
-		this.reasonList.add(list);
-	}
+//	public void addReasonList(ReasonList list) {
+//		list.setReasonCategory(this);
+//		this.reasonList.add(list);
+//	}
 
 	
 
