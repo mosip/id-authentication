@@ -39,7 +39,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	private MapperUtils mapperUtils;
 
 	@Override
-	public ResponseRrgistrationCenterMachineDeviceDto mapRegistrationCenterMachineAndDevice(
+	public ResponseRrgistrationCenterMachineDeviceDto saveRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 
