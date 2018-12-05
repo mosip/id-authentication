@@ -13,16 +13,24 @@ import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 
 /**
+ * This service class contains methods for generating TSPID.
+ * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
 @Service
-public class TspGeneratorImpl implements TspIdGenerator<TspResponseDTO> {
+public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO> {
 
+	/**
+	 * The reference to TspRepository.
+	 */
 	@Autowired
 	TspRepository tspRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.idgenerator.spi.TspIdGenerator#generateId()
+	 */
 	@Override
 	public TspResponseDTO generateId() {
 

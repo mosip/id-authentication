@@ -10,6 +10,8 @@ import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 
 /**
+ * Controller class for TSPID generator.
+ * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
@@ -17,9 +19,17 @@ import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 @RestController
 public class TspGeneratorController {
 
+	/**
+	 * Reference to TspIdGenerator.
+	 */
 	@Autowired
 	private TspIdGenerator<TspResponseDTO> tspIdGeneratorService;
 
+	/**
+	 * This api generate TSPID when requested.
+	 * 
+	 * @return the TSPID.
+	 */
 	@GetMapping("/idgenerator/tsp")
 	public ResponseEntity<TspResponseDTO> generateId() {
 
