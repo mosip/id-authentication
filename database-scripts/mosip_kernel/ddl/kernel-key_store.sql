@@ -13,9 +13,9 @@ create schema if not exists kernel
 create table kernel.key_store (
 
 	id 			character varying(36) not null,   
-    master_key 	character varying(36),
-    private_key	bytea,
-    public_key	bytea,
+    master_key 	character varying(36) not null,
+    private_key	bytea not null,
+    public_key	bytea not null,
 
 	cr_by 		character varying (32) not null,
 	cr_dtimes 	timestamp not null,
