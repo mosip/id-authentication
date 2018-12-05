@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
@@ -70,15 +70,15 @@ public class IdTypeServiceImpl implements IdTypeService {
 		try {
 			idList = idRepository.findByLangCode(languageCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (idList != null && !idList.isEmpty()) {
 			idDtoList = mapperUtils.mapAll(idList, IdTypeDto.class);
 		} else {
-			throw new DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorMessage());
+			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		idTypeResponseDto.setIdtypes(idDtoList);
 		return idTypeResponseDto;
@@ -98,8 +98,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 		try {
 			idType = idRepository.create(entity);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();

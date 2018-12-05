@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -88,7 +89,8 @@ public class LanguageServiceImpl implements LanguageService {
 			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage(), e);
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
 		}
 	}
 

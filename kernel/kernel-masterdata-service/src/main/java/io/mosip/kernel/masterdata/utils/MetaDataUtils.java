@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -99,6 +100,28 @@ public MachineHistory createdMachineHistory(Machine machine) {
 		return machineHistory;
 		
 	}
+
+//-----------------------------------------
+public Machine createdMachine(MachineDto machineDto) {
+	
+	Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+	String contextUser = authN.getName();
+	
+	Machine machine = new Machine() ;
+	machine.setId(machineDto.getId());
+	machine.setName(machineDto.getName());
+	machine.setMacAddress(machineDto.getMacAddress());
+	machine.setSerialNum(machineDto.getSerialNum());
+	machine.setIpAddress(machineDto.getIpAddress());
+	machine.setMachineSpecId(machineDto.getMachineSpecId());
+	machine.setLangCode(machineDto.getLangCode());
+	machine.setIsActive(machineDto.getIsActive());
+	machine.setValidityDateTime(machineDto.getValidityDateTime());
+	
+	setCreatedDateTime(contextUser,machine);
+	return machine;
+	
+}
 
 }
 

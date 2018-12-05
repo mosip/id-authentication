@@ -8,6 +8,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -95,8 +98,12 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL)
-	private LocationHierarchyLevel location;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	private Location location;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;

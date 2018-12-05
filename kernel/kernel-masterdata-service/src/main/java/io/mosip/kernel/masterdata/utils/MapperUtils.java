@@ -2,6 +2,7 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,7 +27,6 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
@@ -35,7 +35,6 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -71,12 +70,12 @@ public class MapperUtils {
 	}
 
 	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
-		Object destination;
+		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
-
-			throw new DataAccessLayerException("KER-MSD-991", e.getMessage(), e);
+			throw new DataAccessLayerException("KER-MSD-991",
+					"Exception in mapping source object to class : " + e.getMessage(), e);
 		}
 		return (D) mapNew(source, destination);
 	}
@@ -91,27 +90,32 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
-				sfield.setAccessible(true);
-				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
-					setFieldValue(sfield.get(source), destination);
-					sfield.setAccessible(false);
-					isIdMapped = true;
-				} else if (!isSuperMapped) {
-					setBaseFieldValue(source, destination);
-					isSuperMapped = true;
-				} else {
-					setFieldValue(source, destination);
-					break;
+				if (!Modifier.isStatic(sfield.getModifiers()) || !Modifier.isFinal(sfield.getModifiers())) {
+					sfield.setAccessible(true);
+					if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+						setFieldValue(sfield.get(source), destination);
+						sfield.setAccessible(false);
+						isIdMapped = true;
+					} else if (!isSuperMapped) {
+						setBaseFieldValue(source, destination);
+						isSuperMapped = true;
+					} else {
+						setFieldValue(source, destination);
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {
 
-			throw new DataAccessLayerException("KER-MSD-992", e.getMessage(), e);
+			throw new DataAccessLayerException("KER-MSD-992",
+					"Exception in mapping source object to destination object : " + e.getMessage(), e);
 		}
 	}
 
 	private <S, D> void setBaseFieldValue(S source, D destination) {
-		if (!source.getClass().getSuperclass().getName().equals(Object.class.getName())) {
+		String sourceSupername = source.getClass().getSuperclass().getName();
+		String objectClassName = Object.class.getName();
+		if (!sourceSupername.equals(objectClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getDeclaredFields();
 			setFieldValues(source, destination, sourceFields, destinationFields);
@@ -290,18 +294,17 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			//deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
+			// deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
-			
-			
+
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
 
 	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
 		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
-		
+
 		for (DeviceType deviceType : deviceTypes) {
 			DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
 			deviceTypeDto.setName(deviceType.getName());
@@ -310,36 +313,29 @@ public class MapperUtils {
 			deviceTypeDto.setLangCode(deviceType.getLangCode());
 			deviceTypeDtoList.add(deviceTypeDto);
 		}
-		
+
 		return deviceTypeDtoList;
 	}
-	
-	
-	
-	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
-		List<MachineDto> machineDtoList = new ArrayList<>();
 
-		for (Machine machine : machines) {		
-			MachineDto machineDto = mapMachineDto(machine);
-			machineDtoList.add(machineDto);
-		}
-		return machineDtoList;
-	}
-	
-	public MachineDto mapMachineDto(Machine machine) {
-		MachineDto machineDto = new MachineDto();
-		machineDto.setName(machine.getName());
-		machineDto.setId(machine.getName());
-		machineDto.setSerialNum(machine.getSerialNum());
-		machineDto.setIsActive(machine.getIsActive());
-		machineDto.setMachineSpecId(machine.getMachineSpecId());
-		machineDto.setValidityDateTime(machine.getValidityDateTime());
-		machineDto.setIpAddress(machine.getIpAddress());
-		machineDto.setLangCode(machine.getLangCode());
-		machineDto.setMacAddress(machine.getMacAddress());
-		return machineDto;
-	}
-
+	/*
+	 * public List<MachineDto> mapMachineListDto(List<Machine> machines) {
+	 * List<MachineDto> machineDtoList = new ArrayList<>();
+	 * 
+	 * for (Machine machine : machines) { MachineDto machineDto =
+	 * mapMachineDto(machine); machineDtoList.add(machineDto); } return
+	 * machineDtoList; }
+	 * 
+	 * public MachineDto mapMachineDto(Machine machine) { MachineDto machineDto =
+	 * new MachineDto(); machineDto.setName(machine.getName());
+	 * machineDto.setId(machine.getId());
+	 * machineDto.setSerialNum(machine.getSerialNum());
+	 * machineDto.setIsActive(machine.getIsActive());
+	 * machineDto.setMachineSpecId(machine.getMachineSpecId());
+	 * machineDto.setValidityDateTime(machine.getValidityDateTime());
+	 * machineDto.setIpAddress(machine.getIpAddress());
+	 * machineDto.setLangCode(machine.getLangCode());
+	 * machineDto.setMacAddress(machine.getMacAddress()); return machineDto; }
+	 */
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();

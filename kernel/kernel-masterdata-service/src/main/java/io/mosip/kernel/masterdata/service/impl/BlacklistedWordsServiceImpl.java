@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
-import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
@@ -130,8 +130,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
