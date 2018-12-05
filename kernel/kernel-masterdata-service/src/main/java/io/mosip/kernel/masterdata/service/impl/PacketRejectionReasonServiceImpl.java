@@ -183,7 +183,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 
-		dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
+		//dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
+		objectMapperUtil.mapNew(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;
 
