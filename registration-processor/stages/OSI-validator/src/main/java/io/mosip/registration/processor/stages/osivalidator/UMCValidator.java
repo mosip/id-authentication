@@ -42,13 +42,16 @@ public class UMCValidator {
 		if (!dtos.isEmpty()) {
 
 			for (RegistrationCenterDto dto : dtos) {
+				if (dto.getLatitude() != null && dto.getLongitude() != null) {
+					if (dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
 
-				if (dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
-
-					activeRegCenter = dto.getIsActive();
-					if (!activeRegCenter)
-						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-					break;
+						activeRegCenter = dto.getIsActive();
+						if (!activeRegCenter)
+							this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+						break;
+					} else {
+						this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+					}
 				} else {
 					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 				}
@@ -93,13 +96,17 @@ public class UMCValidator {
 			String superviserId, String officerId) throws ApisResourceAccessException {
 		boolean t = false;
 
-		boolean supervisorActive=false;
-		boolean officerActive =false;
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos=umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-				registrationCenterId, machineId, superviserId).getRegistrationCenters();
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos=umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-				registrationCenterId, machineId, officerId).getRegistrationCenters();		
+		boolean supervisorActive = false;
+		boolean officerActive = false;
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos = umcClient
+				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
+						superviserId)
+				.getRegistrationCenters();
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos = umcClient
+				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
+						officerId)
+				.getRegistrationCenters();
 
 		if (!supervisordtos.isEmpty()) {
 
