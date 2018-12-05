@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
@@ -74,12 +75,12 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
 		} else {
-			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
+			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(), PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO Catch Exceptions
+			//TODO
 		}
 		return file;
 	}
@@ -93,13 +94,12 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		} else {
-			//TODO Create a Error Code and Error message to remove Hard coded exception value
-			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
+			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(), PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO Catch this exception
+			// TODO
 		}
 		return file;
 	}

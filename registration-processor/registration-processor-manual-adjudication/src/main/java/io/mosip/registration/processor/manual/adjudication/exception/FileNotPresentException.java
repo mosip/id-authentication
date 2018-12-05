@@ -8,14 +8,9 @@ public class FileNotPresentException extends BaseUncheckedException {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public FileNotPresentException() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public FileNotPresentException(String message){
-		super(message, message);
-		//TODO
+
+	public FileNotPresentException(String code, String message){
+		super(code, message);
 	}
 
 }

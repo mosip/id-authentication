@@ -88,6 +88,9 @@ public enum PlatformErrorMessages {
 	
 	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001","Unknown resource provided"),
 	
+	RPR_MVS_INVALID_FILE_REQUEST(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "001", "Invalid file requested"),
+	
+	RPR_MVS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "002", "Requested file is not present"),
 	
 	/*****System Exception*****/
 	
