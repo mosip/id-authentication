@@ -62,11 +62,11 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "longitude", length = 32)
 	private String longitude;
-    
-	@ManyToOne(fetch=FetchType.LAZY)
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	private Location locationCode;
 
 	@Column(name = "contact_phone", length = 16)
@@ -93,7 +93,6 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-
 	@Column(name = "time_zone", length = 64)
 	private String timeZone;
 
@@ -106,5 +105,4 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	
 }

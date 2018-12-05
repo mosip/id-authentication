@@ -461,7 +461,7 @@ public class MasterdataIntegrationTest {
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLanguageCode("ENG");
 		registrationCenters.add(registrationCenter);
-		
+
 		Location location = new Location();
 		location.setCode("BLR");
 
