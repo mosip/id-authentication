@@ -5,8 +5,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -19,12 +17,6 @@ import io.mosip.registration.processor.manual.adjudication.entity.ManualVerifica
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 
-/**
- * 
- * @author M1049617
- *
- */
-@Service
 public class ManualAdjudicationServiceImpl implements ManualAdjudicationService {
 
 	@Autowired
@@ -40,8 +32,9 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		if (manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
 			manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
 			manualVerificationEntity.setMvUsrId(dto.getUserId());
-			ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao.update(manualVerificationEntity);
-			if(updatedManualVerificationEntity!=null) {
+			ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao
+					.update(manualVerificationEntity);
+			if (updatedManualVerificationEntity != null) {
 				manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
 				manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
 				manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
@@ -75,12 +68,13 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
 		} else {
-			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(), PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
+			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			//TODO
+			// TODO
 		}
 		return file;
 	}
@@ -94,7 +88,8 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		} else {
-			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(), PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
+			throw new FileNotPresentException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
@@ -106,8 +101,19 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
-		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
-		return null;
+		ManualVerificationDTO dto = new ManualVerificationDTO();
+		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao
+				.getByRegId(manualVerificationDTO.getRegId(), manualVerificationDTO.getMvUsrId());
+		manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
+		ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao
+				.update(manualVerificationEntity);
+		if (updatedManualVerificationEntity != null) {
+			dto.setRegId(updatedManualVerificationEntity.getId().getRegId());
+			dto.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
+			dto.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+			dto.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
+			dto.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+		}
+		return dto;
 	}
-
 }
