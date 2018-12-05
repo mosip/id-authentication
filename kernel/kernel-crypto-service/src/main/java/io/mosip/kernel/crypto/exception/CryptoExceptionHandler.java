@@ -53,9 +53,9 @@ public class CryptoExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
-	public ResponseEntity<ErrorResponse<Error>> arrayIndexOutOfBoundsException(
-			final ArrayIndexOutOfBoundsException e) {
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse<Error>> illegalArgumentException(
+			final IllegalArgumentException e) {
 		return new ResponseEntity<>(getErrorResponse(CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(), CryptoErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
 	
@@ -67,7 +67,7 @@ public class CryptoExceptionHandler {
 	
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<Error>> invalidDataException(final InvalidDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()) ,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()+CryptoErrorCode.INVALID_DATA.getErrorMessage()) ,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(ConnectException.class)

@@ -45,7 +45,7 @@ public class InvalidDataException extends BaseUncheckedException {
 	 */
 	public InvalidDataException(String errorCode, String errorMessage,
 			Throwable rootCause) {
-
+		super(errorCode, errorMessage,rootCause);
 	}
 
 }
