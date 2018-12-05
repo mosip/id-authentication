@@ -36,14 +36,7 @@ public class BookingControllerTest {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	private AvailabilityDto availabilityDto;
-	
-	
-	@Before
-	public void setup() {
-		availabilityDto= new AvailabilityDto();
-		
-	}
+
 	
 	
 	@Test
