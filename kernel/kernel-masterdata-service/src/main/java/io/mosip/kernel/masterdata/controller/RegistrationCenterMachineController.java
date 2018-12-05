@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/registrationcentermachine")
+@RequestMapping("/v1.0/registrationcentermachine")
 @Api(tags = { "registrationcentermachine" })
 public class RegistrationCenterMachineController {
 

@@ -48,7 +48,7 @@ public class JsonValidatorConfigServerExceptionTest {
 
 	}
 	
-	@Test
+	//@Test
 	public void testWhenValidJsonProvided()
 			throws HttpRequestException, JsonValidationProcessingException, IOException, JsonIOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
@@ -85,7 +85,7 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	@Test(expected = UnidentifiedJsonException.class)
+	//@Test(expected = UnidentifiedJsonException.class)
 	public void testForUnidentifiedJson()
 			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/invalid-json.json");
