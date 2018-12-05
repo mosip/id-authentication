@@ -27,7 +27,7 @@ import io.mosip.kernel.masterdata.service.IdTypeService;
 @RestController
 public class IdTypeController {
 	/**
-	 * Autowired reference to IdService.
+	 * Autowire reference to IdService.
 	 */
 	@Autowired
 	IdTypeService idService;

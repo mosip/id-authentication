@@ -392,7 +392,7 @@ public class MasterdataIntegrationTest {
 	private void deviceSetup() {
 		List<Device> deviceList = new ArrayList<>();
 		device = new Device();
-		device.setCode("1001");
+		device.setId("1001");
 		device.setName("laptop");
 		device.setSerialNum("1234567890");
 		device.setIpAddress("100.100.100.80");
