@@ -48,7 +48,7 @@ import sun.security.pkcs11.SunPKCS11;
  *
  */
 @Component
-public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore,InitializingBean {
+public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore, InitializingBean {
 
 	/**
 	 * Common name for generating certificate
@@ -73,30 +73,30 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 */
 	@Value("${mosip.kernel.keymanager.softhsm.certificate.country}")
 	private String country;
-	
-	@Value("${mosip.kernel.keymanager.softhsm.config-path}") 
+
+	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
 	private String configPath;
-	
-	@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") 
+
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-type}")
 	private String keystoreType;
-	
-	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") 
+
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}")
 	private String keystorePass;
 
-   /**
+	/**
 	 * The Keystore instance
 	 */
 	private KeyStore keyStore;
-	
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		    Provider provider = setupProvider(configPath);
-			addProvider(provider);
-			this.keyStore = getKeystoreInstance(keystoreType, provider);
-			loadKeystore();
+		Provider provider = setupProvider(configPath);
+		addProvider(provider);
+		this.keyStore = getKeystoreInstance(keystoreType, provider);
+		loadKeystore();
 	}
-	
-   /**
+
+	/**
 	 * Setup a new SunPKCS11 provider
 	 * 
 	 * @param configPath
@@ -109,7 +109,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 			provider = new SunPKCS11(configPath);
 		} catch (ProviderException providerException) {
 			throw new NoSuchSecurityProviderException(KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorCode(),
-					KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage());
+					KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage(), providerException);
 		}
 		return provider;
 	}
@@ -376,7 +376,6 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
-	
 
 	public void setKeyStore(KeyStore keyStore) {
 		this.keyStore = keyStore;

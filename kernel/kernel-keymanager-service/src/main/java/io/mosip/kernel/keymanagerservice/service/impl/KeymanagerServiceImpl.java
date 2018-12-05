@@ -230,23 +230,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	private Map<String, List<KeyAlias>> getKeyAliases(String applicationId, String referenceId,
 			LocalDateTime timeStamp) {
 		Map<String, List<KeyAlias>> hashmap = new HashMap<>();
-		List<KeyAlias> keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId);
+		List<KeyAlias> keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId)
+				.stream()
+				.sorted((alias1, alias2) -> alias1.getKeyGenerationTime().compareTo(alias2.getKeyGenerationTime()))
+				.collect(Collectors.toList());
 		List<KeyAlias> currentKeyAliases = keyAliases.stream().filter(keyAlias -> isValidTimestamp(timeStamp, keyAlias))
 				.collect(Collectors.toList());
 		hashmap.put(KeyManagerConstant.KEYALIAS, keyAliases);
 		hashmap.put(KeyManagerConstant.CURRENTKEYALIAS, currentKeyAliases);
 		return hashmap;
-	}
-
-	/**
-	 * @param timeStamp
-	 * @param keyAlias
-	 * @return
-	 */
-	private boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
-		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
-				|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
-						&& timeStamp.isBefore(keyAlias.getKeyExpiryTime()));
 	}
 
 	/**
@@ -262,23 +254,84 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			throw new InvalidApplicationIdException(KeymanagerErrorConstant.APPLICATIONID_NOT_VALID.getErrorCode(),
 					KeymanagerErrorConstant.APPLICATIONID_NOT_VALID.getErrorMessage());
 		}
-		LocalDateTime expiryTime = null;
-		final LocalDateTime policyTime = timeStamp.plusDays(keyPolicy.get().getValidityInDays());
+		LocalDateTime policyExpiryTime = timeStamp.plusDays(keyPolicy.get().getValidityInDays());
 		if (!keyAlias.isEmpty()) {
-			List<KeyAlias> overlapKeyAliases = keyAlias.stream().filter(alias -> isValidTimestamp(policyTime, alias))
-					.collect(Collectors.toList());
-			if (overlapKeyAliases.size() > 1) {
+			for (KeyAlias alias : keyAlias) {
+				if (isOverlapping(timeStamp, policyExpiryTime, alias.getKeyGenerationTime(),
+						alias.getKeyExpiryTime())) {
+					policyExpiryTime = alias.getKeyGenerationTime().minusSeconds(1);
+					break;
+				}
+			}
+		}
+		return policyExpiryTime;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.keymanager.service.KeymanagerService#decryptSymmetricKey(java
+	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
+	 */
+	@Override
+	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
+
+		List<KeyAlias> currentKeyAlias;
+		LocalDateTime timeStamp = symmetricKeyRequestDto.getTimeStamp();
+		String referenceId = symmetricKeyRequestDto.getReferenceId();
+		String applicationId = symmetricKeyRequestDto.getApplicationId();
+		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
+
+		if (!isValidReferenceId(referenceId)) {
+			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeyManagerConstant.CURRENTKEYALIAS);
+		} else {
+			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
+					.get(KeyManagerConstant.CURRENTKEYALIAS);
+		}
+
+		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
+			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+		} else if (currentKeyAlias.size() == 1) {
+			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
+			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
+			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
+					keymanagerUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
+			keyResponseDto.setSymmetricKey(keymanagerUtil.encodeBase64(decryptedSymmetricKey));
+		}
+		return keyResponseDto;
+	}
+
+	/**
+	 * @param privateKey
+	 * @param referenceId
+	 * @param fetchedKeyAlias
+	 * @return
+	 * @throws CryptoException
+	 */
+	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
+
+		if (!isValidReferenceId(referenceId)) {
+			return keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
+		} else {
+			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyDbStore = keyStoreRepository
+					.findByAlias(fetchedKeyAlias.getAlias());
+			if (!keyDbStore.isPresent()) {
 				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
-			} else if (overlapKeyAliases.size() == 1) {
-				expiryTime = overlapKeyAliases.get(0).getKeyGenerationTime().minusSeconds(1);
-			} else if (overlapKeyAliases.isEmpty()) {
-				expiryTime = policyTime;
 			}
-		} else {
-			expiryTime = policyTime;
+			PrivateKey masterPrivateKey = keyStore.getPrivateKey(keyDbStore.get().getMasterAlias());
+			try {
+				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(keyDbStore.get().getPrivateKey(),
+						masterPrivateKey);
+				return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decryptedPrivateKey));
+			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
+					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage());
+			}
 		}
-		return expiryTime;
 	}
 
 	/**
@@ -313,70 +366,35 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyStoreRepository.save(keymanagerUtil.setMetaData(keyDbStore));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.keymanager.service.KeymanagerService#decryptSymmetricKey(java
-	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
+	/**
+	 * @param timeStamp
+	 * @param keyAlias
+	 * @return
 	 */
-	@Override
-	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
-
-		List<KeyAlias> currentKeyAlias;
-		LocalDateTime timeStamp = symmetricKeyRequestDto.getTimeStamp();
-		String referenceId = symmetricKeyRequestDto.getReferenceId();
-		String applicationId = symmetricKeyRequestDto.getApplicationId();
-		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
-
-		if (referenceId == null || referenceId.trim().isEmpty()) {
-			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeyManagerConstant.CURRENTKEYALIAS);
-		} else {
-			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
-					.get(KeyManagerConstant.CURRENTKEYALIAS);
-		}
-
-		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
-			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
-					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
-		} else if (currentKeyAlias.size() == 1) {
-			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
-			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
-			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
-					keymanagerUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-			keyResponseDto.setSymmetricKey(keymanagerUtil.encodeBase64(decryptedSymmetricKey));
-		}
-		return keyResponseDto;
+	private boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
+		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
+				|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
+						&& timeStamp.isBefore(keyAlias.getKeyExpiryTime()));
 	}
 
 	/**
-	 * @param privateKey
-	 * @param referenceId
-	 * @param fetchedKeyAlias
+	 * @param timeStamp
+	 * @param policyExpiryTime
+	 * @param keyGenerationTime
+	 * @param keyExpiryTime
 	 * @return
-	 * @throws CryptoException
 	 */
-	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
-
-		if (referenceId == null || referenceId.trim().isEmpty()) {
-			return keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
-		} else {
-			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyDbStore = keyStoreRepository
-					.findByAlias(fetchedKeyAlias.getAlias());
-			if (!keyDbStore.isPresent()) {
-				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
-						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
-			}
-			PrivateKey masterPrivateKey = keyStore.getPrivateKey(keyDbStore.get().getMasterAlias());
-			try {
-				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(keyDbStore.get().getPrivateKey(),
-						masterPrivateKey);
-				return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decryptedPrivateKey));
-			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
-					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
-				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage());
-			}
-		}
+	private boolean isOverlapping(LocalDateTime timeStamp, LocalDateTime policyExpiryTime,
+			LocalDateTime keyGenerationTime, LocalDateTime keyExpiryTime) {
+		return !timeStamp.isAfter(keyExpiryTime) && !keyGenerationTime.isAfter(policyExpiryTime);
 	}
+
+	/**
+	 * @param referenceId
+	 * @return
+	 */
+	private boolean isValidReferenceId(String referenceId) {
+		return referenceId != null && !referenceId.trim().isEmpty();
+	}
+
 }
