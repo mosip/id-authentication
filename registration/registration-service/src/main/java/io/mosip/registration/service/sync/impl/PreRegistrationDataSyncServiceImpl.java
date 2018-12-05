@@ -31,11 +31,12 @@ import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.SyncManager;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Service
-public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSyncService {
+public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 	/**
 	 * To perform api calls
 	 */
@@ -69,7 +70,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		// prepare request DTO to pass on through REST call
-		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareRequestDTO();
+		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareDataSyncRequestDTO();
 
 		try {
 			// REST call
@@ -79,6 +80,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 			// Get List of responses (Pre-Reg Response)
 			ArrayList<?> preRegistrationResponseList = (ArrayList<?>) preRegistrationResponseDTO.getResponse();
 
+			//TODO dependency kernel
 			HashMap<String, Object> map = (HashMap<String, Object>) preRegistrationResponseList.get(0);
 			ArrayList<String> preregIds = (ArrayList<String>) map.get("preRegistrationIds");
 
@@ -126,7 +128,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 				packet = (byte[]) delegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
 
 				String triggerPoint = (syncJobId != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
-						: getUserId();
+						: getUserIdFromSession();
 
 				if (packet != null) {
 					// see Bala : Get PreRegistrationDTO by taking packet Information
@@ -153,6 +155,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 				setErrorMessage(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR);
 			}
 		} else {
+			//TODO 
 			preRegistrationDTO = new PreRegistrationDTO();
 			preRegistrationDTO.setAppointmentDate(preRegistration.getAppointmentDate());
 			preRegistrationDTO.setPacketPath(preRegistration.getPacketPath());
@@ -171,11 +174,15 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
 		return responseDTO;
 	}
+	
+	private void savePreRegistration(String preRegId) {
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#getPreRegistrations(java.util.List)
 	 */
-	public ResponseDTO getPreRegistrations(List<String> preRegIds) {
+	private ResponseDTO getPreRegistrations(List<String> preRegIds) {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
@@ -195,7 +202,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 
 	}
 
-	private PreRegistrationDataSyncDTO prepareRequestDTO() {
+	private PreRegistrationDataSyncDTO prepareDataSyncRequestDTO() {
 
 		// prepare required DTO to send through API
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
@@ -209,7 +216,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 		preRegistrationDataSyncRequestDTO.setFromDate(reqTime);
 		preRegistrationDataSyncRequestDTO.setRegClientId(RegistrationConstants.REGISTRATION_CLIENT_ID);
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(preRegistrationDataSyncRequestDTO.getFromDate()));
-		preRegistrationDataSyncRequestDTO.setUserId(getUserId());
+		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
 		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
 
@@ -243,15 +250,7 @@ public class PreRegistrationDataSyncServiceImpl implements PreRegistrationDataSy
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 	}
 
-	private String getUserId() {
-
-		String userId = null;
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		if (userContext != null) {
-			userId = userContext.getUserId();
-		}
-		return userId;
-	}
+	
 
 	private Timestamp getToDate(Timestamp fromDate) {
 		Calendar cal = Calendar.getInstance();

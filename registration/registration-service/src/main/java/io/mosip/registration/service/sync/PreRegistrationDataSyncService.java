@@ -12,25 +12,19 @@ import io.mosip.registration.dto.ResponseDTO;
 public interface PreRegistrationDataSyncService {
 
 	/**
-	 * Retriev all preregistartion id's
+	 * Retrive all preregistartion id's
 	 * @return response DTO
 	 */
 	public ResponseDTO getPreRegistrationIds();
 	
 	/**
-	 * Retrieve pre registrations
+	 * Retrive pre registrations
 	 * @param syncJobId the job which it triggered
 	 * @return response DTO
 	 */
 	public ResponseDTO getPreRegistrationIds(String syncJobId);
 
-	/**
-	 * get list of pre Registartions
-	 * @param preRegId list
-	 * @return response DTO
-	 */
-	public ResponseDTO getPreRegistrations(List<String> preRegId);
-
+	
 	/**
 	 * Get Pre Registration
 	 * @param preRegistrationId preRegId
