@@ -35,4 +35,8 @@ export class SharedService {
   updateNameList(index: number, nameList: NameList) {
     this.nameList[index] = nameList;
   }
+
+  resetNameList() {
+    this.nameList = [];
+  }
 }

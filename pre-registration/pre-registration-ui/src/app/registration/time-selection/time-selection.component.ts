@@ -18,7 +18,7 @@ export class TimeSelectionComponent implements OnInit {
   numbers: number[];
   selectedCard = 0;
   selectedTile = null;
-  limit = 3;
+  limit = [];
   showAddButton = false;
   names: NameList[];
   deletedNames = [];
@@ -32,6 +32,8 @@ export class TimeSelectionComponent implements OnInit {
   ngOnInit() {
     this.numbers = Array(10).fill(0).map((x, i) => i); // [0,1,2,3,4]
     this.names = this.sharedService.getNameList();
+    this.sharedService.resetNameList();
+    console.log('in onInit', this.names);
     this.dataService.getAvailabilityData(this.registrationCenter.id).subscribe(response => {
       this.formatJson(response['response'].centerDetails);
     }, error => {
@@ -66,12 +68,12 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   changeLimit(): void {
-    this.limit += 2;
+    this.limit[this.selectedCard] += 2;
   }
 
   itemDelete(index: number): void {
-    this.deletedNames.push(this.names[index]);
-    this.names.splice(index, 1);
+    this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
+    this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
     console.log(index, 'item to be deleted from card', this.deletedNames);
     this.showAddButton = true;
   }
@@ -85,7 +87,14 @@ export class TimeSelectionComponent implements OnInit {
         names: this.deletedNames
       }
     }).afterClosed().subscribe(addedList => {
-      console.log(addedList);
+      addedList.forEach(item => {
+        // tslint:disable-next-line:max-line-length
+        if (this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.length < this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].availability) {
+          this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(item);
+        } else {
+          this.deletedNames.push(item);
+        }
+      });
       if (this.deletedNames.length === 0) {
         this.showAddButton = false;
       }
@@ -121,16 +130,15 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   placeNamesInSlots() {
-    let index = 0;
-    console.log(this.names);
-    this.availabilityData.forEach(data => {
-      data.timeSlots.forEach(slot => {
-        while (slot.names.length <= slot.availability && this.names.length !== 0) {
-          slot.names.push(this.names[index]);
-          this.names.splice(index, 1);
-          index++;
+    console.log('in plot function', this.names);
+    this.availabilityData[this.selectedTile].timeSlots.forEach(slot => {
+      if (this.names.length !== 0) {
+        while (slot.names.length < slot.availability && this.names.length !== 0) {
+          slot.names.push(this.names[0]);
+          this.names.splice(0, 1);
         }
-      });
+        this.limit.push(3);
+      }
     });
     console.log(this.availabilityData);
   }
