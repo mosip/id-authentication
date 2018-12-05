@@ -39,7 +39,7 @@ public class MachineTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
-	@PostMapping("/machinetypes")
+	@PostMapping("/v1.0/machinetypes")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves MachineType and return Machine code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = CodeAndLanguageCodeID.class),

@@ -49,7 +49,7 @@ public class MachineController {
 	 * @param langcode
 	 * @return machine detail based on given Machine ID and Language code
 	 */
-	@GetMapping(value = "/machines/{id}/{langcode}")
+	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
 	public MachineResponseIdDto getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode ) {
 		return machineService.getMachineIdLangcode(machineId, langCode);
@@ -64,7 +64,7 @@ public class MachineController {
 	 * @return machine detail based on given Language code
 	 */
 
-	@GetMapping(value = "/machines/{langcode}")
+	@GetMapping(value = "/v1.0/machines/{langcode}")
 	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
 		return machineService.getMachineLangcode(langCode);
 
@@ -75,7 +75,7 @@ public class MachineController {
 	 * 
 	 * @return all machines details
 	 */
-	@GetMapping(value = "/machines")
+	@GetMapping(value = "/v1.0/machines")
 	public MachineResponseDto getMachineAll() {
 		return machineService.getMachineAll();
 
@@ -88,7 +88,7 @@ public class MachineController {
 	 *            input from user Machine  DTO
 	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/machines")
+	@PostMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),

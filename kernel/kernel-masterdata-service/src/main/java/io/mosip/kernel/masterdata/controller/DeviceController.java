@@ -21,13 +21,13 @@ import io.mosip.kernel.masterdata.service.DeviceService;
  * Controller with api to save and get Device Details
  * 
  * @author Megha Tanga
- * @author Sidhant Agarwal	
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
 
 @RestController
-@RequestMapping(value = "/devices")
+@RequestMapping(value = "/v1.0/devices")
 public class DeviceController {
 
 	/**
