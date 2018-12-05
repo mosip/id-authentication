@@ -26,7 +26,7 @@ import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
  *
  */
 @RestController
-@RequestMapping(value = "/packetrejectionreasons")
+@RequestMapping(value = "/v1.0/packetrejectionreasons")
 public class PacketRejectionReasonController {
 	/**
 	 * creates instance of service class {@link PacketRejectionReasonService}

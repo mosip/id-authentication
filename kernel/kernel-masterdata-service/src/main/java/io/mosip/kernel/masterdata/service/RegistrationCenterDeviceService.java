@@ -28,7 +28,7 @@ public interface RegistrationCenterDeviceService {
 	 *             device id. Like if registration center id or device id is not
 	 *             valid or not present in database.
 	 */
-	public ResponseRegistrationCenterDeviceDto mapRegistrationCenterAndDevice(
+	public ResponseRegistrationCenterDeviceDto saveRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto);
 
 }

@@ -7,9 +7,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Device Details for given Language code and device type

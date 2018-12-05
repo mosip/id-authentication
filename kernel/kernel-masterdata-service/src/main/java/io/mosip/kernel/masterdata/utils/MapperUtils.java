@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,23 +20,19 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.converter.MachineHistroyConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
@@ -90,19 +87,18 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
-				if (!Modifier.isStatic(sfield.getModifiers()) || !Modifier.isFinal(sfield.getModifiers())) {
-					sfield.setAccessible(true);
-					if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
-						setFieldValue(sfield.get(source), destination);
-						sfield.setAccessible(false);
-						isIdMapped = true;
-					} else if (!isSuperMapped) {
-						setBaseFieldValue(source, destination);
-						isSuperMapped = true;
-					} else {
-						setFieldValue(source, destination);
-						break;
-					}
+
+				sfield.setAccessible(true);
+				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+					setFieldValue(sfield.get(source), destination);
+					sfield.setAccessible(false);
+					isIdMapped = true;
+				} else if (!isSuperMapped) {
+					setBaseFieldValue(source, destination);
+					isSuperMapped = true;
+				} else {
+					setFieldValue(source, destination);
+					break;
 				}
 			}
 		} catch (Exception e) {
@@ -114,10 +110,17 @@ public class MapperUtils {
 
 	private <S, D> void setBaseFieldValue(S source, D destination) {
 		String sourceSupername = source.getClass().getSuperclass().getName();
-		String objectClassName = Object.class.getName();
-		if (!sourceSupername.equals(objectClassName)) {
+		String destinationSupername = destination.getClass().getSuperclass().getName();
+		String baseEntityClassName = BaseEntity.class.getName();
+		if (sourceSupername.equals(baseEntityClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			setFieldValues(source, destination, sourceFields, destinationFields);
+			return;
+		}
+		if (destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
 			setFieldValues(source, destination, sourceFields, destinationFields);
 		}
 
@@ -135,6 +138,9 @@ public class MapperUtils {
 	private <D, S> void setFieldValues(S source, D destination, Field[] sourceFields, Field[] destinationFields) {
 		try {
 			for (Field sfield : sourceFields) {
+				if (Modifier.isStatic(sfield.getModifiers()) || Modifier.isFinal(sfield.getModifiers())) {
+					continue;
+				}
 				sfield.setAccessible(true);
 				for (Field dfield : destinationFields) {
 					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
@@ -187,18 +193,6 @@ public class MapperUtils {
 		ef.setAccessible(false);
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
-
-	public List<MachineHistoryDto> mapMachineHistory(List<MachineHistory> machineHistoryList) {
-		List<MachineHistoryDto> responseDto = new ArrayList<>();
-		machineHistoryList.forEach(p -> {
-			MachineHistoryDto dto = new MachineHistoryDto();
-			dataMapperImpl.map(p, dto, new MachineHistroyConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
-
-		return responseDto;
-	}
 
 	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
 			List<RegistrationCenter> list) {
@@ -294,7 +288,7 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			// deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
+			deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
@@ -336,24 +330,5 @@ public class MapperUtils {
 	 * machineDto.setLangCode(machine.getLangCode());
 	 * machineDto.setMacAddress(machine.getMacAddress()); return machineDto; }
 	 */
-
-	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
-		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
-
-		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
-			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
-			deviceSpecificationDto.setId(deviceSpecification.getId());
-			deviceSpecificationDto.setName(deviceSpecification.getName());
-			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
-			deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());
-			deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
-			deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
-			deviceSpecificationDto.setModel(deviceSpecification.getModel());
-			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
-			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
-			deviceSpecificationDtoList.add(deviceSpecificationDto);
-		}
-		return deviceSpecificationDtoList;
-	}
 
 }

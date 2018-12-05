@@ -33,7 +33,7 @@ public class MachineSpecificationController {
 	 *            input from user Machine specification DTO
 	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/machinespecifications")
+	@PostMapping("/v1.0/machinespecifications")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine code and Languge Code", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = IdResponseDto.class),

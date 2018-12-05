@@ -37,7 +37,7 @@ public class DocumentTypeController {
 	DocumentTypeService documentTypeService;
 
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
-	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
+	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("documentcategorycode") String documentcategoryCode) {
@@ -47,7 +47,7 @@ public class DocumentTypeController {
 
 	}
 
-	@PostMapping("/documenttypes")
+	@PostMapping("/v1.0/documenttypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.createDocumentTypes(types), HttpStatus.CREATED);
