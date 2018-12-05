@@ -20,7 +20,7 @@ export class DataStorageService {
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
-  AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/booking/availability';
+  AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/book/availability';
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
