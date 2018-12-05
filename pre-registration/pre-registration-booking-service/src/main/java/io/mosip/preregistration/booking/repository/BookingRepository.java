@@ -20,7 +20,7 @@ import io.mosip.preregistration.booking.entity.AvailibityEntity;
 @Repository("BookingRepository")
 @Transactional
 public interface BookingRepository extends BaseRepository<AvailibityEntity, String> {
-	public static final String distDate = "SELECT DISTINCT reg_date  FROM prereg.availability where regcntr_id=:regcntrId";
+	public static final String distDate = "SELECT DISTINCT availability_date  FROM prereg.reg_available_slot where regcntr_id=:regcntrId order by availability_date ASC";
 
 
 	public List<AvailibityEntity> findByRegcntrIdAndRegDate(String regcntrId, String regDate);

@@ -26,7 +26,7 @@ public class AvailabilityPK implements Serializable{
 	@Column(name = "regcntr_id")
 	private String regcntrId;
 	
-	@Column(name = "reg_date")
+	@Column(name = "availability_date")
 	private String regDate;
 	
 	@Column(name = "slot_from_time")
