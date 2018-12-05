@@ -10,6 +10,7 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -24,6 +25,7 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -54,9 +56,16 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
+	/** The uin repository. */
+	@Autowired
+	UinRepository uinRepository;
+	
 	/** The vid repository. */
 	@Autowired
 	private VIDRepository vidRepository;
+	
+	@Autowired
+	private IdRepoServiceImpl idRepoServiceImpl;
 
 	/*
 	 * (non-Javadoc)
@@ -66,7 +75,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * String)
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
+		IdResponseDTO idRepo = null;
 		String refId = null;
+		
+		idRepo = idRepoServiceImpl.getIdRepo(uin); // REST CALL IdRepo service
 		//FIXME Use IdRepo service
 //		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
 //		if (uinEntityOpt.isPresent()) {
@@ -85,7 +97,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		auditData();
 
 		//return refId;
-		return "12345";
+		//return "12345";
+		return idRepo.getRegistrationId(); 
 	}
 
 	/**
@@ -135,21 +148,23 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *             the id validation failed exception
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
-		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
-		if (!vidEntityOpt.isPresent()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
-		} 
-		VIDEntity vidEntity = vidEntityOpt.get();
-		if (!vidEntity.isActive()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
-		}
-		
-		Date currentDate = new Date();
-		if(!DateUtils.before(currentDate, vidEntity.getExpiryDate())) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
-		}
-		
-		String refId = vidEntity.getRefId();
+		IdResponseDTO idRepo = null;
+		String refId = null;
+//		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
+//		if (!vidEntityOpt.isPresent()) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
+//		} 
+//		VIDEntity vidEntity = vidEntityOpt.get();
+//		if (!vidEntity.isActive()) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
+//		}
+//		
+//		Date currentDate = new Date();
+//		if(!DateUtils.before(currentDate, vidEntity.getExpiryDate())) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
+//		}
+//		
+//		 refId = vidEntity.getRefId();
 		
 		//FIXME Use IdRepo service
 //		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
@@ -160,7 +175,26 @@ public class IdAuthServiceImpl implements IdAuthService {
 //		
 //		doValidateUIN(uinEntityOpt.get());
 	
-		return refId;
+		// Use IdRepo service
+		Optional<String> findRefIdByVid = vidRepository.findRefIdByVid(vid);
+		if (findRefIdByVid.isPresent()) {
+
+			 refId = findRefIdByVid.get();
+			Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
+
+			if (findUinByRefId.isPresent()) {
+				String uin = findUinByRefId.get();
+				try {
+					idRepo = idRepoServiceImpl.getIdRepo(uin);
+				} catch (IdAuthenticationBusinessException e) {
+					
+				}
+			}
+
+		}
+		
+		//return refId;
+		return idRepo.getRegistrationId();
 	}
 
 	/**

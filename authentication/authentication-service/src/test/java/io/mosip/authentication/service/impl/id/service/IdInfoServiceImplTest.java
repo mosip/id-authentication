@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,7 @@ public class IdInfoServiceImplTest {
 		ReflectionTestUtils.setField(IdInfoService, "value", value);
 	}
 
+	@Ignore
 	@Test
 	public void getMapvalue() throws IdAuthenticationDaoException {
 		Map valuemap = IdInfoService.getIdInfo("12232323");

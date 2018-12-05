@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -52,11 +53,12 @@ import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.impl.indauth.builder.AuthType;
 import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
+import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -132,14 +134,19 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private BioAuthService bioAuthService;
 
+	@Autowired
+	private IdRepoServiceImpl idRepoServiceImpl;
+
+	@Autowired
+	UinRepository uinRepository;
+
 	/**
 	 * Process the authorisation type and authorisation response is returned.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 * @throws IdAuthenticationDaoException
 	 * @throws ParseException
 	 */
@@ -149,14 +156,19 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 
 		String refId = processIdType(authRequestDTO);
+
+		// new by rakesh
+		IdResponseDTO idRepoResponse = processIdRepoRequest(authRequestDTO);
+		
+		
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		try {
-		idInfo = getIdEntity(refId);
+			idInfo = getIdEntity(refId);
 
-		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-				.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
+			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
+					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -164,8 +176,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
-			if(idInfo != null) {
-				sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, isAuth);
+			if (idInfo != null) {
+				sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
 			}
 		}
 
@@ -173,7 +185,8 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO, Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
+	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO,
+			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
@@ -221,12 +234,11 @@ public class AuthFacadeImpl implements AuthFacade {
 		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
 		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
-		if(isAuth) {
+		if (isAuth) {
 			notificationType = env.getProperty("auth.notification.type");
-		}else  {
+		} else {
 			notificationType = env.getProperty("internal.auth.notification.type");
 		}
-		
 
 		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
 	}
@@ -236,17 +248,15 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * called according to authorisation type. reference Id is returned in
 	 * AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param idInfo 
-	 * @param refId
-	 *            the ref id
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo
+	 * @param refId          the ref id
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String refId)
-			throws IdAuthenticationBusinessException {
+	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
+			Map<String, List<IdentityInfoDTO>> idInfo, String refId) throws IdAuthenticationBusinessException {
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getAuthType().isOtp()) {
@@ -285,8 +295,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			try {
 
 				// TODO log authStatus - authType, response
-				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo,
-						refId);
+				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo, refId);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
@@ -296,7 +305,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 		}
 
-		
 		return authStatusList;
 	}
 
@@ -304,11 +312,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
@@ -362,8 +369,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * 
 	 * Process the KycAuthRequestDTO to integrate with KycService
 	 * 
-	 * @param kycAuthRequestDTO
-	 *            is DTO of KycAuthRequestDTO
+	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
 	 * 
 	 */
 	@Override
@@ -373,7 +379,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		String key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
 		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(refId);
 		KycInfo info = kycService.retrieveKycInfo(refId, KycType.getEkycAuthType(env.getProperty(key)),
-				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq(), idInfo );
+				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq(), idInfo);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
 		KycResponseDTO response = new KycResponseDTO();
@@ -395,7 +401,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setResTime(resTime);
 		return kycAuthResponseDTO;
 	}
-	
+
 	/**
 	 * Gets the demo entity.
 	 *
@@ -415,6 +421,39 @@ public class AuthFacadeImpl implements AuthFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 
+	}
+
+	private IdResponseDTO processIdRepoRequest(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+		IdResponseDTO idRepo = null;
+
+		String reqType = authRequestDTO.getIdvIdType();
+
+		if (reqType.equals(IdType.UIN.getType())) {
+			idRepo = idRepoServiceImpl.getIdRepo(authRequestDTO.getIdvId());
+
+		} else {
+			// Optional<String> findRefIdByVid =
+			// vidRepository.findRefIdByVid(authRequestDTO.getIdvId());
+			// if (findRefIdByVid.isPresent()) {
+
+			// String refId = findRefIdByVid.get();
+			// Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
+
+			// if (findUinByRefId.isPresent()) {
+			// String uin = findUinByRefId.get();
+			// idRepo = idRepoServiceImpl.getIdRepo(uin);
+			// }
+			// }
+
+			Optional<String> uinNumber = uinRepository
+					.findUinFromUinTableByJoinTableUinAndVid(authRequestDTO.getIdvId());
+			if (uinNumber.isPresent()) {
+				String uin = uinNumber.get();
+				idRepo = idRepoServiceImpl.getIdRepo(uin);
+			}
+		}
+
+		return idRepo;
 	}
 
 }

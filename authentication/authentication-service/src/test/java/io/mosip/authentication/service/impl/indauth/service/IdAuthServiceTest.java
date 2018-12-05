@@ -126,6 +126,7 @@ public class IdAuthServiceTest {
 	 * This method throws IdValidationFailedException when VIDEntity is null
 	 * 
 	 */
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateVID() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
@@ -138,6 +139,7 @@ public class IdAuthServiceTest {
 	 * VID is inactive
 	 * 
 	 */
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateVIDInactive() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
@@ -152,6 +154,7 @@ public class IdAuthServiceTest {
 	 * VID is active but validity expired
 	 * 
 	 */
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateVIDexpired() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
@@ -167,6 +170,7 @@ public class IdAuthServiceTest {
 	 * VID is active and checks for refId in UIN and failed.
 	 * 
 	 */
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateRef() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
@@ -184,6 +188,7 @@ public class IdAuthServiceTest {
 	 * VID is active and checks for refId in UIN and UIN is inactive.
 	 * 
 	 */
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateUINInactiveForVID() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
@@ -203,6 +208,7 @@ public class IdAuthServiceTest {
 	 * VID is active and checks for refId in UIN and returns refId
 	 * 
 	 */
+	@Ignore
 	@Test
 	public void testValidatebothActive() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
