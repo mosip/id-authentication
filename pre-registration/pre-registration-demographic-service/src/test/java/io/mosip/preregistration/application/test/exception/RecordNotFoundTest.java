@@ -48,11 +48,11 @@ public void notFoundException() throws FileNotFoundException, IOException, Parse
 	
 	jsonObject = (JSONObject) parser.parse(new FileReader(file));
 	
-   Mockito.when(preRegistrationService.addRegistration(jsonObject.toJSONString()))
+   Mockito.when(preRegistrationService.addPreRegistration(jsonObject.toJSONString()))
 			.thenThrow(recordNotFoundException);
 	try {
 
-		preRegistrationService.addRegistration(jsonObject.toJSONString());
+		preRegistrationService.addPreRegistration(jsonObject.toJSONString());
 		fail();
 
 	} catch (RecordNotFoundException e) {

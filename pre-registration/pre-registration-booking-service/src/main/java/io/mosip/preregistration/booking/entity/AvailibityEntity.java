@@ -23,7 +23,7 @@ import lombok.ToString;
 
 @Component
 @Entity
-@Table(name = "availability", schema = "prereg")
+@Table(name = "reg_available_slot", schema = "prereg")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class AvailibityEntity implements Serializable {
 	
 	@Id	
 	@AttributeOverrides({ @AttributeOverride(name = "regcntrId", column = @Column(name = "regcntr_id")),
-		@AttributeOverride(name = "regDate", column = @Column(name = "reg_date")),
+		@AttributeOverride(name = "regDate", column = @Column(name = "availability_date")),
 		@AttributeOverride(name = "fromTime", column = @Column(name = "slot_from_time")),
 		@AttributeOverride(name = "toTime", column = @Column(name = "slot_to_time"))})
 	
@@ -51,6 +51,9 @@ public class AvailibityEntity implements Serializable {
 	
 	@Column(name = "availabilityNo")
 	private int availabilityNo;
+	
+	@Column(name = "available_kiosks")
+	private int availableKiosks;
 
 	@Column(name = "cr_by")
 	private String crBy;

@@ -21,7 +21,7 @@ import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
-import io.mosip.preregistration.application.exception.JsonValidationException;
+import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 
 
@@ -56,8 +56,8 @@ public class JsonValidationTest {
 //				
 	//	Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json")).thenThrow(HttpRequestException.class);
 		
-Mockito.when(preRegistrationService.addRegistration(jsonObject.toJSONString())).thenThrow(JsonValidationException.class);
-preRegistrationService.addRegistration(jsonObject.toJSONString());
+Mockito.when(preRegistrationService.addPreRegistration(jsonObject.toJSONString())).thenThrow(JsonValidationException.class);
+preRegistrationService.addPreRegistration(jsonObject.toJSONString());
 	
 	}
 }

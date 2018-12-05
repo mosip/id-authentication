@@ -1,7 +1,6 @@
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +11,15 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class StatusDto implements Serializable{
+public class PreRegistartionStatusDTO implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1088172470058130997L;
-	
+
 	private String PreRegistartionId;
-	
+
 	private String StatusCode;
 
 }

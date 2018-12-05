@@ -1,7 +1,7 @@
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 
@@ -14,12 +14,11 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CreateDto implements Serializable {
+public class CreatePreRegistrationDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
-	
-	
+
 	/** The pre-registration-Id. */
 	private String prId;
 
@@ -27,14 +26,14 @@ public class CreateDto implements Serializable {
 	private String createdBy;
 
 	/** The create date time. */
-	private Timestamp createDateTime;
+	private Date createDateTime;
 
 	/** The updated by. */
 	private String updatedBy;
 
 	/** The update date time. */
-	private Timestamp updateDateTime;
-	 
+	private Date updateDateTime;
+
 	/**
 	 * 
 	 */

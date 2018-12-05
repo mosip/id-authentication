@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/booking/")
+@RequestMapping("/v0.1/pre-registration/book/")
 @Api(tags = "Booking")
 @CrossOrigin("*")
 public class BookingController {
@@ -42,7 +42,7 @@ public class BookingController {
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
-	public ResponseEntity<ResponseDto<String>> retrievePreRegistrations() {
+	public ResponseEntity<ResponseDto<String>> saveAvailability() {
 		ResponseDto<String> response=bookingService.addAvailability();
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
