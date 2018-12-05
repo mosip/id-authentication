@@ -208,48 +208,7 @@ public class UMCValidatorTest {
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	@Test
-	public void UMCMappingIdsNotFoundTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
-		
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
+	
 	@Test
 	public void machineIdNotFoundTest() throws ApisResourceAccessException {
 		RegistrationCenterDto rcdto=new RegistrationCenterDto();
