@@ -53,21 +53,21 @@ public class DeviceServiceImplTest {
 	public void getDeviceLangCodeTest() {
 
 		Device device = new Device();
-		device.setCode("1001");
+		device.setId("1001");
 		device.setName("Laptop");
 		device.setLangCode("ENG");
 		List<Device> deviceList = new ArrayList<>();
 		deviceList.add(device);
 
 		DeviceDto deviceDto = new DeviceDto();
-		deviceDto.setCode("1001");
+		deviceDto.setId("1001");
 		deviceDto.setName("Laptop");
 		deviceDto.setName("ENG");
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
 		deviceDtoList.add(deviceDto);
 		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(deviceList);
-		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
+		Mockito.when(objectMapperUtil.mapAllNew(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
 		DeviceResponseDto actual = deviceServiceImpl.getDeviceLangCode("ENG");
 		assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);

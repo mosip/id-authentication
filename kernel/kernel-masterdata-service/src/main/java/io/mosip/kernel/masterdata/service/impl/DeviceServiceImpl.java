@@ -84,7 +84,8 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
-			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
+			deviceDtoList = objectMapperUtil.mapAllNew(deviceList, DeviceDto.class);
+					
 		} else {
 			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -148,7 +149,8 @@ public class DeviceServiceImpl implements DeviceService {
 	public CodeResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device;
 
-		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		//Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		Device entity = metaDataUtils.setDeviceCreateMetaData(deviceDto.getRequest(), Device.class);
 		try {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException e) {

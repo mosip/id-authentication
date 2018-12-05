@@ -48,7 +48,7 @@ public class DeviceControllerTest1 {
                                 deviceResponseDto = new DeviceResponseDto();
                                 List<DeviceDto> deviceDtos = new ArrayList<>();
                                 DeviceDto  deviceDto = new DeviceDto();
-                                deviceDto.setCode("1000");
+                                deviceDto.setId("1000");
                                 deviceDto.setName("HP");
                                 deviceDto.setLangCode("ENG");
                                 deviceDto.setDeviceSpecId("laptopId");
