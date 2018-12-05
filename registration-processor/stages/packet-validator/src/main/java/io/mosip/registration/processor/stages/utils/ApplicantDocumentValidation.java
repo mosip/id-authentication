@@ -15,11 +15,6 @@ import io.mosip.registration.processor.status.dto.SyncTypeDto;
 public class ApplicantDocumentValidation {
 	IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
 	InternalRegistrationStatusDto registrationStatusDto;
-
-	boolean isApplicantDocumentVerified = false;
-	String applicantType;
-	String registrationType;
-	String isVerfied;
 	String regId;
 
 	public ApplicantDocumentValidation(InternalRegistrationStatusDto registrationStatusDto) {
@@ -27,37 +22,41 @@ public class ApplicantDocumentValidation {
 	}
 
 	public boolean validateDocument(Identity identity, String registrationId) {
+		boolean isApplicantDocumentVerified = false;
 		regId = registrationId;
 
-		isVerfied = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.ISVERIFIED.name());
+		String applicantType = identityIterator.getFieldValue(identity.getMetaData(),
+				JsonConstant.APPLICANTTYPE.name());
 
-		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED.name())
-				&& checkDocumentAvailability(identity, DocumentCategory.POB.name())) {
-
-			registrationType = identityIterator.getFieldValue(identity.getMetaData(),
-					JsonConstant.REGISTRATIONTYPE.name());
-			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.name())) {
-
-				applicantType = identityIterator.getFieldValue(identity.getMetaData(),
-						JsonConstant.APPLICANTTYPE.name());
-
-				if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
-						&& checkDocumentAvailability(identity, DocumentCategory.POR.name()))
-					isApplicantDocumentVerified = true;
-
-				else if (applicantType.equalsIgnoreCase(ApplicantType.ADULT.name())
-						&& checkDocumentAvailability(identity, DocumentCategory.POI.name())
-						&& checkDocumentAvailability(identity, DocumentCategory.POA.name())) {
-
-					isApplicantDocumentVerified = true;
-
-				}
-
-			} else
-				return true;
+		if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
+				&& checkDocumentAvailability(identity, DocumentCategory.POR.name())) {
+			isApplicantDocumentVerified = true;
 		}
 
+		else if (applicantType.equalsIgnoreCase(ApplicantType.ADULT.name())
+				&& checkDocumentAvailability(identity, DocumentCategory.POI.name())
+				&& checkDocumentAvailability(identity, DocumentCategory.POA.name()))
+			isApplicantDocumentVerified = true;
+
+		if (isApplicantDocumentVerified) {
+			isApplicantDocumentVerified = validateRegistrationStatus(identity);
+		}
 		return isApplicantDocumentVerified;
+	}
+
+	public boolean validateRegistrationStatus(Identity identity) {
+
+		Boolean isValidStatus = false;
+		String isVerfied = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.ISVERIFIED.name());
+		String registrationType = identityIterator.getFieldValue(identity.getMetaData(),
+				JsonConstant.REGISTRATIONTYPE.name());
+
+		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED.name())
+				&& registrationType.equalsIgnoreCase(SyncTypeDto.NEW.name())
+				&& checkDocumentAvailability(identity, DocumentCategory.POB.name()))
+			isValidStatus = true;
+
+		return isValidStatus;
 	}
 
 	public boolean checkDocumentAvailability(Identity identity, String category) {
