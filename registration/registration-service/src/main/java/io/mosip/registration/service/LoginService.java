@@ -22,7 +22,7 @@ public interface LoginService {
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	Map<String, Object> getModesOfLogin();
+	Map<String, Object> getModesOfLogin(String authType);
 
 	/**
 	 * fetching user details

@@ -2,8 +2,6 @@ package io.mosip.registration.util.biometric;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javafx.scene.image.WritableImage;
 
 /**
@@ -15,7 +13,6 @@ import javafx.scene.image.WritableImage;
  */
 public class FingerprintFacade {
 	
-	@Autowired
 	MosipFingerprintProvider fingerprintProvider;
 
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {

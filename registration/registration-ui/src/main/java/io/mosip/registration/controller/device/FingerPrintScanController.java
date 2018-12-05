@@ -47,7 +47,7 @@ import javafx.stage.Stage;
  * @since 1.0
  */
 @Controller
-public class FingerPrintScanController extends BaseController{
+public class FingerPrintScanController extends BaseController {
 
 	/**
 	 * Instance of {@link Logger}
@@ -265,24 +265,9 @@ public class FingerPrintScanController extends BaseController{
 			paths.filter(Files::isRegularFile).forEach(e -> {
 				File file = e.getFileName().toFile();
 				if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
-					try {
-
-						FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-						byte[] allBytes = Files.readAllBytes(e.toAbsolutePath());
-
-						fingerprintDetailsDTO.setFingerPrint(allBytes);
-						fingerprintDetailsDTO.setFingerType(e.toFile().getParentFile().getName());
-						fingerprintDetailsDTO.setFingerprintImageName(e.toFile().getParentFile().getName());
-						fingerprintDetailsDTO.setNumRetry(1);
-						fingerprintDetailsDTO.setForceCaptured(false);
-						fingerprintDetailsDTO.setQualityScore(90);
-
-						fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
-								.getApplicantBiometricDTO().getSegmentedFingerprints().add(fingerprintDetailsDTO);
-					} catch (IOException ioException) {
-						LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-								ioException.getMessage());
-					}
+					readFinger(e, RegistrationConstants.ISO_FILE_NAME);
+				} else if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
+					readFinger(e, RegistrationConstants.ISO_IMAGE_FILE_NAME);
 				}
 			});
 		} catch (IOException ioException) {
@@ -303,6 +288,32 @@ public class FingerPrintScanController extends BaseController{
 	}
 
 	/**
+	 * Reading finger based on the isoFile type.
+	 *
+	 * @param path        the path
+	 * @param isoFileType the iso file type
+	 */
+	private void readFinger(Path path, String isoFileType) {
+		try {
+
+			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+			byte[] allBytes = Files.readAllBytes(path.toAbsolutePath());
+
+			fingerprintDetailsDTO.setFingerPrint(allBytes);
+			fingerprintDetailsDTO.setFingerType(path.toFile().getParentFile().getName().concat(isoFileType));
+			fingerprintDetailsDTO.setFingerprintImageName(path.toFile().getParentFile().getName().concat(isoFileType));
+			fingerprintDetailsDTO.setNumRetry(1);
+			fingerprintDetailsDTO.setForceCaptured(false);
+			fingerprintDetailsDTO.setQualityScore(90);
+
+			fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+					.getApplicantBiometricDTO().getSegmentedFingerprints().add(fingerprintDetailsDTO);
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
+	}
+
+	/**
 	 * event class to exit from present pop up window.
 	 * 
 	 * @param event
@@ -315,6 +326,9 @@ public class FingerPrintScanController extends BaseController{
 
 	}
 
+	/**
+	 * Scan iris.
+	 */
 	private void scanIris() {
 		try {
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -340,11 +354,11 @@ public class FingerPrintScanController extends BaseController{
 				if (StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)) {
 					irisCaptureController.getLeftIrisImage().setImage(scannedIrisImage);
 					irisCaptureController.setLeftIrisQualityScore(qualityScore);
-					irisType = RegistrationConstants.LEFT;
+					irisType = RegistrationConstants.LEFT.concat(RegistrationConstants.EYE);
 				} else {
 					irisCaptureController.getRightIrisImage().setImage(scannedIrisImage);
 					irisCaptureController.setRightIrisQualityScore(qualityScore);
-					irisType = RegistrationConstants.RIGHT;
+					irisType = RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE);
 				}
 
 				// Create IrisDetailsDTO object
@@ -389,6 +403,12 @@ public class FingerPrintScanController extends BaseController{
 		return true;
 	}
 
+	/**
+	 * Gets the iris scanned image.
+	 *
+	 * @return the iris scanned image
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	private Map<String, Object> getIrisScannedImage() throws RegBaseCheckedException {
 		try {
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -403,7 +423,7 @@ public class FingerPrintScanController extends BaseController{
 			Map<String, Object> scannedIris = new HashMap<>();
 			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
-			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, 80.5);
+			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.5);
 
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");
@@ -423,6 +443,13 @@ public class FingerPrintScanController extends BaseController{
 		}
 	}
 
+	/**
+	 * Gets the finger print scanned image.
+	 *
+	 * @param path the path
+	 * @return the finger print scanned image
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	private Map<String, Object> getFingerPrintScannedImage(String path) throws RegBaseCheckedException {
 		try {
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -436,7 +463,7 @@ public class FingerPrintScanController extends BaseController{
 			Map<String, Object> scannedFingerPrints = new HashMap<>();
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_FORMAT_KEY, "jpg");
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedFingerPrintBytes);
-			scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 80.5);
+			scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
 
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration completed");

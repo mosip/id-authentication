@@ -16,11 +16,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.impl.RegistrationAppLoginDAOImpl;
-import io.mosip.registration.entity.RegistrationAppLoginMethod;
-import io.mosip.registration.entity.RegistrationAppLoginMethodId;
+import io.mosip.registration.dao.impl.RegistrationAppAuthenticationDAOImpl;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethod;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethodId;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.repositories.RegistrationAppLoginRepository;
+import io.mosip.registration.repositories.RegistrationAppAuthenticationRepository;
 
 public class RegistrationAppLoginDAOTest {
 
@@ -28,42 +28,42 @@ public class RegistrationAppLoginDAOTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	private RegistrationAppLoginDAOImpl registrationAppLoginDAOImpl;
+	private RegistrationAppAuthenticationDAOImpl registrationAppLoginDAOImpl;
 
 	@Mock
-	private RegistrationAppLoginRepository registrationAppLoginRepository;
+	private RegistrationAppAuthenticationRepository registrationAppLoginRepository;
 
 	@Test
 	public void getModesOfLoginSuccessTest() throws RegBaseCheckedException {
 
-		RegistrationAppLoginMethod registrationAppLoginMethod = new RegistrationAppLoginMethod();
-		RegistrationAppLoginMethodId registrationAppLoginMethodId = new RegistrationAppLoginMethodId();
+		RegistrationAppAuthenticationMethod registrationAppLoginMethod = new RegistrationAppAuthenticationMethod();
+		RegistrationAppAuthenticationMethodId registrationAppLoginMethodId = new RegistrationAppAuthenticationMethodId();
 		registrationAppLoginMethodId.setLoginMethod("PWD");
 		registrationAppLoginMethod.setMethodSeq(1);
-		registrationAppLoginMethod.setRegistrationAppLoginMethodId(registrationAppLoginMethodId);
-		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
+		registrationAppLoginMethod.setregistrationAppAuthenticationMethodId(registrationAppLoginMethodId);
+		List<RegistrationAppAuthenticationMethod> loginList = new ArrayList<RegistrationAppAuthenticationMethod>();
 		loginList.add(registrationAppLoginMethod);
 
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
+		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(Mockito.anyString())).thenReturn(loginList);
 
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(
-				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
+				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getregistrationAppAuthenticationMethodId().getLoginMethod()));
 		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.PARAM_ONE);
-		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin());
+		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin(Mockito.anyString()));
 	}
 
 	@Test
 	public void getModesOfLoginFailureTest() throws RegBaseCheckedException {
 
-		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
+		List<RegistrationAppAuthenticationMethod> loginList = new ArrayList<RegistrationAppAuthenticationMethod>();
+		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(Mockito.anyString())).thenReturn(loginList);
 
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(
-				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
+				p -> modes.put(String.valueOf(p.getMethodSeq()), p.getregistrationAppAuthenticationMethodId().getLoginMethod()));
 		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.PARAM_ONE);
-		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin());
+		assertEquals(modes, registrationAppLoginDAOImpl.getModesOfLogin(Mockito.anyString()));
 	}
 
 }

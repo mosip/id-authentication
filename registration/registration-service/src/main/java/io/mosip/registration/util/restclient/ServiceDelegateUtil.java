@@ -202,15 +202,8 @@ public class ServiceDelegateUtil {
 		// RequestType
 		String requestClassName = environment.getProperty(serviceName + "." + RegistrationConstants.REQUEST_TYPE);
 		Class<?> requestClass = null;
-		try {
-			requestClass = Class.forName(requestClassName);
-		} catch (ClassNotFoundException classNotFoundException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
-		}
-
 		requestHTTPDTO.setUri(uri);
-		requestHTTPDTO.setClazz(requestClass);
+		requestHTTPDTO.setClazz(Object.class);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare post request method ended");
 

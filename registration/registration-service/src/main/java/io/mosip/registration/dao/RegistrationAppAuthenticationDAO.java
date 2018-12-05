@@ -10,14 +10,14 @@ import java.util.Map;
  *
  */
 
-public interface RegistrationAppLoginDAO {
+public interface RegistrationAppAuthenticationDAO {
 
 	/**
 	 * This method is used to get the Login Mode
 	 * 
 	 * @return Map of Login modes along with the sequence
 	 */
-	Map<String,Object> getModesOfLogin();
+	Map<String, Object> getModesOfLogin(String authType);
 	
 }
 

@@ -31,7 +31,7 @@
             <Font size="10.0" />
          </font>
       </Button>
-      <Button fx:id="biometricsNext" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#saveBiometricDetails" prefHeight="23.0" prefWidth="55.0" text="Next">
+      <Button fx:id="biometricsNext" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="23.0" prefWidth="55.0" text="Next">
          <font>
             <Font size="10.0" />
          </font>

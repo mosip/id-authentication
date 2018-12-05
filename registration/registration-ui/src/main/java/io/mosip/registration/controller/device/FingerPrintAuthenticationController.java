@@ -20,7 +20,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.util.biometric.FingerprintFacade;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
-import io.mosip.registration.validator.AuthenticationValidatorFactory;
+import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -87,7 +87,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	private FingerprintFacade fingerprintFacade = null;
 
 	@Autowired
-	private AuthenticationValidatorFactory validator;
+	private AuthenticationService validator;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

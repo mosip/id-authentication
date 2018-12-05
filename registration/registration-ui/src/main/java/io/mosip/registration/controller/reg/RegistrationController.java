@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,16 +16,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -47,6 +49,9 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.external.PreRegZipHandlingService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -312,6 +317,9 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane authenticationTitlePane;
+	
+	@Autowired
+	PreRegZipHandlingService preRegZipHandlingService;
 
 	@FXML
 	private void initialize() {
@@ -459,6 +467,23 @@ public class RegistrationController extends BaseController {
 
 	}
 
+	@FXML
+	private void fetchPreRegistration() {
+		try {
+			preRegistrationId.getText();
+			RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(
+					FileUtils.readFileToByteArray(new File("C:/Users/M1046540/Desktop/89149679063970.zip")));
+
+			if (registrationDTO != null) {
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
+						registrationDTO);
+				prepareEditPageContent();
+			}
+		} catch (io.mosip.kernel.core.exception.IOException | RegBaseCheckedException | RegBaseUncheckedException e) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "No Details Found for the given  Pre-Registration ID");
+		}
+
+	}
 	/**
 	 * 
 	 * Loading the address detail from previous entry
