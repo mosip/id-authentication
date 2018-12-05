@@ -29,7 +29,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
  *
  */
 @RestController
-@RequestMapping(value = "/locations")
+@RequestMapping(value = "/v1.0/locations")
 public class LocationController {
 
 	/**

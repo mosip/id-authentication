@@ -40,7 +40,7 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
-	@GetMapping("/idtypes/{langcode}")
+	@GetMapping("/v1.0/idtypes/{langcode}")
 	public IdTypeResponseDto getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
 		return idService.getIdTypesByLanguageCode(langCode);
 	}
@@ -52,7 +52,7 @@ public class IdTypeController {
 	 *            the request of idtype to be added.
 	 * @return the response.
 	 */
-	@PostMapping("/idtypes")
+	@PostMapping("/v1.0/idtypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
 			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
 		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);

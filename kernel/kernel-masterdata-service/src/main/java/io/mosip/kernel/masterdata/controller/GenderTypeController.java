@@ -34,7 +34,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@GetMapping("/gendertype")
+	@GetMapping("/v1.0/gendertype")
 	public GenderTypeResponseDto getAllGenderType() {
 		return genderTypeService.getAllGenderTypes();
 	}
@@ -46,7 +46,7 @@ public class GenderTypeController {
 	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
-	@GetMapping(value = "/gendertype/{langcode}")
+	@GetMapping(value = "/v1.0/gendertype/{langcode}")
 	public GenderTypeResponseDto getGenderBylangCode(@PathVariable("langcode") String langCode) {
 		return genderTypeService.getGenderTypeByLangCode(langCode);
 	}
@@ -58,7 +58,7 @@ public class GenderTypeController {
 	 *            input columns for adding data
 	 * @return added row of gender type
 	 */
-	@PostMapping("/gendertype")
+	@PostMapping("/v1.0/gendertype")
 	public ResponseEntity<CodeAndLanguageCodeID> createGenderType(
 			@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
 		return new ResponseEntity<>(genderTypeService.createGenderType(gender), HttpStatus.CREATED);

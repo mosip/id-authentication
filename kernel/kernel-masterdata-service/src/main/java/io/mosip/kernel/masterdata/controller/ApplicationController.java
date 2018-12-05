@@ -24,7 +24,7 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
  *
  */
 @RestController
-@RequestMapping("/applicationtypes")
+@RequestMapping("/v1.0/applicationtypes")
 public class ApplicationController {
 
 	@Autowired

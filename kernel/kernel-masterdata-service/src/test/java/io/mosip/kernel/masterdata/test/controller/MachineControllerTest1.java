@@ -62,21 +62,21 @@ public class MachineControllerTest1 {
                 @Test
                 public void getMachineIdLangcodeTest() throws Exception {
                                 Mockito.when(machineService.getMachineIdLangcode(Mockito.anyString(), Mockito.anyString())).thenReturn(machineResponseIdDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/machines/1000/ENG")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/machines/1000/ENG")).andExpect(status().isOk());
                 }
                 
                 
                 @Test
                 public void getMachineLangcodeTest() throws Exception {
                 Mockito.when(machineService.getMachineLangcode(Mockito.anyString())).thenReturn(machineResponseDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/machines/ENG")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/machines/ENG")).andExpect(status().isOk());
                 }
                 
                 
                 @Test
                 public void getMachineAllTest() throws Exception {
                                 Mockito.when(machineService.getMachineAll()).thenReturn(machineResponseDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/machines")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/machines")).andExpect(status().isOk());
                 }
                 
                 

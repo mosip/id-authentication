@@ -71,13 +71,13 @@ public class DeviceControllerTest1 {
                 @Test
                 public void getDeviceLangTest() throws Exception {
                                 Mockito.when(deviceService.getDeviceLangCode(Mockito.anyString())).thenReturn(deviceResponseDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/devices/ENG")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devices/ENG")).andExpect(status().isOk());
                 }
                 
                 @Test
                 public void getDeviceLangCodeAndDeviceTypeTest() throws Exception  {
                                 Mockito.when(deviceService.getDeviceLangCodeAndDeviceType(Mockito.anyString(), Mockito.anyString())).thenReturn(deviceLangCodeResponseDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/devices/ENG/LaptopCode")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devices/ENG/LaptopCode")).andExpect(status().isOk());
                 }
                 
                 

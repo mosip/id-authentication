@@ -56,7 +56,7 @@ public class MachineHistoryControllerTest1 {
                 @Test
                 public void getMachineHistroyIdLangEffDTimeTest() throws Exception {
                                 Mockito.when(machineHistoryService.getMachineHistroyIdLangEffDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(machineHistoryResponseDto);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/1000/ENG/2018-01-01T10:10:30.222Z")).andExpect(status().isOk());
+                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/machineshistories/1000/ENG/2018-01-01T10:10:30.222Z")).andExpect(status().isOk());
                 }
                 
 }

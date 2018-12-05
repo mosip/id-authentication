@@ -48,7 +48,7 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-	@GetMapping("/devicespecifications/{langcode}")
+	@GetMapping("/v1.0/devicespecifications/{langcode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -69,7 +69,7 @@ public class DeviceSpecificationController {
 	 */
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode and DeviceTypeCode")
-	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
+	@GetMapping("/v1.0/devicespecifications/{langcode}/{devicetypecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -84,7 +84,7 @@ public class DeviceSpecificationController {
 	 *            input from user Device specification DTO
 	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/devicespecifications")
+	@PostMapping("/v1.0/devicespecifications")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
