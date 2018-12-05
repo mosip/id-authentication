@@ -165,7 +165,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 			authenticationValidatorDTO.setUserId(username.getText());
 			authenticationValidatorDTO.setPassword(hashPassword);
 			String userStatus = validatePassword(authenticationValidatorDTO);
-
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
@@ -180,10 +179,14 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 
 	}
-
+	
+	/**
+	 * to validate the password and send appropriate message to display
+	 * @param authenticationValidatorDTO - DTO which contains the username and password entered by the user
+	 * @return appropriate message after validation
+	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-
 		if (userDetail == null) {
 			return RegistrationConstants.USER_NOT_ONBOARDED;
 		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
@@ -211,42 +214,41 @@ public class OperatorAuthenticationController extends BaseController implements 
 			}
 		} catch (RestClientException resourceAccessException) {
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
-
 					resourceAccessException.getMessage());
 		}
 		return serverStatus;
 	}
 
+	/**
+	 * to generate OTP in case of OTP based authentication
+	 */
 	public void generateOtp() {
-
 		if (!otpUserId.getText().isEmpty()) {
 			// Response obtained from server
 			ResponseDTO responseDTO = null;
 
 			// Service Layer interaction
 			responseDTO = otpGenerator.getOTP(otpUserId.getText());
-
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				// Enable submit button
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
-
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 				generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
-
 			}
 
 		} else {
 			// Generate Alert to show username field was empty
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
-
 		}
-
 	}
 
+	/**
+	 * to validate OTP in case of OTP based authentication
+	 */
 	public void validateOTP() {
 		if (isSupervisor) {
 			if (otpUserId.getText() != null) {
@@ -260,16 +262,33 @@ public class OperatorAuthenticationController extends BaseController implements 
 						if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
 							loadNextScreen();
 						} else {
-
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
 						}
 					} else {
-
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 					}
 				} else {
-
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 				}
 			} else {
-
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+			}
+		} else {
+			if (otp.getText() != null) {
+				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+				authenticationValidatorDTO.setOtp(otp.getText());
+				authenticationValidatorDTO.setUserId(otpUserId.getText());
+				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
+						.getValidator("otp");
+				if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
+					loadNextScreen();
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR,
+							RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 			}
 		}
 	}
