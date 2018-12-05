@@ -42,8 +42,8 @@ public class UMCValidator {
 		if (!dtos.isEmpty()) {
 
 			for (RegistrationCenterDto dto : dtos) {
-				if (dto.getLatitude() != null && dto.getLongitude() != null) {
-					if (dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
+				
+					if (dto.getLatitude() != null && dto.getLongitude() != null &&dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
 
 						activeRegCenter = dto.getIsActive();
 						if (!activeRegCenter)
@@ -52,9 +52,7 @@ public class UMCValidator {
 					} else {
 						this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 					}
-				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-				}
+				
 
 			}
 		} else {
