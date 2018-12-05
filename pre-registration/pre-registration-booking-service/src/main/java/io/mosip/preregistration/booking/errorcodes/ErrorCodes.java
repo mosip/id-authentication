@@ -17,6 +17,7 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_007, // Invalid Version,
 	PRG_BOOK_RCI_008, // Invalid Date and Time
 	PRG_BOOK_RCI_009, //Appointment cannot be booked
+	PRG_BOOK_RCI_010, //Booking Table not found
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
 }

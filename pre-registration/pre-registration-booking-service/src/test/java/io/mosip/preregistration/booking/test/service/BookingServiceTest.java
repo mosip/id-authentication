@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,6 +37,8 @@ public class BookingServiceTest {
 	
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private BookingService service;
@@ -73,18 +77,23 @@ public class BookingServiceTest {
 		entity.setIsActive(true);
 		entity.setFromTime(localTime1);
 		
+		
+	
+		
 	}
 	
 	@Test
 	public void getAvailabilityTest() {
-		
+		logger.info("Availability dto "+availability);
 		List<String> date= new ArrayList<>();
 		List<AvailibityEntity> entityList= new ArrayList<>();
 		date.add("2018-12-04");
 		entityList.add(entity);
+		logger.info("Availability entity "+entity);
 		Mockito.when(repository.findDate(Mockito.anyString())).thenReturn(date);
 		Mockito.when(repository.findByRegcntrIdAndRegDate(Mockito.anyString(),Mockito.anyString())).thenReturn(entityList);
 		ResponseDto<AvailabilityDto> responseDto= service.getAvailability("1");
+		logger.info("Response "+responseDto);
 		assertEquals(responseDto.getResponse().getRegCenterId(),"1");
 	
 	}

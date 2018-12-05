@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +38,7 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.PreRegResponseDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
@@ -83,6 +83,10 @@ public class BookingService {
 	@Value("${holiday.url}")
 	String holidayListUrl;
 
+
+	@Value("${noOfDays}")
+	int noOfDays;
+
 	@Value("${version}")
 	String versionUrl;
 
@@ -94,110 +98,122 @@ public class BookingService {
 
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 
+
 	public ResponseDto<String> addAvailability() {
 		ResponseDto<String> response = new ResponseDto<>();
 
 		try {
 			restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
-			String date = LocalDate.now().getYear() + "/12/31";
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-			LocalDate endDate = LocalDate.parse(date, formatter);
+			LocalDate endDate = LocalDate.now().plusDays(noOfDays);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
-
 			String uriBuilder = regbuilder.build().encode().toUriString();
+
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
+
 			List<RegistrationCenterDto> regCenter = responseEntity.getBody().getRegistrationCenters();
 
-			for (RegistrationCenterDto regDto : regCenter) {
-				String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + 1 + "/2018";
+			if (regCenter.isEmpty()) {
+				response.setResTime(new Timestamp(System.currentTimeMillis()));
+				response.setStatus(false);
+				response.setResponse("No data is preent in registration center master table");
+				return response;
+			} else {
+				for (RegistrationCenterDto regDto : regCenter) {
+					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + 1 + "/"
+							+ LocalDate.now().getYear();
+					UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 
-				UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
+					HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
 
-				HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
-
-				String uriBuilder2 = builder2.build().encode().toUriString();
-				ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
-						HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
-
-				List<String> holidaylist = new ArrayList<String>();
-				for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
-					holidaylist.add(holiday.getHolidayDate());
-				}
-				holidaylist.add("2018-11-30");
-
-				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
-						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
-					if (holidaylist.contains(sDate.toString())) {
-						DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-						String text = "2016-11-09 00:00:00";
-						LocalDateTime localDateTime = LocalDateTime.parse(text, format);
-						LocalTime localTime = localDateTime.toLocalTime();
-						saveAvailability(regDto, sDate, localTime, localTime);
-
-					} else {
-
-						int loop1 = ((regDto.getLunchStartTime().getHour() * 60
-								+ regDto.getLunchStartTime().getMinute())
-								- (regDto.getCenterStartTime().getHour() * 60
-										+ regDto.getCenterStartTime().getMinute()))
-								/ regDto.getPerKioskProcessTime().getMinute();
-
-						int loop2 = ((regDto.getCenterEndTime().getHour() * 60 + regDto.getCenterEndTime().getMinute())
-								- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-								/ regDto.getPerKioskProcessTime().getMinute();
-
-						int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60
-								+ regDto.getLunchStartTime().getMinute())
-								- (regDto.getCenterStartTime().getHour() * 60
-										+ regDto.getCenterStartTime().getMinute()))
-								% regDto.getPerKioskProcessTime().getMinute();
-
-						int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60
-								+ regDto.getCenterEndTime().getMinute())
-								- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-								% regDto.getPerKioskProcessTime().getMinute();
-
-						LocalTime currentTime1 = regDto.getCenterStartTime();
-						for (int i = 0; i < loop1; i++) {
-							if (i == (loop1 - 1)) {
-								LocalTime toTime = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
-										.plusMinutes(extraTime1);
-								saveAvailability(regDto, sDate, currentTime1, toTime);
-
-							} else {
-								LocalTime toTime = currentTime1
-										.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-								saveAvailability(regDto, sDate, currentTime1, toTime);
-							}
-							currentTime1 = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
+					String uriBuilder2 = builder2.build().encode().toUriString();
+					ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
+							HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
+					List<String> holidaylist = new ArrayList<>();
+					if (!responseEntity2.getBody().getHolidays().isEmpty()) {
+						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
+							holidaylist.add(holiday.getHolidayDate());
 						}
+						holidaylist.add("2018-11-30");
+					}
 
-						LocalTime currentTime2 = regDto.getLunchEndTime();
-						for (int i = 0; i < loop2; i++) {
-							if (i == (loop2 - 1)) {
-								LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
-										.plusMinutes(extraTime2);
-								saveAvailability(regDto, sDate, currentTime2, toTime);
+					for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
+							|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
+						if (holidaylist.contains(sDate.toString())) {
+							DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+							String text = "2016-11-09 00:00:00";
+							LocalDateTime localDateTime = LocalDateTime.parse(text, format);
+							LocalTime localTime = localDateTime.toLocalTime();
+							saveAvailability(regDto, sDate, localTime, localTime);
 
-							} else {
-								LocalTime toTime = currentTime2
-										.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-								saveAvailability(regDto, sDate, currentTime2, toTime);
+						} else {
+
+							int loop1 = ((regDto.getLunchStartTime().getHour() * 60
+									+ regDto.getLunchStartTime().getMinute())
+									- (regDto.getCenterStartTime().getHour() * 60
+											+ regDto.getCenterStartTime().getMinute()))
+									/ regDto.getPerKioskProcessTime().getMinute();
+
+							int loop2 = ((regDto.getCenterEndTime().getHour() * 60
+									+ regDto.getCenterEndTime().getMinute())
+									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
+									/ regDto.getPerKioskProcessTime().getMinute();
+
+							int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60
+									+ regDto.getLunchStartTime().getMinute())
+									- (regDto.getCenterStartTime().getHour() * 60
+											+ regDto.getCenterStartTime().getMinute()))
+									% regDto.getPerKioskProcessTime().getMinute();
+
+							int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60
+									+ regDto.getCenterEndTime().getMinute())
+									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
+									% regDto.getPerKioskProcessTime().getMinute();
+
+							LocalTime currentTime1 = regDto.getCenterStartTime();
+							for (int i = 0; i < loop1; i++) {
+								if (i == (loop1 - 1)) {
+									LocalTime toTime = currentTime1
+											.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
+											.plusMinutes(extraTime1);
+									saveAvailability(regDto, sDate, currentTime1, toTime);
+
+								} else {
+									LocalTime toTime = currentTime1
+											.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
+									saveAvailability(regDto, sDate, currentTime1, toTime);
+								}
+								currentTime1 = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
 							}
-							currentTime2 = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
+
+							LocalTime currentTime2 = regDto.getLunchEndTime();
+							for (int i = 0; i < loop2; i++) {
+								if (i == (loop2 - 1)) {
+									LocalTime toTime = currentTime2
+											.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
+											.plusMinutes(extraTime2);
+									saveAvailability(regDto, sDate, currentTime2, toTime);
+
+								} else {
+									LocalTime toTime = currentTime2
+											.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
+									saveAvailability(regDto, sDate, currentTime2, toTime);
+								}
+								currentTime2 = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
+							}
 						}
 					}
 				}
 			}
 		} catch (HttpClientErrorException e) {
-
+             
 		} catch (DataAccessException e) {
 			throw new TablenotAccessibleException("Table not accessable ");
+		} catch (NullPointerException e) {
+
 		}
 
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -209,44 +225,65 @@ public class BookingService {
 
 	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
 		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
-		String date = LocalDate.now().getYear() + "/11/01";
-		LocalDate convertedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-		convertedDate = convertedDate.withDayOfMonth(convertedDate.getMonth().length(convertedDate.isLeapYear()));
-		System.out.println("Converted date " + convertedDate);
+		List<ExceptionJSONInfo> exceptionJSONInfos = new ArrayList<>();
+		try {
+			List<String> dateList = bookingRepository.findDate(regID);
+			if (!dateList.isEmpty()) {
+				AvailabilityDto availability = new AvailabilityDto();
+				List<DateTimeDto> dateTimeList = new ArrayList<>();
+				for (String day : dateList) {
+					DateTimeDto dateTime = new DateTimeDto();
+					List<AvailibityEntity> entity = bookingRepository.findByRegcntrIdAndRegDate(regID, day);
+					if (!entity.isEmpty()) {
+						List<SlotDto> slotList = new ArrayList<>();
+						for (AvailibityEntity en : entity) {
+							SlotDto slots = new SlotDto();
+							slots.setAvailability(en.getAvailabilityNo());
+							slots.setFromTime(en.getFromTime());
+							slots.setToTime(en.getToTime());
+							slotList.add(slots);
+						}
+						if (entity.get(0).getIsActive()) {
+							dateTime.setHoliday(false);
+						} else {
+							dateTime.setHoliday(true);
+						}
+						dateTime.setTimeSlots(slotList);
+						dateTime.setDate(day);
+						dateTimeList.add(dateTime);
+					} else {
+						ExceptionJSONInfo exception = new ExceptionJSONInfo("", "No slots available for that date");
+						exceptionJSONInfos.add(exception);
+						response.setErr(exceptionJSONInfos);
+						response.setResTime(new Timestamp(System.currentTimeMillis()));
+						response.setStatus(false);
+						return response;
+					}
 
-		List<String> dateList = bookingRepository.findDate(regID);
-		AvailabilityDto availability = new AvailabilityDto();
-		List<DateTimeDto> dateTimeList = new ArrayList<>();
-		for (String day : dateList) {
-			DateTimeDto dateTime = new DateTimeDto();
-			List<AvailibityEntity> entity = bookingRepository.findByRegcntrIdAndRegDate(regID, day);
-			List<SlotDto> slotList = new ArrayList<>();
-			for (AvailibityEntity en : entity) {
-				SlotDto slots = new SlotDto();
-				slots.setAvailability(en.getAvailabilityNo());
-				slots.setFromTime(en.getFromTime());
-				slots.setToTime(en.getToTime());
-				slotList.add(slots);
-			}
-			if (entity.get(0).getIsActive()) {
-				dateTime.setHoliday(false);
+				}
+				availability.setCenterDetails(dateTimeList);
+				availability.setRegCenterId(regID);
+
+				response.setResTime(new Timestamp(System.currentTimeMillis()));
+				response.setStatus(true);
+				response.setResponse(availability);
+
 			} else {
-				dateTime.setHoliday(true);
+				ExceptionJSONInfo exception = new ExceptionJSONInfo("", "No time slots are assigned to that registration center");
+				exceptionJSONInfos.add(exception);
+				response.setErr(exceptionJSONInfos);
+				response.setResTime(new Timestamp(System.currentTimeMillis()));
+				response.setStatus(false);
+
 			}
-			dateTime.setTimeSlots(slotList);
-			dateTime.setDate(day);
-			dateTimeList.add(dateTime);
+		} catch (DataAccessException e) {
+			throw new TablenotAccessibleException("Table not accessable ");
+		} catch (NullPointerException e) {
+
 		}
-		availability.setCenterDetails(dateTimeList);
-		availability.setRegCenterId(regID);
-
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
-		response.setStatus(true);
-		response.setResponse(availability);
-
 		return response;
-
 	}
+
 
 	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime)
 			throws TablenotAccessibleException {
