@@ -19,6 +19,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -228,17 +229,13 @@ public class OSIValidator {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-			if (introducerUin == null) {
-				if (validateIntroducerRid(introducerRid, registrationId)) {
+			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
 
-					introducerUin = getIntroducerUIN(introducerRid);
-					if (introducerUin == null) {
+				introducerUin = getIntroducerUIN(introducerRid);
+				if (introducerUin == null) {
 
-						registrationStatusDto
-								.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
-						return false;
-					}
-				} else {
+					registrationStatusDto
+							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
 
@@ -277,7 +274,7 @@ public class OSIValidator {
 			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
 				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
 				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-				if (validateBiometric(uin, PacketFiles.FINGER.name(), type, fingerPrintByte))
+				if (validateBiometric(uin, PacketFiles.FINGER.name(), type.toUpperCase(), fingerPrintByte))
 					return true;
 			}
 		}
@@ -311,7 +308,7 @@ public class OSIValidator {
 			if (adapter.checkFileExistence(registrationId, iris.toUpperCase())) {
 				InputStream irisFileName = adapter.getFile(registrationId, iris.toUpperCase());
 				byte[] irisByte = IOUtils.toByteArray(irisFileName);
-				if (validateBiometric(uin, PacketFiles.IRIS.name(), type, irisByte))
+				if (validateBiometric(uin, PacketFiles.IRIS.name(), type.toUpperCase(), irisByte))
 					return true;
 			}
 		}
@@ -471,28 +468,41 @@ public class OSIValidator {
 			}
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.FINGER.name())) {
 			authTypeDTO.setFingerPrint(true);
-			if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(identity)) {
-
+			switch (identity) {
+			case JsonConstant.LEFTTHUMB:
 				identityDTO.setLeftThumb(biometricData);
-			} else if (PacketFiles.LEFTINDEX.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTINDEX:
 				identityDTO.setLeftIndex(biometricData);
-			} else if (PacketFiles.LEFTMIDDLE.name().equalsIgnoreCase(identity)) {
-				identityDTO.setLeftThumb(biometricData);
-			} else if (PacketFiles.LEFTLITTLE.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTMIDDLE:
+				identityDTO.setLeftMiddle(biometricData);
+				break;
+			case JsonConstant.LEFTLITTLE:
 				identityDTO.setLeftLittle(biometricData);
-			} else if (PacketFiles.LEFTRING.name().equalsIgnoreCase(identity)) {
-				identityDTO.setLeftRing(biometricData);
-			} else if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTRING:
+				identityDTO.setLeftThumb(biometricData);
+				break;
+			case JsonConstant.RIGHTTHUMB:
 				identityDTO.setRightThumb(biometricData);
-			} else if (PacketFiles.RIGHTINDEX.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTINDEX:
 				identityDTO.setRightIndex(biometricData);
-			} else if (PacketFiles.RIGHTMIDDLE.name().equalsIgnoreCase(identity)) {
-				identityDTO.setRightThumb(biometricData);
-			} else if (PacketFiles.RIGHTLITTLE.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTMIDDLE:
+				identityDTO.setRightMiddle(biometricData);
+				break;
+			case JsonConstant.RIGHTLITTLE:
 				identityDTO.setRightLittle(biometricData);
-			} else if (PacketFiles.RIGHTRING.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTRING:
 				identityDTO.setRightRing(biometricData);
+				break;
+			default:
+				break;
 			}
+
 		}
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
