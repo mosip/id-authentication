@@ -51,6 +51,7 @@ import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Language;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -460,6 +461,9 @@ public class MasterdataIntegrationTest {
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLanguageCode("ENG");
 		registrationCenters.add(registrationCenter);
+		
+		Location location = new Location();
+		location.setCode("BLR");
 
 		banglore = new RegistrationCenter();
 		banglore.setId("1");
@@ -467,12 +471,12 @@ public class MasterdataIntegrationTest {
 		banglore.setLatitude("12.9180722");
 		banglore.setLongitude("77.5028792");
 		banglore.setLanguageCode("ENG");
-		banglore.setLocationCode("BLR");
+		banglore.setLocationCode(location);
 		chennai = new RegistrationCenter();
 		chennai.setId("2");
 		chennai.setName("Bangalore Central");
 		chennai.setLanguageCode("ENG");
-		chennai.setLocationCode("BLR");
+		chennai.setLocationCode(location);
 		registrationCenters.add(banglore);
 		registrationCenters.add(chennai);
 
