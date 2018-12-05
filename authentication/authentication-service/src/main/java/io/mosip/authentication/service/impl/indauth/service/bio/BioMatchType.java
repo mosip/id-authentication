@@ -13,7 +13,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy;
@@ -164,5 +163,10 @@ public enum BioMatchType implements MatchType {
 	@Override
 	public LanguageType getLanguageType() {
 		return LanguageType.PRIMARY_LANG;
+	}
+
+	@Override
+	public Category getCategory() {
+		return Category.DEMO;
 	}
 }

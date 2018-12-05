@@ -83,8 +83,15 @@ public enum BioAuthType implements AuthType {
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
 			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
-		// TODO get from property
-		return Optional.of(Integer.parseInt("0"));
+
+		String bioType = getType();
+		Integer threshold = null;
+		String key = bioType.toLowerCase().concat(".default.match.value");
+		String property = environment.getProperty(key);
+		if (property != null && !property.isEmpty()) {
+			threshold = Integer.parseInt(property);
+		}
+		return Optional.ofNullable(threshold);
 	}
 
 	@Override

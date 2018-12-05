@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
@@ -15,6 +17,7 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
  *
  * @author Manoj SP
  */
+@Component
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
 	/** The fp device. */
@@ -49,8 +52,8 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
 		if (fpDevice.IsConnected() && fpDevice.Init() == 0) {
 			FingerData fingerData = new FingerData();
-			int captureStatus = fpDevice.AutoCapture(fingerData, timeout, false, true); 
-																						
+			int captureStatus = fpDevice.AutoCapture(fingerData, timeout, false, true);
+
 			if (captureStatus == 0 && fpDevice.GetLastError().isEmpty()) {
 				fpDevice.StopCapture();
 				fpDevice.Uninit();

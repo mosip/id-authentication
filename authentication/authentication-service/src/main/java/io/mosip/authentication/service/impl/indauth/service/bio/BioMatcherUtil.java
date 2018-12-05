@@ -29,9 +29,9 @@ public final class BioMatcherUtil {
 			String make = bioInfo.getDeviceInfo().getMake();
 			if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
 				if (make.equalsIgnoreCase(COGENT)) {
-					return cogentFingerprintProvider.scoreCalculator(reqInfo, entityInfo);
+					return cogentFingerprintProvider.scoreCalculator(reqInfo.getBytes(), entityInfo.getBytes());
 				} else if (make.equalsIgnoreCase(MANTRA)) {
-					return mantraFingerprintProvider.scoreCalculator(reqInfo, entityInfo);
+					return mantraFingerprintProvider.scoreCalculator(reqInfo.getBytes(), entityInfo.getBytes());
 				}
 			} else if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType())) {
 				if (make.equalsIgnoreCase(COGENT)) {

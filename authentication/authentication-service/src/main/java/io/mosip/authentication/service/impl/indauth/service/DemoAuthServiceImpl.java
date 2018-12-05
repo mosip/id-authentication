@@ -62,7 +62,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
-		return idInfoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs);
+		return idInfoMatcher.matchIdentityData(identitydto, demoEntity, listMatchInputs);
 	}
 
 	/*

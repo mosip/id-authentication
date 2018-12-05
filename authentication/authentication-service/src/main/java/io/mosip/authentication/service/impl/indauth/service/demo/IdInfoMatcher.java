@@ -20,6 +20,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchType.Category;
 
 /**
  * @author Arun Bose The Class IdInfoMatcher.
@@ -32,7 +33,7 @@ public class IdInfoMatcher {
 	public static final String DEFAULT_MATCH_VALUE = "demo.default.match.value";
 
 	@Autowired
-	private IdInfoHelper demoHelper;
+	private IdInfoHelper idInfoHelper;
 
 	/** The environment. */
 	@Autowired
@@ -42,14 +43,14 @@ public class IdInfoMatcher {
 	 * Match demo data.
 	 *
 	 * @param demoDTO             the demo DTO
-	 * @param demoEntity          the demo entity
+	 * @param identityEntity      the demo entity
 	 * @param locationInfoFetcher
 	 * @param matchInput          the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
-			Collection<MatchInput> listMatchInputs) {
-		return listMatchInputs.parallelStream().map(input -> matchType(identityDTO, demoEntity, input))
+	public List<MatchOutput> matchIdentityData(IdentityDTO identityDTO,
+			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs) {
+		return listMatchInputs.parallelStream().map(input -> matchType(identityDTO, identityEntity, input))
 				.filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
@@ -78,10 +79,10 @@ public class IdInfoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Optional<Object> reqInfoOpt = demoHelper.getIdentityInfo(input.getDemoMatchType(), identityDTO);
+				Optional<Object> reqInfoOpt = idInfoHelper.getIdentityInfo(input.getDemoMatchType(), identityDTO);
 				if (reqInfoOpt.isPresent()) {
 					Object reqInfo = reqInfoOpt.get();
-					Object entityInfo = demoHelper.getEntityInfo(input.getDemoMatchType(), demoEntity);
+					Object entityInfo = idInfoHelper.getEntityInfo(input.getDemoMatchType(), demoEntity);
 					MatchFunction matchFunction = strategy.getMatchFunction();
 					int mtOut = matchFunction.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
@@ -106,13 +107,13 @@ public class IdInfoMatcher {
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
 			MatchType[] matchTypes) {
 		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-				.map((IdentityDTO identity) -> Stream.of(matchTypes).map((MatchType demoMatchType) -> {
-					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(demoMatchType, authTypes);
-					Optional<Object> infoOpt = demoHelper.getIdentityInfo(demoMatchType, identity);
+				.map((IdentityDTO identity) -> Stream.of(matchTypes).map((MatchType matchType) -> {
+					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
+					Optional<Object> infoOpt = idInfoHelper.getIdentityInfo(matchType, identity);
 					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
 						AuthType demoAuthType = authTypeOpt.get();
 						if (demoAuthType.isAuthTypeEnabled(authRequestDTO)) {
-							return contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
+							return contstructMatchInput(authRequestDTO, matchType, demoAuthType);
 						}
 					}
 					return null;
@@ -125,28 +126,26 @@ public class IdInfoMatcher {
 	 *
 	 * @param demoAuthServiceImpl TODO
 	 * @param authRequestDTO      the auth request DTO
-	 * @param matchType       TODO
-	 * @param authType        TODO
+	 * @param matchType           TODO
+	 * @param authType            TODO
 	 * @return the list
 	 */
-	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
-			AuthType authType) {
+	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
 		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO,
-				demoHelper::getLanguageCode);
+				idInfoHelper::getLanguageCode);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
 			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 					|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
-						demoHelper::getLanguageCode, environment);
-				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE));
-				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
+						idInfoHelper::getLanguageCode, environment);
+				matchValue = matchThresholdOpt.orElseGet(() ->  Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
 			}
 		}
 		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO,
-				demoHelper::getLanguageCode);
+				idInfoHelper::getLanguageCode);
 
 		return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties);
 	}
@@ -177,8 +176,9 @@ public class IdInfoMatcher {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			boolean hasPartialMatch = matchInput.getDemoMatchType()
 					.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent();
-
-			if (hasPartialMatch) {
+			MatchType matchType = matchInput.getDemoMatchType();
+			Category category = matchType.getCategory();
+			if (hasPartialMatch && category.equals(Category.DEMO)) {
 				String ms = matchInput.getMatchStrategyType();
 				if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
 					ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
@@ -191,7 +191,7 @@ public class IdInfoMatcher {
 				String authTypeStr = authType.getType();
 
 				statusInfoBuilder.addMessageInfo(authTypeStr, ms, mt,
-						demoHelper.getLanguageCode(matchInput.getDemoMatchType().getLanguageType()));
+						idInfoHelper.getLanguageCode(matchInput.getDemoMatchType().getLanguageType()));
 			}
 
 			statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());

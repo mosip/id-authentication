@@ -299,4 +299,9 @@ public enum DemoMatchType implements MatchType {
 		return mosipLogger;
 	}
 
+	@Override
+	public Category getCategory() {
+		return Category.DEMO;
+	}
+
 }
