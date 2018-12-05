@@ -5,13 +5,17 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -34,18 +38,25 @@ import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -54,7 +65,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -62,6 +76,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -195,13 +211,19 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> poaDocuments;
 
 	@FXML
-	private Label poaLabel;
+	private VBox poaBox;
+	
+	@FXML
+	private ScrollPane poaScroll;
 
 	@FXML
 	private ComboBox<String> poiDocuments;
 
 	@FXML
-	private Label poiLabel;
+	private VBox poiBox;
+
+	@FXML
+	private ScrollPane poiScroll;
 
 	@FXML
 	private ImageView headerImage;
@@ -210,7 +232,10 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> porDocuments;
 
 	@FXML
-	private Label porLabel;
+	private VBox porBox;
+	
+	@FXML
+	private ScrollPane porScroll;
 
 	@FXML
 	private AnchorPane documentFields;
@@ -298,7 +323,10 @@ public class RegistrationController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
+
+			// Create RegistrationDTO Object
+			createRegistrationDTOObject();
+
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
 				exceptionBufferedImage = null;
@@ -343,6 +371,7 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
+			setScrollFalse();
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
@@ -532,7 +561,7 @@ public class RegistrationController extends BaseController {
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			RegistrationDTO registrationDTO = new RegistrationDTO();
+			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
@@ -592,9 +621,6 @@ public class RegistrationController extends BaseController {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-						registrationDTO);
-
 				if (ageDatePicker.getValue() != null) {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
 				}
@@ -608,7 +634,7 @@ public class RegistrationController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		} 
+		}
 	}
 
 	@FXML
@@ -1159,7 +1185,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
 		boolean gotoNext = false;
-		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
+		if (validateRegex(fullName, RegistrationConstants.FULL_NAME_REGEX)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR,
 					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 
@@ -1171,7 +1197,7 @@ public class RegistrationController extends BaseController {
 
 					gender.requestFocus();
 				} else {
-					if (validateRegex(addressLine1, "^.{6,50}$")) {
+					if (validateRegex(addressLine1, RegistrationConstants.ADDRESS_LINE1_REGEX)) {
 
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY
 								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
@@ -1211,22 +1237,22 @@ public class RegistrationController extends BaseController {
 															+ RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
-											if (validateRegex(mobileNo, "\\d{9}")) {
+											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
 
 												generateAlert(RegistrationConstants.ALERT_ERROR,
 														RegistrationConstants.MOBILE_NUMBER_EMPTY + " "
 																+ RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
-												if (validateRegex(emailId,
-														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
+												if (validateRegex(emailId, RegistrationConstants.EMAIL_ID_REGEX)) {
 
 													generateAlert(RegistrationConstants.ALERT_ERROR,
 															RegistrationConstants.EMAIL_ID_EMPTY + " "
 																	+ RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
-													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
+													if (validateRegex(cniOrPinNumber,
+															RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
 
 														generateAlert(RegistrationConstants.ALERT_ERROR,
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY + " "
@@ -1284,15 +1310,14 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = false;
 
 		if (isChild) {
-			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
+			if (validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
 
 				generateAlert(RegistrationConstants.ALERT_ERROR,
 						RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
-				if (validateRegex(uinId, "\\d{6,28}")) {
+				if (validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1363,12 +1388,13 @@ public class RegistrationController extends BaseController {
 	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
-			if (validateRegex(ageField, "\\d{1,2}")) {
+			if (validateRegex(ageField, RegistrationConstants.AGE_REGEX)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
 
 				ageField.requestFocus();
 			} else {
-				if (Integer.parseInt(ageField.getText()) < 5) {
+				if (Integer.parseInt(ageField.getText()) < Integer
+						.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 				}
 				gotoNext = true;
@@ -1386,28 +1412,24 @@ public class RegistrationController extends BaseController {
 	}
 
 	@FXML
-	private void scanPoaDocument() {
+	private void scanPoaDocument() throws FileNotFoundException {
 		if (poaDocuments.getValue() == null) {
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
-			poaLabel.setId("doc_label");
-			poaLabel.setText(poaDocuments.getValue());
-
+			addDocuments(poaDocuments.getValue(), poaBox, poaScroll);
 		}
 	}
 
 	@FXML
-	private void scanPoiDocument() {
+	private void scanPoiDocument() throws FileNotFoundException{
 		if (poiDocuments.getValue() == null) {
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
-			poiLabel.setId("doc_label");
-			poiLabel.setText(poiDocuments.getValue());
-
+			addDocuments(poiDocuments.getValue(), poiBox, poiScroll);
 		}
 	}
 
@@ -1418,13 +1440,11 @@ public class RegistrationController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
-			porLabel.setId("doc_label");
-			porLabel.setText(porDocuments.getValue());
-
+			addDocuments(porDocuments.getValue(), porBox, porScroll);
 		}
 	}
 
-	private RegistrationDTO getRegistrationDtoContent() {
+	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
@@ -1435,7 +1455,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	private Boolean isEditPage() {
-		if(SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT)!=null)
+		if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
 			return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
 		return false;
 	}
@@ -1531,12 +1551,13 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
 	}
-	
+
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
@@ -1554,7 +1575,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
@@ -1564,7 +1585,7 @@ public class RegistrationController extends BaseController {
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
@@ -1574,7 +1595,7 @@ public class RegistrationController extends BaseController {
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
@@ -1599,6 +1620,156 @@ public class RegistrationController extends BaseController {
 			biometricsNext.setVisible(visibility);
 			getBiometricsPane().setVisible(visibility);
 		}
+	}
+	
+	private void addDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
+		ObservableList<Node> nodes = vboxElement.getChildren();
+		if(nodes.isEmpty()) {
+			attachDocuments(document, vboxElement, scrollPane);
+		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
+			attachDocuments(document.concat("_").concat(String.valueOf(nodes.size())), vboxElement, scrollPane);
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "Only One can be added");
+		}
+	}
+	
+	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
+		
+		try {
+			
+			//Reading byte[] from Scanner
+			InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
+			
+			byte[] scannedFingerPrintBytes = new byte[inputStream.available()];
+			inputStream.read(scannedFingerPrintBytes);
+			
+			//Setting document details to DTO
+			DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+			documentDetailsDTO.setDocument(scannedFingerPrintBytes);
+			documentDetailsDTO.setDocumentName(document);
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().add(documentDetailsDTO);			
+			
+			if(scannedFingerPrintBytes.length > 1000000) {
+				
+				generateAlert(RegistrationConstants.ALERT_ERROR, "more size.reupload");
+				
+			} else {
+				
+				GridPane anchorPane = new GridPane();
+				anchorPane.setId(document);
+				
+				anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
+				anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+				
+				vboxElement.getChildren().add(anchorPane);
+				
+				//Scrollbar setting for scrollpane
+				if(vboxElement.getChildren().size() > 2) {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+				} else {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				}
+			}
+		} catch (IOException ioException) {
+			
+		} 
+	}
+	
+	private void setScrollFalse() {
+		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+	}
+	
+	private Hyperlink createHyperLink(String document) {
+		Hyperlink hyperLink = new Hyperlink();
+		hyperLink.setId(document);
+		hyperLink.setText(document);
+		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+						GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().forEach(detail -> {
+							if(detail.getDocumentName().equals(pane.getId())) {
+								Image img = convertBytesToImage(detail.getDocument());
+								ImageView view = new ImageView(img);
+								Scene scene = new Scene(new StackPane(view));
+								Stage primaryStage = new Stage();
+								primaryStage.setTitle("Image Click Example");
+								primaryStage.setScene(scene);
+								primaryStage.sizeToScene();
+								primaryStage.show();
+							}
+						});
+			}
+		});
+		return hyperLink;
+	}
+
+	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
+		ImageView imageView = new ImageView(image);
+		imageView.setCursor(Cursor.HAND);
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				GridPane remo = (GridPane) ((ImageView) event.getSource()).getParent();
+				vboxElement.getChildren().remove(remo);
+				if(vboxElement.getChildren().isEmpty()) {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				}
+			}
+
+		});
+		return imageView;
+	}
+	
+	private void createRegistrationDTOObject() {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+
+		// Create objects for Biometric DTOS
+		BiometricDTO biometricDTO = new BiometricDTO();
+		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setSupervisorBiometricDTO(createBiometricInfoDTO());
+		registrationDTO.setBiometricDTO(biometricDTO);
+
+		// Create object for Demographic DTOS
+		DemographicDTO demographicDTO = new DemographicDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
+		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
+		demographicDTO.setDemoInLocalLang(new DemographicInfoDTO());
+		demographicDTO.setDemoInUserLang(new DemographicInfoDTO());
+		registrationDTO.setDemographicDTO(demographicDTO);
+
+		// Create object for OSIData DTO
+		registrationDTO.setOsiDataDTO(new OSIDataDTO());
+
+		// Create object for RegistrationMetaData DTO
+		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+
+		// Put the RegistrationDTO object to SessionContext Map
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+	}
+
+	private BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setSegmentedFingerprints(new ArrayList<>());
+
+		return biometricInfoDTO;
 	}
 
 }

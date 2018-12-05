@@ -1,5 +1,6 @@
 package io.mosip.registration.jobs;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -100,18 +103,21 @@ public abstract class BaseJob extends QuartzJobBean {
 			});
 
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
-			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
-			
+			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					noSuchBeanDefinitionException.getMessage());
+
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
 		}
 
-	LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE,RegistrationConstants.APPLICATION_NAME,RegistrationConstants.APPLICATION_ID,"job execution Ended");
+		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "job execution Ended");
 
 	}
 
 	public ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint, String syncJobId) {
+
 		if (responseDTO != null) {
 			try {
 				if (responseDTO.getSuccessResponseDTO() != null) {
@@ -123,6 +129,12 @@ public abstract class BaseJob extends QuartzJobBean {
 
 					// Insert Sync Control transaction
 					syncManager.createSyncControlTransaction(syncTransaction);
+					
+					Map<String, Object> attributes=new HashMap<>();
+					attributes.put("syncTransaction", syncTransaction);
+		
+					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+					successResponseDTO.setOtherAttributes(attributes);
 
 				} else if (responseDTO.getErrorResponseDTOs() != null) {
 
@@ -132,10 +144,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
-				
-				LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
-				
+
+				LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
+						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						regBaseUncheckedException.getMessage());
 				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
@@ -145,6 +157,7 @@ public abstract class BaseJob extends QuartzJobBean {
 				errorResponseDTOs.add(errorResponseDTO);
 
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+
 			}
 
 		}
