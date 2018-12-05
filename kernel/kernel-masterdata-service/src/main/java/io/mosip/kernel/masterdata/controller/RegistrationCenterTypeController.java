@@ -38,7 +38,7 @@ public class RegistrationCenterTypeController {
 	 *            be added.
 	 * @return the response dto.
 	 */
-	@PostMapping("/registrationcentertypes")
+	@PostMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto),

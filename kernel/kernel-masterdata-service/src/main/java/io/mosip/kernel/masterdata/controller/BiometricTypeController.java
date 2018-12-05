@@ -24,7 +24,7 @@ import io.mosip.kernel.masterdata.service.BiometricTypeService;
  *
  */
 @RestController
-@RequestMapping("/biometrictypes")
+@RequestMapping("/v1.0/biometrictypes")
 public class BiometricTypeController {
 
 	@Autowired

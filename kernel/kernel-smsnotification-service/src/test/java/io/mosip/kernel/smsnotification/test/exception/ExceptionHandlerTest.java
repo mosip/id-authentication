@@ -30,42 +30,42 @@ public class ExceptionHandlerTest {
 	@Test
 	public void emptyContactNumberTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullContactNumberTest() throws Exception {
 		String json = "{\"number\":null,\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullMessageTest() throws Exception {
 		String json = "{\"number\":\"8987672341\",\"message\":null}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void emptyMessageTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void contactNumberLengthTest() throws Exception {
 		String json = "{\"number\":\"678\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void invalidContactNumberTest() throws Exception {
 		String json = "{\"number\":\"sdjnjkdfj\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 }

@@ -10,7 +10,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 
 @RestController
-@RequestMapping("/holidays")
+@RequestMapping("/v1.0/holidays")
 public class HolidayController {
 
 	@Autowired

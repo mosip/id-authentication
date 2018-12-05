@@ -17,7 +17,6 @@ import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +40,7 @@ public class BiometricAttributeController {
 	BiometricAttributeService biometricAttributeService;
 
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
-	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
+	@GetMapping("/v1.0/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public BiometricAttributeResponseDto getBiometricAttributesByBiometricType(
 			@PathVariable("langcode") String langCode, @PathVariable("biometrictypecode") String biometricTypeCode) {
 		List<BiometricAttributeDto> biomentricAttributes = biometricAttributeService
@@ -56,7 +55,7 @@ public class BiometricAttributeController {
 	 *            input from user Biometric Attribute DTO
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
-	@PostMapping("/biometricattributes")
+	@PostMapping("/v1.0/biometricattributes")
 	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
@@ -64,7 +63,7 @@ public class BiometricAttributeController {
 	public ResponseEntity<CodeAndLanguageCodeID> createBiometricAttribute(
 			@Valid @RequestBody RequestDto<BiometricAttributeDto> biometricAttribute) {
 		return new ResponseEntity<>(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()),
-				HttpStatus.OK);
+				HttpStatus.CREATED);
 	}
 
 }

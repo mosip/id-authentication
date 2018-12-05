@@ -87,6 +87,7 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
+
 				sfield.setAccessible(true);
 				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
 					setFieldValue(sfield.get(source), destination);

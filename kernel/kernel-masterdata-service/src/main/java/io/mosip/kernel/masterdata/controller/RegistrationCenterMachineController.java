@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/registrationcentermachine")
+@RequestMapping("/v1.0/registrationcentermachine")
 @Api(tags = { "registrationcentermachine" })
 public class RegistrationCenterMachineController {
 
@@ -38,9 +38,9 @@ public class RegistrationCenterMachineController {
 			@ApiResponse(code = 201, message = "When registration center and machine mapped", response = ResponseRrgistrationCenterMachineDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
-	public ResponseEntity<ResponseRrgistrationCenterMachineDto> mapRegistrationCenterAndMachine(
+	public ResponseEntity<ResponseRrgistrationCenterMachineDto> saveRegistrationCenterAndMachine(
 			@Valid @RequestBody RequestDto<RegistrationCenterMachineDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterMachineService.mapRegistrationCenterAndMachine(requestDto),
+		return new ResponseEntity<>(registrationCenterMachineService.saveRegistrationCenterAndMachine(requestDto),
 				HttpStatus.CREATED);
 	}
 
