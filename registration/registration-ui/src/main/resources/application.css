@@ -295,3 +295,13 @@
 #leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
 	-fx-border-color: black;
 }
+
+.scanScrollPane {
+	-fx-background-color: white;
+	-fx-border-width:0 0 0 0;
+}
+
+.scanVBox {
+	-fx-background-color: white;
+	-fx-border-width:0 0 0 0;
+}

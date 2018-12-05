@@ -5,7 +5,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -13,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -42,14 +45,18 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -58,7 +65,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -66,6 +76,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -199,13 +211,19 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> poaDocuments;
 
 	@FXML
-	private Label poaLabel;
+	private VBox poaBox;
+	
+	@FXML
+	private ScrollPane poaScroll;
 
 	@FXML
 	private ComboBox<String> poiDocuments;
 
 	@FXML
-	private Label poiLabel;
+	private VBox poiBox;
+
+	@FXML
+	private ScrollPane poiScroll;
 
 	@FXML
 	private ImageView headerImage;
@@ -214,7 +232,10 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> porDocuments;
 
 	@FXML
-	private Label porLabel;
+	private VBox porBox;
+	
+	@FXML
+	private ScrollPane porScroll;
 
 	@FXML
 	private AnchorPane documentFields;
@@ -350,6 +371,7 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
+			setScrollFalse();
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
@@ -1390,28 +1412,24 @@ public class RegistrationController extends BaseController {
 	}
 
 	@FXML
-	private void scanPoaDocument() {
+	private void scanPoaDocument() throws FileNotFoundException {
 		if (poaDocuments.getValue() == null) {
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
 		} else {
-			poaLabel.setId("doc_label");
-			poaLabel.setText(poaDocuments.getValue());
-
+			addDocuments(poaDocuments.getValue(), poaBox, poaScroll);
 		}
 	}
 
 	@FXML
-	private void scanPoiDocument() {
+	private void scanPoiDocument() throws FileNotFoundException{
 		if (poiDocuments.getValue() == null) {
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
 		} else {
-			poiLabel.setId("doc_label");
-			poiLabel.setText(poiDocuments.getValue());
-
+			addDocuments(poiDocuments.getValue(), poiBox, poiScroll);
 		}
 	}
 
@@ -1422,9 +1440,7 @@ public class RegistrationController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
 		} else {
-			porLabel.setId("doc_label");
-			porLabel.setText(porDocuments.getValue());
-
+			addDocuments(porDocuments.getValue(), porBox, porScroll);
 		}
 	}
 
@@ -1605,7 +1621,116 @@ public class RegistrationController extends BaseController {
 			getBiometricsPane().setVisible(visibility);
 		}
 	}
+	
+	private void addDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
+		ObservableList<Node> nodes = vboxElement.getChildren();
+		if(nodes.isEmpty()) {
+			attachDocuments(document, vboxElement, scrollPane);
+		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
+			attachDocuments(document.concat("_").concat(String.valueOf(nodes.size())), vboxElement, scrollPane);
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "Only One can be added");
+		}
+	}
+	
+	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
+		
+		try {
+			
+			//Reading byte[] from Scanner
+			InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
+			
+			byte[] scannedFingerPrintBytes = new byte[inputStream.available()];
+			inputStream.read(scannedFingerPrintBytes);
+			
+			//Setting document details to DTO
+			DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+			documentDetailsDTO.setDocument(scannedFingerPrintBytes);
+			documentDetailsDTO.setDocumentName(document);
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().add(documentDetailsDTO);			
+			
+			if(scannedFingerPrintBytes.length > 1000000) {
+				
+				generateAlert(RegistrationConstants.ALERT_ERROR, "more size.reupload");
+				
+			} else {
+				
+				GridPane anchorPane = new GridPane();
+				anchorPane.setId(document);
+				
+				anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
+				anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+				
+				vboxElement.getChildren().add(anchorPane);
+				
+				//Scrollbar setting for scrollpane
+				if(vboxElement.getChildren().size() > 2) {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+				} else {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				}
+			}
+		} catch (IOException ioException) {
+			
+		} 
+	}
+	
+	private void setScrollFalse() {
+		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+	}
+	
+	private Hyperlink createHyperLink(String document) {
+		Hyperlink hyperLink = new Hyperlink();
+		hyperLink.setId(document);
+		hyperLink.setText(document);
+		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+						GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().forEach(detail -> {
+							if(detail.getDocumentName().equals(pane.getId())) {
+								Image img = convertBytesToImage(detail.getDocument());
+								ImageView view = new ImageView(img);
+								Scene scene = new Scene(new StackPane(view));
+								Stage primaryStage = new Stage();
+								primaryStage.setTitle("Image Click Example");
+								primaryStage.setScene(scene);
+								primaryStage.sizeToScene();
+								primaryStage.show();
+							}
+						});
+			}
+		});
+		return hyperLink;
+	}
 
+	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
+		ImageView imageView = new ImageView(image);
+		imageView.setCursor(Cursor.HAND);
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				GridPane remo = (GridPane) ((ImageView) event.getSource()).getParent();
+				vboxElement.getChildren().remove(remo);
+				if(vboxElement.getChildren().isEmpty()) {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				}
+			}
+
+		});
+		return imageView;
+	}
+	
 	private void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 

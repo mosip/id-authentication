@@ -50,6 +50,7 @@ public class RegistrationConstants {
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
+	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
 
 	// Key values to read value from messages.properties file
 
@@ -550,11 +551,11 @@ public class RegistrationConstants {
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
 
 	public static List<String> getPoaDocumentList() {
-		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
 
 	public static List<String> getPoiDocumentList() {
-		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+		return Arrays.asList("PAN", "Aadhar", "Passport", "VoterId", "Licence");
 	}
 
 	public static List<String> getPorDocumentList() {
