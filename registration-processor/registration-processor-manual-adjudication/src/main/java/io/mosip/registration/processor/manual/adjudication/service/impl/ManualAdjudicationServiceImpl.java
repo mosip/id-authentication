@@ -107,7 +107,18 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
 		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
-		return null;
+		ManualVerificationDTO dto=new ManualVerificationDTO();
+		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getByRegId(manualVerificationDTO.getRegId(),manualVerificationDTO.getMvUsrId());
+		manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
+		ManualVerificationEntity updatedManualVerificationEntity=manualAdjudicationDao.update(manualVerificationEntity);
+		if(updatedManualVerificationEntity!=null) {
+			dto.setRegId(updatedManualVerificationEntity.getId().getRegId());
+			dto.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
+			dto.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+			dto.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
+			dto.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+		}
+		return dto;
 	}
-
+	
 }
