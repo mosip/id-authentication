@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class BioTypeCodeAndLangCodeAndAttributeCode {
 	private String code;
 	private String biometricTypeCode;

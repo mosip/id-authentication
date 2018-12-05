@@ -38,9 +38,8 @@ public class AuditManagerController {
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
-	@PostMapping(value = "/auditmanager/audits")
+	@PostMapping(value = "/v1.0/audits")
 	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid AuditRequestDto auditRequestDto) {
 		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.CREATED);
 	}
-
 }

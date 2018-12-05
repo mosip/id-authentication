@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @ApiModel(value = "BiometricAttribute", description = "BiometricAttribute resource representation")
 public class BiometricAttributeDto {
 	/**

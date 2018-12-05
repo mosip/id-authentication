@@ -41,7 +41,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	public ResponseRrgistrationCenterMachineDto mapRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
- 
+
 		try {
 			RegistrationCenterMachine registrationCenterMachine = metadataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachine.class);

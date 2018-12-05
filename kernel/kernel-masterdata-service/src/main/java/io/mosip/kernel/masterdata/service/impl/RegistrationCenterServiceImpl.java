@@ -104,7 +104,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterEntity.add(registrationCenter);
 			// registrationCenterDto=
 
-			registrationCenters = objectMapperUtil.mapRegistrationCenter(registrationCenterEntity);
+			// registrationCenters =
+			// objectMapperUtil.mapRegistrationCenter(registrationCenterEntity);
+			registrationCenters = objectMapperUtil.mapAllNew(registrationCenterEntity, RegistrationCenterDto.class);
 			registrationCenterDto = registrationCenters.get(0);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
@@ -152,7 +154,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterDto> registrationCenters = null;
 		// registrationCenters = objectMapperUtil.mapAll(centers,
 		// RegistrationCenterDto.class);
-		registrationCenters = objectMapperUtil.mapRegistrationCenter(centers);
+		// registrationCenters = objectMapperUtil.mapRegistrationCenter(centers);
+		registrationCenters = objectMapperUtil.mapAllNew(centers, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -172,7 +175,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
 			registrationCentersList = registrationCenterRepository
-					.findByLocationCodeAndLanguageCodeAndIsDeletedFalse(locationCode, langCode);
+					.findByLocationCodeAndLanguageCode(locationCode, langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
@@ -186,7 +189,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
 		// registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
 		// RegistrationCenterDto.class);
-		registrationCentersDtoList = objectMapperUtil.mapRegistrationCenter(registrationCentersList);
+		// registrationCentersDtoList =
+		// objectMapperUtil.mapRegistrationCenter(registrationCentersList);
+		registrationCentersDtoList = objectMapperUtil.mapAllNew(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
@@ -218,7 +223,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		// registrationCenterDto = objectMapperUtil.map(registrationCenter,
 		// RegistrationCenterDto.class);
-		registrationCenters = objectMapperUtil.mapRegistrationCenter(registrationCenter);
+		// registrationCenters =
+		// objectMapperUtil.mapRegistrationCenter(registrationCenter);
+		RegistrationCenterDto registrationCenterDto = objectMapperUtil.mapNew(registrationCenter,
+				RegistrationCenterDto.class);
+		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
 		response.setRegistrationCenters(registrationCenters);
 		return response;
@@ -250,8 +259,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterDto> registrationCenters = null;
 		// registrationCenters = objectMapperUtil.mapAll(registrationCentersList,
 		// RegistrationCenterDto.class);
-		registrationCenters = objectMapperUtil.mapRegistrationCenter(registrationCentersList);
-
+		// registrationCenters =
+		// objectMapperUtil.mapRegistrationCenter(registrationCentersList);
+		registrationCenters = objectMapperUtil.mapAllNew(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;

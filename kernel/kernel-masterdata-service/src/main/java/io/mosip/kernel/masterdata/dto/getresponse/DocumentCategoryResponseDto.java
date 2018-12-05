@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class DocumentCategoryResponseDto {
 	private List<DocumentCategoryDto> documentcategories;
 }
