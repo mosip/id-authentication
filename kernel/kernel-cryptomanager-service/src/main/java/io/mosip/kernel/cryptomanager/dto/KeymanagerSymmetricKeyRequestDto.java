@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeymanagerSymmetricKeyRequestDto {
+	
 	private String applicationId;
 
 	private LocalDateTime timeStamp;

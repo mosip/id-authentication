@@ -24,8 +24,8 @@ public class KeymanagerPublicKeyResponseDto {
     
 	private String publicKey;
 
-	private LocalDateTime keyGenerationTime;//validfrom
+	private LocalDateTime issuedAt;
 
-	private LocalDateTime keyExpiryTime;//validto
+	private LocalDateTime expiryAt;
 
 }
