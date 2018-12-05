@@ -1510,7 +1510,7 @@ public class MasterdataIntegrationTest {
 			biometricAttribute.setLangCode("ENG");
 			String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"code\": \"BA222\", \"name\": \"sample data\", \"description\": \"sample data desc\", \"biometricTypeCode\": \"4\", \"langCode\": \"ENG\", \"isActive\": true }}";
 			Mockito.when(biometricAttributeRepository.create(Mockito.any())).thenReturn(biometricAttribute);
-			mockMvc.perform(post("/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isCreated());
 		}
 
@@ -1519,7 +1519,7 @@ public class MasterdataIntegrationTest {
 			String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"code\": \"BA222\", \"name\": \"sample data\", \"description\": \"sample data desc\", \"biometricTypeCode\": \"4\", \"langCode\": \"ENG\", \"isActive\": true }}";
 			when(biometricAttributeRepository.create(Mockito.any()))
 					.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-			mockMvc.perform(post("/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isInternalServerError());
 		}
 
@@ -1530,7 +1530,7 @@ public class MasterdataIntegrationTest {
 			template.setId("T222");
 			String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"id\": \"T222\",    \"name\": \"Email template\",    \"description\": null,    \"fileFormatCode\": \"xml\",    \"model\": null,    \"fileText\": null,    \"moduleId\": \"preregistation\",    \"moduleName\": null,    \"templateTypeCode\": \"EMAIL\",    \"langCode\": \"ENG\",    \"isActive\": true  }}";
 			Mockito.when(templateRepository.create(Mockito.any())).thenReturn(template);
-			mockMvc.perform(post("/templates").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isCreated());
 		}
 
@@ -1539,7 +1539,7 @@ public class MasterdataIntegrationTest {
 			String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"id\": \"TT22\",    \"name\": \"Email template\",    \"description\": null,    \"fileFormatCode\": \"xml\",    \"model\": null,    \"fileText\": null,    \"moduleId\": \"preregistation\",    \"moduleName\": null,    \"templateTypeCode\": \"EMAIL\",    \"langCode\": \"ENG\",    \"isActive\": true  }}";
 			when(templateRepository.create(Mockito.any()))
 					.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-			mockMvc.perform(post("/templates").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isInternalServerError());
 		}
 
@@ -1549,9 +1549,9 @@ public class MasterdataIntegrationTest {
 			TemplateType templateType = new TemplateType();
 			templateType.setCode("TTC222");
 			templateType.setLangCode("ENG");
-			String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"2018-12-05T06:23:16.252Z\",  \"request\": {    \"code\": \"TTC222\",    \"description\": \"Template type desc\",    \"isActive\": true,    \"langCode\": \"ENG\"  }}";
+			String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"code\": \"TTC222\",    \"description\": \"Template type desc\",    \"isActive\": true,    \"langCode\": \"ENG\"  }}";
 			Mockito.when(templateTypeRepository.create(Mockito.any())).thenReturn(templateType);
-			mockMvc.perform(post("/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isCreated());
 		}
 
@@ -1560,7 +1560,7 @@ public class MasterdataIntegrationTest {
 			String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"code\": \"BA222\", \"name\": \"sample data\", \"description\": \"sample data desc\", \"biometricTypeCode\": \"4\", \"langCode\": \"ENG\", \"isActive\": true }}";
 			when(templateTypeRepository.create(Mockito.any()))
 					.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-			mockMvc.perform(post("/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
+			mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
 					.andExpect(status().isInternalServerError());
 		}
 
