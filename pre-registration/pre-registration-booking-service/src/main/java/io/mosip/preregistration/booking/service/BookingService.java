@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -24,7 +25,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.booking.dto.PreRegResponseDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -199,7 +199,7 @@ public class BookingService {
 		} catch (DataAccessException e) {
 			throw new TablenotAccessibleException("Table not accessable ");
 		}
-		
+
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);
 		response.setResponse("Master Data is synched successfully");
@@ -208,7 +208,7 @@ public class BookingService {
 	}
 
 	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
-		ResponseDto<AvailabilityDto> response= new ResponseDto<>();
+		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
 		String date = LocalDate.now().getYear() + "/11/01";
 		LocalDate convertedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 		convertedDate = convertedDate.withDayOfMonth(convertedDate.getMonth().length(convertedDate.isLeapYear()));
@@ -243,7 +243,7 @@ public class BookingService {
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);
 		response.setResponse(availability);
-		
+
 		return response;
 
 	}
@@ -256,7 +256,7 @@ public class BookingService {
 		avaEntity.setRegcntrId(regDto.getId());
 		avaEntity.setFromTime(currentTime);
 		avaEntity.setToTime(toTime);
-		
+
 		avaEntity.setCrBy(regDto.getContactPerson());
 		if (currentTime.equals(toTime)) {
 			avaEntity.setIsActive(false);
@@ -267,7 +267,6 @@ public class BookingService {
 		}
 		bookingRepository.save(avaEntity);
 	}
-	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ResponseDto<BookingDTO> bookAppointment(BookingDTO bookingDTO) throws java.text.ParseException {
@@ -282,25 +281,22 @@ public class BookingService {
 
 				requestDTO = bookingDTO.getRequest();
 
-				ResponseEntity<PreRegistartionStatusDTO> respEntity = callGetStatusRestService(
-						requestDTO.getPre_registration_id());
-				PreRegistartionStatusDTO responseGetDto = respEntity.getBody();
+				boolean existsFlag = registrationBookingRepository
+						.existsBypreIdandbookingDateTime(requestDTO.getPre_registration_id(), requestDTO.getReg_date());
+				if (!existsFlag) {
+					String preRegStatusCode = callGetStatusRestService(requestDTO.getPre_registration_id());
 
-				String preRegStatusCode = responseGetDto.getStatusCode();
-				System.out.println("status from pre reg: " + preRegStatusCode);
-
-				AvailibityEntity availableEntity = bookingRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-						LocalTime.parse(requestDTO.getSlotFromTime()), LocalTime.parse(requestDTO.getSlotToTime()),
-						new Date(requestDTO.getReg_date().getTime()).toString(),
-						requestDTO.getRegistration_center_id());
-
-				if (!registrationBookingRepository.existsBypreIdandbookingDateTime(requestDTO.getPre_registration_id(),
-						requestDTO.getReg_date())) {
-					System.out.println(preRegStatusCode);
-					System.out.println(availableEntity.getAvailabilityNo());
+					System.out.println("status code from pre reg: " + preRegStatusCode);
+					AvailibityEntity availableEntity = bookingRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+							LocalTime.parse(requestDTO.getSlotFromTime()), LocalTime.parse(requestDTO.getSlotToTime()),
+							new Date(requestDTO.getReg_date().getTime()).toString(),
+							requestDTO.getRegistration_center_id());
 
 					if (availableEntity != null && availableEntity.getAvailabilityNo() > 0 && preRegStatusCode != null
-							&& preRegStatusCode.trim().equalsIgnoreCase("Pending_Appointment")) {
+							&& preRegStatusCode.trim().equalsIgnoreCase("Pending_appointment")) {
+
+						System.out.println("No. of availability: : " + availableEntity.getAvailabilityNo());
+						System.out.println("preRegistration StatusCode: : " + preRegStatusCode);
 
 						bookingPK.setPreregistrationId(requestDTO.getPre_registration_id());
 						bookingPK.setBookingDateTime(bookingDTO.getReqTime());
@@ -317,18 +313,12 @@ public class BookingService {
 
 						RegistrationBookingEntity resultEntity = registrationBookingRepository.save(entity);
 
-						ResponseEntity<ResponseDto> responseEntity = callUpdateStatusRestService(
-								requestDTO.getPre_registration_id(), "Booked");
-						if (responseEntity.getStatusCode() == HttpStatus.OK) {
-							System.out.println("PreId updated");
-							// updateRepository.getOne(resultEntity.getBookingPK().getPreregistrationId());
-						}
+
 						if (resultEntity != null) {
 							List<String> respList = new ArrayList<>();
-
-							// preRegistrationEntity.setStatusCode("Booked");
-							// updateRepository.update(preRegistrationEntity);
-
+							
+							callUpdateStatusRestService(requestDTO.getPre_registration_id(), "Booked");
+							
 							availableEntity.setAvailabilityNo(availableEntity.getAvailabilityNo() - 1);
 							bookingRepository.update(availableEntity);
 
@@ -539,31 +529,34 @@ public class BookingService {
 	@SuppressWarnings("rawtypes")
 	public ResponseEntity<ResponseDto> callUpdateStatusRestService(String preId, String status) {
 		restTemplate = restTemplateBuilder.build();
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl).queryParam("preRegId", preId)
-				.queryParam("status", status);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications")
+				.queryParam("preRegId", preId).queryParam("status", status);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<ResponseDto<String>> httpEntity = new HttpEntity<>(headers);
 		String uriBuilder = builder.build().encode().toUriString();
-
-		return restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity, ResponseDto.class);
-
+		System.out.println("Url for Update status: " + uriBuilder);
+		ResponseEntity<ResponseDto> resp = restTemplate.exchange(uriBuilder, HttpMethod.PUT, httpEntity,
+				ResponseDto.class);
+		return resp;
 	}
 
-	public ResponseEntity<PreRegistartionStatusDTO> callGetStatusRestService(String preId) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public String callGetStatusRestService(String preId) {
 		restTemplate = restTemplateBuilder.build();
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl)
-				.queryParam("preRegId", preId);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applicationStatus")
+				.queryParam("preId", preId);
 		HttpHeaders headers = new HttpHeaders();
-		// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		HttpEntity<ResponseDto<String>> httpEntity = new HttpEntity<>(headers);
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		HttpEntity<PreRegResponseDto> httpEntity = new HttpEntity<>(headers);
 		String uriBuilder = builder.build().encode().toUriString();
-
-		return restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity, PreRegistartionStatusDTO.class);
-
-		// return restTemplate.getForEntity(preRegResourceUrl + "/applications",
-		// ResponseDto.class).getBody();
-
+		System.out.println("Url for Get status: " + uriBuilder);
+		ResponseEntity<PreRegResponseDto> respEntity = (ResponseEntity) restTemplate.exchange(uriBuilder,
+				HttpMethod.GET, httpEntity, PreRegResponseDto.class);
+		Map<String, String> mapValues = (Map<String, String>) respEntity.getBody().getResponse().get(0);
+		String statusCode = mapValues.get("statusCode").toString().trim();
+		System.out.println("statusCode in callGetStatusRestService: " + statusCode);
+		return statusCode;
 	}
 
 }
