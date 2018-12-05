@@ -52,6 +52,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
@@ -228,6 +229,8 @@ public class MasterdataControllerTest {
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		registrationCenter = new RegistrationCenter();
+		Location location = new Location();
+		location.setCode("KAR_59");
 		registrationCenter.setAddressLine1("7th Street");
 		registrationCenter.setAddressLine2("Lane 2");
 		registrationCenter.setAddressLine3("Mylasandra-560001");
@@ -237,7 +240,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setCreatedBy("John");
 		registrationCenter.setCreatedDateTime(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
-		registrationCenter.setLocationCode("KAR_59");
+		registrationCenter.setLocationCode(location);
 		registrationCenter.setId("REG_CR_001");
 		registrationCenter.setLanguageCode("ENG");
 		registrationCenter.setWorkingHours("9");
