@@ -302,10 +302,10 @@ public class RegistrationController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
+
 			// Create RegistrationDTO Object
 			createRegistrationDTOObject();
-			
+
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
 				exceptionBufferedImage = null;
@@ -612,7 +612,7 @@ public class RegistrationController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		} 
+		}
 	}
 
 	@FXML
@@ -1163,7 +1163,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
 		boolean gotoNext = false;
-		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
+		if (validateRegex(fullName, RegistrationConstants.FULL_NAME_REGEX)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR,
 					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 
@@ -1175,7 +1175,7 @@ public class RegistrationController extends BaseController {
 
 					gender.requestFocus();
 				} else {
-					if (validateRegex(addressLine1, "^.{6,50}$")) {
+					if (validateRegex(addressLine1, RegistrationConstants.ADDRESS_LINE1_REGEX)) {
 
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY
 								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
@@ -1215,22 +1215,22 @@ public class RegistrationController extends BaseController {
 															+ RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
-											if (validateRegex(mobileNo, "\\d{9}")) {
+											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
 
 												generateAlert(RegistrationConstants.ALERT_ERROR,
 														RegistrationConstants.MOBILE_NUMBER_EMPTY + " "
 																+ RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
-												if (validateRegex(emailId,
-														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
+												if (validateRegex(emailId, RegistrationConstants.EMAIL_ID_REGEX)) {
 
 													generateAlert(RegistrationConstants.ALERT_ERROR,
 															RegistrationConstants.EMAIL_ID_EMPTY + " "
 																	+ RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
-													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
+													if (validateRegex(cniOrPinNumber,
+															RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
 
 														generateAlert(RegistrationConstants.ALERT_ERROR,
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY + " "
@@ -1288,15 +1288,14 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = false;
 
 		if (isChild) {
-			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
+			if (validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
 
 				generateAlert(RegistrationConstants.ALERT_ERROR,
 						RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
-				if (validateRegex(uinId, "\\d{6,28}")) {
+				if (validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1367,12 +1366,13 @@ public class RegistrationController extends BaseController {
 	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
-			if (validateRegex(ageField, "\\d{1,2}")) {
+			if (validateRegex(ageField, RegistrationConstants.AGE_REGEX)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
 
 				ageField.requestFocus();
 			} else {
-				if (Integer.parseInt(ageField.getText()) < 5) {
+				if (Integer.parseInt(ageField.getText()) < Integer
+						.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 				}
 				gotoNext = true;
@@ -1439,7 +1439,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	private Boolean isEditPage() {
-		if(SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT)!=null)
+		if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
 			return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
 		return false;
 	}
@@ -1535,12 +1535,13 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
 	}
-	
+
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
@@ -1558,7 +1559,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
@@ -1568,7 +1569,7 @@ public class RegistrationController extends BaseController {
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
@@ -1578,7 +1579,7 @@ public class RegistrationController extends BaseController {
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
@@ -1607,7 +1608,7 @@ public class RegistrationController extends BaseController {
 
 	private void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
-		
+
 		// Create objects for Biometric DTOS
 		BiometricDTO biometricDTO = new BiometricDTO();
 		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
@@ -1615,7 +1616,7 @@ public class RegistrationController extends BaseController {
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		biometricDTO.setSupervisorBiometricDTO(createBiometricInfoDTO());
 		registrationDTO.setBiometricDTO(biometricDTO);
-		
+
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
@@ -1624,18 +1625,17 @@ public class RegistrationController extends BaseController {
 		demographicDTO.setDemoInLocalLang(new DemographicInfoDTO());
 		demographicDTO.setDemoInUserLang(new DemographicInfoDTO());
 		registrationDTO.setDemographicDTO(demographicDTO);
-		
+
 		// Create object for OSIData DTO
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
-		
+
 		// Create object for RegistrationMetaData DTO
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
-		
+
 		// Put the RegistrationDTO object to SessionContext Map
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-				registrationDTO);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}
-	
+
 	private BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
@@ -1643,7 +1643,7 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setSegmentedFingerprints(new ArrayList<>());
-		
+
 		return biometricInfoDTO;
 	}
 

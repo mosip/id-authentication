@@ -702,4 +702,14 @@ public class RegistrationConstants {
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
 	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
+	
+	// Regex Constants
+	public static final String FULL_NAME_REGEX = "[A-z]{1,25}\\s?\\.?[A-z]{1,25}";
+	public static final String ADDRESS_LINE1_REGEX="^.{1,50}$";
+	public static final String MOBILE_NUMBER_REGEX="\\d{9}";
+	public static final String EMAIL_ID_REGEX="^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
+	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
+	public static final String AGE_REGEX="\\d{1,2}";
+	public static final String UIN_REGEX="\\d{1,30}";
+
 }
