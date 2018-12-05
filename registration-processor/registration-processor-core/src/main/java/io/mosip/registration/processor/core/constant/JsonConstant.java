@@ -5,12 +5,15 @@ package io.mosip.registration.processor.core.constant;
  * 
  * @author M1039285
  */
-public enum JsonConstant {
+public class JsonConstant {
 
-	/** The applicanttype. */
-	APPLICANTTYPE,
-	/** The registrationtype. */
-	REGISTRATIONTYPE,
-	/** The is verified. */
-	ISVERIFIED, VERIFIED
+	private JsonConstant() {
+
+	}
+
+	public static final String APPLICANTTYPE = "APPLICANTTYPE";
+	public static final String REGISTRATIONTYPE = "REGISTRATIONTYPE";
+	public static final String ISVERIFIED = "ISVERIFIED";
+	public static final String VERIFIED = "VERIFIED";
+
 }
