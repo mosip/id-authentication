@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -30,7 +31,7 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            effective Date and time provided by user in the format "yyyy-mm-ddThh:mm:ss"
 	 * @return List<MachineHistory> fetched from database
 	 */
-	//@Query("from MachineHistory where id =?1 langCode=?2 and effectDtimes <= ?3 and ( isDeleted =false or isDeleted is null)")
-	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(String id, String langCode,
+	@Query("from MachineHistory m where m.id = ?1 and m.langCode= ?2 and m.effectDtimes <= ?3 and ( isDeleted =false or isDeleted is null)")
+	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode,
 			LocalDateTime effectDtimes);
 }

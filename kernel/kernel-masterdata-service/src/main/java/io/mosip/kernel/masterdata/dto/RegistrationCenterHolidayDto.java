@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
  * @since 23-10-2016
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class RegistrationCenterHolidayDto {
 	private RegistrationCenterDto registrationCenter;
 	private List<HolidayDto> holidays;

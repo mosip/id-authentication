@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class BiometricTypeResponseDto {
 
 	private List<BiometricTypeDto> biometrictypes;

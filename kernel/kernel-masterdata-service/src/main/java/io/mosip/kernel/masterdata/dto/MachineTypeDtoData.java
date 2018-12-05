@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class MachineTypeDtoData {
 	private MachineTypeDto machineTypeDto;
 

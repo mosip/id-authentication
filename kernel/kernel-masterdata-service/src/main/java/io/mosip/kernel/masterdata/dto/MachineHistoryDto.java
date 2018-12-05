@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class MachineHistoryDto {
 
 	/**
@@ -65,7 +65,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold created date and time
 	 */
-	private LocalDateTime createdtime;
+	private LocalDateTime createdtimes;
 
 	/**
 	 * Field to hold updater name
@@ -75,7 +75,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold updated date and time
 	 */
-	private LocalDateTime updatedtime;
+	private LocalDateTime updatedtimes;
 
 	/**
 	 * Field to hold is deleted
@@ -85,7 +85,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold deleted date and time
 	 */
-	private LocalDateTime deletedtime;
+	private LocalDateTime deletedtimes;
 
 	/**
 	 * Field to hold Effective Date and time

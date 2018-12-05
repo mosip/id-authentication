@@ -34,7 +34,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -53,9 +52,11 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
+import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
@@ -132,7 +133,6 @@ public class MasterdataControllerTest {
 	private IdType idType;
 	private BlacklistedWordsDto blacklistedWordsDto;
 	private BlackListedWordsRequest blackListedWordsRequest;
-	private BlackListedWordsRequestDto blackListedWordsRequestDto;
 
 	private BlackListedWordsResponse blackListedWordsResponse;
 
@@ -146,7 +146,7 @@ public class MasterdataControllerTest {
 	private LanguageDto hin;
 
 	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"request\":{\"isActive\": true,\"code\":\"TN\",\"parentLocCode\":\"IND\"}}";
+	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"id\": \"string\", \"request\": { \"code\": \"string\", \"hierarchyLevel\": 0, \"hierarchyName\": \"string\", \"isActive\": true, \"languageCode\": \"str\", \"name\": \"string\", \"parentLocCode\": \"string\" }, \"timestamp\": \"2018-11-30T11:05:49.799Z\", \"ver\": \"string\" }";
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -229,6 +229,8 @@ public class MasterdataControllerTest {
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		registrationCenter = new RegistrationCenter();
+		Location location = new Location();
+		location.setCode("KAR_59");
 		registrationCenter.setAddressLine1("7th Street");
 		registrationCenter.setAddressLine2("Lane 2");
 		registrationCenter.setAddressLine3("Mylasandra-560001");
@@ -238,7 +240,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setCreatedBy("John");
 		registrationCenter.setCreatedDateTime(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
-		registrationCenter.setLocationCode("KAR_59");
+		registrationCenter.setLocationCode(location);
 		registrationCenter.setId("REG_CR_001");
 		registrationCenter.setLanguageCode("ENG");
 		registrationCenter.setWorkingHours("9");
@@ -270,8 +272,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
 		locationDto.setLanguageCode("HIN");
-		locationDto.setCreatedBy("dfs");
-		locationDto.setUpdatedBy("sdfsd");
+
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationDto.setCode("KAR");
@@ -280,8 +281,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
-		locationDto.setCreatedBy("dfs");
-		locationDto.setUpdatedBy("sdfsd");
+
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
@@ -364,7 +364,7 @@ public class MasterdataControllerTest {
 		applicationDto.setLangCode("ENG");
 
 		applicationDtoList.add(applicationDto);
-		
+
 		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
 		codeAndLanguageCodeId.setLangCode("ENG");
@@ -396,9 +396,6 @@ public class MasterdataControllerTest {
 		blacklistedWordsDto.setWord("testword");
 		blackListedWordsRequest = new BlackListedWordsRequest();
 		blackListedWordsRequest.setBlacklistedword(blacklistedWordsDto);
-		blackListedWordsRequestDto = new BlackListedWordsRequestDto();
-		blackListedWordsRequestDto.setId("TEST");
-		blackListedWordsRequestDto.setRequest(blackListedWordsRequest);
 		blackListedWordsResponse = new BlackListedWordsResponse();
 		blackListedWordsResponse.setLangCode("TST");
 		blackListedWordsResponse.setWord("testword");
@@ -408,10 +405,11 @@ public class MasterdataControllerTest {
 	// --------------------------------BlackListedWordsControllerTest--------------------------
 	@Test
 	public void addBlackListedWordTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"blacklistedword\":{\"word\":\"testword\",\"description\":\"Test\",\"langCode\":\"TST\",\"isActive\":\"true\"}}}";
-
-		Mockito.when(blacklistedWordsService.addBlackListedWord(blackListedWordsRequestDto))
-				.thenReturn(blackListedWordsResponse);
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
+		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
+		wordAndLanguageCodeID.setLangCode("TST");
+		wordAndLanguageCodeID.setWord("testword");
+		Mockito.when(blacklistedWordsService.createBlackListedWord(Mockito.any())).thenReturn(wordAndLanguageCodeID);
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -477,24 +475,15 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void addApplication() throws Exception {
-		Mockito.when(applicationService.createApplication(Mockito.any()))
-				.thenReturn(codeAndLanguageCodeId);
+		Mockito.when(applicationService.createApplication(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
-				.content("{\n" + 
-						"  \"id\": \"string\",\n" + 
-						"  \"ver\": \"string\",\n" + 
-						"  \"timestamp\": \"2018-11-29T09:55:39.821Z\",\n" + 
-						"  \"request\": {\n" + 
-						"    \"applicationtype\": {\n" + 
-						"      \"code\": \"101\",\n" + 
-						"      \"name\": \"pre-registeration\",\n" + 
-						"      \"description\": \"Pre-registration Application Form\",\n" + 
-						"      \"langCode\": \"ENG\",\n" + 
-						"      \"isActive\": true\n" + 
-						"    }\n" + 
-						"  }\n" + 
-						"}"))
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"2018-11-29T09:55:39.821Z\",\n" + "  \"request\": {\n"
+						+ "    \"applicationtype\": {\n" + "      \"code\": \"101\",\n"
+						+ "      \"name\": \"pre-registeration\",\n"
+						+ "      \"description\": \"Pre-registration Application Form\",\n"
+						+ "      \"langCode\": \"ENG\",\n" + "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
 	}
 
@@ -562,7 +551,7 @@ public class MasterdataControllerTest {
 	public void testIdTypeController() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		Mockito.when(repository.findByLangCodeAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
+		Mockito.when(repository.findByLangCode(anyString())).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/{languagecode}", "ENG")).andExpect(status().isOk());
 	}
 
@@ -667,14 +656,14 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.saveLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
+		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isCreated());
 	}
 
 	@Test
 	public void testNegativeSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.saveLocationHierarchy(Mockito.any()))
+		Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST))
@@ -739,7 +728,8 @@ public class MasterdataControllerTest {
 	// -----------------------------TemplateFileFormatControllerTest------------------------
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
-		Mockito.when(templateFileFormatService.createTemplateFileFormat(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+		Mockito.when(templateFileFormatService.createTemplateFileFormat(Mockito.any()))
+				.thenReturn(codeAndLanguageCodeId);
 		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-11-29T09:32:01.911Z\",\n" + "  \"request\": {\n"

@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,15 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
-import io.mosip.kernel.masterdata.dto.MachineRequestDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecIdAndId;
-import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
-import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
 
@@ -27,11 +32,11 @@ import io.mosip.kernel.masterdata.service.MachineService;
  */
 
 @RestController
-@RequestMapping(value = "/machines")
+@Api(tags = { "Machines" })
 public class MachineController {
 
 	/**
-	 * Reference to MachineDetailService.
+	 * Reference to MachineService.
 	 */
 	@Autowired
 	private MachineService machineService;
@@ -44,10 +49,10 @@ public class MachineController {
 	 * @param langcode
 	 * @return machine detail based on given Machine ID and Language code
 	 */
-	@GetMapping(value = "/{id}/{langcode}")
-	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
-			@PathVariable("langcode") String langCode) {
-		return machineService.getMachineDetailIdLang(machineId, langCode);
+	@GetMapping(value = "/machines/{id}/{langcode}")
+	public MachineResponseIdDto getMachineIdLangcode(@PathVariable("id") String machineId,
+			@PathVariable("langcode") String langCode ) {
+		return machineService.getMachineIdLangcode(machineId, langCode);
 
 	}
 
@@ -59,9 +64,9 @@ public class MachineController {
 	 * @return machine detail based on given Language code
 	 */
 
-	@GetMapping(value = "/{langcode}")
-	public MachineResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
-		return machineService.getMachineDetailLang(langCode);
+	@GetMapping(value = "/machines/{langcode}")
+	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
+		return machineService.getMachineLangcode(langCode);
 
 	}
 
@@ -70,10 +75,9 @@ public class MachineController {
 	 * 
 	 * @return all machines details
 	 */
-
-	@GetMapping
-	public MachineResponseDto getMachineDetailAll() {
-		return machineService.getMachineDetailAll();
+	@GetMapping(value = "/machines")
+	public MachineResponseDto getMachineAll() {
+		return machineService.getMachineAll();
 
 	}
 	
@@ -82,13 +86,17 @@ public class MachineController {
 	 * 
 	 * @param machine
 	 *            input from user Machine  DTO
-	 * @return {@link MachineTypeCodeAndLanguageCodeAndId}
+	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/")
-	public ResponseEntity<MachineSpecIdAndId> saveMachine(
-			@RequestBody MachineRequestDto machine) {
-
-		return new ResponseEntity<>(machineService.saveMachine(machine), HttpStatus.CREATED);
+	@PostMapping("/machines")
+	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine and return Machine id", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
+	public ResponseEntity<IdResponseDto> saveMachine(
+		@Valid  @RequestBody RequestDto<MachineDto> machine) {
+		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
 
 }

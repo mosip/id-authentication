@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricAttributeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
@@ -36,13 +35,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 	private MapperUtils mapperUtil;
 
 	@Autowired
-	MapperUtils objMapper;
-
-	@Autowired
 	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private DataMapper dataMapper;
 
 	@Override
 	public List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode) {
@@ -78,10 +71,11 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		CodeAndLanguageCodeID codeAndLanguageCodeID = dataMapper.map(entity, CodeAndLanguageCodeID.class, true, null,
-				null, true);
+		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 
-		return codeAndLanguageCodeID;
+		mapperUtil.mapNew(entity, codeAndLanguageCodeId);
+
+		return codeAndLanguageCodeId;
 	}
 
 }

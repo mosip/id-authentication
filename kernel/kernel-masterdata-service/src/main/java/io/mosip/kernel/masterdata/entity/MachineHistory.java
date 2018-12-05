@@ -26,8 +26,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "machine_master_h", schema = "master")
 @IdClass(IdAndEffectDtimesID.class)
 public class MachineHistory extends BaseEntity implements Serializable {
-	
-	
+	/**
+	 * 
+	 */
 	@Id
 	@AttributeOverrides({
 			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
@@ -39,14 +40,6 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
-
-	/**
-	 * Field for machine ID
-	 *//*
-	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;*/
-
 	/**
 	 * Field for machine name
 	 */
@@ -82,17 +75,10 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-
-/*	*//**
-	 * Field to hold effected date and time
-	 *//*
-	@Column(name = "eff_dtimes", nullable = false)
-	private LocalDateTime effectDtimes;*/
-
 	/**
 	 * Field to hold effected date and time
 	 */
-	@Column(name = "validity_end_dtimes", nullable = false)
+	@Column(name = "validity_end_dtimes")
 	private LocalDateTime valEndDtimes;
 
 }

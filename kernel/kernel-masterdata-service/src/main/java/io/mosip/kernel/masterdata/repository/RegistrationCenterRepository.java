@@ -65,8 +65,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return List<RegistrationCenter> fetched from database
 	 */
-	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsDeletedFalse(String locationCode,
-			String languageCode);
+	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
+	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
 
 	/**
 	 * This method trigger query to fetch registration centers based on hierarchy

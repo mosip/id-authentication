@@ -18,14 +18,14 @@ public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory,
 	
 	/**
 	 * 
-	 * @return
+	 * @return ReasonCategory - reasoncategory obj
 	 */
 	List<ReasonCategory> findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
 	/**
 	 * 
 	 * @param code
 	 * @param languageCode
-	 * @return
+	 * @return reasonCategoryObj
 	 */
 	@Query("FROM ReasonCategory r where r.code=?1 and r.langCode=?2 and (r.isDeleted is null or r.isDeleted=false)")
 	List<ReasonCategory> findReasonCategoryByCodeAndLangCode(String code, String languageCode);
