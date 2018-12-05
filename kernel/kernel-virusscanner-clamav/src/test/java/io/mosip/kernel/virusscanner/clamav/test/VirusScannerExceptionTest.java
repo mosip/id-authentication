@@ -27,7 +27,7 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * @author Mukul Puspam
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class VirusScannerExceptionTest {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
