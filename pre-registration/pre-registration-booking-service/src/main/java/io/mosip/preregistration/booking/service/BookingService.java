@@ -108,7 +108,6 @@ public class BookingService {
 			LocalDate endDate = LocalDate.now().plusDays(noOfDays);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
 
@@ -117,7 +116,7 @@ public class BookingService {
 
 			List<RegistrationCenterDto> regCenter = responseEntity.getBody().getRegistrationCenters();
 
-			if (regCenter.size() == 0) {
+			if (regCenter.isEmpty()) {
 				response.setResTime(new Timestamp(System.currentTimeMillis()));
 				response.setStatus(false);
 				response.setResponse("No data is preent in registration center master table");
@@ -126,7 +125,6 @@ public class BookingService {
 				for (RegistrationCenterDto regDto : regCenter) {
 					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + 1 + "/"
 							+ LocalDate.now().getYear();
-
 					UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 
 					HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
@@ -134,8 +132,8 @@ public class BookingService {
 					String uriBuilder2 = builder2.build().encode().toUriString();
 					ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
 							HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
-					List<String> holidaylist = new ArrayList<String>();
-					if (responseEntity2.getBody().getHolidays().size() > 0) {
+					List<String> holidaylist = new ArrayList<>();
+					if (!responseEntity2.getBody().getHolidays().isEmpty()) {
 						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
 							holidaylist.add(holiday.getHolidayDate());
 						}
@@ -211,7 +209,7 @@ public class BookingService {
 				}
 			}
 		} catch (HttpClientErrorException e) {
-
+             
 		} catch (DataAccessException e) {
 			throw new TablenotAccessibleException("Table not accessable ");
 		} catch (NullPointerException e) {
@@ -230,13 +228,13 @@ public class BookingService {
 		List<ExceptionJSONInfo> exceptionJSONInfos = new ArrayList<>();
 		try {
 			List<String> dateList = bookingRepository.findDate(regID);
-			if (dateList.size() > 0) {
+			if (!dateList.isEmpty()) {
 				AvailabilityDto availability = new AvailabilityDto();
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (String day : dateList) {
 					DateTimeDto dateTime = new DateTimeDto();
 					List<AvailibityEntity> entity = bookingRepository.findByRegcntrIdAndRegDate(regID, day);
-					if (entity.size() > 0) {
+					if (!entity.isEmpty()) {
 						List<SlotDto> slotList = new ArrayList<>();
 						for (AvailibityEntity en : entity) {
 							SlotDto slots = new SlotDto();
