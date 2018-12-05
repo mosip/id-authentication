@@ -2,6 +2,7 @@ package io.mosip.registration.controller.device;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -20,12 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
-import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
@@ -94,6 +95,13 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	/**
+	 * @return the registrationController
+	 */
+	public RegistrationController getRegistrationController() {
+		return registrationController;
+	}
+
+	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
 	 * initializes the Iris Capture page.
 	 */
@@ -117,12 +125,28 @@ public class IrisCaptureController extends BaseController {
 					Pane sourcePane = (Pane) event.getSource();
 					sourcePane.requestFocus();
 					selectedIris = sourcePane;
-					IrisDetailsDTO irisDetailsDTO = registrationController.getRegistrationDtoContent().getBiometricDTO()
-							.getApplicantBiometricDTO().getIrisDetailsDTO().stream()
-							.filter(iris -> iris.getIrisType().contains(RegistrationConstants.LEFT)).findFirst()
-							.orElse(null);
-					if (irisDetailsDTO == null || validateQualityScore(irisDetailsDTO)) {
+
+					// Get the Iris from RegistrationDTO based on selected Iris Pane
+					IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
+
+					boolean isExceptionIris = getIrisExceptions().stream()
+							.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getBiometricType(),
+									StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
+											? RegistrationConstants.LEFT
+											: RegistrationConstants.RIGHT));
+
+					// Enable the scan button, if any of the following satisfies
+					// 1. If Iris was not scanned
+					// 2. Quality score of the scanned image is less than threshold
+					// 3. If number of retries attempted is not same as configured number of retries
+					// attempt
+					// 4. If iris is not forced captured
+					// 5. If iris is an exception iris 
+					if (irisDetailsDTO == null || isExceptionIris || !validateQualityScore(irisDetailsDTO)) {
 						scanIris.setDisable(false);
+						if (irisDetailsDTO != null) {
+							irisDetailsDTO.setNumOfIrisRetry(irisDetailsDTO.getNumOfIrisRetry() + 1);
+						}
 					}
 				}
 			};
@@ -133,9 +157,7 @@ public class IrisCaptureController extends BaseController {
 			
 			// Display the Captured Iris
 			if (registrationController.getRegistrationDtoContent() != null) {
-				List<IrisDetailsDTO> capturedIrises = registrationController.getRegistrationDtoContent()
-						.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
-				for (IrisDetailsDTO capturedIris : capturedIrises) {
+				for (IrisDetailsDTO capturedIris : getIrises()) {
 					if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
 						getLeftIrisImage().setImage(convertBytesToImage(capturedIris.getIris()));
 					} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
@@ -289,11 +311,7 @@ public class IrisCaptureController extends BaseController {
 			boolean isLeftEyeCaptured = false;
 			boolean isRightEyeCaptured = false;
 
-			BiometricInfoDTO applicantBiometricInfoDTO = registrationController.getRegistrationDtoContent()
-					.getBiometricDTO().getApplicantBiometricDTO();
-			List<IrisDetailsDTO> irisDetailsDTOs = applicantBiometricInfoDTO.getIrisDetailsDTO();
-
-			for (IrisDetailsDTO irisDetailsDTO : irisDetailsDTOs) {
+			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
 				if (validateQualityScore(irisDetailsDTO)) {
 					if (irisDetailsDTO.getIrisType()
 							.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
@@ -305,17 +323,13 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 
-			List<BiometricExceptionDTO> exceptionIrises = applicantBiometricInfoDTO.getIrisBiometricExceptionDTO();
-
-			if (exceptionIrises != null) {
-				for (BiometricExceptionDTO exceptionIris : exceptionIrises) {
-					if (exceptionIris.getMissingBiometric()
-							.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
-						isLeftEyeCaptured = true;
-					} else if (exceptionIris.getMissingBiometric()
-							.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
-						isRightEyeCaptured = true;
-					}
+			for (BiometricExceptionDTO exceptionIris : getIrisExceptions()) {
+				if (exceptionIris.getMissingBiometric()
+						.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
+					isLeftEyeCaptured = true;
+				} else if (exceptionIris.getMissingBiometric()
+						.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
+					isRightEyeCaptured = true;
 				}
 			}
 
@@ -328,7 +342,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the captured irises of individual completed");
 
-			return true;
+			return isValid;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_VALIDATION_EXP,
 					String.format("Exception while validating the captured irises of individual: %s caused by %s",
@@ -351,12 +365,31 @@ public class IrisCaptureController extends BaseController {
 			
 			return irisDetailsDTO.getQualityScore() >= irisThreshold
 					|| (irisDetailsDTO.getQualityScore() < irisThreshold
-							&& irisDetailsDTO.getNumOfIrisRetry() == numOfRetries);
+							&& irisDetailsDTO.getNumOfIrisRetry() == numOfRetries)
+					|| irisDetailsDTO.isForceCaptured();
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCORE_VALIDATION_EXP,
-					String.format("Exception while validating the quality score of captured irises: %s caused by %s",
+					String.format("Exception while validating the quality score of captured iris: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
+	}
+
+	public List<IrisDetailsDTO> getIrises() {
+		return registrationController.getRegistrationDtoContent().getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO();
+	}
+
+	private List<BiometricExceptionDTO> getIrisExceptions() {
+		return registrationController.getRegistrationDtoContent().getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisBiometricExceptionDTO();
+	}
+
+	public Stream<IrisDetailsDTO> getIrisBySelectedPane() {
+		return getIrises().stream()
+				.filter(iris -> iris.getIrisType()
+						.contains(StringUtils.containsIgnoreCase(getSelectedIris().getId(), RegistrationConstants.LEFT)
+								? RegistrationConstants.LEFT
+								: RegistrationConstants.RIGHT));
 	}
 
 }

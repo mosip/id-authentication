@@ -764,7 +764,8 @@ public class RegistrationController extends BaseController {
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+							.getApplicantDocumentDTO();
 					applicantDocumentDTO.setPhoto(photoInBytes);
 					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 					byteArrayOutputStream.close();
@@ -780,7 +781,7 @@ public class RegistrationController extends BaseController {
 					} else {
 						applicantDocumentDTO.setHasExceptionPhoto(false);
 					}
-					getRegistrationDtoContent().getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
+
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
 

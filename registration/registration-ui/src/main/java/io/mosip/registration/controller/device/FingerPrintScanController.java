@@ -1,9 +1,5 @@
 package io.mosip.registration.controller.device;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_BIOMETRIC_SCAN_CONTROLLER;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,21 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -38,6 +19,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
+
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_BIOMETRIC_SCAN_CONTROLLER;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * {@code FingerPrintScanController} is to scan fingerprint biometrics.
@@ -348,36 +347,34 @@ public class FingerPrintScanController extends BaseController {
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				fingerPrintScanImage.setImage(scannedIrisImage);
 
-				// Display the Scanned Iris Image and its corresponding quality score in the
-				// Iris Biometric Screen
-				String irisType;
-				if (StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)) {
-					irisCaptureController.getLeftIrisImage().setImage(scannedIrisImage);
-					irisCaptureController.setLeftIrisQualityScore(qualityScore);
-					irisType = RegistrationConstants.LEFT.concat(RegistrationConstants.EYE);
-				} else {
-					irisCaptureController.getRightIrisImage().setImage(scannedIrisImage);
-					irisCaptureController.setRightIrisQualityScore(qualityScore);
-					irisType = RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE);
-				}
-
-				// Create IrisDetailsDTO object
-				IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
-				irisDetailsDTO.setForceCaptured(false);
-				irisDetailsDTO.setQualityScore(qualityScore);
-				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
-						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
-				irisDetailsDTO.setIrisType(irisType);
-
-				// Get RegistrationDTO object from SessionContext
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-						.get(RegistrationConstants.REGISTRATION_DATA);
-
-				// Add the captured iris to RegistrationDTO
-				registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().add(irisDetailsDTO);
-
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, "Iris captured successfully");
+
+				if (getIrisQualityScore() < qualityScore) {
+					// Display the Scanned Iris Image and its corresponding quality score in the
+					// Iris Biometric Screen
+					String irisType;
+					if (StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)) {
+						irisCaptureController.getLeftIrisImage().setImage(scannedIrisImage);
+						irisCaptureController.setLeftIrisQualityScore(qualityScore);
+						irisType = RegistrationConstants.LEFT.concat(RegistrationConstants.EYE);
+					} else {
+						irisCaptureController.getRightIrisImage().setImage(scannedIrisImage);
+						irisCaptureController.setRightIrisQualityScore(qualityScore);
+						irisType = RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE);
+					}
+	
+					// Create IrisDetailsDTO object
+					IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
+					irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
+					irisDetailsDTO.setForceCaptured(false);
+					irisDetailsDTO.setQualityScore(qualityScore);
+					irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
+							.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
+					irisDetailsDTO.setIrisType(irisType);
+	
+					// Add the captured iris to RegistrationDTO
+					irisCaptureController.getIrises().add(irisDetailsDTO);
+				}
 
 				primarystage.close();
 			}
@@ -482,6 +479,26 @@ public class FingerPrintScanController extends BaseController {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_SCAN_EXP,
 					String.format(
 							"Exception while scanning fingerprints details for user registration: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
+		}
+	}
+
+	private double getIrisQualityScore() {
+		try {
+			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Getting the quality score of previously captured iris");
+			
+			return irisCaptureController.getIrisBySelectedPane().findFirst().orElse(new IrisDetailsDTO())
+					.getQualityScore();
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"Exception while getting the quality score of previously captured iris: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
+
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_SCAN_EXP,
+					String.format(
+							"Exception while getting the quality score of previously captured iris: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
 	}
