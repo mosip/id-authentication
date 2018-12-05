@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
 
 /**
- * Controller with api to get Device Details
+ * Controller with api to save and get Device Details
  * 
  * @author Megha Tanga
  * @author Sidhant Agarwal	
