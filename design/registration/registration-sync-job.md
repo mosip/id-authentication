@@ -39,4 +39,4 @@ The key **non-functional requirements** are
 	
 
 Class and Sequence Diagram:
-![Sync job sequence diagram](_images/registration-sync-batch-jobs.png)
+![Sync job sequence diagram](_images/registration-sync-batch-job.png)
