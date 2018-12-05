@@ -34,75 +34,57 @@ public class UMCValidator {
 	private String primaryLanguagecode;
 
 	private boolean validateRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
-			String latitude, String longitude)throws ApisResourceAccessException {
-		boolean activeRegCenter=false;
-		List<RegistrationCenterDto> dtos= umcClient.getRegistrationCentersHistory(registrationCenterId, langCode, effectiveDate)
-				.getRegistrationCenters();
-		
-		if( latitude==null || longitude==null) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-		}
-		else if(latitude.trim().isEmpty() || longitude.trim().isEmpty()) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-		}
-		else {
-		if(!dtos.isEmpty()) {
-			
-				for(RegistrationCenterDto dto: dtos) {
-					if(registrationCenterId==dto.getId()) {
-						if(dto.getLatitude()==null || dto.getLongitude()==null) {
-							this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-						}
-						else if(dto.getLatitude().trim().isEmpty() || dto.getLongitude().trim().isEmpty()) {
-							this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-						}else {
-							if(dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
-				
-								activeRegCenter=dto.getIsActive();
-								if(!activeRegCenter)this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-								break;
-							}
-							else {
-								this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-							}
-						}
-					}
-					else {
-						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
-					}
+			String latitude, String longitude) throws ApisResourceAccessException {
+		boolean activeRegCenter = false;
+		List<RegistrationCenterDto> dtos = umcClient
+				.getRegistrationCentersHistory(registrationCenterId, langCode, effectiveDate).getRegistrationCenters();
+
+		if (!dtos.isEmpty()) {
+
+			for (RegistrationCenterDto dto : dtos) {
+
+				if (dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
+
+					activeRegCenter = dto.getIsActive();
+					if (!activeRegCenter)
+						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+					break;
+				} else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 				}
+
 			}
-		else {
+		} else {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
 		}
-		}
-		
+
 		return activeRegCenter;
 
 	}
 
 	private boolean validateMachine(String machineId, String langCode, String effdatetimes)
 			throws ApisResourceAccessException {
-		
-		boolean isActiveMachine=false;
-		List<MachineHistoryDto> dtos=umcClient.getMachineHistoryIdLangEff(machineId, langCode, effdatetimes).getMachineHistoryDetails();
-		
-		if(!dtos.isEmpty()) {
-			for(MachineHistoryDto dto:dtos) {
-				if(dto.getId()==machineId) {
-					isActiveMachine=dto.getIsActive();
-					if(!isActiveMachine)this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
+
+		boolean isActiveMachine = false;
+		List<MachineHistoryDto> dtos = umcClient.getMachineHistoryIdLangEff(machineId, langCode, effdatetimes)
+				.getMachineHistoryDetails();
+
+		if (!dtos.isEmpty()) {
+			for (MachineHistoryDto dto : dtos) {
+				if (dto.getId() == machineId) {
+					isActiveMachine = dto.getIsActive();
+					if (!isActiveMachine)
+						this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
 					break;
-				}
-				else {
+				} else {
 					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
 				}
 			}
-			
-		}else {
+
+		} else {
 			this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
 		}
-		
+
 		return isActiveMachine;
 
 	}
@@ -110,41 +92,32 @@ public class UMCValidator {
 	private boolean validateUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
 			String superviserId, String officerId) throws ApisResourceAccessException {
 		boolean t = false;
-		boolean supervisorActive=false;
-		boolean officerActive =false;
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos=umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-				registrationCenterId, machineId, superviserId).getRegistrationCenters();
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos=umcClient.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-				registrationCenterId, machineId, officerId).getRegistrationCenters();
-		
-		if(!supervisordtos.isEmpty()) {
-			for(RegistrationCenterUserMachineMappingHistoryDto dto: officerdtos) {
-				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==officerId) {
-					supervisorActive = officerdtos.get(0).getIsActive();
-					break;
-				}
-				else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
-				}
-		} 
+		boolean supervisorActive = false;
+		boolean officerActive = false;
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos = umcClient
+				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
+						superviserId)
+				.getRegistrationCenters();
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos = umcClient
+				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
+						officerId)
+				.getRegistrationCenters();
+
+		if (!supervisordtos.isEmpty()) {
+
+			supervisorActive = supervisordtos.get(0).getIsActive();
+
 		}
-		if(!officerdtos.isEmpty()) {
-			for(RegistrationCenterUserMachineMappingHistoryDto dto: officerdtos) {
-				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==officerId) {
-					officerActive = officerdtos.get(0).getIsActive();
-					break;
-				}
-				else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
-				}
+		if (!officerdtos.isEmpty()) {
+
+			officerActive = officerdtos.get(0).getIsActive();
+
 		}
-		}
-		if(supervisordtos.isEmpty() && officerdtos.isEmpty()) {
+		if (supervisordtos.isEmpty() && officerdtos.isEmpty()) {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
 		}
-		
-		
+
 		if (supervisorActive || officerActive) {
 			t = true;
 		}
@@ -156,8 +129,13 @@ public class UMCValidator {
 
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
 		boolean umc = false;
-		if (validateRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,
-				rcmDto.getPacketCreationDate().toString(),rcmDto.getLatitude(),rcmDto.getLongitude())
+		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()
+				|| rcmDto.getLongitude().trim().isEmpty()) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+		}
+
+		else if (validateRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,
+				rcmDto.getPacketCreationDate().toString(), rcmDto.getLatitude(), rcmDto.getLongitude())
 				&& validateMachine(rcmDto.getMachineId(), primaryLanguagecode,
 						rcmDto.getPacketCreationDate().toString())
 				&& validateUMCmapping(rcmDto.getPacketCreationDate().toString(), rcmDto.getRegcntrId(),
@@ -174,5 +152,5 @@ public class UMCValidator {
 	public void setRegistrationStatusDto(InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 	}
-	
+
 }
