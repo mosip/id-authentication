@@ -96,7 +96,7 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	private LocalTime lunchEndTime;
 
 	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL)
-	private LocationHierarcyLevel location;
+	private LocationHierarchyLevel location;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;

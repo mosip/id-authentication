@@ -103,5 +103,5 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	private LocalTime lunchEndTime;
 
 	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-	private LocationHierarcyLevel location;
+	private LocationHierarchyLevel location;
 }
