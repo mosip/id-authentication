@@ -39,7 +39,7 @@ public class OtpValidationsTest {
 	@Test
 	public void testNullKey() throws Exception {
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(null);
-		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 	}
 
@@ -53,7 +53,7 @@ public class OtpValidationsTest {
 		entity.setGeneratedDtimes(LocalDateTime.now().minusMinutes(3));
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),

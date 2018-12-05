@@ -41,7 +41,7 @@ public class OtpGeneratorServiceTest {
 	public void testOtpGeneratorServicePositiveCase() throws Exception {
 		String json = "{\"key\":\"testKey\"}";
 		MvcResult result = mockMvc
-				.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated()).andReturn();
 		ObjectMapper objectMapper = new ObjectMapper();
 		OtpGeneratorResponseDto response = objectMapper.readValue(result.getResponse().getContentAsString(),
@@ -60,7 +60,7 @@ public class OtpGeneratorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now());
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpGeneratorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
