@@ -194,7 +194,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables.]]></comment>
 	</column>
 	<column name="uin" not-null="true">
-		<type name="character" length="28"/>
+		<type name="character varying" length="28"/>
 		<comment><![CDATA[Unique identification number of an individual]]></comment>
 	</column>
 	<column name="status_code" not-null="true">
@@ -237,7 +237,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="uin"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Table to store details of the UINs. This table will contain the data of an individual in json structure.]]></comment>
-	<position x="56" y="286"/>
+	<position x="39" y="411"/>
 	<column name="uin_data" not-null="true">
 		<type name="bytea" length="28"/>
 		<comment><![CDATA[Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.]]></comment>
@@ -293,7 +293,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="uin"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[History of the changes to the individual details. individual data is stored in json structure.]]></comment>
-	<position x="507" y="290"/>
+	<position x="496" y="418"/>
 	<column name="uin_ref_id" alias="uid" not-null="true">
 		<type name="character varying" length="28"/>
 		<comment><![CDATA[UIN reference id of an individual from uin table. ]]></comment>
@@ -384,7 +384,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<columns names="uin_ref_id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="uinh_uk" type="uq-constr" table="uin.uin_h">
-		<columns names="uin" ref-type="src-columns"/>
+		<columns names="uin,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 </table>
 

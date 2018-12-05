@@ -12,7 +12,7 @@ CREATE TABLE uin.uin_h(
 	is_deleted boolean,
 	del_dtimes timestamp,
 	CONSTRAINT uinh_pk PRIMARY KEY (uin_ref_id,eff_dtimes),
-	CONSTRAINT uinh_uk UNIQUE (uin)
+	CONSTRAINT uinh_uk UNIQUE (uin,eff_dtimes)
 
 );
 -- ddl-end --

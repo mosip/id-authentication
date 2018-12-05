@@ -2,7 +2,7 @@
 -- DROP TABLE IF EXISTS uin.uin CASCADE;
 CREATE TABLE uin.uin(
 	uin_ref_id character varying(28) NOT NULL,
-	uin character(28) NOT NULL,
+	uin character varying(28) NOT NULL,
 	status_code character varying(32) NOT NULL,
 	cr_by character varying(32) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -37,4 +37,3 @@ COMMENT ON COLUMN uin.uin.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE uin.uin OWNER TO appadmin;
 -- ddl-end --
-
