@@ -1,4 +1,4 @@
-/*package io.mosip.kernel.keymanager.softhsm;
+package io.mosip.kernel.keymanager.softhsm;
 
 import java.security.Key;
 import java.security.KeyPair;
@@ -49,9 +49,7 @@ public class KeymanagerDemo {
 		keypairDemo();
 	}
 
-	*//**
-	 * 
-	 *//*
+
 	private void secretkeyDemo() {
 		KeyGenerator keyGenerator = null;
 		try {
@@ -70,9 +68,7 @@ public class KeymanagerDemo {
 		System.out.println(fetchedSecretKey.toString());
 	}
 
-	*//**
-	 * 
-	 *//*
+	
 	private void keypairDemo() {
 		KeyPairGenerator keyPairGenerator = null;
 		try {
@@ -111,4 +107,3 @@ public class KeymanagerDemo {
 		System.out.println("OK");
 	}
 }
-*/
