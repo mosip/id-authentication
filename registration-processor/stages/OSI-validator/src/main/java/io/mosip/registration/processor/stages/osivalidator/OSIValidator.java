@@ -232,10 +232,8 @@ public class OSIValidator {
 				if (validateIntroducerRid(introducerRid, registrationId)) {
 
 					introducerUin = getIntroducerUIN(introducerRid);
-					if (introducerUin != null) {
+					if (introducerUin == null) {
 
-						return validateIntroducer(regOsi, registrationId, introducerUin);
-					} else {
 						registrationStatusDto
 								.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 						return false;
@@ -244,9 +242,8 @@ public class OSIValidator {
 					return false;
 				}
 
-			} else {
-				return validateIntroducer(regOsi, registrationId, introducerUin);
 			}
+			return validateIntroducer(regOsi, registrationId, introducerUin);
 
 		} else {
 			return true;
@@ -441,7 +438,6 @@ public class OSIValidator {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 		String date = simpleDateFormat.format(new Date());
-		Boolean isValidBiometric = false;
 
 		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
@@ -503,10 +499,8 @@ public class OSIValidator {
 
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
-			isValidBiometric = true;
-
-		return isValidBiometric;
+		return authResponseDTO != null && authResponseDTO.getStatus() != null
+				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
 
 	/**
@@ -526,45 +520,39 @@ public class OSIValidator {
 	 */
 	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
-		String fingerPrint = "";
-		String iris = "";
-		String face = "";
+		// check if any one of biometric is provided
 		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
 				&& (regOsi.getIntroducerPhotoName() == null)) {
 			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 			return false;
-		} else {
-			if (regOsi.getIntroducerFingerpImageName() != null) {
-				fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
-			} else {
-				fingerPrint = null;
-			}
+		}
+		// validate fingerprint
+		if (regOsi.getIntroducerFingerpImageName() != null) {
+			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			if (regOsi.getIntroducerIrisImageName() != null) {
-				iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
-			} else {
-				iris = null;
-			}
-
-			String irisType = regOsi.getIntroducerIrisType();
-			if (regOsi.getIntroducerPhotoName() != null) {
-				face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
-			} else {
-				face = null;
-			}
-
-			if ((validateUIN(introducerUin))
-					&& (validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(introducerUin, iris, irisType, registrationId)
-							&& (validateFace(introducerUin, face, registrationId)))) {
-				return true;
-			} else {
+			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
 				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
 				return false;
 			}
-
 		}
-
+		// validate iris
+		if (regOsi.getIntroducerIrisImageName() != null) {
+			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
+			String irisType = regOsi.getIntroducerIrisType();
+			if (!validateIris(introducerUin, iris, irisType, registrationId)) {
+				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
+				return false;
+			}
+		}
+		// validate face
+		if (regOsi.getIntroducerPhotoName() != null) {
+			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
+			if (!validateFace(introducerUin, face, registrationId)) {
+				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
