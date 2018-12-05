@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class EncryptionRequestDto {
 
-	private String publicKey;
-	private String sessionKey;
+//	private String publicKey;
+//	private String sessionKey;
+	private String tspID;
 	private String identityRequest;
 
 }

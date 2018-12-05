@@ -28,6 +28,7 @@ import com.google.common.io.Files;
 
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -54,70 +55,28 @@ public class Encrypt {
 
 	private static final Provider provider = new BouncyCastleProvider();
 
-	@GetMapping(path = "/sessionKey")
-	@ApiOperation(value = "Generate Session Key")
-	public String getSessionKey() {
-		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
-		return Base64.getEncoder().encodeToString(symmetricKey.getEncoded());
-	}
-
-	@GetMapping(path = "/publicKey")
-	@ApiOperation(value = "Generate Public Key", response = String.class)
-	public String getPublicKey(String tspId, String date) {
-		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
-		PublicKey publickey = asymmetricKey.getPublic();
-		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
-		storePrivateKey(privateKey, tspId);
-		return Base64.getEncoder().encodeToString(publickey.getEncoded());
-	}
-
-	@PostMapping(path = "/authRequest/encrypt")
+	@PostMapping(path = "/identity/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto) {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		byte[] sessionKey = decode(encryptionRequestDto.getSessionKey());
-		byte[] tmpPublicKey = decode(encryptionRequestDto.getPublicKey());
-		PublicKey publicKey = null;
-		SecretKeySpec secretKey = null;
-		try {
-			publicKey = preparePublicKey(tmpPublicKey);
-			secretKey = prepareSecretKey(sessionKey, "AES");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		} catch (InvalidKeySpecException e2) {
-			e2.printStackTrace();
-		}
+
+		SecretKey sessionKey = keyGenerator.getSymmetricKey();
 
 		// Encrypt data with session key
 		byte[] data = encryptionRequestDto.getIdentityRequest().getBytes();
-		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, data);
-		encryptionResponseDto.setEncryptedData(encryptedData);
+		byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, data);
+		encryptionResponseDto.setEncryptedSessionKey(Base64.getEncoder().encodeToString(encryptedData));
+
+		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
+		PublicKey publicKey = asymmetricKey.getPublic();
+		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
+		storePrivateKey(privateKey, encryptionRequestDto.getTspID());
 
 		// Encrypt session Key with public Key
-		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
-		encryptionResponseDto.setEncryptedkey(encryptedsessionKey);
+		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey.getEncoded());
+		encryptionResponseDto.setEncryptedSessionKey(Base64.getEncoder().encodeToString(encryptedsessionKey));
 
 		return encryptionResponseDto;
-	}
-
-	private PublicKey preparePublicKey(byte[] publicKeyStr) throws InvalidKeySpecException, NoSuchAlgorithmException {
-		return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyStr));
-	}
-
-	private SecretKeySpec prepareSecretKey(byte[] sessionKey, String type)
-			throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest digester;
-		digester = MessageDigest.getInstance("SHA-256", provider);
-		digester.update(String.valueOf(sessionKey).getBytes(FORMAT));
-		byte[] key = digester.digest();
-		SecretKeySpec spec = new SecretKeySpec(key, type);
-		return spec;
-	}
-
-	private byte[] decode(String value) {
-		return Base64.getDecoder().decode(value);
 	}
 
 	private void storePrivateKey(byte[] encodedvalue, String tspId) {

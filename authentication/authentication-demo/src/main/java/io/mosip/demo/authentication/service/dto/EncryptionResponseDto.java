@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class EncryptionResponseDto {
 
-	byte[] encryptedkey;
-	byte[] encryptedData;
+	String encryptedSessionKey;
+	String encryptedIdentity;
 
 }
