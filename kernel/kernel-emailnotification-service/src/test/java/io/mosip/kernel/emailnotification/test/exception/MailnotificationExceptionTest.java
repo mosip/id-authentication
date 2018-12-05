@@ -40,42 +40,42 @@ public class MailnotificationExceptionTest {
 
 	@Test
 	public void testToRaiseExceptionForNullContent() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA)
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
 				.param("mailTo", "testmail@gmail.com").param("mailSubject", "testsubject"))
 				.andExpect(status().isNotAcceptable()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForNullSubject() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA)
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
 				.param("mailTo", "testmail@gmail.com").param("mailContent", "testsubject"))
 				.andExpect(status().isNotAcceptable()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForNullTo() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA)
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
 				.param("mailSubject", "testsubject").param("mailContent", "testsubject"))
 				.andExpect(status().isNotAcceptable()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForEmptySubject() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
 				.param("mailSubject", "   ").param("mailContent", "testsubject")).andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForEmptyContent() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
 				.param("mailSubject", "test subject").param("mailContent", "  ")).andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForEmptyWithMultipleTo() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA)
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
 				.param("mailTo", "test@gmail.com,,testmail@gmail.com").param("mailSubject", "test subject")
 				.param("mailContent", "  ")).andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -95,7 +95,7 @@ public class MailnotificationExceptionTest {
 
 	@Test
 	public void testToRaiseExceptionForEmptyWithMultipleToAndMultipleEmpty() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA)
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
 				.param("mailTo", "test@gmail.com,,testmail@gmail.com,,testcheck@gmail.com")
 				.param("mailSubject", "test subject").param("mailContent", "  ")).andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -103,7 +103,7 @@ public class MailnotificationExceptionTest {
 
 	@Test
 	public void testToRaiseExceptionForEmptyTo() throws Exception {
-		mockMvc.perform(post("/notifier/email").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "")
+		mockMvc.perform(post("/v1.0/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "")
 				.param("mailSubject", "test subject").param("mailContent", "  ")).andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}

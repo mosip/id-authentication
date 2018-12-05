@@ -68,6 +68,13 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	private Location locationCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "cntrtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	
+	private RegistrationCenterType registrationCenterType;
 
 	@Column(name = "contact_phone", length = 16)
 	private String contactPhone;
