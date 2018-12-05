@@ -32,12 +32,5 @@ public interface PreRegistrationDataSyncService {
 	 */
 	public ResponseDTO getPreRegistration(String preRegistrationId);
 
-	/**
-	 * get Pre Registration
-	 * @param preRegistrationId preRegId
-	 * @param syncJobId sJobId
-	 * @return response DTO
-	 */
-	public ResponseDTO getPreRegistration(String preRegistrationId, String syncJobId);
-
+	
 }

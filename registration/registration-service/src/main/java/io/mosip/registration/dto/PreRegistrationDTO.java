@@ -5,21 +5,20 @@ import java.util.Date;
 public class PreRegistrationDTO {
 	
 	private String preRegId;
-	private Date appointmentDate;
+	private byte[] encryptedPacket;
 	private String packetPath;
 	private String symmetricKey;
-	
 	public String getPreRegId() {
 		return preRegId;
 	}
 	public void setPreRegId(String preRegId) {
 		this.preRegId = preRegId;
 	}
-	public Date getAppointmentDate() {
-		return appointmentDate;
+	public byte[] getEncryptedPacket() {
+		return encryptedPacket;
 	}
-	public void setAppointmentDate(Date appointmentDate) {
-		this.appointmentDate = appointmentDate;
+	public void setEncryptedPacket(byte[] encryptedPacket) {
+		this.encryptedPacket = encryptedPacket;
 	}
 	public String getPacketPath() {
 		return packetPath;
@@ -33,6 +32,7 @@ public class PreRegistrationDTO {
 	public void setSymmetricKey(String symmetricKey) {
 		this.symmetricKey = symmetricKey;
 	}
+	
 	
 	
 

@@ -11,5 +11,7 @@ import io.mosip.registration.entity.PreRegistrationList;
  */
 public interface PreRegistrationRepository extends BaseRepository<PreRegistrationList, String> {
 	
+	public PreRegistrationList findByPreRegId(String preRegId);
+	
 
 }

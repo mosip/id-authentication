@@ -28,7 +28,7 @@ public class PreRegistrationDAOImpl implements PreRegistrationDAO {
 	 */
 	@Override
 	public PreRegistrationList getPreRegistration(String preRegId) {
-		return preRegistrationRepository.findById(PreRegistrationList.class, preRegId);
+		return preRegistrationRepository.findByPreRegId(preRegId);
 		
 	}
 
