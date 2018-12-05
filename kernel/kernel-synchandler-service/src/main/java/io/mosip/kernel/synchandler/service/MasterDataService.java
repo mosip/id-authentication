@@ -2,7 +2,7 @@ package io.mosip.kernel.synchandler.service;
 
 import java.time.LocalDateTime;
 
-import io.mosip.kernel.synchandler.dto.MasterDataResponseDto;
+import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
 
 /**
  * masterdata sync handler service

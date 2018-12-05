@@ -58,4 +58,10 @@ public class LanguageDto {
 	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 
+//	@NotNull
+//	private LocalTime lunchStartTime;
+	
+//	@NotNull
+//	private LocalDateTime createdDateTime;
+
 }

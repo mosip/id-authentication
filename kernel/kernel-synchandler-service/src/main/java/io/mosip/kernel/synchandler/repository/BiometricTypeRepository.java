@@ -1,7 +1,9 @@
 package io.mosip.kernel.synchandler.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -39,5 +41,6 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * @return {@linkplain BiometricType}
 	 */
 	BiometricType findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
-
+	@Query("FROM BiometricType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<BiometricType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

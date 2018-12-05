@@ -12,6 +12,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.kernel.synchandler.entity.id.HolidayID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  * @since 24-10-2018
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class Holiday extends BaseEntity implements Serializable {
 			@AttributeOverride(name = "locationCode", column = @Column(name = "location_code", nullable = false, length = 36)),
 			@AttributeOverride(name = "holidayDate", column = @Column(name = "holiday_date", nullable = false, length = 36)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 36)) })
-	private HolidayId holidayId;
+	private HolidayID holidayId;
 
 	@Column(name = "holiday_name", nullable = false, length = 64)
 	private String holidayName;

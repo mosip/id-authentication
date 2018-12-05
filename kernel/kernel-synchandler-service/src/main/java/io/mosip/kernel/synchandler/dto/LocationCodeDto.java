@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LocationCodeDto {
-	
+
 	private String code;
+	private String parentLocCode;
 	private Boolean isActive;
 
 }

@@ -12,18 +12,19 @@ import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.kernel.synchandler.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "reason_category", schema = "master")
-@IdClass(ReasonCategoryId.class)
+@IdClass(CodeAndLanguageCodeID.class)
 public class ReasonCategory extends BaseEntity implements Serializable {
 
 	/**

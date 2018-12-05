@@ -17,7 +17,8 @@ public class HolidayDto {
 	private String holidayId;
 	private String holidayDate;
 	/**
-	 * Holiday day is day of week as integer value, week start from Monday , Monday is 1 and Sunday is 7
+	 * Holiday day is day of week as integer value, week start from Monday , Monday
+	 * is 1 and Sunday is 7
 	 */
 	private String holidayDay;
 	/**
@@ -27,6 +28,7 @@ public class HolidayDto {
 	private String holidayYear;
 	private String holidayName;
 	private String languageCode;
+	private String locationCode;
 	private Boolean isActive;
 
 }

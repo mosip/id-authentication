@@ -1,12 +1,14 @@
 package io.mosip.kernel.synchandler.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.synchandler.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.synchandler.entity.DocumentCategory;
+import io.mosip.kernel.synchandler.entity.id.CodeAndLanguageCodeID;
 
 /**
  * @author Neha
@@ -14,7 +16,7 @@ import io.mosip.kernel.synchandler.entity.DocumentCategory;
  *
  */
 @Repository
-public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeAndLanguageCodeId> {
+public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeAndLanguageCodeID> {
 
 	/**
 	 * Get all DocumentCategory types
@@ -40,4 +42,6 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 */
 	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 
+	@Query("FROM DocumentCategory WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<DocumentCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

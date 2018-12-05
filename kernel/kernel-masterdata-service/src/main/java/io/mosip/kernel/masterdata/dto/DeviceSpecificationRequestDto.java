@@ -1,6 +1,6 @@
 
 
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.synchandler.dto;
 
 
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
 package io.mosip.kernel.synchandler.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -27,5 +28,6 @@ public interface TitleRepository extends BaseRepository<Title, String> {
 	 */
 	@Query
 	List<Title> getThroughLanguageCode(@Param("lang_code") String languageCode);
-
+	@Query("FROM Title WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<Title> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

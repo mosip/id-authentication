@@ -3,7 +3,7 @@
  *
  */
 
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.synchandler.dto;
 
 import java.time.LocalDateTime;
 

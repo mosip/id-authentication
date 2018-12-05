@@ -1,6 +1,9 @@
 package io.mosip.kernel.synchandler.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.synchandler.entity.BlacklistedWords;
@@ -28,4 +31,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * @return {@link List of BlacklistedWords }
 	 */
 	List<BlacklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
+	
+	@Query("FROM BlacklistedWords WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<BlacklistedWords> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

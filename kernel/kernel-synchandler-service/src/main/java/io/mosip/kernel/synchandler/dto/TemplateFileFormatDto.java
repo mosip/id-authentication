@@ -8,13 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TemplateFileFormatDto {
-
 	private String code;
-
 	private String description;
-
 	private String langCode;
 	private Boolean isActive;
-	
-
 }

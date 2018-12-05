@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
- * @author M1046571
- * @author M1047717
+ * @author Uday
+ * @author Megha Tanga
  * 
  *
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

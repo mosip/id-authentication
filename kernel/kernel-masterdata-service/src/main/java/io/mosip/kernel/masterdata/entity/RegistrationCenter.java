@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.synchandler.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -123,6 +123,6 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private LocationHierarcyLevel location;
 }

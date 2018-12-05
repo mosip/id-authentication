@@ -1,7 +1,10 @@
 
 package io.mosip.kernel.synchandler.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.synchandler.entity.IdType;
@@ -22,4 +25,7 @@ public interface IdTypeRepository extends BaseRepository<IdType, String> {
 	 * @return the list of id types.
 	 */
 	List<IdType> findByLangCodeAndIsDeletedFalse(String languageCode);
+
+	@Query("FROM IdType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<IdType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

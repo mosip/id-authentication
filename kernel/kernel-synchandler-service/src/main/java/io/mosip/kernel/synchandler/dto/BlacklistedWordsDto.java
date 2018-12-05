@@ -5,18 +5,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * blacklisted word Dto
+ * Blacklisted word DTO.
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 06-11-2018
+ * @since 1.0.0
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BlacklistedWordsDto {
+	/**
+	 * The blacklisted word.
+	 */
 	private String word;
+	/**
+	 * The description of the word.
+	 */
 	private String description;
+	/**
+	 * The language code of the word.
+	 */
 	private String langCode;
+	/**
+	 * variable that sets the word is active or not.
+	 */
 	private Boolean isActive;
 }

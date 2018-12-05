@@ -42,6 +42,6 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 */
 	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
 
-	@Query("FROM Application WHERE createdtimes > ?1 or updatedtimes > ?1  or deletedtimes > ?1")
-	List<Application> findAllNewUpdateDeletedApplication(LocalDateTime lastUpdated);
+	@Query("FROM Application WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
+	List<Application> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

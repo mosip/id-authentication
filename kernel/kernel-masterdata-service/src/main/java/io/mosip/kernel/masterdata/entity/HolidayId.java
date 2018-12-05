@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.entity;
+package io.mosip.kernel.synchandler.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
