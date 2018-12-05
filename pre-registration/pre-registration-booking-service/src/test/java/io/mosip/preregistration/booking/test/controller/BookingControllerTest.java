@@ -110,7 +110,7 @@ public class BookingControllerTest {
 
 		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/booking/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/book/book")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
