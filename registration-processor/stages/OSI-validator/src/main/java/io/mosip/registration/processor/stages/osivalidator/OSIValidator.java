@@ -537,20 +537,20 @@ public class OSIValidator {
 			if (regOsi.getIntroducerFingerpImageName() != null) {
 				fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
 			} else {
-				return true;
+				fingerPrint = null;
 			}
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
 			if (regOsi.getIntroducerIrisImageName() != null) {
 				iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
 			} else {
-				return true;
+				iris = null;
 			}
 
 			String irisType = regOsi.getIntroducerIrisType();
 			if (regOsi.getIntroducerPhotoName() != null) {
 				face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
 			} else {
-				return true;
+				face = null;
 			}
 
 			if ((validateUIN(introducerUin))
