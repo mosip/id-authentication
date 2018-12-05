@@ -1,5 +1,11 @@
 package io.mosip.kernel.masterdata.config;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,6 +42,20 @@ public class SwaggerConfig {
 	 */
 	private static final String DISCRIBTION = "Master Data Service";
 
+	@Value("${application.env.local:false}")
+	private Boolean localEnv;
+
+	@Value("${swagger.target-url:#{null}}")
+	private String swaggerUrl;
+
+	@Value("${server.port:8080}")
+	private int serverPort;
+
+	String proto = "http";
+	String host = "localhost";
+	int port = -1;
+	String hostWithPort = "localhost:8080";
+
 	/**
 	 * Produces {@link ApiInfo}
 	 * 
@@ -52,12 +72,42 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+		boolean targetSwagger = false;
+		if (!localEnv && swaggerUrl != null && !swaggerUrl.isEmpty()) {
+			try {
+				proto = new URL(swaggerUrl).getProtocol();
+				host = new URL(swaggerUrl).getHost();
+				port = new URL(swaggerUrl).getPort();
+				if (port == -1) {
+					hostWithPort = host;
+				} else {
+					hostWithPort = host + ":" + port;
+				}
+				targetSwagger = true;
+			} catch (MalformedURLException e) {
+				System.err.println("SwaggerUrlException: " + e);
+			}
+		}
+
+		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
 				.tags(new Tag("languages", "Operation performed on Language"),
 						new Tag("registrationcenterdevice", "Api to map Registration center and Device"),
 						new Tag("registrationcentermachine", "Api to map Registration center and machine"),
 						new Tag("registrationcentermachinedevice",
 								"Api to map Registration, center machine and Device"))
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+
+		if (targetSwagger) {
+			docket.protocols(protocols()).host(hostWithPort);
+		}
+		System.out.println("\nSwagger target url: " + proto + "://" + hostWithPort + "\n");
+
+		return docket;
+	}
+
+	private Set<String> protocols() {
+		Set<String> protocols = new HashSet<>();
+		protocols.add(proto);
+		return protocols;
 	}
 }
