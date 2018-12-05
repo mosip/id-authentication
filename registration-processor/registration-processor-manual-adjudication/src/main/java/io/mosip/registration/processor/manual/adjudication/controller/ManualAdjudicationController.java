@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.registration.processor.manual.adjudication.dto.FileRequestDto;
@@ -20,11 +18,20 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * The controller class for Manual Adjudication
+ * 
+ * @author Shuchita
+ * @author Pranav Kumar
+ * @since 0.0.1
+ *
+ */
 @RestController
 @RequestMapping("/v0.1/registration-processor/manual-adjudication")
 @Api(tags = "Manual Adjudication")
 @CrossOrigin
 public class ManualAdjudicationController {
+	
 	@Autowired
 	private ManualAdjudicationService manualAdjudicationService;
 

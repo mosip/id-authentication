@@ -6,40 +6,78 @@ import javax.persistence.*;
 /**
  * The primary key class for the reg_manual_verification database table.
  * 
+ * @author Shuchita
+ * @since 0.0.1
  */
 @Embeddable
 public class ManualVerificationPKEntity implements Serializable {
-	//default serial version id, required for serializable classes.
+
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="reg_id")
+	@Column(name = "reg_id")
 	private String regId;
 
-	@Column(name="matched_ref_id")
+	@Column(name = "matched_ref_id")
 	private String matchedRefId;
 
-	@Column(name="matched_ref_type")
+	@Column(name = "matched_ref_type")
 	private String matchedRefType;
-	
+
+	/**
+	 * @return the regId
+	 */
 	public String getRegId() {
-		return this.regId;
+		return regId;
 	}
+
+	/**
+	 * @param regId
+	 *            the regId to set
+	 */
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
+
+	/**
+	 * @return the matchedRefId
+	 */
 	public String getMatchedRefId() {
-		return this.matchedRefId;
+		return matchedRefId;
 	}
+
+	/**
+	 * @param matchedRefId
+	 *            the matchedRefId to set
+	 */
 	public void setMatchedRefId(String matchedRefId) {
 		this.matchedRefId = matchedRefId;
 	}
+
+	/**
+	 * @return the matchedRefType
+	 */
 	public String getMatchedRefType() {
-		return this.matchedRefType;
+		return matchedRefType;
 	}
+
+	/**
+	 * @param matchedRefType
+	 *            the matchedRefType to set
+	 */
 	public void setMatchedRefType(String matchedRefType) {
 		this.matchedRefType = matchedRefType;
 	}
 
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -47,20 +85,21 @@ public class ManualVerificationPKEntity implements Serializable {
 		if (!(other instanceof ManualVerificationPKEntity)) {
 			return false;
 		}
-		ManualVerificationPKEntity castOther = (ManualVerificationPKEntity)other;
-		return 
-			this.regId.equals(castOther.regId)
-			&& this.matchedRefId.equals(castOther.matchedRefId)
-			&& this.matchedRefType.equals(castOther.matchedRefType);
+		ManualVerificationPKEntity castOther = (ManualVerificationPKEntity) other;
+		return this.regId.equals(castOther.regId) && this.matchedRefId.equals(castOther.matchedRefId)
+				&& this.matchedRefType.equals(castOther.matchedRefType);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.regId.hashCode();
 		hash = hash * prime + this.matchedRefId.hashCode();
 		hash = hash * prime + this.matchedRefType.hashCode();
-		
+
 		return hash;
 	}
 }

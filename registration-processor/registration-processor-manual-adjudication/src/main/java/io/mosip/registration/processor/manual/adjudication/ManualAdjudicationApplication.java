@@ -4,16 +4,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * The Class ManualAdjudicationApplication
+ * ManualAdjudicationApplication Main class
+ * 
+ * @author Pranav Kumar
+ * @since 0.0.1
  */
 @SpringBootApplication(scanBasePackages = {"io.mosip.registration.processor.packet.receiver", "io.mosip.registration.processor.manual.adjudication", "io.mosip.registration.processor.filesystem.ceph.adapter.impl"})
 public class ManualAdjudicationApplication {
 
 	/**
-	 * The main method.
+	 * Main method to instantiate the spring boot application
 	 *
 	 * @param args
-	 *            the arguments
+	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(ManualAdjudicationApplication.class, args);
