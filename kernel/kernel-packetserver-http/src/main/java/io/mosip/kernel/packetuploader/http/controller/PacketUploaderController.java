@@ -38,7 +38,7 @@ public class PacketUploaderController {
 	 *             class is the general class of exceptions produced by failed
 	 *             or interrupted I/O operations.
 	 */
-	@PostMapping("/uploads")
+	@PostMapping(value = "/v1.0/packet/upload")
 	public ResponseEntity<PacketUploaderResponceDTO> upload(
 			MultipartFile packet) throws IOException {
 		return new ResponseEntity<>(service.upload(packet), HttpStatus.CREATED);
