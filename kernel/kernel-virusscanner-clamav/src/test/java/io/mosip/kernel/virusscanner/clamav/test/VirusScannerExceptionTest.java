@@ -48,7 +48,7 @@ public class VirusScannerExceptionTest {
 	private File doc;
 	private byte[] byteArray;
 
-	@Before
+	//@Before
 	public void setup() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("files/0000.zip").getFile());
