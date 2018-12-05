@@ -63,7 +63,7 @@ public class BiometricAttributeController {
 	public ResponseEntity<CodeAndLanguageCodeID> createBiometricAttribute(
 			@Valid @RequestBody RequestDto<BiometricAttributeDto> biometricAttribute) {
 		return new ResponseEntity<>(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()),
-				HttpStatus.OK);
+				HttpStatus.CREATED);
 	}
 
 }
