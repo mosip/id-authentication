@@ -52,7 +52,27 @@
 <div *ngIf="input.case === 'SLOTS'">
   <h1 mat-dialog-title>{{ input.title }}</h1>
   <div mat-dialog-content>
-    <p>{{ input.message }}</p>
+    <span>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedName" (selectionChange)="enableButton()" placeholder="Select Names">
+          <mat-option *ngFor="let name of input.names" [value]="name">
+            {{name.fullName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+  <span class="button-placer">
+      <button mat-raised-button [disabled]="disableAddButton" (click)="addToList()">Add</button>
+  </span>
+  <span>
+    <ul>
+      <li *ngFor="let addedItem of addedList">
+        {{addedItem.fullName}}<i (click)="itemDelete(addedItem)" class="material-icons close-button-sizing">close</i>
+      </li>
+    </ul>
+  </span>
   </div>
-  <div mat-dialog-actions><button mat-button (click)="onNoClick()" cdkFocusInitial>Dismiss</button></div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="addedList" cdkFocusInitial>Add to Slot</button>
+  </div>
 </div>

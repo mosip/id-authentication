@@ -29,4 +29,9 @@ public interface BookingRepository extends BaseRepository<AvailibityEntity, Stri
 	public List<String> findDate(@Param("regcntrId") String regcntrId);
 	
 
+	public AvailibityEntity findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+			@Param("slot_from_time") LocalTime slot_from_time, @Param("slot_to_time") LocalTime slot_to_time,
+			@Param("reg_date") String reg_date, @Param("regcntr_id") String regcntr_id);
+
+
 }

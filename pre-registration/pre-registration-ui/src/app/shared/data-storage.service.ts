@@ -20,6 +20,8 @@ export class DataStorageService {
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
+  AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/booking/availability';
+
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
@@ -73,5 +75,13 @@ export class DataStorageService {
 
   getRegistrationCentersByName(locType: string, text: string) {
     return this.httpClient.get(this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text);
+  }
+
+  getAvailabilityData(registrationCenterId) {
+    return this.httpClient.get(this.AVAILABILITY_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('RegCenterId', registrationCenterId)
+    });
   }
 }

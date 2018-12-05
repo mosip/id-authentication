@@ -1,12 +1,14 @@
 package io.mosip.preregistration.booking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@ToString
 public class HolidayDto {
 	private String holidayId;
 	private String holidayDate;
