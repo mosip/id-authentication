@@ -119,9 +119,9 @@ public class UMCValidator {
 				registrationCenterId, machineId, officerId).getRegistrationCenters();
 		
 		if(!supervisordtos.isEmpty()) {
-			for(RegistrationCenterUserMachineMappingHistoryDto dto: officerdtos) {
-				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==officerId) {
-					supervisorActive = officerdtos.get(0).getIsActive();
+			for(RegistrationCenterUserMachineMappingHistoryDto dto:supervisordtos) {
+				if(dto.getCntrId()==registrationCenterId && dto.getMachineId()==machineId && dto.getUsrId()==superviserId) {
+					supervisorActive = supervisordtos.get(0).getIsActive();
 					break;
 				}
 				else {
@@ -147,6 +147,7 @@ public class UMCValidator {
 		
 		if (supervisorActive || officerActive) {
 			t = true;
+			this.registrationStatusDto.setStatusComment(null);
 		}
 		return t;
 	}
