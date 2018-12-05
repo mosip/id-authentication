@@ -17,7 +17,6 @@ import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.swagger.annotations.ApiOperation;
@@ -64,7 +63,7 @@ public class BiometricAttributeController {
 	public ResponseEntity<CodeAndLanguageCodeID> createBiometricAttribute(
 			@Valid @RequestBody RequestDto<BiometricAttributeDto> biometricAttribute) {
 		return new ResponseEntity<>(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()),
-				HttpStatus.OK);
+				HttpStatus.CREATED);
 	}
 
 }
