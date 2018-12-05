@@ -85,7 +85,7 @@ export class MapComponent implements OnInit {
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'pixels',
                 opacity: 0.75,
-                src: '../../assets/marker.png'
+                src: '/src/assets/marker.png'
             }))
         });
 
