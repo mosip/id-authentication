@@ -30,7 +30,7 @@ public class SwaggerConfig {
 	/**
 	 * Application name
 	 */
-	@Value("${mosip.kernel.crypto.application.name}")
+	@Value("${mosip.kernel.cryptomanager.application.name}")
 	private String applicationName;
 	/**
 	 * Produce Docket bean
