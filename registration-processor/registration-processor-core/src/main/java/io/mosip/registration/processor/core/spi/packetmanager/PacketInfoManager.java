@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -67,6 +68,8 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	 * @return the list
 	 */
 	public List<DemographicDedupeDto> findDemoById(String regId);
+	
+	public Set<String>performDedupe(String refId);
 	
 	
 }

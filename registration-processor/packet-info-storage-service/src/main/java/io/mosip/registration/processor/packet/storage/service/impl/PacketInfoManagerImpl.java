@@ -611,10 +611,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
-
+@Override
 	public Set<String> performDedupe(String refId) {
 		int score = 0;
-		int threshold = 60;
+		int threshold =utility.getThreshold() ;
 		Set<String> duplicateRegIds = new HashSet<>();
 		List<DemographicDedupeDto> idsWithUin = packetInfoDao.getAllDemoWithUIN();
 
