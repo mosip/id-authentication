@@ -13,7 +13,6 @@ import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -70,14 +69,13 @@ public class CryptoServiceImpl implements CryptoService {
 	 * @see io.mosip.kernel.cryptography.service.CryptographyService#encrypt(io.mosip.kernel.cryptography.dto.CryptographyRequestDto)
 	 */
 	@Override
-	public CryptoResponseDto encrypt(
-			CryptoRequestDto cryptoRequestDto) {
+	public CryptoResponseDto encrypt(CryptoRequestDto cryptoRequestDto) {
 		SecretKey secretKey=keyGenerator.getSymmetricKey();
-		final byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, Base64.decodeBase64(cryptoRequestDto.getData()));
+		final byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
 		PublicKey publicKey=cryptoUtil.getPublicKey(cryptoRequestDto);
 		final byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptoResponseDto cryptoResponseDto= new CryptoResponseDto();
-		cryptoResponseDto.setData(Base64.encodeBase64URLSafeString(cryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey)));
+		cryptoResponseDto.setData(CryptoUtil.encodeBase64(cryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey)));
 		return cryptoResponseDto;
 	}
 
@@ -85,22 +83,19 @@ public class CryptoServiceImpl implements CryptoService {
 	 * @see io.mosip.kernel.cryptography.service.CryptographyService#decrypt(io.mosip.kernel.cryptography.dto.CryptographyRequestDto)
 	 */
 	@Override
-	public CryptoResponseDto decrypt(
-			CryptoRequestDto cryptoRequestDto) {
+	public CryptoResponseDto decrypt(CryptoRequestDto cryptoRequestDto) {
 		int keyDemiliterIndex = 0;
-		byte[] encryptedHybridData = Base64.decodeBase64(cryptoRequestDto.getData());
-		final int cipherKeyandDataLength = encryptedHybridData.length;
+		byte[] encryptedHybridData = CryptoUtil.decodeBase64(cryptoRequestDto.getData());
 		final int keySplitterLength = keySplitter.length();
-		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
-        keyDemiliterIndex = cryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex,
-				keySplitterLength, keySplitterFirstByte);
+		keyDemiliterIndex = cryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex,
+				keySplitterLength, keySplitter.getBytes()[0]);
         byte[] encryptedKey = copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitterLength,
-				cipherKeyandDataLength);
-		cryptoRequestDto.setData(Base64.encodeBase64URLSafeString(encryptedKey));
+				encryptedHybridData.length);
+		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey=cryptoUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		CryptoResponseDto cryptoResponseDto= new CryptoResponseDto();
-		cryptoResponseDto.setData(Base64.encodeBase64URLSafeString(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
+		cryptoResponseDto.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
 		return cryptoResponseDto;
 	}
 

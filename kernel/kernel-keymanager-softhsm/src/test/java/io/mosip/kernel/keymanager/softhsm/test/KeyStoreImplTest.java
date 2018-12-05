@@ -46,7 +46,6 @@ public class KeyStoreImplTest{
 	public void setUp() throws Exception  {
 		KeyStoreSpi keyStoreSpiMock = mock(KeyStoreSpi.class);
 		keyStore = new java.security.KeyStore(keyStoreSpiMock, null, "test"){ };
-		
 		keyStoreImpl = new KeyStoreImpl();
 		keyStoreImpl.setKeyStore(keyStore);
 		ReflectionTestUtils.setField(keyStoreImpl, "configPath", "configPath");
