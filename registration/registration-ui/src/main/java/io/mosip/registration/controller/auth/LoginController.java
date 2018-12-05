@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -157,7 +158,10 @@ public class LoginController extends BaseController implements Initializable {
 		String loginMode = null;
 
 		try {
-			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
+			ApplicationContext.getInstance().setApplicationLanguageBundle();
+			ApplicationContext.getInstance().setLocalLanguageProperty();
+			ApplicationContext.getInstance().setApplicationMessagesBundle();
+			Map<String, Object> userLoginMode = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
 
 			if (userLoginMode.containsKey((String.valueOf(RegistrationConstants.PARAM_ONE)))) {
 				loginMode = String.valueOf(userLoginMode.get(String.valueOf(RegistrationConstants.PARAM_ONE)));
@@ -168,9 +172,6 @@ public class LoginController extends BaseController implements Initializable {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginMode);
 
 			// Load the property files for application and local language
-			ApplicationContext.getInstance().setApplicationLanguageBundle();
-			ApplicationContext.getInstance().setLocalLanguageProperty();
-			ApplicationContext.getInstance().setApplicationMessagesBundle();
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");
@@ -289,7 +290,8 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
 									APPLICATION_ID, exception.getMessage());
 
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
 					}
 				}
@@ -380,7 +382,8 @@ public class LoginController extends BaseController implements Initializable {
 								LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
 										APPLICATION_ID, exception.getMessage());
 
-								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
+								generateAlert(RegistrationConstants.ALERT_ERROR,
+										RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 							}
 
 						}
@@ -435,7 +438,8 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
 									APPLICATION_ID, exception.getMessage());
 
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
 					}
 				}
@@ -705,7 +709,7 @@ public class LoginController extends BaseController implements Initializable {
 				"Resetting login sequence to the Session context after log out");
 
 		if (sessionContext.getMapObject() == null) {
-			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
+			Map<String, Object> userLoginMode = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
 			sessionContext.setMapObject(userLoginMode);
 			sessionContext.getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginModeToLoad);
 		}

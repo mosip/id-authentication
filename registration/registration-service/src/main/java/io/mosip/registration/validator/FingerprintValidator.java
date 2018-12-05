@@ -14,7 +14,7 @@ import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
 
-@Component
+@Component("fingerprintValidator")
 public class FingerprintValidator extends AuthenticationValidatorImplementation {
 
 	@Autowired
@@ -26,6 +26,9 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationValidatorImplementation#validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
+	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		if (fingerPrintType.equals("single")) {
@@ -37,11 +40,22 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 		return false;
 	}
 
+	/**
+	 * Validate one finger print values with all the fingerprints from the table.
+	 * @param userId
+	 * @param fingerprintDetailsDTO
+	 * @return
+	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
 		registrationUserDetail = userDataService.getUserDetail(userId);
 		return validateFP(fingerprintDetailsDTO, registrationUserDetail);
 	}
 
+	/**
+	 * Validate all the user input finger details with all the finger details form the DB.
+	 * @param fingerprintDetailsDTOs
+	 * @return
+	 */
 	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		List<RegistrationUserDetail> registrationUserDetails = userDataService.getAllActiveUsers();
 		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> registrationUserDetails.stream()
@@ -49,6 +63,12 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 
 	}
 
+	/**
+	 * Comparing two fingerprint image and send the matching status
+	 * @param fingerprintDetailsDTO
+	 * @param registrationUserDetail
+	 * @return
+	 */
 	private boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
 			RegistrationUserDetail registrationUserDetail) {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerprintDetailsDTO.getFingerPrint());

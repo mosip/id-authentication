@@ -3,8 +3,6 @@ package io.mosip.registration.validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 
@@ -17,25 +15,7 @@ public abstract class AuthenticationValidatorImplementation {
 	@Autowired
 	protected FingerprintValidator fingerprintValidator;
 
-	@Autowired
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
-
-	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		return fingerprintValidator.validate(authenticationValidatorDTO);
-	}
-
-	public String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		RegistrationUserDetail userDetail = registrationUserDetailDAO
-				.getUserDetail(authenticationValidatorDTO.getUserId());
-
-		if (userDetail == null) {
-			return RegistrationConstants.USER_NOT_ONBOARDED;
-		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
-			return RegistrationConstants.PWD_MATCH;
-		} else {
-			return RegistrationConstants.PWD_MISMATCH;
-		}
-	}
+	public abstract boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO);
 
 	public String getFingerPrintType() {
 		return fingerPrintType;

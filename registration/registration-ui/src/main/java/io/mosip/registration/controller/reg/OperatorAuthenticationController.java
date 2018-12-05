@@ -23,18 +23,23 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.biometric.FingerprintFacade;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
-import io.mosip.registration.validator.AuthenticationValidatorFactory;
+import io.mosip.registration.util.common.OTPGenerator;
+import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -102,13 +107,13 @@ public class OperatorAuthenticationController extends BaseController implements 
 	private RegistrationOfficerPacketController registrationOfficerPacketController;
 
 	@Autowired
-	private AuthenticationValidatorFactory validator;
+	private AuthenticationService validator;
+
+	@Autowired
+	private OTPGenerator otpGenerator;
 
 	@Autowired
 	private LoginService loginService;
-	
-	@Autowired
-	private AuthenticationValidatorImplementation authenticationValidatorImplementation;
 
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
@@ -159,7 +164,7 @@ public class OperatorAuthenticationController extends BaseController implements 
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username.getText());
 			authenticationValidatorDTO.setPassword(hashPassword);
-			String userStatus = authenticationValidatorImplementation.validatePassword(authenticationValidatorDTO);			
+			String userStatus = validatePassword(authenticationValidatorDTO);
 
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
@@ -171,39 +176,26 @@ public class OperatorAuthenticationController extends BaseController implements 
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
 					}
 				}
-				/*
-				 * if (serverStatus || offlineStatus) { if
-				 * (validateUserStatus(username.getText())) {
-				 * 
-				 * LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
-				 * APPLICATION_NAME, APPLICATION_ID, "Validating user status");
-				 * 
-				 * generateAlert(RegistrationConstants.ALERT_ERROR,
-				 * RegistrationConstants.BLOCKED_USER_ERROR); } else { try {
-				 * 
-				 * LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
-				 * APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
-				 * 
-				 * SessionContext sessionContext = SessionContext.getInstance();
-				 * loadNextScreen(userDetail, sessionContext,
-				 * RegistrationConstants.LOGIN_METHOD_PWORD);
-				 * 
-				 * } catch (IOException | RuntimeException | RegBaseCheckedException exception)
-				 * {
-				 * 
-				 * LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER",
-				 * APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-				 * 
-				 * generateAlert(RegistrationConstants.ALERT_ERROR,
-				 * RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN); } } }
-				 */
 			}
 		}
 
 	}
 
+	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
+		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+
+		if (userDetail == null) {
+			return RegistrationConstants.USER_NOT_ONBOARDED;
+		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+			return RegistrationConstants.PWD_MATCH;
+		} else {
+			return RegistrationConstants.PWD_MISMATCH;
+		}
+	}
+
 	/**
 	 * Checking server status
+	 * 
 	 * @param LoginUserDTO
 	 *            the UserDTO object
 	 * @return boolean
@@ -219,17 +211,67 @@ public class OperatorAuthenticationController extends BaseController implements 
 			}
 		} catch (RestClientException resourceAccessException) {
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
+
 					resourceAccessException.getMessage());
 		}
 		return serverStatus;
 	}
 
-	/**
-	 * to validate the OTP in case of OTP based authentication
-	 */
+	public void generateOtp() {
+
+		if (!otpUserId.getText().isEmpty()) {
+			// Response obtained from server
+			ResponseDTO responseDTO = null;
+
+			// Service Layer interaction
+			responseDTO = otpGenerator.getOTP(otpUserId.getText());
+
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				// Enable submit button
+				// Generate alert to show OTP
+				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
+
+			} else if (responseDTO.getErrorResponseDTOs() != null) {
+				// Generate Alert to show INVALID USERNAME
+				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+				generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+
+			}
+
+		} else {
+			// Generate Alert to show username field was empty
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+
+		}
+
+	}
+
 	public void validateOTP() {
-		otpBasedLogin.setVisible(false);
-		fingerprintBasedLogin.setVisible(true);
+		if (isSupervisor) {
+			if (otpUserId.getText() != null) {
+				if (fetchUserRole(otpUserId.getText())) {
+					if (otp.getText() != null) {
+						AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+						authenticationValidatorDTO.setOtp(otp.getText());
+						authenticationValidatorDTO.setUserId(otpUserId.getText());
+						AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
+								.getValidator("otp");
+						if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
+							loadNextScreen();
+						} else {
+
+						}
+					} else {
+
+					}
+				} else {
+
+				}
+			} else {
+
+			}
+		}
 	}
 
 	/**
@@ -259,19 +301,23 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
-	
 	/**
 	 * to get the configured modes of authentication
 	 */
 	private void getAuthenticationModes() {
 		count = 1;
-		userAuthenticationTypeMap = loginService.getModesOfLogin();
+		if (isSupervisor) {
+			userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
+		} else {
+			userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
+		}
 		userAuthenticationTypeMap.remove(RegistrationConstants.LOGIN_SEQUENCE);
 		loadNextScreen();
 	}
 
 	/**
-	 * to load the respective screen with respect to the list of configured authentication modes
+	 * to load the respective screen with respect to the list of configured
+	 * authentication modes
 	 */
 	private void loadNextScreen() {
 		if (!userAuthenticationTypeMap.isEmpty()) {
@@ -295,7 +341,9 @@ public class OperatorAuthenticationController extends BaseController implements 
 
 	/**
 	 * to enable the respective authentication mode
-	 * @param loginMode	- name of authentication mode
+	 * 
+	 * @param loginMode
+	 *            - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		switch (loginMode) {
@@ -370,11 +418,13 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
-	
 	/**
 	 * to check the role of supervisor in case of biometric exception
-	 * @param userId - username entered by the supervisor in the authentication screen
-	 * @return boolean variable "true", if the person is authenticated as supervisor or "false", if not
+	 * 
+	 * @param userId
+	 *            - username entered by the supervisor in the authentication screen
+	 * @return boolean variable "true", if the person is authenticated as supervisor
+	 *         or "false", if not
 	 */
 	private boolean fetchUserRole(String userId) {
 		RegistrationUserDetail registrationUserDetail = loginService.getUserDetail(userId);
@@ -385,10 +435,11 @@ public class OperatorAuthenticationController extends BaseController implements 
 		return false;
 	}
 
-	
 	/**
 	 * to capture and validate the fingerprint for authentication
-	 * @param userId - username entered in the textfield
+	 * 
+	 * @param userId
+	 *            - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
