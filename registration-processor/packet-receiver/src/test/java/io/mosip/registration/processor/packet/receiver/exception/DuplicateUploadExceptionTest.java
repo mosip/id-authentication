@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,12 +22,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -39,8 +41,9 @@ public class DuplicateUploadExceptionTest {
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	private SyncRegistrationService syncRegistrationService;
+    private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
+	SyncRegistrationEntity regEntity;
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
 		@Override
@@ -61,6 +64,16 @@ public class DuplicateUploadExceptionTest {
 	@Test
 	public void TestDuplicateUploadException() {
 		MockMultipartFile mockMultipartFile = null;
+		regEntity=new SyncRegistrationEntity();
+		regEntity.setCreateDateTime(LocalDateTime.now());
+		regEntity.setCreatedBy("Mosip");
+		regEntity.setId("001");
+		regEntity.setIsActive(true);
+		regEntity.setLangCode("eng");
+		regEntity.setRegistrationId("0000");
+		regEntity.setRegistrationType("new");
+		regEntity.setStatusCode("NEW_REGISTRATION");
+		regEntity.setStatusComment("registration begins");
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -74,7 +87,7 @@ public class DuplicateUploadExceptionTest {
 
 		Mockito.doReturn(dto).when(registrationStatusService).getRegistrationStatus("0000");
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
-
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		try {
 			packetReceiverService.storePacket(mockMultipartFile);
 			fail();
