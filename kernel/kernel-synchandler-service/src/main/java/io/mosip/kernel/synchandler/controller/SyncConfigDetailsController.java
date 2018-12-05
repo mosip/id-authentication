@@ -18,25 +18,25 @@ import net.minidev.json.JSONObject;
 public class SyncConfigDetailsController {
 
 	/**
-	 * 
+	 * Service instance {@link SyncConfigDetailsService}
 	 */
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 	/**
-	 * 
-	 * @return JSONNode - global config response 
+	 * This API method would fetch all synced global config details from server
+	 * @return JSONObject - global config response 
 	 */
 	@GetMapping(value="/globalconfigs")
 	public JSONObject getGlobalConfigDetails() {
-		return syncConfigDetailsService.getEnrolmentClientConfigDetails();
+		return syncConfigDetailsService.getGlobalConfigDetails();
 	}
 	/**
-	 * 
-	 * @return
+	 * This API method would fetch all synced registration center config details from server
+	 * @return JSONObject
 	 */
 	@GetMapping(value="/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value="registrationcenterid") String regId) {
-		return syncConfigDetailsService.getAdminConfigDetails(regId);
+		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
 	}
 	
 }
