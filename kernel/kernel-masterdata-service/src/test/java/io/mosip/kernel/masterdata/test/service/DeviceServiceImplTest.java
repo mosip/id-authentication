@@ -1,4 +1,4 @@
-/*package io.mosip.kernel.masterdata.test.service;
+package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -127,4 +127,3 @@ public class DeviceServiceImplTest {
 	}
 
 }
-*/
