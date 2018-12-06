@@ -156,6 +156,7 @@ public class RegistrationConstants {
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
+	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -219,6 +220,8 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String BLACKLISTED = "BLOCKED";
+	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
+	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";

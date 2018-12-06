@@ -7,7 +7,7 @@ import io.mosip.registration.entity.PreRegistrationList;
  * @author YASWANTH S
  * @since 1.0.0
  */
-public interface PreRegistrationDAO {
+public interface PreRegistrationDataSyncDAO {
 
 	/**
 	 * To get pre registration

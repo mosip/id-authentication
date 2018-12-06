@@ -854,9 +854,9 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	public static void loadScreen(String screen) throws IOException {
+	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				ApplicationContext.getInstance().getApplicationLanguageBundle());
+				applicationContext.getApplicationLanguageBundle());
 		LoginController.getScene().setRoot(createRoot);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		LoginController.getScene().getStylesheets()
@@ -1378,7 +1378,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
@@ -1850,37 +1850,29 @@ public class RegistrationController extends BaseController {
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
-		
+
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
 		hyperLink.setText(document);
-		
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Binding OnAction event to Hyperlink to display Scanned document");
-		
+				RegistrationConstants.APPLICATION_ID,
+				"Binding OnAction event to Hyperlink to display Scanned document");
+
 		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.forEach(detail -> {
-							if (detail.getDocumentName().equals(pane.getId())) {
-								Image img = convertBytesToImage(detail.getDocument());
-								ImageView view = new ImageView(img);
-								Scene scene = new Scene(new StackPane(view));
-								Stage primaryStage = new Stage();
-								primaryStage.setTitle("Image Click Example");
-								primaryStage.setScene(scene);
-								primaryStage.sizeToScene();
-								primaryStage.show();
-							}
-						});
+						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
+						.ifPresent(doc -> displayDocument(doc.getDocument()));
+
 			}
 		});
-		
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
-		
+
 		return hyperLink;
 	}
 
@@ -1919,6 +1911,27 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
 		
 		return imageView;
+	}
+	
+	/**
+	 * This method will display the scanned document
+	 */
+	private void displayDocument(byte[] document) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
+		
+		Image img = convertBytesToImage(document);
+		ImageView view = new ImageView(img);
+		Scene scene = new Scene(new StackPane(view));
+		Stage primaryStage = new Stage();
+		primaryStage.setTitle(RegistrationConstants.SCAN_DOC_TITLE);
+		primaryStage.setScene(scene);
+		primaryStage.sizeToScene();
+		primaryStage.show();
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}
 	
 	private void createRegistrationDTOObject() {

@@ -13,7 +13,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.auth.LoginController;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
@@ -59,6 +61,15 @@ public class DemographicPreviewController extends BaseController {
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
 	}
+	
+	private void loadScreen(String screen) throws IOException {
+		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
+				applicationContext.getApplicationLanguageBundle());
+		LoginController.getScene().setRoot(createRoot);
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		LoginController.getScene().getStylesheets()
+				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+	}
 
 	/**
 	 * This method is used to handle the edit action of registration preview screen
@@ -66,7 +77,7 @@ public class DemographicPreviewController extends BaseController {
 	public void handleEdit() {
 		try {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-			RegistrationController.loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
+			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
@@ -85,7 +96,7 @@ public class DemographicPreviewController extends BaseController {
 				isInPane1 = false;
 			} else {
 				isInPane1 = true;
-				RegistrationController.loadScreen(RegistrationConstants.BIOMETRIC_PREVIEW);
+				loadScreen(RegistrationConstants.BIOMETRIC_PREVIEW);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Demographic Preview ", APPLICATION_NAME, APPLICATION_ID,

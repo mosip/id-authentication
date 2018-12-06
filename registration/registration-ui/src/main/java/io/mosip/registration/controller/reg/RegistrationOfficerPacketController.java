@@ -60,7 +60,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 
 		try {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-					ApplicationContext.getInstance().getApplicationLanguageBundle());
+					applicationContext.getApplicationLanguageBundle());
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Create Packet screen for specific role");
 

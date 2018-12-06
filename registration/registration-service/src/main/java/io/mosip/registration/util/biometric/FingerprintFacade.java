@@ -54,7 +54,7 @@ public class FingerprintFacade {
 	
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		for(MosipFingerprintProvider mosipFingerprintProvider: fingerprintProviders) {
-			if(mosipFingerprintProvider.getClass().getName().contains(make)) {
+			if(mosipFingerprintProvider.getClass().getName().toLowerCase().contains(make.toLowerCase())) {
 				fingerprintProvider = mosipFingerprintProvider;
 			}
 		}
