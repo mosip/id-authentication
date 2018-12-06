@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
@@ -271,5 +273,41 @@ public class OSIValidatorTest {
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertFalse(isValid);
+	}
+
+	@Test
+	public void testIntroducerUIN() throws Exception {
+		regOsiDto.setIntroducerRegId(null);
+		regOsiDto.setIntroducerUin(null);
+
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+
+	/**
+	 * Test invalid iris.
+	 * 
+	 * @throws IOException
+	 * @throws ApisResourceAccessException
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
+	public void tesAllIntroducerFingerPrint() throws ApisResourceAccessException, IOException {
+		regOsiDto.setIntroducerFingerpType("LEFTTHUMB");
+		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
+		regOsiDto.setSupervisorFingerType("LEFTRING");
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertTrue(isValid);
 	}
 }

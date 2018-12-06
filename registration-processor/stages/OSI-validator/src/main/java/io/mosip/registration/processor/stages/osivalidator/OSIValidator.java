@@ -482,7 +482,7 @@ public class OSIValidator {
 				identityDTO.setLeftLittle(biometricData);
 				break;
 			case JsonConstant.LEFTRING:
-				identityDTO.setLeftThumb(biometricData);
+				identityDTO.setLeftRing(biometricData);
 				break;
 			case JsonConstant.RIGHTTHUMB:
 				identityDTO.setRightThumb(biometricData);
