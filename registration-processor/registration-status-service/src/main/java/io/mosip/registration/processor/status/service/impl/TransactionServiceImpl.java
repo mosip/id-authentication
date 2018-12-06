@@ -13,7 +13,6 @@ import io.mosip.registration.processor.status.exception.TransactionTableNotAcces
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransactionServiceImpl.
  */

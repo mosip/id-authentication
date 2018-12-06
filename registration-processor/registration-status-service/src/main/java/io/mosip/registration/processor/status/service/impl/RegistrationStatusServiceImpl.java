@@ -50,9 +50,6 @@ public class RegistrationStatusServiceImpl
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
 
-	/** The Constant COULD_NOT_GET. */
-	private static final String COULD_NOT_GET = "Could not get Information from table";
-
 	/** The event id. */
 	private String eventId = "";
 

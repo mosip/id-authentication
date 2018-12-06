@@ -7,15 +7,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -34,9 +35,6 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  */
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
-
-	/** The Constant TABLE_NOT_ACCESSIBLE. */
-	private static final String TABLE_NOT_ACCESSIBLE = "Could not fetch data from table";
 
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "MOSIP";
@@ -102,10 +100,11 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
-			String  description = "";
+			String description = "";
 			if (isTransactionSuccessful) {
 				eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 						: EventName.ADD.toString();
@@ -117,7 +116,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventType = EventType.SYSTEM.toString();
 				description = "Registartion Id's sync is unsuccessful";
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.MULTIPLE_ID.toString());
 
 		}
 
