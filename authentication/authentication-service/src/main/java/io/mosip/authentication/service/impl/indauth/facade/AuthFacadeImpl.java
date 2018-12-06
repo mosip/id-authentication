@@ -26,10 +26,13 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -70,6 +73,10 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class AuthFacadeImpl implements AuthFacade {
+	
+	private static final String DEMO_AUTHENTICATION_REQUESTED = "Demo Authentication requested";
+
+	private static final String OTP_AUTHENTICATION_REQUESTED = "OTP Authentication requested";
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
@@ -161,7 +168,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		
 		
 		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
+		AuthResponseBuilder authResponseBuilder = new AuthResponseBuilder(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		try {
 			idInfo = getIdEntity(idResDTO);
@@ -169,7 +176,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, String.valueOf(idResDTO.get("registrationId")));
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, String.valueOf(idResDTO.get("registrationId")), isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
@@ -255,9 +262,17 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, String refId) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> idInfo, String refId, boolean isAuth) throws IdAuthenticationBusinessException {
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		AuthStatusInfo statusInfo = null;
+		IdType idType=null;
+
+		if(authRequestDTO.getIdvIdType().equals(IdType.UIN.getType()))	{
+			idType=IdType.UIN;
+		}
+		else{
+			 idType=IdType.VID;
+		}
 		if (authRequestDTO.getAuthType().isOtp()) {
 			AuthStatusInfo otpValidationStatus;
 			try {
@@ -267,10 +282,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = otpValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
-				// TODO Update audit details
-				auditData();
+				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(),idType, OTP_AUTHENTICATION_REQUESTED);
 			}
-			// TODO log authStatus - authType, response
 
 		}
 
@@ -283,10 +296,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = demoValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
-				// TODO Update audit details
-				auditData();
+				auditHelper.audit(AuditModules.DEMO_AUTH,  getAuditEvent(isAuth), authRequestDTO.getIdvId(),idType, DEMO_AUTHENTICATION_REQUESTED);
 			}
-			// TODO log authStatus - authType, response
 
 		}
 		if (authRequestDTO.getAuthType().isBio()) {
@@ -299,12 +310,27 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = bioValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				// TODO Update audit details
-				auditData();
+				String desc;
+				if(authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.equals(BioType.FGRMIN.getType()) || bioInfo.equals(BioType.FGRIMG.getType()))) {
+					desc = "Fingerprint Authentication requested";
+					auditHelper.audit(AuditModules.BIO_AUTH,  getAuditEvent(isAuth), authRequestDTO.getIdvId(),idType,desc );
+				}
+				if(authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.equals(BioType.IRISIMG.getType()))) {
+					desc = "Iris Authentication requested";
+					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(),idType,desc );
+				}
+				if(authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.equals(BioType.FACEIMG.getType()))) {
+					desc = "Face Authentication requested";
+					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(),idType,desc );
+				}
 			}
 		}
 
 		return authStatusList;
+	}
+
+	private AuditEvents getAuditEvent(boolean isAuth) {
+		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
 	}
 
 	/**
@@ -399,6 +425,15 @@ public class AuthFacadeImpl implements AuthFacade {
 		ZoneId zone = zonedDateTime2.getZone();
 		String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 		kycAuthResponseDTO.setResTime(resTime);
+		IdType idType;
+
+		if(kycAuthRequestDTO.getAuthRequest().getIdvIdType()==IdType.UIN.getType())	{
+			idType=IdType.UIN;
+		}
+		else{
+			 idType=IdType.VID;
+		}
+		auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, kycAuthRequestDTO.getAuthRequest().getIdvId(),idType,"" );
 		return kycAuthResponseDTO;
 	}
 

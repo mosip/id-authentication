@@ -37,6 +37,6 @@ public class IdInfoServiceImplTest {
 	@Ignore
 	@Test
 	public void getMapvalue() throws IdAuthenticationDaoException {
-		Map valuemap = IdInfoService.getIdInfo("12232323");
+		//Map valuemap = IdInfoService.getIdInfo("12232323");
 	}
 }
