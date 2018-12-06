@@ -3,6 +3,7 @@ package io.mosip.registration.dao.impl;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -45,7 +46,10 @@ public class RegistrationAppAuthenticationDAOImpl implements RegistrationAppAuth
 		List<RegistrationAppAuthenticationMethod> loginList = registrationAppLoginRepository
 				.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(authType);
 
-		Map<String, Object> loginModes = new LinkedHashMap<>();
+		Map<String, Object> loginModes = loginList.stream().collect(
+                Collectors.toMap(registrationAppAuthenticationMethod -> String.valueOf(registrationAppAuthenticationMethod.getMethodSeq()), 
+                		registrationAppAuthenticationMethod -> registrationAppAuthenticationMethod.getregistrationAppAuthenticationMethodId().getLoginMethod()));
+                		
 		loginList.forEach(mode -> loginModes.put(String.valueOf(mode.getMethodSeq()), mode.getregistrationAppAuthenticationMethodId().getLoginMethod()));
 		
 		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,

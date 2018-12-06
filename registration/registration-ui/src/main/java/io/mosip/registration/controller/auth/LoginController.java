@@ -124,7 +124,8 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private SchedulerUtil schedulerUtil;
 
-	private FingerprintFacade fingerprintFacade = new FingerprintFacade();
+	@Autowired
+	private FingerprintFacade fingerprintFacade;
 
 	private static Scene scene;
 

@@ -1,6 +1,10 @@
 package io.mosip.registration.util.biometric;
 
 import java.io.IOException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javafx.scene.image.WritableImage;
 
@@ -11,17 +15,12 @@ import javafx.scene.image.WritableImage;
  * @author M1046564
  *
  */
+@Component
 public class FingerprintFacade {
 	
-	MosipFingerprintProvider fingerprintProvider;
-
-	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
-		fingerprintProvider =null;
-		if(make.equals("Mantra")) {
-			fingerprintProvider =new MantraFingerprintProvider();
-		}
-		return fingerprintProvider;
-	}
+	private List<MosipFingerprintProvider> fingerprintProviders;
+	
+	private MosipFingerprintProvider fingerprintProvider;
 
 	/**
 	 * provide the minutia of a finger.
@@ -46,6 +45,20 @@ public class FingerprintFacade {
 	 */
 	public WritableImage getFingerPrintImage() throws IOException{
 		return fingerprintProvider.getFingerPrintImage();
+	}
+	
+	@Autowired
+	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
+		this.fingerprintProviders = fingerprintProviders;
+	}
+	
+	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
+		for(MosipFingerprintProvider mosipFingerprintProvider: fingerprintProviders) {
+			if(mosipFingerprintProvider.getClass().getName().contains(make)) {
+				fingerprintProvider = mosipFingerprintProvider;
+			}
+		}
+		return fingerprintProvider;
 	}
 	
 }

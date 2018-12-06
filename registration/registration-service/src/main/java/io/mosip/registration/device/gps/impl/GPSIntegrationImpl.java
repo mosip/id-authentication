@@ -171,10 +171,14 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	 * {@code actualDistance} is to calculate the distance between the given
 	 * latitudes and longitudes.
 	 *
-	 * @param fromlat from latitude
-	 * @param fromlng from longitude
-	 * @param tolat   to latitude
-	 * @param tolng   to longitude
+	 * @param fromlat
+	 *            from latitude
+	 * @param fromlng
+	 *            from longitude
+	 * @param tolat
+	 *            to latitude
+	 * @param tolng
+	 *            to longitude
 	 * @return double
 	 */
 	private double actualDistance(BigDecimal fromlat, BigDecimal fromlng, double centerLat, double centerLngt) {
@@ -203,7 +207,8 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	/**
 	 * Gets the latitudeFromGps long.
 	 *
-	 * @param gpsData the gps data
+	 * @param gpsData
+	 *            the gps data
 	 * @return the latitudeFromGps long
 	 * @throws RegBaseCheckedException
 	 */
@@ -248,10 +253,10 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 
 		if (!gpsConnectionsList.isEmpty()) {
 			for (IGPSConnector connector : gpsConnectionsList) {
-				if (connector.getClass().getName().contains(gpsConnectionDevice))
-					;
-				igpsConnector = connector;
-				break;
+				if (connector.getClass().getName().contains(gpsConnectionDevice)) {
+					igpsConnector = connector;
+					break;
+				}
 			}
 		}
 		return igpsConnector;
