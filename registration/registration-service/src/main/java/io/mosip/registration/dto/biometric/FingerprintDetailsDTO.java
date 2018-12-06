@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.biometric;
 
+import java.util.List;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -27,7 +29,10 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	
 	/** The num retry. */
 	protected int numRetry;
-	
+
+	/** The segmented fingerprints. */
+	private List<FingerprintDetailsDTO> segmentedFingerprints;
+
 	/**
 	 * Gets the finger print.
 	 *
@@ -134,6 +139,14 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	 */
 	public void setNumRetry(int numRetry) {
 		this.numRetry = numRetry;
+	}
+
+	public List<FingerprintDetailsDTO> getSegmentedFingerprints() {
+		return segmentedFingerprints;
+	}
+
+	public void setSegmentedFingerprints(List<FingerprintDetailsDTO> segmentedFingerprints) {
+		this.segmentedFingerprints = segmentedFingerprints;
 	}
 	
 }

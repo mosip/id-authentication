@@ -25,8 +25,6 @@ public class BiometricInfoDTO extends BaseDTO {
 	/** The iris biometric exception DTO. */
 	private List<BiometricExceptionDTO> irisBiometricExceptionDTO;
 
-	/** The segmented fingerprints. */
-	private List<FingerprintDetailsDTO> segmentedFingerprints;
 
 	/**
 	 * Gets the fingerprint details DTO.
@@ -99,19 +97,5 @@ public class BiometricInfoDTO extends BaseDTO {
 	 */
 	public void setIrisBiometricExceptionDTO(List<BiometricExceptionDTO> irisBiometricExceptionDTO) {
 		this.irisBiometricExceptionDTO = irisBiometricExceptionDTO;
-	}
-
-	/**
-	 * @return the segmentedFingerprints
-	 */
-	public List<FingerprintDetailsDTO> getSegmentedFingerprints() {
-		return segmentedFingerprints;
-	}
-
-	/**
-	 * @param segmentedFingerprints the segmentedFingerprints to set
-	 */
-	public void setSegmentedFingerprints(List<FingerprintDetailsDTO> segmentedFingerprints) {
-		this.segmentedFingerprints = segmentedFingerprints;
 	}
 }

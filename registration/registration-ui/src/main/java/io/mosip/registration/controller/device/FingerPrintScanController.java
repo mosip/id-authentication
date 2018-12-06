@@ -124,7 +124,7 @@ public class FingerPrintScanController extends BaseController {
 	 * 
 	 * 
 	 */
-	private void scanFinger() {
+	private void scanFinger() {/*
 		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has started");
 
 		try {
@@ -241,7 +241,7 @@ public class FingerPrintScanController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
 		}
 		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
-	}
+	*/}
 
 	/**
 	 * {@code readFingerPrints} is to read the scanned fingerprints.
@@ -298,9 +298,9 @@ public class FingerPrintScanController extends BaseController {
 			fingerprintDetailsDTO.setForceCaptured(false);
 			fingerprintDetailsDTO.setQualityScore(90);
 
-			fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
+			/*fpCaptureController.getRegistrationController().getRegistrationDtoContent().getBiometricDTO()
 					.getApplicantBiometricDTO().getSegmentedFingerprints().add(fingerprintDetailsDTO);
-		} catch (IOException ioException) {
+	*/	} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
 	}
