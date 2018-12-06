@@ -82,7 +82,7 @@ public class SwaggerConfig {
 					hostWithPort = host;
 				} else {
 					hostWithPort = host + ":" + port;
-				}
+				} 
 				targetSwagger = true;
 			} catch (MalformedURLException e) {
 				System.err.println("SwaggerUrlException: " + e);
