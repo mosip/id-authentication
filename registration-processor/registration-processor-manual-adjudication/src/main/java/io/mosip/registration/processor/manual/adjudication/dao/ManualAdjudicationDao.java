@@ -24,13 +24,17 @@ public class ManualAdjudicationDao {
 		return manualAdjudiacationRepository.save(manualAdjudicationEntity);
 	}
 	
-	public List<ManualVerificationEntity> getFirstApplicantDetails() {
+	public List<ManualVerificationEntity> getFirstApplicantDetails(String status) {
 		List<ManualVerificationEntity> manualAdjudicationEntitiesList = manualAdjudiacationRepository
-				.getFirstApplicantDetails("PENDING");
+				.getFirstApplicantDetails(status);
 		return manualAdjudicationEntitiesList;
 		
 	}
 	public ManualVerificationEntity getByRegId(String regId,String mvUsrId) {
 		return manualAdjudiacationRepository.getByRegId(regId,mvUsrId);
+	}
+	
+	public ManualVerificationEntity getAssignedApplicantDetails(String userId, String status) {
+		return manualAdjudiacationRepository.getAssignedApplicantDetails(userId,status);
 	}
 }

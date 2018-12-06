@@ -35,19 +35,31 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	@Override
 	public ManualVerificationDTO assignStatus(UserDto dto) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
-		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getFirstApplicantDetails().get(0);
-		if (manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
-			manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
-			manualVerificationEntity.setMvUsrId(dto.getUserId());
-			ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao.update(manualVerificationEntity);
-			if(updatedManualVerificationEntity!=null) {
-				manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
-				manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
-				manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
-				manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
-				manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
-			}
+		ManualVerificationEntity entity= manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(), ManualVerificationStatus.ASSIGNED.name());
+		if(entity!=null) {
+			manualVerificationDTO.setRegId(entity.getId().getRegId());
+			manualVerificationDTO.setMatchedRefId(entity.getId().getMatchedRefId());
+			manualVerificationDTO.setMatchedRefType(entity.getId().getMatchedRefType());
+			manualVerificationDTO.setMvUsrId(entity.getMvUsrId());
+			manualVerificationDTO.setStatusCode(entity.getStatusCode());
 		}
+		else {
+			ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()).get(0);
+			if(manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
+				manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
+				manualVerificationEntity.setMvUsrId(dto.getUserId());
+				ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao.update(manualVerificationEntity);
+				if(updatedManualVerificationEntity!=null) {
+					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
+					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
+					manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
+					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+				}
+			}
+		
+		}
+			
 		return manualVerificationDTO;
 	}
 
