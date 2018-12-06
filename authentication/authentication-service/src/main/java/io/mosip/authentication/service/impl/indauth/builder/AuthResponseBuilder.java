@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseInfo;
@@ -22,9 +25,14 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
  * @authour Loganathan Sekar
  */
 public class AuthResponseBuilder {
+	
+	/** The Environment */
+	@Autowired
+	private Environment env;
 
-	//FIXME get the date time pattern from configuration
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	private static final String DATETIME_PATTERN = "datetime.pattern";
+	
+	private SimpleDateFormat dateFormat;
 
 	/** The built. */
 	private boolean built;
@@ -40,21 +48,14 @@ public class AuthResponseBuilder {
 
 	/**
 	 * Instantiates a new auth response builder.
+	 * @param dateTimePattern 
 	 */
-	private AuthResponseBuilder() {
+	public AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
 		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
 		responseDTO.setInfo(authResponseInfo);
 		authStatusInfos = new ArrayList<>();
-	}
-
-	/**
-	 * New instance.
-	 *
-	 * @return the auth response builder
-	 */
-	public static AuthResponseBuilder newInstance() {
-		return new AuthResponseBuilder();
+		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
 
 	/**
