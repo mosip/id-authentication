@@ -109,9 +109,12 @@ public class MapperUtils {
 	}
 
 	private <S, D> void setBaseFieldValue(S source, D destination) {
-		String sourceSupername = source.getClass().getSuperclass().getName();
-		String destinationSupername = destination.getClass().getSuperclass().getName();
-		String baseEntityClassName = BaseEntity.class.getName();
+		
+		String sourceSupername = source.getClass().getSuperclass().getName();//super class of source object
+		String destinationSupername = destination.getClass().getSuperclass().getName();//super class of destination object
+		String baseEntityClassName = BaseEntity.class.getName();//base entity fully qualified name
+		
+		//
 		if (sourceSupername.equals(baseEntityClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getDeclaredFields();
@@ -138,12 +141,25 @@ public class MapperUtils {
 	private <D, S> void setFieldValues(S source, D destination, Field[] sourceFields, Field[] destinationFields) {
 		try {
 			for (Field sfield : sourceFields) {
+				// Do not set values either static or final
 				if (Modifier.isStatic(sfield.getModifiers()) || Modifier.isFinal(sfield.getModifiers())) {
 					continue;
 				}
+				
+				//make field accessible possibly private
 				sfield.setAccessible(true);
+				
+				
 				for (Field dfield : destinationFields) {
+					
+					// map only those field whose name and type is same
 					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
+						//for collections
+						
+						//for entity inside a entity
+						
+						
+						//for normal field values
 						dfield.setAccessible(true);
 						setFieldValue(source, destination, sfield, dfield);
 						break;
