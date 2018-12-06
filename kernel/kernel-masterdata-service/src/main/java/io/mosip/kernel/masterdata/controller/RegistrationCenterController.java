@@ -144,11 +144,17 @@ public class RegistrationCenterController {
 
 	}
 
+	/**
+	 * This method creates registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the request dto for creating registration center.
+	 * @return the response i.e. the id of the registration center created.
+	 */
 	@PostMapping("/v1.0/registrationcenters")
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
 			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
 				HttpStatus.CREATED);
 	}
-
 }

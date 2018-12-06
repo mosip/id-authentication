@@ -100,6 +100,13 @@ public interface RegistrationCenterService {
 	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
 			String hierarchyLevel, String text, String languageCode);
 
+	/**
+	 * This service method can be used to create registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the input registration center dto.
+	 * @return the id response dto.
+	 */
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
 }
