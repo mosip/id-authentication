@@ -35,6 +35,6 @@ public class ReasonListDto {
 	@NotNull
 	private Boolean isActive;
 
-	private boolean isDeleted;
+	private Boolean isDeleted;
 
 }

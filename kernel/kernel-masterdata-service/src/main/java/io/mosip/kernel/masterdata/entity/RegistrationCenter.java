@@ -63,17 +63,20 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "longitude", length = 32)
 	private String longitude;
 
+	@Column(name = "location_code", length = 36)
+	private String locationCode;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
-	private Location locationCode;
-	
+	private Location location;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "cntrtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
-	
+
 	private RegistrationCenterType registrationCenterType;
 
 	@Column(name = "contact_phone", length = 16)
@@ -112,5 +115,4 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	
 }
