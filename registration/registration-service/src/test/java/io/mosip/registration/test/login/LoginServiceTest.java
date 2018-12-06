@@ -112,10 +112,10 @@ public class LoginServiceTest {
 		loginList.add(registrationAppLoginMethod);
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq((Mockito.anyString()))).thenReturn(loginList);
+		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq("LOGIN")).thenReturn(loginList);
 		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getregistrationAppAuthenticationMethodId().getLoginMethod()));
-		Mockito.when(registrationAppLoginDAO.getModesOfLogin(Mockito.anyString())).thenReturn(modes);
-		assertEquals(modes,loginServiceImpl.getModesOfLogin(Mockito.anyString()));
+		Mockito.when(registrationAppLoginDAO.getModesOfLogin("LOGIN")).thenReturn(modes);
+		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN"));
 	}
 
 	@Test
