@@ -16,7 +16,6 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
 
 /**
  * MetaDataUtils class provide methods to copy values from DTO to entity along
@@ -57,21 +56,15 @@ public class MetaDataUtils {
 
 		D entity = (D) mapperUtils.mapNew(source, destinationClass);
 
-	/*	Field[] fields = entity.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(EmbeddedId.class)) {
-				try {
-					Object id = field.getType().newInstance();
-					mapperUtils.mapNew(source, id);
-					field.setAccessible(true);
-					field.set(entity, id);
-					field.setAccessible(false);
-					break;
-				} catch (Exception e) {
-					throw new DataAccessLayerException("KER-MSD-000", "Error while mapping Embedded Id fields", e);
-				}
-			}
-		}*/
+		/*
+		 * Field[] fields = entity.getClass().getDeclaredFields(); for (Field field :
+		 * fields) { if (field.isAnnotationPresent(EmbeddedId.class)) { try { Object id
+		 * = field.getType().newInstance(); mapperUtils.mapNew(source, id);
+		 * field.setAccessible(true); field.set(entity, id); field.setAccessible(false);
+		 * break; } catch (Exception e) { throw new
+		 * DataAccessLayerException("KER-MSD-000",
+		 * "Error while mapping Embedded Id fields", e); } } }
+		 */
 
 		setCreatedDateTime(contextUser, entity);
 		return entity;
@@ -117,8 +110,6 @@ public class MetaDataUtils {
 		entity.setCreatedBy(contextUser);
 	}
 
-	
-	// -----------------------------------------
 	public Machine createdMachine(MachineDto machineDto) {
 
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
