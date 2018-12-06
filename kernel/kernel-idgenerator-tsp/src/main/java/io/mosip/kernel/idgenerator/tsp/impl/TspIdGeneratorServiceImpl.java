@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdPropertyConstant;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
@@ -28,7 +29,9 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 	@Autowired
 	TspRepository tspRepository;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.core.idgenerator.spi.TspIdGenerator#generateId()
 	 */
 	@Override
@@ -36,7 +39,14 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 
 		final int initialValue = Integer.parseInt(TspIdPropertyConstant.ID_START_VALUE.getProperty());
 
-		Tsp entity = tspRepository.findMaxTspId();
+		Tsp entity = null;
+		try {
+
+			entity = tspRepository.findMaxTspId();
+
+		} catch (DataAccessLayerException e) {
+
+		}
 
 		if (entity == null) {
 			entity = new Tsp();
@@ -52,7 +62,13 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 			entity.setCreatedDateTime(time);
 
 		}
-		tspRepository.save(entity);
+		try {
+
+			tspRepository.save(entity);
+
+		} catch (DataAccessLayerException e) {
+
+		}
 
 		TspResponseDTO tspDto = new TspResponseDTO();
 		tspDto.setTspId(entity.getTspId());
