@@ -1,8 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
  * This interface contains methods that provides registration centers details
@@ -96,4 +99,14 @@ public interface RegistrationCenterService {
 	 */
 	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
 			String hierarchyLevel, String text, String languageCode);
+
+	/**
+	 * This service method can be used to create registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the input registration center dto.
+	 * @return the id response dto.
+	 */
+	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
+
 }

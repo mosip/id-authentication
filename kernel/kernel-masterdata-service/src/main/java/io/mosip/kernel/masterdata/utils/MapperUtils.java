@@ -369,10 +369,10 @@ public class MapperUtils {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
 			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
-			dto.setHolidayId(String.valueOf(holidayId.getId()));
-			dto.setHolidayDate(String.valueOf(date));
+			dto.setId(holiday.getId());
+			dto.setHolidayDate(date);
 			dto.setHolidayName(holiday.getHolidayName());
-			dto.setLanguageCode(holidayId.getLangCode());
+			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));

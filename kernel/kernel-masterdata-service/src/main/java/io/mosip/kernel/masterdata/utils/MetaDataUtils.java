@@ -117,30 +117,7 @@ public class MetaDataUtils {
 		entity.setCreatedBy(contextUser);
 	}
 
-	public MachineHistory createdMachineHistory(Machine machine) {
-
-		LocalDateTime etime = LocalDateTime.now(ZoneId.of("UTC"));
-		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = authN.getName();
-
-		MachineHistory machineHistory = new MachineHistory();
-		machineHistory.setId(machine.getId());
-		machineHistory.setName(machine.getName());
-		machineHistory.setMacAddress(machine.getMacAddress());
-		machineHistory.setSerialNum(machine.getSerialNum());
-		machineHistory.setIpAddress(machine.getIpAddress());
-		machineHistory.setMspecId(machine.getMachineSpecId());
-		machineHistory.setLangCode(machine.getLangCode());
-		machineHistory.setIsActive(machine.getIsActive());
-		machineHistory.setValEndDtimes(machine.getValidityDateTime());
-
-		setCreatedDateTime(contextUser, machineHistory);
-		machineHistory.setEffectDtimes(etime);
-
-		return machineHistory;
-
-	}
-
+	
 	// -----------------------------------------
 	public Machine createdMachine(MachineDto machineDto) {
 

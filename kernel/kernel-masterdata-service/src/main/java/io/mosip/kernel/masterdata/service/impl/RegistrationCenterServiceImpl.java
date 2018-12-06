@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
@@ -16,8 +17,10 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -25,7 +28,9 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This service class contains methods that provides registration centers
@@ -48,6 +53,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Autowired
 	private MapperUtils objectMapperUtil;
+
+	@Autowired
+	private MetaDataUtils metaUtils;
 
 	/**
 	 * Reference to RegistrationCenterRepository.
@@ -174,8 +182,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String langCode) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository
-					.findByLocationCodeAndLanguageCode(locationCode, langCode);
+			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLanguageCode(locationCode,
+					langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
@@ -302,5 +310,25 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		RegistrationCenter entity = new RegistrationCenter();
+		entity = metaUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		RegistrationCenter registrationCenter;
+		try {
+			registrationCenter = registrationCenterRepository.create(entity);
+		} catch (DataAccessLayerException dataAccessLayerException) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(dataAccessLayerException));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId(registrationCenter.getId());
+		return idResponseDto;
 	}
 }

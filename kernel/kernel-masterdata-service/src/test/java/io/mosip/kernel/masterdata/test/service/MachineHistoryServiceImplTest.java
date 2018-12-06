@@ -63,7 +63,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistoryDto.setUpdatedBy("Admin");
 		machineHistoryDto.setIsDeleted(false);
 		machineHistoryDto.setIpAddress("100.10.01.01");
-		machineHistoryDto.setMspecId("12345678");
+		machineHistoryDto.setMachineSpecId("12345678");
 
 		machineHistoryDtoList.add(machineHistoryDto);
 		MachineHistory machineHistory = new MachineHistory();
@@ -78,7 +78,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistory.setUpdatedBy("Admin");
 		machineHistory.setIsDeleted(false);
 		machineHistory.setIpAddress("100.10.01.01");
-		machineHistory.setMspecId("12345678");
+		machineHistory.setMachineSpecId("12345678");
 
 		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
 		machineHistoryList.add(machineHistory);

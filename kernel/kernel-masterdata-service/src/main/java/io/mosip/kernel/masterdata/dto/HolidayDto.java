@@ -1,23 +1,35 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
+ * DTO class for Holiday Data
  * 
  * @author Abhishek Kumar
+ * @author Sidhant Agarwal
  * @version 1.0.0
  * @since 23-10-2016
  */
 @Data
-
-
 public class HolidayDto {
-	private String holidayId;
-	private String holidayDate;
+
+	@NotNull
+	private int id;
+
+	@NotNull
+	@Size(min = 1, max = 36)
+	private String locationCode;
+
+	@NotNull
+	private LocalDate holidayDate;
 	/**
-	 * Holiday day is day of week as integer value, week start from Monday , Monday is 1 and Sunday is 7
+	 * Holiday day is day of week as integer value, week start from Monday , Monday
+	 * is 1 and Sunday is 7
 	 */
 	private String holidayDay;
 	/**
@@ -25,8 +37,20 @@ public class HolidayDto {
 	 */
 	private String holidayMonth;
 	private String holidayYear;
+
+	@NotNull
+	@Size(min = 1, max = 64)
 	private String holidayName;
-	private String languageCode;
+
+	@NotNull
+	@Size(min = 1, max = 128)
+	private String holidayDesc;
+
+	@NotNull
+	@Size(min = 1, max = 3)
+	private String langCode;
+
+	@NotNull
 	private Boolean isActive;
 
 }

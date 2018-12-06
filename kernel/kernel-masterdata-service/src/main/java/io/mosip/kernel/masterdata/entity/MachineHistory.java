@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.IdAndEffectDtimesID;
+import io.mosip.kernel.masterdata.entity.id.IdAndEffectDateTimeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_master_h", schema = "master")
-@IdClass(IdAndEffectDtimesID.class)
+@IdClass(IdAndEffectDateTimeID.class)
 public class MachineHistory extends BaseEntity implements Serializable {
 	/**
 	 * 
@@ -32,9 +32,9 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	@Id
 	@AttributeOverrides({
 			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "effectDtimes", column = @Column(name = "eff_dtimes", nullable = false)) })
+			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)) })
 	private String id;
-	private LocalDateTime effectDtimes;
+	private LocalDateTime effectDateTime;
 
 	/**
 	 * 
@@ -55,20 +55,20 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	/**
 	 * Field for machine serial number
 	 */
-	@Column(name = "serial_num", nullable = false)
+	@Column(name = "serial_num", nullable = false,  length = 64)
 	private String serialNum;
 
 	/**
 	 * Field for machine ip address
 	 */
-	@Column(name = "ip_address", length = 64)
+	@Column(name = "ip_address", length = 17)
 	private String ipAddress;
 
 	/**
 	 * Field for machine specific id
 	 */
 	@Column(name = "mspec_id", nullable = false, length = 36)
-	private String mspecId;
+	private String machineSpecId;
 
 	/**
 	 * Field for language code
@@ -79,6 +79,6 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 * Field to hold effected date and time
 	 */
 	@Column(name = "validity_end_dtimes")
-	private LocalDateTime valEndDtimes;
+	private LocalDateTime validityDateTime;
 
 }

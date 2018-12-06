@@ -240,7 +240,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setCreatedBy("John");
 		registrationCenter.setCreatedDateTime(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
-		registrationCenter.setLocationCode(location);
+		registrationCenter.setLocationCode("LOC");
 		registrationCenter.setId("REG_CR_001");
 		registrationCenter.setLanguageCode("ENG");
 		registrationCenter.setWorkingHours("9");
@@ -251,7 +251,8 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
+		holiday.setId(1);
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -410,9 +411,8 @@ public class MasterdataControllerTest {
 		wordAndLanguageCodeID.setLangCode("TST");
 		wordAndLanguageCodeID.setWord("testword");
 		Mockito.when(blacklistedWordsService.createBlackListedWord(Mockito.any())).thenReturn(wordAndLanguageCodeID);
-		mockMvc.perform(
-				MockMvcRequestBuilders.post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isCreated());
 
 	}
 
@@ -420,7 +420,8 @@ public class MasterdataControllerTest {
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/biometrictypes")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/biometrictypes"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -608,7 +609,8 @@ public class MasterdataControllerTest {
 	public void testGetAllLocationHierarchy() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString())).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/ENG")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/ENG"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
