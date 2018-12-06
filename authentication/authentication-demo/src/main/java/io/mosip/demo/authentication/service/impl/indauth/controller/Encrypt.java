@@ -65,7 +65,7 @@ public class Encrypt {
 		// Encrypt data with session key
 		byte[] data = encryptionRequestDto.getIdentityRequest().getBytes();
 		byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, data);
-		encryptionResponseDto.setEncryptedSessionKey(Base64.getEncoder().encodeToString(encryptedData));
+		encryptionResponseDto.setEncryptedIdentity(Base64.getEncoder().encodeToString(encryptedData));
 
 		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
 		PublicKey publicKey = asymmetricKey.getPublic();
