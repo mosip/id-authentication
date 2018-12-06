@@ -56,20 +56,9 @@ public class MetaDataUtils {
 
 		D entity = (D) mapperUtils.mapNew(source, destinationClass);
 
-		/*
-		 * Field[] fields = entity.getClass().getDeclaredFields(); for (Field field :
-		 * fields) { if (field.isAnnotationPresent(EmbeddedId.class)) { try { Object id
-		 * = field.getType().newInstance(); mapperUtils.mapNew(source, id);
-		 * field.setAccessible(true); field.set(entity, id); field.setAccessible(false);
-		 * break; } catch (Exception e) { throw new
-		 * DataAccessLayerException("KER-MSD-000",
-		 * "Error while mapping Embedded Id fields", e); } } }
-		 */
-
 		setCreatedDateTime(contextUser, entity);
 		return entity;
 	}
-
 
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {

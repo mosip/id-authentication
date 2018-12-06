@@ -24,7 +24,6 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
@@ -32,7 +31,6 @@ import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
-import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -428,39 +426,5 @@ public class MapperUtils {
 		return deviceLangCodeDtypeDtoList;
 	}
 
-	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
-		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
-
-		for (DeviceType deviceType : deviceTypes) {
-			DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
-			deviceTypeDto.setName(deviceType.getName());
-			deviceTypeDto.setDescription(deviceType.getDescription());
-			deviceTypeDto.setCode(deviceType.getCode());
-			deviceTypeDto.setLangCode(deviceType.getLangCode());
-			deviceTypeDtoList.add(deviceTypeDto);
-		}
-
-		return deviceTypeDtoList;
-	}
-
-	/*
-	 * public List<MachineDto> mapMachineListDto(List<Machine> machines) {
-	 * List<MachineDto> machineDtoList = new ArrayList<>();
-	 * 
-	 * for (Machine machine : machines) { MachineDto machineDto =
-	 * mapMachineDto(machine); machineDtoList.add(machineDto); } return
-	 * machineDtoList; }
-	 * 
-	 * public MachineDto mapMachineDto(Machine machine) { MachineDto machineDto =
-	 * new MachineDto(); machineDto.setName(machine.getName());
-	 * machineDto.setId(machine.getId());
-	 * machineDto.setSerialNum(machine.getSerialNum());
-	 * machineDto.setIsActive(machine.getIsActive());
-	 * machineDto.setMachineSpecId(machine.getMachineSpecId());
-	 * machineDto.setValidityDateTime(machine.getValidityDateTime());
-	 * machineDto.setIpAddress(machine.getIpAddress());
-	 * machineDto.setLangCode(machine.getLangCode());
-	 * machineDto.setMacAddress(machine.getMacAddress()); return machineDto; }
-	 */
 
 }
