@@ -32,7 +32,7 @@ alter table master.introducer_type add constraint fk_intyp_lang foreign key (lan
 alter table master.location add constraint fk_loc_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.loc_holiday add constraint fk_lochol_loc foreign key (location_code, lang_code) references master.location(code, lang_code) on delete no action on update no action ;
 alter table master.loc_holiday add constraint fk_lochol_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
-alter table master.login_method add constraint fk_logmeth_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
+alter table master.authentication_method add constraint fk_authm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.machine_master add constraint fk_machm_mspec foreign key (mspec_id) references master.machine_spec(id) on delete no action on update no action ;
 alter table master.machine_master add constraint fk_machm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.machine_spec add constraint fk_mspec_mtyp foreign key (mtyp_code, lang_code) references master.machine_type(code, lang_code) on delete no action on update no action ;
@@ -83,7 +83,8 @@ alter table master.template add constraint fk_tmplt_lang foreign key (lang_code)
 alter table master.title add constraint fk_ttl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.transaction_type  add constraint fk_trntyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 
-alter table master.user_detail add constraint fk_usrdtl_logmeth foreign key (last_login_method, lang_code) references master.login_method(code, lang_code) on delete no action on update no action ;
+alter table master.user_detail add constraint fk_usrdtl_logmeth foreign key (last_login_method, lang_code) references master.authentication_method(code, lang_code) on delete no action on update no action ;
+
 alter table master.user_detail add constraint fk_usrdtl_status foreign key (status_code, lang_code) references master.status_list(code, lang_code) on delete no action on update no action ;
 alter table master.user_detail add constraint fk_usrdtl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 

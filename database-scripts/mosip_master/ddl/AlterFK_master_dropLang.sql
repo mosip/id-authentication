@@ -21,7 +21,7 @@ alter table master.id_type drop constraint fk_idtyp_lang   ;
 alter table master.introducer_type drop constraint fk_intyp_lang   ;
 alter table master.location drop constraint fk_loc_lang   ;
 alter table master.loc_holiday drop constraint fk_lochol_lang   ;
-alter table master.login_method drop constraint fk_logmeth_lang   ;
+alter table master.authentication_method drop constraint fk_authm_lang ;
 alter table master.machine_master drop constraint fk_machm_lang   ;
 alter table master.machine_spec drop constraint fk_mspec_lang   ;
 alter table master.machine_type drop constraint fk_mtyp_lang   ;
