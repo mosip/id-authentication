@@ -138,6 +138,8 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 			for (int i = 0; i < value.length; i++) {
 				allowedAuthType.add(value[i]);				
 			}
+		}else {
+			allowedAuthType.add(intAllowedAuthType);
 		}
 		return allowedAuthType;
 	}	

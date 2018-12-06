@@ -1,9 +1,11 @@
 package io.mosip.authentication.core.spi.id.service;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 
@@ -22,7 +24,7 @@ public interface IdAuthService {
 	 * @return
 	 * @throws IdValidationFailedException
 	 */
-	String validateUIN(String uin) throws IdAuthenticationBusinessException;
+	Map<String, Object> validateUIN(String uin) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID

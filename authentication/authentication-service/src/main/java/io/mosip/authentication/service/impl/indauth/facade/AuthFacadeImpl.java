@@ -27,7 +27,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -155,29 +154,29 @@ public class AuthFacadeImpl implements AuthFacade {
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
 			throws IdAuthenticationBusinessException {
 
-		String refId = processIdType(authRequestDTO);
+		Map<String, Object> idResDTO = processIdType(authRequestDTO);
 
 		// new by rakesh
-		IdResponseDTO idRepoResponse = processIdRepoRequest(authRequestDTO);
+//		Map<String, Object> idRepoResponse = processIdRepoRequest(authRequestDTO);
 		
 		
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		try {
-			idInfo = getIdEntity(refId);
+			idInfo = getIdEntity(idResDTO);
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId);
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, String.valueOf(idResDTO.get("registrationId")));
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
 			if (idInfo != null) {
-				sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
+				//sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
 			}
 		}
 
@@ -317,26 +316,27 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
-		String refId = null;
+	public Map<String, Object> processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+		Map<String, Object> idResDTO = null;
 		String reqType = authRequestDTO.getIdvIdType();
 		if (reqType.equals(IdType.UIN.getType())) {
 			try {
-				refId = idAuthService.validateUIN(authRequestDTO.getIdvId());
+				idResDTO = idAuthService.validateUIN(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 			try {
-				refId = idAuthService.validateVID(authRequestDTO.getIdvId());
+				//FIXME handle this
+				String refId = idAuthService.validateVID(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
 
-		return refId;
+		return idResDTO;
 	}
 
 	/**
@@ -375,10 +375,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
 			throws IdAuthenticationBusinessException {
-		String refId = processIdType(kycAuthRequestDTO.getAuthRequest());
+		Map<String, Object> idResDTO = processIdType(kycAuthRequestDTO.getAuthRequest());
 		String key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
-		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(refId);
-		KycInfo info = kycService.retrieveKycInfo(refId, KycType.getEkycAuthType(env.getProperty(key)),
+		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(idResDTO);
+		KycInfo info = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("registrationId")), KycType.getEkycAuthType(env.getProperty(key)),
 				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq(), idInfo);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
@@ -413,47 +413,47 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	public Map<String, List<IdentityInfoDTO>> getIdEntity(String refId) throws IdAuthenticationBusinessException {
+	public Map<String, List<IdentityInfoDTO>> getIdEntity(Map<String, Object> idResponseDTO) throws IdAuthenticationBusinessException {
 
 		try {
-			return idInfoService.getIdInfo(refId);
+			return idInfoService.getIdInfo(idResponseDTO);
 		} catch (IdAuthenticationDaoException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 
 	}
 
-	private IdResponseDTO processIdRepoRequest(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
-		IdResponseDTO idRepo = null;
-
-		String reqType = authRequestDTO.getIdvIdType();
-
-		if (reqType.equals(IdType.UIN.getType())) {
-			idRepo = idRepoServiceImpl.getIdRepo(authRequestDTO.getIdvId());
-
-		} else {
-			// Optional<String> findRefIdByVid =
-			// vidRepository.findRefIdByVid(authRequestDTO.getIdvId());
-			// if (findRefIdByVid.isPresent()) {
-
-			// String refId = findRefIdByVid.get();
-			// Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
-
-			// if (findUinByRefId.isPresent()) {
-			// String uin = findUinByRefId.get();
-			// idRepo = idRepoServiceImpl.getIdRepo(uin);
-			// }
-			// }
-
-			Optional<String> uinNumber = uinRepository
-					.findUinFromUinTableByJoinTableUinAndVid(authRequestDTO.getIdvId());
-			if (uinNumber.isPresent()) {
-				String uin = uinNumber.get();
-				idRepo = idRepoServiceImpl.getIdRepo(uin);
-			}
-		}
-
-		return idRepo;
-	}
+//	private Map<String, Object> processIdRepoRequest(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+//		Map<String, Object> idRepo = null;
+//
+//		String reqType = authRequestDTO.getIdvIdType();
+//
+//		if (reqType.equals(IdType.UIN.getType())) {
+//			idRepo = idRepoServiceImpl.getIdRepo(authRequestDTO.getIdvId());
+//
+//		} else {
+//			// Optional<String> findRefIdByVid =
+//			// vidRepository.findRefIdByVid(authRequestDTO.getIdvId());
+//			// if (findRefIdByVid.isPresent()) {
+//
+//			// String refId = findRefIdByVid.get();
+//			// Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
+//
+//			// if (findUinByRefId.isPresent()) {
+//			// String uin = findUinByRefId.get();
+//			// idRepo = idRepoServiceImpl.getIdRepo(uin);
+//			// }
+//			// }
+//
+//			Optional<String> uinNumber = uinRepository
+//					.findUinFromUinTableByJoinTableUinAndVid(authRequestDTO.getIdvId());
+//			if (uinNumber.isPresent()) {
+//				String uin = uinNumber.get();
+//				idRepo = idRepoServiceImpl.getIdRepo(uin);
+//			}
+//		}
+//
+//		return idRepo;
+//	}
 
 }

@@ -24,7 +24,7 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 public class AuthResponseBuilder {
 
 	//FIXME get the date time pattern from configuration
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
 	/** The built. */
 	private boolean built;

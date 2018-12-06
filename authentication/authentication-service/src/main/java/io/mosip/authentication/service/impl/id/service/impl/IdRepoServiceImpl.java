@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.id.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -57,20 +61,23 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-	@Value("${sample.demo.entity}")
-	private String value;
+//	@Value("${sample.demo.entity}")
+//	private String value;
 
-	public IdResponseDTO getIdRepo(String uin) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException {
 
 		IdRequestDTO requestBody = new IdRequestDTO();
 		requestBody.setUin(uin);
 
 		RestRequestDTO buildRequest = null;
-		IdResponseDTO requestSync = null;
+		Map<String, Object> requestSync = null;
 
 		try {
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, requestBody,
-					IdResponseDTO.class);
+					Map.class);
+			Map<String, String> params = new HashMap<>();
+			params.put("uin", requestBody.getUin());
+			buildRequest.setPathVariables(params);
 			requestSync = restHelper.requestSync(buildRequest);
 
 		} catch (RestServiceException e) {
@@ -80,18 +87,18 @@ public class IdRepoServiceImpl implements IdRepoService {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
 		}
-
-		//return String.valueOf(requestSync); 
 		return requestSync;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Map<String, List<IdentityInfoDTO>> getIdInfo(String uinRefId) throws IdAuthenticationDaoException {
-		ObjectMapper mapper = new ObjectMapper();
+	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) throws IdAuthenticationDaoException {
+		
 		try {
+			ObjectMapper mapper = new ObjectMapper();
+			String value = mapper.writeValueAsString(idResponseDTO);
 			//Map<String, Object> outputMap = mapper.readValue(value, new TypeReference<Map>() {
-			Map<String, Object> outputMap = mapper.readValue(uinRefId, new TypeReference<Map>() {
+			Map<String, Object> outputMap = mapper.readValue(value, new TypeReference<Map>() {
 			});
 
 			return outputMap.entrySet().parallelStream()

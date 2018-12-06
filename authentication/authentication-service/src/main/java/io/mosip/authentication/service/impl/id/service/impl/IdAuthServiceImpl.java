@@ -1,6 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
-import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +10,23 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.UinEntity;
-import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -65,7 +63,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private VIDRepository vidRepository;
 	
 	@Autowired
-	private IdRepoServiceImpl idRepoServiceImpl;
+	private IdRepoService idRepoService;
 
 	/*
 	 * (non-Javadoc)
@@ -74,11 +72,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.
 	 * String)
 	 */
-	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
-		IdResponseDTO idRepo = null;
-		String refId = null;
+	public Map<String, Object> validateUIN(String uin) throws IdAuthenticationBusinessException {
 		
-		idRepo = idRepoServiceImpl.getIdRepo(uin); // REST CALL IdRepo service
+		Map<String, Object> idRepo = idRepoService.getIdRepo(uin); // REST CALL IdRepo service
 		//FIXME Use IdRepo service
 //		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
 //		if (uinEntityOpt.isPresent()) {
@@ -98,7 +94,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		//return refId;
 		//return "12345";
-		return idRepo.getRegistrationId(); 
+		return idRepo; 
 	}
 
 	/**
@@ -148,7 +144,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *             the id validation failed exception
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
-		IdResponseDTO idRepo = null;
+		Map<String, Object> idRepo = null;
 		String refId = null;
 //		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
 //		if (!vidEntityOpt.isPresent()) {
@@ -185,7 +181,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			if (findUinByRefId.isPresent()) {
 				String uin = findUinByRefId.get();
 				try {
-					idRepo = idRepoServiceImpl.getIdRepo(uin);
+					idRepo = idRepoService.getIdRepo(uin);
 				} catch (IdAuthenticationBusinessException e) {
 					
 				}
@@ -194,7 +190,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 		
 		//return refId;
-		return idRepo.getRegistrationId();
+		return String.valueOf(idRepo.get("registrationId"));
 	}
 
 	/**
