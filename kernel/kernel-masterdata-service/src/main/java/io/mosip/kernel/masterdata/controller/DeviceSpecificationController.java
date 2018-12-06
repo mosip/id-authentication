@@ -75,7 +75,9 @@ public class DeviceSpecificationController {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(langCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
+		
 	}
+
 
 	/**
 	 * Save device specification details to the database table
