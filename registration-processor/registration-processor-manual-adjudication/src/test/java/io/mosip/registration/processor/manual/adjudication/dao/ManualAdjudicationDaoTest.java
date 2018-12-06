@@ -49,9 +49,9 @@ public class ManualAdjudicationDaoTest {
 	public void setUp() {
 		manualAdjudicationEntityList =new ArrayList<ManualVerificationEntity>();
 		manualAdjudicationEntity = new ManualVerificationEntity();
-		manualAdjudicationEntity.getId().setRegId("12345");
-		manualAdjudicationEntity.getId().setMatchedRefType("12345");
-		manualAdjudicationEntity.getId().setMatchedRefId("12345");
+		manualAdjudicationEntity.getPkId().setRegId("12345");
+		manualAdjudicationEntity.getPkId().setMatchedRefType("12345");
+		manualAdjudicationEntity.getPkId().setMatchedRefId("12345");
 		manualAdjudicationEntity.setCrBy("USER");
 		manualAdjudicationEntity.setIsActive(false);
 		manualAdjudicationEntity.setMvUsrId("mvuser");
@@ -80,7 +80,7 @@ public class ManualAdjudicationDaoTest {
 	}
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualAdjudicationEntity.getId().getRegId(), manualAdjudicationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualAdjudicationEntity.getPkId().getRegId(), manualAdjudicationEntity.getMvUsrId());
 	}
 	@Test
 	public void getAssignedApplicantDetailsTest() {

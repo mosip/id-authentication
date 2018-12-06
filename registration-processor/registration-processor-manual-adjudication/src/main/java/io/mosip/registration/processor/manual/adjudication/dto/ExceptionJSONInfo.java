@@ -15,6 +15,10 @@ public class ExceptionJSONInfo implements Serializable {
 	
 	/** The message. */
 	private String message;
+	
+	public ExceptionJSONInfo() {
+	}
+
 
 	/**
 	 * Instantiates a new exception JSON info.
@@ -27,7 +31,6 @@ public class ExceptionJSONInfo implements Serializable {
 		errorCode = errorcode;
 		this.message = message;
 	}
-
 	/**
 	 * Gets the errorcode.
 	 *

@@ -5,9 +5,13 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
@@ -15,31 +19,41 @@ import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificatio
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
+import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
+import io.mosip.registration.processor.manual.adjudication.util.StatusMessage;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-/**
- * 
- * @author M1049617
- *
- */
-@Service
+@Component
 public class ManualAdjudicationServiceImpl implements ManualAdjudicationService {
-
+	/** The Constant USER. */
+	private static final String USER = "MOSIP_SYSTEM";
+	/** The audit log request builder. */
+	@Autowired
+	AuditLogRequestBuilder auditLogRequestBuilder;
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Autowired
 	ManualAdjudicationDao manualAdjudicationDao;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual.adjudication.dto.UserDto)
+	 */
 	@Override
 	public ManualVerificationDTO assignStatus(UserDto dto) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		ManualVerificationEntity entity= manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(), ManualVerificationStatus.ASSIGNED.name());
 		if(entity!=null) {
-			manualVerificationDTO.setRegId(entity.getId().getRegId());
-			manualVerificationDTO.setMatchedRefId(entity.getId().getMatchedRefId());
-			manualVerificationDTO.setMatchedRefType(entity.getId().getMatchedRefType());
+			manualVerificationDTO.setRegId(entity.getPkId().getRegId());
+			manualVerificationDTO.setMatchedRefId(entity.getPkId().getMatchedRefId());
+			manualVerificationDTO.setMatchedRefType(entity.getPkId().getMatchedRefType());
 			manualVerificationDTO.setMvUsrId(entity.getMvUsrId());
 			manualVerificationDTO.setStatusCode(entity.getStatusCode());
 		}
@@ -50,9 +64,9 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 				manualVerificationEntity.setMvUsrId(dto.getUserId());
 				ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao.update(manualVerificationEntity);
 				if(updatedManualVerificationEntity!=null) {
-					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
-					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
-					manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getPkId().getRegId());
+					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getPkId().getMatchedRefId());
+					manualVerificationDTO.setMatchedRefType(updatedManualVerificationEntity.getPkId().getMatchedRefType());
 					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
 					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
 				}
@@ -63,6 +77,9 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		return manualVerificationDTO;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService#getApplicantFile(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public byte[] getApplicantFile(String regId, String fileName) {
 		byte[] file = null;
@@ -86,16 +103,20 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
 		} else {
-			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
+			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO Catch Exceptions
+			// TODO
 		}
 		return file;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService#getApplicantData(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public byte[] getApplicantData(String regId, String fileName) {
 		byte[] file = null;
@@ -105,32 +126,52 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		} else {
-			//TODO Create a Error Code and Error message to remove Hard coded exception value
-			throw new FileNotPresentException("INVALID FILE NAME REQUESTED");
+			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO Catch this exception
+			// TODO
 		}
 		return file;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService#updatePacketStatus(io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO)
+	 */
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
-		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
-		ManualVerificationDTO dto=new ManualVerificationDTO();
-		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getByRegId(manualVerificationDTO.getRegId(),manualVerificationDTO.getMvUsrId());
-		manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
-		ManualVerificationEntity updatedManualVerificationEntity=manualAdjudicationDao.update(manualVerificationEntity);
-		if(updatedManualVerificationEntity!=null) {
-			dto.setRegId(updatedManualVerificationEntity.getId().getRegId());
-			dto.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
-			dto.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
-			dto.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
-			dto.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+		String registrationId = manualVerificationDTO.getRegId();
+		String eventId = "";
+		String eventName = "";
+		String eventType = "";
+		String description = "";
+		boolean isTransactionSuccessful = false;
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+		if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
+		{
+			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_SUCCESS.toString());
+			isTransactionSuccessful = true;
+			description = "Manual verification approved for registration id : " + registrationId;
 		}
-		return dto;
+		else
+		{
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
+			description = "Manual verification rejected for registration id : " + registrationId;
+		}
+		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+		eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+				: EventName.EXCEPTION.toString();
+		eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+				: EventType.SYSTEM.toString();
+		registrationStatusDto.setUpdatedBy(USER);
+		auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				registrationId);
+		
+		return manualVerificationDTO;
 	}
-	
 }
