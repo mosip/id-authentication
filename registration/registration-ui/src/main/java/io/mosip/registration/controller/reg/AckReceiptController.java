@@ -94,7 +94,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {							
 				// get the mode of communication
-				String notificationServiceName = String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+				String notificationServiceName = String.valueOf(applicationContext.getApplicationMap()
 						.get(RegistrationConstants.MODE_OF_COMMUNICATION));
 
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {

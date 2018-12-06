@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,13 +60,20 @@ public class BaseController {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
+	
+	protected ApplicationContext applicationContext;
+	
+	@PostConstruct
+	public void initializeContext() {
+		applicationContext = applicationContext;
+	}
 
 	protected static Stage stage;
 	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	protected Logger LOGGER = AppConfig.getLogger(this.getClass());
+	private static final Logger LOGGER = AppConfig.getLogger(BaseController.class);
 
 	/**
 	 * Adding events to the stage
@@ -176,7 +185,7 @@ public class BaseController {
 	 * login from config table
 	 */
 	protected void getGlobalParams() {
-		ApplicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**

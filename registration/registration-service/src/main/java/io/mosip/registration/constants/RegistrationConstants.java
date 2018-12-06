@@ -216,6 +216,8 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String BLACKLISTED = "BLOCKED";
+	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
+	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";

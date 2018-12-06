@@ -49,8 +49,6 @@ public class RegistrationAppAuthenticationDAOImpl implements RegistrationAppAuth
 		Map<String, Object> loginModes = loginList.stream().collect(
                 Collectors.toMap(registrationAppAuthenticationMethod -> String.valueOf(registrationAppAuthenticationMethod.getMethodSeq()), 
                 		registrationAppAuthenticationMethod -> registrationAppAuthenticationMethod.getregistrationAppAuthenticationMethodId().getLoginMethod()));
-                		
-		loginList.forEach(mode -> loginModes.put(String.valueOf(mode.getMethodSeq()), mode.getregistrationAppAuthenticationMethodId().getLoginMethod()));
 		
 		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");

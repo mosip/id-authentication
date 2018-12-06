@@ -79,7 +79,7 @@ public class OnHoldController extends BaseController implements Initializable {
 
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
-		onHoldComboBox.setItems(FXCollections.observableArrayList(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.ONHOLD_COMMENTS)).split(",")));
+		onHoldComboBox.setItems(FXCollections.observableArrayList(String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.ONHOLD_COMMENTS)).split(",")));
 		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 

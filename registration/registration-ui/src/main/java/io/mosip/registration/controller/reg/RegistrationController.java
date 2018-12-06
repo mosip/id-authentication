@@ -841,9 +841,9 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	public static void loadScreen(String screen) throws IOException {
+	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				ApplicationContext.getInstance().getApplicationLanguageBundle());
+				applicationContext.getApplicationLanguageBundle());
 		LoginController.getScene().setRoot(createRoot);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		LoginController.getScene().getStylesheets()
@@ -1365,7 +1365,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));

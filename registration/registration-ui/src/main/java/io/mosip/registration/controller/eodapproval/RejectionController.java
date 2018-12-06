@@ -79,7 +79,7 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS)).split(",")));
+		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS)).split(",")));
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
