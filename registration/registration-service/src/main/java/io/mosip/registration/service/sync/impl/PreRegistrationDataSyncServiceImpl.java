@@ -23,7 +23,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
-import io.mosip.registration.dao.PreRegistrationDAO;
+import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
@@ -44,7 +44,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
 	@Autowired
-	PreRegistrationDAO preRegistrationDAO;
+	PreRegistrationDataSyncDAO preRegistrationDAO;
 
 	@Autowired
 	SyncManager syncManager;
@@ -197,6 +197,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				/** TODO get encrypted packet by giving packetPath information using Entity */
 				encryptedPacket = null;
+				
 			}
 
 			/** get decrypted packet into Response */

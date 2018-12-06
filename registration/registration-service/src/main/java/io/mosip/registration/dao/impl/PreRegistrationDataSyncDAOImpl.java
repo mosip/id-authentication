@@ -3,25 +3,25 @@ package io.mosip.registration.dao.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.dao.PreRegistrationDAO;
+import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.entity.PreRegistrationList;
-import io.mosip.registration.repositories.PreRegistrationRepository;
+import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
 
 
 /**
- * {@link PreRegistrationDAO}
+ * {@link PreRegistrationDataSyncDAO}
  * @author YASWANTH S
  * @since 1.0.0
  *
  */
 @Component
-public class PreRegistrationDAOImpl implements PreRegistrationDAO {
+public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDAO {
 	
 	/**
 	 * Autowires Pre Registration Repository class
 	 */
 	@Autowired
-	PreRegistrationRepository preRegistrationRepository;
+	PreRegistrationDataSyncRepository preRegistrationRepository;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.dao.PreRegistrationDAO#getPreRegistration(java.lang.String)
