@@ -134,10 +134,14 @@ public class NotificationManager {
 			contentTemplate = environment.getProperty(OTP_SMS_TEMPLATE);
 		}
 
+		String smsTemplate = applyTemplate(values, contentTemplate);
+		sendSmsNotification(notificationMobileNo, smsTemplate);
+	}
+
+	private void sendSmsNotification(String notificationMobileNo, String message) throws IdAuthenticationBusinessException {
 		try {
-			String smsTemplate = applyTemplate(values, contentTemplate);
 			SmsRequestDto smsRequestDto = new SmsRequestDto();
-			smsRequestDto.setMessage(smsTemplate);
+			smsRequestDto.setMessage(message);
 			smsRequestDto.setNumber(notificationMobileNo);
 			RestRequestDTO restRequestDTO = null;
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
@@ -169,9 +173,14 @@ public class NotificationManager {
 			contentTemplate = environment.getProperty(OTP_CONTENT_TEMPLATE);
 		}
 
+		String mailSubject = applyTemplate(values, subjectTemplate);
+		String mailContent = applyTemplate(values, contentTemplate);
+		sendEmailNotification(emailId, mailSubject, mailContent);
+	}
+
+	private void sendEmailNotification(String emailId, String mailSubject, String mailContent)
+			throws IdAuthenticationBusinessException {
 		try {
-			String mailSubject = applyTemplate(values, subjectTemplate);
-			String mailContent = applyTemplate(values, contentTemplate);
 			RestRequestDTO restRequestDTO = null;
 			MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();
 			mailRequestDto.add("mailContent", mailContent);
