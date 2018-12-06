@@ -1794,8 +1794,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-			scanController.getScanImage().setImage(convertBytesToImage(byteArray));
-
 			if (byteArray.length > documentSize) {
 
 				generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -1807,16 +1805,40 @@ public class RegistrationController extends BaseController {
 					
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
-
-					if (selectedDocument.equals("poa")) {
-						addDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
-					} else if (selectedDocument.equals("poi")) {
-						addDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
-					} else if (selectedDocument.equals("por")) {
-						addDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
+					
+					String docName = "";
+					
+					if (selectedDocument.equals(RegistrationConstants.POA_DOCUMENT)) {
+						
+						docName = addDocuments(poaDocuments.getValue(), poaBox);
+						
+						if(!docName.equals(RegistrationConstants.ERROR)) {			
+							attachDocuments(docName, poaBox, poaScroll, byteArray);							
+						} else {
+							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
+						}
+						
+					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
+			
+						docName = addDocuments(poiDocuments.getValue(), poiBox);
+						
+						if(!docName.equals(RegistrationConstants.ERROR)) {							
+							attachDocuments(docName, poiBox, poiScroll, byteArray);														
+						} else {
+							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
+						}
+						
+					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
+						
+						docName = addDocuments(porDocuments.getValue(), porBox);
+						
+						if(!docName.equals(RegistrationConstants.ERROR)) {							
+							attachDocuments(docName, porBox, porScroll, byteArray);							
+						} else {
+							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
+						}
 					}
 					
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, "Document scanned successfully");
 					popupStage.close();
 					
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1831,30 +1853,33 @@ public class RegistrationController extends BaseController {
 					ioException.getCause()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, 
+					String.format(
+					"%s -> Exception while scanning documents for registration  %s",
+					RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
 		}
 
 	}
 
 	/**
-	 * This method will add documents to display
+	 * This method will validate number of documents
 	 */
-	private void addDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+	private String addDocuments(String document, VBox vboxElement) {
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Adding documemnts to VBox");
+				RegistrationConstants.APPLICATION_ID, "Validating number of documemnts");
 		
 		ObservableList<Node> nodes = vboxElement.getChildren();
 		if (nodes.isEmpty()) {
-			attachDocuments(document, vboxElement, scrollPane, byteArray);
+			return document;
 		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
-			attachDocuments(document.concat("_").concat(String.valueOf(nodes.size())), vboxElement, scrollPane,
-					byteArray);
+			return document.concat("_").concat(String.valueOf(nodes.size()));
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, "Only One can be added");
+			return RegistrationConstants.ERROR;
 		}
-		
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Added documemnts to VBox");
 	}
 
 	/**
@@ -1864,6 +1889,8 @@ public class RegistrationController extends BaseController {
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
+		
+		scanController.getScanImage().setImage(convertBytesToImage(byteArray));
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
@@ -1896,6 +1923,8 @@ public class RegistrationController extends BaseController {
 			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		}
+		
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, "Document scanned successfully");
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");

@@ -11,11 +11,6 @@ import io.mosip.registration.dto.ResponseDTO;
  */
 public interface PreRegistrationDataSyncService {
 
-	/**
-	 * Retrive all preregistartion id's
-	 * @return response DTO
-	 */
-	public ResponseDTO getPreRegistrationIds();
 	
 	/**
 	 * Retrive pre registrations
