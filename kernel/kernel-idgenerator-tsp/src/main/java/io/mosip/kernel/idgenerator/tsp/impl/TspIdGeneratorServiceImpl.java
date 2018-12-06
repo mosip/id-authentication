@@ -11,6 +11,7 @@ import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdPropertyConstant;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
+import io.mosip.kernel.idgenerator.tsp.exception.TspIdServiceException;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 
 /**
@@ -45,7 +46,7 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 			entity = tspRepository.findMaxTspId();
 
 		} catch (DataAccessLayerException e) {
-
+			throw new TspIdServiceException("xxxx", "Error Occur While Fetching Id", e);
 		}
 
 		if (entity == null) {
@@ -67,7 +68,7 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 			tspRepository.save(entity);
 
 		} catch (DataAccessLayerException e) {
-
+			throw new TspIdServiceException("xxxx", "Error Occur While Inserting Id", e);
 		}
 
 		TspResponseDTO tspDto = new TspResponseDTO();

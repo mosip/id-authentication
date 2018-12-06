@@ -12,9 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
+import io.mosip.kernel.idgenerator.tsp.exception.TspIdServiceException;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 
 @SpringBootTest
@@ -45,5 +47,20 @@ public class TspIdServiceTest {
 		when(tspRepository.findMaxTspId()).thenReturn(entity);
 		when(tspRepository.save(Mockito.any())).thenReturn(entityResponse);
 		assertThat(service.generateId().getTspId(), is(1001));
+	}
+
+	@Test(expected = TspIdServiceException.class)
+	public void generateIdFetchExceptionTest() {
+		when(tspRepository.findMaxTspId())
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		service.generateId();
+	}
+
+	@Test(expected = TspIdServiceException.class)
+	public void generateIdInsertExceptionTest() {
+		when(tspRepository.findMaxTspId()).thenReturn(null);
+		when(tspRepository.save(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		service.generateId();
 	}
 }
