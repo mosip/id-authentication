@@ -7,6 +7,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class FilesValidation.
@@ -31,14 +32,17 @@ public class FilesValidation {
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	InternalRegistrationStatusDto registrationStatusDto;
+
 	/**
 	 * Instantiates a new files validation.
 	 *
 	 * @param adapter
 	 *            the adapter
 	 */
-	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
-
+	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter,
+			InternalRegistrationStatusDto registrationStatusDto) {
+		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 	}
 
@@ -56,6 +60,9 @@ public class FilesValidation {
 
 		List<FieldValueArray> hashSequence = identity.getHashSequence();
 		filesValidated = validateHashSequence(registrationId, hashSequence);
+
+		if (!filesValidated)
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
 
 		return filesValidated;
 

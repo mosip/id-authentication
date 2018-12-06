@@ -12,21 +12,46 @@ import io.mosip.registration.processor.status.code.ApplicantType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 
+/**
+ * The Class ApplicantDocumentValidation.
+ * 
+ * M1039285
+ */
 public class ApplicantDocumentValidation {
+
+	/** The identity iterator. */
 	IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
+
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
+
+	/** The reg id. */
 	String regId;
 
+	/**
+	 * Instantiates a new applicant document validation.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 */
 	public ApplicantDocumentValidation(InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 	}
 
+	/**
+	 * Validate document.
+	 *
+	 * @param identity
+	 *            the identity
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if successful
+	 */
 	public boolean validateDocument(Identity identity, String registrationId) {
 		boolean isApplicantDocumentVerified = false;
 		regId = registrationId;
 
-		String applicantType = identityIterator.getFieldValue(identity.getMetaData(),
-				JsonConstant.APPLICANTTYPE.name());
+		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.APPLICANTTYPE);
 
 		if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
 				&& checkDocumentAvailability(identity, DocumentCategory.POR.name())) {
@@ -44,14 +69,20 @@ public class ApplicantDocumentValidation {
 		return isApplicantDocumentVerified;
 	}
 
+	/**
+	 * Validate registration status.
+	 *
+	 * @param identity
+	 *            the identity
+	 * @return true, if successful
+	 */
 	public boolean validateRegistrationStatus(Identity identity) {
 
 		Boolean isValidStatus = false;
-		String isVerfied = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.ISVERIFIED.name());
-		String registrationType = identityIterator.getFieldValue(identity.getMetaData(),
-				JsonConstant.REGISTRATIONTYPE.name());
+		String isVerfied = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.ISVERIFIED);
+		String registrationType = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.REGISTRATIONTYPE);
 
-		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED.name())
+		if (isVerfied.equalsIgnoreCase(JsonConstant.VERIFIED)
 				&& registrationType.equalsIgnoreCase(SyncTypeDto.NEW.name())
 				&& checkDocumentAvailability(identity, DocumentCategory.POB.name()))
 			isValidStatus = true;
@@ -59,6 +90,15 @@ public class ApplicantDocumentValidation {
 		return isValidStatus;
 	}
 
+	/**
+	 * Check document availability.
+	 *
+	 * @param identity
+	 *            the identity
+	 * @param category
+	 *            the category
+	 * @return true, if successful
+	 */
 	public boolean checkDocumentAvailability(Identity identity, String category) {
 
 		for (Document doc : identity.getDocuments()) {

@@ -20,10 +20,10 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -113,13 +113,13 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
-			FilesValidation filesValidation = new FilesValidation(adapter);
+			FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 			boolean isCheckSumValidated = false;
 			boolean isApplicantDocumentValidation = false;
 			if (isFilesValidated) {
 
-				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
+				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 						packetMetaInfo.getIdentity());
 
@@ -129,12 +129,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					isApplicantDocumentValidation = applicantDocumentValidation
 							.validateDocument(packetMetaInfo.getIdentity(), registrationId);
 
-				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
-			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
+
 			}
+
 			if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
@@ -147,29 +145,21 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
-				if (registrationStatusDto.getRetryCount() == null) {
-					registrationStatusDto.setRetryCount(0);
-				} else {
-					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
-				}
+
+				int retryCount = registrationStatusDto.getRetryCount() != null
+						? registrationStatusDto.getRetryCount() + 1
+						: 1;
+				description = registrationStatusDto.getStatusComment() + registrationId;
+				registrationStatusDto.setRetryCount(retryCount);
 
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 
 			}
-			if (!isFilesValidated) {
-				description = "File validation Failed for registration id : " + registrationId;
-			} else if (!isCheckSumValidated) {
-				description = "Checksum validation failed for registration id : " + registrationId;
-			} else {
-				description = "Packet validation successful for registration id : " + registrationId;
-			}
+
 			registrationStatusDto.setUpdatedBy(USER);
-			for (FieldValue field : packetMetaInfo.getIdentity().getMetaData()) {
-				if (field.getLabel().matches(APPLICANT_TYPE)) {
-					registrationStatusDto.setApplicantType(field.getValue());
-					break;
-				}
-			}
+
+			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
+
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 		} catch (DataAccessException e) {
@@ -205,6 +195,13 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		}
 
 		return object;
+	}
+
+	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
+		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+		String applicantType = identityIteratorUtil.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
+		registrationStatusDto.setApplicantType(applicantType);
+
 	}
 
 }
