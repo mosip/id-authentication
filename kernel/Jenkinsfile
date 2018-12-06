@@ -4,8 +4,9 @@ node {
  def buildInfo
  def branch = 'DEV'
  projectToBuild = 'kernel'
- def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
- def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def registryUrl = 'http://docker-registry.mosip.io:5000'
+ def registryName = 'docker-registry.mosip.io:5000'
+ def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
  targetDeploymentServer = 'kernel-dev-server'
  containersToRun = ''
  containerNames= ''
@@ -80,7 +81,7 @@ stage('---------- SonarQube Analysis --------------') {
      containersToRun=containersToRun+" "+registryName+'/'+parentDirectoryName
      containerNames=containerNames+" "+parentDirectoryName
       echo parentDirectoryPathForamtted + " will be built"
-      docker.withRegistry(registryUrl) {
+      docker.withRegistry(registryUrl, registryCredentials) {
       def buildName = "$parentDirectoryName:$BUILD_NUMBER"
       newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
       newApp.push()
