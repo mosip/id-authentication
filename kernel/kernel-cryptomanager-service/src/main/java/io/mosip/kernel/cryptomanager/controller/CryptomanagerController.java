@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
@@ -26,6 +27,7 @@ import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
  */
 @CrossOrigin
 @RestController
+@RequestMapping("/v1.0")
 public class CryptomanagerController {
 
 	/**
@@ -39,7 +41,7 @@ public class CryptomanagerController {
 	 * @param cryptoRequestDto
 	 * @return
 	 */
-	@PostMapping(value = "/v1.0/encrypt")
+	@PostMapping(value = "/encrypt")
 	public CryptomanagerResponseDto encrypt(@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.encrypt(cryptoRequestDto);
 	}
@@ -49,7 +51,7 @@ public class CryptomanagerController {
 	 * @param cryptoRequestDto
 	 * @return
 	 */
-	@PostMapping(value = "/v1.0/decrypt")
+	@PostMapping(value = "/decrypt")
 	public CryptomanagerResponseDto decrypt(@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.decrypt(cryptoRequestDto);
 	}
