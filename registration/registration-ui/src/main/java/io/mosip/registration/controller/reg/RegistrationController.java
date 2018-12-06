@@ -333,7 +333,9 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create RegistrationDTO Object
-			createRegistrationDTOObject();
+			if (getRegistrationDtoContent() == null) {
+				createRegistrationDTOObject();
+			}
 
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
