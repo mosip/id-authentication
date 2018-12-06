@@ -46,11 +46,12 @@ public class RegistrationConstants {
 	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
 	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
-	public static final String USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE = "/fxml/FingerPrintScan.fxml";
+	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
 	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
+	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
 
 	// Key values to read value from messages.properties file
 
@@ -153,6 +154,8 @@ public class RegistrationConstants {
 	public static final String TEN_LETTER_INPUT_LIMT = bundle.getString("TEN_LETTER_INPUT_LIMT");
 	public static final String SIX_DIGIT_INPUT_LIMT = bundle.getString("SIX_DIGIT_INPUT_LIMT");
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
+	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
+	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -411,6 +414,8 @@ public class RegistrationConstants {
 	public static final String SYNC_JOB_EXP_CODE = "SYN-";
 	public static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
 	public static final String USER_REG_FINGERPRINT_CAPTURE_EXP_CODE = "FPC-";
+	public static final String USER_REGISTRATION_EXP_CODE = "REG-";
+	public static final String USER_REG_SCAN_EXP_CODE = "SCN-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -555,7 +560,11 @@ public class RegistrationConstants {
 	public static final String GPS_SIGNAL = "$GP";
 
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
-
+		
+	// Documents
+	public static final String POA_DOCUMENT = "poa";
+	public static final String POI_DOCUMENT = "poi";
+	public static final String POR_DOCUMENT = "por";
 	public static List<String> getPoaDocumentList() {
 		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
@@ -710,6 +719,12 @@ public class RegistrationConstants {
 	public static final String USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-004";
 	public static final String USER_REG_FINGERPRINT_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-005";
 	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
+	
+	//Exception for Registration - Document Scan and Upload
+	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
+	
+	//Scan
+	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";

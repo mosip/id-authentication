@@ -193,7 +193,7 @@ public class IrisCaptureController extends BaseController {
 			Stage popupStage = new Stage();
 			popupStage.initStyle(StageStyle.UNDECORATED);
 			Parent biometricScanPopup = BaseController
-					.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
+					.load(getClass().getResource(RegistrationConstants.SCAN_PAGE));
 			fingerPrintScanController.setPopupTitle("Iris");
 			fingerPrintScanController.setPrimarystage(popupStage);
 			popupStage.setResizable(false);

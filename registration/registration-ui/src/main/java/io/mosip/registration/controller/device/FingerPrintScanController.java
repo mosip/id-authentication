@@ -104,7 +104,7 @@ public class FingerPrintScanController extends BaseController {
 	 * This method scans the biometric of the individual
 	 */
 	@FXML
-	private void scan() {
+	public void scan() {
 		try {
 			LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of biometric details for user registration");
@@ -310,19 +310,6 @@ public class FingerPrintScanController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
-	}
-
-	/**
-	 * event class to exit from present pop up window.
-	 * 
-	 * @param event
-	 */
-	public void exitWindow(ActionEvent event) {
-		LOGGER.debug(LOG_REG_BIOMETRIC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Exit window has been called");
-		primarystage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		primarystage.close();
-
 	}
 
 	/**

@@ -9,7 +9,7 @@ import io.mosip.registration.entity.PreRegistrationList;
  * @since 1.0.0
  *
  */
-public interface PreRegistrationRepository extends BaseRepository<PreRegistrationList, String> {
+public interface PreRegistrationDataSyncRepository extends BaseRepository<PreRegistrationList, String> {
 	
 	public PreRegistrationList findByPreRegId(String preRegId);
 	
