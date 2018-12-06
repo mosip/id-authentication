@@ -34,6 +34,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
@@ -65,10 +66,11 @@ public class BaseController {
 	
 	@PostConstruct
 	public void initializeContext() {
-		applicationContext = applicationContext;
+		applicationContext = ApplicationContext.getInstance();
 	}
 
-	protected static Stage stage;
+	protected Stage stage;
+	protected Scene scene;
 	
 	/**
 	 * Instance of {@link MosipLogger}
@@ -80,7 +82,7 @@ public class BaseController {
 	 * 
 	 * @return
 	 */
-	protected static Stage getStage() {
+	protected Stage getStage() {
 		EventHandler<Event> event = new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
@@ -89,6 +91,10 @@ public class BaseController {
 		};
 		stage.addEventHandler(EventType.ROOT, event);
 		return stage;
+	}
+	
+	protected Scene getScene() {
+		return scene;
 	}
 
 	/**

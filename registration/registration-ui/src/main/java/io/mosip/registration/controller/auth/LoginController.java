@@ -29,7 +29,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationOfficerDetailsController;
@@ -131,16 +130,10 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
-	private static Scene scene;
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 		RegistrationOfficerDetailsController.stopTimer();
-	}
-
-	public static Scene getScene() {
-		return scene;
 	}
 
 	/**
@@ -154,7 +147,7 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
-		BaseController.stage = primaryStage;
+		stage = primaryStage;
 		String loginMode = null;
 
 		try {

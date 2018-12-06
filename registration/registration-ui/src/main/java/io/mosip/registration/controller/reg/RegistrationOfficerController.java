@@ -55,9 +55,9 @@ public class RegistrationOfficerController extends BaseController implements Ini
 					.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			mainBox.getChildren().add(optionRoot);
 
-			LoginController.getScene().setRoot(mainBox);
+			getScene().setRoot(mainBox);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			LoginController.getScene().getStylesheets()
+			getScene().getStylesheets()
 					.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 
 		} catch (IOException | RuntimeException exception) {

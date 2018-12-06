@@ -79,9 +79,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
 
 				} else {
-					LoginController.getScene().setRoot(createRoot);
+					getScene().setRoot(createRoot);
 					ClassLoader loader = Thread.currentThread().getContextClassLoader();
-					LoginController.getScene().getStylesheets()
+					getScene().getStylesheets()
 							.add(loader.getResource("application.css").toExternalForm());
 				}
 			}
@@ -98,7 +98,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			LoginController.getScene().setRoot(createRoot);
+			getScene().setRoot(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage());
