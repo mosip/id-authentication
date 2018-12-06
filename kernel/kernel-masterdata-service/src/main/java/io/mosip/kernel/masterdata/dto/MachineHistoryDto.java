@@ -7,9 +7,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Machine History Detail
@@ -65,7 +63,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold created date and time
 	 */
-	private LocalDateTime createdtimes;
+	private LocalDateTime createdDateTime;
 
 	/**
 	 * Field to hold updater name
@@ -75,7 +73,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold updated date and time
 	 */
-	private LocalDateTime updatedtimes;
+	private LocalDateTime updatedDateTime;
 
 	/**
 	 * Field to hold is deleted
@@ -85,7 +83,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold deleted date and time
 	 */
-	private LocalDateTime deletedtimes;
+	private LocalDateTime deletedDateTime;
 
 	/**
 	 * Field to hold Effective Date and time

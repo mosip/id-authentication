@@ -53,7 +53,7 @@ public class VirusScannerExceptionTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("files/0000.zip").getFile());
 		folder = new File(classLoader.getResource("files").getFile());
-		doc= new File("D://test1.docx");
+		doc= new File(classLoader.getResource("files/test1.docx").getFile());
 	    byteArray = new byte[(int) doc.length()]; 
 	}
 

@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 
 @RestController
-@RequestMapping("/templatefileformats")
+@RequestMapping("/v1.0/templatefileformats")
 public class TemplateFileFormatController {
 
 	@Autowired

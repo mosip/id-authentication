@@ -46,7 +46,7 @@ public class AuditExceptionTest {
 				"  \"moduleId\": \"string\",\r\n" + 
 				"  \"description\": \"string\"\r\n" + 
 				"}";
-		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-001")));
 	}
@@ -72,7 +72,7 @@ public class AuditExceptionTest {
 				"  \"moduleId\": \"string\",\r\n" + 
 				"  \"description\": \"string\"\r\n" + 
 				"}";
-		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-002")));
 	}
@@ -98,7 +98,7 @@ public class AuditExceptionTest {
 				"  \"moduleId\": \"string\",\r\n" + 
 				"  \"description\": \"string\"\r\n" + 
 				"}";
-		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-001")));
 	}

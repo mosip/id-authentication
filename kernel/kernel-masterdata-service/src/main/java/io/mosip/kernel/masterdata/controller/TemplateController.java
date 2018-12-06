@@ -40,7 +40,7 @@ public class TemplateController {
 	 * 
 	 * @return All {@link TemplateDto}
 	 */
-	@GetMapping("/templates")
+	@GetMapping("/v1.0/templates")
 	public List<TemplateDto> getAllTemplate() {
 		return templateService.getAllTemplate();
 	}
@@ -50,7 +50,7 @@ public class TemplateController {
 	 * 
 	 * @return All TemplateDto of specific language
 	 */
-	@GetMapping("/templates/{langcode}")
+	@GetMapping("/v1.0/templates/{langcode}")
 	public List<TemplateDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
 	}
@@ -60,7 +60,7 @@ public class TemplateController {
 	 * 
 	 * @return Template Details
 	 */
-	@GetMapping("/templates/{langcode}/{templatetypecode}")
+	@GetMapping("/v1.0/templates/{langcode}/{templatetypecode}")
 	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
@@ -74,7 +74,7 @@ public class TemplateController {
 	 *            the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PostMapping("/templates")
+	@PostMapping("/v1.0/templates")
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = IdResponseDto.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),

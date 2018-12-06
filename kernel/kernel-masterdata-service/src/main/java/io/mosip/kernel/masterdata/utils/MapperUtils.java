@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.converter.MachineHistroyConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -27,7 +26,6 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -35,7 +33,6 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
@@ -90,19 +87,18 @@ public class MapperUtils {
 		boolean isSuperMapped = false;
 		try {
 			for (Field sfield : sourceFields) {
-				if (!Modifier.isStatic(sfield.getModifiers()) || !Modifier.isFinal(sfield.getModifiers())) {
-					sfield.setAccessible(true);
-					if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
-						setFieldValue(sfield.get(source), destination);
-						sfield.setAccessible(false);
-						isIdMapped = true;
-					} else if (!isSuperMapped) {
-						setBaseFieldValue(source, destination);
-						isSuperMapped = true;
-					} else {
-						setFieldValue(source, destination);
-						break;
-					}
+
+				sfield.setAccessible(true);
+				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+					setFieldValue(sfield.get(source), destination);
+					sfield.setAccessible(false);
+					isIdMapped = true;
+				} else if (!isSuperMapped) {
+					setBaseFieldValue(source, destination);
+					isSuperMapped = true;
+				} else {
+					setFieldValue(source, destination);
+					break;
 				}
 			}
 		} catch (Exception e) {
@@ -135,6 +131,9 @@ public class MapperUtils {
 	private <D, S> void setFieldValues(S source, D destination, Field[] sourceFields, Field[] destinationFields) {
 		try {
 			for (Field sfield : sourceFields) {
+				if (Modifier.isStatic(sfield.getModifiers()) || Modifier.isFinal(sfield.getModifiers())) {
+					continue;
+				}
 				sfield.setAccessible(true);
 				for (Field dfield : destinationFields) {
 					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
@@ -188,17 +187,6 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	public List<MachineHistoryDto> mapMachineHistory(List<MachineHistory> machineHistoryList) {
-		List<MachineHistoryDto> responseDto = new ArrayList<>();
-		machineHistoryList.forEach(p -> {
-			MachineHistoryDto dto = new MachineHistoryDto();
-			dataMapperImpl.map(p, dto, new MachineHistroyConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
-
-		return responseDto;
-	}
 
 	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
 			List<RegistrationCenter> list) {
