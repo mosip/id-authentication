@@ -21,6 +21,11 @@ public class SyncHandlerControllerAdvice {
 		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@ExceptionHandler(DateParsingException.class)
+	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final DateParsingException e) {
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.BAD_REQUEST);
+	}
+
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
 		Error error = new Error(e.getErrorCode(), e.getErrorText());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
