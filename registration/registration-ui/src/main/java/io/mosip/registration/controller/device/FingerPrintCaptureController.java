@@ -352,7 +352,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				Stage primaryStage = new Stage();
 				primaryStage.initStyle(StageStyle.UNDECORATED);
 				Parent ackRoot = BaseController
-						.load(getClass().getResource(RegistrationConstants.USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE));
+						.load(getClass().getResource(RegistrationConstants.SCAN_PAGE));
 				fingerPrintScanController.init(selectedPane, primaryStage);
 				primaryStage.setResizable(false);
 				Scene scene = new Scene(ackRoot);

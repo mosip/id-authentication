@@ -190,7 +190,7 @@
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane,#fingerPrintScanRootPane{
+#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
 	-fx-background-color:#808080;
 }
 #onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane,#fingerPrintCapturePane,#fingerPrintScanRootSubPane{
@@ -304,4 +304,38 @@
 .scanVBox {
 	-fx-background-color: white;
 	-fx-border-width:0 0 0 0;
+}
+
+.headerPane {
+	-fx-background-color:#808080;
+}
+
+.paneRoot {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+
+.subPane {
+	-fx-background-color:#ffffff;
+}
+
+.buttonStyle {
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.imagePane {
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+
+.exit {
+	-fx-border-color: transparent;
+    -fx-padding: 4 0 4 0;
+    -fx-text-fill: black;
 }

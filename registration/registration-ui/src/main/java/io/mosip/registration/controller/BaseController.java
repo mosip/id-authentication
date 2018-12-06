@@ -212,6 +212,15 @@ public class BaseController {
 	public void getFingerPrintStatus(Stage primaryStage) {
 	
 	}
+	
+	/**
+	 * Scans documents
+	 *
+	 * @param popupStage the stage
+	 */
+	public void scan(Stage popupStage) {
+		
+	}
 
 	/**
 	 * This method is for saving the Applicant Image and Exception Image which are

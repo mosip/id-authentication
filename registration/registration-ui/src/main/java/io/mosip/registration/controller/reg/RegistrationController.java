@@ -1,12 +1,12 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -31,12 +31,14 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.controller.device.ScanController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -273,6 +275,12 @@ public class RegistrationController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
+	
+	@Value("${DOCUMENT_SIZE}")
+	public int documentSize;
+	
+	@Value("${SCROLL_CHECK}")
+	public int scrollCheck;
 
 	@FXML
 	protected Button biometricsNext;
@@ -314,12 +322,17 @@ public class RegistrationController extends BaseController {
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
 	private Image defaultImage;
+	
+	@Autowired
+	private ScanController scanController;
 
 	@FXML
 	private TitledPane authenticationTitlePane;
 	
 	@Autowired
 	PreRegZipHandlingService preRegZipHandlingService;
+
+	private String selectedDocument;
 
 	@FXML
 	private void initialize() {
@@ -1439,39 +1452,6 @@ public class RegistrationController extends BaseController {
 		return gotoNext;
 	}
 
-	@FXML
-	private void scanPoaDocument() throws FileNotFoundException {
-		if (poaDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
-			poaDocuments.requestFocus();
-		} else {
-			addDocuments(poaDocuments.getValue(), poaBox, poaScroll);
-		}
-	}
-
-	@FXML
-	private void scanPoiDocument() throws FileNotFoundException{
-		if (poiDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
-			poiDocuments.requestFocus();
-		} else {
-			addDocuments(poiDocuments.getValue(), poiBox, poiScroll);
-		}
-	}
-
-	@FXML
-	private void scanPorDocument() {
-		if (porDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
-			porDocuments.requestFocus();
-		} else {
-			addDocuments(porDocuments.getValue(), porBox, porScroll);
-		}
-	}
-
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
@@ -1650,61 +1630,210 @@ public class RegistrationController extends BaseController {
 		}
 	}
 	
-	private void addDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
-		ObservableList<Node> nodes = vboxElement.getChildren();
-		if(nodes.isEmpty()) {
-			attachDocuments(document, vboxElement, scrollPane);
-		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
-			attachDocuments(document.concat("_").concat(String.valueOf(nodes.size())), vboxElement, scrollPane);
+	/**
+	 * This method scans and uploads Proof of Address documents
+	 */
+	@FXML
+	private void scanPoaDocument() {
+		
+		if (poaDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
+			poaDocuments.requestFocus();
+			
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, "Only One can be added");
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Address Documents");
+			
+			selectedDocument = RegistrationConstants.POA_DOCUMENT;
+			scanWindow();
+		}
+	}
+
+	/**
+	 * This method scans and uploads Proof of Identity documents
+	 */
+	@FXML
+	private void scanPoiDocument() {
+		
+		if (poiDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
+			poiDocuments.requestFocus();
+			
+		} else {
+			
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Identity Documents");
+			
+			selectedDocument = RegistrationConstants.POI_DOCUMENT;
+			scanWindow();
+		}
+	}
+
+	/**
+	 * This method scans and uploads Proof of Relation documents
+	 */
+	@FXML
+	private void scanPorDocument() {
+		
+		if (porDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			porDocuments.requestFocus();
+			
+		} else {
+			
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
+			
+			selectedDocument = RegistrationConstants.POR_DOCUMENT;
+			scanWindow();
 		}
 	}
 	
-	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane) {
+	/**
+	 * This method will display Scan window to scan and upload documents
+	 */
+	private void scanWindow() {
 		
-		try {
-			
-			//Reading byte[] from Scanner
-			InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
-			
-			byte[] scannedFingerPrintBytes = new byte[inputStream.available()];
-			inputStream.read(scannedFingerPrintBytes);
-			
-			//Setting document details to DTO
-			DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
-			documentDetailsDTO.setDocument(scannedFingerPrintBytes);
-			documentDetailsDTO.setDocumentName(document);
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().add(documentDetailsDTO);			
-			
-			if(scannedFingerPrintBytes.length > 1000000) {
-				
-				generateAlert(RegistrationConstants.ALERT_ERROR, "more size.reupload");
-				
-			} else {
-				
-				GridPane anchorPane = new GridPane();
-				anchorPane.setId(document);
-				
-				anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
-				anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
-				
-				vboxElement.getChildren().add(anchorPane);
-				
-				//Scrollbar setting for scrollpane
-				if(vboxElement.getChildren().size() > 2) {
-					scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-					scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-				} else {
-					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-				}
-			}
-		} catch (IOException ioException) {
-			
-		} 
+		scanController.init(this, "Document");
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
 	}
 	
+	/**
+	 * This method will allow to scan and upload documents
+	 */
+	@Override
+	public void scan(Stage popupStage) {
+
+		try {
+			
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+			
+			InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.DOC_STUB_PATH);
+
+			byte[] byteArray = new byte[inputStream.available()];
+			inputStream.read(byteArray);
+			
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
+
+			scanController.getScanImage().setImage(convertBytesToImage(byteArray));
+
+			if (byteArray.length > documentSize) {
+
+				generateAlert(RegistrationConstants.ALERT_ERROR,
+						"Document size should be less than 1 MB. Please re-scan the document.");
+
+			} else {
+
+				if (selectedDocument != null) {
+					
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
+
+					if (selectedDocument.equals("poa")) {
+						addDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
+					} else if (selectedDocument.equals("poi")) {
+						addDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
+					} else if (selectedDocument.equals("por")) {
+						addDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
+					}
+					
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, "Document scanned successfully");
+					popupStage.close();
+					
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "Documents added successfully");
+				}
+			}
+
+		} catch (IOException ioException) {
+			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s -> Exception while scanning documents for registration  %s -> %s",
+					RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
+					ioException.getCause()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+		}
+
+	}
+
+	/**
+	 * This method will add documents to display
+	 */
+	private void addDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Adding documemnts to VBox");
+		
+		ObservableList<Node> nodes = vboxElement.getChildren();
+		if (nodes.isEmpty()) {
+			attachDocuments(document, vboxElement, scrollPane, byteArray);
+		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
+			attachDocuments(document.concat("_").concat(String.valueOf(nodes.size())), vboxElement, scrollPane,
+					byteArray);
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "Only One can be added");
+		}
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Added documemnts to VBox");
+	}
+
+	/**
+	 * This method will add Hyperlink and Image for scanned documents
+	 */
+	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
+
+		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+		documentDetailsDTO.setDocument(byteArray);
+		documentDetailsDTO.setDocumentName(document);
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
+
+		getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+				.add(documentDetailsDTO);
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
+
+		GridPane anchorPane = new GridPane();
+		anchorPane.setId(document);
+
+		anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
+		anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+
+		vboxElement.getChildren().add(anchorPane);
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
+
+		if (vboxElement.getChildren().size() > scrollCheck) {
+			scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		} else {
+			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+		}
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
+
+	}
+
+	/**
+	 * This method will set scrollbar policy for scroll pane
+	 */
 	private void setScrollFalse() {
 		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
@@ -1713,17 +1842,29 @@ public class RegistrationController extends BaseController {
 		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
 	}
-	
+
+	/**
+	 * This method will create Hyperlink to view scanned document
+	 */
 	private Hyperlink createHyperLink(String document) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
+		
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
 		hyperLink.setText(document);
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Binding OnAction event to Hyperlink to display Scanned document");
+		
 		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
-						GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
-						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().forEach(detail -> {
-							if(detail.getDocumentName().equals(pane.getId())) {
+				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.forEach(detail -> {
+							if (detail.getDocumentName().equals(pane.getId())) {
 								Image img = convertBytesToImage(detail.getDocument());
 								ImageView view = new ImageView(img);
 								Scene scene = new Scene(new StackPane(view));
@@ -1736,26 +1877,47 @@ public class RegistrationController extends BaseController {
 						});
 			}
 		});
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
+		
 		return hyperLink;
 	}
 
+	/**
+	 * This method will create Image to delete scanned document
+	 */
 	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
+		
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
 		ImageView imageView = new ImageView(image);
 		imageView.setCursor(Cursor.HAND);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
+		
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				GridPane remo = (GridPane) ((ImageView) event.getSource()).getParent();
-				vboxElement.getChildren().remove(remo);
-				if(vboxElement.getChildren().isEmpty()) {
+				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
+				vboxElement.getChildren().remove(gridpane);
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().removeIf(document -> document.getDocumentName().equals(gridpane.getId()));
+				if (vboxElement.getChildren().isEmpty()) {
 					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 				}
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO();
 			}
 
 		});
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
+		
 		return imageView;
 	}
 	
@@ -1799,5 +1961,8 @@ public class RegistrationController extends BaseController {
 
 		return biometricInfoDTO;
 	}
+
+	
+	
 
 }
