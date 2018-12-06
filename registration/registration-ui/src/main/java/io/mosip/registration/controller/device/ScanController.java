@@ -54,7 +54,7 @@ public class ScanController extends BaseController {
 		try {
 			
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Opening pop-up screen to capture Iris for user registration");
+					"Opening pop-up screen to scan for user registration");
 			
 			baseController = parentControllerObj;
 			popupStage = new Stage();
@@ -72,7 +72,7 @@ public class ScanController extends BaseController {
 			popupStage.show();
 			
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Opening pop-up screen to capture Iris for user registration");
+					"Opening pop-up screen to scan for user registration");
 			
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
