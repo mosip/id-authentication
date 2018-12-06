@@ -37,7 +37,7 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private MasterDataService masterDataService;
-	
+
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
 	private MasterDataResponseDto masterDataResponseDto;
@@ -46,9 +46,9 @@ public class MasterDataServiceTest {
 	List<MachineDto> machines;
 	List<MachineSpecificationDto> machineSpecifications;
 	List<MachineTypeDto> machineTypes;
-	
+
 	JSONObject globalConfigMap = null;
-	JSONObject regCentreConfigMap=null;
+	JSONObject regCentreConfigMap = null;
 
 	@Before
 	public void setup() {
@@ -64,7 +64,7 @@ public class MasterDataServiceTest {
 				.thenReturn(machineSpecifications);
 		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any())).thenReturn(machineTypes);
 	}
-	
+
 	public void masterDataSyncSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		applications = new ArrayList<>();
@@ -85,7 +85,7 @@ public class MasterDataServiceTest {
 		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop", "Laptop", true));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
-	
+
 	public void configDetialsSyncSetup() {
 		globalConfigMap = new JSONObject();
 		globalConfigMap.put("archivalPolicy", "arc_policy_2");
@@ -113,17 +113,24 @@ public class MasterDataServiceTest {
 
 	}
 
-	@Test(expected=MasterDataServiceException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void syncDataFailure() {
 		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any()))
 				.thenThrow(MasterDataServiceException.class);
 		masterDataService.syncData("1001", null);
 
 	}
-	
+
 	@Test
 	public void globalConfigsyncSuccess() {
-		JSONObject jsonObject=syncConfigDetailsService.getGlobalConfigDetails();
+
+		JSONObject jsonObject = syncConfigDetailsService.getGlobalConfigDetails();
 		Assert.assertEquals("arc_policy_2", jsonObject.get("archivalPolicy"));
+	}
+
+	@Test
+	public void registrationConfigsyncSuccess() {
+		JSONObject jsonObject = syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+		Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
 	}
 }
