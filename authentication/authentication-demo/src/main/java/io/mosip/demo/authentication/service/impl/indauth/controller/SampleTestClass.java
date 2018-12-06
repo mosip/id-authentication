@@ -41,8 +41,8 @@ public class SampleTestClass {
 
 	private static final Provider provider = new BouncyCastleProvider();
 
-	@GetMapping(value = "/test")
-	public void Test() throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeySpecException {
+	@GetMapping(value = "/decrypt")
+	public void Test() {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		byte[] sessionKey = symmetricKey.getEncoded();
 		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
@@ -58,10 +58,9 @@ public class SampleTestClass {
 		byte[] encryptedKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
 
 		byte[] decryptedKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedKey);
-		
 
-		byte[] finalDecryptedData = decryptor.symmetricDecrypt(
-				new SecretKeySpec(decryptedKey, 0, decryptedKey.length, "AES"), encryptedData);
+		byte[] finalDecryptedData = decryptor
+				.symmetricDecrypt(new SecretKeySpec(decryptedKey, 0, decryptedKey.length, "AES"), encryptedData);
 
 		System.err.println(finalDecryptedData.toString());
 	}
