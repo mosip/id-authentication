@@ -2,6 +2,7 @@ package io.mosip.kernel.synchandler.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 /**
@@ -29,6 +30,12 @@ public class Config {
 		filter.setIncludeHeaders(false);
 		filter.setAfterMessagePrefix("REQUEST DATA : ");
 		return filter;
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+		
 	}
 
 

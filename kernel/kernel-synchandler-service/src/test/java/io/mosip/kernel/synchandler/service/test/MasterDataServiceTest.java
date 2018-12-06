@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,8 @@ import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
 import io.mosip.kernel.synchandler.service.MasterDataServiceHelper;
+import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -34,15 +37,35 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private MasterDataService masterDataService;
+	
+	@Autowired
+	private SyncConfigDetailsService syncConfigDetailsService;
 	private MasterDataResponseDto masterDataResponseDto;
 	private List<ApplicationDto> applications;
 	List<HolidayDto> holidays;
 	List<MachineDto> machines;
 	List<MachineSpecificationDto> machineSpecifications;
 	List<MachineTypeDto> machineTypes;
+	
+	JSONObject globalConfigMap = null;
+	JSONObject regCentreConfigMap=null;
 
 	@Before
 	public void setup() {
+		masterDataSyncSetup();
+		configDetialsSyncSetup();
+	}
+
+	private void mockForSuccess() {
+		when(masterDataServiceHelper.getApplications(Mockito.any())).thenReturn(applications);
+		when(masterDataServiceHelper.getHolidays(Mockito.any(), Mockito.anyString())).thenReturn(holidays);
+		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any())).thenReturn(machines);
+		when(masterDataServiceHelper.getMachineSpecification(Mockito.anyString(), Mockito.any()))
+				.thenReturn(machineSpecifications);
+		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any())).thenReturn(machineTypes);
+	}
+	
+	public void masterDataSyncSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		applications = new ArrayList<>();
 		applications.add(new ApplicationDto("01", "REG FORM", "REG Form", "ENG", true));
@@ -62,14 +85,24 @@ public class MasterDataServiceTest {
 		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop", "Laptop", true));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
+	
+	public void configDetialsSyncSetup() {
+		globalConfigMap = new JSONObject();
+		globalConfigMap.put("archivalPolicy", "arc_policy_2");
+		globalConfigMap.put("otpTimeOutInMinutes", 2);
+		globalConfigMap.put("numberOfWrongAttemptsForOtp", 5);
+		globalConfigMap.put("uinLength", 24);
 
-	private void mockForSuccess() {
-		when(masterDataServiceHelper.getApplications(Mockito.any())).thenReturn(applications);
-		when(masterDataServiceHelper.getHolidays(Mockito.any(), Mockito.anyString())).thenReturn(holidays);
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any())).thenReturn(machines);
-		when(masterDataServiceHelper.getMachineSpecification(Mockito.anyString(), Mockito.any()))
-				.thenReturn(machineSpecifications);
-		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any())).thenReturn(machineTypes);
+		regCentreConfigMap = new JSONObject();
+
+		regCentreConfigMap.put("fingerprintQualityThreshold", 120);
+		regCentreConfigMap.put("irisQualityThreshold", 25);
+		regCentreConfigMap.put("irisRetryAttempts", 10);
+		regCentreConfigMap.put("faceQualityThreshold", 25);
+		regCentreConfigMap.put("faceRetry", 12);
+		regCentreConfigMap.put("supervisorVerificationRequiredForExceptions", true);
+		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
+
 	}
 
 	@Test
@@ -86,5 +119,11 @@ public class MasterDataServiceTest {
 				.thenThrow(MasterDataServiceException.class);
 		masterDataService.syncData("1001", null);
 
+	}
+	
+	@Test
+	public void globalConfigsyncSuccess() {
+		JSONObject jsonObject=syncConfigDetailsService.getGlobalConfigDetails();
+		Assert.assertEquals("arc_policy_2", jsonObject.get("archivalPolicy"));
 	}
 }

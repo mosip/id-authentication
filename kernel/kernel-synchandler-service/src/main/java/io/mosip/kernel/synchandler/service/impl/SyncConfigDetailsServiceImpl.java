@@ -7,20 +7,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.synchandler.constant.SyncConfigDetailsErrorCode;
+import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
+
 /**
- * Implementation class 
+ * Implementation class
+ * 
  * @author Srinivasan
  *
  */
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
-
-	RestTemplate restTemplate = null;
+	@Autowired
+	RestTemplate restTemplate;
 
 	/**
-	 *  Environment instance
+	 * Environment instance
 	 */
 	@Autowired
 	Environment env;
@@ -58,15 +63,19 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		configLabel = env.getProperty("spring.cloud.config.label");
 		configProfile = env.getProperty("spring.profiles.active");
 		configAppName = env.getProperty("spring.application.name");
-		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-				.append(configLabel + "/").append(fileName);
 		JSONObject result = null;
 		try {
+			StringBuilder uriBuilder = new StringBuilder();
+			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+					.append(configLabel + "/").append(fileName);
+
 			restTemplate = new RestTemplate();
 			result = restTemplate.getForObject(uriBuilder.toString(), JSONObject.class);
-		} catch (RestClientException e) {
-			// throw appropriate error
+		} catch (Exception e) {
+			throw new MasterDataServiceException(
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 
 		}
 

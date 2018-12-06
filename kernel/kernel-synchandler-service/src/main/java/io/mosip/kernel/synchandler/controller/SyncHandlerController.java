@@ -12,6 +12,8 @@ import io.mosip.kernel.synchandler.constant.MasterDataErrorCode;
 import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.synchandler.exception.DateParsingException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
+import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 
 /**
  * Sync Handler Controller
@@ -23,6 +25,33 @@ import io.mosip.kernel.synchandler.service.MasterDataService;
 public class SyncHandlerController {
 	@Autowired
 	private MasterDataService masterDataService;
+
+	/**
+	 * Service instance {@link SyncConfigDetailsService}
+	 */
+	@Autowired
+	SyncConfigDetailsService syncConfigDetailsService;
+
+	/**
+	 * This API method would fetch all synced global config details from server
+	 * 
+	 * @return JSONObject - global config response
+	 */
+	@GetMapping(value = "/globalconfigs")
+	public JSONObject getGlobalConfigDetails() {
+		return syncConfigDetailsService.getGlobalConfigDetails();
+	}
+
+	/**
+	 * This API method would fetch all synced registration center config details
+	 * from server
+	 * 
+	 * @return JSONObject
+	 */
+	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
+	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
+		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
+	}
 
 	@GetMapping("/syncmasterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
