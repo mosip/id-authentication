@@ -13,13 +13,13 @@ import java.time.ZoneId;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.BaseEntity;
 
@@ -70,70 +70,24 @@ public class KeymanagerUtil {
 		return entity;
 	}
 
-	public String encodeBase64(byte[] binaryData) {
-		return Base64.encodeBase64URLSafeString(binaryData);
-	}
-
-	public byte[] decodeBase64(String base64String) {
-		return Base64.decodeBase64(base64String);
-	}
-
 	public byte[] encryptKey(PrivateKey privateKey, PublicKey masterKey) {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		byte[] encryptedPrivateKey = encryptor.symmetricEncrypt(symmetricKey, privateKey.getEncoded());
 		byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(masterKey, symmetricKey.getEncoded());
-		return combineByteArray(encryptedPrivateKey, encryptedSymmetricKey);
+		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey,keySplitter);
 	}
 
 	public byte[] decryptKey(byte[] key, PrivateKey privateKey) {
 		int keyDemiliterIndex = 0;
 		final int cipherKeyandDataLength = key.length;
 		final int keySplitterLength = keySplitter.length();
-		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
-		keyDemiliterIndex = getSplitterIndex(key, keyDemiliterIndex, keySplitterLength, keySplitterFirstByte);
+		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitterLength,keySplitter);
 		byte[] encryptedKey = copyOfRange(key, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(key, keyDemiliterIndex + keySplitterLength, cipherKeyandDataLength);
 		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedKey);
 		SecretKey symmetricKey = new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length,
 				symmetricAlgorithmName);
 		return decryptor.symmetricDecrypt(symmetricKey, encryptedData);
-	}
-
-	/**
-	 * @param data
-	 * @param key
-	 * @return
-	 */
-	public byte[] combineByteArray(byte[] data, byte[] key) {
-		byte[] keySplitterBytes = keySplitter.getBytes();
-		byte[] combinedArray = new byte[key.length + keySplitterBytes.length + data.length];
-		System.arraycopy(key, 0, combinedArray, 0, key.length);
-		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length, keySplitterBytes.length);
-		System.arraycopy(data, 0, combinedArray, key.length + keySplitterBytes.length, data.length);
-		return combinedArray;
-	}
-
-	/**
-	 * @param cryptoRequestDto
-	 * @param keyDemiliterIndex
-	 * @param cipherKeyandDataLength
-	 * @param keySplitterLength
-	 * @param keySplitterFirstByte
-	 * @return
-	 */
-	public int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex, final int keySplitterLength,
-			final byte keySplitterFirstByte) {
-		for (byte data : encryptedData) {
-			if (data == keySplitterFirstByte) {
-				final String keySplit = new String(
-						copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
-				if (keySplitter.equals(keySplit)) {
-					break;
-				}
-			}
-			keyDemiliterIndex++;
-		}
-		return keyDemiliterIndex;
 	}
 
 }

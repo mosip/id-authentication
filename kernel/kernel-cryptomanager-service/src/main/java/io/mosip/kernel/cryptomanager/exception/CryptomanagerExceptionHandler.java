@@ -7,6 +7,7 @@
 package io.mosip.kernel.cryptomanager.exception;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,12 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(), CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage()), HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(SocketException.class)
+	public ResponseEntity<ErrorResponse<Error>> socketException(
+			final SocketException e) {
+		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(), CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<Error>> invalidFormatException(
 			final InvalidFormatException e) {
@@ -70,19 +77,19 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText()+CryptomanagerErrorCode.INVALID_DATA.getErrorMessage()) ,HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler(ConnectException.class)//keymanager service
+	@ExceptionHandler(ConnectException.class)
 	public ResponseEntity<ErrorResponse<Error>> connectException(final ConnectException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptomanagerErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(), CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(HttpClientErrorException.class)
 	public ResponseEntity<ErrorResponse<Error>> httpClientErrorException(final HttpClientErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptomanagerConstant.WHITESPACE+e.getResponseBodyAsString()), e.getStatusCode());
+		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptomanagerConstant.WHITESPACE+e.getResponseBodyAsString()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(HttpServerErrorException.class)
 	public ResponseEntity<ErrorResponse<Error>> httpServerErrorException(final HttpServerErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptomanagerConstant.WHITESPACE+e.getResponseBodyAsString()), e.getStatusCode());
+		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage()+CryptomanagerConstant.WHITESPACE+e.getResponseBodyAsString()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -37,7 +37,7 @@ public enum CryptomanagerErrorCode {
 	/**
 	 * 
 	 */
-	CANNOT_CONNECT_TO_SOFTHSM_SERVICE("KER-CRY-005","cannot connect to softhsm service"),
+	CANNOT_CONNECT_TO_KEYMANAGER_SERVICE("KER-CRY-005","cannot connect to keymanager service"),
 	/**
 	 * 
 	 */

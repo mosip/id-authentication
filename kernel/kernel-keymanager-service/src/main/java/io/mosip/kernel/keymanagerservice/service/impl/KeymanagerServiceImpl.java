@@ -28,6 +28,7 @@ import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
@@ -113,13 +114,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
-			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
+			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
 			publicKeyResponse.setIssuedAt(hsmPublicKey.getIssuedAt());
 			publicKeyResponse.setExpiryAt(hsmPublicKey.getExpiryAt());
 		} else {
 			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, timeStamp,
 					referenceId.get());
-			publicKeyResponse.setPublicKey(keymanagerUtil.encodeBase64(dbPublicKey.getPublicKey()));
+			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(dbPublicKey.getPublicKey()));
 			publicKeyResponse.setIssuedAt(dbPublicKey.getIssuedAt());
 			publicKeyResponse.setExpiryAt(dbPublicKey.getExpiryAt());
 		}
@@ -297,8 +298,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
 			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
-					keymanagerUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-			keyResponseDto.setSymmetricKey(keymanagerUtil.encodeBase64(decryptedSymmetricKey));
+					CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
+			keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
 		}
 		return keyResponseDto;
 	}

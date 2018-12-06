@@ -6,8 +6,6 @@
  */
 package io.mosip.kernel.cryptomanager.utils;
 
-import static java.util.Arrays.copyOfRange;
-
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -19,7 +17,6 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -29,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
@@ -106,7 +104,7 @@ public class CryptomanagerUtil {
 		        .queryParam("referenceId", cryptoRequestDto.getReferenceId());
 		try {
 			KeymanagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeymanagerPublicKeyResponseDto.class);
-			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(CryptomanagerUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
 					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
@@ -129,61 +127,8 @@ public class CryptomanagerUtil {
 		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeymanagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptoRequestDto, keyManagerSymmetricKeyRequestDto,new KeymanagerSymmetricKeyConverter());
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeymanagerSymmetricKeyResponseDto.class);
-		byte[] symmetricKey=decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
+		byte[] symmetricKey=CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0,symmetricKey.length, symmetricAlgorithmName);
-	}
-
-	/**
-	 * @param data
-	 * @param key
-	 * @return
-	 */
-	public byte[] combineByteArray(byte[] data, byte[] key) {
-		byte[] keySplitterBytes =keySplitter.getBytes();
-		byte[] combinedArray = new byte[key.length + keySplitterBytes.length + data.length];
-		System.arraycopy(key, 0, combinedArray, 0, key.length);
-		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length,keySplitterBytes.length);
-		System.arraycopy(data, 0, combinedArray,key.length + keySplitterBytes.length, data.length);
-		return combinedArray;
-	}
-	
-	/**
-	 * @param cryptoRequestDto
-	 * @param keyDemiliterIndex
-	 * @param cipherKeyandDataLength
-	 * @param keySplitterLength
-	 * @param keySplitterFirstByte
-	 * @return
-	 */
-	public int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex,
-			 final int keySplitterLength, final byte keySplitterFirstByte) {
-		
-		for (byte data:encryptedData) {
-			if (data == keySplitterFirstByte) {
-				final String keySplit = new String(copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
-				if (keySplitter.equals(keySplit)) {
-					break;
-				}
-			}
-			keyDemiliterIndex++;
-		}
-		return keyDemiliterIndex;
-	}
-	
-	/**
-	 * @param data
-	 * @return
-	 */
-	public static String encodeBase64(byte[] data) {
-		return Base64.encodeBase64URLSafeString(data);
-	}
-	
-	/**
-	 * @param data
-	 * @return
-	 */
-	public static byte[] decodeBase64(String data) {
-		return Base64.decodeBase64(data);
 	}
 
 }
