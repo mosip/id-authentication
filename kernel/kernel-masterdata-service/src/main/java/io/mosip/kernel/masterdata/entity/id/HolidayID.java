@@ -17,10 +17,7 @@ import lombok.NoArgsConstructor;
 public class HolidayID implements Serializable {
 
 	private static final long serialVersionUID = -1631873932622755759L;
-
-	@Column(name = "id", unique = true, nullable = false)
-	private int id;
-
+	
 	@Column(name = "location_code", nullable = false, length = 36)
 	private String locationCode;
 

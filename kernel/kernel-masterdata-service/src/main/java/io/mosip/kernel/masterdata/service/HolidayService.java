@@ -1,6 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
+import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 /**
  * @author Abhishek Kumar
@@ -32,4 +35,6 @@ public interface HolidayService {
 	 * @return {@linkplain HolidayResponseDto}
 	 */
 	HolidayResponseDto getHolidayByIdAndLanguageCode(int holidayId, String langCode);
+	
+	public HolidayID saveHoliday(RequestDto<HolidayDto> holidayDto);
 }

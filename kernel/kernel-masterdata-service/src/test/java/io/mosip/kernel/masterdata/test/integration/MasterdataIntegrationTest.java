@@ -548,7 +548,8 @@ public class MasterdataIntegrationTest {
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holidays = new ArrayList<>();
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID( "KAR", date, "ENG"));
+		holiday.setId(1);
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -556,7 +557,8 @@ public class MasterdataIntegrationTest {
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayID(1, "KAH", date, "ENG"));
+		holiday2.setHolidayId(new HolidayID( "KAH", date, "ENG"));
+		holiday2.setId(1);
 		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
 		holiday2.setCreatedDateTime(specificDate);
@@ -890,13 +892,13 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getHolidayByIdSuccessTest() throws Exception {
-		when(holidayRepository.findAllByHolidayIdId(any(Integer.class))).thenReturn(holidays);
+		when(holidayRepository.findAllById(any(Integer.class))).thenReturn(holidays);
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}", 1)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getHolidayByIdHolidayFetchExceptionTest() throws Exception {
-		when(holidayRepository.findAllByHolidayIdId(any(Integer.class))).thenThrow(DataRetrievalFailureException.class);
+		when(holidayRepository.findAllById(any(Integer.class))).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}", 1)).andExpect(status().isInternalServerError());
 	}
 
@@ -907,14 +909,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getHolidayByIdAndLangCodeSuccessTest() throws Exception {
-		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(any(Integer.class), anyString()))
+		when(holidayRepository.findHolidayByIdAndHolidayIdLangCode(any(Integer.class), anyString()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getHolidayByIdAndLangCodeHolidayFetchExceptionTest() throws Exception {
-		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(any(Integer.class), anyString()))
+		when(holidayRepository.findHolidayByIdAndHolidayIdLangCode(any(Integer.class), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}/{languagecode}", 1, "ENG"))
 				.andExpect(status().isInternalServerError());
