@@ -1,5 +1,9 @@
 package io.mosip.registration.controller;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import io.mosip.registration.config.AppConfig;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -31,6 +35,13 @@ public class VirtualKeyboard {
 
 	  private final VBox root ;
 	  
+	  private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards//keyboard",new Locale(AppConfig.getApplicationProperty("local_language")));
+
+	  private String getKey(String keyCode) {
+	  	
+	  	return keyboard.getString(keyCode);
+	  }
+	  
 	  /**
 	   * Creates a Virtual Keyboard. 
 	   * @param target The node that will receive KeyEvents from this keyboard. 
@@ -45,18 +56,18 @@ public class VirtualKeyboard {
 	    final Modifiers modifiers = new Modifiers();
 
 	    // Data for regular buttons; split into rows
-	    final String[][] unshifted = new String[][] {
-	        { "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" },
-	        { "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\" },
-	        { "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'" },
-	        { "z", "x", "c", "v", "b", "n", "m", ",", ".", "/" } };
+	     String[][] unshifted = new String[][] {
+	         { getKey("unshifted_code_backQuote"), getKey("unshifted_code_digit1"), getKey("unshifted_code_digit2"), getKey("unshifted_code_digit3"), getKey("unshifted_code_digit4"), getKey("unshifted_code_digit5"), getKey("unshifted_code_digit6"), getKey("unshifted_code_digit7"), getKey("unshifted_code_digit8"), getKey("unshifted_code_digit9"), getKey("unshifted_code_digit0"), getKey("unshifted_code_subtract"), getKey("unshifted_code_equals") },
+	         { getKey("unshifted_code_Q"), getKey("unshifted_code_W"), getKey("unshifted_code_E"), getKey("unshifted_code_R"), getKey("unshifted_code_T"), getKey("unshifted_code_Y"), getKey("unshifted_code_U"), getKey("unshifted_code_I"), getKey("unshifted_code_O"), getKey("unshifted_code_P"), getKey("unshifted_code_openBracket"), getKey("unshifted_code_closeBracket"), getKey("unshifted_code_backSlash")},
+	         { getKey("unshifted_code_A"), getKey("unshifted_code_S"), getKey("unshifted_code_D"), getKey("unshifted_code_F"), getKey("unshifted_code_G"), getKey("unshifted_code_H"), getKey("unshifted_code_J"), getKey("unshifted_code_K"), getKey("unshifted_code_L"), getKey("unshifted_code_semiColon"), getKey("unshifted_code_Quote") },
+	         { getKey("unshifted_code_Z"), getKey("unshifted_code_X"), getKey("unshifted_code_C"), getKey("unshifted_code_V"), getKey("unshifted_code_B"), getKey("unshifted_code_N"), getKey("unshifted_code_M"), getKey("unshifted_code_coma"), getKey("unshifted_code_period"), getKey("unshifted_code_slash") } };
 
-	    final String[][] shifted = new String[][] {
-	        { "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+" },
-	        { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|" },
-	        { "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\"" },
-	        { "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?" } };
-
+	     String[][] shifted = new String[][] {
+	         { getKey("shifted_code_backQuote"), getKey("shifted_code_digit1"), getKey("shifted_code_digit2"), getKey("shifted_code_digit3"), getKey("shifted_code_digit4"), getKey("shifted_code_digit5"), getKey("shifted_code_digit6"), getKey("shifted_code_digit7"), getKey("shifted_code_digit8"), getKey("shifted_code_digit9"), getKey("shifted_code_digit0"), getKey("shifted_code_subtract"), getKey("shifted_code_equals") },
+	         { getKey("shifted_code_Q"), getKey("shifted_code_W"), getKey("shifted_code_E"), getKey("shifted_code_R"), getKey("shifted_code_T"), getKey("shifted_code_Y"), getKey("shifted_code_U"), getKey("shifted_code_I"), getKey("shifted_code_O"), getKey("shifted_code_P"), getKey("shifted_code_openBracket"), getKey("shifted_code_closeBracket"), getKey("shifted_code_backSlash")},
+	         { getKey("shifted_code_A"), getKey("shifted_code_S"), getKey("shifted_code_D"), getKey("shifted_code_F"), getKey("shifted_code_G"), getKey("shifted_code_H"), getKey("shifted_code_J"), getKey("shifted_code_K"), getKey("shifted_code_L"), getKey("shifted_code_semiColon"), getKey("shifted_code_Quote") },
+	         { getKey("shifted_code_Z"), getKey("shifted_code_X"), getKey("shifted_code_C"), getKey("shifted_code_V"), getKey("shifted_code_B"), getKey("shifted_code_N"), getKey("shifted_code_M"), getKey("shifted_code_coma"), getKey("shifted_code_period"), getKey("shifted_code_slash") } };
+	        
 	    final KeyCode[][] codes = new KeyCode[][] {
 	        { KeyCode.BACK_QUOTE, KeyCode.DIGIT1, KeyCode.DIGIT2, KeyCode.DIGIT3,
 	            KeyCode.DIGIT4, KeyCode.DIGIT5, KeyCode.DIGIT6, KeyCode.DIGIT7,
@@ -168,7 +179,7 @@ public class VirtualKeyboard {
 	        
 	        if (targetNode != null) {
 	          final String character;
-	          if (text.get().length() == 1) {
+	          if (text.get().length() == 1 || text.get().length() == 2) {
 	            character = text.get();
 	          } else {
 	            character = KeyEvent.CHAR_UNDEFINED;

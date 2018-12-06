@@ -1,21 +1,21 @@
 package io.mosip.registration.controller.device;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,11 +24,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -67,39 +71,9 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private RegistrationController registrationController;
 	@Autowired
-	private FingerPrintScanController fingerPrintScanController;
+	private ScanController scanController;
 
 	private Pane selectedIris;
-
-	/**
-	 * Gets the selected iris.
-	 *
-	 * @return the selected iris
-	 */
-	public Pane getSelectedIris() {
-		return selectedIris;
-	}
-
-	/**
-	 * @return the leftIrisImage
-	 */
-	public ImageView getLeftIrisImage() {
-		return leftIrisImage;
-	}
-
-	/**
-	 * @return the rightIrisImage
-	 */
-	public ImageView getRightIrisImage() {
-		return rightIrisImage;
-	}
-
-	/**
-	 * @return the registrationController
-	 */
-	public RegistrationController getRegistrationController() {
-		return registrationController;
-	}
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -141,7 +115,7 @@ public class IrisCaptureController extends BaseController {
 					// 3. If number of retries attempted is not same as configured number of retries
 					// attempt
 					// 4. If iris is not forced captured
-					// 5. If iris is an exception iris 
+					// 5. If iris is an exception iris
 					if (irisDetailsDTO == null || isExceptionIris || !validateQualityScore(irisDetailsDTO)) {
 						scanIris.setDisable(false);
 						if (irisDetailsDTO != null) {
@@ -154,14 +128,16 @@ public class IrisCaptureController extends BaseController {
 			// Add event handler object to mouse click event
 			rightIrisPane.setOnMouseClicked(mouseClick);
 			leftIrisPane.setOnMouseClicked(mouseClick);
-			
+
 			// Display the Captured Iris
-			if (registrationController.getRegistrationDtoContent() != null) {
+			if (getRegistrationDTOFromSession() != null) {
 				for (IrisDetailsDTO capturedIris : getIrises()) {
 					if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
-						getLeftIrisImage().setImage(convertBytesToImage(capturedIris.getIris()));
+						leftIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
+						leftIrisQualityScore.setText(String.valueOf(capturedIris.getQualityScore()));
 					} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
-						getRightIrisImage().setImage(convertBytesToImage(capturedIris.getIris()));
+						rightIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
+						rightIrisQualityScore.setText(String.valueOf(capturedIris.getQualityScore()));
 					}
 				}
 			}
@@ -190,33 +166,13 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to capture Iris for user registration");
 
-			Stage popupStage = new Stage();
-			popupStage.initStyle(StageStyle.UNDECORATED);
-			Parent biometricScanPopup = BaseController
-					.load(getClass().getResource(RegistrationConstants.SCAN_PAGE));
-			fingerPrintScanController.setPopupTitle("Iris");
-			fingerPrintScanController.setPrimarystage(popupStage);
-			popupStage.setResizable(false);
-			Scene scene = new Scene(biometricScanPopup);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-			popupStage.setScene(scene);
-			popupStage.initModality(Modality.WINDOW_MODAL);
-			popupStage.initOwner(stage);
-			popupStage.show();
+			scanController.init(this, "Iris");
 
 			// Disable the scan button
 			scanIris.setDisable(true);
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to capture Iris for user registration completed");
-		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-					"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s -> %s",
-					RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, ioException.getMessage(),
-					ioException.getCause()));
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
@@ -224,6 +180,133 @@ public class IrisCaptureController extends BaseController {
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
+		}
+	}
+
+	@Override
+	public void scan(Stage popupStage) {
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration");
+
+			Map<String, Object> scannedIrisMap = getIrisScannedImage();
+
+			byte[] irisImageBytes = (byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY);
+
+			Image scannedIrisImage = convertBytesToImage(irisImageBytes);
+
+			double qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
+
+			if (validateIrisLocalDedup(irisImageBytes)) {
+				// Display the Scanned Iris Image in the Scan pop-up screen
+				scanController.getScanImage().setImage(scannedIrisImage);
+
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, "Iris captured successfully");
+
+				if (getIrisQualityScore() < qualityScore) {
+					// Display the Scanned Iris Image and its corresponding quality score in the
+					// Iris Biometric Screen
+					String irisType;
+					if (StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)) {
+						leftIrisImage.setImage(scannedIrisImage);
+						leftIrisQualityScore.setText(String.valueOf(qualityScore));
+						irisType = RegistrationConstants.LEFT.concat(RegistrationConstants.EYE);
+					} else {
+						rightIrisImage.setImage(scannedIrisImage);
+						rightIrisQualityScore.setText(String.valueOf(qualityScore));
+						irisType = RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE);
+					}
+
+					// Create IrisDetailsDTO object
+					IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
+					irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
+					irisDetailsDTO.setForceCaptured(false);
+					irisDetailsDTO.setQualityScore(qualityScore);
+					irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
+							.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
+					irisDetailsDTO.setIrisType(irisType);
+
+					// Remove the previously captured Iris image
+					getIrises().removeIf(iris -> iris.getIrisType().equals(irisType));
+
+					// Add the captured iris to RegistrationDTO
+					getIrises().add(irisDetailsDTO);
+				}
+
+				popupStage.close();
+			}
+
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration completed");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCANNING_ERROR);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+							RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(), runtimeException.getCause()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCANNING_ERROR);
+		} finally {
+			selectedIris.requestFocus();
+		}
+	}
+
+	private Map<String, Object> getIrisScannedImage() throws RegBaseCheckedException {
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration");
+
+			InputStream inputStream = this.getClass().getResourceAsStream("/images/scanned-iris.png");
+
+			byte[] scannedIrisBytes = new byte[inputStream.available()];
+			inputStream.read(scannedIrisBytes);
+
+			// Add image format, image and quality score in bytes array to map
+			Map<String, Object> scannedIris = new HashMap<>();
+			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
+			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
+			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.5);
+
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Scanning of iris details for user registration completed");
+
+			return scannedIris;
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_IRIS_SCANNING_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_IRIS_SCANNING_ERROR.getErrorMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s Exception while scanning iris details for user registration: %s caused by %s",
+							RegistrationConstants.USER_REG_IRIS_SCAN_EXP, runtimeException.getMessage(), runtimeException.getCause()));
+
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCAN_EXP,
+					String.format("Exception while scanning iris details for user registration: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
+		}
+	}
+
+	private boolean validateIrisLocalDedup(byte[] scannedIrisImage) {
+		// TODO: Implement Local Dedup for Iris
+		return true;
+	}
+
+	private double getIrisQualityScore() {
+		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Getting the quality score of previously captured iris");
+
+			return getIrisBySelectedPane().findFirst().orElse(new IrisDetailsDTO()).getQualityScore();
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s Exception while getting the quality score of previously captured iris: %s caused by %s",
+							RegistrationConstants.USER_REG_GET_IRIS_QUALITY_SCORE_EXP, runtimeException.getMessage(), runtimeException.getCause()));
+
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_GET_IRIS_QUALITY_SCORE_EXP,
+					String.format(
+							"Exception while getting the quality score of previously captured iris: %s caused by %s",
+							runtimeException.getMessage(), runtimeException.getCause()));
 		}
 	}
 
@@ -272,34 +355,13 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration completed");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					String.format("%s -> Exception while navigating to Fingerprint capture page for user registration  %s",
-							RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP,
-							runtimeException.getMessage()));
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s -> Exception while navigating to Fingerprint capture page for user registration  %s",
+					RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP, runtimeException.getMessage()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR,
 					RegistrationConstants.IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR);
 		}
-	}
-
-	/**
-	 * Sets the quality score for Left Iris
-	 * 
-	 * @param qualityScore
-	 *            the leftIrisQualityScore to set
-	 */
-	public void setLeftIrisQualityScore(double qualityScore) {
-		this.leftIrisQualityScore.setText(String.valueOf(qualityScore));
-	}
-
-	/**
-	 * Sets the quality score for Right Iris
-	 * 
-	 * @param qualityScore
-	 *            the rightIrisQualityScore to set
-	 */
-	public void setRightIrisQualityScore(double qualityScore) {
-		this.rightIrisQualityScore.setText(String.valueOf(qualityScore));
 	}
 
 	private boolean validateIris() {
@@ -362,7 +424,7 @@ public class IrisCaptureController extends BaseController {
 					.parseInt(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_RETRY_COUNT));
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris completed");
-			
+
 			return irisDetailsDTO.getQualityScore() >= irisThreshold
 					|| (irisDetailsDTO.getQualityScore() < irisThreshold
 							&& irisDetailsDTO.getNumOfIrisRetry() == numOfRetries)
@@ -374,22 +436,26 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	public List<IrisDetailsDTO> getIrises() {
-		return registrationController.getRegistrationDtoContent().getBiometricDTO().getApplicantBiometricDTO()
-				.getIrisDetailsDTO();
+	private List<IrisDetailsDTO> getIrises() {
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
 	}
 
 	private List<BiometricExceptionDTO> getIrisExceptions() {
-		return registrationController.getRegistrationDtoContent().getBiometricDTO().getApplicantBiometricDTO()
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 				.getIrisBiometricExceptionDTO();
 	}
 
-	public Stream<IrisDetailsDTO> getIrisBySelectedPane() {
+	private Stream<IrisDetailsDTO> getIrisBySelectedPane() {
 		return getIrises().stream()
 				.filter(iris -> iris.getIrisType()
-						.contains(StringUtils.containsIgnoreCase(getSelectedIris().getId(), RegistrationConstants.LEFT)
+						.contains(StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
 								? RegistrationConstants.LEFT
 								: RegistrationConstants.RIGHT));
+	}
+
+	private RegistrationDTO getRegistrationDTOFromSession() {
+		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 }

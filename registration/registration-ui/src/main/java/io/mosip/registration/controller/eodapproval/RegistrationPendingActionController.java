@@ -202,7 +202,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Opening the Acknowledgement Form started");
 		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-				stage);
+				initializeParentRoot.getStage());
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.initModality(Modality.WINDOW_MODAL);
-			primaryStage.initOwner(stage);
+			primaryStage.initOwner(initializeParentRoot.getStage());
 			primaryStage.show();
 			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
 			fpcontroller.init(this);
@@ -351,7 +351,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
 			primarystage.initModality(Modality.WINDOW_MODAL);
-			primarystage.initOwner(stage);
+			primarystage.initOwner(initializeParentRoot.getStage());
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 

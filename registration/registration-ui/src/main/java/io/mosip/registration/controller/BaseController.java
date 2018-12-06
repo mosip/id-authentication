@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,8 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
@@ -58,28 +62,46 @@ public class BaseController {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
-
-	protected static Stage stage;
+	
+	@Autowired
+	protected InitializeParentRoot initializeParentRoot;
+	
+	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	protected Scene scene;
 	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	protected Logger LOGGER = AppConfig.getLogger(this.getClass());
+	private static final Logger LOGGER = AppConfig.getLogger(BaseController.class);
 
 	/**
 	 * Adding events to the stage
 	 * 
 	 * @return
 	 */
-	protected static Stage getStage() {
+	protected Stage getStage() {
 		EventHandler<Event> event = new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
 				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
-		stage.addEventHandler(EventType.ROOT, event);
-		return stage;
+		initializeParentRoot.getStage().addEventHandler(EventType.ROOT, event);
+		return initializeParentRoot.getStage();
+	}
+	
+	protected Scene getScene(Parent borderPane) {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		scene = initializeParentRoot.getScene(); 
+		if(scene == null) {
+			scene = new Scene(borderPane, 950, 630);
+			initializeParentRoot.setScene(scene);
+		}
+		scene.setRoot(borderPane);
+		initializeParentRoot.getStage().setScene(scene);
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		return scene;
 	}
 
 	/**
@@ -176,7 +198,7 @@ public class BaseController {
 	 * login from config table
 	 */
 	protected void getGlobalParams() {
-		ApplicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**

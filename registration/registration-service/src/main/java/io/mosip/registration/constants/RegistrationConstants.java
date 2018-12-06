@@ -145,9 +145,11 @@ public class RegistrationConstants {
 	public static final String EMAIL_ID_EXAMPLE = bundle.getString("EMAIL_ID_EXAMPLE");
 	public static final String PARENT_NAME_EMPTY = bundle.getString("PARENT_NAME_EMPTY");
 	public static final String UIN_ID_EMPTY = bundle.getString("UIN_ID_EMPTY");
+	public static final String UIN_ID_WARNING = bundle.getString("UIN_ID_WARNING");
 	public static final String ADDRESS_LINE_WARNING = bundle.getString("ADDRESS_LINE_WARNING");
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = bundle.getString("LOCAL_ADMIN_AUTHORITY_EMPTY");
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = bundle.getString("CNIE_OR_PIN_NUMBER_EMPTY");
+	public static final String CNIE_OR_PIN_NUMBER_WARNING = bundle.getString("CNIE_OR_PIN_NUMBER_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("POA_DOCUMENT_EMPTY");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("POI_DOCUMENT_EMPTY");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("POR_DOCUMENT_EMPTY");
@@ -156,6 +158,7 @@ public class RegistrationConstants {
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
+	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -219,6 +222,8 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String BLACKLISTED = "BLOCKED";
+	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
+	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
@@ -709,7 +714,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
 	public static final String USER_REG_IRIS_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-005";
 	public static final String USER_REG_IRIS_SCORE_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-006";
-	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "FSC-002";
+	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-007";
 	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
 	public static final String USER_REG_FINGERPRINT_PAGE_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-001";
 	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-002";
@@ -717,6 +722,8 @@ public class RegistrationConstants {
 	public static final String USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-004";
 	public static final String USER_REG_FINGERPRINT_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-005";
 	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
+	public static final String USER_REG_IRIS_SAVE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-008";
+	public static final String USER_REG_GET_IRIS_QUALITY_SCORE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-009";
 	
 	//Exception for Registration - Document Scan and Upload
 	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
@@ -735,10 +742,13 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
 	// Regex Constants
-	public static final String FULL_NAME_REGEX = "[A-z]{1,25}\\s?\\.?[A-z]{1,25}";
+	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
+	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX="^.{1,50}$";
-	public static final String MOBILE_NUMBER_REGEX="\\d{9}";
+	public static final String MOBILE_NUMBER_REGEX="\\d++";
+	public static final int MOBILE_NUMBER_LENGTH=9;
 	public static final String EMAIL_ID_REGEX="^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
+	public static final String EMAIL_ID_REGEX_INITIAL="([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
 	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
 	public static final String AGE_REGEX="\\d{1,2}";
 	public static final String UIN_REGEX="\\d{1,30}";

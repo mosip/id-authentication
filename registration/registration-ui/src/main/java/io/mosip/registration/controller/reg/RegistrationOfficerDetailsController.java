@@ -109,7 +109,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			LoginController loginController = RegistrationAppInitialization.getApplicationContext()
 					.getBean(LoginController.class);
 			loginController.loadLoginScreen(initialMode);
-			LoginController.getScene().setRoot(loginpage);
+			getScene(loginpage);
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
@@ -129,7 +129,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					APPLICATION_ID, "Redirecting to Home page");
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			LoginController.getScene().setRoot(homePage);
+			getScene(homePage);
 
 		} catch (IOException | RuntimeException exception) {
 

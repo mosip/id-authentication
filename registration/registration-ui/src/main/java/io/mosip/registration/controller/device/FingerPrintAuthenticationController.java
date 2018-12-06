@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -41,7 +43,11 @@ import javafx.stage.Stage;
  */
 @Controller
 public class FingerPrintAuthenticationController extends BaseController implements Initializable {
-
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(FingerPrintAuthenticationController.class);
+	
 	@FXML
 	private AnchorPane authenticateRootPane;
 	@FXML

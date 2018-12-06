@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import javafx.event.ActionEvent;
@@ -25,6 +27,7 @@ import javafx.stage.StageStyle;
 
 @Controller
 public class ScanController extends BaseController {
+	private static final Logger LOGGER = AppConfig.getLogger(ScanController.class);
 
 	@Autowired
 	private BaseController baseController;
@@ -68,7 +71,7 @@ public class ScanController extends BaseController {
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
-			popupStage.initOwner(stage);
+			popupStage.initOwner(initializeParentRoot.getStage());
 			popupStage.show();
 			
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

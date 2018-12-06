@@ -37,7 +37,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
-import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.controller.device.ScanController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -854,13 +853,10 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	public static void loadScreen(String screen) throws IOException {
+	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				ApplicationContext.getInstance().getApplicationLanguageBundle());
-		LoginController.getScene().setRoot(createRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		LoginController.getScene().getStylesheets()
-				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+				applicationContext.getApplicationLanguageBundle());
+		getScene(createRoot);
 	}
 
 	/**
@@ -934,11 +930,11 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
 
-						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
+						fullName.setText(fullName.getText().replaceAll(".$", ""));
 						fullName.requestFocus();
 					} else {
 						fullNameLocalLanguage.setText(fullName.getText());
@@ -950,7 +946,14 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					addressLine1LocalLanguage.setText(addressLine1.getText());
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
+
+						addressLine1.setText(addressLine1.getText().replaceAll(".$", ""));
+						addressLine1.requestFocus();
+					} else {
+						addressLine1LocalLanguage.setText(addressLine1.getText());
+					}
 				}
 			});
 
@@ -969,6 +972,74 @@ public class RegistrationController extends BaseController {
 					addressLine3LocalLanguage.setText(addressLine3.getText());
 				}
 			});
+
+			mobileNo.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
+							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+						mobileNo.setText(mobileNo.getText().replaceAll(".$", ""));
+						mobileNo.requestFocus();
+					}
+				}
+			});
+
+			emailId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
+							|| newValue.length() > 50)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
+						emailId.setText(emailId.getText().replaceAll(".$", ""));
+						emailId.requestFocus();
+					}
+				}
+			});
+
+			cniOrPinNumber.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR,
+								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
+						cniOrPinNumber.setText(cniOrPinNumber.getText().replaceAll(".$", ""));
+						cniOrPinNumber.requestFocus();
+					}
+				}
+			});
+
+			parentName.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
+
+						parentName.setText(parentName.getText().replaceAll(".$", ""));
+						parentName.requestFocus();
+					}
+				}
+			});
+			
+			uinId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
+						uinId.setText(uinId.getText().replaceAll(".$", ""));
+						uinId.requestFocus();
+					}
+				}
+			});
+			
+			
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1378,7 +1449,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
@@ -1850,37 +1921,29 @@ public class RegistrationController extends BaseController {
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
-		
+
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
 		hyperLink.setText(document);
-		
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Binding OnAction event to Hyperlink to display Scanned document");
-		
+				RegistrationConstants.APPLICATION_ID,
+				"Binding OnAction event to Hyperlink to display Scanned document");
+
 		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.forEach(detail -> {
-							if (detail.getDocumentName().equals(pane.getId())) {
-								Image img = convertBytesToImage(detail.getDocument());
-								ImageView view = new ImageView(img);
-								Scene scene = new Scene(new StackPane(view));
-								Stage primaryStage = new Stage();
-								primaryStage.setTitle("Image Click Example");
-								primaryStage.setScene(scene);
-								primaryStage.sizeToScene();
-								primaryStage.show();
-							}
-						});
+						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
+						.ifPresent(doc -> displayDocument(doc.getDocument()));
+
 			}
 		});
-		
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
-		
+
 		return hyperLink;
 	}
 
@@ -1919,6 +1982,27 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
 		
 		return imageView;
+	}
+	
+	/**
+	 * This method will display the scanned document
+	 */
+	private void displayDocument(byte[] document) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
+		
+		Image img = convertBytesToImage(document);
+		ImageView view = new ImageView(img);
+		Scene scene = new Scene(new StackPane(view), 700, 600);
+		Stage primaryStage = new Stage();
+		primaryStage.setTitle(RegistrationConstants.SCAN_DOC_TITLE);
+		primaryStage.setScene(scene);
+		primaryStage.sizeToScene();
+		primaryStage.show();
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}
 	
 	private void createRegistrationDTOObject() {

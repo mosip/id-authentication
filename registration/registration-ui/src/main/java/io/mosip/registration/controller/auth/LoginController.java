@@ -29,7 +29,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationOfficerDetailsController;
@@ -48,7 +47,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -66,6 +64,10 @@ import javafx.stage.Stage;
  */
 @Controller
 public class LoginController extends BaseController implements Initializable {
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(LoginController.class);
 
 	@FXML
 	private TextField userId;
@@ -127,21 +129,10 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
-	private static Scene scene;
-
-	/**
-	 * Instance of {@link Logger}
-	 */
-	private static final Logger LOGGER = AppConfig.getLogger(LoginController.class);
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 		RegistrationOfficerDetailsController.stopTimer();
-	}
-
-	public static Scene getScene() {
-		return scene;
 	}
 
 	/**
@@ -150,18 +141,18 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException
 	 */
-	public String loadInitialScreen(Stage primaryStage) throws RegBaseCheckedException {
+	public String loadInitialScreen(Stage primaryStage) {
 
-		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
-		BaseController.stage = primaryStage;
+		initializeParentRoot.setStage(primaryStage);
 		String loginMode = null;
 
 		try {
-			ApplicationContext.getInstance().setApplicationLanguageBundle();
-			ApplicationContext.getInstance().setLocalLanguageProperty();
-			ApplicationContext.getInstance().setApplicationMessagesBundle();
+			applicationContext.setApplicationLanguageBundle();
+			applicationContext.setLocalLanguageProperty();
+			applicationContext.setApplicationMessagesBundle();
 			Map<String, Object> userLoginMode = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
 
 			if (userLoginMode.containsKey((String.valueOf(RegistrationConstants.PARAM_ONE)))) {
@@ -174,24 +165,21 @@ public class LoginController extends BaseController implements Initializable {
 
 			// Load the property files for application and local language
 
-			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");
 
 			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
-					ApplicationContext.getInstance().getApplicationMessagesBundle());
-
+					applicationContext.getApplicationMessagesBundle());
+			
+			scene = getScene(loginRoot);
 			if (loginMode == null) {
 				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-				loginRoot.setCenter(loginType);
+				scene = getScene(loginType);
 			} else {
 				loadLoginScreen(loginMode);
 			}
 
 			getGlobalParams();
-
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene = new Scene(loginRoot, 950, 630);
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
@@ -199,13 +187,13 @@ public class LoginController extends BaseController implements Initializable {
 
 		} catch (IOException ioException) {
 
-			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		} catch (RuntimeException runtimeException) {
 
-			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage());
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
@@ -272,14 +260,14 @@ public class LoginController extends BaseController implements Initializable {
 				if (serverStatus || offlineStatus) {
 					if (validateUserStatus(userId.getText())) {
 
-						LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 								"Validating user status");
 
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 					} else {
 						try {
 
-							LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
+							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
 									APPLICATION_ID, "Loading next login screen");
 
 							SessionContext sessionContext = SessionContext.getInstance();
@@ -288,7 +276,7 @@ public class LoginController extends BaseController implements Initializable {
 
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
-							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
+							LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
 									APPLICATION_ID, exception.getMessage());
 
 							generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -832,10 +820,10 @@ public class LoginController extends BaseController implements Initializable {
 		Timestamp loginTime = registrationUserDetail.getUserlockTillDtimes();
 
 		int invalidLoginCount = Integer.parseInt(String.valueOf(
-				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+				applicationContext.getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
 
 		int invalidLoginTime = Integer.parseInt(String.valueOf(
-				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_TIME)));
+				applicationContext.getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 		LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 				"validating invalid login params");
