@@ -131,7 +131,6 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	 */
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
-		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
 		String registrationId = manualVerificationDTO.getRegId();
 		String eventId = "";
 		String eventName = "";

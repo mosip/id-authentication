@@ -37,7 +37,7 @@ public class ManualAdjudicationDao {
 	 * @return the earliest created unassigned {@link ManualVerificationEntity}
 	 */
 	public List<ManualVerificationEntity> getFirstApplicantDetails() {
-		//TODO Fix this sonar lint issue
+		//TODO TO Fix this sonar lint issue
 		List<ManualVerificationEntity> manualAdjudicationEntitiesList = manualAdjudiacationRepository
 				.getFirstApplicantDetails("PENDING");
 		return manualAdjudicationEntitiesList;
@@ -50,7 +50,7 @@ public class ManualAdjudicationDao {
 	 * @return
 	 */
 	public ManualVerificationEntity getByRegId(String regId, String mvUsrId) {
-		//TODO Specify comment for this method
+		//TODO TO Specify comment for this method
 		return manualAdjudiacationRepository.getByRegId(regId, mvUsrId);
 	}
 }
