@@ -63,6 +63,21 @@ public class KeymanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText(),HttpStatus.BAD_REQUEST) ,HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(NoUniqueAliasException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> noUniqueAliasException(final NoUniqueAliasException e) {
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText(),HttpStatus.INTERNAL_SERVER_ERROR) ,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(CryptoException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> cryptoException(final CryptoException e) {
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText(),HttpStatus.INTERNAL_SERVER_ERROR) ,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(InvalidApplicationIdException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> invalidApplicationIdException(final InvalidApplicationIdException e) {
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),e.getErrorText(),HttpStatus.INTERNAL_SERVER_ERROR) ,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
     @ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentNotValidException(
 			final MethodArgumentNotValidException e) {
