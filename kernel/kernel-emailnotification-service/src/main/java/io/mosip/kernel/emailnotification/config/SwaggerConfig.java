@@ -1,4 +1,4 @@
-package io.mosip.kernel.auditmanager.config;
+package io.mosip.kernel.emailnotification.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,9 +16,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Configuration class for swagger config
+ * Class for swagger configuration.
  * 
- * @author Dharmesh Khandelwal
+ * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
