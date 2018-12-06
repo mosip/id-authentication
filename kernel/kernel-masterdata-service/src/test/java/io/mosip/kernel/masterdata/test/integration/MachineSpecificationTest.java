@@ -27,7 +27,7 @@ public class MachineSpecificationTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	MachineSpecificationRepository machineSpecificationRepository;;
+	MachineSpecificationRepository machineSpecificationRepository;
 
 	@Test
 	public void createMachineTest() throws Exception {

@@ -29,16 +29,13 @@ public class DeviceTypeTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	DeviceTypeRepository deviceTypeRepository;;
+	DeviceTypeRepository deviceTypeRepository;
 
 	@Test
 	public void createDeviceSpecificationTest() throws Exception {
-
 		DeviceType deviceType = new DeviceType();
 		deviceType.setCode("1000");
 		deviceType.setLangCode("ENG");
-		
-		
 		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
 		
 		Mockito.when(deviceTypeRepository.create(Mockito.any())).thenReturn(deviceType);
@@ -47,8 +44,7 @@ public class DeviceTypeTest {
 	}
 
 	@Test
-	public void createDeviceSpecificationExceptionTest() throws Exception {
-
+	public void createDeviceTypeExceptionTest() throws Exception {
 		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
 		Mockito.when(deviceTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
