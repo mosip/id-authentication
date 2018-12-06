@@ -247,6 +247,7 @@ public class MasterdataIntegrationTest {
 	private Gender genderType;
 
 	private ValidDocument validDocument;
+	private Holiday holiday;
 
 	@MockBean
 	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
@@ -548,6 +549,8 @@ public class MasterdataIntegrationTest {
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holidays = new ArrayList<>();
 		Holiday holiday = new Holiday();
+
+		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
 		holiday.setId(1);
 		holiday.setHolidayName("Diwali");
@@ -929,6 +932,25 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getHolidayByIdAndLangCodeHolidayNoDataFoundTest() throws Exception {
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void addHolidayTypeTest() throws Exception {
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
+		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addHolidayTypeExceptionTest() throws Exception {
+
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		when(holidayRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
+		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	// -----------------------------IdTypeTest----------------------------------
@@ -1574,5 +1596,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
+
 
 }
