@@ -2,19 +2,22 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -50,13 +53,13 @@ public class LanguageServiceImpl implements LanguageService {
 	 * @see LanguageService#getAllLaguages()
 	 */
 	@Override
-	public LanguageRequestResponseDto getAllLaguages() {
-		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
+	public LanguageResponseDto getAllLaguages() {
+		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
 		List<LanguageDto> languageDtos = null;
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAllByIsDeletedFalse();
+			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage(), dataAccessException);
@@ -69,24 +72,25 @@ public class LanguageServiceImpl implements LanguageService {
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 
-		languageRequestResponseDto.setLanguages(languageDtos);
-		return languageRequestResponseDto;
+		languageResponseDto.setLanguages(languageDtos);
+		return languageResponseDto;
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see LanguageService#saveLanguage(LanguageDto)
+	 * @see LanguageService#saveLanguage(RequestDto)
 	 */
-	@Override
-	public String saveLanguage(LanguageDto dto) {
+	public CodeResponseDto saveLanguage(RequestDto<LanguageDto> requestDto) {
 
 		try {
-			Language languages = metaDataUtils.mapDtoToEntity(dto, Language.class);
-			return languageRepository.create(languages).getCode();
-		} catch (HibernateException e) {
+			Language language = metaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
+			Language savedLanguage = languageRepository.create(language);
+			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
+		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage(), e);
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
 		}
 	}
 

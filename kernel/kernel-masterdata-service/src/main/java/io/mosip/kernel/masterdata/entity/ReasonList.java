@@ -11,18 +11,19 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "reason_list", schema = "master")
-@IdClass(CodeLangCodeAndRsnCatCode.class)
+@IdClass(CodeLangCodeAndRsnCatCodeID.class)
 public class ReasonList extends BaseEntity implements Serializable {
 
 	/**

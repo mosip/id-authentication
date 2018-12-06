@@ -12,8 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * This class provide services to MOSIP system to do CRUD operations on
@@ -23,7 +29,8 @@ import io.mosip.kernel.masterdata.service.LanguageService;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/languages")
+@RequestMapping("/v1.0/languages")
+@Api(tags = { "languages" })
 public class LanguageController {
 
 	/**
@@ -32,25 +39,24 @@ public class LanguageController {
 	@Autowired
 	private LanguageService languageService;
 
-	/**
-	 * This method provides list of all languages present in MOSIP system.
-	 * 
-	 * @return LanguageRequestResponseDto
-	 */
 	@GetMapping
-	public LanguageRequestResponseDto getAllLaguages() {
+	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages", response = LanguageResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When all Language retrieved from database", response = LanguageResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Language found"),
+			@ApiResponse(code = 500, message = "While retrieving Language any error occured") })
+	public LanguageResponseDto getAllLaguages() {
 		return languageService.getAllLaguages();
 	}
 
-	/**
-	 * This method creates list of all languages provided by <code>dto</code>.
-	 * 
-	 * @see LanguageRequestResponseDto
-	 * @return ResponseEntity
-	 */
 	@PostMapping
-	public ResponseEntity<?> saveAllLaguages(@Valid @RequestBody LanguageDto dto) {
-		return new ResponseEntity<>(languageService.saveLanguage(dto), HttpStatus.CREATED);
+	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = CodeResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While creating Language any error occured") })
+	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
+		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.CREATED);
 	}
 
 }

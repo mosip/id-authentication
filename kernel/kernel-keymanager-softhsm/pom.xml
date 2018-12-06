@@ -11,6 +11,9 @@
 	<artifactId>kernel-keymanager-softhsm</artifactId>
 	<packaging>jar</packaging>
 	<name>kernel-keymanager-softhsm</name>
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

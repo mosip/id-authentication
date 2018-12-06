@@ -7,21 +7,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
-import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
+/**
+ * Service API for Application
+ * 
+ * @author Neha
+ * @since 1.0.0
+ *
+ */
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -39,7 +46,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	/**
 	 * Get All Applications
 	 * 
-	 * @return {@link List<ApplicationDto>}
+	 * @return {@link ApplicationResponseDto}
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplication() {
@@ -48,7 +55,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 			applicationList = applicationRepository.findAllByIsDeletedFalse(Application.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
@@ -65,6 +72,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by language code
+	 * 
+	 * @param languageCode
+	 * 
+	 * @return {@link ApplicationResponseDto}
+	 */
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
@@ -72,7 +86,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
@@ -89,17 +103,24 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by code and language code
+	 * 
+	 * @param code
+	 * @param languageCode
+	 * 
+	 * @return {@link ApplicationResponseDto}
+	 */
 	@Override
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
 		Application application;
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
-					languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
 			dataMapper.map(application, applicationDto, true, null, null, true);
@@ -113,25 +134,26 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by language code
+	 * 
+	 * @param applicationRequestDto
+	 * 
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
 	@Override
-	public PostResponseDto addApplicationData(ApplicationRequestDto application) {
-		List<Application> entities = metaUtils.setCreateMetaData(application.getRequest().getApplicationtypes(),
+	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {
+		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
 				Application.class);
-		List<Application> applications;
+		Application application;
 		try {
-			applications = applicationRepository.saveAll(entities);
+			application = applicationRepository.create(entity);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		applications.forEach(app -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(app, codeLangCodeId, true, null, null, true);
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(application, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
 	}
 }

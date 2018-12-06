@@ -1,22 +1,26 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * blacklisted word Dto
+ * Blacklisted word DTO.
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 06-11-2018
+ * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class BlacklistedWordsDto {
+	@NotNull
+	@Size(min = 1, max = 128)
 	private String word;
-	private String description;
+	@NotNull
+	@Size(min = 1, max = 3)
 	private String langCode;
+	@Size(min = 1, max = 256)
+	private String description;
+	@NotNull
 	private Boolean isActive;
 }

@@ -2,6 +2,7 @@ package io.mosip.registration.test.service.packet.encryption.aes;
 
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +25,11 @@ public class AESSeedGeneratorTest {
 	@InjectMocks
 	private AESSeedGeneratorImpl aesSeedGeneratorImpl;
 
+	@AfterClass
+	public static void destroy() {
+		SessionContext.destroySession();
+	}
+	
 	@Test
 	public void testGenerateAESKeySeeds() throws RegBaseCheckedException {
 		UserContext userContext = SessionContext.getInstance().getUserContext();

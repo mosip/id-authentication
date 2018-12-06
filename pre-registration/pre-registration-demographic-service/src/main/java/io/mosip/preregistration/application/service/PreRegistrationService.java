@@ -25,12 +25,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
-import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.preregistration.application.code.StateManagment;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
@@ -78,7 +78,7 @@ public class PreRegistrationService {
 	private PreRegistrationRepository preRegistrationRepository;
 
 	@Autowired
-	private JsonValidator jsonValidator;
+	private JsonValidator jsonValidatorImpl;
 
 	@Value("${resource.url}")
 	String resourceUrl;
@@ -116,7 +116,7 @@ public class PreRegistrationService {
 
 			JSONObject demoObj = (JSONObject) reqObject.get("demographicDetails");
 
-			jsonValidator.validateJson(demoObj.toString(), "mosip-prereg-identity-json-schema.json");
+			jsonValidatorImpl.validateJson(demoObj.toString(), "mosip-prereg-identity-json-schema.json");
 
 			prid = (String) reqObject.get("preRegistrationId");
 			String json = applicantDetailJson.toString();

@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Machine History Details

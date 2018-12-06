@@ -465,8 +465,8 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
-
-		demographicJsonFile = new File("..\\packet-info-storage-service\\src\\test\\resources\\DemographicInfo.json");
+		ClassLoader classLoader = getClass().getClassLoader(); 
+		demographicJsonFile = new File(classLoader.getResource("DemographicInfo.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
 
 		Mockito.when(utility.getConfigServerFileStorageURL())

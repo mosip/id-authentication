@@ -1,26 +1,26 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This class have methods to fetch list of valid document types and to create
@@ -72,27 +72,23 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * 
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DocumentTypeService#addDocumentTypes(io.
-	 * mosip.kernel.masterdata.dto.DocumentTypeRequestDto)
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public PostResponseDto addDocumentTypes(DocumentTypeRequestDto documentTypeDto) {
-		List<DocumentType> entities = metaUtils.setCreateMetaData(documentTypeDto.getRequest().getDocumentTypes(),
-				DocumentType.class);
-		List<DocumentType> documentTypes;
+	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
+		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
+		DocumentType documentType;
 		try {
-			documentTypes = documentTypeRepository.saveAll(entities);
-		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
+			documentType = documentTypeRepository.create(entity);
+
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
 		}
-		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
-		documentTypes.forEach(documentType -> {
-			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
-			codeLangCodeIds.add(codeLangCodeId);
-		});
-		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setResults(codeLangCodeIds);
-		return postResponseDto;
+
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
+
+		return codeLangCodeId;
 	}
 }

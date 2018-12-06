@@ -1,0 +1,20 @@
+{
+	"identity": {
+		"name": {
+			"value": "firstName+lastName",
+			"weight": 20
+		},
+		"gender": {
+			"value": "gender",
+			"weight": 20
+		},
+		"dob": {
+			"value": "dob",
+			"weight": 20
+		},
+		"pheoniticName": {
+			"weight": 20
+		}
+
+	}
+} 
