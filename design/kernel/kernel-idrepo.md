@@ -27,6 +27,12 @@ Identity Repository service can be used internally by products to create, read a
 -	Audit :
 	-	Audit all transaction details in database
 	-	Individual’s UIN should not be audited
+		Event ID	|	Event Name	|	Module ID	|	Module Name	
+		-------------------------------------------------------------
+		IDR-EVT-001	|	System Event	|	IDR-MOD-001	|	Create Identity
+		IDR-EVT-001	|	System Event	|	IDR-MOD-002	|	Update Identity
+		IDR-EVT-001	|	System Event	|	IDR-MOD-003	|	Retrieve Identity
+
 -	Exception :
 	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
 -	Security :    
@@ -97,3 +103,7 @@ ID Repo provides default shard implementation where shards are decided based on 
 
 ![UIN Database Sharding](_images/kernel-idrepo-databasesharding.png)   
 
+
+**2.4.	Encrypting/Decrypting Identity**    
+
+Identity stored in UIN DB is encrypted/decrypted outside the DB. Details on the approach of encryption/decryption is available here - [Identity Encryption/Decryption] (https://github.com/mosip/mosip/wiki/Security#database-encryption)
