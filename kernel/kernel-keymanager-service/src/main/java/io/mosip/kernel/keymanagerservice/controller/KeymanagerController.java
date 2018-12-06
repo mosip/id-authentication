@@ -20,6 +20,7 @@ import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.swagger.annotations.Api;
 
 /**
  * This class provides controller methods for Key manager.
@@ -30,6 +31,7 @@ import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
  */
 @RestController
 @RequestMapping("/v1.0")
+@Api(tags = { "keymanager" })
 public class KeymanagerController {
 
 	@Autowired
