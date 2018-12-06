@@ -57,14 +57,12 @@ public class RegistrationAppInitialization extends Application {
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Application Initilization"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
-
 	}
-
 	
 	@Override
 	public void stop() throws Exception {
 		super.stop();
-		RegistrationOfficerDetailsController.stopTimer();
+		System.exit(0);
 	}
 
 	public static ApplicationContext getApplicationContext() {

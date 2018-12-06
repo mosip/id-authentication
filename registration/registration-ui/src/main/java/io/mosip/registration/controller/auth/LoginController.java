@@ -132,7 +132,7 @@ public class LoginController extends BaseController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
-		RegistrationOfficerDetailsController.stopTimer();
+		stopTimer();
 	}
 
 	/**

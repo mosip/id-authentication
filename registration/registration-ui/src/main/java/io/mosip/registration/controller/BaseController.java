@@ -9,8 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javax.annotation.PostConstruct;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +29,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.util.biometric.FingerprintFacade;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -298,4 +299,23 @@ public class BaseController {
 	protected Image convertBytesToImage(byte[] imageBytes) {
 		return new Image(new ByteArrayInputStream(imageBytes));
 	}
+	
+	protected Timer onlineAvailabilityCheck() {
+		Timer timer = new Timer();
+		initializeParentRoot.setTimer(timer);
+		return timer;
+	}
+
+	protected void stopTimer() {
+		if (initializeParentRoot.getTimer() != null) {
+			initializeParentRoot.getTimer().cancel();
+			initializeParentRoot.getTimer().purge();
+			initializeParentRoot.setTimer(null);
+		}
+	}
+
+	public Timer getTimer() {
+		return initializeParentRoot.getTimer() == null ? onlineAvailabilityCheck() : initializeParentRoot.getTimer();
+	}
+	
 }

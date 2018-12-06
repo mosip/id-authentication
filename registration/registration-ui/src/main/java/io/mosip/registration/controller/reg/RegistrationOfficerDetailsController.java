@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +63,6 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	@FXML
 	private ImageView availableIcon;
 
-	private static Timer timer;
-	
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
 
@@ -85,10 +82,14 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-		if (timer == null) {
-			onlineAvailabilityCheck();
+		
+		getTimer().schedule(new TimerTask() {
 
-		}
+			@Override
+			public void run() {
+				availableIcon.setVisible(RegistrationAppHealthCheckUtil.isNetworkAvailable());
+			}
+		}, 0, 5000);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
-			
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
 	}
@@ -222,32 +223,9 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		}
 	}
 
-	private void onlineAvailabilityCheck() {
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				availableIcon.setVisible(RegistrationAppHealthCheckUtil.isNetworkAvailable());
-			}
-		}, 0, 5000);
-	}
-
-	public static void stopTimer() {
-		if (timer != null) {
-			timer.cancel();
-			timer.purge();
-			timer = null;
-		}
-	}
-
-	public static Timer getTimer() {
-		return timer;
-	}
-	
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		//preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
+		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
 	}
 
 }
