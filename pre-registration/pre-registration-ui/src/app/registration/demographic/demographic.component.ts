@@ -299,7 +299,7 @@ export class DemographicComponent implements OnInit {
     const identity = this.createIdentityJSON();
     const req: RequestModel = {
       preRegistrationId: id,
-      createdBy: 'test4',
+      createdBy: this.loginId,
       createdDateTime: '',
       updatedBy: '',
       updatedDateTime: '',
