@@ -13,7 +13,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.auth.LoginController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -65,10 +64,7 @@ public class DemographicPreviewController extends BaseController {
 	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
 				applicationContext.getApplicationLanguageBundle());
-		getScene().setRoot(createRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		getScene().getStylesheets()
-				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		getScene(createRoot);
 	}
 
 	/**
