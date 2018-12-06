@@ -167,7 +167,6 @@ public class PacketInfoDao {
 				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
 			}
 
-			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
 	}
@@ -181,7 +180,6 @@ public class PacketInfoDao {
 				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
 			}
 
-			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
 	}

@@ -128,7 +128,7 @@ public class PacketInfoManagerImplTest {
 		Photograph applicantPhotograph = new Photograph();
 
 		applicantPhotograph.setLabel("label");
-		applicantPhotograph.setLanguage("eng");
+		applicantPhotograph.setLanguage("eng"); 
 		applicantPhotograph.setNumRetry(4);
 		applicantPhotograph.setPhotographName("applicantPhoto");
 		applicantPhotograph.setQualityScore(80.0);
@@ -552,7 +552,6 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
-
 		DemographicDedupeDto demoDto = new DemographicDedupeDto();
 		List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
@@ -691,8 +690,8 @@ public void findDemoByIdTest() {
 public void getRegistrationCenterMachineTest() {
 	RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
 	regCenterMachineDto.setIsActive(true);
-	regCenterMachineDto.setLatitude("90");
-	regCenterMachineDto.setLongitude("101");
+	regCenterMachineDto.setLatitude("12.9716° N");
+	regCenterMachineDto.setLongitude("77.5946° E");
 	regCenterMachineDto.setMachineId("123");
 	regCenterMachineDto.setRegId("2018782130000103122018100224");
 	
