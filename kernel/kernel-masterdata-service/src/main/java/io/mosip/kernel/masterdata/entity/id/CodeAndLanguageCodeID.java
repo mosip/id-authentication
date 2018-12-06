@@ -14,10 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CodeAndLanguageCodeID implements Serializable {
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7001663925687776491L;
+	private static final long serialVersionUID = -9083898959072007739L;
 
 	@Column(name = "code", nullable = false)
 	private String code;

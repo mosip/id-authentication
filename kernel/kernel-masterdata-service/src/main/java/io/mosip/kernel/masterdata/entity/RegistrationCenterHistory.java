@@ -98,6 +98,7 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
+	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),

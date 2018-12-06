@@ -28,10 +28,13 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
-	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
+	@Autowired
+	MapperUtils mapperUtils;
+
+	/*public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
-	
+
 		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 
 		Field[] fields = entity.getClass().getDeclaredFields();
@@ -52,7 +55,7 @@ public class MetaDataUtils {
 
 		setCreatedDateTime(contextUser, entity);
 		return entity;
-	}
+	}*/
 
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
@@ -65,7 +68,7 @@ public class MetaDataUtils {
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
-		
+
 		return entities;
 
 	}
@@ -74,15 +77,14 @@ public class MetaDataUtils {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
 	}
-	
-	
-public MachineHistory createdMachineHistory(Machine machine) {
-		
+
+	public MachineHistory createdMachineHistory(Machine machine) {
+
 		LocalDateTime etime = LocalDateTime.now(ZoneId.of("UTC"));
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
-		
-		MachineHistory machineHistory = new MachineHistory() ;
+
+		MachineHistory machineHistory = new MachineHistory();
 		machineHistory.setId(machine.getId());
 		machineHistory.setName(machine.getName());
 		machineHistory.setMacAddress(machine.getMacAddress());
@@ -92,36 +94,61 @@ public MachineHistory createdMachineHistory(Machine machine) {
 		machineHistory.setLangCode(machine.getLangCode());
 		machineHistory.setIsActive(machine.getIsActive());
 		machineHistory.setValEndDtimes(machine.getValidityDateTime());
-		
-		setCreatedDateTime(contextUser,machineHistory);
+
+		setCreatedDateTime(contextUser, machineHistory);
 		machineHistory.setEffectDtimes(etime);
-		
-		
+
 		return machineHistory;
-		
+
 	}
 
-//-----------------------------------------
-public Machine createdMachine(MachineDto machineDto) {
-	
-	Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-	String contextUser = authN.getName();
-	
-	Machine machine = new Machine() ;
-	machine.setId(machineDto.getId());
-	machine.setName(machineDto.getName());
-	machine.setMacAddress(machineDto.getMacAddress());
-	machine.setSerialNum(machineDto.getSerialNum());
-	machine.setIpAddress(machineDto.getIpAddress());
-	machine.setMachineSpecId(machineDto.getMachineSpecId());
-	machine.setLangCode(machineDto.getLangCode());
-	machine.setIsActive(machineDto.getIsActive());
-	machine.setValidityDateTime(machineDto.getValidityDateTime());
-	
-	setCreatedDateTime(contextUser,machine);
-	return machine;
-	
-}
+	// -----------------------------------------
+	public Machine createdMachine(MachineDto machineDto) {
+
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		String contextUser = authN.getName();
+
+		Machine machine = new Machine();
+		machine.setId(machineDto.getId());
+		machine.setName(machineDto.getName());
+		machine.setMacAddress(machineDto.getMacAddress());
+		machine.setSerialNum(machineDto.getSerialNum());
+		machine.setIpAddress(machineDto.getIpAddress());
+		machine.setMachineSpecId(machineDto.getMachineSpecId());
+		machine.setLangCode(machineDto.getLangCode());
+		machine.setIsActive(machineDto.getIsActive());
+		machine.setValidityDateTime(machineDto.getValidityDateTime());
+
+		setCreatedDateTime(contextUser, machine);
+		return machine;
+
+	}
+
+	public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		String contextUser = authN.getName();
+
+		D entity = (D) mapperUtils.mapNew(dto, entityClass);
+
+		Field[] fields = entity.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(EmbeddedId.class)) {
+				try {
+					Object id = field.getType().newInstance();
+					dataMapper.map(dto, id, true, null, null, true);
+					field.setAccessible(true);
+					field.set(entity, id);
+					field.setAccessible(false);
+					break;
+				} catch (Exception e) {
+					throw new DataAccessLayerException("KER-MSD-000", "Error while mapping Embedded Id fields", e);
+				}
+			}
+		}
+
+		setCreatedDateTime(contextUser, entity);
+		return entity;
+	}
 
 }
 
