@@ -16,6 +16,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller with api to save and get Device Details
@@ -65,7 +68,12 @@ public class DeviceController {
 	 *            input parameters
 	 * @return code of entered row of device
 	 */
-	@PostMapping("/device")
+	@PostMapping()
+	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While creating device any error occured") })
 	public ResponseEntity<IdResponseDto> saveDevice(@RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
 		return new ResponseEntity<>(deviceService.saveDevice(deviceRequestDto), HttpStatus.CREATED);

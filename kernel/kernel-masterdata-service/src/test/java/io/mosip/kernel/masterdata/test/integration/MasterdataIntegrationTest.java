@@ -600,7 +600,7 @@ public class MasterdataIntegrationTest {
 		blacklistedWords.setIsActive(true);
 		blacklistedWords.setWord("testword");
 	}
-	// -------RegistrationCenterDevice mapping-------------------------
+	// -------RegistrationCenter mapping-------------------------
 
 	@Test
 	public void mapRegistrationCenterAndDeviceTest() throws Exception {
@@ -1484,25 +1484,27 @@ public class MasterdataIntegrationTest {
 
 	// ------------------------------------------device
 	// ----------------------------------------
+	
+	
 
-	/*@Test
-	public void addDeviceTypeTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"request\": { \"code\": \"1234rf\", \"deviceSpecId\": \"1011\", \"ipAddress\": \"string\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"string\", \"name\": \"string\", \"serialNum\": \"string\" }, \"timestamp\": \"2018-12-03T09:46:53.033Z\", \"ver\": \"string\"}";
+	@Test
+	public void createDeviceTypeTest() throws Exception {
+		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T07:05:31.177Z\", \"request\": { \"deviceSpecId\": \"6655\", \"id\": \"665555\", \"ipAddress\": \"129.0.0.0\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"HP\", \"serialNum\": \"66\", \"validityDateTime\": \"2018-12-06T07:05:31.177Z\" } }";
 		when(deviceRepository.create(Mockito.any())).thenReturn(device);
 		mockMvc.perform(post("/v1.0/devices/device").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
-	}*/
+	}
 
-/*	@Test
-	public void addDeviceTypeExceptionTest() throws Exception {
+	@Test
+	public void createDeviceTypeExceptionTest() throws Exception {
 
-		String json = "{ \"id\": \"string\", \"request\": { \"code\": \"1234rf\", \"deviceSpecId\": \"1011\", \"ipAddress\": \"string\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"string\", \"name\": \"string\", \"serialNum\": \"string\" }, \"timestamp\": \"2018-12-03T09:46:53.033Z\", \"ver\": \"string\"}";
+		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T07:05:31.177Z\", \"request\": { \"deviceSpecId\": \"6655\", \"id\": \"665555\", \"ipAddress\": \"129.0.0.0\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"HP\", \"serialNum\": \"66\", \"validityDateTime\": \"2018-12-06T07:05:31.177Z\" } }";
 		when(deviceRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/devices/device").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 
-	}*/
+	}
 	
 	// ----------------------------------BiometricAttributeCreateApiTest--------------------------------------------------
 		@Test
