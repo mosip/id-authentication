@@ -36,82 +36,153 @@ import lombok.NoArgsConstructor;
 @Table(name = "registration_center", schema = "master")
 public class RegistrationCenter extends BaseEntity implements Serializable {
 
+	/**
+	 * Serializable version ID.
+	 */
 	private static final long serialVersionUID = -8541947587557590379L;
 
+	/**
+	 * the id of the registration center.
+	 */
 	@Id
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	/**
+	 * the name of the registration center.
+	 */
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
 
+	/**
+	 * the center type code.
+	 */
 	@Column(name = "cntrtyp_code", length = 36)
 	private String centerTypeCode;
 
+	/**
+	 * the first address line.
+	 */
 	@Column(name = "addr_line1", length = 256)
 	private String addressLine1;
 
+	/**
+	 * the second address line.
+	 */
 	@Column(name = "addr_line2", length = 256)
 	private String addressLine2;
 
+	/**
+	 * the third address line.
+	 */
 	@Column(name = "addr_line3", length = 256)
 	private String addressLine3;
 
+	/**
+	 * the latitude of the registration center.
+	 */
 	@Column(name = "latitude", length = 32)
 	private String latitude;
 
+	/**
+	 * the longitude of the registration center.
+	 */
 	@Column(name = "longitude", length = 32)
 	private String longitude;
 
+	/**
+	 * the location code of the registration center.
+	 */
 	@Column(name = "location_code", length = 36)
 	private String locationCode;
-	
+
+	/**
+	 * the {@link Location} reference.
+	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	private Location location;
 
+	/**
+	 * the {@link RegistrationCenterType} reference.
+	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "cntrtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
-
 	private RegistrationCenterType registrationCenterType;
 
+	/**
+	 * the contact phone of the registration center.
+	 */
 	@Column(name = "contact_phone", length = 16)
 	private String contactPhone;
 
+	/**
+	 * the number of kiosks.
+	 */
 	@Column(name = "number_of_kiosks")
 	private Short numberOfKiosks;
 
+	/**
+	 * the holiday location code.
+	 */
 	@Column(name = "holiday_loc_code", nullable = false, length = 36)
 	private String holidayLocationCode;
 
+	/**
+	 * the number of working hours.
+	 */
 	@Column(name = "working_hours", length = 32)
 	private String workingHours;
 
+	/**
+	 * the per kiosk process time.
+	 */
 	@Column(name = "per_kiosk_process_time")
 	private LocalTime perKioskProcessTime;
 
+	/**
+	 * the start time of the registration center.
+	 */
 	@Column(name = "center_start_time")
 	private LocalTime centerStartTime;
 
+	/**
+	 * the end time of the registration center.
+	 */
 	@Column(name = "center_end_time")
 	private LocalTime centerEndTime;
 
+	/**
+	 * the language code of the registration center.
+	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
+	/**
+	 * the timezone of the registration center.
+	 */
 	@Column(name = "time_zone", length = 64)
 	private String timeZone;
 
+	/**
+	 * the contact person of the registration center.
+	 */
 	@Column(name = "contact_person", length = 128)
 	private String contactPerson;
 
+	/**
+	 * the lunch start time of the registration center.
+	 */
 	@Column(name = "lunch_start_time")
 	private LocalTime lunchStartTime;
 
+	/**
+	 * the lunch end time of the registration center.
+	 */
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 

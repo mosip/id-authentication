@@ -312,6 +312,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		RegistrationCenter entity = new RegistrationCenter();
@@ -328,5 +331,4 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		idResponseDto.setId(registrationCenter.getId());
 		return idResponseDto;
 	}
-
 }
