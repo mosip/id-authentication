@@ -70,24 +70,6 @@ public class MetaDataUtils {
 		return entity;
 	}
 
-	/*
-	 * public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<?
-	 * extends BaseEntity> entityClass) { Authentication authN =
-	 * SecurityContextHolder.getContext().getAuthentication(); String contextUser =
-	 * authN.getName();
-	 * 
-	 * D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
-	 * 
-	 * Field[] fields = entity.getClass().getDeclaredFields(); for (Field field :
-	 * fields) { if (field.isAnnotationPresent(EmbeddedId.class)) { try { Object id
-	 * = field.getType().newInstance(); dataMapper.map(dto, id, true, null, null,
-	 * true); field.setAccessible(true); field.set(entity, id);
-	 * field.setAccessible(false); break; } catch (Exception e) { throw new
-	 * DataAccessLayerException("KER-MSD-000",
-	 * "Error while mapping Embedded Id fields", e); } } }
-	 * 
-	 * setCreatedDateTime(contextUser, entity); return entity; }
-	 */
 
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
