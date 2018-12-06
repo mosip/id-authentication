@@ -145,9 +145,11 @@ public class RegistrationConstants {
 	public static final String EMAIL_ID_EXAMPLE = bundle.getString("EMAIL_ID_EXAMPLE");
 	public static final String PARENT_NAME_EMPTY = bundle.getString("PARENT_NAME_EMPTY");
 	public static final String UIN_ID_EMPTY = bundle.getString("UIN_ID_EMPTY");
+	public static final String UIN_ID_WARNING = bundle.getString("UIN_ID_WARNING");
 	public static final String ADDRESS_LINE_WARNING = bundle.getString("ADDRESS_LINE_WARNING");
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = bundle.getString("LOCAL_ADMIN_AUTHORITY_EMPTY");
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = bundle.getString("CNIE_OR_PIN_NUMBER_EMPTY");
+	public static final String CNIE_OR_PIN_NUMBER_WARNING = bundle.getString("CNIE_OR_PIN_NUMBER_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("POA_DOCUMENT_EMPTY");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("POI_DOCUMENT_EMPTY");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("POR_DOCUMENT_EMPTY");
@@ -738,10 +740,13 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
 	// Regex Constants
-	public static final String FULL_NAME_REGEX = "[A-z]{1,25}\\s?\\.?[A-z]{1,25}";
+	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
+	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX="^.{1,50}$";
-	public static final String MOBILE_NUMBER_REGEX="\\d{9}";
+	public static final String MOBILE_NUMBER_REGEX="\\d++";
+	public static final int MOBILE_NUMBER_LENGTH=9;
 	public static final String EMAIL_ID_REGEX="^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
+	public static final String EMAIL_ID_REGEX_INITIAL="([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
 	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
 	public static final String AGE_REGEX="\\d{1,2}";
 	public static final String UIN_REGEX="\\d{1,30}";

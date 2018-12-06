@@ -930,11 +930,11 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
 
-						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
+						fullName.setText(fullName.getText().replaceAll(".$", ""));
 						fullName.requestFocus();
 					} else {
 						fullNameLocalLanguage.setText(fullName.getText());
@@ -946,7 +946,14 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					addressLine1LocalLanguage.setText(addressLine1.getText());
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
+
+						addressLine1.setText(addressLine1.getText().replaceAll(".$", ""));
+						addressLine1.requestFocus();
+					} else {
+						addressLine1LocalLanguage.setText(addressLine1.getText());
+					}
 				}
 			});
 
@@ -965,6 +972,74 @@ public class RegistrationController extends BaseController {
 					addressLine3LocalLanguage.setText(addressLine3.getText());
 				}
 			});
+
+			mobileNo.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
+							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+						mobileNo.setText(mobileNo.getText().replaceAll(".$", ""));
+						mobileNo.requestFocus();
+					}
+				}
+			});
+
+			emailId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
+							|| newValue.length() > 50)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
+						emailId.setText(emailId.getText().replaceAll(".$", ""));
+						emailId.requestFocus();
+					}
+				}
+			});
+
+			cniOrPinNumber.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR,
+								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
+						cniOrPinNumber.setText(cniOrPinNumber.getText().replaceAll(".$", ""));
+						cniOrPinNumber.requestFocus();
+					}
+				}
+			});
+
+			parentName.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
+
+						parentName.setText(parentName.getText().replaceAll(".$", ""));
+						parentName.requestFocus();
+					}
+				}
+			});
+			
+			uinId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
+						uinId.setText(uinId.getText().replaceAll(".$", ""));
+						uinId.requestFocus();
+					}
+				}
+			});
+			
+			
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
