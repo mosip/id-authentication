@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 
 import { Applicant } from '../registration/dashboard/dashboard.modal';
+import { BookingModelRequest } from '../registration/center-selection/booking-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,12 @@ export class DataStorageService {
     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
-  MASTER_DATA_URL = 'http://localhost:8086/';
+  MASTER_DATA_URL = 'http://localhost:8080/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
   AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/book/availability';
+  BOOKING_URL = 'http://localhost:9094/v0.1/pre-registration/book/book';
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
@@ -83,5 +85,9 @@ export class DataStorageService {
       responseType: 'json',
       params: new HttpParams().append('RegCenterId', registrationCenterId)
     });
+  }
+
+  makeBooking(request: BookingModelRequest) {
+    return this.httpClient.post(this.BOOKING_URL, request);
   }
 }

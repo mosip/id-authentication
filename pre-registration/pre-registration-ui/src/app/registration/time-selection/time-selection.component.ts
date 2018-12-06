@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SharedService } from 'src/app/shared/shared.service';
 import { NameList } from '../demographic/name-list.modal';
 import { MatDialog } from '@angular/material';
@@ -10,12 +10,11 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit {
+export class TimeSelectionComponent implements OnInit, OnChanges {
 
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
   @Input() registrationCenter: any;
-  numbers: number[];
   selectedCard = 0;
   selectedTile = null;
   limit = [];
@@ -30,15 +29,16 @@ export class TimeSelectionComponent implements OnInit {
   constructor(private sharedService: SharedService, private dialog: MatDialog, private dataService: DataStorageService) { }
 
   ngOnInit() {
-    this.numbers = Array(10).fill(0).map((x, i) => i); // [0,1,2,3,4]
     this.names = this.sharedService.getNameList();
     this.sharedService.resetNameList();
     console.log('in onInit', this.names);
-    this.dataService.getAvailabilityData(this.registrationCenter.id).subscribe(response => {
-      this.formatJson(response['response'].centerDetails);
-    }, error => {
-      console.log(error);
-    });
+    this.getSlotsforCenter(this.registrationCenter.id);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.availabilityData = [];
+    console.log('On changes triggered');
+    this.getSlotsforCenter(changes.registrationCenter.currentValue.id);
   }
 
   public scrollRight(): void {
@@ -141,6 +141,17 @@ export class TimeSelectionComponent implements OnInit {
       }
     });
     console.log(this.availabilityData);
+  }
+
+  getSlotsforCenter(id) {
+    this.dataService.getAvailabilityData(id).subscribe(response => {
+      console.log(response);
+      if (response['response']) {
+        this.formatJson(response['response'].centerDetails);
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
 }

@@ -16,6 +16,7 @@ import { ParentComponent } from './parent/parent.component';
 import { DialougComponent } from '../shared/dialoug/dialoug.component';
 import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { DraggableDirective } from './file-upload/draggable.directive';
     CenterSelectionComponent,
     DashBoardComponent,
     ParentComponent,
-    DraggableDirective
+    DraggableDirective,
+    ConfirmationComponent
   ]
 })
 export class RegistrationModule {}
