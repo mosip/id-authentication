@@ -1,6 +1,5 @@
 
 -- Foreign Key Constraints Same DB/Schema tables.
-
 -- FOREIGN KEY CONSTRAINTS : mosip_regprc database/schema.
 
 alter table regprc.applicant_demographic add constraint fk_appldem_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
