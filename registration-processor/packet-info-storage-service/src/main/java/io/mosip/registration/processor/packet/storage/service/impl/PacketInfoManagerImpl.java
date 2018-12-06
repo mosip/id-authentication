@@ -532,7 +532,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		boolean isTransactionSuccessful = false;
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
-					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
+					.converDemographicDedupeDtoToEntity(demographicData, regId);
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
 				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> DemographicDedupeData SAVED");
@@ -611,10 +611,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
-@Override
+
+	@Override
 	public Set<String> performDedupe(String refId) {
 		int score = 0;
-		int threshold =utility.getThreshold() ;
+		int threshold = utility.getThreshold();
 		Set<String> duplicateRegIds = new HashSet<>();
 		List<DemographicDedupeDto> idsWithUin = packetInfoDao.getAllDemoWithUIN();
 
@@ -655,6 +656,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public List<DemographicDedupeDto> findDemoById(String regId) {
-				return packetInfoDao.findDemoById(regId);
+		return packetInfoDao.findDemoById(regId);
 	}
 }

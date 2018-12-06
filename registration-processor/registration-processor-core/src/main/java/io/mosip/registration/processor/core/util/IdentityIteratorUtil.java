@@ -48,8 +48,8 @@ public class IdentityIteratorUtil {
 	 *            the label
 	 * @return the field value
 	 */
-	public String getFieldValue(List<FieldValue> metaData, String label) {
-		for (FieldValue field : metaData) {
+	public String getFieldValue(List<FieldValue> data, String label) {
+		for (FieldValue field : data) {
 			if (field.getLabel().equalsIgnoreCase(label))
 				return field.getValue();
 
