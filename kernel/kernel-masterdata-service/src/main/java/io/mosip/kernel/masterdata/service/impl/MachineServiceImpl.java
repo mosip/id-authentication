@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,12 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -53,7 +52,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Autowired
 	MapperUtils objectMapperUtil;
-
+	
 	@Autowired
 	private MetaDataUtils metaUtils;
 
@@ -97,7 +96,6 @@ public class MachineServiceImpl implements MachineService {
 		}
 		if (machine != null) {
 			machineDto = objectMapperUtil.mapNew(machine, MachineDto.class);
-					//mapMachineDto(machine);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -196,17 +194,9 @@ public class MachineServiceImpl implements MachineService {
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine;
-		try {
-		 machine.getRequest().getValidityDateTime();
-		} catch (Exception e) {
-		throw new MasterDataServiceException(
-				MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-				MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage());
-		}
-		Machine entity = metaUtils.createdMachine(machine.getRequest());
-		//Machine entity = metaUtils.setMachineCreateMetaData(machine.getRequest(), Machine.class);
-		MachineHistory entityHistory = metaUtils.createdMachineHistory(entity);
-
+		Machine entity = metaUtils.setCreateMetaData(machine.getRequest(), Machine.class);
+		MachineHistory entityHistory = metaUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
+		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		try {
 			crtMachine = machineRepository.create(entity);
 			machineHistoryRepository.create(entityHistory);

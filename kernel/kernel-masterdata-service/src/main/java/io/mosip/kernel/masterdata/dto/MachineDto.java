@@ -62,6 +62,7 @@ public class MachineDto {
 	/**
 	 * Field for machine specification Id
 	 */
+	@NotNull
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "machineSpecId", required = true, dataType = "java.lang.String")
 	private String machineSpecId;

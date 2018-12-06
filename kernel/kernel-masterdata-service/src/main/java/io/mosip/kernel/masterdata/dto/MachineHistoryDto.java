@@ -45,7 +45,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field for machine specific id
 	 */
-	private String mspecId;
+	private String machineSpecId;
 	/**
 	 * Field for language code
 	 */
@@ -88,8 +88,8 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold Effective Date and time
 	 */
-	private LocalDateTime effectDtimes;
+	private LocalDateTime effectDateTime;
 	
-	private LocalDateTime valEndDtimes;
+	private LocalDateTime validityDateTime;
 
 }

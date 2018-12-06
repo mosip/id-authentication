@@ -31,32 +31,7 @@ public class MetaDataUtils {
 	@Autowired
 	MapperUtils mapperUtils;
 
-	/*public <T, D extends BaseEntity> D setCreateMetaData(final T dto, Class<? extends BaseEntity> entityClass) {
-		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = authN.getName();
-
-		D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
-
-		Field[] fields = entity.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(EmbeddedId.class)) {
-				try {
-					Object id = field.getType().newInstance();
-					dataMapper.map(dto, id, true, null, null, true);
-					field.setAccessible(true);
-					field.set(entity, id);
-					field.setAccessible(false);
-					break;
-				} catch (Exception e) {
-					throw new DataAccessLayerException("KER-MSD-000", "Error while mapping Embedded Id fields", e);
-				}
-			}
-		}
-
-		setCreatedDateTime(contextUser, entity);
-		return entity;
-	}*/
-
+	
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
@@ -90,13 +65,13 @@ public class MetaDataUtils {
 		machineHistory.setMacAddress(machine.getMacAddress());
 		machineHistory.setSerialNum(machine.getSerialNum());
 		machineHistory.setIpAddress(machine.getIpAddress());
-		machineHistory.setMspecId(machine.getMachineSpecId());
+		machineHistory.setMachineSpecId(machine.getMachineSpecId());
 		machineHistory.setLangCode(machine.getLangCode());
 		machineHistory.setIsActive(machine.getIsActive());
-		machineHistory.setValEndDtimes(machine.getValidityDateTime());
+		machineHistory.setValidityDateTime(machine.getValidityDateTime());
 
 		setCreatedDateTime(contextUser, machineHistory);
-		machineHistory.setEffectDtimes(etime);
+		machineHistory.setEffectDateTime(etime);
 
 		return machineHistory;
 
@@ -135,7 +110,7 @@ public class MetaDataUtils {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
 				try {
 					Object id = field.getType().newInstance();
-					dataMapper.map(dto, id, true, null, null, true);
+					mapperUtils.mapNew(dto, id);
 					field.setAccessible(true);
 					field.set(entity, id);
 					field.setAccessible(false);
@@ -151,4 +126,3 @@ public class MetaDataUtils {
 	}
 
 }
-

@@ -48,7 +48,7 @@ public class MachineHistoryControllerTest1 {
                                 machineHistoryDto.setId("1000");
                                 machineHistoryDto.setLangCode("ENG");
                                 LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
-                                machineHistoryDto.setEffectDtimes(specificDate);
+                                machineHistoryDto.setEffectDateTime(specificDate);
                                 machineHistoryDetails.add(machineHistoryDto);
                                 machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDetails);
                 }
