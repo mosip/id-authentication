@@ -1,11 +1,6 @@
 package io.mosip.registration.processor.manual.adjudication.dao;
 
-import java.util.HashMap;
-
-
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,46 +8,49 @@ import io.mosip.registration.processor.manual.adjudication.entity.ManualVerifica
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.manual.adjudication.repository.ManualAdjudiacationRepository;
 
-
-
+/**
+ * Dao Layer for Manual Verification
+ * 
+ * @author Shuchita
+ * @since 0.0.1
+ *
+ */
 @Component
 public class ManualAdjudicationDao {
 	@Autowired
 	ManualAdjudiacationRepository<ManualVerificationEntity, ManualVerificationPKEntity> manualAdjudiacationRepository;
-	/** The Constant AND. */
-	public static final String AND = "AND";
 
-	/** The Constant EMPTY_STRING. */
-	public static final String EMPTY_STRING = " ";
-
-	/** The Constant SELECT_DISTINCT. */
-	public static final String SELECT_DISTINCT = "SELECT DISTINCT ";
-
-	/** The Constant FROM. */
-	public static final String FROM = " FROM  ";
-
-	/** The Constant WHERE. */
-	public static final String WHERE = " WHERE ";
-	
-	/** The Constant WHERE. */
-	public static final String ORDER_BY = " ORDER BY ";
-
-	
+	/**
+	 * This method updates Manual Verification Status in DB
+	 * 
+	 * @param manualAdjudicationEntity
+	 *            Entity {@link io.mosip.registration.processor.status.repositary.ManualVerificationEntity}
+	 * @return updated {@link ManualVerificationEntity}
+	 */
 	public ManualVerificationEntity update(ManualVerificationEntity manualAdjudicationEntity) {
 		return manualAdjudiacationRepository.save(manualAdjudicationEntity);
 	}
-	
-	public List<ManualVerificationEntity> getFirstApplicantDetails(){
-		Map<String, Object> params = new HashMap<>();
-		String className = ManualVerificationEntity.class.getSimpleName();
-		String alias = ManualVerificationEntity.class.getName().toLowerCase().substring(0, 1);
-		
-		String queryStr = SELECT_DISTINCT + alias + FROM + className + WHERE + alias +".cr_dtimes in "
-				+ "(" + "select min(" +alias + ".cr_dtimes)" +FROM +className +")" +AND +alias+ ".status_code =:statusCode" ;
-		params.put("statusCode", "PENDING");
+
+	/**
+	 * This method finds earliest created unassigned {@link ManualVerificationEntity}.
+	 * 
+	 * @return the earliest created unassigned {@link ManualVerificationEntity}
+	 */
+	public List<ManualVerificationEntity> getFirstApplicantDetails() {
+		//TODO Fix this sonar lint issue
 		List<ManualVerificationEntity> manualAdjudicationEntitiesList = manualAdjudiacationRepository
-				.createQuerySelect(queryStr, params);
+				.getFirstApplicantDetails("PENDING");
 		return manualAdjudicationEntitiesList;
-		
+
+	}
+
+	/**
+	 * @param regId
+	 * @param mvUsrId
+	 * @return
+	 */
+	public ManualVerificationEntity getByRegId(String regId, String mvUsrId) {
+		//TODO Specify comment for this method
+		return manualAdjudiacationRepository.getByRegId(regId, mvUsrId);
 	}
 }
