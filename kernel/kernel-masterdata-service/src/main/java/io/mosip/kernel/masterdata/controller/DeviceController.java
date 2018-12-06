@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
 
 /**
@@ -66,7 +66,7 @@ public class DeviceController {
 	 * @return code of entered row of device
 	 */
 	@PostMapping("/device")
-	public ResponseEntity<CodeResponseDto> saveDevice(@RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdResponseDto> saveDevice(@RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
 		return new ResponseEntity<>(deviceService.saveDevice(deviceRequestDto), HttpStatus.CREATED);
 	}

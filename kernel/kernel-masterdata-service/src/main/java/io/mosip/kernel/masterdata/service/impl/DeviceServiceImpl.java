@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -146,21 +146,20 @@ public class DeviceServiceImpl implements DeviceService {
 	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device;
 
 		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
-		/*Device entity = metaDataUtils.setDeviceCreateMetaData(deviceDto.getRequest(), Device.class);*/
 		try {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		CodeResponseDto codeResponseDto = new CodeResponseDto();
-		dataMapper.map(device, codeResponseDto, true, null, null, true);
+		IdResponseDto idResponseDto = new IdResponseDto();
+		dataMapper.map(device, idResponseDto, true, null, null, true);
 
-		return codeResponseDto;
+		return idResponseDto;
 
 	}
 

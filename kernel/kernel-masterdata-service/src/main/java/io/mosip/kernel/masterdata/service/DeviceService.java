@@ -4,7 +4,7 @@ import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Device Details
@@ -33,6 +33,6 @@ public interface DeviceService {
 	 *            DTO containing input parameters to add a new device
 	 * @return code of the entered device
 	 */
-	public CodeResponseDto saveDevice(RequestDto<DeviceDto> deviceRequestDto);
+	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceRequestDto);
 
 }
