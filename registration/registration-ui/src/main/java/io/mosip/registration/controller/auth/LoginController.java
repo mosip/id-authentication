@@ -181,10 +181,6 @@ public class LoginController extends BaseController implements Initializable {
 
 			getGlobalParams();
 
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene = new Scene(loginRoot, 950, 630);
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();

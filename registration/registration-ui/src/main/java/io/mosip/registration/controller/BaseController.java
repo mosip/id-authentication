@@ -41,6 +41,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -65,8 +66,9 @@ public class BaseController {
 	protected ApplicationContext applicationContext;
 	
 	@PostConstruct
-	public void initializeContext() {
+	public void initializeContext() throws IOException {
 		applicationContext = ApplicationContext.getInstance();
+		this.scene = getScene();
 	}
 
 	protected Stage stage;
@@ -93,7 +95,12 @@ public class BaseController {
 		return stage;
 	}
 	
-	protected Scene getScene() {
+	protected Scene getScene() throws IOException {
+		BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
+				applicationContext.getApplicationMessagesBundle());
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		scene = new Scene(loginRoot, 950, 630);
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}
 
