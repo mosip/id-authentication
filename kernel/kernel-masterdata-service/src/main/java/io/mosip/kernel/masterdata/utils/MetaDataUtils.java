@@ -31,7 +31,6 @@ public class MetaDataUtils {
 	@Autowired
 	MapperUtils mapperUtils;
 
-	
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
