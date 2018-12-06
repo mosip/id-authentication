@@ -5,7 +5,7 @@ import java.util.Date;
 public class PreRegistrationDTO {
 	
 	private String preRegId;
-	private byte[] encryptedPacket;
+	private byte[] decryptedPacket;
 	private String packetPath;
 	private String symmetricKey;
 	public String getPreRegId() {
@@ -15,10 +15,10 @@ public class PreRegistrationDTO {
 		this.preRegId = preRegId;
 	}
 	public byte[] getEncryptedPacket() {
-		return encryptedPacket;
+		return decryptedPacket;
 	}
 	public void setEncryptedPacket(byte[] encryptedPacket) {
-		this.encryptedPacket = encryptedPacket;
+		this.decryptedPacket = encryptedPacket;
 	}
 	public String getPacketPath() {
 		return packetPath;
