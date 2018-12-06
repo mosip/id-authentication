@@ -13,7 +13,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.auth.LoginController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -55,11 +54,7 @@ public class RegistrationOfficerController extends BaseController implements Ini
 					.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			mainBox.getChildren().add(optionRoot);
 
-			getScene().setRoot(mainBox);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			getScene().getStylesheets()
-					.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-
+			getScene(mainBox);
 		} catch (IOException | RuntimeException exception) {
 			
 			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME,

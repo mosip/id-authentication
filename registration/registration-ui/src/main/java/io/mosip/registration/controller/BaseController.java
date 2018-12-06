@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +32,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -41,7 +40,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -65,7 +63,7 @@ public class BaseController {
 	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 	
-	protected Stage stage;
+	protected static Stage stage;
 	protected Scene scene;
 	
 	/**
@@ -89,11 +87,12 @@ public class BaseController {
 		return stage;
 	}
 	
-	protected Scene getScene() throws IOException {
-		BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
-				ApplicationContext.getInstance().getApplicationMessagesBundle());
+	protected Scene getScene(Parent borderPane) throws IOException {
+		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		scene = new Scene(loginRoot, 950, 630);
+		scene = new Scene(borderPane, 950, 630);
+		scene.setRoot(borderPane);
+		stage.setScene(scene);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}

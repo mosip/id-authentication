@@ -37,7 +37,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
-import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.controller.device.ScanController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -857,10 +856,7 @@ public class RegistrationController extends BaseController {
 	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
 				applicationContext.getApplicationLanguageBundle());
-		getScene().setRoot(createRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		getScene().getStylesheets()
-				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		getScene(createRoot);
 	}
 
 	/**
@@ -1923,7 +1919,7 @@ public class RegistrationController extends BaseController {
 		
 		Image img = convertBytesToImage(document);
 		ImageView view = new ImageView(img);
-		Scene scene = new Scene(new StackPane(view));
+		Scene scene = new Scene(new StackPane(view), 700, 600);
 		Stage primaryStage = new Stage();
 		primaryStage.setTitle(RegistrationConstants.SCAN_DOC_TITLE);
 		primaryStage.setScene(scene);

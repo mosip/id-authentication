@@ -13,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -79,10 +77,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
 
 				} else {
-					getScene().setRoot(createRoot);
-					ClassLoader loader = Thread.currentThread().getContextClassLoader();
-					getScene().getStylesheets()
-							.add(loader.getResource("application.css").toExternalForm());
+					getScene(createRoot).setRoot(createRoot);
 				}
 			}
 
@@ -98,7 +93,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			getScene().setRoot(createRoot);
+			getScene(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage());

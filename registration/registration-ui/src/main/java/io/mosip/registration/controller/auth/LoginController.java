@@ -47,7 +47,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -171,10 +170,11 @@ public class LoginController extends BaseController implements Initializable {
 
 			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
 					applicationContext.getApplicationMessagesBundle());
-
+			
+			scene = getScene(loginRoot);
 			if (loginMode == null) {
 				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-				loginRoot.setCenter(loginType);
+				//loginRoot.setCenter(loginType);
 			} else {
 				loadLoginScreen(loginMode);
 			}
@@ -182,7 +182,7 @@ public class LoginController extends BaseController implements Initializable {
 			getGlobalParams();
 
 			primaryStage.setResizable(false);
-			primaryStage.setScene(getScene());
+			primaryStage.setScene(scene);
 			primaryStage.show();
 
 		} catch (IOException ioException) {
