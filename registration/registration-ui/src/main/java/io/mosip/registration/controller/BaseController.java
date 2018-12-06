@@ -65,7 +65,7 @@ public class BaseController {
 	
 	@PostConstruct
 	public void initializeContext() {
-		applicationContext = applicationContext;
+		applicationContext = applicationContext.getInstance();
 	}
 
 	protected static Stage stage;
