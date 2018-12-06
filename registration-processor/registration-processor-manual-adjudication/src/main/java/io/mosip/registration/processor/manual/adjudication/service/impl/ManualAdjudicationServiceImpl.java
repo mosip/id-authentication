@@ -5,8 +5,12 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -17,15 +21,29 @@ import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
+import io.mosip.registration.processor.manual.adjudication.util.StatusMessage;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
+
 
 /**
  * 
  * @author M1049617
  *
  */
+@RefreshScope
 @Service
 public class ManualAdjudicationServiceImpl implements ManualAdjudicationService {
-
+	/** The Constant USER. */
+	private static final String USER = "MOSIP_SYSTEM";
+	/** The audit log request builder. */
+	@Autowired
+	AuditLogRequestBuilder auditLogRequestBuilder;
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
@@ -107,7 +125,37 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
 		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
-		return null;
+		String registrationId = manualVerificationDTO.getRegId();
+		String eventId = "";
+		String eventName = "";
+		String eventType = "";
+		String description = "";
+		boolean isTransactionSuccessful = false;
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+		if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
+		{
+			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_SUCCESS.toString());
+			isTransactionSuccessful = true;
+			description = "Manual verification approved for registration id : " + registrationId;
+		}
+		else
+		{
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
+			description = "Manual verification rejected for registration id : " + registrationId;
+		}
+		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+		eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+				: EventName.EXCEPTION.toString();
+		eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+				: EventType.SYSTEM.toString();
+		registrationStatusDto.setUpdatedBy(USER);
+		auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				registrationId);
+		
+		return manualVerificationDTO;
 	}
 
 }

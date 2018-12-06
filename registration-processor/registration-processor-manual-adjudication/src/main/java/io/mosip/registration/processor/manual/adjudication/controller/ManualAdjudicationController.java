@@ -29,8 +29,8 @@ public class ManualAdjudicationController {
 		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignStatus(userDto);
 		return ResponseEntity.status(HttpStatus.OK).body(manualVerificationDTO);
 	}
-	
-	@PostMapping(path = "/packetStatus ", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	 
+	@PostMapping(path = "/packetStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(code = 200, message = "status successfully updated")
 	public ResponseEntity<ManualVerificationDTO> updatePacketStatus(@RequestBody(required = true) ManualVerificationDTO manualVerificationDTO) {
 		ManualVerificationDTO updatedManualVerificationDTO = manualAdjudicationService.updatePacketStatus(manualVerificationDTO);

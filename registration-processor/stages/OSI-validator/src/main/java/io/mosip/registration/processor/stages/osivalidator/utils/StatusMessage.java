@@ -39,5 +39,5 @@ public class StatusMessage {
 
 	/** The Constant OSI_VALIDATION_SUCCESS. */
 	public static final String OSI_VALIDATION_SUCCESS = "OSI_VALIDATION_SUCCESS";
-
+	
 }
