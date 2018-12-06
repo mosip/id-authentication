@@ -28,7 +28,7 @@ public class DeviceDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 36)
-	private String code;
+	private String id;
 	/**
 	 * Field for device name
 	 */
@@ -69,6 +69,6 @@ public class DeviceDto {
 	@NotNull
 	private Boolean isActive;
 
-	private LocalDateTime validityEndDate;
+	private LocalDateTime validityDateTime;
 
 }

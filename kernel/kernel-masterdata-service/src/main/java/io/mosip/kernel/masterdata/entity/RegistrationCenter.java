@@ -112,4 +112,5 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
+	
 }
