@@ -202,7 +202,7 @@ public class IrisCaptureController extends BaseController {
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
-			popupStage.initOwner(stage);
+			popupStage.initOwner(initializeParentRoot.getStage());
 			popupStage.show();
 
 			// Disable the scan button

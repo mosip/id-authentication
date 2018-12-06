@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,9 +63,11 @@ public class BaseController {
 	@Autowired
 	private GlobalParamService globalParamService;
 	
+	@Autowired
+	protected InitializeParentRoot initializeParentRoot;
+	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 	
-	protected static Stage stage;
 	protected Scene scene;
 	
 	/**
@@ -83,16 +87,19 @@ public class BaseController {
 				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
-		stage.addEventHandler(EventType.ROOT, event);
-		return stage;
+		initializeParentRoot.getStage().addEventHandler(EventType.ROOT, event);
+		return initializeParentRoot.getStage();
 	}
 	
-	protected Scene getScene(Parent borderPane) throws IOException {
-		
+	protected Scene getScene(Parent borderPane) {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		scene = new Scene(borderPane, 950, 630);
+		scene = initializeParentRoot.getScene(); 
+		if(scene == null) {
+			scene = new Scene(borderPane, 950, 630);
+			initializeParentRoot.setScene(scene);
+		}
 		scene.setRoot(borderPane);
-		stage.setScene(scene);
+		initializeParentRoot.getStage().setScene(scene);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}

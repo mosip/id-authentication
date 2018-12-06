@@ -146,7 +146,7 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
-		stage = primaryStage;
+		initializeParentRoot.setStage(primaryStage);
 		String loginMode = null;
 
 		try {
@@ -174,7 +174,7 @@ public class LoginController extends BaseController implements Initializable {
 			scene = getScene(loginRoot);
 			if (loginMode == null) {
 				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-				//loginRoot.setCenter(loginType);
+				scene = getScene(loginType);
 			} else {
 				loadLoginScreen(loginMode);
 			}

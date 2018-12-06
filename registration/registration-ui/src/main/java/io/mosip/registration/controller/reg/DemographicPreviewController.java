@@ -65,10 +65,7 @@ public class DemographicPreviewController extends BaseController {
 	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
 				applicationContext.getApplicationLanguageBundle());
-		getScene().setRoot(createRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		getScene().getStylesheets()
-				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		getScene(createRoot);
 	}
 
 	/**

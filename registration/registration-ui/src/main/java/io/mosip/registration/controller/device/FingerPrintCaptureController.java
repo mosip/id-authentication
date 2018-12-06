@@ -360,7 +360,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 				primaryStage.setScene(scene);
 				primaryStage.initModality(Modality.WINDOW_MODAL);
-				primaryStage.initOwner(stage);
+				primaryStage.initOwner(initializeParentRoot.getStage());
 				primaryStage.show();
 				scanBtn.setDisable(true);
 			} else {
