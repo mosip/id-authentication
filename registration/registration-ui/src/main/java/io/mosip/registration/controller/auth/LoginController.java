@@ -182,7 +182,7 @@ public class LoginController extends BaseController implements Initializable {
 			getGlobalParams();
 
 			primaryStage.setResizable(false);
-			primaryStage.setScene(scene);
+			primaryStage.setScene(getScene());
 			primaryStage.show();
 
 		} catch (IOException ioException) {

@@ -63,14 +63,8 @@ public class BaseController {
 	@Autowired
 	private GlobalParamService globalParamService;
 	
-	protected ApplicationContext applicationContext;
+	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 	
-	@PostConstruct
-	public void initializeContext() throws IOException {
-		applicationContext = ApplicationContext.getInstance();
-		this.scene = getScene();
-	}
-
 	protected Stage stage;
 	protected Scene scene;
 	
@@ -97,7 +91,7 @@ public class BaseController {
 	
 	protected Scene getScene() throws IOException {
 		BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
-				applicationContext.getApplicationMessagesBundle());
+				ApplicationContext.getInstance().getApplicationMessagesBundle());
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = new Scene(loginRoot, 950, 630);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
