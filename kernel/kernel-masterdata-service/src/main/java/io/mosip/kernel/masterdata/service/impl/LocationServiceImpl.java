@@ -70,6 +70,7 @@ public class LocationServiceImpl implements LocationService {
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()+" "+ExceptionUtils.parseException(e));
 		}
 		if (!locations.isEmpty()) {
+			
 			responseList = objectMapperUtil.objectToDtoConverter(locations);
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -106,8 +107,8 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
-
+				//List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
+				List<LocationDto> locationHierarchies = objectMapperUtil.mapAllNew(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
@@ -214,8 +215,8 @@ public class LocationServiceImpl implements LocationService {
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
-
+		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
 		return locationCodeDto;
 	}
 

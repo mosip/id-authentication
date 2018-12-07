@@ -1,0 +1,1145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,816" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_regprc" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all the transaction data of Registration Processor module]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="regprc" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="applicant_demographic">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_demographic table stores applicant demographic details]]></comment>
+	<position x="75" y="38"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="demog_detail">
+		<type name="json" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appldem_reg_id" type="pk-constr" table="regprc.applicant_demographic">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_document">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_document table stores applicant demographic document proof submitted details]]></comment>
+	<position x="437.716" y="33"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="doc_cat_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_typ_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_file_format" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_owner">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="doc_store">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appldoc_reg_id" type="pk-constr" table="regprc.applicant_document">
+		<columns names="reg_id,doc_cat_code,doc_typ_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_fingerprint">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_fingerprint table stores applicant fingerprint details]]></comment>
+	<position x="830.432" y="39"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="image_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="typ" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="quality_score">
+		<type name="numeric" length="5" precision="3"/>
+	</column>
+	<column name="no_of_retry">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appfprnt_reg_id" type="pk-constr" table="regprc.applicant_fingerprint">
+		<columns names="reg_id,typ" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_iris">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_iris table stores applicant Iris details]]></comment>
+	<position x="1208.15" y="32"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="image_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="typ" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="quality_score">
+		<type name="numeric" length="5" precision="3"/>
+	</column>
+	<column name="no_of_retry">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appliris_reg_id" type="pk-constr" table="regprc.applicant_iris">
+		<columns names="reg_id,typ" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_photograph">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_photograph table stores applicant Photograph details]]></comment>
+	<position x="1529.86" y="49"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="image_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="quality_score">
+		<type name="numeric" length="5" precision="3"/>
+	</column>
+	<column name="no_of_retry">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="image_store">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="has_excp_photograph">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="excp_photo_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="excp_photo_store">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_applphot_reg_id" type="pk-constr" table="regprc.applicant_photograph">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="biometric_exception">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[biometric_exception table stores applicant exceptions]]></comment>
+	<position x="73" y="342.25"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="bio_typ" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="missing_bio" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="excp_descr">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="excp_typ">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_bioexcp_reg_id" type="pk-constr" table="regprc.biometric_exception">
+		<columns names="reg_id,missing_bio" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="diskspace_log">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Diskspace Log table is to track idsvr server diskspace details for audit and reporting purposes ]]></comment>
+	<position x="416.716" y="390.25"/>
+	<column name="log_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="host_ip" not-null="true">
+		<type name="character varying" length="17"/>
+	</column>
+	<column name="host_name">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="folder_path" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="total_mb" not-null="true">
+		<type name="numeric" length="12" precision="4"/>
+	</column>
+	<column name="used_mb" not-null="true">
+		<type name="numeric" length="12" precision="4"/>
+	</column>
+	<column name="free_mb">
+		<type name="numeric" length="12" precision="4"/>
+	</column>
+	<column name="free_pct">
+		<type name="numeric" length="5" precision="2"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+</table>
+
+<table name="registration_list">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[List of Registration to Process]]></comment>
+	<position x="1446.93" y="369.25"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="reg_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="parent_reg_id">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_reglist_id" type="pk-constr" table="regprc.registration_list">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registration_transaction">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Processor Transaction table is to store ALL  Registration Processor packet processing/process transaction details for ID issuance]]></comment>
+	<position x="1171.95" y="690.25"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="trn_type_code" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="remarks">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="parent_regtrn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_regtrn_id" type="pk-constr" table="regprc.registration_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registration">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Processor table is to store id issuance enrolment id and packet id details]]></comment>
+	<position x="836.565" y="405.25"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="reg_type" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="ref_reg_id">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="latest_trn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="trn_retry_count">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="pkt_cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_reg_id" type="pk-constr" table="regprc.registration">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_machine">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[This table is used to store Registration center, Machine details for a individual registration]]></comment>
+	<position x="91" y="740.5"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="machine_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="latitude">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="longitude">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_rcntrm_reg_id" type="pk-constr" table="regprc.reg_center_machine">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_osi">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[This table is used to store Operator, Supervisor and Introducers id while processing registration]]></comment>
+	<position x="467.016" y="690.5"/>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="officer_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="officer_fingerp_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="officer_iris_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="supervisor_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="supervisor_fingerp_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="supervisor_iris_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="introducer_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="introducer_typ">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="introducer_reg_id">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="introducer_uin">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="introducer_fingerp_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="introducer_iris_image_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_regosi_reg_id" type="pk-constr" table="regprc.reg_osi">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="transaction_type">
+	<schema name="regprc"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Process Transaction Type table, ]]></comment>
+	<position x="1591.03" y="642.5"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Primary key of transaction code, with lang_cd for multi language ]]></comment>
+	</column>
+	<column name="descr" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_trntyp_code" type="pk-constr" table="regprc.transaction_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="individual_demographic_dedup" alias="idemog">
+	<schema name="regprc"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[individual demographic table stores applicant demographic details for deduplication]]></comment>
+	<position x="93" y="1010"/>
+	<column name="ref_id_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[type of the reference id. It can have values like prereg_id, reg_id or uin_ref_id.]]></comment>
+	</column>
+	<column name="ref_id" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[Reference id can be registration id of new registrations or uin_ref_id of individuals whose uin is already generated]]></comment>
+	</column>
+	<column name="first_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[first name of an individual]]></comment>
+	</column>
+	<column name="middle_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Middle Name of an individual]]></comment>
+	</column>
+	<column name="last_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Last Name of an individual]]></comment>
+	</column>
+	<column name="full_name">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Full Name of an individual]]></comment>
+	</column>
+	<column name="dob">
+		<type name="date" length="0"/>
+		<comment><![CDATA[DOB of an individual]]></comment>
+	</column>
+	<column name="gender">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Gender of an individual]]></comment>
+	</column>
+	<column name="address_line_1">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 1 of an individual]]></comment>
+	</column>
+	<column name="address_line_2">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 2 of an individual]]></comment>
+	</column>
+	<column name="address_line_3">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 3 of an individual]]></comment>
+	</column>
+	<column name="address_line_4">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 4 of an individual]]></comment>
+	</column>
+	<column name="address_line_5">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 5 of an individual]]></comment>
+	</column>
+	<column name="address_line_6">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 6 of an individual]]></comment>
+	</column>
+	<column name="zip_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Zip / Pin / Postal Code of an individual]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="idemog_pk" type="pk-constr" table="regprc.individual_demographic_dedup">
+		<columns names="ref_id_type,ref_id,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_appldem_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.applicant_demographic">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_appldoc_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.applicant_document">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_appfprnt_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.applicant_fingerprint">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_appliris_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.applicant_iris">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_applphot_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.applicant_photograph">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_bioexcp_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.biometric_exception">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_regtrn_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.registration" table="regprc.registration_transaction">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_regtrn_trntyp" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="regprc.transaction_type" table="regprc.registration_transaction">
+	<columns names="trn_type_code,lang_code" ref-type="src-columns"/>
+	<columns names="code,lang_code" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_applicant_demographic_registration" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="regprc.applicant_demographic"
+	 dst-table="regprc.registration" reference-fk="fk_appldem_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_applicant_document_registration" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="regprc.applicant_document"
+	 dst-table="regprc.registration" reference-fk="fk_appldoc_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_applicant_fingerprint_registration" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="regprc.applicant_fingerprint"
+	 dst-table="regprc.registration" reference-fk="fk_appfprnt_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_applicant_iris_registration" type="relfk"
+	 custom-color="#249b49"
+	 src-table="regprc.applicant_iris"
+	 dst-table="regprc.registration" reference-fk="fk_appliris_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_applicant_photograph_registration" type="relfk"
+	 custom-color="#942665"
+	 src-table="regprc.applicant_photograph"
+	 dst-table="regprc.registration" reference-fk="fk_applphot_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_biometric_exception_registration" type="relfk"
+	 custom-color="#abb258"
+	 src-table="regprc.biometric_exception"
+	 dst-table="regprc.registration" reference-fk="fk_bioexcp_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_registration_transaction_registration" type="relfk"
+	 custom-color="#94e1e5"
+	 src-table="regprc.registration_transaction"
+	 dst-table="regprc.registration" reference-fk="fk_regtrn_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_registration_transaction_transaction_type" type="relfk"
+	 custom-color="#a239f5"
+	 src-table="regprc.registration_transaction"
+	 dst-table="regprc.transaction_type" reference-fk="fk_regtrn_trntyp"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_regprc" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_regprc" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_regprc" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_regprc" type="database"/>
+	<roles names="regprcuser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="regprc" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="regprc" type="schema"/>
+	<roles names="regprcuser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_demographic" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_demographic" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_document" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_document" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_fingerprint" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_fingerprint" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_iris" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_iris" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_photograph" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.applicant_photograph" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.biometric_exception" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.biometric_exception" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.diskspace_log" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.diskspace_log" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration_list" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration_list" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.registration" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.reg_center_machine" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.reg_center_machine" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.reg_osi" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.reg_osi" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="regprc.transaction_type" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="regprc.transaction_type" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

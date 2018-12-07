@@ -251,7 +251,8 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID(1, "KAR", date, "ENG"));
+		holiday.setId(1);
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);

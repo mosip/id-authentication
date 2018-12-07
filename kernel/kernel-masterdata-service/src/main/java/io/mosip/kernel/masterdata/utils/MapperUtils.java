@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,7 +23,6 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
@@ -30,7 +30,7 @@ import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -110,10 +110,17 @@ public class MapperUtils {
 
 	private <S, D> void setBaseFieldValue(S source, D destination) {
 		String sourceSupername = source.getClass().getSuperclass().getName();
-		String objectClassName = Object.class.getName();
-		if (!sourceSupername.equals(objectClassName)) {
+		String destinationSupername = destination.getClass().getSuperclass().getName();
+		String baseEntityClassName = BaseEntity.class.getName();
+		if (sourceSupername.equals(baseEntityClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			setFieldValues(source, destination, sourceFields, destinationFields);
+			return;
+		}
+		if (destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
 			setFieldValues(source, destination, sourceFields, destinationFields);
 		}
 
@@ -187,7 +194,6 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-
 	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
 			List<RegistrationCenter> list) {
 		List<RegistrationCenterHierarchyLevelDto> responseDto = new ArrayList<>();
@@ -231,10 +237,10 @@ public class MapperUtils {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
 			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
-			dto.setHolidayId(String.valueOf(holidayId.getId()));
-			dto.setHolidayDate(String.valueOf(date));
+			dto.setId(holiday.getId());
+			dto.setHolidayDate(date);
 			dto.setHolidayName(holiday.getHolidayName());
-			dto.setLanguageCode(holidayId.getLangCode());
+			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
@@ -282,7 +288,7 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			// deviceLangCodeDtypeDto.setValidityEndDateTime((String)arr[8]));
+			deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
@@ -324,24 +330,5 @@ public class MapperUtils {
 	 * machineDto.setLangCode(machine.getLangCode());
 	 * machineDto.setMacAddress(machine.getMacAddress()); return machineDto; }
 	 */
-
-	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
-		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
-
-		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
-			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
-			deviceSpecificationDto.setId(deviceSpecification.getId());
-			deviceSpecificationDto.setName(deviceSpecification.getName());
-			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
-			deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());
-			deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
-			deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
-			deviceSpecificationDto.setModel(deviceSpecification.getModel());
-			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
-			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
-			deviceSpecificationDtoList.add(deviceSpecificationDto);
-		}
-		return deviceSpecificationDtoList;
-	}
 
 }

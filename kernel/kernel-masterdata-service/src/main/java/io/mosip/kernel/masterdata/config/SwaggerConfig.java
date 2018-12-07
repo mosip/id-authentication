@@ -32,7 +32,7 @@ public class SwaggerConfig {
 	/**
 	 * Master service Version
 	 */
-	private static final String MASTER_SERVICE_VERSION = "0.0.1";
+	private static final String MASTER_SERVICE_VERSION = "1.0";
 	/**
 	 * Application Title
 	 */
@@ -40,12 +40,12 @@ public class SwaggerConfig {
 	/**
 	 * Master Data Service
 	 */
-	private static final String DISCRIBTION = "Master Data Service";
+	private static final String DISCRIBTION = "Master Data Service for CRUD";
 
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
-	@Value("${swagger.target-url:#{null}}")
+	@Value("${swagger.base-url:#{null}}")
 	private String swaggerUrl;
 
 	@Value("${server.port:8080}")
@@ -95,12 +95,13 @@ public class SwaggerConfig {
 						new Tag("registrationcentermachine", "Api to map Registration center and machine"),
 						new Tag("registrationcentermachinedevice",
 								"Api to map Registration, center machine and Device"))
-				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
+				.build();
 
 		if (targetSwagger) {
 			docket.protocols(protocols()).host(hostWithPort);
 		}
-		System.out.println("\nSwagger target url: " + proto + "://" + hostWithPort + "\n");
+		System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 
 		return docket;
 	}

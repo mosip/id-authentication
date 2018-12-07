@@ -100,7 +100,6 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
-			//machineHistoryDtoList = objectMapperUtil.mapMachineHistory(macHistoryList);
 			
 			machineHistoryDtoList =objectMapperUtil.mapAllNew(macHistoryList, MachineHistoryDto.class);
 		} else {
