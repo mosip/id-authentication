@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -283,7 +284,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		PreRegistrationList preRegistrationList = new PreRegistrationList();
 
-		preRegistrationList.setId("Random Id");
+		preRegistrationList.setId(UUID.randomUUID().toString());
 		preRegistrationList.setPreRegId(preRegistrationDTO.getPreRegId());
 		// preRegistrationList.setAppointmentDate(preRegistrationDTO.getAppointmentDate());
 		preRegistrationList.setPacketSymmetricKey(preRegistrationDTO.getSymmetricKey());

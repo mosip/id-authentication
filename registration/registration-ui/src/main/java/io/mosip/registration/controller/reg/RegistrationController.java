@@ -346,6 +346,8 @@ public class RegistrationController extends BaseController {
 	
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
+	
+	private final ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 
 	@FXML
 	private void initialize() {
@@ -490,16 +492,20 @@ public class RegistrationController extends BaseController {
 					.getDocumentDetailsDTO() != null) {
 					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 							.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POA_DOCUMENT))
-							.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), poaBox,
-									poaScroll, document.getDocument()));
+							.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox,
+									poaScroll));
 					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POI_DOCUMENT))
-					.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), poiBox,
-							poiScroll, document.getDocument()));
+					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox,
+							poiScroll));
 					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POR_DOCUMENT))
-					.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), porBox,
-							porScroll, document.getDocument()));
+					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox,
+							porScroll));
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.DOB_DOCUMENT))
+					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox,
+							dobScroll));
 
 			}
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
@@ -636,7 +642,7 @@ public class RegistrationController extends BaseController {
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
-			DemographicDTO demographicDTO = new DemographicDTO();
+			DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
 			OSIDataDTO osiDataDTO = new OSIDataDTO();
 			if (validateDemographicPaneTwo()) {
 				demographicInfoDTO.setFullName(fullName.getText());
@@ -1434,54 +1440,35 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = false;
-		if (isChild) {
-			gotoNext = getParentToggle();
+		
+		if(isChild && validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
+			generateAlert(RegistrationConstants.ALERT_ERROR,
+					RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
+			parentName.requestFocus();
 		} else {
-			if(poaBox.getChildren().isEmpty()) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
+			if(isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
+				uinId.requestFocus();
 			} else {
-				if(poiBox.getChildren().isEmpty()) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
+				if(poaBox.getChildren().isEmpty()) {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 				} else {
-					gotoNext = true;
-				}
-			} 
-		}
-
-		return gotoNext;
-	}
-
-	/**
-	 * 
-	 * Toggles the parent fields
-	 * 
-	 */
-	private boolean getParentToggle() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Toggling for parent/guardian fields");
-		boolean gotoNext = false;
-
-		if (isChild) {
-			if (validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
-
-				generateAlert(RegistrationConstants.ALERT_ERROR,
-						RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
-				parentName.requestFocus();
-			} else {
-				if (validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-					uinId.requestFocus();
-				} else {
-					if(porBox.getChildren().isEmpty()) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+					if(poiBox.getChildren().isEmpty()) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 					} else {
-						gotoNext = true;
+						if(isChild && porBox.getChildren().isEmpty()) {
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+						} else {
+							gotoNext = true;
+						}
 					}
 				}
 			}
 		}
+
 		return gotoNext;
 	}
+
 
 	/**
 	 * 
@@ -1493,7 +1480,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
@@ -1872,21 +1858,29 @@ public class RegistrationController extends BaseController {
 
 						docName = addDocuments(poaDocuments.getValue(), poaBox);
 						validateDocuments(docName, poaBox, poaScroll, byteArray);
+						poaDocuments.setValue(null);
+						poaDocuments.setPromptText(properties.getString("poaDocumentLabel"));
 
 					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
 
 						docName = addDocuments(poiDocuments.getValue(), poiBox);
 						validateDocuments(docName, poiBox, poiScroll, byteArray);
+						poiDocuments.setValue(null);
+						poiDocuments.setPromptText(properties.getString("poiDocumentLabel"));
 
 					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
 
 						docName = addDocuments(porDocuments.getValue(), porBox);
 						validateDocuments(docName, porBox, porScroll, byteArray);
+						porDocuments.setValue(null);
+						porDocuments.setPromptText(properties.getString("porDocumentLabel"));
 
-					}else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
+					} else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
 
 						docName = addDocuments(dobDocuments.getValue(), dobBox);
 						validateDocuments(docName, dobBox, dobScroll, byteArray);
+						dobDocuments.setValue(null);
+						dobDocuments.setPromptText(properties.getString("dobDocumentLabel"));
 
 					}
 
@@ -1986,7 +1980,7 @@ public class RegistrationController extends BaseController {
 		GridPane anchorPane = new GridPane();
 		anchorPane.setId(document);
 
-		anchorPane.add(createHyperLink(document, selectedDocument), 0, vboxElement.getChildren().size());
+		anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
 		anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(anchorPane);
@@ -2020,7 +2014,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method will create Hyperlink to view scanned document
 	 */
-	private Hyperlink createHyperLink(String document, String selectedDocument) {
+	private Hyperlink createHyperLink(String document) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
@@ -2038,7 +2032,7 @@ public class RegistrationController extends BaseController {
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(detail -> (detail.getDocumentName().equals(pane.getId())) && detail.getDocumentType().equals(selectedDocument)).findFirst()
+						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
 						.ifPresent(doc -> displayDocument(doc.getDocument()));
 
 			}
