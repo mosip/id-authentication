@@ -25,12 +25,12 @@ import javafx.stage.Stage;
  *
  */
 @Component 
-public class RegistrationAppInitialization extends Application {
+public class Initialization extends Application {
 
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppInitialization.class);
+	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
 

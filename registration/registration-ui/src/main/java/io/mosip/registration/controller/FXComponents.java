@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 @Component
-public class InitializeParentRoot {
+public class FXComponents {
 	private Stage stage;
 	private Scene scene;
 	private Timer timer;

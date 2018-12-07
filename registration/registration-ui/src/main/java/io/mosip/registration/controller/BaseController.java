@@ -65,7 +65,7 @@ public class BaseController {
 	private GlobalParamService globalParamService;
 	
 	@Autowired
-	protected InitializeParentRoot initializeParentRoot;
+	protected FXComponents fXComponents;
 	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 	
@@ -88,19 +88,19 @@ public class BaseController {
 				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
-		initializeParentRoot.getStage().addEventHandler(EventType.ROOT, event);
-		return initializeParentRoot.getStage();
+		fXComponents.getStage().addEventHandler(EventType.ROOT, event);
+		return fXComponents.getStage();
 	}
 	
 	protected Scene getScene(Parent borderPane) {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		scene = initializeParentRoot.getScene(); 
+		scene = fXComponents.getScene(); 
 		if(scene == null) {
 			scene = new Scene(borderPane, 950, 630);
-			initializeParentRoot.setScene(scene);
+			fXComponents.setScene(scene);
 		}
 		scene.setRoot(borderPane);
-		initializeParentRoot.getStage().setScene(scene);
+		fXComponents.getStage().setScene(scene);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}
@@ -113,7 +113,7 @@ public class BaseController {
 	public static <T> T load(URL url) throws IOException {
 		clearDeviceOnboardingContext();
 		FXMLLoader loader = new FXMLLoader(url);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
 
@@ -124,7 +124,7 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url, ResourceBundle resource) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, resource);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
 
@@ -222,7 +222,7 @@ public class BaseController {
 
 	public static FXMLLoader loadChild(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader;
 	}
 
@@ -302,20 +302,20 @@ public class BaseController {
 	
 	protected Timer onlineAvailabilityCheck() {
 		Timer timer = new Timer();
-		initializeParentRoot.setTimer(timer);
+		fXComponents.setTimer(timer);
 		return timer;
 	}
 
 	protected void stopTimer() {
-		if (initializeParentRoot.getTimer() != null) {
-			initializeParentRoot.getTimer().cancel();
-			initializeParentRoot.getTimer().purge();
-			initializeParentRoot.setTimer(null);
+		if (fXComponents.getTimer() != null) {
+			fXComponents.getTimer().cancel();
+			fXComponents.getTimer().purge();
+			fXComponents.setTimer(null);
 		}
 	}
 
 	public Timer getTimer() {
-		return initializeParentRoot.getTimer() == null ? onlineAvailabilityCheck() : initializeParentRoot.getTimer();
+		return fXComponents.getTimer() == null ? onlineAvailabilityCheck() : fXComponents.getTimer();
 	}
 	
 }

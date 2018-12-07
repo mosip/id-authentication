@@ -23,7 +23,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.RegistrationAppInitialization;
+import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
 import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
@@ -202,7 +202,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Opening the Acknowledgement Form started");
 		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-				initializeParentRoot.getStage());
+				fXComponents.getStage());
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 			Stage primarystage = new Stage();
 			primarystage.initStyle(StageStyle.UNDECORATED);
-			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
+			RejectionController rejectionController = (RejectionController) Initialization
 					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
 			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage,
@@ -327,7 +327,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.initModality(Modality.WINDOW_MODAL);
-			primaryStage.initOwner(initializeParentRoot.getStage());
+			primaryStage.initOwner(fXComponents.getStage());
 			primaryStage.show();
 			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
 			fpcontroller.init(this);
@@ -351,7 +351,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
 			primarystage.initModality(Modality.WINDOW_MODAL);
-			primarystage.initOwner(initializeParentRoot.getStage());
+			primarystage.initOwner(fXComponents.getStage());
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 

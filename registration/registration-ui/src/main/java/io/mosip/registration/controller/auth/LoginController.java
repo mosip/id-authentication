@@ -146,7 +146,7 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
-		initializeParentRoot.setStage(primaryStage);
+		fXComponents.setStage(primaryStage);
 		String loginMode = null;
 
 		try {

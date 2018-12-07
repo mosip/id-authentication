@@ -15,7 +15,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.RegistrationAppInitialization;
+import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -76,7 +76,7 @@ public class RegPacketStatusController extends BaseController implements Initial
 	@SuppressWarnings("unchecked")
 	private void packetSyncStatus() {
 		
-		ResponseDTO response = jobConfigurationService.executeJob(RegistrationAppInitialization.getApplicationContext(),
+		ResponseDTO response = jobConfigurationService.executeJob(Initialization.getApplicationContext(),
 				"RPS_J00006");
 		
 		if (response.getSuccessResponseDTO() != null) {
