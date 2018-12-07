@@ -111,7 +111,7 @@ public class ManualAdjudicationServiceTest {
 	{
 		
 		//manualVerificationEntity.setStatusCode("PENDING");
-		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails()).thenReturn(entities);
+		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(anyString())).thenReturn(entities);
 		
 		
 		manualVerificationDTO=manualAdjudicationService.assignStatus(dto);
@@ -120,7 +120,7 @@ public class ManualAdjudicationServiceTest {
 	public void assignStatusMethodEntityCheck()
 	{
 		//manualVerificationEntity.setStatusCode("PENDING");
-		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails()).thenReturn(entities);
+		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(anyString())).thenReturn(entities);
 		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(null);
 		manualVerificationDTO=manualAdjudicationService.assignStatus(dto);
 	}
