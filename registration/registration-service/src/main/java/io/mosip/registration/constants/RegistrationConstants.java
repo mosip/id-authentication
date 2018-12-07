@@ -153,7 +153,7 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("POA_DOCUMENT_EMPTY");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("POI_DOCUMENT_EMPTY");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("POR_DOCUMENT_EMPTY");
-	public static final String DOB_DOCUMENT_EMPTY = bundle.getString("DOB_DOCUMENT_EMPTY");
+	//public static final String DOB_DOCUMENT_EMPTY = bundle.getString("DOB_DOCUMENT_EMPTY");
 	public static final String TEN_LETTER_INPUT_LIMT = bundle.getString("TEN_LETTER_INPUT_LIMT");
 	public static final String SIX_DIGIT_INPUT_LIMT = bundle.getString("SIX_DIGIT_INPUT_LIMT");
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
