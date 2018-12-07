@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -42,32 +43,31 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,
 			String effectiveDate) {
-		List<RegistrationCenterHistory> registrationCenter = null;
+		List<RegistrationCenterHistory> registrationCenters = null;
 		RegistrationCenterResponseDto registrationCenterDto = new RegistrationCenterResponseDto();
 
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = LocalDateTime.parse(effectiveDate);
 		} catch (Exception e) {
-			throw new MasterDataServiceException(
-					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
 		}
 		try {
-			registrationCenter = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId, langCode,
-							localDateTime);
+			registrationCenters = registrationCenterHistoryRepository
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId,
+							langCode, localDateTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (registrationCenter == null || registrationCenter.isEmpty()) {
+		if (registrationCenters == null || registrationCenters.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto.setRegistrationCenters(
-					objectMapperUtil.mapRegistrationCenterHistory(registrationCenter));
+			registrationCenterDto
+					.setRegistrationCenters(objectMapperUtil.mapAllNew(registrationCenters, RegistrationCenterDto.class));
 		}
 		return registrationCenterDto;
 	}

@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class MachineHistoryResponseDto {
 	private List<MachineHistoryDto> machineHistoryDetails;
 }

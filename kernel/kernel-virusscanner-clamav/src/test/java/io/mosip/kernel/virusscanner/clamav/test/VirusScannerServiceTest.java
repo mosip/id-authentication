@@ -61,7 +61,7 @@ public class VirusScannerServiceTest {
 		folder = new File(classLoader.getResource("files").getFile());
 		virusNotFound = new ScanResult(Status.OK);
 		virusFound = new ScanResult(Status.VIRUS_FOUND);
-		doc= new File("D://test1.docx");
+		doc= new File(classLoader.getResource("files/test1.docx").getFile());
 	    byteArray = new byte[(int) doc.length()]; 
 	}
 

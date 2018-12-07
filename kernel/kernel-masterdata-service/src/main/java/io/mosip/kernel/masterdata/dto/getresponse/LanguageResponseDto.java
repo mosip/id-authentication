@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
  * @Version 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 @JsonInclude(Include.NON_NULL)
 public class LanguageResponseDto {
 

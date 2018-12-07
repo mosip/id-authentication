@@ -36,7 +36,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping("/documentcategories")
+	@GetMapping("/v1.0/documentcategories")
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
@@ -46,7 +46,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("/documentcategories/{langcode}")
+	@GetMapping("/v1.0/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
@@ -56,7 +56,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return A Document category
 	 */
-	@GetMapping("/documentcategories/{code}/{langcode}")
+	@GetMapping("/v1.0/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
@@ -70,7 +70,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
 	 */
-	@PostMapping("/documentcategories")
+	@PostMapping("/v1.0/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
