@@ -46,7 +46,7 @@ public class DocumentDetailsDTO extends BaseDTO {
 	 *            the documentName to set
 	 */
 	public void setDocumentName(String documentName) {
-		this.documentName = documentName;
+		this.documentName = documentCategory.concat("_").concat(documentName).concat(".").concat(documentType);
 	}
 
 	/**

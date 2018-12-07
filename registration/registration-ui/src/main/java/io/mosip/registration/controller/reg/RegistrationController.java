@@ -349,7 +349,6 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
 
-	private ResourceBundle applicationProperties;
 
 	@FXML
 	private void initialize() {
@@ -391,7 +390,6 @@ public class RegistrationController extends BaseController {
 						}
 					});
 
-			applicationProperties = applicationContext.getApplicationLanguageBundle();
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleAgeOrDobField = false;
@@ -495,19 +493,19 @@ public class RegistrationController extends BaseController {
 					&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
 							.getDocumentDetailsDTO() != null) {
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POA_DOCUMENT))
+						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POA_DOCUMENT))
 						.findFirst()
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POI_DOCUMENT))
+						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POI_DOCUMENT))
 						.findFirst()
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POR_DOCUMENT))
+						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POR_DOCUMENT))
 						.findFirst()
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.DOB_DOCUMENT))
+						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.DOB_DOCUMENT))
 						.findFirst()
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
 
@@ -1749,12 +1747,11 @@ public class RegistrationController extends BaseController {
 	private void scanPoaDocument() {
 
 		if (poaDocuments.getValue() == null) {
-
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 			poaDocuments.requestFocus();
-
+		} else if (!poaBox.getChildren().isEmpty() && poaBox.getChildren().stream().noneMatch(index -> index.getId().contains(poaDocuments.getValue()))){
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Address Documents");
 
@@ -1770,12 +1767,11 @@ public class RegistrationController extends BaseController {
 	private void scanPoiDocument() {
 
 		if (poiDocuments.getValue() == null) {
-
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 			poiDocuments.requestFocus();
-
+		} else if (!poiBox.getChildren().isEmpty() && poiBox.getChildren().stream().noneMatch(index -> index.getId().contains(poiDocuments.getValue()))){
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Identity Documents");
 
@@ -1791,12 +1787,11 @@ public class RegistrationController extends BaseController {
 	private void scanPorDocument() {
 
 		if (porDocuments.getValue() == null) {
-
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 			porDocuments.requestFocus();
-
+		} else if (!porBox.getChildren().isEmpty() && porBox.getChildren().stream().noneMatch(index -> index.getId().contains(porDocuments.getValue()))){
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
 
@@ -1812,12 +1807,11 @@ public class RegistrationController extends BaseController {
 	private void scanDobDocument() {
 
 		if (dobDocuments.getValue() == null) {
-
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
 			dobDocuments.requestFocus();
-
+		} else if (!dobBox.getChildren().isEmpty() && dobBox.getChildren().stream().noneMatch(index -> index.getId().contains(dobDocuments.getValue()))){
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
 
@@ -1851,49 +1845,29 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 			if (byteArray.length > documentSize) {
-
 				generateAlert(RegistrationConstants.ALERT_ERROR,
 						"Document size should be less than 1 MB. Please re-scan the document.");
-
 			} else {
-
 				if (selectedDocument != null) {
-
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
-
-					String docName = "";
-
-					if (selectedDocument.equals(RegistrationConstants.POA_DOCUMENT)) {
-
-						docName = addDocuments(poaDocuments.getValue(), poaBox);
-						validateDocuments(docName, poaBox, poaScroll, byteArray);
-						poaDocuments.setValue(null);
-						poaDocuments.setPromptText(applicationProperties.getString("poaDocumentLabel"));
-
-					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
-
-						docName = addDocuments(poiDocuments.getValue(), poiBox);
-						validateDocuments(docName, poiBox, poiScroll, byteArray);
-						poiDocuments.setValue(null);
-						poiDocuments.setPromptText(applicationProperties.getString("poiDocumentLabel"));
-
-					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
-
-						docName = addDocuments(porDocuments.getValue(), porBox);
-						validateDocuments(docName, porBox, porScroll, byteArray);
-						porDocuments.setValue(null);
-						porDocuments.setPromptText(applicationProperties.getString("porDocumentLabel"));
-
-					} else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
-
-						docName = addDocuments(dobDocuments.getValue(), dobBox);
-						validateDocuments(docName, dobBox, dobScroll, byteArray);
-						dobDocuments.setValue(null);
-						dobDocuments.setPromptText(applicationProperties.getString("dobDocumentLabel"));
-
+					
+					switch (selectedDocument) {
+					case RegistrationConstants.POA_DOCUMENT:
+						attachDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
+						break;
+					case RegistrationConstants.POI_DOCUMENT:
+						attachDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
+						break;
+					case RegistrationConstants.POR_DOCUMENT:
+						attachDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
+						break;
+					case RegistrationConstants.DOB_DOCUMENT:
+						attachDocuments(dobDocuments.getValue(), dobBox, dobScroll, byteArray);
+						break;
+					default:
 					}
-
+					
 					popupStage.close();
 
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1917,40 +1891,7 @@ public class RegistrationController extends BaseController {
 		}
 
 	}
-
-	/**
-	 * This method will validate number of documents
-	 */
-	private String addDocuments(String document, VBox vboxElement) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating number of documemnts");
-
-		ObservableList<Node> nodes = vboxElement.getChildren();
-		if (nodes.isEmpty()) {
-			return document;
-		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
-			return document.concat("_").concat(String.valueOf(nodes.size()));
-		} else {
-			return RegistrationConstants.ERROR;
-		}
-	}
-
-	/**
-	 * This method will validate with existing documents
-	 */
-	private void validateDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating documents before adding to Screen");
-
-		if (!document.equals(RegistrationConstants.ERROR)) {
-			attachDocuments(document, vboxElement, scrollPane, byteArray);
-		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
-		}
-	}
-
+	
 	/**
 	 * This method will add Hyperlink and Image for scanned documents
 	 */
@@ -1960,12 +1901,19 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		scanController.getScanImage().setImage(convertBytesToImage(byteArray));
+		
+		String documentName = document;
+		
+		ObservableList<Node> nodes = vboxElement.getChildren();
+		if (!nodes.isEmpty() && nodes.stream().anyMatch(index -> index.getId().contains(document))) {
+			documentName = document.concat("_").concat(String.valueOf(nodes.size()));
+		} 
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setDocumentName(document);
-		documentDetailsDTO.setDocumentCategory(document);
-		documentDetailsDTO.setDocumentType(selectedDocument);
+		documentDetailsDTO.setDocumentCategory(selectedDocument);
+		documentDetailsDTO.setDocumentType("jpg");
+		documentDetailsDTO.setDocumentName(documentName);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
@@ -1976,7 +1924,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 
-		addDocumentsToScreen(document, vboxElement, scrollPane);
+		addDocumentsToScreen(documentDetailsDTO.getDocumentName(), vboxElement, scrollPane);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
 
@@ -1987,13 +1935,13 @@ public class RegistrationController extends BaseController {
 
 	private void addDocumentsToScreen(String document, VBox vboxElement, ScrollPane scrollPane) {
 
-		GridPane anchorPane = new GridPane();
-		anchorPane.setId(document);
+		GridPane gridPane = new GridPane();
+		gridPane.setId(document);
 
-		anchorPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
-		anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
+		gridPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
 
-		vboxElement.getChildren().add(anchorPane);
+		vboxElement.getChildren().add(gridPane);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
@@ -2043,7 +1991,7 @@ public class RegistrationController extends BaseController {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
-						.ifPresent(doc -> displayDocument(doc.getDocument()));
+						.ifPresent(doc -> displayDocument(doc.getDocument(),doc.getDocumentName()));
 
 			}
 		});
@@ -2095,7 +2043,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method will display the scanned document
 	 */
-	private void displayDocument(byte[] document) {
+	private void displayDocument(byte[] document, String documentName) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
@@ -2104,7 +2052,7 @@ public class RegistrationController extends BaseController {
 		ImageView view = new ImageView(img);
 		Scene scene = new Scene(new StackPane(view), 700, 600);
 		Stage primaryStage = new Stage();
-		primaryStage.setTitle(RegistrationConstants.SCAN_DOC_TITLE);
+		primaryStage.setTitle(documentName);
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
 		primaryStage.show();
