@@ -162,6 +162,7 @@ public class RegistrationConstants {
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
+	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -216,6 +217,7 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
 	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR  = bundle.getString("FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR");
 	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP  = bundle.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
+	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
 	
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -727,7 +729,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
 	public static final String USER_REG_IRIS_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-005";
 	public static final String USER_REG_IRIS_SCORE_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-006";
-	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-007";
+	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-001";
 	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
 	public static final String USER_REG_FINGERPRINT_PAGE_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-001";
 	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-002";
@@ -737,6 +739,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
 	public static final String USER_REG_IRIS_SAVE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-008";
 	public static final String USER_REG_GET_IRIS_QUALITY_SCORE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-009";
+	public static final String USER_REG_IRIS_STUB_IMAGE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-002";
 	
 	//Exception for Registration - Document Scan and Upload
 	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
@@ -749,6 +752,7 @@ public class RegistrationConstants {
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
 	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
+	public static final String MASTER_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Master Sync Status Job";
 	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
 	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
@@ -765,5 +769,12 @@ public class RegistrationConstants {
 	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
 	public static final String AGE_REGEX="\\d{1,2}";
 	public static final String UIN_REGEX="\\d{1,30}";
-
+	
+	//master sync 
+	
+	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
+	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
+	public static final String MASTER_SYNC_FAILURE="Master Sync Failure";
+	public static final String MASTER_SYNC_SUCCESS="Master Sync Successful";
+	public static final String MASTER_SYNC="MASTER_SYNC";
 }

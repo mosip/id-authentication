@@ -1,5 +1,6 @@
 package io.mosip.registration.service.sync.impl;
 
+import java.io.File;
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
@@ -24,6 +27,7 @@ import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncRequestDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDataSyncDTO;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.SyncTransaction;
@@ -31,6 +35,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
+import io.mosip.registration.service.external.PreRegZipHandlingService;
+import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 @Service
@@ -46,11 +52,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	@Value("${PRE_REG_NO_OF_DAYS_LIMIT}")
 	private int noOfDays;
 
+	@Autowired
+	private PreRegZipHandlingService preRegZipHandlingService;
+
 	/**
 	 * Instance of LOGGER
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(PreRegistrationDataSyncServiceImpl.class);
-
 
 	/*
 	 * (non-Javadoc)
@@ -144,6 +152,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegistrationId);
 
 		byte[] encryptedPacket = null;
+		
+		String symmetricKey=null;
 
 		boolean isJob = (syncJobId != null);
 
@@ -154,24 +164,27 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			Map<String, String> requestParamMap = new HashMap<>();
 			requestParamMap.put(RegistrationConstants.PRE_REGISTRATION_ID, preRegistrationId);
 
-			byte[] packet = null;
-			PreRegistrationDTO preRegistrationDTO = null;
-
-			String triggerPoint = (syncJobId != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
-					: getUserIdFromSession();
-			syncJobId = isJob ? syncJobId : RegistrationConstants.JOB_TRIGGER_POINT_USER;
+			String triggerPoint = null;
+			if(isJob) {
+				triggerPoint = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			} else {
+				triggerPoint = getUserIdFromSession();
+				syncJobId = RegistrationConstants.JOB_TRIGGER_POINT_USER;
+			}
 
 			try {
 				/** REST call to get packet */
-				packet = (byte[]) serviceDelegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
+				byte[] packet = (byte[]) serviceDelegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
 
 				if (packet != null) {
 
-					/** TODO Bala : Get PreRegistrationDTO by taking packet Information */
-					preRegistrationDTO = new PreRegistrationDTO();
-
-					/** TODO Set encrypted Packet using DTO */
-
+					/** Get PreRegistrationDTO by taking packet Information */
+					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService.encryptAndSavePreRegPacket(preRegistrationId,
+							packet);
+					
+					//encryptedPacket = preRegistrationDTO.getEncryptedPacket();
+					//symmetricKey = preRegistrationDTO.getSymmetricKey();
+					
 					// Transaction
 					SyncTransaction syncTransaction = syncManager.createSyncTransaction(
 							RegistrationConstants.RETRIEVED_PRE_REG_ID, RegistrationConstants.RETRIEVED_PRE_REG_ID,
@@ -185,6 +198,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					/** set success response */
 					setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
 
+				} else {
+					setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+					return;
 				}
 
 			} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException exception) {
@@ -205,9 +221,20 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		/** Only for Manual Trigger */
 		if (!isJob) {
+			if (preRegistration != null) {
 
+				try {
+					encryptedPacket = FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath()));
+					symmetricKey = preRegistration.getPacketSymmetricKey();
+				} catch (IOException e) {
+					setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+					return;
+				}
+			}
+
+			byte[] decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(symmetricKey, encryptedPacket);
 			/** set decrypted packet into Response */
-			setPacketToResponse(responseDTO, encryptedPacket, preRegistrationId);
+			setPacketToResponse(responseDTO, decryptedPacket, preRegistrationId);
 		}
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -217,27 +244,23 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	@SuppressWarnings("unused")
-	private void setPacketToResponse(ResponseDTO responseDTO, byte[] encryptedPacket, String preRegistrationId) {
+	private void setPacketToResponse(ResponseDTO responseDTO, byte[] decryptedPacket, String preRegistrationId) {
 
 		try {
-			if (encryptedPacket == null) {
-
-				/** TODO get encrypted packet by giving packetPath information using Entity */
-				encryptedPacket = null;
-
-			}
-
-			/** TODO get decrypted packet by giving encrypted packet info */
-			byte[] decryptedPacket = null;
-
 			if (decryptedPacket != null) {
 				/** create attributes */
+				RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(decryptedPacket);
+				registrationDTO.setPreRegistrationId(preRegistrationId);
 				Map<String, Object> attributes = new HashMap<>();
-				attributes.put(preRegistrationId, decryptedPacket);
+				attributes.put("registrationDTO", registrationDTO);
 				setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, attributes);
-
 			}
-		} catch (RegBaseUncheckedException | NullPointerException exception) {
+		} catch (RegBaseCheckedException exception) {
+			LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage());
+			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+		}catch (RuntimeException exception) {
 			LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());

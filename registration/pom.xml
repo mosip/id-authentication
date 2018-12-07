@@ -149,6 +149,11 @@
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derby</artifactId>
 				<version>${apache.derby.version}</version>

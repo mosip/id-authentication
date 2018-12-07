@@ -1,5 +1,6 @@
 package io.mosip.registration.service.external;
 
+import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -16,5 +17,12 @@ public interface PreRegZipHandlingService {
 	 * @throws RegBaseCheckedException
 	 */
 	RegistrationDTO extractPreRegZipFile(byte[] preREgZipFile) throws RegBaseCheckedException;
+
+	PreRegistrationDTO encryptAndSavePreRegPacket(String PreRegistrationId, byte[] preRegPacket)
+			throws RegBaseCheckedException;
+
+	String storePreRegPacketToDisk(String PreRegistrationId, byte[] encryptedPacket) throws RegBaseCheckedException;
+
+	byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket);
 
 }
