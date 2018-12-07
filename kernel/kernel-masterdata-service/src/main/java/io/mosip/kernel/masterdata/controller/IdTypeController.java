@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.IdTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.IdTypeService;
 
 /**
@@ -24,7 +27,7 @@ import io.mosip.kernel.masterdata.service.IdTypeService;
 @RestController
 public class IdTypeController {
 	/**
-	 * Autowired reference to IdService.
+	 * Autowire reference to IdService.
 	 */
 	@Autowired
 	IdTypeService idService;
@@ -37,20 +40,21 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
-	@GetMapping("/idtypes/{langcode}")
-	public IdTypeResponseDto getIdTypeDetailsBylangCode(@PathVariable("langcode") String langCode) {
-		return idService.getIdTypeByLanguageCode(langCode);
+	@GetMapping("/v1.0/idtypes/{langcode}")
+	public IdTypeResponseDto getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
+		return idService.getIdTypesByLanguageCode(langCode);
 	}
 
 	/**
-	 * This method adds a list of id types.
+	 * This method creates id types.
 	 * 
 	 * @param idTypeRequestDto
-	 *            the request of list of id types to be added.
-	 * @return the list of added id types as response.
+	 *            the request of idtype to be added.
+	 * @return the response.
 	 */
-	@PostMapping("/idtypes")
-	public ResponseEntity<PostResponseDto> addIdType(@RequestBody IdTypeRequestDto idTypeRequestDto) {
-		return new ResponseEntity<>(idService.addIdType(idTypeRequestDto), HttpStatus.CREATED);
+	@PostMapping("/v1.0/idtypes")
+	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
+			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
+		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);
 	}
 }

@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
@@ -66,9 +67,10 @@ public class LocationServiceImpl implements LocationService {
 			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()+" "+ExceptionUtils.parseException(e));
 		}
 		if (!locations.isEmpty()) {
+			
 			responseList = objectMapperUtil.objectToDtoConverter(locations);
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -105,8 +107,8 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
-
+				//List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
+				List<LocationDto> locationHierarchies = objectMapperUtil.mapAllNew(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
@@ -118,7 +120,7 @@ public class LocationServiceImpl implements LocationService {
 		catch (DataAccessException e) {
 
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()+" "+ExceptionUtils.parseException(e));
 
 		}
 		return locationHierarchyResponseDto;
@@ -147,8 +149,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
 
-		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(locCode,
-				langCode);
+		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(locCode, langCode);
 
 	}
 
@@ -193,25 +194,29 @@ public class LocationServiceImpl implements LocationService {
 
 		return parentHierarchyList;
 	}
-
+    
+	/**
+	 * Method creates location hierarchy data into the table based on the request parameter sent
+	 * {@inheritDoc}
+	 */
 	@Override
-	public LocationCodeDto saveLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
-		
-	    Location location = null;
+	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
+
+		Location location = null;
 		Location locationResultantEntity = null;
 		LocationCodeDto locationCodeDto = null;
-		
-			location = metaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
-			try {
-				locationResultantEntity = locationRepository.create(location);
-			} catch (DataAccessLayerException ex) {
-				throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
-			}
-		
-	   locationCodeDto = objectMapperUtil.map(locationResultantEntity,LocationCodeDto.class);
-		
-        
+
+		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
+		try {
+			locationResultantEntity = locationRepository.create(location);
+		} catch (DataAccessLayerException ex) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(ex));
+		}
+
+		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
 		return locationCodeDto;
 	}
 

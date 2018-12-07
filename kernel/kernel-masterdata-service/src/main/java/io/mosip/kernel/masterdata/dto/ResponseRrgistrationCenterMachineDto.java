@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class ResponseRrgistrationCenterMachineDto {
 
 	private String regCenterId;

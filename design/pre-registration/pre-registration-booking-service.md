@@ -17,15 +17,19 @@ The key requirements are -
 
     -   Registration center Id
 
-    -   DateTime
+    -   Registration Date
 
-    -   Time slot
+    -   From time slot
 
-- This ablove details need to store in a pre-registration database. Once storing the data is completed then syatem need to update the cache server.
+    -   To  time slot
 
-- A key should get generate with Registration center id, date and a time slot. with this generated key cache should get update the value.
+- Only 'Pending-Appointment' pre-registartions are eligible for booking. if the pre-registration is in any other status other then 'Pending-Appointment' throw an exception saying 'Appointment booking can not be done'.
 
--  Once the cache get updated successfully then an status need to update in the applicant_demographic table to "Booked".
+- Check for availability in the avialability table by using Registration center id, Registration date, from time slot and to time slot. 
+
+- If there is an availability then update the availability  for requested time slot then store in a pre-registration booking table. 
+
+- Once the booking data successfully stored then an status need to update in the applicant_demographic table to "Booked".
 
 The key non-functional requirements are
 
@@ -36,8 +40,7 @@ The key non-functional requirements are
 
 -   Audit :
 
-    -   Each state of the Pre-Registration booking appointment should be stored into the DB
-        for audit purpose.
+    -   Each state of the Pre-Registration booking appointment should be stored into the DB for audit purpose.
 
     -   Pre-reg Id and important detail of the applicant should not be audited.
 
@@ -50,13 +53,18 @@ The key non-functional requirements are
 
 **Booking an appointment :**
 
--   Create a REST API as '/booking' accept the PreRegistrationId,Registration center id, booking date time and slot from the pre-registration application portal.
+-  Create a REST API as '/booking' accept the PreRegistrationId,Registration center id, booking date, from time slot and to time slot from the pre-registration application portal.
 
--   Generate an cache key using Registration center id, booking date time and slot.
+- Check the status of the application by doing REST call. if the status is 'Pending-Appointment' then processed with booking appointment else throw an exception saying 'Appointment booking can not be done'.
 
--   Once the key generated successfully update the cache using the generated key by decrementing the value by 1.
+-  Update the cache using the generated key by decrementing the value by 1. before updating check the number of availability.
+      - If the number of availability is zero(0) then thow an exception saying Appointment booking can not be done.
 
--   Save the booking data in the pre-registration booking table. after inserting the booking data system need to update the main table (applicant_demographic) with the status code "Booked"
+-   Insert the booking data in the pre-registration booking table. after sucessfully inserting the data then update the main table (applicant_demographic) with the status code 'Booked'
+
+- To update the main table (applicant_demographic) with the status code 'Booked' by doing REST call.
+
+- If updation failed due to network issue then rollback the transaction and thow an exception 'Appointment booking failed'.
 
 -   Audit the exception/start/exit of the each stages of the Pre-registration create mechanism using AuditManager component.
 
@@ -74,8 +82,11 @@ The key non-functional requirements are
 
   Code   |       Type  | Message|
 -----|----------|-------------|
-  PRG_PAM_RCI-001 |  Error   |   User has not been selected any time slot.
-  PRG_PAM_RCI_002  | Error   |   Appointment time slot is already booked.
+  PRG_PAM_RCI-001 |  Error   |   Appointment booking can not be done.
+  PRG_PAM_RCI-002 |  Error   |   Availability not there for selected time slot.
+  PRG_PAM_RCI-003 |  Error   |   User has not been selected any time slot.
+  PRG_PAM_RCI_004  | Error   |   Appointment time slot is already booked.
+  PRG_PAM_RCI_005  | Error   |   Appointment booking failed.
 
 **Dependency Modules**
 

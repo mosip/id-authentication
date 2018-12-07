@@ -3,14 +3,15 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -62,8 +63,18 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "longitude", length = 32)
 	private String longitude;
 
-	@Column(name = "location_code", nullable = false, length = 36)
-	private String locationCode;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	private Location locationCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "cntrtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	
+	private RegistrationCenterType registrationCenterType;
 
 	@Column(name = "contact_phone", length = 16)
 	private String contactPhone;
@@ -89,7 +100,6 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-
 	@Column(name = "time_zone", length = 64)
 	private String timeZone;
 
@@ -102,6 +112,5 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-	private LocationHierarcyLevel location;
+	
 }

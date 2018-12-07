@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class GenderTypeResponseDto {
 	private List<GenderTypeDto> genderType;
 

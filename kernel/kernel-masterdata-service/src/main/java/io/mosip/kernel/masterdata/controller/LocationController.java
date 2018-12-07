@@ -1,6 +1,10 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +29,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
  *
  */
 @RestController
-@RequestMapping(value = "/locations")
+@RequestMapping(value = "/v1.0/locations")
 public class LocationController {
 
 	/**
@@ -46,9 +50,9 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public LocationCodeDto createLocationHierarchyDetails(@RequestBody RequestDto<LocationDto> locationRequestDto) {
+	public ResponseEntity<LocationCodeDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
 		
-		return locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),HttpStatus.CREATED);
 	}
 
 	/**

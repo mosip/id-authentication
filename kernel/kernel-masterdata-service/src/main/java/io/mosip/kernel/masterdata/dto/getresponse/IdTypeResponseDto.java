@@ -3,9 +3,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO class for id types response.
@@ -15,8 +13,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class IdTypeResponseDto {
 	/**
 	 * List of id types.

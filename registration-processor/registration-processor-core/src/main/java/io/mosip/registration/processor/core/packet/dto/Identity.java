@@ -12,7 +12,7 @@ import java.util.List;
 public class Identity {
 
 	private Biometric biometric;
-	private List<BiometricException> exceptionBiometrics;
+	private List<BiometricExceptionDto> exceptionBiometrics;
 	private Photograph applicantPhotograph;
 	private Photograph exceptionPhotograph;
 	private List<Document> documents;
@@ -39,7 +39,7 @@ public class Identity {
 	/**
 	 * @return the exceptionBiometrics
 	 */
-	public List<BiometricException> getExceptionBiometrics() {
+	public List<BiometricExceptionDto> getExceptionBiometrics() {
 		return exceptionBiometrics;
 	}
 
@@ -47,7 +47,7 @@ public class Identity {
 	 * @param exceptionBiometrics
 	 *            the exceptionBiometrics to set
 	 */
-	public void setExceptionBiometrics(List<BiometricException> exceptionBiometrics) {
+	public void setExceptionBiometrics(List<BiometricExceptionDto> exceptionBiometrics) {
 		this.exceptionBiometrics = exceptionBiometrics;
 	}
 
