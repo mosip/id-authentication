@@ -40,7 +40,7 @@ public interface DeviceSpecificationService {
 	 *         language code and deviceTypeCode
 	 *
 	 */
-	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(String languageCode,
+	public List<DeviceSpecificationDto> findDeviceSpecByLangCodeAndDevTypeCode(String languageCode,
 			String deviceTypeCode);
 
 	/**

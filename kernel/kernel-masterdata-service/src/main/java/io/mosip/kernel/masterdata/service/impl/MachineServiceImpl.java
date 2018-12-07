@@ -192,6 +192,7 @@ public class MachineServiceImpl implements MachineService {
 		Machine entity = metaUtils.setCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = metaUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 		try {
 			crtMachine = machineRepository.create(entity);
 			machineHistoryRepository.create(entityHistory);

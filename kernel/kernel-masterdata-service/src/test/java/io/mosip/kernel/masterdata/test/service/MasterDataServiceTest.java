@@ -891,7 +891,7 @@ public class MasterDataServiceTest {
 				deviceTypeCode)).thenReturn(deviceSpecificationListWithDeviceTypeCode);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
-				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
+				.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
 		Assert.assertEquals(deviceSpecificationDtos.get(0).getId(),
 				deviceSpecificationListWithDeviceTypeCode.get(0).getId());
 		Assert.assertEquals(deviceSpecificationDtos.get(0).getName(),
@@ -908,7 +908,7 @@ public class MasterDataServiceTest {
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode,
 				deviceTypeCode)).thenReturn(empityList);
-		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
+		deviceSpecificationService.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
 	}
 
 	@Test(expected = DataNotFoundException.class)
@@ -917,7 +917,7 @@ public class MasterDataServiceTest {
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode,
 				deviceTypeCode)).thenReturn(null);
-		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
+		deviceSpecificationService.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
 
 	}
 
@@ -927,7 +927,7 @@ public class MasterDataServiceTest {
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode,
 				deviceTypeCode)).thenThrow(DataAccessResourceFailureException.class);
-		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
+		deviceSpecificationService.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
 
 	}
 
