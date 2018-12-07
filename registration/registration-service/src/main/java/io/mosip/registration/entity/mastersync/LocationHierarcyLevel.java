@@ -21,7 +21,7 @@ public class LocationHierarcyLevel extends RegistrationCommonFields implements S
 	@Id
 	@OneToOne
 	@JoinColumn(name = "code")
-	private RegistrationCenter code;
+	private RegistrationCenterMasterSync code;
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
