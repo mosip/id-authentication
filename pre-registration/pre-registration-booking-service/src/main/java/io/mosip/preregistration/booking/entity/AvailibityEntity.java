@@ -42,16 +42,10 @@ public class AvailibityEntity implements Serializable {
 		@AttributeOverride(name = "toTime", column = @Column(name = "slot_to_time"))})
 	
 	private String regcntrId;
-	private String regDate;
+	private LocalDate regDate;
 	private LocalTime fromTime;
 	private LocalTime toTime;
-	
-	@Column(name = "isActive")
-	private Boolean isActive;
-	
-	@Column(name = "availabilityNo")
-	private int availabilityNo;
-	
+
 	@Column(name = "available_kiosks")
 	private int availableKiosks;
 

@@ -1,6 +1,7 @@
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,7 +36,7 @@ public class RegistrationBookingEntity implements Serializable {
 	@Column(name = "slot_to_time")
 	private LocalTime slotToTime;
 	
-	@Column(name = "reg_date")
+	@Column(name = "appointment_date")
 	private LocalDate regDate;
 
 	@Column(name = "status_code")
@@ -48,18 +49,18 @@ public class RegistrationBookingEntity implements Serializable {
 	private String crBy;
 
 	@Column(name = "cr_dtimes")
-	private LocalDateTime crDate;
+	private Timestamp crDate;
 
 	@Column(name = "upd_by")
 	private String upBy;
 
 	@Column(name = "upd_dtimes")
-	private LocalDateTime updDate;
+	private Timestamp updDate;
 
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
 	@Column(name = "del_dtimes")
-	private LocalDateTime delTime;
+	private Timestamp delTime;
 
 }

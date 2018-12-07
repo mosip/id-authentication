@@ -113,7 +113,6 @@ public class PreRegistrationService {
 	 * lang. Object, java.lang.String)
 	 */
 	public ResponseDTO<CreatePreRegistrationDTO> addPreRegistration(String jsonString) {
-
 		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
@@ -145,7 +144,6 @@ public class PreRegistrationService {
 				preRegistrationEntity.setPreRegistrationId(prid);
 				preRegistrationDao.save(preRegistrationEntity);
 				createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-
 				createDto.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
 			} else {
 				preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(prid);
@@ -195,7 +193,7 @@ public class PreRegistrationService {
 		}
 
 		createDto.setPrId(prid);
-
+		response.setErr(null);
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(trueStatus);
 		saveList.add(createDto);
