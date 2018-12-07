@@ -21,6 +21,7 @@ import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificatio
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.util.StatusMessage;
@@ -159,12 +160,19 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		ManualVerificationEntity manualVerificationEntity;
-	
-		
-		try {
-		
-		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
+				&&!manualVerificationDTO.getStatusCode()
+						.equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
+			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
+		}
 		manualVerificationEntity = manualAdjudicationDao.getByRegId(manualVerificationDTO.getRegId(), manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId());
+		if (manualVerificationEntity == null) {
+			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
+		}
+		try {
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 		manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
 			if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
 			{

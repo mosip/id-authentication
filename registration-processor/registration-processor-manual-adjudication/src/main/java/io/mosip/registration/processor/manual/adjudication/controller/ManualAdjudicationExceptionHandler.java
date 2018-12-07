@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.manual.adjudication.controller;
 
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +12,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.Pa
 import io.mosip.registration.processor.manual.adjudication.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 
 /**
@@ -62,9 +64,18 @@ public class ManualAdjudicationExceptionHandler {
 	@ExceptionHandler(NoRecordAssignedException.class)
 	public ResponseEntity<ExceptionJSONInfo> noRecordAssignedExceptionHandler(final NoRecordAssignedException e,
 			WebRequest request) {
-		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(),
-				e.getLocalizedMessage());
+		NoRecordAssignedException noRecordAssignedException=new NoRecordAssignedException(
+				PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
+				PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(noRecordAssignedException.getErrorCode(),
+				noRecordAssignedException.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
+	}
+	@ExceptionHandler(InvalidUpdateException.class)
+	public ResponseEntity<ExceptionJSONInfo> invalidUpdateException(final InvalidUpdateException e,
+			WebRequest request) {
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
+		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.FORBIDDEN);
 	}
 
 }
