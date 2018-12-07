@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,6 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.util.biometric.FingerprintFacade;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
