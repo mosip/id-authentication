@@ -68,6 +68,8 @@
 								<MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="Device Onboarding" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#redirectHome" text="Home" />
+								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" onAction="#syncMasterData" text="Master Sync Data" />
 							</items>
 						</Menu>
 					</menus>
