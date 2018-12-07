@@ -30,6 +30,7 @@ import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
+import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.booking.dto.ResponseDto;
@@ -51,8 +52,9 @@ public class BookingControllerTest {
 
 	BookingDTO bookingDTO = new BookingDTO();
 	List<BookingRequestDTO> bookingList=new ArrayList<>();
-	BookingRequestDTO bookingRequestDTOA = new BookingRequestDTO();
-	BookingRequestDTO bookingRequestDTOB = new BookingRequestDTO();
+	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
+	BookingRegistrationDTO oldBooking= new BookingRegistrationDTO();
+	BookingRegistrationDTO newBooking= new BookingRegistrationDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
 	ResponseDto responseDto = new ResponseDto();
@@ -70,17 +72,17 @@ public class BookingControllerTest {
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
 
-		bookingRequestDTOA.setPre_registration_id("23587986034785");
-		bookingRequestDTOA.setRegistration_center_id("1");
-		bookingRequestDTOA.setSlotFromTime("09:00");
-		bookingRequestDTOA.setSlotToTime("09:13");
-		bookingRequestDTOA.setReg_date("2018-12-06");
+		bookingRequestDTO.setPre_registration_id("23587986034785");
+		oldBooking.setRegistration_center_id("1");
+		oldBooking.setSlotFromTime("09:00");
+		oldBooking.setSlotToTime("09:13");
+		oldBooking.setReg_date("2018-12-06");
 
-		bookingRequestDTOB.setPre_registration_id("31496715428069");
-		bookingRequestDTOB.setRegistration_center_id("1");
-		bookingRequestDTOB.setSlotFromTime("09:00");
-		bookingRequestDTOB.setSlotToTime("09:13");
-		bookingRequestDTOB.setReg_date("2018-12-06");
+		//bookingRequestDTOB.setPre_registration_id("31496715428069");
+		newBooking.setRegistration_center_id("1");
+		newBooking.setSlotFromTime("09:00");
+		newBooking.setSlotToTime("09:13");
+		newBooking.setReg_date("2018-12-06");
 
 		bookingDTO.setRequest(bookingList);
 

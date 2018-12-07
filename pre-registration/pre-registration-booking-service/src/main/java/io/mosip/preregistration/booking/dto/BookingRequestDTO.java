@@ -2,8 +2,6 @@ package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,19 +21,11 @@ public class BookingRequestDTO implements Serializable{
 	 */
 	private String pre_registration_id;
 	/**
-	 * registration Center Id
+	 * Old Booking Details
 	 */
-	private String registration_center_id;
+	private BookingRegistrationDTO oldBookingDetails;
 	/**
-	 * booked Date Time
+	 * New Booking Details
 	 */
-	private String reg_date;
-	/**
-	 * booked Time Slot
-	 */
-	@JsonProperty("time-slot-from")
-	private String slotFromTime;
-	
-	@JsonProperty("time-slot-to")
-	private String slotToTime;
+	private BookingRegistrationDTO newBookingDetails;
 }

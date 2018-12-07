@@ -34,6 +34,18 @@ public class BookingExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(AvailabilityTableNotAccessableException.class)
+	public ResponseEntity<ResponseDto<?>> availabilityTableNotAccessableException(final AvailabilityTableNotAccessableException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+				ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		ResponseDto<?> errorRes = new ResponseDto<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(false);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	@ExceptionHandler(DemographicGetStatusException.class)
 	public ResponseEntity<ResponseDto<?>> getStatusException(final DemographicGetStatusException e,
@@ -159,6 +171,32 @@ public class BookingExceptionHandler {
 		ExceptionJSONInfo err = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
 		responseDto.setStatus(false);
 		responseDto.setErr(err);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(BookingDataNotFoundException.class)
+	public ResponseEntity<ResponseDto<?>> bookingDataNotFound(final BookingDataNotFoundException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+				ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+
+		ResponseDto<?> responseDto = new ResponseDto<>();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(RecordNotFoundException.class)
+	public ResponseEntity<ResponseDto<?>> recordNotFound(final BookingDataNotFoundException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_015.toString(),
+				 ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
+
+		ResponseDto<?> responseDto = new ResponseDto<>();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
