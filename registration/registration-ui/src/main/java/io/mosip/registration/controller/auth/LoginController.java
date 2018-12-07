@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -677,6 +678,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			String userRole = !userContext.getRoles().isEmpty() ? userContext.getRoles().get(0) : null;
 			userContext.setAuthorizationDTO(loginService.getScreenAuthorizationDetails(userRole));
+			userContext.setUserMap(new HashMap<String,Object>());
 			result = true;
 		}
 		return result;
