@@ -78,7 +78,7 @@
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <Accordion id="registrationAccordian" fx:id="accord" layoutX="80.0" layoutY="85.0" pickOnBounds="false" visible="true">
+            <Accordion id="registrationAccordian" fx:id="accord" layoutX="40.0" layoutY="85.0" pickOnBounds="false" visible="true">
               <panes>
                   <TitledPane fx:id="demoGraphicTitlePane" text="%titleDemographicPane">
                      <content>
