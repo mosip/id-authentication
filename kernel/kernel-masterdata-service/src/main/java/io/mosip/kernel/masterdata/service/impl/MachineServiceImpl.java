@@ -90,7 +90,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machine != null) {
-			machineDto = objectMapperUtil.mapNew(machine, MachineDto.class);
+			machineDto = objectMapperUtil.map(machine, MachineDto.class);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -133,7 +133,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
+			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -176,7 +176,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
+			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
 	
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -200,7 +200,7 @@ public class MachineServiceImpl implements MachineService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(crtMachine, idResponseDto);
+		objectMapperUtil.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
 	}

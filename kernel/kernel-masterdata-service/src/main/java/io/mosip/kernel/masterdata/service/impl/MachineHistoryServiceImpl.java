@@ -101,7 +101,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
 			
-			machineHistoryDtoList =objectMapperUtil.mapAllNew(macHistoryList, MachineHistoryDto.class);
+			machineHistoryDtoList =objectMapperUtil.mapAll(macHistoryList, MachineHistoryDto.class);
 		} else {
 			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());

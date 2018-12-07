@@ -51,7 +51,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		}
 		
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.mapNew(renDeviceType, codeLangCodeId);
+		objectMapperUtil.map(renDeviceType, codeLangCodeId);
 		return codeLangCodeId;
 	}
 

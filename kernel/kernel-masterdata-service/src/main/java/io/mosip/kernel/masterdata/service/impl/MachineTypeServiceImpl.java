@@ -43,7 +43,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		}
 		
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.mapNew(renMachineType, codeLangCodeId);
+		objectMapperUtil.map(renMachineType, codeLangCodeId);
 		return codeLangCodeId;
 	}
 

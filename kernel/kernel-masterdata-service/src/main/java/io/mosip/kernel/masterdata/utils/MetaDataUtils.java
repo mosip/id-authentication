@@ -54,7 +54,7 @@ public class MetaDataUtils {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
 
-		D entity = (D) mapperUtils.mapNew(source, destinationClass);
+		D entity = (D) mapperUtils.map(source, destinationClass);
 
 		setCreatedDateTime(contextUser, entity);
 		return entity;
