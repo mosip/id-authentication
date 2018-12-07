@@ -14,5 +14,5 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
  */
 public interface IdRepoService {
 	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException;
-	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) throws IdAuthenticationDaoException;
+	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) throws IdAuthenticationBusinessException;
 }

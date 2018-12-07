@@ -449,13 +449,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws JsonParseException
 	 */
 	public Map<String, List<IdentityInfoDTO>> getIdEntity(Map<String, Object> idResponseDTO) throws IdAuthenticationBusinessException {
-
-		try {
-			return idInfoService.getIdInfo(idResponseDTO);
-		} catch (IdAuthenticationDaoException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}
-
+		return idInfoService.getIdInfo(idResponseDTO);
 	}
 
 //	private Map<String, Object> processIdRepoRequest(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {

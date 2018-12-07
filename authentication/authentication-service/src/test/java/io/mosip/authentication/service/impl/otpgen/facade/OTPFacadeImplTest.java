@@ -312,7 +312,7 @@ public class OTPFacadeImplTest {
 
 	@Ignore
 	@Test
-	public void testEmail() throws IdAuthenticationDaoException {
+	public void testEmail() throws  IdAuthenticationBusinessException {
 		String refId = "8765";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		String language = "fr";
@@ -327,7 +327,7 @@ public class OTPFacadeImplTest {
 
 	@Ignore
 	@Test
-	public void testMobileNumber() throws IdAuthenticationDaoException {
+	public void testMobileNumber() throws  IdAuthenticationBusinessException {
 		String refId = "8765";
 		String language = "fr";
 		String eamilId = "abc@abc.com";

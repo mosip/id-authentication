@@ -595,7 +595,7 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationDaoException
 	 */
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void testGetIdEntityException() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+	public void testGetIdEntityException() throws IdAuthenticationBusinessException {
 		String refId = "863537";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
@@ -604,7 +604,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("ema.il", list);
 		idInfo.put("phone", list);
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenThrow(new IdAuthenticationDaoException());
+		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenThrow(new IdAuthenticationBusinessException());
 		authFacadeImpl.getIdEntity(repoDetails());
 	}
 	private Map<String, Object> repoDetails(){
