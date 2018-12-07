@@ -159,6 +159,14 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 
 		}
 
+		// TODO: Hard codded because if gps device and signa is not connected and weak
+		// it wont allow for new registarion
+
+		gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, 12.9913);
+		gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, 80.2457);
+		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
+		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+
 		return gpsResponseMap;
 	}
 
@@ -166,14 +174,10 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	 * {@code actualDistance} is to calculate the distance between the given
 	 * latitudes and longitudes.
 	 *
-	 * @param fromlat
-	 *            from latitude
-	 * @param fromlng
-	 *            from longitude
-	 * @param tolat
-	 *            to latitude
-	 * @param tolng
-	 *            to longitude
+	 * @param fromlat from latitude
+	 * @param fromlng from longitude
+	 * @param tolat   to latitude
+	 * @param tolng   to longitude
 	 * @return double
 	 */
 	private double actualDistance(BigDecimal fromlat, BigDecimal fromlng, double centerLat, double centerLngt) {
@@ -202,8 +206,7 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	/**
 	 * Gets the latitudeFromGps long.
 	 *
-	 * @param gpsData
-	 *            the gps data
+	 * @param gpsData the gps data
 	 * @return the latitudeFromGps long
 	 * @throws RegBaseCheckedException
 	 */
