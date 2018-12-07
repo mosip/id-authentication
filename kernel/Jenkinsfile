@@ -100,7 +100,7 @@ stage('---------- SonarQube Analysis --------------') {
   }
  }
  
-  stage('----deploy----')
+  stage('----deploy in dev----')
  {
 	  command = """
  		INDEX=0
@@ -114,20 +114,39 @@ stage('---------- SonarQube Analysis --------------') {
 			  portExposed="\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{index (split \$p "/") 0}} {{end}}' \$i)"
 			  portExposedFormatted="\$(echo \$portExposed| xargs)"
 			  echo Container will expose services on \$portExposedFormatted 
+			  volumeMounted="\$(docker inspect --format='{{range \$p, \$conf := .Config.Volumes}} {{ \$p }} {{end}}' \$i)"
+			  portExposedFormatted="\$(echo \$portExposed| xargs)"
 			 if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]})" ]; then
 			  docker rename \${containerNamesShell[\$INDEX]} \${containerNamesShell[\$INDEX]}-backup && docker stop \${containerNamesShell[\$INDEX]}-backup
 			 fi
-			 docker run -d -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
-			  if [ \$? -eq 0 ]; then
-				echo Container Started - \${containerNamesShell[\$INDEX]}
-				if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
-					echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
-					docker rm \${containerNamesShell[\$INDEX]}-backup
-				fi
+			  if [ "\$volumeMounted" = "" ]; then 
+					echo "No volume to mount" 
+					 docker run -d -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+					  if [ \$? -eq 0 ]; then
+						echo Container Started - \${containerNamesShell[\$INDEX]}
+						if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
+							echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
+							docker rm \${containerNamesShell[\$INDEX]}-backup
+						fi
+					  else
+						echo Error - Cannot start new container, rollbacking to previous container
+						docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
+					  fi
 			  else
-				echo Error - Cannot start new container, rollbacking to previous container
-				docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
-			  fi
+					echo "Volume to me mounted : \$volumeMounted" 
+					// create a directory in which volume has to be mounted
+					 docker run -d -v \$PWD\$volumeMounted:\$volumeMounted   -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+					  if [ \$? -eq 0 ]; then
+						echo Container Started - \${containerNamesShell[\$INDEX]}
+						if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
+							echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
+							docker rm \${containerNamesShell[\$INDEX]}-backup
+						fi
+					  else
+						echo Error - Cannot start new container, rollbacking to previous container
+						docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
+					  fi					
+			  fi;
 			  let INDEX=\${INDEX}+1
 			done
 			
