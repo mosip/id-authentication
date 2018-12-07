@@ -312,8 +312,7 @@ public class DataSyncService {
 		final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
 		final TimeZone utc = TimeZone.getTimeZone("UTC");
 		sdf.setTimeZone(utc);
-		Date myDate = DateUtils.parse(sdf.format(fromDate));
-		//System.out.println("from timestamp :" + new Timestamp(myDate.getTime()));
+		Date myDate = DateUtils.parseDefaultUTCToDate(sdf.format(fromDate).toString());
 		Date myDate1 = toDate;
 
 		if (toDate == null) {
@@ -325,13 +324,9 @@ public class DataSyncService {
 			cal.set(Calendar.MINUTE, 59);
 			cal.set(Calendar.SECOND, 59);
 			myDate1 = cal.getTime();
-			//System.out.println("to timestamp :" + new Timestamp(myDate1.getTime()));
 		} else {
-			myDate1 = DateUtils.parse(sdf.format(toDate));
-			//System.out.println("to timestamp :" + new Timestamp(myDate1.getTime()));
+			myDate1 = DateUtils.parseDefaultUTCToDate(sdf.format(toDate).toString());
 		}
-		//System.out.println("from timestamp :" + new Timestamp(myDate.getTime()));
-
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();
 		List<PreRegistrationEntity> preRegIdEntitylist;

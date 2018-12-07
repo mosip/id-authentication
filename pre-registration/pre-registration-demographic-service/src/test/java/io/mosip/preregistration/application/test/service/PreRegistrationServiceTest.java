@@ -39,8 +39,8 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
@@ -79,7 +79,7 @@ public class PreRegistrationServiceTest {
 	private PridGenerator<String> pridGenerator;
 
 	@MockBean
-	private JsonValidator jsonValidator;
+	private JsonValidatorImpl jsonValidator;
 
 	JSONParser parser = new JSONParser();
 

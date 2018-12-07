@@ -50,12 +50,10 @@ public class DocumentUploadService {
 	@Value("${file.extension}")
 	private String fileExtension;
 
-	
-
 	public ResponseDto<DocResponseDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
 		ResponseDto<DocResponseDto> responseDto = new ResponseDto<DocResponseDto>();
 		List<DocResponseDto> uploadList = new ArrayList<>();
-		DocResponseDto uploadDcoRes= new DocResponseDto();
+		DocResponseDto uploadDcoRes = new DocResponseDto();
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo DocumentErr = null;
 
@@ -118,7 +116,7 @@ public class DocumentUploadService {
 
 		ResponseDto<DocResponseDto> responseDto = new ResponseDto<>();
 		List<DocResponseDto> copyList = new ArrayList<>();
-		DocResponseDto copyDcoRes= new DocResponseDto();
+		DocResponseDto copyDcoRes = new DocResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 
@@ -145,7 +143,7 @@ public class DocumentUploadService {
 		documentEntity.setLang_code(preIdList.getLang_code());
 		documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 		documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
-		documentEntity.setStatus_code("Pending_Appointment"); 
+		documentEntity.setStatus_code("Pending_Appointment");
 		documentRepository.save(documentEntity);
 		responseDto.setStatus("true");
 		err.add(documentErr);
@@ -156,54 +154,50 @@ public class DocumentUploadService {
 
 	}
 
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ResponseDto<DocumentGetAllDto> getAllDocumentForPreId(String preId) {
-		DocumentGetAllDto allDocDto= new DocumentGetAllDto();
+		DocumentGetAllDto allDocDto = new DocumentGetAllDto();
 		ResponseDto<DocumentGetAllDto> responseDto = new ResponseDto<DocumentGetAllDto>();
-		List<DocumentGetAllDto> allDocRes= new ArrayList<>();
+		List<DocumentGetAllDto> allDocRes = new ArrayList<>();
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo DocumentMissingErr = null;
 		try {
-		List<DocumentEntity> documentEntities = documentRepository.findBypreregId(preId);
-		if (documentEntities == null) {
-			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
-		} else {
-			DocumentMissingErr = new ExceptionJSONInfo("", "");
-			err.add(DocumentMissingErr);
-			responseDto.setErr(err);
-			for(DocumentEntity doc:documentEntities) {
-				allDocDto.setDoc_cat_code(doc.getDoc_cat_code());
-				allDocDto.setDoc_file_format(doc.getDoc_file_format());
-				allDocDto.setDoc_id(Integer.toString(doc.getDocumentId()));
-				allDocDto.setDoc_typ_code(doc.getDoc_typ_code());
-				allDocDto.setMultipartFile(doc.getDoc_store());
-				allDocDto.setPrereg_id(doc.getPreregId());
-				allDocRes.add(allDocDto);
+			List<DocumentEntity> documentEntities = documentRepository.findBypreregId(preId);
+			if (documentEntities == null) {
+				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
+			} else {
+				DocumentMissingErr = new ExceptionJSONInfo("", "");
+				err.add(DocumentMissingErr);
+				responseDto.setErr(err);
+				for (DocumentEntity doc : documentEntities) {
+					allDocDto.setDoc_cat_code(doc.getDoc_cat_code());
+					allDocDto.setDoc_file_format(doc.getDoc_file_format());
+					allDocDto.setDoc_id(Integer.toString(doc.getDocumentId()));
+					allDocDto.setDoc_typ_code(doc.getDoc_typ_code());
+					allDocDto.setMultipartFile(doc.getDoc_store());
+					allDocDto.setPrereg_id(doc.getPreregId());
+					allDocRes.add(allDocDto);
+				}
+				responseDto.setResponse(allDocRes);
 			}
-			responseDto.setResponse(allDocRes);
-		}
-		}catch (DataAccessLayerException e) {
-            //log here
+		} catch (DataAccessLayerException e) {
+			// log here
 			throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), e);
 
-			}
+		}
 
-		
 		responseDto.setStatus("true");
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return responseDto;
 	}
-
-
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ResponseDto<DocResponseDto> deleteDocument(String doctId) {
 		Integer documnetId = Integer.parseInt(doctId.toString().trim());
 
 		DocumentEntity documentEntity = documentRepository.findBydocumentId(documnetId);
-		DocResponseDto deletedocRes= new DocResponseDto();
-		List<DocResponseDto> deleteDocList= new ArrayList<>();
+		DocResponseDto deletedocRes = new DocResponseDto();
+		List<DocResponseDto> deleteDocList = new ArrayList<>();
 		ResponseDto<DocResponseDto> responseDto = new ResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
@@ -223,7 +217,7 @@ public class DocumentUploadService {
 				responseDto.setResponse(deleteDocList);
 
 			} else {
-			
+
 				throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
 			}
 
@@ -237,8 +231,8 @@ public class DocumentUploadService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ResponseDto<DocResponseDto> deleteAllByPreId(String preregId) {
-		DocResponseDto deleteAllDto=new DocResponseDto();
-		List<DocResponseDto> deleteAllList= new ArrayList<>();
+		DocResponseDto deleteAllDto = new DocResponseDto();
+		List<DocResponseDto> deleteAllList = new ArrayList<>();
 		ResponseDto<DocResponseDto> responseDto = new ResponseDto();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
@@ -246,7 +240,7 @@ public class DocumentUploadService {
 
 		List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 		if (documentEntityList == null || documentEntityList.size() == 0) {
-			
+
 			throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 		} else {
 			if (documentRepository.deleteAllBypreregId(preregId).size() > 0) {
@@ -258,7 +252,7 @@ public class DocumentUploadService {
 				responseDto.setResponse(deleteAllList);
 
 			} else {
-				
+
 				throw new TablenotAccessibleException(StatusCodes.DOCUMENT_TABLE_NOTACCESSIBLE.toString());
 			}
 		}
