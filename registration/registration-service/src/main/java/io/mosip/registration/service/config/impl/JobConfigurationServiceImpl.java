@@ -30,6 +30,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.JobConfigurationService;
 
 /**
@@ -39,7 +40,7 @@ import io.mosip.registration.service.config.JobConfigurationService;
  *
  */
 @Service
-public class JobConfigurationServiceImpl implements JobConfigurationService {
+public class JobConfigurationServiceImpl extends BaseService implements JobConfigurationService {
 
 	@Autowired
 	private SyncJobConfigDAO jobConfigDAO;
@@ -118,14 +119,15 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
-					setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
+					
+					setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE,null);
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, exception.getMessage());
 				
-				setErrorResponseDTO(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE);
+				setErrorResponse(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,null);
 			} 
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -142,13 +144,13 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			schedulerFactoryBean.getScheduler().shutdown(shutdown);
-			setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE);
+			setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE,null);
 
 		} catch (SchedulerException schedulerException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE);
+			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE,null);
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -186,7 +188,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE);
+			setErrorResponse(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE,null);
 
 		}
 
@@ -223,35 +225,14 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			
 			responseDTO = new ResponseDTO();
-			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE);
+			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE,null);
 		} 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");
 		return responseDTO;
 	}
 
-	private ResponseDTO setErrorResponseDTO(ResponseDTO responseDTO, String message) {
-		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
-
-		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-		errorResponseDTO.setCode(RegistrationConstants.ALERT_ERROR);
-		errorResponseDTO.setMessage(message);
-		errorResponseDTOs.add(errorResponseDTO);
-		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-
-		return responseDTO;
-	}
-
-	private ResponseDTO setSuccessResponseDTO(ResponseDTO responseDTO, String message) {
-
-		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-		successResponseDTO.setMessage(message);
-
-		responseDTO.setSuccessResponseDTO(successResponseDTO);
-
-		return responseDTO;
-	}
+	
 
 
 }
