@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
@@ -67,9 +69,9 @@ public class RegistrationOfficerDetailsController extends BaseController {
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
+
 	@Autowired
-	MasterSyncService masterSyncService; 
+	MasterSyncService masterSyncService;
 
 	/**
 	 * Mapping Registration Officer details
@@ -87,7 +89,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-		
+
 		getTimer().schedule(new TimerTask() {
 
 			@Override
@@ -149,8 +151,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event
-	 *            is an action event
+	 * @param event is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
@@ -168,25 +169,34 @@ public class RegistrationOfficerDetailsController extends BaseController {
 
 		}
 	}
-	
+
 	/**
 	 * Redirecting to Home page
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
+		Map<String, Object> responseMap = null;
+		MasterSyncResponseDto masterResponse;
 		try {
 
 			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Syncing master data");
-		
-			masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+
+			responseMap = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+
+			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
 
 		} catch (RuntimeException exception) {
 
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_HOME_PAGE);
+			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
 		}
 	}
 
@@ -217,8 +227,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent
-	 *            is an action event
+	 * @param actionEvent is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
