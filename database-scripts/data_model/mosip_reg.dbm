@@ -1,0 +1,1878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.65"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_reg" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all data related to Individual registration.]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="reg" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="app_login_method">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[ app_login_method table ... ]]></comment>
+	<position x="1933.08" y="293.077"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="login_method_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="method_seq">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_applogm_app_id" type="pk-constr" table="reg.app_login_method">
+		<columns names="app_id,login_method_code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="device_master">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="856.862" y="42.3077"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="mac_address" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="serial_num" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ip_address">
+		<type name="character varying" length="17"/>
+	</column>
+	<column name="dspec_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_devicem_id" type="pk-constr" table="reg.device_master">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="device_spec">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[reg device_spec table]]></comment>
+	<position x="95.3402" y="57.6923"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="brand" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="model" not-null="true">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="dtyp_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="min_driver_ver" not-null="true">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_dspec_code" type="pk-constr" table="reg.device_spec">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="device_type">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[reg device_type table]]></comment>
+	<position x="456.126" y="59.2308"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_dtyp_code" type="pk-constr" table="reg.device_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="machine_master">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store master list of machines like desktop, laptop, notebook...etc used at registration centers for individual registration]]></comment>
+	<position x="1301.45" y="51.5385"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="mac_address" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="serial_num" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ip_address">
+		<type name="character varying" length="17"/>
+	</column>
+	<column name="mspec_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_machm_id" type="pk-constr" table="reg.machine_master">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="machine_spec">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[reg machine_spec table]]></comment>
+	<position x="1622.31" y="49.4038"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="brand" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="model" not-null="true">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="mtyp_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="min_driver_ver" not-null="true">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_mspec_code" type="pk-constr" table="reg.machine_spec">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="machine_type">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[reg machine_type table]]></comment>
+	<position x="1992.32" y="54.0192"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_mtyp_code" type="pk-constr" table="reg.machine_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="pre_registration_list">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="1953.03" y="509.404"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="prereg_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="parent_prereg_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="packet_path">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="sjob_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="trn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_preregl_id" type="pk-constr" table="reg.pre_registration_list">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registration_center">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Client reg. registration_center table]]></comment>
+	<position x="1047.82" y="714.019"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="cntrtyp_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="addr_line1">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="addr_line2">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="addr_line3">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="latitude">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="longitude">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="location_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="contact_phone">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="number_of_kiosks">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="working_hours">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="per_kiosk_process_time">
+		<type name="time" length="0"/>
+	</column>
+	<column name="process_start_time">
+		<type name="time" length="0"/>
+	</column>
+	<column name="process_end_time">
+		<type name="time" length="0"/>
+	</column>
+	<column name="holiday_loc_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_regcntr_code" type="pk-constr" table="reg.registration_center">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registration_transaction">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="1054.03" y="1167.87"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="trn_type_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="remarks">
+		<type name="character varying" length="1024"/>
+	</column>
+	<column name="parent_regtrn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="1024"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_regtrn_id" type="pk-constr" table="reg.registration_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registration">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration / Enrolment table is to store id issuance registration/enrolment id and packet id details]]></comment>
+	<position x="551.538" y="1130.19"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="reg_type" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_reg_id">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="status_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="ack_filename">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="client_status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="server_status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="client_status_dtime">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="server_status_dtime">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="client_status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="server_status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="indv_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="reg_usr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="reg_cntr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="approver_usr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="approver_role_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="file_upload_status">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="upload_count">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="upload_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="latest_regtrn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="latest_trn_type_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="latest_trn_status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="latest_trn_lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="latest_regtrn_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_reg_id" type="pk-constr" table="reg.registration">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_device">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store all MOSIP registration centers and their mapped machines]]></comment>
+	<position x="571.016" y="342.5"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="device_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_cntrdev_id" type="pk-constr" table="reg.reg_center_device">
+		<columns names="regcntr_id,device_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_machine_device">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store all MOSIP registration centers, machines and their mapped devices]]></comment>
+	<position x="1049.19" y="402.5"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="device_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_cntrmdev_cntr_id" type="pk-constr" table="reg.reg_center_machine_device">
+		<columns names="regcntr_id,machine_id,device_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_machine">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store all MOSIP registration centers and their mapped machines]]></comment>
+	<position x="1484.68" y="434.808"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_cntrmac_usr_id" type="pk-constr" table="reg.reg_center_machine">
+		<columns names="regcntr_id,machine_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_user_machine">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="530.934" y="860.962"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="usr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_cntrmusr_usr_id" type="pk-constr" table="reg.reg_center_user_machine">
+		<columns names="regcntr_id,usr_id,machine_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_center_user">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store all MOSIP Application users and their mapped registration centers]]></comment>
+	<position x="490" y="609.135"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="usr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_cntrusr_usr_id" type="pk-constr" table="reg.reg_center_user">
+		<columns names="regcntr_id,usr_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="screen_authorization">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="109.716" y="1249.13"/>
+	<column name="screen_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="role_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_permitted" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_scrauth_screen_id" type="pk-constr" table="reg.screen_authorization">
+		<columns names="screen_id,role_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_job_def">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration sync_job_def table which hold all sync job details]]></comment>
+	<position x="1931.81" y="1147.6"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="api_name">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="parent_syncjob_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_freq">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lock_duration">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_syncjob_id" type="pk-constr" table="reg.sync_job_def">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_syncjob_name" table="reg.sync_job_def"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="name"/>
+		</idxelement>
+</index>
+
+<table name="transaction_type">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration  Transaction Type table, ]]></comment>
+	<position x="1560.83" y="1282.98"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Primary key of transaction code, with lang_cd for multi language ]]></comment>
+	</column>
+	<column name="descr" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_trntyp_code" type="pk-constr" table="reg.transaction_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="user_detail">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Application user details, List of user will have access to MOSIP applications based on assigned roles]]></comment>
+	<position x="85.6573" y="641.442"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="uin_ref_id">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="email">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="mobile">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="last_login_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="last_login_method">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_usrdtl_id" type="pk-constr" table="reg.user_detail">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="user_pwd">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration user password details.]]></comment>
+	<position x="97.6923" y="973.308"/>
+	<column name="usr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="pwd" not-null="true">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="pwd_expiry_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_usrpwd_usr_id" type="pk-constr" table="reg.user_pwd">
+		<columns names="usr_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="user_role">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Table to store all MOSIP Application users and their mapped roles]]></comment>
+	<position x="94.3316" y="347.154"/>
+	<column name="usr_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="role_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_usrrol_usr_id" type="pk-constr" table="reg.user_role">
+		<columns names="usr_id,role_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_control">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration sync_control table which hold all sucessfull sync job details]]></comment>
+	<position x="1925.89" y="825.615"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="synctrn_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="last_sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_synctrl_id" type="pk-constr" table="reg.sync_control">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_transaction">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Master sync_transaction table which hold all sync job details and transactions]]></comment>
+	<position x="1500.66" y="808.692"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="trigger_point">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="sync_from">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="sync_to">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_param">
+		<type name="character varying" length="2048"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_synctrn_id" type="pk-constr" table="reg.sync_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_regtrn_reg" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration" table="reg.registration_transaction">
+	<columns names="reg_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_regtrn_trntyp" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.transaction_type" table="reg.registration_transaction">
+	<columns names="trn_type_code,lang_code" ref-type="src-columns"/>
+	<columns names="code,lang_code" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrdev_regcntr" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration_center" table="reg.reg_center_device">
+	<columns names="regcntr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrdev_devicem" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.device_master" table="reg.reg_center_device">
+	<columns names="device_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmdev_regcntr" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration_center" table="reg.reg_center_machine_device">
+	<columns names="regcntr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmdev_machm" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.machine_master" table="reg.reg_center_machine_device">
+	<columns names="machine_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmdev_devicem" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.device_master" table="reg.reg_center_machine_device">
+	<columns names="device_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmac_regcntr" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration_center" table="reg.reg_center_machine">
+	<columns names="regcntr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmac_machm" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.machine_master" table="reg.reg_center_machine">
+	<columns names="machine_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmusr_regcntr" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration_center" table="reg.reg_center_user_machine">
+	<columns names="regcntr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmusr_usrdtl" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.user_detail" table="reg.reg_center_user_machine">
+	<columns names="usr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrmusr_machm" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.machine_master" table="reg.reg_center_user_machine">
+	<columns names="machine_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrusr_regcntr" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.registration_center" table="reg.reg_center_user">
+	<columns names="regcntr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cntrusr_usrdtl" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.user_detail" table="reg.reg_center_user">
+	<columns names="usr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_usrpwd_usrdtl" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.user_detail" table="reg.user_pwd">
+	<columns names="usr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_usrrol_usrdtl" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.user_detail" table="reg.user_role">
+	<columns names="usr_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_cntrmac" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.reg_center_machine" table="reg.sync_control">
+	<columns names="machine_id,regcntr_id" ref-type="src-columns"/>
+	<columns names="machine_id,regcntr_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.sync_job_def" table="reg.sync_control">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_synctrn" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.sync_transaction" table="reg.sync_control">
+	<columns names="synctrn_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrn_cntrmac" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.reg_center_machine" table="reg.sync_transaction">
+	<columns names="machine_id,regcntr_id" ref-type="src-columns"/>
+	<columns names="machine_id,regcntr_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrn_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.sync_job_def" table="reg.sync_transaction">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_registration_transaction_registration" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="reg.registration_transaction"
+	 dst-table="reg.registration" reference-fk="fk_regtrn_reg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_registration_transaction_transaction_type" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="reg.registration_transaction"
+	 dst-table="reg.transaction_type" reference-fk="fk_regtrn_trntyp"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_device_registration_center" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="reg.reg_center_device"
+	 dst-table="reg.registration_center" reference-fk="fk_cntrdev_regcntr"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_device_device_master" type="relfk"
+	 custom-color="#249b49"
+	 src-table="reg.reg_center_device"
+	 dst-table="reg.device_master" reference-fk="fk_cntrdev_devicem"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_machine_device_registration_center" type="relfk"
+	 custom-color="#942665"
+	 src-table="reg.reg_center_machine_device"
+	 dst-table="reg.registration_center" reference-fk="fk_cntrmdev_regcntr"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_machine_device_machine_master" type="relfk"
+	 custom-color="#abb258"
+	 src-table="reg.reg_center_machine_device"
+	 dst-table="reg.machine_master" reference-fk="fk_cntrmdev_machm"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_machine_device_device_master" type="relfk"
+	 custom-color="#94e1e5"
+	 src-table="reg.reg_center_machine_device"
+	 dst-table="reg.device_master" reference-fk="fk_cntrmdev_devicem"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_machine_registration_center" type="relfk"
+	 custom-color="#a239f5"
+	 src-table="reg.reg_center_machine"
+	 dst-table="reg.registration_center" reference-fk="fk_cntrmac_regcntr"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_machine_machine_master" type="relfk"
+	 custom-color="#4e132e"
+	 src-table="reg.reg_center_machine"
+	 dst-table="reg.machine_master" reference-fk="fk_cntrmac_machm"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_user_machine_registration_center" type="relfk"
+	 custom-color="#081cb1"
+	 src-table="reg.reg_center_user_machine"
+	 dst-table="reg.registration_center" reference-fk="fk_cntrmusr_regcntr"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="104.812" y="58.824"/>
+	</label>
+</relationship>
+
+<relationship name="rel_reg_center_user_machine_user_detail" type="relfk"
+	 custom-color="#87ec86"
+	 src-table="reg.reg_center_user_machine"
+	 dst-table="reg.user_detail" reference-fk="fk_cntrmusr_usrdtl"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_user_machine_machine_master" type="relfk"
+	 custom-color="#63e1f3"
+	 src-table="reg.reg_center_user_machine"
+	 dst-table="reg.machine_master" reference-fk="fk_cntrmusr_machm"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_user_registration_center" type="relfk"
+	 custom-color="#e41bea"
+	 src-table="reg.reg_center_user"
+	 dst-table="reg.registration_center" reference-fk="fk_cntrusr_regcntr"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_center_user_user_detail" type="relfk"
+	 custom-color="#36beed"
+	 src-table="reg.reg_center_user"
+	 dst-table="reg.user_detail" reference-fk="fk_cntrusr_usrdtl"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_pwd_user_detail" type="relfk"
+	 custom-color="#871fa4"
+	 src-table="reg.user_pwd"
+	 dst-table="reg.user_detail" reference-fk="fk_usrpwd_usrdtl"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_role_user_detail" type="relfk"
+	 custom-color="#484368"
+	 src-table="reg.user_role"
+	 dst-table="reg.user_detail" reference-fk="fk_usrrol_usrdtl"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_reg_center_machine" type="relfk"
+	 custom-color="#ce5d86"
+	 src-table="reg.sync_control"
+	 dst-table="reg.reg_center_machine" reference-fk="fk_synctrl_cntrmac"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_job_def" type="relfk"
+	 custom-color="#132c5f"
+	 src-table="reg.sync_control"
+	 dst-table="reg.sync_job_def" reference-fk="fk_synctrl_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_transaction" type="relfk"
+	 custom-color="#3aff7d"
+	 src-table="reg.sync_control"
+	 dst-table="reg.sync_transaction" reference-fk="fk_synctrl_synctrn"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_transaction_reg_center_machine" type="relfk"
+	 custom-color="#5cce88"
+	 src-table="reg.sync_transaction"
+	 dst-table="reg.reg_center_machine" reference-fk="fk_synctrn_cntrmac"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_transaction_sync_job_def" type="relfk"
+	 custom-color="#264253"
+	 src-table="reg.sync_transaction"
+	 dst-table="reg.sync_job_def" reference-fk="fk_synctrn_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_reg" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_reg" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_reg" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_reg" type="database"/>
+	<roles names="reguser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="reg" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="reg" type="schema"/>
+	<roles names="reguser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="reg.app_login_method" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.app_login_method" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.device_master" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.device_master" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.device_spec" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.device_spec" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.device_type" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.device_type" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_master" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_master" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_spec" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_spec" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_type" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.machine_type" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.pre_registration_list" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.pre_registration_list" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.registration_center" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.registration_center" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.registration_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.registration_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.registration" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.registration" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_device" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_device" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_machine_device" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_machine_device" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_machine" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_machine" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_user_machine" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_user_machine" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_user" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.reg_center_user" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.screen_authorization" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.screen_authorization" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_job_def" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_job_def" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.transaction_type" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.transaction_type" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.user_detail" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.user_detail" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.user_pwd" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.user_pwd" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.user_role" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.user_role" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_control" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_control" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="reg.sync_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

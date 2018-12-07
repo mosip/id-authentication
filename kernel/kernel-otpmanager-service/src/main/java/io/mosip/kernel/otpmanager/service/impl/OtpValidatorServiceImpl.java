@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.otpmanager.spi.OtpValidator;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.constant.SqlQueryConstants;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.RequiredKeyNotFoundException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
@@ -65,12 +65,9 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		// This method validates the input parameters.
 		otpUtils.validateOtpRequestArguments(key, otp);
 		OtpValidatorResponseDto responseDto;
-
 		ResponseEntity<OtpValidatorResponseDto> validationResponseEntity;
-
 		// The OTP entity for a specific key.
 		OtpEntity otpResponse = otpRepository.findById(OtpEntity.class, key);
-
 		responseDto = new OtpValidatorResponseDto();
 		responseDto.setMessage(OtpStatusConstants.FAILURE_MESSAGE.getProperty());
 		responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
@@ -81,15 +78,14 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		 * exception.
 		 */
 		if (otpResponse == null) {
-			List<Error> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
+			List<ServiceError> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
 			throw new RequiredKeyNotFoundException(validationErrorsList);
 		}
 		// This variable holds the update query to be performed.
 		String updateString;
 		// This variable holds the count of number
-
 		int attemptCount = otpResponse.getValidationRetryCount();
 		if ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getGeneratedDtimes(),
 				OtpManagerUtils.getCurrentLocalDateTime())) > (Integer.parseInt(otpExpiryLimit))) {
@@ -162,7 +158,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	 *            the response dto.
 	 * @param validationResponseEntity
 	 *            the validation response entity.
-	 * @return
+	 * @return the response entity.
 	 */
 	private ResponseEntity<OtpValidatorResponseDto> unFreezeKey(String key, String otp, OtpEntity otpResponse,
 			int attemptCount, OtpValidatorResponseDto responseDto,
@@ -203,7 +199,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	 *            the new number of attempt value.
 	 * @param localDateTime
 	 *            the new LocalDateTime.
-	 * @return
+	 * @return the map.
 	 */
 	private HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
 			LocalDateTime localDateTime) {

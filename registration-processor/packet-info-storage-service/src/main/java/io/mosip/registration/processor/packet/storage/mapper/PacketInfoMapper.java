@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
@@ -184,7 +184,7 @@ public class PacketInfoMapper {
 	 *            the meta data
 	 * @return the biometric exception entity
 	 */
-	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricException exception,
+	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDto exception,
 			List<FieldValue> metaData) {
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";

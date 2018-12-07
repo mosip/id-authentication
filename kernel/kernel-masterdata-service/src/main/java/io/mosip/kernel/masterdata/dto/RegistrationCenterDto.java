@@ -2,9 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalTime;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Dharmesh Khandelwal
@@ -13,8 +11,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegistrationCenterDto {
 
 	private String id;
