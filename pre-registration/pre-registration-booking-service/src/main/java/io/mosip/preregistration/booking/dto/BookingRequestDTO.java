@@ -1,13 +1,16 @@
 package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author M1046129
+ *
+ */
 @Getter
 @Setter
 public class BookingRequestDTO implements Serializable{
@@ -26,7 +29,7 @@ public class BookingRequestDTO implements Serializable{
 	/**
 	 * booked Date Time
 	 */
-	private Timestamp reg_date;
+	private String reg_date;
 	/**
 	 * booked Time Slot
 	 */

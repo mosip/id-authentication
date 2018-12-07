@@ -8,6 +8,6 @@ package io.mosip.preregistration.booking.code;
  *
  */
 public enum StatusCodes {
-	APPOINTMENT_SUCCESSFULLY_BOOKED
+	Pending_Appointment, Booked, Expired, Consumed;
 
 }

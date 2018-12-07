@@ -31,6 +31,7 @@ import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import net.minidev.json.parser.JSONParser;
@@ -46,17 +47,18 @@ public class BookingControllerTest {
 	@MockBean
 	private BookingService service;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	private AvailabilityDto availabilityDto;
 
 	BookingDTO bookingDTO = new BookingDTO();
-	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
+	List<BookingRequestDTO> bookingList=new ArrayList<>();
+	BookingRequestDTO bookingRequestDTOA = new BookingRequestDTO();
+	BookingRequestDTO bookingRequestDTOB = new BookingRequestDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
 	ResponseDto responseDto = new ResponseDto();
 	private Object jsonObject = null;
 
+	@SuppressWarnings({ "deprecation" })
 	@Before
 	public void setup() throws FileNotFoundException, ParseException, URISyntaxException {
 		availabilityDto = new AvailabilityDto();
@@ -68,20 +70,28 @@ public class BookingControllerTest {
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
 
-		bookingRequestDTO.setPre_registration_id("12345");
-		bookingRequestDTO.setRegistration_center_id("2");
-		bookingRequestDTO.setSlotFromTime("09:00");
-		bookingRequestDTO.setSlotToTime("09:20");
-		bookingRequestDTO.setReg_date(resTime);
+		bookingRequestDTOA.setPre_registration_id("23587986034785");
+		bookingRequestDTOA.setRegistration_center_id("1");
+		bookingRequestDTOA.setSlotFromTime("09:00");
+		bookingRequestDTOA.setSlotToTime("09:13");
+		bookingRequestDTOA.setReg_date("2018-12-06");
 
-		bookingDTO.setRequest(bookingRequestDTO);
+		bookingRequestDTOB.setPre_registration_id("31496715428069");
+		bookingRequestDTOB.setRegistration_center_id("1");
+		bookingRequestDTOB.setSlotFromTime("09:00");
+		bookingRequestDTOB.setSlotToTime("09:13");
+		bookingRequestDTOB.setReg_date("2018-12-06");
+
+		bookingDTO.setRequest(bookingList);
+
+		responseDto.setErr(null);
 	}
 
 	@Test
 	public void getAvailability() throws Exception {
 		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/book/availability")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("RegCenterId", "1");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -91,7 +101,7 @@ public class BookingControllerTest {
 	public void saveAvailability() throws Exception {
 		ResponseDto<String> response = new ResponseDto<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/book/masterSync")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -101,16 +111,30 @@ public class BookingControllerTest {
 	@Test
 	public void successBookingTest() throws Exception {
 
-		responseDto.setErr(null);
 		responseDto.setStatus(true);
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		List<String> respList = new ArrayList<>();
-		respList.add(StatusCodes.APPOINTMENT_SUCCESSFULLY_BOOKED.toString());
+		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
 
 		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/book/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/booking/book")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void failureBookingTest() throws Exception {
+
+		responseDto.setStatus(false);
+		bookingDTO.setRequest(null);
+		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/booking/book")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 

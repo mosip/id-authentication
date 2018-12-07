@@ -1,5 +1,7 @@
 package io.mosip.preregistration.booking.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
+import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.swagger.annotations.Api;
@@ -23,13 +26,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Data Sync Controller
+ * Booking Controller
  * 
  * @author M1037717
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/book/")
+@RequestMapping("/v0.1/pre-registration/booking/")
 @Api(tags = "Booking")
 @CrossOrigin("*")
 public class BookingController {
@@ -67,15 +70,17 @@ public class BookingController {
 
 	/**
 	 * @param bookingDTO
-	 * @return
+	 * @return response entity
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PostMapping(path = "/book")
-	public ResponseEntity<ResponseDto<BookingDTO>> book(@RequestBody(required = true) BookingDTO bookingDTO)
-			throws ParseException, java.text.ParseException {
-
-		ResponseDto<BookingDTO> responseDTO = bookingService.bookAppointment(bookingDTO);
+	@PostMapping(path = "/book", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Booking Appointment")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
+			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
+	public ResponseEntity<ResponseDto<List<BookingStatusDTO>>> bookAppoinment(
+			@RequestBody(required = true) BookingDTO bookingDTO) throws ParseException, java.text.ParseException {
+		ResponseDto<List<BookingStatusDTO>> responseDTO = bookingService.bookAppointment(bookingDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
 	}

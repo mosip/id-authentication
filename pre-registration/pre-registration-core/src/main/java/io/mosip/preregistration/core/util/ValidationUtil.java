@@ -31,7 +31,7 @@ public class ValidationUtil {
 		return matcher.matches();
 	}
 
-	public static BaseUncheckedException requestValidator(Map<String, String> requestMap,
+	public static InvalidRequestParameterException requestValidator(Map<String, String> requestMap,
 			Map<String, String> requiredRequestMap) {
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.ID)
@@ -47,7 +47,7 @@ public class ValidationUtil {
 						ErrorMessages.INVALID_REQUEST_DATETIME.toString());
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
-					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse(requestMap.get(RequestCodes.REQ_TIME));
+					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS").parse(requestMap.get(RequestCodes.REQ_TIME));
 				} catch (Exception ex) {
 					return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
 							ErrorMessages.INVALID_REQUEST_DATETIME.toString());

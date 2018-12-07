@@ -1,5 +1,6 @@
 package io.mosip.preregistration.booking.repository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import io.mosip.preregistration.booking.entity.AvailibityEntity;
  */
 @Repository("BookingRepository")
 @Transactional
-public interface BookingRepository extends BaseRepository<AvailibityEntity, String> {
+public interface BookingAvailabilityRepository extends BaseRepository<AvailibityEntity, String> {
 	public static final String distDate = "SELECT DISTINCT availability_date  FROM prereg.reg_available_slot where regcntr_id=:regcntrId order by availability_date ASC";
 
 	public List<AvailibityEntity> findByRegcntrIdAndRegDate(String regcntrId, String regDate);
@@ -28,6 +29,13 @@ public interface BookingRepository extends BaseRepository<AvailibityEntity, Stri
 	@Query(value = distDate, nativeQuery = true)
 	public List<String> findDate(@Param("regcntrId") String regcntrId);
 	
+	/**
+	 * @param slot_from_time
+	 * @param slot_to_time
+	 * @param reg_date
+	 * @param regcntr_id
+	 * @return Availability entity
+	 */
 	public AvailibityEntity findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 			@Param("slot_from_time") LocalTime slot_from_time, @Param("slot_to_time") LocalTime slot_to_time,
 			@Param("reg_date") String reg_date, @Param("regcntr_id") String regcntr_id);
