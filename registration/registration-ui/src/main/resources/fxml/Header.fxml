@@ -61,6 +61,8 @@
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#syncPacketStatus" text="Sync Data" />
 								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" onAction="#syncMasterData" text="Master Sync Data" />
+								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#syncInitializer" text="Sync Initializer" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="Download Pre-Registration Data" />
@@ -70,8 +72,6 @@
 								<MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="Device Onboarding" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#redirectHome" text="Home" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#syncMasterData" text="Master Sync Data" />
 							</items>
 						</Menu>
 					</menus>
