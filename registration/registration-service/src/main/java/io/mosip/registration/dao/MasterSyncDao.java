@@ -1,8 +1,6 @@
 package io.mosip.registration.dao;
 
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.MasterSyncDto;
-import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 

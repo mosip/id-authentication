@@ -749,6 +749,7 @@ public class RegistrationConstants {
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
 	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
+	public static final String MASTER_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Master Sync Status Job";
 	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
 	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
@@ -765,5 +766,12 @@ public class RegistrationConstants {
 	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
 	public static final String AGE_REGEX="\\d{1,2}";
 	public static final String UIN_REGEX="\\d{1,30}";
-
+	
+	//master sync 
+	
+	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
+	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
+	public static final String MASTER_SYNC_FAILURE="Master Sync Failure";
+	public static final String MASTER_SYNC_SUCCESS="Master Sync Successful";
+	public static final String MASTER_SYNC="MASTER_SYNC";
 }
