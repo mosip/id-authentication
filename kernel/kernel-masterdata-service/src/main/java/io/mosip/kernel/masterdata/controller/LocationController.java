@@ -1,6 +1,10 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.LocationCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationRequestDto;
-import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCodeDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 
 /**
@@ -24,7 +29,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
  *
  */
 @RestController
-@RequestMapping(value = "/locations")
+@RequestMapping(value = "/v1.0/locations")
 public class LocationController {
 
 	/**
@@ -45,8 +50,9 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public LocationCodeResponseDto saveLocationHierarchyDetails(@RequestBody LocationRequestDto locationRequestDto) {
-		return locationHierarchyService.saveLocationHierarchy(locationRequestDto);
+	public ResponseEntity<LocationCodeDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
+		
+		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),HttpStatus.CREATED);
 	}
 
 	/**

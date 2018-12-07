@@ -1,10 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
-import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
-import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 
 /**
  * 
@@ -12,8 +13,30 @@ import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
  *
  */
 public interface PacketRejectionReasonService {
-    public PostResponseDto saveReasonCategories(ReasonCategoryRequestDto reasonRequestDto);
-    public ReasonListResponseDto saveReasonList(ReasonListRequestDto reasonRequestDto);
+	/**
+	 * 
+	 * @param reasonRequestDto
+	 * @return codeAndLanguageCodeId - composite key
+	 */
+    public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto);
+    /**
+     * 
+     * @param reasonRequestDto
+     * @return codeLangCodeAndRsnCatCode - composite key
+     */
+    public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto);
+    
+    /**
+     * 
+     * @return PacketRejectionReasonResponseDto
+     */
 	public PacketRejectionReasonResponseDto getAllReasons();
+	
+	/**
+	 * 
+	 * @param categoryCode
+	 * @param langCode
+	 * @return PacketRejectionReasonResponseDto
+	 */
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,String langCode);
 }

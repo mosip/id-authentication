@@ -29,7 +29,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * @param languageCode
 	 * @return {@link List<Template>}
 	 */
-	public List<Template> findAllByLanguageCodeAndIsDeletedFalse(String languageCode);
+	public List<Template> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
 	/**
 	 * To fetch all the {@link Template} based on language code and template type
@@ -39,7 +39,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * @param templateTypeCode
 	 * @return {@link List<Template>}
 	 */
-	public List<Template> findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(String languageCode,
+	public List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(String langCode,
 			String templateTypeCode);
 
 }

@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.dto;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,8 +18,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @ApiModel(value = "Language", description = "Language resource representation")
 public class LanguageDto {
 
@@ -57,5 +59,11 @@ public class LanguageDto {
 	@NotNull
 	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
+
+//	@NotNull
+//	private LocalTime lunchStartTime;
+	
+//	@NotNull
+//	private LocalDateTime createdDateTime;
 
 }
