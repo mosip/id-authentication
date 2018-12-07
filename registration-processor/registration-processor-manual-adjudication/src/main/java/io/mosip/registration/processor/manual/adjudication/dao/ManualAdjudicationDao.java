@@ -49,9 +49,9 @@ public class ManualAdjudicationDao {
 	 * @param mvUsrId
 	 * @return
 	 */
-	public ManualVerificationEntity getByRegId(String regId, String mvUsrId) {
+	public ManualVerificationEntity getByRegId(String regId, String refId, String mvUsrId) {
 		//TODO TO Specify comment for this method
-		return manualAdjudiacationRepository.getByRegId(regId, mvUsrId);
+		return manualAdjudiacationRepository.getByRegId(regId, refId, mvUsrId);
 	}
 	
 	public ManualVerificationEntity getAssignedApplicantDetails(String userId, String status) {

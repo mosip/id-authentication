@@ -11,6 +11,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.Pa
 import io.mosip.registration.processor.manual.adjudication.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 
 /**
  * The Exception Handler class for Manual Verification
@@ -55,6 +56,14 @@ public class ManualAdjudicationExceptionHandler {
 				PlatformErrorMessages.RPR_MVS_FILE_NOT_PRESENT.getMessage());
 		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(fileNotPresentException.getErrorCode(),
 				fileNotPresentException.getLocalizedMessage());
+		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(NoRecordAssignedException.class)
+	public ResponseEntity<ExceptionJSONInfo> noRecordAssignedExceptionHandler(final NoRecordAssignedException e,
+			WebRequest request) {
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(),
+				e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
 

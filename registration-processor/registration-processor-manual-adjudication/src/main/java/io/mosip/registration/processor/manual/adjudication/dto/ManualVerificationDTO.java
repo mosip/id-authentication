@@ -25,6 +25,10 @@ public class ManualVerificationDTO implements Serializable {
 	private String matchedRefId;
 	
 	private String matchedRefType;
+	
+	private String office;
+	
+	private String name;
 
 	/**
 	 * @return the regId
@@ -102,6 +106,35 @@ public class ManualVerificationDTO implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	/**
+	 * @return the office
+	 */
+	public String getOffice() {
+		return office;
+	}
+
+	/**
+	 * @param office the office to set
+	 */
+	public void setOffice(String office) {
+		this.office = office;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	
 	
 }

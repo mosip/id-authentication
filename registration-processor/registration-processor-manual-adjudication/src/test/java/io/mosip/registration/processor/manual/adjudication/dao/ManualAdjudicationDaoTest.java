@@ -60,7 +60,7 @@ public class ManualAdjudicationDaoTest {
 		manualAdjudicationEntity.setMvUsrId("mv");
 		
 		Mockito.when(manualAdjudiacationRepository.save(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
-		Mockito.when(manualAdjudiacationRepository.getByRegId(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
+		Mockito.when(manualAdjudiacationRepository.getByRegId(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
 
 		Mockito.when(manualAdjudiacationRepository.getFirstApplicantDetails(ArgumentMatchers.any()))
 				.thenReturn(manualAdjudicationEntityList);
@@ -80,7 +80,7 @@ public class ManualAdjudicationDaoTest {
 	}
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualAdjudicationEntity.getPkId().getRegId(), manualAdjudicationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualAdjudicationEntity.getPkId().getRegId(), manualAdjudicationEntity.getPkId().getMatchedRefId(), manualAdjudicationEntity.getMvUsrId());
 	}
 	@Test
 	public void getAssignedApplicantDetailsTest() {

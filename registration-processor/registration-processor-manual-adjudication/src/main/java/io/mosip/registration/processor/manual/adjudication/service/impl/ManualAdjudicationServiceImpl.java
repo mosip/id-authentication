@@ -20,6 +20,7 @@ import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificatio
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -148,7 +149,10 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		String eventType = "";
 		String description = "";
 		boolean isTransactionSuccessful = false;
+		ManualVerificationEntity manualVerificationEntity;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+		manualVerificationEntity = manualAdjudicationDao.getByRegId(manualVerificationDTO.getRegId(), manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId());
+		manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
 		if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
 		{
 			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
@@ -162,7 +166,27 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 			description = "Manual verification rejected for registration id : " + registrationId;
 		}
-		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		manualAdjudicationDao.update(manualVerificationEntity);
+		manualVerificationEntity = manualAdjudicationDao.getAssignedApplicantDetails(manualVerificationDTO.getMvUsrId(), ManualVerificationStatus.ASSIGNED.name());
+		if(manualVerificationEntity!=null) {
+			manualVerificationDTO.setRegId(manualVerificationEntity.getPkId().getRegId());
+			manualVerificationDTO.setMatchedRefId(manualVerificationEntity.getPkId().getMatchedRefId());
+			manualVerificationDTO.setMatchedRefType(manualVerificationEntity.getPkId().getMatchedRefType());
+			manualVerificationDTO.setMvUsrId(manualVerificationEntity.getMvUsrId());
+			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
+		}
+		else {
+			UserDto userDto = new UserDto();
+			userDto.setUserId(manualVerificationDTO.getMvUsrId());
+			userDto.setOffice(manualVerificationDTO.getOffice());
+			userDto.setStatus(ManualVerificationStatus.PENDING.name());
+			userDto.setName(manualVerificationDTO.getName());
+			manualVerificationDTO = assignStatus(userDto);
+			if(manualVerificationDTO==null) {
+				throw new NoRecordAssignedException("no record", "no record");
+			}
+		}
+		/*registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 		eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 				: EventName.EXCEPTION.toString();
@@ -170,7 +194,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 				: EventType.SYSTEM.toString();
 		registrationStatusDto.setUpdatedBy(USER);
 		auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-				registrationId);
+				registrationId);*/
 		
 		return manualVerificationDTO;
 	}

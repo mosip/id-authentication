@@ -44,8 +44,8 @@ public interface ManualAdjudiacationRepository<T extends ManualVerificationEntit
 	 *            The manual verifier user Id
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.pkId.regId=:regId and mve.mvUsrId=:mvUserId")
-	public ManualVerificationEntity getByRegId(@Param("regId") String regId,@Param("mvUserId") String mvUserId);
+	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.pkId.regId=:regId and mve.mvUsrId=:mvUserId and mve.pkId.matchedRefId=:refId")
+	public ManualVerificationEntity getByRegId(@Param("regId") String regId,@Param("refId") String refId,@Param("mvUserId") String mvUserId);
 	
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
 	public ManualVerificationEntity getAssignedApplicantDetails(@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);
