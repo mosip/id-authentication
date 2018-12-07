@@ -78,6 +78,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
+
 	private static final String LANGUAGE = "language";
 
 	private static final String DECRYPT_ENTITY = "decryptEntity";
@@ -87,8 +89,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
 
 	private static final String SESSION_ID = "sessionId";
-
-	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
