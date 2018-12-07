@@ -134,8 +134,9 @@ stage('---------- SonarQube Analysis --------------') {
 					  fi
 			  else
 					echo "Volume to me mounted : \$volumeMounted" 
-					// create a directory in which volume has to be mounted
-					 docker run -d -v \$(pwd)\$volumeMounted:\$volumeMounted   -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+					currentDirectory=\$(echo \$(pwd))
+					volumeMountedFormatted="\$(echo \$volumeMounted| xargs)"
+					 docker run -d -v \$currentDirectory\$volumeMountedFormatted:\$volumeMountedFormatted -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
 					  if [ \$? -eq 0 ]; then
 						echo Container Started - \${containerNamesShell[\$INDEX]}
 						if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
