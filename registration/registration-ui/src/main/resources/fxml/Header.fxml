@@ -61,6 +61,8 @@
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#syncPacketStatus" text="Sync Data" />
 								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" onAction="#syncInitializer" text="Sync Initializer" />
+								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="Download Pre-Registration Data" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#onBoardUser" text="On Board User" />
