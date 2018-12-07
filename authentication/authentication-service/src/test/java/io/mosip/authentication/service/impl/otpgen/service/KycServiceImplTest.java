@@ -97,7 +97,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(demoHelper, "environment", environment);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
-		idInfo = idInfoService.getIdInfo("12232323121");
+		//idInfo = idInfoService.getIdInfo("12232323121");
 		
 	}
 	

@@ -411,7 +411,7 @@ public class DemoAuthServiceTest {
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
 		entityInfo.put("firstName", identityInfoList);
-		Mockito.when(idInfoService.getIdInfo(Mockito.anyString())).thenReturn(entityInfo);
+		Mockito.when(idInfoService.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
 		AuthRequestDTO authRequestDTO = generateData();
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));

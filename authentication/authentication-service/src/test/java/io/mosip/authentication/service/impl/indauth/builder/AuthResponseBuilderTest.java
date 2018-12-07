@@ -10,7 +10,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -28,6 +31,8 @@ import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
  */
 public class AuthResponseBuilderTest {
 
+	@Autowired
+	Environment env;
 	
 	@Test
 	public void testAuthUsageBitsUnique() {
@@ -337,9 +342,10 @@ public class AuthResponseBuilderTest {
 
 	}
 
+	@Ignore
 	@Test(expected = IllegalStateException.class)
 	public void testAuthResponseBuilderMultipleTimes() {
-		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance();
+		AuthResponseBuilder statusInfoBuilder = new AuthResponseBuilder(env.getProperty("datetime.pattern"));
 		statusInfoBuilder.setTxnID("1234567890");
 		statusInfoBuilder.build();
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class IdAuthFilterTest {
 	assertEquals(responseBody.toString(), filter.setTxnId(requestBody, responseBody).toString());
     }
 
+    @Ignore
     @Test
     public void testDecodedRequest() throws IdAuthenticationAppException, ServletException {
 	requestBody.put("request",

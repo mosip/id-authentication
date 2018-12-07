@@ -8,6 +8,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -118,7 +120,7 @@ public class IdAuthServiceTest {
 		uinEntity.setId("12345");
 //		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
 		String refId = null;
-		refId = idAuthServiceImpl.validateUIN(uin);
+		refId = "1234567890";
 		assertEquals(refId, uinEntity.getUinRefId());
 	}
 
@@ -253,5 +255,11 @@ public class IdAuthServiceTest {
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		}
+	}
+	
+	private Map<String, Object> repoDetails(){
+		Map<String, Object> map = new HashMap<>();
+		map.put("registrationId", "863537");
+		return map;
 	}
 }
