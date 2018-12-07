@@ -13,7 +13,7 @@ import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException
 
 public class ValidationUtil {
 	
-	private ValidationUtil() {
+	public ValidationUtil() {
 		
 	}
 	

@@ -8,15 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Embeddable
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 public class AvailabilityPK implements Serializable{
 	/**
 	 * 
@@ -27,13 +23,11 @@ public class AvailabilityPK implements Serializable{
 	private String regcntrId;
 	
 	@Column(name = "availability_date")
-	private String regDate;
+	private LocalDate regDate;
 	
 	@Column(name = "slot_from_time")
 	private LocalTime fromTime;
 	
-	@Column(name = "slot_to_time")
-	private LocalTime toTime;
 	
 
 }

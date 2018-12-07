@@ -14,6 +14,7 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
+import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 /**
@@ -100,5 +101,16 @@ public class PreRegistrationExceptionHandler {
 		errorRes.setStatus(falseStatus);
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(InvalidRequestParameterException.class)
+	public ResponseEntity<ResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText(),e.getLocalizedMessage());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(falseStatus);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

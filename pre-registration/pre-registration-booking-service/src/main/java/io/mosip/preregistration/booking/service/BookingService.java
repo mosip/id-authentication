@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.StringTokenizer;
+import java.util.TimeZone;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +66,8 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.RecordNotFoundException;
+import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
@@ -113,7 +116,6 @@ public class BookingService {
 
 	@PostConstruct
 	public void setupBookingService() {
-
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
 
@@ -122,6 +124,7 @@ public class BookingService {
 	/**
 	 * @return
 	 */
+
 	public ResponseDto<String> addAvailability() {
 		ResponseDto<String> response = new ResponseDto<>();
 
@@ -142,11 +145,11 @@ public class BookingService {
 			if (regCenter.isEmpty()) {
 				response.setResTime(new Timestamp(System.currentTimeMillis()));
 				response.setStatus(false);
-				response.setResponse("No data is preent in registration center master table");
+				response.setResponse("No data is present in registration center master table");
 				return response;
 			} else {
 				for (RegistrationCenterDto regDto : regCenter) {
-					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + 1 + "/"
+					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + regDto.getId() + "/"
 							+ LocalDate.now().getYear();
 					UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 
@@ -160,7 +163,6 @@ public class BookingService {
 						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
 							holidaylist.add(holiday.getHolidayDate());
 						}
-						holidaylist.add("2018-11-30");
 					}
 
 					for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
@@ -232,13 +234,12 @@ public class BookingService {
 				}
 			}
 		} catch (HttpClientErrorException e) {
+			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(),"HTTP_CLIENT_EXCEPTION");
 
 		} catch (DataAccessException e) {
-			throw new DemographicStatusUpdationException("Table not accessable ");
-		} catch (NullPointerException e) {
-
-		}
-
+			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		} 
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);
 		response.setResponse("Master Data is synched successfully");
@@ -252,37 +253,37 @@ public class BookingService {
 	 */
 	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
 		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
+		LocalDate endDate = LocalDate.now().plusDays(noOfDays);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		System.out.println("date " + endDate);
 		try {
-			List<String> dateList = bookingAvailabilityRepository.findDate(regID);
+			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, endDate);
 			if (!dateList.isEmpty()) {
 				AvailabilityDto availability = new AvailabilityDto();
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
-				for (String day : dateList) {
+				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
-					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDate(regID, day);
+					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDate(regID,
+							dateList.get(i).toLocalDate());
 					if (!entity.isEmpty()) {
 						List<SlotDto> slotList = new ArrayList<>();
 						for (AvailibityEntity en : entity) {
-							SlotDto slots = new SlotDto();
-							slots.setAvailability(en.getAvailabilityNo());
-							slots.setFromTime(en.getFromTime());
-							slots.setToTime(en.getToTime());
-							slotList.add(slots);
+							if (en.getAvailableKiosks() > 0) {
+								SlotDto slots = new SlotDto();
+								slots.setAvailability(en.getAvailableKiosks());
+								slots.setFromTime(en.getFromTime());
+								slots.setToTime(en.getToTime());
+								slotList.add(slots);
+							}
 						}
-						if (entity.get(0).getIsActive()) {
-							dateTime.setHoliday(false);
-						} else {
+						if (entity.size() == 1) {
 							dateTime.setHoliday(true);
+						} else {
+							dateTime.setHoliday(false);
 						}
 						dateTime.setTimeSlots(slotList);
-						dateTime.setDate(day);
+						dateTime.setDate(dateList.get(i).toString());
 						dateTimeList.add(dateTime);
-					} else {
-						ExceptionJSONInfo exception = new ExceptionJSONInfo("", "No slots available for that date");
-						response.setErr(exception);
-						response.setResTime(new Timestamp(System.currentTimeMillis()));
-						response.setStatus(false);
-						return response;
 					}
 
 				}
@@ -294,37 +295,31 @@ public class BookingService {
 				response.setResponse(availability);
 
 			} else {
-				ExceptionJSONInfo exception = new ExceptionJSONInfo("",
-						"No time slots are assigned to that registration center");
-				response.setErr(exception);
-				response.setResTime(new Timestamp(System.currentTimeMillis()));
-				response.setStatus(false);
+				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.toString(),
+						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
 
 			}
 		} catch (DataAccessException e) {
-			throw new DemographicStatusUpdationException("Table not accessable ");
-		} catch (NullPointerException e) {
-
-		}
+			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		} 
 		return response;
 	}
 
 	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime)
-			throws DemographicStatusUpdationException {
-
+			throws AvailablityNotFoundException {
 		AvailibityEntity avaEntity = new AvailibityEntity();
-		avaEntity.setRegDate(date.toString());
+		avaEntity.setRegDate(date);
 		avaEntity.setRegcntrId(regDto.getId());
 		avaEntity.setFromTime(currentTime);
 		avaEntity.setToTime(toTime);
-
+		avaEntity.setCrBy("Admin");
+		avaEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
 		avaEntity.setCrBy(regDto.getContactPerson());
 		if (currentTime.equals(toTime)) {
-			avaEntity.setIsActive(false);
-			avaEntity.setAvailabilityNo(0);
+			avaEntity.setAvailableKiosks(0);
 		} else {
-			avaEntity.setAvailabilityNo(regDto.getNumberOfKiosks());
-			avaEntity.setIsActive(true);
+			avaEntity.setAvailableKiosks(regDto.getNumberOfKiosks());
 		}
 		bookingAvailabilityRepository.save(avaEntity);
 	}
@@ -518,7 +513,7 @@ public class BookingService {
 								LocalTime.parse(registrationDTO.getSlotToTime().toString()),
 								registrationDTO.getReg_date().toString(), registrationDTO.getRegistration_center_id());
 
-				if (availableEntity != null && availableEntity.getAvailabilityNo() > 0) {
+				if (availableEntity != null && availableEntity.getAvailableKiosks() > 0) {
 
 					boolean slotExistsFlag = registrationBookingRepository.existsByPreIdandStatusCode(
 							bookingRequestDTO.getPre_registration_id(), StatusCodes.Booked.toString());
@@ -548,7 +543,7 @@ public class BookingService {
 									StatusCodes.Booked.toString().trim());
 
 							/* No. of Availability. update */
-							availableEntity.setAvailabilityNo(availableEntity.getAvailabilityNo() - 1);
+							availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 							bookingAvailabilityRepository.update(availableEntity);
 
 							bookingStatusDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
