@@ -157,7 +157,7 @@ public class DeviceServiceImpl implements DeviceService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(device, idResponseDto, true, null, null, true);
+		objectMapperUtil.mapNew(device, idResponseDto);
 
 		return idResponseDto;
 

@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -41,8 +40,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	private MetaDataUtils metaUtils;
 
+	
 	@Autowired
-	private DataMapper dataMapper;
+	private MapperUtils objectMapperUtil;
 
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
@@ -105,7 +105,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(renDeviceSpecification, idResponseDto, true, null, null, true);
+		objectMapperUtil.mapNew(renDeviceSpecification, idResponseDto);
 
 		return idResponseDto;
 	}
