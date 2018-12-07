@@ -216,6 +216,7 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
 	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR  = bundle.getString("FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR");
 	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP  = bundle.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
+	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
 	
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -727,7 +728,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
 	public static final String USER_REG_IRIS_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-005";
 	public static final String USER_REG_IRIS_SCORE_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-006";
-	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-007";
+	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-001";
 	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
 	public static final String USER_REG_FINGERPRINT_PAGE_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-001";
 	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-002";
@@ -737,6 +738,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
 	public static final String USER_REG_IRIS_SAVE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-008";
 	public static final String USER_REG_GET_IRIS_QUALITY_SCORE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-009";
+	public static final String USER_REG_IRIS_STUB_IMAGE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-002";
 	
 	//Exception for Registration - Document Scan and Upload
 	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
