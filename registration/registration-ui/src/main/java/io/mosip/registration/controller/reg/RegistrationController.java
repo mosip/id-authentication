@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -15,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -38,9 +38,12 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.device.ScanController;
 import io.mosip.registration.controller.device.WebCameraController;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
@@ -49,9 +52,8 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
+import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -349,6 +351,8 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
 
+	@Autowired
+	private PreRegistrationDataSyncService preRegistrationDataSyncService;
 
 	@FXML
 	private void initialize() {
@@ -434,10 +438,11 @@ public class RegistrationController extends BaseController {
 
 			DemographicDTO demographicDTO = getRegistrationDtoContent().getDemographicDTO();
 			DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
-
 			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
 			LocationDTO locationDTO = addressDTO.getLocationDTO();
+			
 			fullName.setText(demographicInfoDTO.getFullName());
+			
 			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
@@ -447,23 +452,29 @@ public class RegistrationController extends BaseController {
 				ageField.setText(demographicInfoDTO.getAge());
 
 			}
+			
 			gender.setValue(demographicInfoDTO.getGender());
+			
 			addressLine1.setText(addressDTO.getAddressLine1());
 			addressLine2.setText(addressDTO.getAddressLine2());
 			addressLine3.setText(addressDTO.getAddressLine3());
+			
 			province.setText(locationDTO.getProvince());
 			city.setText(locationDTO.getCity());
 			region.setText(locationDTO.getRegion());
 			postalCode.setText(locationDTO.getPostalCode());
+			
 			mobileNo.setText(demographicInfoDTO.getMobile());
 			emailId.setText(demographicInfoDTO.getEmailId());
 			cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
 			localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
+			
 			if (demographicDTO.getIntroducerRID() != null) {
 				uinId.setText(demographicDTO.getIntroducerRID());
 			} else {
 				uinId.setText(demographicDTO.getIntroducerUIN());
 			}
+			
 			parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
@@ -487,7 +498,7 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
-
+			
 			// for Document scan
 			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
 					&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
@@ -510,6 +521,7 @@ public class RegistrationController extends BaseController {
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
 
 			}
+			
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
@@ -523,20 +535,27 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void fetchPreRegistration() {
-		try {
-			preRegistrationId.getText();
-			RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(
-					FileUtils.readFileToByteArray(new File("C:/Users/M1046540/Desktop/89149679063970.zip")));
+		String preRegId = preRegistrationId.getText();
 
-			if (registrationDTO != null) {
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-						registrationDTO);
-				prepareEditPageContent();
-			}
-		} catch (io.mosip.kernel.core.exception.IOException | RegBaseCheckedException | RegBaseUncheckedException e) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, "No Details Found for the given  Pre-Registration ID");
+		if (StringUtils.isEmpty(preRegId)) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
+			return;
 		}
 
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
+
+		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+		List<ErrorResponseDTO> errorResponseDTOList = responseDTO.getErrorResponseDTOs();
+
+		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null
+				&& successResponseDTO.getOtherAttributes().containsKey("registrationDto")) {
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
+					successResponseDTO.getOtherAttributes().get("registrationDto"));
+			prepareEditPageContent();
+
+		} else if (errorResponseDTOList != null && !errorResponseDTOList.isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTOList.get(0).getMessage());
+		}
 	}
 
 	/**
