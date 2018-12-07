@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatDialog} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { SharedService } from 'src/app/shared/shared.service';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
+import { TimeSelectionComponent } from '../time-selection/time-selection.component';
+import { BookingModel } from './booking.model';
+import { BookingModelRequest } from './booking-request.model';
+import { Router, ActivatedRoute } from '@angular/router';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -15,6 +19,9 @@ let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 })
 
 export class CenterSelectionComponent implements OnInit {
+
+  @ViewChild(TimeSelectionComponent)
+  timeSelectionComponent: TimeSelectionComponent;
 
   displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
   dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
@@ -35,11 +42,17 @@ export class CenterSelectionComponent implements OnInit {
   showMap = false;
   showMessage = false;
   enableNextButton = false;
+  bookingDataList: BookingModel[] = [];
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
 
-  constructor(private dialog: MatDialog, private service: SharedService, private dataService: DataStorageService) { }
+  constructor(
+    private dialog: MatDialog,
+    private service: SharedService,
+    private dataService: DataStorageService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
   }
@@ -116,15 +129,42 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
-    const data = {
-      case: 'MESSAGE',
-      title: 'Success',
-      message: 'Action was completed successfully'
-    };
-   const dialogRef = this.dialog.open(DialougComponent, {
-      width: '250px',
-      data: data
+    this.timeSelectionComponent.availabilityData.forEach(data => {
+      data.timeSlots.forEach(slot => {
+        if (slot.names.length !== 0) {
+          slot.names.forEach(name => {
+            const bookingData = new BookingModel(name.preRegId, this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
+            this.bookingDataList.push(bookingData);
+          });
+        }
+      });
     });
+    const request = new BookingModelRequest(this.bookingDataList);
+    console.log(request);
+    this.dataService.makeBooking(request).subscribe(response => {
+        const data = {
+            case: 'MESSAGE',
+            title: 'Success',
+            message: 'Action was completed successfully'
+          };
+        const dialogRef = this.dialog.open(DialougComponent, {
+            width: '250px',
+            data: data
+          }).afterClosed().subscribe(() => {
+            this.router.navigate(['../confirmation'], { relativeTo: this.route });
+          });
+        }, error => {
+          console.log(error);
+          const data = {
+              case: 'MESSAGE',
+              title: 'Failure',
+              message: 'Action could not be completed'
+            };
+          const dialogRef = this.dialog.open(DialougComponent, {
+              width: '250px',
+              data: data
+            });
+        });
   }
 
   dispatchCenterCoordinatesList() {

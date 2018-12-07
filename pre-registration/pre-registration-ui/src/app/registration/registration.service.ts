@@ -9,6 +9,10 @@ export class RegistrationService {
   private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
 
+  flushUsers() {
+    this.users.length = 0;
+  }
+
   getUser(index: number) {
     return this.users[index];
   }
