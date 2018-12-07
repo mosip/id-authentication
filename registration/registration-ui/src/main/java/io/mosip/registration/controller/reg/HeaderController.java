@@ -18,10 +18,14 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -69,6 +73,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
+	
+	@Autowired
+	JobConfigurationService jobConfigurationService;
 
 	@Autowired
 	MasterSyncService masterSyncService;
@@ -261,6 +268,20 @@ public class HeaderController extends BaseController {
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
 		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
+	}
+	
+	@FXML
+	public void syncInitializer(ActionEvent event){
+		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
+		
+		if(responseDTO.getErrorResponseDTOs()!=null) {
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+		}else if(responseDTO.getSuccessResponseDTO()!=null) {
+			SuccessResponseDTO successResponseDTO=responseDTO.getSuccessResponseDTO();
+			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+		}
+		
 	}
 
 }
