@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="updateRoot" prefHeight="133.0" prefWidth="1027.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationOfficerUpdateController">
+<AnchorPane fx:id="updateRoot" prefHeight="133.0" prefWidth="1027.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.LastUpdateDetailsController">
    <children>
       <Hyperlink fx:id="registrationData" layoutX="713.0" layoutY="27.0" text="Download Pre-Registration Data" underline="true" />
       <Hyperlink layoutX="536.0" layoutY="27.0" text="Sync Data" underline="true" />

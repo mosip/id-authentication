@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="optionRoot" prefHeight="244.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationOfficerPacketController">
+<AnchorPane fx:id="optionRoot" prefHeight="244.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
    <children>
       <Button layoutX="61.0" layoutY="32.0" mnemonicParsing="false" onAction="#createPacket" prefHeight="127.0" prefWidth="231.0" text="New Registration" />
       <Button layoutX="347.0" layoutY="32.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="127.0" prefWidth="251.0" text="Approve Packet" />

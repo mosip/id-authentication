@@ -23,7 +23,7 @@ import javafx.scene.control.Label;
  *
  */
 @Controller
-public class RegistrationOfficerUpdateController extends BaseController {
+public class LastUpdateDetailsController extends BaseController {
 
 	@FXML
 	private Label scanDate;
@@ -37,7 +37,7 @@ public class RegistrationOfficerUpdateController extends BaseController {
 	@FXML
 	private Label downloadDate;
 
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerUpdateController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(LastUpdateDetailsController.class);
 
 	/**
 	 * Mapping dates to corresponding fields

@@ -275,11 +275,9 @@ public class RegistrationController extends BaseController {
 
 	private boolean toggleAgeOrDobField;
 
-	protected static boolean toggleBiometricException = false;
-
 	private boolean isChild;
 
-	Node keyboardNode;
+	private Node keyboardNode;
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
@@ -328,9 +326,13 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane irisCapture;
 
-	protected BufferedImage applicantBufferedImage;
-	protected BufferedImage exceptionBufferedImage;
-	private boolean applicantImageCaptured = false;
+	private BufferedImage applicantBufferedImage;
+	private BufferedImage exceptionBufferedImage;
+	
+	private boolean applicantImageCaptured;
+	
+	private boolean toggleBiometricException;
+	
 	private Image defaultImage;
 
 	private String selectedDocument;
@@ -1635,7 +1637,10 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-
+			
+			SessionContext.getInstance().getUserContext().getUserMap().
+			put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+			
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
 				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 			});
@@ -1808,7 +1813,7 @@ public class RegistrationController extends BaseController {
 
 		if (dobDocuments.getValue() == null) {
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
 			dobDocuments.requestFocus();
 
 		} else {
