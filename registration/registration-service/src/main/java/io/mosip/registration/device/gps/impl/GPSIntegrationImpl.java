@@ -2,7 +2,6 @@ package io.mosip.registration.device.gps.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +16,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.gps.GPSUtill;
+import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.device.gps.IGPSConnector;
 import io.mosip.registration.device.gps.IGPSIntegrator;
-import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.MasterSyncService;
 
 /**
  * GPSIntegrationImpl class for GPS response parsing and getting
@@ -44,6 +44,10 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	/** Object forserialPortConnected. */
 	@Value("${GPS_SERIAL_PORT_WINDOWS}")
 	private String serialPortConnected;
+
+	/** Object forserialPortConnected. */
+	@Value("${GPS_DEVICE_ENABLE_FLAG}")
+	private String gpsEnableFlag;;
 
 	/** Object forserialPortConnected. */
 	@Value("${GPS_SERIAL_PORT_LINUX}")
@@ -75,94 +79,85 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 
 		Map<String, Object> gpsResponseMap = new HashMap<>();
 
-		try {
+		if (gpsEnableFlag.equals("Y")) {
 
-			IGPSConnector gpsConnector = getConnectorFactory(gpsConnectionDevice);
+			try {
 
-			String gpsRawData = gpsConnector != null
-					? gpsConnector.getComPortGPSData(serialPortConnected, portThreadTime)
-					: RegistrationConstants.GPS_CAPTURE_FAILURE;
+				IGPSConnector gpsConnector = getConnectorFactory(gpsConnectionDevice);
 
-			System.out.println("GPS SIGNAL ============>" + gpsRawData);
+				String gpsRawData = gpsConnector != null
+						? gpsConnector.getComPortGPSData(serialPortConnected, portThreadTime)
+						: RegistrationConstants.GPS_CAPTURE_FAILURE;
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					"GPS SIGNAL ============>" + gpsRawData);
+				LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+						"GPS SIGNAL ============>" + gpsRawData);
 
-			if (RegistrationConstants.GPS_CAPTURE_FAILURE.equals(gpsRawData)
-					|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE.equals(gpsRawData)
-					|| RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG.equals(gpsRawData)) {
+				if (RegistrationConstants.GPS_CAPTURE_FAILURE.equals(gpsRawData)
+						|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE.equals(gpsRawData)
+						|| RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG.equals(gpsRawData)) {
 
-				gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, null);
-				gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, null);
-				gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, null);
-				gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, gpsRawData);
-
-			} else {
-
-				String temp[] = gpsRawData.split("\\$");
-
-				GPSPosition gpsdata = getGPRMCLatLong(temp);
-
-				System.out.println("GPSPosition=====>" + gpsdata);
-
-				if (null != gpsdata && !gpsdata.getResponse().equals("failure")) {
-
-					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.GPS_LATITUDE + " =====>" + gpsdata.getLat()
-									+ RegistrationConstants.GPS_LONGITUDE + " ====>" + gpsdata.getLon()
-									+ RegistrationConstants.GPS_DISTANCE + " =====>" + gpsdata.getResponse());
-
-					double deviceLat = gpsdata.getLat();
-					double deviceLongi = gpsdata.getLon();
-
-					BigDecimal deviceLatitute = BigDecimal.valueOf(deviceLat);
-					BigDecimal deviceLongitude = BigDecimal.valueOf(deviceLongi);
-
-					double distance = actualDistance(deviceLatitute, deviceLongitude, centerLat, centerLngt);
-
-					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							"Distance between GPS Device and Registartion Station ====>" + distance);
-
-					if ((BigDecimal.ZERO.compareTo(deviceLatitute) != 0)
-							&& (BigDecimal.ZERO.compareTo(deviceLongitude) != 0)) {
-
-						gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, deviceLatitute);
-						gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, deviceLongitude);
-						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, distance);
-						gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
-								RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
-
-					}
-				} else {
 					gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, null);
 					gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, null);
 					gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, null);
-					gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
-							RegistrationConstants.GPS_CAPTURE_FAILURE_MSG);
-					gpsResponseMap.put(RegistrationConstants.GPS_ERROR_CODE, RegistrationConstants.GPS_REG_LGE‌_002);
+					gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, gpsRawData);
+
+				} else {
+
+					String temp[] = gpsRawData.split("\\$");
+
+					GPSPosition gpsdata = getGPRMCLatLong(temp);
+
+					if (null != gpsdata && !gpsdata.getResponse().equals("failure")) {
+
+						LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+								RegistrationConstants.GPS_LATITUDE + " =====>" + gpsdata.getLat()
+										+ RegistrationConstants.GPS_LONGITUDE + " ====>" + gpsdata.getLon()
+										+ RegistrationConstants.GPS_DISTANCE + " =====>" + gpsdata.getResponse());
+
+						double deviceLat = gpsdata.getLat();
+						double deviceLongi = gpsdata.getLon();
+
+						BigDecimal deviceLatitute = BigDecimal.valueOf(deviceLat);
+						BigDecimal deviceLongitude = BigDecimal.valueOf(deviceLongi);
+
+						double distance = actualDistance(deviceLatitute, deviceLongitude, centerLat, centerLngt);
+
+						LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+								"Distance between GPS Device and Registartion Station ====>" + distance);
+
+						if ((BigDecimal.ZERO.compareTo(deviceLatitute) != 0)
+								&& (BigDecimal.ZERO.compareTo(deviceLongitude) != 0)) {
+
+							gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, deviceLatitute);
+							gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, deviceLongitude);
+							gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, distance);
+							gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
+									RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+
+						}
+					} else {
+						gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, null);
+						gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, null);
+						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, null);
+						gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
+								RegistrationConstants.GPS_CAPTURE_FAILURE_MSG);
+						gpsResponseMap.put(RegistrationConstants.GPS_ERROR_CODE,
+								RegistrationConstants.GPS_REG_LGE‌_002);
+					}
+
 				}
+			} catch (RegBaseCheckedException exception) {
 
+				gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
+
+				LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, exception.toString());
 			}
-		} catch (RegBaseCheckedException exception) {
 
-			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					"GPS map details" + gpsResponseMap);
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.toString());
 		}
-
-		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-				"GPS map details" + gpsResponseMap);
-
-		// TODO: Hard codded because if gps device and signa is not connected and weak
-		// it wont allow for new registarion
-
-		gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, 12.9913);
-		gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, 80.2457);
-		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
-		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
-
-		System.out.println("GPS map details =========>" + gpsResponseMap);
 
 		return gpsResponseMap;
 	}
