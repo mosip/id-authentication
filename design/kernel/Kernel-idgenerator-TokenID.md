@@ -20,7 +20,7 @@ A Token ID can be requested by an Indivudual against his UIN. A library should b
 
 
 
-![Module Diagram](_images/kernel-TokenIDGenerator.jpg)
+![Module Diagram](_images/kernel-TokenGenerator.jpg)
 
 
 
