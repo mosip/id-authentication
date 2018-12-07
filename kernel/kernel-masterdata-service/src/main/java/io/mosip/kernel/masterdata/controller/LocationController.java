@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 
 /**
@@ -50,7 +50,7 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<LocationCodeDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
+	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
 		
 		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),HttpStatus.CREATED);
 	}

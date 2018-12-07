@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -200,11 +200,11 @@ public class LocationServiceImpl implements LocationService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
-		LocationCodeDto locationCodeDto = null;
+		PostLocationCodeResponseDto locationCodeDto = null;
 
 		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
@@ -216,7 +216,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
-         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
 

@@ -38,18 +38,18 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -155,7 +155,7 @@ public class MasterdataControllerTest {
 	LocationResponseDto locationResponseDto = null;
 	List<Object[]> locObjList = null;
 	LocationHierarchyResponseDto locationHierarchyResponseDto = null;
-	LocationCodeDto locationCodeDto = null;
+	PostLocationCodeResponseDto locationCodeDto = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -292,7 +292,7 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		locationCodeDto = new LocationCodeDto();
+		locationCodeDto = new PostLocationCodeResponseDto();
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setIsActive(true);
 		locationCodeDto.setParentLocCode("IND");

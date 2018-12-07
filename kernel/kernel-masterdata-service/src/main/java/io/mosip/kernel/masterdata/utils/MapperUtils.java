@@ -22,14 +22,12 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
-import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -375,7 +373,7 @@ public class MapperUtils {
 		reasonCategoryDtos = reasonCategories.parallelStream()
 				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
 						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
-						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
+						 mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
 				.collect(Collectors.toList());
 
 		return reasonCategoryDtos;
