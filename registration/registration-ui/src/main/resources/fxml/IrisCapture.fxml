@@ -13,7 +13,7 @@
          <font>
             <Font size="23.0" />
          </font></Label>
-      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
          <children>
             <ImageView fx:id="leftIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -28,7 +28,7 @@
       <Label layoutX="29.0" layoutY="340.0" text="Threshold %" />
       <Label layoutX="146.0" layoutY="340.0" text=":" />
       <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="340.0" />
-      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
          <children>
             <ImageView fx:id="rightIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                <image>
