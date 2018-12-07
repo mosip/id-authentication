@@ -85,7 +85,10 @@ public enum PlatformErrorMessages {
 
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
-
+	
+	// Stages - Demo-Dedupe error code and message
+	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
+	
 	// Packet scanner job Exception error code and message
 	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
 			"The Packet store set by the System is not accessible"),

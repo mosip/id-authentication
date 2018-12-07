@@ -36,5 +36,14 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	
 	@Query("SELECT  demo FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL")
 	public List<E> getAllDemoWithUIN();
+	
+	@Query("SELECT uin.uinRefId FROM IndividualDemographicDedupeEntity uin WHERE uin.id.regId=:regId ")
+	public List<String> getUINById(@Param("regId") String regId);
+	
+	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
+	public List<String> getApplicantIrisImageNameById(@Param("regId") String regId);
+	
+	@Query("SELECT applicant.imageName FROM ApplicantFingerprintEntity applicant WHERE applicant.id.regId=:regId")
+	public List<String> getApplicantFingerPrintImageNameById(@Param("regId") String regId);
 
 }

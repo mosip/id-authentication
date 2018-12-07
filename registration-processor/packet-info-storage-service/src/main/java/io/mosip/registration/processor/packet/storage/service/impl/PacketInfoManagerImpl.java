@@ -574,7 +574,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demoJson.setStatusCode("DemographicJson saved");
 			ApplicantDemographicInfoJsonEntity entity = PacketInfoMapper.convertDemographicInfoJsonToEntity(demoJson);
 			demographicJsonRepository.save(entity);
-
+			
 			saveIndividualDemographicDedupe(bytes);
 
 			isTransactionSuccessful = true;
@@ -612,6 +612,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
 
+	@Override
 	public Set<String> performDedupe(String refId) {
 		int score = 0;
 		int threshold = 60;
@@ -655,6 +656,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public List<DemographicDedupeDto> findDemoById(String regId) {
-				return packetInfoDao.findDemoById(regId);
+		return packetInfoDao.findDemoById(regId);
 	}
+	
+	@Override
+	public String findUINById(String regId){
+		return packetInfoDao.findUINById(regId);
+	}
+	
+	@Override
+	public List<String> getApplicantFingerPrintImageNameById(String regId){
+		return packetInfoDao.getApplicantFingerPrintImageNameById(regId);
+	}
+	
+	@Override
+	public List<String> getApplicantIrisImageNameById(String regId){
+		return packetInfoDao.getApplicantIrisImageNameById(regId);
+	}
+	
 }
