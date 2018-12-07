@@ -31,7 +31,7 @@ public interface ManualAdjudiacationRepository<T extends ManualVerificationEntit
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query("SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode)")
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
 	public List<ManualVerificationEntity> getFirstApplicantDetails(@Param("statusCode") String statusCode);
 
 	/**
