@@ -255,6 +255,7 @@ public class RegistrationConstants {
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
+	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";

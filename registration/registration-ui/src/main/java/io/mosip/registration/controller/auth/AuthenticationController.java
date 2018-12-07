@@ -1,4 +1,4 @@
-package io.mosip.registration.controller.reg;
+package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -21,6 +21,8 @@ import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.reg.PacketHandlerController;
+import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -308,6 +310,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * authentication modes
 	 */
 	private void loadNextScreen() {
+		Boolean toogleBioException = (Boolean)SessionContext.getInstance().getUserContext().getUserMap().
+				get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		
 		if (!userAuthenticationTypeMap.isEmpty()) {
 			String authenticationType = String.valueOf(userAuthenticationTypeMap.get(String.valueOf(count)));
 			userAuthenticationTypeMap.remove(String.valueOf(count));
@@ -315,7 +320,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			loadAuthenticationScreen(authenticationType);
 		} else {
 			if (!isSupervisor) {
-				if (RegistrationController.toggleBiometricException) {
+				if (toogleBioException != null && toogleBioException.booleanValue()) {
 					isSupervisor = true;
 					getAuthenticationModes();
 				} else {
