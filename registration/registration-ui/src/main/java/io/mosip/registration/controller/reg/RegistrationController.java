@@ -1769,7 +1769,7 @@ public class RegistrationController extends BaseController {
 	 */
 	private void scanWindow() {
 		
-		scanController.init(this, "Document");
+		scanController.init(this, RegistrationConstants.SCAN_DOC_TITLE);
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
@@ -1811,32 +1811,18 @@ public class RegistrationController extends BaseController {
 					if (selectedDocument.equals(RegistrationConstants.POA_DOCUMENT)) {
 						
 						docName = addDocuments(poaDocuments.getValue(), poaBox);
-						
-						if(!docName.equals(RegistrationConstants.ERROR)) {			
-							attachDocuments(docName, poaBox, poaScroll, byteArray);							
-						} else {
-							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
-						}
+						validateDocuments(docName, poaBox, poaScroll, byteArray);						
 						
 					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
 			
 						docName = addDocuments(poiDocuments.getValue(), poiBox);
-						
-						if(!docName.equals(RegistrationConstants.ERROR)) {							
-							attachDocuments(docName, poiBox, poiScroll, byteArray);														
-						} else {
-							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
-						}
+						validateDocuments(docName, poiBox, poiScroll, byteArray);
 						
 					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
 						
 						docName = addDocuments(porDocuments.getValue(), porBox);
+						validateDocuments(docName, porBox, porScroll, byteArray);
 						
-						if(!docName.equals(RegistrationConstants.ERROR)) {							
-							attachDocuments(docName, porBox, porScroll, byteArray);							
-						} else {
-							generateAlert(RegistrationConstants.ALERT_ERROR, "Only one Document Category can be scanned");
-						}
 					}
 					
 					popupStage.close();
@@ -1881,6 +1867,21 @@ public class RegistrationController extends BaseController {
 			return RegistrationConstants.ERROR;
 		}
 	}
+	
+	/**
+	 * This method will validate with existing documents
+	 */
+	private void validateDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating documents before adding to Screen");
+		
+		if(!document.equals(RegistrationConstants.ERROR)) {			
+			attachDocuments(document, vboxElement, scrollPane, byteArray);							
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+		}
+	}
 
 	/**
 	 * This method will add Hyperlink and Image for scanned documents
@@ -1895,6 +1896,8 @@ public class RegistrationController extends BaseController {
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setDocumentName(document);
+		documentDetailsDTO.setDocumentCategory(document);
+		documentDetailsDTO.setDocumentType(selectedDocument);
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
@@ -1924,7 +1927,7 @@ public class RegistrationController extends BaseController {
 			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		}
 		
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, "Document scanned successfully");
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");

@@ -159,6 +159,8 @@ public class RegistrationConstants {
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
+	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
+	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -565,9 +567,9 @@ public class RegistrationConstants {
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
 		
 	// Documents
-	public static final String POA_DOCUMENT = "poa";
-	public static final String POI_DOCUMENT = "poi";
-	public static final String POR_DOCUMENT = "por";
+	public static final String POA_DOCUMENT = "PoA";
+	public static final String POI_DOCUMENT = "PoI";
+	public static final String POR_DOCUMENT = "PoR";
 	public static List<String> getPoaDocumentList() {
 		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
