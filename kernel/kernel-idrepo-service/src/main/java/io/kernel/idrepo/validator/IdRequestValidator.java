@@ -15,9 +15,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.kernel.idrepo.config.IdRepoLogger;
 import io.kernel.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
 /**
@@ -27,6 +45,16 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
  */
 @Component
 public class IdRequestValidator implements Validator {
+
+	private static final String VALIDATE_REQUEST = "validateRequest - \n";
+
+	private static final String ID_REQUEST_VALIDATOR = "IdRequestValidator";
+
+	private static final String ID_REPO = "IdRepo";
+
+	private static final String SESSION_ID = "sessionId";
+
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRequestValidator.class);
 
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
@@ -49,6 +77,8 @@ public class IdRequestValidator implements Validator {
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
+	private static final String SCHEMA_NAME = "mosip-identity-json-schema.json";
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -64,6 +94,12 @@ public class IdRequestValidator implements Validator {
 	/** The uin validator. */
 	@Autowired
 	private UinValidatorImpl uinValidator;
+
+	@Autowired
+	private JsonValidator jsonValidator;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
@@ -98,7 +134,7 @@ public class IdRequestValidator implements Validator {
 				&& (request.getId().equals(id.get("update")) || request.getId().equals(id.get("read")))) {
 			validateUin(request.getUin(), errors);
 		}
-		
+
 		if (!errors.hasErrors()
 				&& (request.getId().equals(id.get("read")) || request.getId().equals(id.get("create")))) {
 			validateRegId(request.getRegistrationId(), errors);
@@ -209,6 +245,24 @@ public class IdRequestValidator implements Validator {
 		if (Objects.isNull(request)) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+		} else {
+			try {
+				jsonValidator.validateJson(mapper.writeValueAsString(request), SCHEMA_NAME);
+			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException e) {
+				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+						(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+				errors.rejectValue(REQUEST, e.getErrorCode(), e.getErrorText());
+			} catch (NullJsonSchemaException | ConfigServerConnectionException | HttpRequestException
+					| NullJsonNodeException | UnidentifiedJsonException e) {
+				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
+				errors.rejectValue(REQUEST, e.getErrorCode(), e.getErrorText());
+			} catch (JsonProcessingException e) {
+				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+			}
 		}
 	}
 

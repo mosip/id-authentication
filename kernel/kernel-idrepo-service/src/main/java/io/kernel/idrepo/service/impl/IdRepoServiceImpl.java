@@ -3,30 +3,47 @@ package io.kernel.idrepo.service.impl;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.text.MessageFormat;
+import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 
+import io.kernel.idrepo.config.IdRepoLogger;
 import io.kernel.idrepo.controller.IdRepoController;
 import io.kernel.idrepo.dto.IdRequestDTO;
 import io.kernel.idrepo.dto.IdResponseDTO;
@@ -39,13 +56,19 @@ import io.kernel.idrepo.repository.UinDetailHistoryRepo;
 import io.kernel.idrepo.repository.UinDetailRepo;
 import io.kernel.idrepo.repository.UinHistoryRepo;
 import io.kernel.idrepo.repository.UinRepo;
+import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
  * The Class IdRepoServiceImpl.
@@ -54,6 +77,18 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
+
+	private static final String LANGUAGE = "language";
+
+	private static final String DECRYPT_ENTITY = "decryptEntity";
+
+	private static final String ENCRYPT_IDENTITY = "encryptIdentity";
+
+	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
+
+	private static final String SESSION_ID = "sessionId";
+
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -112,6 +147,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private UinDetailHistoryRepo uinDetailHistoryRepo;
 
+	@Autowired
+	private KeyGenerator keyGenerator;
+
+	@Autowired
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+
+	@Autowired
+	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -123,8 +167,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		try {
 			String uin = generateUIN();
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShrad(uin));
-			return constructIdResponse(MOSIP_ID_CREATE,
-					addIdentity(uin, request.getRegistrationId(), convertToBytes(request.getRequest())));
+			return constructIdResponse(MOSIP_ID_CREATE, addIdentity(uin, request.getRegistrationId(),
+					encryptIdentity(convertToBytes(request.getRequest()))));
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e, MOSIP_ID_CREATE);
 		}
@@ -146,16 +190,18 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Transactional
 	public Uin addIdentity(String uin, String uinRefId, byte[] identityInfo) throws IdRepoAppException {
 		try {
-			uinHistoryRepo
-					.save(new UinHistory(uinRefId, now(), uinRefId, env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED),
-							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-			uinDetailHistoryRepo.save(new UinDetailHistory(uinRefId, now(), identityInfo, CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-			return uinRepo.save(new Uin(uinRefId, uin, env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), CREATED_BY,
-					now(), UPDATED_BY, now(), false, now(), uinDetailRepo.save(new UinDetail(uinRefId, identityInfo,
-							CREATED_BY, now(), UPDATED_BY, now(), false, now()))));
-		} catch (DataIntegrityViolationException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS, e);
+			if (!uinRepo.existsById(uinRefId)) {
+				uinHistoryRepo
+						.save(new UinHistory(uinRefId, now(), uin, env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED),
+								CREATED_BY, now(), UPDATED_BY, now(), false, now()));
+				uinDetailHistoryRepo.save(new UinDetailHistory(uinRefId, now(), identityInfo, CREATED_BY, now(),
+						UPDATED_BY, now(), false, now()));
+				return uinRepo.save(new Uin(uinRefId, uin, env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), CREATED_BY,
+						now(), UPDATED_BY, now(), false, now(), uinDetailRepo.save(new UinDetail(uinRefId, identityInfo,
+								CREATED_BY, now(), UPDATED_BY, now(), false, now()))));
+			} else {
+				throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
+			}
 		} catch (DataAccessException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
@@ -201,23 +247,50 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@SuppressWarnings("unchecked")
 	@Override
 	public IdResponseDTO updateIdentity(IdRequestDTO request) throws IdRepoAppException {
-		checkUIN(request.getUin());
-		Uin dbUinData = retrieveIdentityByUin(request.getUin());
-		Uin uinObject = null;
-		if (!request.getStatus().equals(dbUinData.getStatusCode())) {
-			uinObject = updateUinStatus(dbUinData, request.getStatus());
-		}
+		try {
+			checkUIN(request.getUin());
+			Uin dbUinData = retrieveIdentityByUin(request.getUin());
+			Uin uinObject = null;
+			if (!request.getStatus().equals(dbUinData.getStatusCode())) {
+				uinObject = updateUinStatus(dbUinData, request.getStatus());
+			}
 
-		if (!request.getRequest().toString().equals(new String(dbUinData.getUinDetail().getUinData()))) {
-			Map<String, Object> requestData = convertToMap(request.getRequest());
-			Map<String, Object> dbData = (Map<String, Object>) convertToObject(dbUinData.getUinDetail().getUinData(),
-					Map.class);
-			Maps.difference(requestData, dbData).entriesDiffering()
-					.forEach((key, value) -> dbData.put(key, value.leftValue()));
-			uinObject = updateIdenityInfo(dbUinData, convertToBytes(dbData));
-		}
+			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()),
+					new String(decryptIdentity(dbUinData.getUinDetail().getUinData())))) {
+				Map<String, Map<String, List<Map<String, String>>>> requestData = convertToMap(request.getRequest());
+				Map<String, Map<String, List<Map<String, String>>>> dbData = (Map<String, Map<String, List<Map<String, String>>>>) convertToObject(
+						decryptIdentity(dbUinData.getUinDetail().getUinData()), Map.class);
+				Maps.difference(requestData.get("identity"), dbData.get("identity")).entriesDiffering()
+						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData
+								.get("identity").put(key, findDifference(value.leftValue(), value.rightValue())));
+				Maps.difference(requestData.get("identity"), dbData.get("identity")).entriesOnlyOnLeft()
+						.forEach((key, value) -> dbData.get("identity").put(key, value));
 
-		return constructIdResponse(MOSIP_ID_UPDATE, uinObject);
+				uinObject = updateIdenityInfo(dbUinData, encryptIdentity(convertToBytes(dbData)));
+			}
+
+			return constructIdResponse(MOSIP_ID_UPDATE, uinObject);
+		} catch (JsonProcessingException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"));
+		}
+	}
+
+	private List<Map<String, String>> findDifference(List<Map<String, String>> leftValue,
+			List<Map<String, String>> rightValue) {
+		if (leftValue.size() > rightValue.size()) {
+			leftValue.parallelStream().filter(leftMap -> !rightValue.contains(leftMap))
+					.forEach(leftMap -> rightValue.add(leftMap));
+		}
+		leftValue.sort((map1, map2) -> map1.get(LANGUAGE).compareTo(map2.get(LANGUAGE)));
+		rightValue.sort((map1, map2) -> map1.get(LANGUAGE).compareTo(map2.get(LANGUAGE)));
+		IntStream.range(0, leftValue.size()).forEach(i -> {
+			Maps.difference(leftValue.get(i), rightValue.get(i)).entriesDiffering().entrySet().forEach(entry -> {
+				rightValue.get(i).put(entry.getKey(), entry.getValue().leftValue());
+			});
+		});
+
+		return rightValue;
 	}
 
 	/**
@@ -338,7 +411,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 						SimpleBeanPropertyFilter.serializeAllExcept("identity", "err")));
 			} else {
-				response.setIdentity(convertToObject(uin.getUinDetail().getUinData(), Object.class));
+				response.setIdentity(convertToObject(decryptIdentity(uin.getUinDetail().getUinData()), Object.class));
 				mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 						SimpleBeanPropertyFilter.serializeAllExcept("entity", "err")));
 			}
@@ -349,6 +422,95 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		idResponse.setResponse(response);
 
 		return idResponse;
+	}
+
+	private byte[] encryptIdentity(byte[] identity) throws IdRepoAppException {
+		try {
+			// hash data using HMAC SHA256
+			String hash = HMACUtils.digestAsPlainText(identity);
+
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY, "hash - \n" + hash + "\n");
+
+			// Generate SessionKey (AES 256)
+			SecretKey sessionKey = keyGenerator.getSymmetricKey();
+
+			// Encrypt data with session key
+			byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, identity);
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY,
+					"encryptedData - \n" + Base64.getEncoder().encodeToString(encryptedData) + "\n");
+
+			// Encrypt session Key using public Key
+			byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(
+					KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(getKey("publicKey"))),
+					sessionKey.getEncoded());
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY,
+					"encryptedsessionKey - \n" + Base64.getEncoder().encodeToString(encryptedsessionKey) + "\n");
+
+			// Append Hash | Encrypted session key | Encrypted Data
+			StringBuilder builder = new StringBuilder(Base64.getEncoder().encodeToString(hash.getBytes()));
+			builder.append('|');
+			builder.append(Base64.getEncoder().encodeToString(encryptedsessionKey));
+			builder.append('|');
+			builder.append(Base64.getEncoder().encodeToString(encryptedData));
+			return builder.toString().getBytes();
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException | java.security.NoSuchAlgorithmException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private byte[] decryptIdentity(byte[] identity) throws IdRepoAppException {
+
+		try {
+			// Extract Hash & Encrypted session key & Encrypted Data
+			String[] encryptedIdentity = new String(identity).split("\\|");
+			String hash = encryptedIdentity[0];
+			String encryptedSessionKey = encryptedIdentity[1];
+			String encryptedData = encryptedIdentity[2];
+
+			// Decrypt session Key with private Key
+			byte[] sessionKey = decryptor.asymmetricPrivateDecrypt(
+					KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(getKey("privateKey"))),
+					Base64.getDecoder().decode(encryptedSessionKey));
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY,
+					"sessionKey - \n" + Base64.getEncoder().encodeToString(sessionKey) + "\n");
+
+			// Decrypt data with with decrypted session key
+			byte[] decryptedData = decryptor.symmetricDecrypt(
+					new SecretKeySpec(sessionKey, 0, sessionKey.length, "AES"),
+					Base64.getDecoder().decode(encryptedData));
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY,
+					"decryptedData - \n" + new String(decryptedData) + "\n");
+
+			// HMAC Decrypted Data record
+			// Compare HMAC
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY,
+					"HASH - \n" + new String(Base64.getDecoder().decode(hash)) + "\n");
+			if (!new String(Base64.getDecoder().decode(hash))
+					.contentEquals(HMACUtils.digestAsPlainText(decryptedData))) {
+				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST);
+			}
+
+			return decryptedData;
+		} catch (IdRepoAppException | InvalidKeySpecException | java.security.NoSuchAlgorithmException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+		}
+	}
+
+	public byte[] getKey(String keyType) throws IdRepoAppException {
+		try {
+			String localpath = env.getProperty("sample.privatekey.filepath");
+			Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
+			String finalpath = MessageFormat.format(localpath, homedirectory);
+			File fileInfo = new File(finalpath + File.separator + keyType);
+			File parentFile = fileInfo.getParentFile();
+			byte[] output = null;
+			if (parentFile.exists()) {
+				output = Files.toByteArray(fileInfo);
+			}
+			return output;
+		} catch (IOException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+		}
 	}
 
 	/**
@@ -397,10 +559,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> convertToMap(Object identity) throws IdRepoAppException {
+	private Map<String, Map<String, List<Map<String, String>>>> convertToMap(Object identity)
+			throws IdRepoAppException {
 		try {
-			return mapper.readValue(mapper.writeValueAsBytes(identity), Map.class);
+			return mapper.readValue(mapper.writeValueAsBytes(identity),
+					new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {
+					});
 		} catch (IOException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"), e);

@@ -82,6 +82,16 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-crypto-jce</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
