@@ -1,4 +1,4 @@
-## kernel-packetserver-http:
+## kernel-packetserver-http
 [Background & Design](../../design/kernel/kernel-packetserver-http.md)
  
 
