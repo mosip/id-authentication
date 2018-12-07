@@ -9,8 +9,6 @@ import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Interface PacketInfoManager.
  *
@@ -69,7 +67,37 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	 */
 	public List<DemographicDedupeDto> findDemoById(String regId);
 	
-	public Set<String>performDedupe(String refId);
+	/**
+	 * Perform dedupe.
+	 *
+	 * @param refId the ref id
+	 * @return the sets the
+	 */
+	public Set<String> performDedupe(String refId);
+	
+	/**
+	 * Find UIN by id.
+	 *
+	 * @param regId the reg id
+	 * @return the string
+	 */
+	public String findUINById(String regId);
+	
+	/**
+	 * Gets the applicant finger print image name by id.
+	 *
+	 * @param regId the reg id
+	 * @return the applicant finger print image name by id
+	 */
+	public List<String> getApplicantFingerPrintImageNameById(String regId);
+	
+	/**
+	 * Gets the applicant iris image name by id.
+	 *
+	 * @param regId the reg id
+	 * @return the applicant iris image name by id
+	 */
+	public List<String> getApplicantIrisImageNameById(String regId);
 	
 	
 }
