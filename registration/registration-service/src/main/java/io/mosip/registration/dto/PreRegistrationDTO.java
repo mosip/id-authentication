@@ -1,7 +1,5 @@
 package io.mosip.registration.dto;
 
-import java.util.Date;
-
 public class PreRegistrationDTO {
 	
 	private String preRegId;
