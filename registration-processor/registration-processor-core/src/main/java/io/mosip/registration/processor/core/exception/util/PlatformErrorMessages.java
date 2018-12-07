@@ -92,6 +92,11 @@ public enum PlatformErrorMessages {
 	
 	RPR_MVS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "002", "Requested file is not present"),
 	
+	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003", "Invalid status update"),
+	
+	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004", "No Assigned Record Found"),
+	
+	
 	/*****System Exception*****/
 	
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),

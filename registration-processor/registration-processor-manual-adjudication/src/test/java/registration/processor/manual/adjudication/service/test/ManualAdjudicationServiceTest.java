@@ -55,9 +55,9 @@ public class ManualAdjudicationServiceTest {
 	@InjectMocks
 	private ManualAdjudicationService manualAdjudicationService = new ManualAdjudicationServiceImpl();
 	@Mock
-	ManualAdjudicationService mockManualAdjudicationService;
+	UserDto dto;
 	@Mock
-	ManualVerificationPKEntity PKId;
+	ManualAdjudicationService mockManualAdjudicationService;
 	@Mock
 	AuditLogRequestBuilder auditLogRequestBuilder;
 	@Mock
@@ -67,20 +67,21 @@ public class ManualAdjudicationServiceTest {
 	@Mock
 	ManualAdjudicationDao manualAdjudicationDao;
 	
-	@Mock
-	ManualVerificationDTO manualVerificationDTO;
-	ManualVerificationEntity manualVerificationEntity;
-	@Mock
-	UserDto dto;
+	private InternalRegistrationStatusDto registrationStatusDto;
+	private ManualVerificationPKEntity PKId;
+	private ManualVerificationDTO manualVerificationDTO;
+	private ManualVerificationEntity manualVerificationEntity;
+	
 	
 	
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 	
 
-		//AuditResponseDto auditResponseDto=new AuditResponseDto();
-		//Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
 		manualVerificationEntity = new ManualVerificationEntity();
+		manualVerificationDTO = new ManualVerificationDTO();
+		registrationStatusDto= new InternalRegistrationStatusDto();
+		PKId = new ManualVerificationPKEntity();
 		dto.setName("User");
 		dto.setOffice("Office");
 		dto.setStatus("PENDING");
@@ -96,33 +97,28 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationEntity.setIsActive(true);
 		manualVerificationEntity.setPkId(PKId);
 		manualVerificationEntity.setLangCode("eng");
-		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
+		manualVerificationDTO.setRegId("RegID");
+		manualVerificationDTO.setMatchedRefId("RefID");
+		manualVerificationDTO.setMvUsrId("");
+		registrationStatusDto.setStatusCode("");
+		registrationStatusDto.setStatusComment("");
 		entities = new ArrayList<>();
 		entities.add(manualVerificationEntity);
-		
-		
-	
-
-		
-
+		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name())).thenReturn(entities);
 	}
 	@Test
 	public void assignStatusMethodCheck()
 	{
 		
-		//manualVerificationEntity.setStatusCode("PENDING");
-		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails()).thenReturn(entities);
-		
-		
-		manualVerificationDTO=manualAdjudicationService.assignStatus(dto);
+	    Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(), ManualVerificationStatus.ASSIGNED.name())).thenReturn(manualVerificationEntity);
+		manualAdjudicationService.assignStatus(dto);
 	}
 	@Test
-	public void assignStatusMethodEntityCheck()
+	public void assignStatusMethodNullEntityCheck()
 	{
 		//manualVerificationEntity.setStatusCode("PENDING");
-		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails()).thenReturn(entities);
-		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(null);
-		manualVerificationDTO=manualAdjudicationService.assignStatus(dto);
+		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
+		manualAdjudicationService.assignStatus(dto);
 	}
 	@Test
 	public void getApplicantFileMethodCheck() 
@@ -169,19 +165,38 @@ public class ManualAdjudicationServiceTest {
 	public void testExceptionIngetApplicantFile() throws Exception {
 		String regId="Id"; 
 		String fileName="";
-		
 		manualAdjudicationService.getApplicantFile(regId, fileName);
-		//file=manualAdjudicationService.getApplicantData(regId, fileName);
 	}
 	@Test(expected=InvalidFileNameException.class)
 	public void testExceptionIngetApplicantData() throws Exception {
 		String regId="Id"; 
 		String fileName="";
-		
-		
-		
-		//file=manualAdjudicationService.getApplicantFile(regId, fileName);
 		manualAdjudicationService.getApplicantData(regId, fileName);
+	}
+	
+	
+	@Test
+	public void updatePacketStatusMethodCheck()
+	{
+		Mockito.when(manualAdjudicationDao.getByRegId(any(),any(),any())).thenReturn(manualVerificationEntity);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(),any())).thenReturn(manualVerificationEntity);
+
+		manualVerificationDTO.setStatusCode("APPROVED");
+
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+		manualVerificationDTO.setStatusCode("PENDING");
+
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(),any())).thenReturn(null);
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+		manualVerificationDTO.setStatusCode(null);
+
+		
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+
+
+
 	}
 
 	
