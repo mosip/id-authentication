@@ -218,7 +218,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private VBox poaBox;
-	
+
 	@FXML
 	private ScrollPane poaScroll;
 
@@ -236,19 +236,19 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private ComboBox<String> porDocuments;
-	
+
 	@FXML
 	private ComboBox<String> dobDocuments;
 
 	@FXML
 	private VBox porBox;
-	
+
 	@FXML
 	private VBox dobBox;
-	
+
 	@FXML
 	private ScrollPane porScroll;
-	
+
 	@FXML
 	private ScrollPane dobScroll;
 
@@ -283,10 +283,10 @@ public class RegistrationController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
-	
+
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-	
+
 	@Value("${SCROLL_CHECK}")
 	public int scrollCheck;
 
@@ -332,21 +332,21 @@ public class RegistrationController extends BaseController {
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
 	private Image defaultImage;
-	
+
 	private String selectedDocument;
-	
+
 	@Autowired
 	private ScanController scanController;
 
 	@FXML
 	private TitledPane authenticationTitlePane;
-	
+
 	@Autowired
 	PreRegZipHandlingService preRegZipHandlingService;
-	
+
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
-	
+
 	private ResourceBundle applicationProperties;
 
 	@FXML
@@ -487,26 +487,27 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
-			
-			//for Document scan			
-			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null && getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
-					.getDocumentDetailsDTO() != null) {
-					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-							.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POA_DOCUMENT))
-							.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox,
-									poaScroll));
-					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POI_DOCUMENT))
-					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox,
-							poiScroll));
-					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POR_DOCUMENT))
-					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox,
-							porScroll));
-					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.DOB_DOCUMENT))
-					.findFirst().ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox,
-							dobScroll));
+
+			// for Document scan
+			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
+					&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
+							.getDocumentDetailsDTO() != null) {
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POA_DOCUMENT))
+						.findFirst()
+						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POI_DOCUMENT))
+						.findFirst()
+						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POR_DOCUMENT))
+						.findFirst()
+						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.DOB_DOCUMENT))
+						.findFirst()
+						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
 
 			}
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
@@ -537,6 +538,7 @@ public class RegistrationController extends BaseController {
 		}
 
 	}
+
 	/**
 	 * 
 	 * Loading the address detail from previous entry
@@ -1064,7 +1066,7 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-			
+
 			uinId.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
@@ -1076,8 +1078,6 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-			
-			
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
@@ -1441,26 +1441,31 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = false;
-		
-		if(isChild && validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
+
+		if (isChild && validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR,
 					RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 			parentName.requestFocus();
 		} else {
-			if(isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
+			if (isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
 				uinId.requestFocus();
 			} else {
-				if(poaBox.getChildren().isEmpty()) {
+				if (poaBox.getChildren().isEmpty()) {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
 				} else {
-					if(poiBox.getChildren().isEmpty()) {
+					if (poiBox.getChildren().isEmpty()) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
 					} else {
-						if(isChild && porBox.getChildren().isEmpty()) {
+						if (isChild && porBox.getChildren().isEmpty()) {
 							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 						} else {
-							gotoNext = true;
+							if (dobBox.getChildren().isEmpty()) {
+								generateAlert(RegistrationConstants.ALERT_ERROR,
+										RegistrationConstants.DOB_DOCUMENT_EMPTY);
+							} else {
+								gotoNext = true;
+							}
 						}
 					}
 				}
@@ -1469,7 +1474,6 @@ public class RegistrationController extends BaseController {
 
 		return gotoNext;
 	}
-
 
 	/**
 	 * 
@@ -1732,7 +1736,7 @@ public class RegistrationController extends BaseController {
 			getBiometricsPane().setVisible(visibility);
 		}
 	}
-	
+
 	/**
 	 * This method scans and uploads Proof of Address documents
 	 */
@@ -1795,7 +1799,7 @@ public class RegistrationController extends BaseController {
 			scanWindow();
 		}
 	}
-	
+
 	/**
 	 * This method scans and uploads Proof of Date of birth documents
 	 */
@@ -2103,7 +2107,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}
-	
+
 	private void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
@@ -2142,8 +2146,5 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
-
-	
-	
 
 }
