@@ -2,7 +2,8 @@ package io.mosip.registration.processor.manual.adjudication.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Component
 public class ManualAdjudicationServiceImpl implements ManualAdjudicationService {
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(ManualAdjudicationServiceImpl.class);
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 	/** The audit log request builder. */
@@ -50,7 +53,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	public ManualVerificationDTO assignStatus(UserDto dto) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		ManualVerificationEntity manualVerificationEntity = manualAdjudicationDao.getFirstApplicantDetails().get(0);
-		if (manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
+		if (ManualVerificationStatus.PENDING.name().equals(manualVerificationEntity.getStatusCode())) {
 			manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
 			manualVerificationEntity.setMvUsrId(dto.getUserId());
 			ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao
@@ -132,35 +135,54 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
 		// TODO Update the status either approved or rejected coming from front end corresponding to a reg id and mvUserId
-		String registrationId = manualVerificationDTO.getRegId();
-		String eventId = "";
-		String eventName = "";
-		String eventType = "";
 		String description = "";
 		boolean isTransactionSuccessful = false;
+		String registrationId = manualVerificationDTO.getRegId();
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
-		if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
+		
+		try
 		{
-			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_SUCCESS.toString());
-			isTransactionSuccessful = true;
-			description = "Manual verification approved for registration id : " + registrationId;
+			if(manualVerificationDTO.getStatusCode().equalsIgnoreCase("APPROVED"))
+			{
+				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_SUCCESS.toString());
+				isTransactionSuccessful = true;
+				description = "Manual verification approved for registration id : " + registrationId;
+			}
+			else
+			{
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
+				description = "Manual verification rejected for registration id : " + registrationId;
+			}
+			
+			registrationStatusDto.setUpdatedBy(USER);
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		}
-		else
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		} 
+		
+		finally
 		{
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
-			description = "Manual verification rejected for registration id : " + registrationId;
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
 		}
-		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-		eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-		eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-				: EventName.EXCEPTION.toString();
-		eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-				: EventType.SYSTEM.toString();
-		registrationStatusDto.setUpdatedBy(USER);
-		auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-				registrationId);
+		
+		
+		
+		
+		
+		
 		
 		return manualVerificationDTO;
 	}
