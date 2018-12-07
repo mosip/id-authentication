@@ -5,9 +5,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,16 +29,20 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.util.biometric.FingerprintFacade;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -56,28 +63,46 @@ public class BaseController {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
-
-	protected static Stage stage;
+	
+	@Autowired
+	protected InitializeParentRoot initializeParentRoot;
+	
+	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	protected Scene scene;
 	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	protected Logger LOGGER = AppConfig.getLogger(this.getClass());
+	private static final Logger LOGGER = AppConfig.getLogger(BaseController.class);
 
 	/**
 	 * Adding events to the stage
 	 * 
 	 * @return
 	 */
-	protected static Stage getStage() {
+	protected Stage getStage() {
 		EventHandler<Event> event = new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
 				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
-		stage.addEventHandler(EventType.ROOT, event);
-		return stage;
+		initializeParentRoot.getStage().addEventHandler(EventType.ROOT, event);
+		return initializeParentRoot.getStage();
+	}
+	
+	protected Scene getScene(Parent borderPane) {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		scene = initializeParentRoot.getScene(); 
+		if(scene == null) {
+			scene = new Scene(borderPane, 950, 630);
+			initializeParentRoot.setScene(scene);
+		}
+		scene.setRoot(borderPane);
+		initializeParentRoot.getStage().setScene(scene);
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		return scene;
 	}
 
 	/**
@@ -174,7 +199,7 @@ public class BaseController {
 	 * login from config table
 	 */
 	protected void getGlobalParams() {
-		ApplicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**
@@ -209,6 +234,15 @@ public class BaseController {
 	 */
 	public void getFingerPrintStatus(Stage primaryStage) {
 	
+	}
+	
+	/**
+	 * Scans documents
+	 *
+	 * @param popupStage the stage
+	 */
+	public void scan(Stage popupStage) {
+		
 	}
 
 	/**
@@ -261,4 +295,27 @@ public class BaseController {
 			counter++;
 		}
 	}
+	
+	protected Image convertBytesToImage(byte[] imageBytes) {
+		return new Image(new ByteArrayInputStream(imageBytes));
+	}
+	
+	protected Timer onlineAvailabilityCheck() {
+		Timer timer = new Timer();
+		initializeParentRoot.setTimer(timer);
+		return timer;
+	}
+
+	protected void stopTimer() {
+		if (initializeParentRoot.getTimer() != null) {
+			initializeParentRoot.getTimer().cancel();
+			initializeParentRoot.getTimer().purge();
+			initializeParentRoot.setTimer(null);
+		}
+	}
+
+	public Timer getTimer() {
+		return initializeParentRoot.getTimer() == null ? onlineAvailabilityCheck() : initializeParentRoot.getTimer();
+	}
+	
 }

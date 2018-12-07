@@ -1,7 +1,7 @@
 package io.mosip.registration.repositories;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.entity.PreRegistration;
+import io.mosip.registration.entity.PreRegistrationList;
 
 /**
  * Pre registration repository to get/save/update and verify pre-reg
@@ -9,7 +9,9 @@ import io.mosip.registration.entity.PreRegistration;
  * @since 1.0.0
  *
  */
-public interface PreRegistrationRepository extends BaseRepository<PreRegistration, String> {
+public interface PreRegistrationDataSyncRepository extends BaseRepository<PreRegistrationList, String> {
+	
+	public PreRegistrationList findByPreRegId(String preRegId);
 	
 
 }

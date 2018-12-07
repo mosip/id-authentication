@@ -13,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -59,32 +57,27 @@ public class RegistrationOfficerPacketController extends BaseController {
 	public void createPacket() {
 
 		try {
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), ApplicationContext.getInstance().getApplicationLanguageBundle());
-			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID,
-					"Validating Create Packet screen for specific role");
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+					applicationContext.getApplicationLanguageBundle());
+			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
 				StringBuilder errorMessage = new StringBuilder();
-				String errorAlert = null;
 				ResponseDTO responseDTO;
 				responseDTO = validateSyncStatus();
 				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 						errorMessage
-						.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
-				errorAlert = errorResponseDTO.getInfoType();
+								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
 
 				} else {
-					LoginController.getScene().setRoot(createRoot);
-					ClassLoader loader = Thread.currentThread().getContextClassLoader();
-					LoginController.getScene().getStylesheets()
-							.add(loader.getResource("application.css").toExternalForm());
+					getScene(createRoot).setRoot(createRoot);
 				}
 			}
 
@@ -98,12 +91,12 @@ public class RegistrationOfficerPacketController extends BaseController {
 
 		try {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
-			ackReceiptController.setRegistrationData(registrationDTO);			
+			ackReceiptController.setRegistrationData(registrationDTO);
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			LoginController.getScene().setRoot(createRoot);
+			getScene(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME,
-					APPLICATION_ID, regBaseCheckedException.getMessage());
+			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
@@ -118,9 +111,8 @@ public class RegistrationOfficerPacketController extends BaseController {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
-			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID,
-					"Validating Approve Packet screen for specific role");
+			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
@@ -136,9 +128,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 				nodes.add(root);
 			}
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
-		
+			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
 	}
@@ -150,9 +142,8 @@ public class RegistrationOfficerPacketController extends BaseController {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
-			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID,
-					"Validating Upload Packet screen for specific role");
+			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);

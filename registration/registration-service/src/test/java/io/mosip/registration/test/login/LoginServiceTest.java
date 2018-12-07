@@ -30,7 +30,7 @@ import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.dao.RegistrationAppLoginDAO;
+import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
@@ -39,14 +39,14 @@ import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.OtpGeneratorResponseDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.RegistrationAppLoginMethod;
-import io.mosip.registration.entity.RegistrationAppLoginMethodId;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethod;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethodId;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationScreenAuthorization;
 import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.repositories.RegistrationAppLoginRepository;
+import io.mosip.registration.repositories.RegistrationAppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
@@ -68,10 +68,10 @@ public class LoginServiceTest {
 	private LoginServiceImpl loginServiceImpl;
 
 	@Mock
-	private RegistrationAppLoginRepository registrationAppLoginRepository;
+	private RegistrationAppAuthenticationRepository registrationAppLoginRepository;
 
 	@Mock
-	private RegistrationAppLoginDAO registrationAppLoginDAO;
+	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
 
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
@@ -103,19 +103,19 @@ public class LoginServiceTest {
 	@Test
 	public void getModesOfLoginTest() {
 
-		RegistrationAppLoginMethod registrationAppLoginMethod = new RegistrationAppLoginMethod();
-		RegistrationAppLoginMethodId registrationAppLoginMethodID = new RegistrationAppLoginMethodId();
+		RegistrationAppAuthenticationMethod registrationAppLoginMethod = new RegistrationAppAuthenticationMethod();
+		RegistrationAppAuthenticationMethodId registrationAppLoginMethodID = new RegistrationAppAuthenticationMethodId();
 		registrationAppLoginMethodID.setLoginMethod("PWD");
 		registrationAppLoginMethod.setMethodSeq(1);
-		registrationAppLoginMethod.setRegistrationAppLoginMethodId(registrationAppLoginMethodID);
-		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
+		registrationAppLoginMethod.setregistrationAppAuthenticationMethodId(registrationAppLoginMethodID);
+		List<RegistrationAppAuthenticationMethod> loginList = new ArrayList<RegistrationAppAuthenticationMethod>();
 		loginList.add(registrationAppLoginMethod);
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
-		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		Mockito.when(registrationAppLoginDAO.getModesOfLogin()).thenReturn(modes);
-		assertEquals(modes,loginServiceImpl.getModesOfLogin());
+		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq("LOGIN")).thenReturn(loginList);
+		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getregistrationAppAuthenticationMethodId().getLoginMethod()));
+		Mockito.when(registrationAppLoginDAO.getModesOfLogin("LOGIN")).thenReturn(modes);
+		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN"));
 	}
 
 	@Test

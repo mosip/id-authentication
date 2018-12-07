@@ -21,7 +21,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.RegistrationAppLoginDAO;
+import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
@@ -34,6 +34,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -69,7 +70,7 @@ public class LoginServiceImpl implements LoginService {
 	 * Class to retrieve the Login Details from DB
 	 */
 	@Autowired
-	private RegistrationAppLoginDAO registrationAppLoginDAO;
+	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
 
 	/**
 	 * Class to retrieve the Registration Officer Details from DB
@@ -95,7 +96,7 @@ public class LoginServiceImpl implements LoginService {
 	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
 	 */
 	@Override
-	public Map<String, Object> getModesOfLogin() {
+	public Map<String, Object> getModesOfLogin(String authType) {
 		// Retrieve Login information
 
 		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -104,7 +105,7 @@ public class LoginServiceImpl implements LoginService {
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
 
-		return registrationAppLoginDAO.getModesOfLogin();
+		return registrationAppLoginDAO.getModesOfLogin(authType);
 	}
 	
 	/*
@@ -327,7 +328,11 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	public List<RegistrationUserDetail> getAllActiveUsers() {
-		return registrationUserDetailDAO.getAllActiveUsers();
+	public List<UserBiometric> getAllActiveUsers(String attrCode) {
+		return registrationUserDetailDAO.getAllActiveUsers(attrCode);
+	}
+	
+	public List<UserBiometric> getUserSpecificFingerprintDetails(String userId){
+		return registrationUserDetailDAO.getUserSpecificFingerprintDetails(userId);
 	}
 }

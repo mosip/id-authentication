@@ -1,15 +1,18 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -17,36 +20,49 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
-import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.controller.device.ScanController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.external.PreRegZipHandlingService;
+import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -55,7 +71,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -63,6 +82,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -196,22 +217,40 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> poaDocuments;
 
 	@FXML
-	private Label poaLabel;
+	private VBox poaBox;
+	
+	@FXML
+	private ScrollPane poaScroll;
 
 	@FXML
 	private ComboBox<String> poiDocuments;
 
 	@FXML
-	private Label poiLabel;
+	private VBox poiBox;
+
+	@FXML
+	private ScrollPane poiScroll;
 
 	@FXML
 	private ImageView headerImage;
 
 	@FXML
 	private ComboBox<String> porDocuments;
+	
+	@FXML
+	private ComboBox<String> dobDocuments;
 
 	@FXML
-	private Label porLabel;
+	private VBox porBox;
+	
+	@FXML
+	private VBox dobBox;
+	
+	@FXML
+	private ScrollPane porScroll;
+	
+	@FXML
+	private ScrollPane dobScroll;
 
 	@FXML
 	private AnchorPane documentFields;
@@ -236,7 +275,7 @@ public class RegistrationController extends BaseController {
 
 	private boolean toggleAgeOrDobField;
 
-	private boolean toggleBiometricException;
+	protected static boolean toggleBiometricException = false;
 
 	private boolean isChild;
 
@@ -244,6 +283,12 @@ public class RegistrationController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
+	
+	@Value("${DOCUMENT_SIZE}")
+	public int documentSize;
+	
+	@Value("${SCROLL_CHECK}")
+	public int scrollCheck;
 
 	@FXML
 	protected Button biometricsNext;
@@ -275,6 +320,8 @@ public class RegistrationController extends BaseController {
 	protected Button poiScanBtn;
 	@FXML
 	protected Button porScanBtn;
+	@FXML
+	protected Button dobScanBtn;
 
 	@FXML
 	private AnchorPane fingerPrintCapturePane;
@@ -285,9 +332,20 @@ public class RegistrationController extends BaseController {
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
 	private Image defaultImage;
+	
+	private String selectedDocument;
+	
+	@Autowired
+	private ScanController scanController;
 
 	@FXML
 	private TitledPane authenticationTitlePane;
+	
+	@Autowired
+	PreRegZipHandlingService preRegZipHandlingService;
+	
+	@Autowired
+	private DocumentScanFacade documentScanFacade;
 
 	@FXML
 	private void initialize() {
@@ -299,7 +357,12 @@ public class RegistrationController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
+
+			// Create RegistrationDTO Object
+			if (getRegistrationDtoContent() == null) {
+				createRegistrationDTOObject();
+			}
+
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
 				exceptionBufferedImage = null;
@@ -327,7 +390,6 @@ public class RegistrationController extends BaseController {
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleAgeOrDobField = false;
-			toggleBiometricException = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
@@ -345,6 +407,7 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
+			setScrollFalse();
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
@@ -421,6 +484,24 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
+			
+			//for Document scan			
+			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null && getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
+					.getDocumentDetailsDTO() != null) {
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+							.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POA_DOCUMENT))
+							.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), poaBox,
+									poaScroll, document.getDocument()));
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POI_DOCUMENT))
+					.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), poiBox,
+							poiScroll, document.getDocument()));
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+					.stream().filter(doc -> doc.getDocumentType().equals(RegistrationConstants.POR_DOCUMENT))
+					.findFirst().ifPresent(document -> attachDocuments(document.getDocumentName(), porBox,
+							porScroll, document.getDocument()));
+
+			}
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
@@ -432,6 +513,23 @@ public class RegistrationController extends BaseController {
 
 	}
 
+	@FXML
+	private void fetchPreRegistration() {
+		try {
+			preRegistrationId.getText();
+			RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(
+					FileUtils.readFileToByteArray(new File("C:/Users/M1046540/Desktop/89149679063970.zip")));
+
+			if (registrationDTO != null) {
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
+						registrationDTO);
+				prepareEditPageContent();
+			}
+		} catch (io.mosip.kernel.core.exception.IOException | RegBaseCheckedException | RegBaseUncheckedException e) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "No Details Found for the given  Pre-Registration ID");
+		}
+
+	}
 	/**
 	 * 
 	 * Loading the address detail from previous entry
@@ -534,7 +632,7 @@ public class RegistrationController extends BaseController {
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			RegistrationDTO registrationDTO = new RegistrationDTO();
+			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
@@ -594,9 +692,6 @@ public class RegistrationController extends BaseController {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-						registrationDTO);
-
 				if (ageDatePicker.getValue() != null) {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
 				}
@@ -610,7 +705,7 @@ public class RegistrationController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		} 
+		}
 	}
 
 	@FXML
@@ -715,7 +810,8 @@ public class RegistrationController extends BaseController {
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+							.getApplicantDocumentDTO();
 					applicantDocumentDTO.setPhoto(photoInBytes);
 					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 					byteArrayOutputStream.close();
@@ -731,7 +827,7 @@ public class RegistrationController extends BaseController {
 					} else {
 						applicantDocumentDTO.setHasExceptionPhoto(false);
 					}
-					getRegistrationDtoContent().getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
+
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
 
@@ -789,13 +885,10 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	public static void loadScreen(String screen) throws IOException {
+	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				ApplicationContext.getInstance().getApplicationLanguageBundle());
-		LoginController.getScene().setRoot(createRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		LoginController.getScene().getStylesheets()
-				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+				applicationContext.getApplicationLanguageBundle());
+		getScene(createRoot);
 	}
 
 	/**
@@ -869,11 +962,11 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (!newValue.matches("([A-z]+\\s?\\.?)+")) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
 
-						fullName.setText(fullName.getText().replaceAll("\\d+", ""));
+						fullName.setText(fullName.getText().replaceAll(".$", ""));
 						fullName.requestFocus();
 					} else {
 						fullNameLocalLanguage.setText(fullName.getText());
@@ -885,7 +978,14 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					addressLine1LocalLanguage.setText(addressLine1.getText());
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
+
+						addressLine1.setText(addressLine1.getText().replaceAll(".$", ""));
+						addressLine1.requestFocus();
+					} else {
+						addressLine1LocalLanguage.setText(addressLine1.getText());
+					}
 				}
 			});
 
@@ -904,6 +1004,74 @@ public class RegistrationController extends BaseController {
 					addressLine3LocalLanguage.setText(addressLine3.getText());
 				}
 			});
+
+			mobileNo.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
+							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+						mobileNo.setText(mobileNo.getText().replaceAll(".$", ""));
+						mobileNo.requestFocus();
+					}
+				}
+			});
+
+			emailId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
+							|| newValue.length() > 50)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
+						emailId.setText(emailId.getText().replaceAll(".$", ""));
+						emailId.requestFocus();
+					}
+				}
+			});
+
+			cniOrPinNumber.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR,
+								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
+						cniOrPinNumber.setText(cniOrPinNumber.getText().replaceAll(".$", ""));
+						cniOrPinNumber.requestFocus();
+					}
+				}
+			});
+
+			parentName.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
+							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
+
+						parentName.setText(parentName.getText().replaceAll(".$", ""));
+						parentName.requestFocus();
+					}
+				}
+			});
+			
+			uinId.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
+						uinId.setText(uinId.getText().replaceAll(".$", ""));
+						uinId.requestFocus();
+					}
+				}
+			});
+			
+			
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1144,9 +1312,6 @@ public class RegistrationController extends BaseController {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-			SessionContext.getInstance().getMapObject().remove("LEFT_PALM_PATH");
-			SessionContext.getInstance().getMapObject().remove("RIGHT_PALM_PATH");
-			SessionContext.getInstance().getMapObject().remove("THUMB_PATH");
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
@@ -1164,7 +1329,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
 		boolean gotoNext = false;
-		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
+		if (validateRegex(fullName, RegistrationConstants.FULL_NAME_REGEX)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR,
 					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 
@@ -1176,7 +1341,7 @@ public class RegistrationController extends BaseController {
 
 					gender.requestFocus();
 				} else {
-					if (validateRegex(addressLine1, "^.{6,50}$")) {
+					if (validateRegex(addressLine1, RegistrationConstants.ADDRESS_LINE1_REGEX)) {
 
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY
 								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
@@ -1216,22 +1381,22 @@ public class RegistrationController extends BaseController {
 															+ RegistrationConstants.ONLY_ALPHABETS);
 											localAdminAuthority.requestFocus();
 										} else {
-											if (validateRegex(mobileNo, "\\d{9}")) {
+											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
 
 												generateAlert(RegistrationConstants.ALERT_ERROR,
 														RegistrationConstants.MOBILE_NUMBER_EMPTY + " "
 																+ RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
-												if (validateRegex(emailId,
-														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
+												if (validateRegex(emailId, RegistrationConstants.EMAIL_ID_REGEX)) {
 
 													generateAlert(RegistrationConstants.ALERT_ERROR,
 															RegistrationConstants.EMAIL_ID_EMPTY + " "
 																	+ RegistrationConstants.EMAIL_ID_EXAMPLE);
 													emailId.requestFocus();
 												} else {
-													if (validateRegex(cniOrPinNumber, "\\d{30}")) {
+													if (validateRegex(cniOrPinNumber,
+															RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
 
 														generateAlert(RegistrationConstants.ALERT_ERROR,
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY + " "
@@ -1272,7 +1437,15 @@ public class RegistrationController extends BaseController {
 		if (isChild) {
 			gotoNext = getParentToggle();
 		} else {
-			gotoNext = true;
+			if(poaBox.getChildren().isEmpty()) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
+			} else {
+				if(poiBox.getChildren().isEmpty()) {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
+				} else {
+					gotoNext = true;
+				}
+			} 
 		}
 
 		return gotoNext;
@@ -1289,18 +1462,21 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = false;
 
 		if (isChild) {
-			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
+			if (validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
 
 				generateAlert(RegistrationConstants.ALERT_ERROR,
 						RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
-				if (validateRegex(uinId, "\\d{6,28}")) {
+				if (validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-
 					uinId.requestFocus();
 				} else {
-					gotoNext = true;
+					if(porBox.getChildren().isEmpty()) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+					} else {
+						gotoNext = true;
+					}
 				}
 			}
 		}
@@ -1317,7 +1493,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 
-			ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
@@ -1359,6 +1535,7 @@ public class RegistrationController extends BaseController {
 			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
 			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
 			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
+			dobDocuments.getItems().addAll(RegistrationConstants.getDobDocumentList());
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1368,12 +1545,13 @@ public class RegistrationController extends BaseController {
 	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
-			if (validateRegex(ageField, "\\d{1,2}")) {
+			if (validateRegex(ageField, RegistrationConstants.AGE_REGEX)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
 
 				ageField.requestFocus();
 			} else {
-				if (Integer.parseInt(ageField.getText()) < 5) {
+				if (Integer.parseInt(ageField.getText()) < Integer
+						.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 				}
 				gotoNext = true;
@@ -1390,46 +1568,7 @@ public class RegistrationController extends BaseController {
 		return gotoNext;
 	}
 
-	@FXML
-	private void scanPoaDocument() {
-		if (poaDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
-			poaDocuments.requestFocus();
-		} else {
-			poaLabel.setId("doc_label");
-			poaLabel.setText(poaDocuments.getValue());
-
-		}
-	}
-
-	@FXML
-	private void scanPoiDocument() {
-		if (poiDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
-			poiDocuments.requestFocus();
-		} else {
-			poiLabel.setId("doc_label");
-			poiLabel.setText(poiDocuments.getValue());
-
-		}
-	}
-
-	@FXML
-	private void scanPorDocument() {
-		if (porDocuments.getValue() == null) {
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
-			porDocuments.requestFocus();
-		} else {
-			porLabel.setId("doc_label");
-			porLabel.setText(porDocuments.getValue());
-
-		}
-	}
-
-	private RegistrationDTO getRegistrationDtoContent() {
+	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
@@ -1440,7 +1579,9 @@ public class RegistrationController extends BaseController {
 	}
 
 	private Boolean isEditPage() {
-		return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
+			return (Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		return false;
 	}
 
 	public void clickMe() {
@@ -1526,6 +1667,21 @@ public class RegistrationController extends BaseController {
 		this.biometricsPane = biometricsPane;
 	}
 
+	/**
+	 * @return the demoGraphicTitlePane
+	 */
+	public TitledPane getDemoGraphicTitlePane() {
+		return demoGraphicTitlePane;
+	}
+
+	/**
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
+	 */
+	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
+		this.demoGraphicTitlePane = demoGraphicTitlePane;
+	}
+
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
@@ -1543,7 +1699,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
@@ -1553,7 +1709,7 @@ public class RegistrationController extends BaseController {
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
@@ -1563,7 +1719,7 @@ public class RegistrationController extends BaseController {
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
@@ -1589,5 +1745,410 @@ public class RegistrationController extends BaseController {
 			getBiometricsPane().setVisible(visibility);
 		}
 	}
+	
+	/**
+	 * This method scans and uploads Proof of Address documents
+	 */
+	@FXML
+	private void scanPoaDocument() {
+
+		if (poaDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
+			poaDocuments.requestFocus();
+
+		} else {
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Address Documents");
+
+			selectedDocument = RegistrationConstants.POA_DOCUMENT;
+			scanWindow();
+		}
+	}
+
+	/**
+	 * This method scans and uploads Proof of Identity documents
+	 */
+	@FXML
+	private void scanPoiDocument() {
+
+		if (poiDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
+			poiDocuments.requestFocus();
+
+		} else {
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Identity Documents");
+
+			selectedDocument = RegistrationConstants.POI_DOCUMENT;
+			scanWindow();
+		}
+	}
+
+	/**
+	 * This method scans and uploads Proof of Relation documents
+	 */
+	@FXML
+	private void scanPorDocument() {
+
+		if (porDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			porDocuments.requestFocus();
+
+		} else {
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
+
+			selectedDocument = RegistrationConstants.POR_DOCUMENT;
+			scanWindow();
+		}
+	}
+	
+	/**
+	 * This method scans and uploads Proof of Date of birth documents
+	 */
+	@FXML
+	private void scanDobDocument() {
+
+		if (dobDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			dobDocuments.requestFocus();
+
+		} else {
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
+
+			selectedDocument = RegistrationConstants.DOB_DOCUMENT;
+			scanWindow();
+		}
+	}
+
+	/**
+	 * This method will display Scan window to scan and upload documents
+	 */
+	private void scanWindow() {
+
+		scanController.init(this, RegistrationConstants.SCAN_DOC_TITLE);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
+	}
+
+	/**
+	 * This method will allow to scan and upload documents
+	 */
+	@Override
+	public void scan(Stage popupStage) {
+
+		try {
+
+			byte[] byteArray = documentScanFacade.getScannedDocument();
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
+
+			if (byteArray.length > documentSize) {
+
+				generateAlert(RegistrationConstants.ALERT_ERROR,
+						"Document size should be less than 1 MB. Please re-scan the document.");
+
+			} else {
+
+				if (selectedDocument != null) {
+
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
+
+					String docName = "";
+
+					if (selectedDocument.equals(RegistrationConstants.POA_DOCUMENT)) {
+
+						docName = addDocuments(poaDocuments.getValue(), poaBox);
+						validateDocuments(docName, poaBox, poaScroll, byteArray);
+
+					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
+
+						docName = addDocuments(poiDocuments.getValue(), poiBox);
+						validateDocuments(docName, poiBox, poiScroll, byteArray);
+
+					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
+
+						docName = addDocuments(porDocuments.getValue(), porBox);
+						validateDocuments(docName, porBox, porScroll, byteArray);
+
+					}else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
+
+						docName = addDocuments(dobDocuments.getValue(), dobBox);
+						validateDocuments(docName, dobBox, dobScroll, byteArray);
+
+					}
+
+					popupStage.close();
+
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "Documents added successfully");
+				}
+			}
+
+		} catch (IOException ioException) {
+			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
+							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
+							ioException.getCause()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s -> Exception while scanning documents for registration  %s",
+							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+		}
+
+	}
+
+	/**
+	 * This method will validate number of documents
+	 */
+	private String addDocuments(String document, VBox vboxElement) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating number of documemnts");
+
+		ObservableList<Node> nodes = vboxElement.getChildren();
+		if (nodes.isEmpty()) {
+			return document;
+		} else if (nodes.stream().anyMatch(index -> index.getId().contains(document))) {
+			return document.concat("_").concat(String.valueOf(nodes.size()));
+		} else {
+			return RegistrationConstants.ERROR;
+		}
+	}
+
+	/**
+	 * This method will validate with existing documents
+	 */
+	private void validateDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating documents before adding to Screen");
+
+		if (!document.equals(RegistrationConstants.ERROR)) {
+			attachDocuments(document, vboxElement, scrollPane, byteArray);
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+		}
+	}
+
+	/**
+	 * This method will add Hyperlink and Image for scanned documents
+	 */
+	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
+
+		scanController.getScanImage().setImage(convertBytesToImage(byteArray));
+
+		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+		documentDetailsDTO.setDocument(byteArray);
+		documentDetailsDTO.setDocumentName(document);
+		documentDetailsDTO.setDocumentCategory(document);
+		documentDetailsDTO.setDocumentType(selectedDocument);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
+
+		getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+				.add(documentDetailsDTO);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
+
+		addDocumentsToScreen(document, vboxElement, scrollPane);
+
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
+
+	}
+
+	private void addDocumentsToScreen(String document, VBox vboxElement, ScrollPane scrollPane) {
+
+		GridPane anchorPane = new GridPane();
+		anchorPane.setId(document);
+
+		anchorPane.add(createHyperLink(document, selectedDocument), 0, vboxElement.getChildren().size());
+		anchorPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+
+		vboxElement.getChildren().add(anchorPane);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
+
+		if (vboxElement.getChildren().size() > scrollCheck) {
+			scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		} else {
+			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+		}
+	}
+
+	/**
+	 * This method will set scrollbar policy for scroll pane
+	 */
+	private void setScrollFalse() {
+		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		dobScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		dobScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+	}
+
+	/**
+	 * This method will create Hyperlink to view scanned document
+	 */
+	private Hyperlink createHyperLink(String document, String selectedDocument) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
+
+		Hyperlink hyperLink = new Hyperlink();
+		hyperLink.setId(document);
+		hyperLink.setText(document);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
+				"Binding OnAction event to Hyperlink to display Scanned document");
+
+		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.stream().filter(detail -> (detail.getDocumentName().equals(pane.getId())) && detail.getDocumentType().equals(selectedDocument)).findFirst()
+						.ifPresent(doc -> displayDocument(doc.getDocument()));
+
+			}
+		});
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
+
+		return hyperLink;
+	}
+
+	/**
+	 * This method will create Image to delete scanned document
+	 */
+	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
+
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
+		ImageView imageView = new ImageView(image);
+		imageView.setCursor(Cursor.HAND);
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
+
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
+				vboxElement.getChildren().remove(gridpane);
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+						.removeIf(document -> document.getDocumentName().equals(gridpane.getId()));
+				if (vboxElement.getChildren().isEmpty()) {
+					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				}
+				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO();
+			}
+
+		});
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
+
+		return imageView;
+	}
+
+	/**
+	 * This method will display the scanned document
+	 */
+	private void displayDocument(byte[] document) {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
+
+		Image img = convertBytesToImage(document);
+		ImageView view = new ImageView(img);
+		Scene scene = new Scene(new StackPane(view), 700, 600);
+		Stage primaryStage = new Stage();
+		primaryStage.setTitle(RegistrationConstants.SCAN_DOC_TITLE);
+		primaryStage.setScene(scene);
+		primaryStage.sizeToScene();
+		primaryStage.show();
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
+	}
+	
+	private void createRegistrationDTOObject() {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+
+		// Create objects for Biometric DTOS
+		BiometricDTO biometricDTO = new BiometricDTO();
+		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setSupervisorBiometricDTO(createBiometricInfoDTO());
+		registrationDTO.setBiometricDTO(biometricDTO);
+
+		// Create object for Demographic DTOS
+		DemographicDTO demographicDTO = new DemographicDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
+		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
+		demographicDTO.setDemoInLocalLang(new DemographicInfoDTO());
+		demographicDTO.setDemoInUserLang(new DemographicInfoDTO());
+		registrationDTO.setDemographicDTO(demographicDTO);
+
+		// Create object for OSIData DTO
+		registrationDTO.setOsiDataDTO(new OSIDataDTO());
+
+		// Create object for RegistrationMetaData DTO
+		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+
+		// Put the RegistrationDTO object to SessionContext Map
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+	}
+
+	private BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		return biometricInfoDTO;
+	}
+
+	
+	
 
 }

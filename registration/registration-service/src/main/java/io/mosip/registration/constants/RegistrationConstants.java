@@ -46,10 +46,12 @@ public class RegistrationConstants {
 	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
 	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
-	public static final String USER_REGISTRATION_BIOMETRIC_CAPTURE_PAGE = "/fxml/FingerPrintScan.fxml";
+	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
+	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
+	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
 
 	// Key values to read value from messages.properties file
 
@@ -72,6 +74,11 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_SUCCESS_MESSAGE = bundle.getString("OTP_VALIDATION_SUCCESS_MESSAGE");
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = bundle.getString("OTP_VALIDATION_ERROR_MESSAGE");
 	public static final String FINGER_PRINT_MATCH = bundle.getString("FINGER_PRINT_MATCH");
+
+	// Authentication
+	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
+	public static final String SUPERVISOR_NAME = "Supervisor";
+	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -138,15 +145,22 @@ public class RegistrationConstants {
 	public static final String EMAIL_ID_EXAMPLE = bundle.getString("EMAIL_ID_EXAMPLE");
 	public static final String PARENT_NAME_EMPTY = bundle.getString("PARENT_NAME_EMPTY");
 	public static final String UIN_ID_EMPTY = bundle.getString("UIN_ID_EMPTY");
+	public static final String UIN_ID_WARNING = bundle.getString("UIN_ID_WARNING");
 	public static final String ADDRESS_LINE_WARNING = bundle.getString("ADDRESS_LINE_WARNING");
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = bundle.getString("LOCAL_ADMIN_AUTHORITY_EMPTY");
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = bundle.getString("CNIE_OR_PIN_NUMBER_EMPTY");
+	public static final String CNIE_OR_PIN_NUMBER_WARNING = bundle.getString("CNIE_OR_PIN_NUMBER_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("POA_DOCUMENT_EMPTY");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("POI_DOCUMENT_EMPTY");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("POR_DOCUMENT_EMPTY");
 	public static final String TEN_LETTER_INPUT_LIMT = bundle.getString("TEN_LETTER_INPUT_LIMT");
 	public static final String SIX_DIGIT_INPUT_LIMT = bundle.getString("SIX_DIGIT_INPUT_LIMT");
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
+	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
+	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
+	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
+	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
+	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -186,6 +200,22 @@ public class RegistrationConstants {
 	public static final String UNABLE_LOAD_APPROVAL_PAGE = bundle.getString("UNABLE_LOAD_APPROVAL_PAGE");
 	public static final String UNABLE_LOAD_REG_PAGE = bundle.getString("UNABLE_LOAD_REG_PAGE");
 
+	// Individual Registartion - Iris Capture
+	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");
+	public static final String IRIS_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_NEXT_SECTION_ERROR");
+	public static final String IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle
+			.getString("IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR");
+	public static final String BIOMETRIC_SCANNING_ERROR = bundle.getString("BIOMETRIC_SCANNING_ERROR");
+	public static final String IRIS_SCANNING_ERROR = bundle.getString("IRIS_SCANNING_ERROR");
+	public static final String FINGERPRINT_SCANNING_ERROR = bundle.getString("FINGERPRINT_SCANNING_ERROR");
+	public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
+	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
+	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
+	public static final String FINGERPRINT_DUPLICATION_ALERT = bundle.getString("FINGERPRINT_DUPLICATION_ALERT");
+	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
+	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR  = bundle.getString("FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR");
+	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP  = bundle.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
+	
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
 	public static final String LOGIN_METHOD_OTP = "OTP";
@@ -194,6 +224,8 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String BLACKLISTED = "BLOCKED";
+	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
+	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
@@ -257,6 +289,14 @@ public class RegistrationConstants {
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
+	
+	//Validation Types
+	public static final String VALIDATION_TYPE_FP = "Fingerprint";
+	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
+
+	// Supervisor Authentication
+	public static final String PWD_MATCH = "Username and Password Match";
+	public static final String PWD_MISMATCH = "Username and Password Not Match";
 
 	// RSA
 	public static final String RSA_ALG = "RSA";
@@ -381,7 +421,10 @@ public class RegistrationConstants {
 	public static final String REG_ACK_EXP_CODE = "ACK-";
 	public static final String DEVICE_ONBOARD_EXP_CODE = "DVO-";
 	public static final String SYNC_JOB_EXP_CODE = "SYN-";
-	private static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
+	public static final String USER_REG_IRIS_CAPTURE_EXP_CODE = "IRC-";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_EXP_CODE = "FPC-";
+	public static final String USER_REGISTRATION_EXP_CODE = "REG-";
+	public static final String USER_REG_SCAN_EXP_CODE = "SCN-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -497,6 +540,9 @@ public class RegistrationConstants {
 	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
 	public static final String JOB_TRIGGER_MIS_FIRED = "Trigger Mis-Fired";
 	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
+	public static final String RETRIEVED_PRE_REG_ID = "Retrieved Pre Registration";
+	public static final String UNABLE_TO_RETRIEVE_PRE_REG_ID = "Unable to retrieve pre registration";
+
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
@@ -523,16 +569,25 @@ public class RegistrationConstants {
 	public static final String GPS_SIGNAL = "$GP";
 
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
-
+		
+	// Documents
+	public static final String POA_DOCUMENT = "PoA";
+	public static final String POI_DOCUMENT = "PoI";
+	public static final String POR_DOCUMENT = "PoR";
+	public static final String DOB_DOCUMENT = "DoB";
 	public static List<String> getPoaDocumentList() {
-		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
 
 	public static List<String> getPoiDocumentList() {
-		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+		return Arrays.asList("PAN", "Aadhar", "Passport", "VoterId", "Licence");
 	}
 
 	public static List<String> getPorDocumentList() {
+		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+	}
+	
+	public static List<String> getDobDocumentList() {
 		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
 	}
 
@@ -546,13 +601,42 @@ public class RegistrationConstants {
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
 	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
-	public static final String VER = "1.0";
+	public static final List<String> VER = Arrays.asList("1.0","1.1","1.2");
+	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "Got Pre registartion ";
 
 	// UI Date Format
 	public static final String DEMOGRAPHIC_DOB_FORMAT = "dd-MM-yyyy";
 	public static final String DEMOGRAPHIC_DOB = "01-01-";
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
+
+	// Iris & Fingerprint Capture for Individual Registration	
+	public static final String IRIS_THRESHOLD = "iris_threshold";
+	public static final String IMAGE_FORMAT_KEY = "imageFormat";
+	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
+	public static final String IMAGE_SCORE_KEY = "imageScore";
+	public static final String LEFT = "Left";
+	public static final String RIGHT = "Right";
+	public static final String EYE = "Eye";
+	public static final String DOT = ".";
+	public static final String FINGERPRINT = "Fingerprint";
+	public static final String LEFTPALM = "LeftPalm";
+	public static final String RIGHTPALM = "RightPalm";
+	public static final String THUMBS = "BothThumbs";
+	public static final String PERCENTAGE = "%";
+	public static final String ISO_FILE_NAME = "ISOTemplate";
+	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
+	public static final String ISO_FILE = "ISOTemplate.iso";
+	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
+	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
+	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/LeftPalm.jpg";
+	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
+	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightPalm.jpg";
+	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
+	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumb.jpg";
+	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -633,12 +717,30 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_FILTER_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-012";
 	public static final String DEVICE_ONBOARD_FILTER_LIST_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-013";
 	public static final String DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-014";
-	
-	// Exceptions for User Registration - Iris Capture
+
+// Exceptions for User Registration - Iris & FingerPrint Capture	
 	public static final String USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001";
 	public static final String USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-002";
 	public static final String USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-003";
 	public static final String USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-004";
+	public static final String USER_REG_IRIS_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-005";
+	public static final String USER_REG_IRIS_SCORE_VALIDATION_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-006";
+	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-007";
+	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
+	public static final String USER_REG_FINGERPRINT_PAGE_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-001";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-002";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-003";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-004";
+	public static final String USER_REG_FINGERPRINT_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-005";
+	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
+	public static final String USER_REG_IRIS_SAVE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-008";
+	public static final String USER_REG_GET_IRIS_QUALITY_SCORE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-009";
+	
+	//Exception for Registration - Document Scan and Upload
+	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
+	
+	//Scan
+	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
@@ -647,4 +749,19 @@ public class RegistrationConstants {
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
 	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
+	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
+	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
+	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+	// Regex Constants
+	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
+	public static final int FULL_NAME_LENGTH = 50;
+	public static final String ADDRESS_LINE1_REGEX="^.{1,50}$";
+	public static final String MOBILE_NUMBER_REGEX="\\d++";
+	public static final int MOBILE_NUMBER_LENGTH=9;
+	public static final String EMAIL_ID_REGEX="^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
+	public static final String EMAIL_ID_REGEX_INITIAL="([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
+	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
+	public static final String AGE_REGEX="\\d{1,2}";
+	public static final String UIN_REGEX="\\d{1,30}";
+
 }

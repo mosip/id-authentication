@@ -83,7 +83,6 @@ public class DataProvider {
 		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
 			biometricInfoDTO.setFingerPrintBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			biometricInfoDTO.setNumOfIrisRetry(2);
 			biometricInfoDTO.setIrisBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
 		}
 		return biometricInfoDTO;
@@ -156,6 +155,7 @@ public class DataProvider {
 		irisDetailsDTO.setIrisType(irisType);
 		irisDetailsDTO.setForceCaptured(isForcedCaptured);
 		irisDetailsDTO.setQualityScore(qualityScore);
+		irisDetailsDTO.setNumOfIrisRetry(2);
 		return irisDetailsDTO;
 	}
 

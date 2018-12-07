@@ -1,21 +1,21 @@
 package io.mosip.registration.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 
+@Component
 public abstract class AuthenticationValidatorImplementation {
 	protected String fingerPrintType;
-	
+
 	protected RegistrationUserDetail registrationUserDetail;
-	
+
 	@Autowired
 	protected FingerprintValidator fingerprintValidator;
-	
-	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		return fingerprintValidator.validate(authenticationValidatorDTO);
-	}
+
+	public abstract boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO);
 
 	public String getFingerPrintType() {
 		return fingerPrintType;
@@ -25,5 +25,4 @@ public abstract class AuthenticationValidatorImplementation {
 		this.fingerPrintType = fingerPrintType;
 	}
 
-	
 }

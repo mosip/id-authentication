@@ -10,7 +10,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
 
@@ -26,6 +26,12 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.validator.AuthenticationValidatorImplementation#
+	 * validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
+	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		if (fingerPrintType.equals("single")) {
@@ -37,23 +43,44 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 		return false;
 	}
 
+	/**
+	 * Validate one finger print values with all the fingerprints from the table.
+	 * 
+	 * @param userId
+	 * @param fingerprintDetailsDTO
+	 * @return
+	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
-		registrationUserDetail = userDataService.getUserDetail(userId);
-		return validateFP(fingerprintDetailsDTO, registrationUserDetail);
+		List<UserBiometric> userFingerprintDetails = userDataService.getUserSpecificFingerprintDetails(userId);
+		return validateFP(fingerprintDetailsDTO, userFingerprintDetails);
 	}
 
+	/**
+	 * Validate all the user input finger details with all the finger details form
+	 * the DB.
+	 * 
+	 * @param fingerprintDetailsDTOs
+	 * @return
+	 */
 	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
-		List<RegistrationUserDetail> registrationUserDetails = userDataService.getAllActiveUsers();
-		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> registrationUserDetails.stream()
-				.anyMatch(userDetails -> validateFP(fingerprintDetailsDTO, userDetails)));
+		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> validateFP(fingerprintDetailsDTO,
+				userDataService.getAllActiveUsers(fingerprintDetailsDTO.getFingerType())));
 
 	}
 
+	/**
+	 * Comparing two fingerprint image and send the matching status
+	 * 
+	 * @param fingerprintDetailsDTO
+	 * @param registrationUserDetail
+	 * @return
+	 */
 	private boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
-			RegistrationUserDetail registrationUserDetail) {
-		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().create(fingerprintDetailsDTO.getFingerPrint());
+			List<UserBiometric> userFingerprintDetails) {
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
-		return registrationUserDetail.getUserBiometric().stream().anyMatch(
+		return userFingerprintDetails.stream().anyMatch(
 				bio -> fingerPrintConnector.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}
 }

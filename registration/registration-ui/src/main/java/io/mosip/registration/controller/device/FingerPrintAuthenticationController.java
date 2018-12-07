@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -20,7 +22,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.util.biometric.FingerprintFacade;
 import io.mosip.registration.util.biometric.MosipFingerprintProvider;
-import io.mosip.registration.validator.AuthenticationValidatorFactory;
+import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -41,7 +43,11 @@ import javafx.stage.Stage;
  */
 @Controller
 public class FingerPrintAuthenticationController extends BaseController implements Initializable {
-
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(FingerPrintAuthenticationController.class);
+	
 	@FXML
 	private AnchorPane authenticateRootPane;
 	@FXML
@@ -84,10 +90,11 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Autowired
 	private BaseController baseController;
 
-	private FingerprintFacade fingerprintFacade = null;
+	@Autowired
+	private FingerprintFacade fingerprintFacade ;
 
 	@Autowired
-	private AuthenticationValidatorFactory validator;
+	private AuthenticationService validator;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -126,7 +133,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				fingerPrintConnector.uninitFingerPrintDevice();
 				fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
 
-				if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getIsoTemplate())) {
 					// if FP data fetched then retrieve the user specific detail from db.
 					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
@@ -174,7 +181,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	 */
 	public void init(BaseController parentControllerObj) {
 		baseController = parentControllerObj;
-		fingerprintFacade = new FingerprintFacade();
 	}
 
 	/**

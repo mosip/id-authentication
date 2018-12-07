@@ -24,34 +24,27 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.device.webcam.impl.WebcamDeviceImpl;
+import io.mosip.registration.util.biometric.LogitechPhotoProvider;
+import io.mosip.registration.util.biometric.PhotoCaptureFacade;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Webcam.class })
-public class WebCamDeviceTest {
-	
-	@InjectMocks
-	WebcamDeviceImpl webcamDeviceImpl;
+public class PhotoCaptureFacadeTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
+	@InjectMocks
+	PhotoCaptureFacade photoCaptureServiceImpl;
+	
 	@Mock
-	WebcamDiscoveryService discoveryService;
+	LogitechPhotoProvider logitechPhotoProvider;
 	
-	
-	@Test
-	public void connectFailureTest() {
-		PowerMockito.mockStatic(Webcam.class);
-		Webcam webcam = Mockito.mock(Webcam.class);
-		List<Webcam> webcams = new ArrayList<>();
-		when(Webcam.getWebcams()).thenReturn(webcams);
-		webcam = null;
-		assertThat(webcamDeviceImpl.connect(640, 480), is(webcam));		
-	}
+	@Mock
+	WebcamDiscoveryService webcamDiscoveryService;
 	
 	@Test
-	public void connectSuccessTest() {
+	public void connectTest() {
 		PowerMockito.mockStatic(Webcam.class);
 		Webcam webcam = Mockito.mock(Webcam.class);
 		List<Webcam> webcams = new ArrayList<>();
@@ -59,9 +52,10 @@ public class WebCamDeviceTest {
 		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
 		webcams.add(webcam);
 		when(Webcam.getWebcams()).thenReturn(webcams);
-		when(Webcam.getDiscoveryService()).thenReturn(discoveryService);
-		discoveryService.stop();
-		assertThat(webcamDeviceImpl.connect(640, 480), is(webcam));		
+		when(Webcam.getDiscoveryService()).thenReturn(webcamDiscoveryService);
+		webcamDiscoveryService.stop();
+		when(logitechPhotoProvider.connect(640, 480)).thenReturn(webcam);
+		assertThat(photoCaptureServiceImpl.connect(640, 480), is(webcam));
 	}
 	
 	@Test
@@ -73,8 +67,9 @@ public class WebCamDeviceTest {
 		when(Webcam.getDefault()).thenReturn(webcam);
 		BufferedImage image = null;		
 		when(webcam.getImage()).thenReturn(image);
-		assertThat(webcamDeviceImpl.captureImage(webcam), is(image));
-		webcamDeviceImpl.close(webcam);
+		when(logitechPhotoProvider.captureImage(webcam)).thenReturn(image);
+		assertThat(photoCaptureServiceImpl.captureImage(webcam), is(image));
+		photoCaptureServiceImpl.close(webcam);
 	}
 	
 }

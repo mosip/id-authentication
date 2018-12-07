@@ -1,5 +1,7 @@
 package io.mosip.registration.exception;
 
+import io.mosip.registration.constants.RegistrationConstants;
+
 import static io.mosip.registration.constants.RegistrationConstants.PACKET_CREATION_EXP_CODE;
 import static io.mosip.registration.constants.RegistrationConstants.PACKET_UPLOAD_EXP_CODE;
 import static io.mosip.registration.constants.RegistrationConstants.REG_ACK_EXP_CODE;
@@ -44,8 +46,9 @@ public enum RegistrationExceptionConstants {
 	REG_PACKET_SYNC_EXCEPTION("REG-PSS-001","Unable to Sync Packets to the server"),
 	REG_PACKET_UPLOAD_ERROR("REG-PUS-001","Unable to Push Packets to the server"),
 	REG_ID_JSON_ERROR("REG-JSC-001","Exception while parsing DemographicDTO to ID JSON"),
-	REG_ID_JSON_FIELD_ACCESS_ERROR("REG-JSC-002","Exception while accessing fields in DemographicDTO for ID JSON conversion");
-
+	REG_ID_JSON_FIELD_ACCESS_ERROR("REG-JSC-002","Exception while accessing fields in DemographicDTO for ID JSON conversion"),
+	REG_IRIS_SCANNING_ERROR(RegistrationConstants.USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001", "Exception while scanning iris of the individual"),
+	REG_FINGERPRINT_SCANNING_ERROR(RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_EXP_CODE+"FCS-002", "Exception while scanning fingerprints of the individual");
 
 	/**
 	 * The constructor

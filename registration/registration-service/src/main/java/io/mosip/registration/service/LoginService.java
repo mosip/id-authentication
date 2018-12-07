@@ -7,6 +7,7 @@ import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 
 /**
  * Service Class for Login
@@ -22,7 +23,7 @@ public interface LoginService {
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	Map<String, Object> getModesOfLogin();
+	Map<String, Object> getModesOfLogin(String authType);
 
 	/**
 	 * fetching user details
@@ -80,8 +81,9 @@ public interface LoginService {
 	 */
 	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
 	
-	List<RegistrationUserDetail> getAllActiveUsers();
-		
+	List<UserBiometric> getAllActiveUsers(String attrCode);
+	
+	List<UserBiometric> getUserSpecificFingerprintDetails(String userId);
 }
 
 

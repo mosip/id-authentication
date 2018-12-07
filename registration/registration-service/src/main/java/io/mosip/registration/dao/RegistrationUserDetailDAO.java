@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 
 /**
  * DAO class for RegistrationUserDetail
@@ -29,6 +30,8 @@ public interface RegistrationUserDetailDAO {
 	 */
 	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
 	
-	List<RegistrationUserDetail> getAllActiveUsers();
+	List<UserBiometric> getAllActiveUsers(String attrCode);
+	
+	List<UserBiometric> getUserSpecificFingerprintDetails(String userId);
 
 }

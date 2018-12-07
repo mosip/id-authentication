@@ -121,14 +121,14 @@ public class JSONConverter {
 			Map<String, String> languagesSpecificObject = new LinkedHashMap<>();
 			languagesSpecificObject.put("language", AppConfig.getApplicationProperty("application_language"));
 			languagesSpecificObject.put("label", inUserLanguage.getName());
-			languagesSpecificObject.put("value", String.valueOf(inUserLanguage.get(inUserLang)));
+			languagesSpecificObject.put("value", inUserLanguage.get(inUserLang) == null ? null : String.valueOf(inUserLanguage.get(inUserLang)));
 
 			languagesSpecificObjects.add(languagesSpecificObject);
 
 			languagesSpecificObject = new LinkedHashMap<>();
 			languagesSpecificObject.put("language", AppConfig.getApplicationProperty("local_language"));
 			languagesSpecificObject.put("label", inLocalLanguage.getName());
-			languagesSpecificObject.put("value", String.valueOf(inLocalLanguage.get(inLocalLang)));
+			languagesSpecificObject.put("value", inLocalLanguage.get(inLocalLang) == null ? null : String.valueOf(inLocalLanguage.get(inLocalLang)));
 
 			languagesSpecificObjects.add(languagesSpecificObject);
 		} catch (IllegalArgumentException | IllegalAccessException exception) {

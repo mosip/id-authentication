@@ -12,14 +12,16 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
-public class RegistrationAppLoginMethodId implements Serializable {
+public class RegistrationAppAuthenticationMethodId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "app_id")
 	private String appId;
-	@Column(name = "login_method_code")
-	private String loginMethod;
+	@Column(name = "auth_method_code")
+	private String authMethodCode;
+	@Column(name = "process_name")
+	private String processName;
 	@Column(name = "lang_code")
 	private String langCode;
 
@@ -42,7 +44,7 @@ public class RegistrationAppLoginMethodId implements Serializable {
 	 * @return the loginMethod
 	 */
 	public String getLoginMethod() {
-		return loginMethod;
+		return authMethodCode;
 	}
 
 	/**
@@ -50,7 +52,7 @@ public class RegistrationAppLoginMethodId implements Serializable {
 	 *            the loginMethod to set
 	 */
 	public void setLoginMethod(String loginMethod) {
-		this.loginMethod = loginMethod;
+		this.authMethodCode = loginMethod;
 	}
 
 	/**
@@ -67,5 +69,20 @@ public class RegistrationAppLoginMethodId implements Serializable {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
+
+	/**
+	 * @return the processName
+	 */
+	public String getProcessName() {
+		return processName;
+	}
+
+	/**
+	 * @param processName
+	 */
+	public void setProcessName(String processName) {
+		this.processName = processName;
+	}
+	
 
 }
