@@ -19,9 +19,11 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -227,18 +229,18 @@ public class OSIValidator {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-			if (introducerUin == null) {
-				if (validateIntroducerRid(introducerRid, registrationId)) {
-					// To do get parent UIN from UIN Master DB
-					introducerUin = getUIN() + regOsi.getIntroducerRegId();
-					return validateIntroducer(regOsi, registrationId, introducerUin);
-				} else {
+			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
+
+				introducerUin = getIntroducerUIN(introducerRid);
+				if (introducerUin == null) {
+
+					registrationStatusDto
+							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
 
-			} else {
-				return validateIntroducer(regOsi, registrationId, introducerUin);
 			}
+			return validateIntroducer(regOsi, registrationId, introducerUin);
 
 		} else {
 			return true;
@@ -272,7 +274,7 @@ public class OSIValidator {
 			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
 				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
 				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-				if (validateBiometric(uin, PacketFiles.FINGER.name(), type, fingerPrintByte))
+				if (validateBiometric(uin, PacketFiles.FINGER.name(), type.toUpperCase(), fingerPrintByte))
 					return true;
 			}
 		}
@@ -306,7 +308,7 @@ public class OSIValidator {
 			if (adapter.checkFileExistence(registrationId, iris.toUpperCase())) {
 				InputStream irisFileName = adapter.getFile(registrationId, iris.toUpperCase());
 				byte[] irisByte = IOUtils.toByteArray(irisFileName);
-				if (validateBiometric(uin, PacketFiles.IRIS.name(), type, irisByte))
+				if (validateBiometric(uin, PacketFiles.IRIS.name(), type.toUpperCase(), irisByte))
 					return true;
 			}
 		}
@@ -433,7 +435,6 @@ public class OSIValidator {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 		String date = simpleDateFormat.format(new Date());
-		Boolean isValidBiometric = false;
 
 		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
@@ -467,38 +468,49 @@ public class OSIValidator {
 			}
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.FINGER.name())) {
 			authTypeDTO.setFingerPrint(true);
-			if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(identity)) {
-
+			switch (identity) {
+			case JsonConstant.LEFTTHUMB:
 				identityDTO.setLeftThumb(biometricData);
-			} else if (PacketFiles.LEFTINDEX.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTINDEX:
 				identityDTO.setLeftIndex(biometricData);
-			} else if (PacketFiles.LEFTMIDDLE.name().equalsIgnoreCase(identity)) {
-				identityDTO.setLeftThumb(biometricData);
-			} else if (PacketFiles.LEFTLITTLE.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTMIDDLE:
+				identityDTO.setLeftMiddle(biometricData);
+				break;
+			case JsonConstant.LEFTLITTLE:
 				identityDTO.setLeftLittle(biometricData);
-			} else if (PacketFiles.LEFTRING.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.LEFTRING:
 				identityDTO.setLeftRing(biometricData);
-			} else if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTTHUMB:
 				identityDTO.setRightThumb(biometricData);
-			} else if (PacketFiles.RIGHTINDEX.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTINDEX:
 				identityDTO.setRightIndex(biometricData);
-			} else if (PacketFiles.RIGHTMIDDLE.name().equalsIgnoreCase(identity)) {
-				identityDTO.setRightThumb(biometricData);
-			} else if (PacketFiles.RIGHTLITTLE.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTMIDDLE:
+				identityDTO.setRightMiddle(biometricData);
+				break;
+			case JsonConstant.RIGHTLITTLE:
 				identityDTO.setRightLittle(biometricData);
-			} else if (PacketFiles.RIGHTRING.name().equalsIgnoreCase(identity)) {
+				break;
+			case JsonConstant.RIGHTRING:
 				identityDTO.setRightRing(biometricData);
+				break;
+			default:
+				break;
 			}
+
 		}
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
-			isValidBiometric = true;
-
-		return isValidBiometric;
+		return authResponseDTO != null && authResponseDTO.getStatus() != null
+				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
 
 	/**
@@ -518,45 +530,39 @@ public class OSIValidator {
 	 */
 	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
-		String fingerPrint = "";
-		String iris = "";
-		String face = "";
+		// check if any one of biometric is provided
 		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
 				&& (regOsi.getIntroducerPhotoName() == null)) {
 			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 			return false;
-		} else {
-			if (regOsi.getIntroducerFingerpImageName() != null) {
-				fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
-			} else {
-				return true;
-			}
+		}
+		// validate fingerprint
+		if (regOsi.getIntroducerFingerpImageName() != null) {
+			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			if (regOsi.getIntroducerIrisImageName() != null) {
-				iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
-			} else {
-				return true;
-			}
-
-			String irisType = regOsi.getIntroducerIrisType();
-			if (regOsi.getIntroducerPhotoName() != null) {
-				face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
-			} else {
-				return true;
-			}
-
-			if ((validateUIN(introducerUin))
-					&& (validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(introducerUin, iris, irisType, registrationId)
-							&& (validateFace(introducerUin, face, registrationId)))) {
-				return true;
-			} else {
+			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
 				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
 				return false;
 			}
-
 		}
-
+		// validate iris
+		if (regOsi.getIntroducerIrisImageName() != null) {
+			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName().toUpperCase();
+			String irisType = regOsi.getIntroducerIrisType();
+			if (!validateIris(introducerUin, iris, irisType, registrationId)) {
+				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
+				return false;
+			}
+		}
+		// validate face
+		if (regOsi.getIntroducerPhotoName() != null) {
+			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerPhotoName().toUpperCase();
+			if (!validateFace(introducerUin, face, registrationId)) {
+				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -592,9 +598,12 @@ public class OSIValidator {
 	 *
 	 * @return the uin
 	 */
-	private String getUIN() {
-		// TO do handle Parent UIN not found in UIN Master DB
-		return "";
+	private String getIntroducerUIN(String intoducerRid) {
+		List<DemographicDedupeDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
+		if (!demographicDedupeDtoList.isEmpty()) {
+			return demographicDedupeDtoList.get(0).getUin();
+		}
+		return null;
 	}
 
 }

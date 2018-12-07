@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class CheckSumValidation.
@@ -25,13 +26,17 @@ public class CheckSumValidation {
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	InternalRegistrationStatusDto registrationStatusDto;
+
 	/**
 	 * Instantiates a new check sum validation.
 	 *
 	 * @param adapter
 	 *            the adapter
 	 */
-	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
+	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter,
+			InternalRegistrationStatusDto registrationStatusDto) {
+		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 
 	}
@@ -58,7 +63,12 @@ public class CheckSumValidation {
 		CheckSumGeneration checkSumGeneration = new CheckSumGeneration(adapter);
 		byte[] generatedHash = checkSumGeneration.generateIdentityHash(hashSequence, registrationId);
 
-		return Arrays.equals(generatedHash, hmacFileHashByte);
+		Boolean isChecksumValid = Arrays.equals(generatedHash, hmacFileHashByte);
+
+		if (!isChecksumValid)
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
+
+		return isChecksumValid;
 	}
 
 }

@@ -8,7 +8,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -23,8 +26,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -89,6 +94,10 @@ public class OSIValidatorTest {
 	@InjectMocks
 	OSIValidator osiValidator;
 
+	List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+
+	DemographicDedupeDto demographicDedupeDto = new DemographicDedupeDto();
+
 	/**
 	 * Sets the up.
 	 *
@@ -97,6 +106,7 @@ public class OSIValidatorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		demographicDedupeDto.setUin("1234");
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		regOsiDto.setOfficerId("O1234");
 		regOsiDto.setOfficerFingerpImageName("fingerprint");
@@ -122,6 +132,7 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerPhotoName("IntroducerPhotoName");
 		regOsiDto.setIntroducerIrisType("RIGHTEYE");
 		registrationStatusDto.setApplicantType("Child");
+		demographicDedupeDtoList.add(demographicDedupeDto);
 
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
@@ -150,6 +161,7 @@ public class OSIValidatorTest {
 	@Test
 	public void testisValidOSISuccess() throws Exception {
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
 
@@ -173,6 +185,7 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerHashedPin(null);
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertFalse(isValid);
@@ -194,6 +207,7 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerIrisImageName(null);
 		regOsiDto.setIntroducerPhotoName(null);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -259,5 +273,41 @@ public class OSIValidatorTest {
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertFalse(isValid);
+	}
+
+	@Test
+	public void testIntroducerUIN() throws Exception {
+		regOsiDto.setIntroducerRegId(null);
+		regOsiDto.setIntroducerUin(null);
+
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+
+	/**
+	 * Test invalid iris.
+	 * 
+	 * @throws IOException
+	 * @throws ApisResourceAccessException
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
+	public void tesAllIntroducerFingerPrint() throws ApisResourceAccessException, IOException {
+		regOsiDto.setIntroducerFingerpType("LEFTTHUMB");
+		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
+		regOsiDto.setSupervisorFingerType("LEFTRING");
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertTrue(isValid);
 	}
 }

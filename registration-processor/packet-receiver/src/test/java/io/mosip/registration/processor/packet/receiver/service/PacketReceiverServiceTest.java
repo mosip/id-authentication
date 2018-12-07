@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +49,7 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -87,12 +89,26 @@ public class PacketReceiverServiceTest {
 		}
 	};
 
+	SyncRegistrationEntity regEntity;
+	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private MockMultipartFile mockMultipartFile, invalidPacket, largerFile;
 
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		
+		regEntity=new SyncRegistrationEntity();
+		regEntity.setCreateDateTime(LocalDateTime.now());
+		regEntity.setCreatedBy("Mosip");
+		regEntity.setId("001");
+		regEntity.setIsActive(true);
+		regEntity.setLangCode("eng");
+		regEntity.setRegistrationId("0000");
+		regEntity.setRegistrationType("new");
+		regEntity.setStatusCode("NEW_REGISTRATION");
+		regEntity.setStatusComment("registration begins");
+		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -135,6 +151,7 @@ public class PacketReceiverServiceTest {
 	@Test
 	public void testPacketStorageSuccess() throws IOException, URISyntaxException {
 
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 
 		Mockito.doNothing().when(fileManager).put(mockMultipartFile.getOriginalFilename(),
@@ -148,7 +165,7 @@ public class PacketReceiverServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = DuplicateUploadRequestException.class)
 	public void testDuplicateUploadRequest() throws IOException, URISyntaxException {
-
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
@@ -170,6 +187,8 @@ public class PacketReceiverServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = PacketNotValidException.class)
 	public void testInvalidPacketFormat() {
+		regEntity.setRegistrationId("1111");
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
@@ -189,6 +208,9 @@ public class PacketReceiverServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = FileSizeExceedException.class)
 	public void testFileSizeExceeded() {
+		
+		regEntity.setRegistrationId("2222");
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
@@ -230,7 +252,7 @@ public class PacketReceiverServiceTest {
 	
 	@Test
 	public void testIoException() throws IOException {
-		
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
 		

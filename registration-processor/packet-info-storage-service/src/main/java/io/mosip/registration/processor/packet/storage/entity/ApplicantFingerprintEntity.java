@@ -3,13 +3,14 @@ package io.mosip.registration.processor.packet.storage.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-// TODO: Auto-generated Javadoc
 /**
  * The persistent class for the applicant_fingerprint database table.
  * 
@@ -81,7 +82,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the active.
 	 *
-	 * @param isActive the new active
+	 * @param isActive
+	 *            the new active
 	 */
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
@@ -106,7 +108,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -124,7 +127,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimes the new cr dtimes
+	 * @param crDtimes
+	 *            the new cr dtimes
 	 */
 	public void setCrDtimes(LocalDateTime crDtimes) {
 		this.crDtimes = crDtimes;
@@ -142,7 +146,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the del dtimes.
 	 *
-	 * @param delDtimes the new del dtimes
+	 * @param delDtimes
+	 *            the new del dtimes
 	 */
 	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
@@ -160,7 +165,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the image name.
 	 *
-	 * @param imageName the new image name
+	 * @param imageName
+	 *            the new image name
 	 */
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
@@ -178,7 +184,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -196,7 +203,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the no of retry.
 	 *
-	 * @param noOfRetry the new no of retry
+	 * @param noOfRetry
+	 *            the new no of retry
 	 */
 	public void setNoOfRetry(Integer noOfRetry) {
 		this.noOfRetry = noOfRetry;
@@ -214,7 +222,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the pre reg id.
 	 *
-	 * @param preregId the new pre reg id
+	 * @param preregId
+	 *            the new pre reg id
 	 */
 	public void setPreRegId(String preregId) {
 		this.preRegId = preregId;
@@ -232,7 +241,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the quality score.
 	 *
-	 * @param qualityScore the new quality score
+	 * @param qualityScore
+	 *            the new quality score
 	 */
 	public void setQualityScore(BigDecimal qualityScore) {
 		this.qualityScore = qualityScore;
@@ -250,7 +260,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -268,7 +279,8 @@ public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFinger
 	/**
 	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimes the new upd dtimes
+	 * @param updDtimes
+	 *            the new upd dtimes
 	 */
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;

@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ApplicantDocumentEntity.
  *
@@ -60,7 +59,6 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-
 	/** The del dtimes. */
 	@Column(name = "del_dtimes")
 	@UpdateTimestamp
@@ -86,7 +84,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the active.
 	 *
-	 * @param isActive the new active
+	 * @param isActive
+	 *            the new active
 	 */
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
@@ -111,7 +110,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -129,7 +129,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimes the new cr dtimes
+	 * @param crDtimes
+	 *            the new cr dtimes
 	 */
 	public void setCrDtimes(LocalDateTime crDtimes) {
 		this.crDtimes = crDtimes;
@@ -147,7 +148,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the doc file format.
 	 *
-	 * @param docFileFormat the new doc file format
+	 * @param docFileFormat
+	 *            the new doc file format
 	 */
 	public void setDocFileFormat(String docFileFormat) {
 		this.docFileFormat = docFileFormat;
@@ -165,7 +167,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the doc name.
 	 *
-	 * @param docName the new doc name
+	 * @param docName
+	 *            the new doc name
 	 */
 	public void setDocName(String docName) {
 		this.docName = docName;
@@ -183,7 +186,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the doc owner.
 	 *
-	 * @param docOwner the new doc owner
+	 * @param docOwner
+	 *            the new doc owner
 	 */
 	public void setDocOwner(String docOwner) {
 		this.docOwner = docOwner;
@@ -201,7 +205,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the doc store.
 	 *
-	 * @param docStore the new doc store
+	 * @param docStore
+	 *            the new doc store
 	 */
 	public void setDocStore(byte[] docStore) {
 		this.docStore = docStore;
@@ -219,7 +224,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the pre reg id.
 	 *
-	 * @param preregId the new pre reg id
+	 * @param preregId
+	 *            the new pre reg id
 	 */
 	public void setPreRegId(String preregId) {
 		this.preRegId = preregId;
@@ -237,7 +243,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -255,7 +262,8 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	/**
 	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimes the new upd dtimes
+	 * @param updDtimes
+	 *            the new upd dtimes
 	 */
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;

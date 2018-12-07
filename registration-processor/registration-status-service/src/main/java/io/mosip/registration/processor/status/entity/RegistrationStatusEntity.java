@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationStatusEntity.
  */
@@ -79,7 +78,7 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	/** The applicant type. */
 	@Column(name = "applicant_type")
 	private String applicantType;
-	
+
 	/**
 	 * Instantiates a new registration status entity.
 	 */
@@ -366,7 +365,8 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	/**
 	 * Sets the applicant type.
 	 *
-	 * @param applicantType the new applicant type
+	 * @param applicantType
+	 *            the new applicant type
 	 */
 	public void setApplicantType(String applicantType) {
 		this.applicantType = applicantType;

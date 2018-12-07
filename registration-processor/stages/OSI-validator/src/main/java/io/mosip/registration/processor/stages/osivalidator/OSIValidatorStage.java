@@ -107,11 +107,11 @@ public class OSIValidatorStage extends MosipVerticleManager {
 				description = "OSI validation successful for registration id : " + registrationId;
 			} else {
 				object.setIsValid(Boolean.FALSE);
-				if (registrationStatusDto.getRetryCount() == null) {
-					registrationStatusDto.setRetryCount(0);
-				} else {
-					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
-				}
+				int retryCount = registrationStatusDto.getRetryCount() != null
+						? registrationStatusDto.getRetryCount() + 1
+						: 1;
+				registrationStatusDto.setRetryCount(retryCount);
+
 				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.toString());
 

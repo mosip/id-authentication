@@ -36,19 +36,37 @@ public class MosipBridgeMappingTest {
 
 			@Override
 			public void configure() throws Exception {
-				// Decryption to Structure Validation routing
+				
 				from(BridgeUtil.getEndpoint(MessageBusAddress.BATCH_BUS)).choice()
-						.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-						.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN));
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN));
 
-				// Structure Validation to Demographic Validation routing
-				from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(validateStructure).choice()
-						.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
-						.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
-						.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-						.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
-						.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
-						.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+		
+		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(validateStructure).choice()
+				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+
+		
+		from(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)).process(validateStructure).choice()
+				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN))
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+		
+		
+		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)).process(validateStructure).choice()
+		.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
+		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
+		.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 
 			}
 
@@ -60,22 +78,30 @@ public class MosipBridgeMappingTest {
 
 		options.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR))
 				.toVertx(MessageBusAddress.ERROR.getAddress()))
-				.addInboundMapping(
-						InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN))
-								.toVertx(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
-				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN))
-						.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
-				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
-						.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
-				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
-						.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
+		.addInboundMapping(
+				InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN))
+						.toVertx(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN))
+				.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
+		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
+				.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
+		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
+				.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
+		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN))
+				.toVertx(MessageBusAddress.OSI_BUS_IN.getAddress()))
+		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN))
+				.toVertx(MessageBusAddress.DEMODEDUPE_BUS_IN.getAddress()))
 
-				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.BATCH_BUS.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN)))
-				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)))
-				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.RETRY_BUS.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)));
+		.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.BATCH_BUS.getAddress())
+				.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN)))
+		.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())
+				.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_IN)))
+		.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.OSI_BUS_OUT.getAddress())
+				.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN)))
+		.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.DEMODEDUPE_BUS_OUT.getAddress())
+				.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS)))
+		.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.RETRY_BUS.getAddress())
+				.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)));
 	}
 
 	@Test

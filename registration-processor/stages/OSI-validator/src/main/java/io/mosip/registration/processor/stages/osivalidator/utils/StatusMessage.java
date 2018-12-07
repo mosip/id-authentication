@@ -44,25 +44,27 @@ public class StatusMessage {
 	public static final String PARENT_RID_NOT_IN_REGISTRATION_TABLE = "The RID of Parent is not present in Packet";
 
 	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
-	
-	public static final String MACHINE_ID_NOT_FOUND="The Machine ID was not found in Master DB for Registration ID.";
-	
-	public static final String MACHINE_NOT_ACTIVE= "The Machine ID was not active when Registration ID  was created";
-	
-	public static final String CENTER_ID_NOT_FOUND= "The Center ID was not found in Master DB for Registration ID";
-	
-	public static final String CENTER_NOT_ACTIVE= "The Center was not active when Registration ID was created";
-	
-	public static final String OFFICER_ID_NOT_FOUND="The Officer was not found in Master DB for Registration ID ";
-	
-	public static final String OFFICER_NOT_ACTIVE="The Officer was not active when Registration ID was created";
-	
-	public static final String SUPERVISOR_ID_NOT_FOUND="The Supervisor was not found in Master DB for Registration ID ";
-	
-	public static final String SUPERVISOR_NOT_ACTIVE="The Supervisor was not active when Registration ID was created";
-	
-	public static final String CENTER_MACHINE_USER_MAPPING_NOT_FOUND="The Center-Machine-User Mapping for Center, Machine & supervisor/officer was not found";
-	
-	public static final String GPS_DATA_NOT_PRESENT= "The GPS Details for the Packet is Not Present";
+
+	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID.";
+
+	public static final String MACHINE_NOT_ACTIVE = "The Machine ID was not active when Registration ID  was created";
+
+	public static final String CENTER_ID_NOT_FOUND = "The Center ID was not found in Master DB for Registration ID";
+
+	public static final String CENTER_NOT_ACTIVE = "The Center was not active when Registration ID was created";
+
+	public static final String OFFICER_ID_NOT_FOUND = "The Officer was not found in Master DB for Registration ID ";
+
+	public static final String OFFICER_NOT_ACTIVE = "The Officer was not active when Registration ID was created";
+
+	public static final String SUPERVISOR_ID_NOT_FOUND = "The Supervisor was not found in Master DB for Registration ID ";
+
+	public static final String SUPERVISOR_NOT_ACTIVE = "The Supervisor was not active when Registration ID was created";
+
+	public static final String CENTER_MACHINE_USER_MAPPING_NOT_FOUND = "The Center-Machine-User Mapping for Center, Machine & supervisor/officer was not found";
+
+	public static final String GPS_DATA_NOT_PRESENT = "The GPS Details for the Packet is Not Present";
+
+	public static final String PARENT_UIN_NOT_FOUND_IN_TABLE = "The UIN of Parent is not present in individual_demographic_dedup for Packet";
 
 }
