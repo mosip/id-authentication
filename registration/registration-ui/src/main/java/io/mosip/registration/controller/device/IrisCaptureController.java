@@ -1,15 +1,11 @@
 package io.mosip.registration.controller.device;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import javax.imageio.ImageIO;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -262,12 +258,9 @@ public class IrisCaptureController extends BaseController {
 					"Scanning of iris details for user registration");
 
 			InputStream inputStream = this.getClass().getResourceAsStream("/images/scanned-iris.png");
-			BufferedImage bufferedImage = ImageIO.read(inputStream);
-			
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 
-			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
+			byte[] scannedIrisBytes = new byte[inputStream.available()];
+			inputStream.read(scannedIrisBytes);
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new HashMap<>();
