@@ -277,7 +277,7 @@ public class RegistrationController extends BaseController {
 
 	private boolean isChild;
 
-	Node keyboardNode;
+	private Node keyboardNode;
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
