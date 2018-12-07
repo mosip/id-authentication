@@ -1813,7 +1813,7 @@ public class RegistrationController extends BaseController {
 
 		if (dobDocuments.getValue() == null) {
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
 			dobDocuments.requestFocus();
 
 		} else {
