@@ -22,6 +22,15 @@ public interface TransactionService<U> {
 	 */
 	public TransactionEntity addRegistrationTransaction(U registrationStatusDto);
 
+	/**
+	 * Gets the transaction by reg id and status code.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @param statusCode
+	 *            the status code
+	 * @return the transaction by reg id and status code
+	 */
 	public TransactionDto getTransactionByRegIdAndStatusCode(String regId, String statusCode);
 
 }

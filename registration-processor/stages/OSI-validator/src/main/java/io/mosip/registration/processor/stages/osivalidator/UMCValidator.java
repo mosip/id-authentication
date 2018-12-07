@@ -19,20 +19,46 @@ import io.mosip.registration.processor.rest.client.regcentermachine.dto.Registra
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
+/**
+ * The Class UMCValidator.
+ * 
+ * @author Jyothi
+ */
 @Service
 public class UMCValidator {
+
+	/** The packet info manager. */
 	@Autowired
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The umc client. */
 	@Autowired
 	RegCenterMachineHistoryClientBuilder umcClient;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
 
+	/** The primary languagecode. */
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
 
+	/**
+	 * Validate registration center.
+	 *
+	 * @param registrationCenterId
+	 *            the registration center id
+	 * @param langCode
+	 *            the lang code
+	 * @param effectiveDate
+	 *            the effective date
+	 * @param latitude
+	 *            the latitude
+	 * @param longitude
+	 *            the longitude
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
 			String latitude, String longitude) throws ApisResourceAccessException {
 		boolean activeRegCenter = false;
@@ -42,17 +68,17 @@ public class UMCValidator {
 		if (!dtos.isEmpty()) {
 
 			for (RegistrationCenterDto dto : dtos) {
-				
-					if (dto.getLatitude() != null && dto.getLongitude() != null &&dto.getLatitude().matches(latitude) && dto.getLongitude().matches(longitude)) {
 
-						activeRegCenter = dto.getIsActive();
-						if (!activeRegCenter)
-							this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-						break;
-					} else {
-						this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-					}
-				
+				if (dto.getLatitude() != null && dto.getLongitude() != null && dto.getLatitude().matches(latitude)
+						&& dto.getLongitude().matches(longitude)) {
+
+					activeRegCenter = dto.getIsActive();
+					if (!activeRegCenter)
+						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+					break;
+				} else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+				}
 
 			}
 		} else {
@@ -63,6 +89,19 @@ public class UMCValidator {
 
 	}
 
+	/**
+	 * Validate machine.
+	 *
+	 * @param machineId
+	 *            the machine id
+	 * @param langCode
+	 *            the lang code
+	 * @param effdatetimes
+	 *            the effdatetimes
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateMachine(String machineId, String langCode, String effdatetimes)
 			throws ApisResourceAccessException {
 
@@ -90,6 +129,23 @@ public class UMCValidator {
 
 	}
 
+	/**
+	 * Validate UM cmapping.
+	 *
+	 * @param effectiveTimestamp
+	 *            the effective timestamp
+	 * @param registrationCenterId
+	 *            the registration center id
+	 * @param machineId
+	 *            the machine id
+	 * @param superviserId
+	 *            the superviser id
+	 * @param officerId
+	 *            the officer id
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	private boolean validateUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
 			String superviserId, String officerId) throws ApisResourceAccessException {
 		boolean t = false;
@@ -127,6 +183,15 @@ public class UMCValidator {
 		return t;
 	}
 
+	/**
+	 * Checks if is valid UMC.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return true, if is valid UMC
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException {
 		RegistrationCenterMachineDto rcmDto = packetInfoManager.getRegistrationCenterMachine(registrationId);
 
@@ -148,10 +213,21 @@ public class UMCValidator {
 		return umc;
 	}
 
+	/**
+	 * Gets the registration status dto.
+	 *
+	 * @return the registration status dto
+	 */
 	public InternalRegistrationStatusDto getRegistrationStatusDto() {
 		return this.registrationStatusDto;
 	}
 
+	/**
+	 * Sets the registration status dto.
+	 *
+	 * @param registrationStatusDto
+	 *            the new registration status dto
+	 */
 	public void setRegistrationStatusDto(InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 	}
