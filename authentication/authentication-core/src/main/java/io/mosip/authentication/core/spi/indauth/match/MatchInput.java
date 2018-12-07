@@ -1,8 +1,7 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
 
-import io.mosip.authentication.service.impl.indauth.builder.AuthType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,11 +16,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class MatchInput {
 	
-	/** The demo match type. */
+	/** The match type. */
 	private AuthType authType;
 
-	/** The demo match type. */
-	private MatchType demoMatchType;
+	/** The match type. */
+	private MatchType matchType;
 
 	/** The match strategy type. */
 	private String matchStrategyType;

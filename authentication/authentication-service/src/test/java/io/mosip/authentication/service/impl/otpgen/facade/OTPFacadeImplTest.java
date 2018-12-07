@@ -41,14 +41,12 @@ import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.authentication.service.repository.DemoRepository;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -98,9 +96,6 @@ public class OTPFacadeImplTest {
 	@Mock
 	private IdInfoHelper demoHelper;
 
-	@Mock
-	DemoRepository demoRepository;
-
 	@InjectMocks
 	NotificationManager notificationManager;
 
@@ -132,10 +127,10 @@ public class OTPFacadeImplTest {
 		String emailId = "abc@abc.com";
 		String name = "mosip";
 
-		DemoEntity demoEntity = new DemoEntity();
-		demoEntity.setEmail(emailId);
-		demoEntity.setMobile(mobileNumber);
-		Mockito.when(demoRepository.findById(Mockito.anyString())).thenReturn(Optional.of(demoEntity));
+//		DemoEntity demoEntity = new DemoEntity();
+//		demoEntity.setEmail(emailId);
+//		demoEntity.setMobile(mobileNumber);
+//		Mockito.when(demoRepository.findById(Mockito.anyString())).thenReturn(Optional.of(demoEntity));
 		String unqueId = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
@@ -377,8 +372,8 @@ public class OTPFacadeImplTest {
 
 		return otpResponseDTO;
 	}
-	
-	private Map<String, Object> repoDetails(){
+
+	private Map<String, Object> repoDetails() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("registrationId", "863537");
 		return map;

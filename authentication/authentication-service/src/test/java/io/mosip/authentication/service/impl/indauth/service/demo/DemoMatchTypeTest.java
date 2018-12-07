@@ -24,6 +24,7 @@ import org.junit.Test;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 
 

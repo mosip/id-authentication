@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.List;
 import java.util.Optional;

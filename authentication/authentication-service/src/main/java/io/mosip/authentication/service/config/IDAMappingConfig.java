@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import lombok.Data;
 @PropertySource(value = "classpath:ida-mapping.json", factory = IDAMappingFactory.class)
 @ConfigurationProperties
 @Data
-public class IDAMappingConfig {
+public class IDAMappingConfig implements MappingConfig {
 
 	private List<String> name;
 	private List<String> dob;

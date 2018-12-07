@@ -2,6 +2,9 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {

@@ -13,14 +13,13 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
-import io.mosip.authentication.service.impl.id.service.impl.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.builder.AuthType;
-import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
+import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.IdInfoMatcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchOutput;
 
 /**
  * The implementation of Demographic Authentication service.
@@ -34,12 +33,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	@Autowired
 	public Environment environment;
 
-	/** The demo matcher. */
 	@Autowired
-	private IdInfoMatcher idInfoMatcher;
-
-	@Autowired
-	public IdInfoHelper demoHelper;
+	public IdInfoHelper idInfoHelper;
 
 	/**
 	 * Construct match input.
@@ -49,7 +44,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
 			AuthType demoAuthType) {
-		return idInfoMatcher.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
+		return idInfoHelper.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
 	}
 
 	/**
@@ -62,7 +57,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
-		return idInfoMatcher.matchIdentityData(identitydto, demoEntity, listMatchInputs);
+		return idInfoHelper.matchIdentityData(identitydto, demoEntity, listMatchInputs);
 	}
 
 	/*
@@ -82,9 +77,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getRequest().getIdentity(),
 				demoEntity);
+		//Using AND condition on the match output for Bio auth.
 		boolean demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 
-		return idInfoMatcher.buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs, DemoAuthType.values());
+		return idInfoHelper.buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs, DemoAuthType.values());
 
 	}
 
@@ -96,7 +92,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return idInfoMatcher.constructMatchInput(authRequestDTO,  DemoAuthType.values(), DemoMatchType.values());
+		return idInfoHelper.constructMatchInput(authRequestDTO,  DemoAuthType.values(), DemoMatchType.values());
 	}
 
 }

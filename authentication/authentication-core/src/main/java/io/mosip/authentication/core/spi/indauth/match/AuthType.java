@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.builder;
+package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,7 +11,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 
 /**
  * 
@@ -49,6 +48,8 @@ public interface AuthType {
 	Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment);
 
 	Set<MatchType> getAssociatedMatchTypes();
+	
+	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO);
 
 	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
 			Function<LanguageType, String> languageInfoFetcher) {
@@ -64,4 +65,5 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
+	
 }

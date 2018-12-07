@@ -21,8 +21,8 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
-import io.mosip.authentication.service.impl.indauth.builder.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 
 /**
  * {@code AuthResponseBuilderTest} - Test class for {@link AuthResponseBuilder}

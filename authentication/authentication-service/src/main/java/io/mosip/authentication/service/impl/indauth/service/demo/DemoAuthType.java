@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.builder;
+package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,8 +18,8 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
 /**
  * 
@@ -219,6 +219,16 @@ public enum DemoAuthType implements AuthType {
 		HashMap<String, Object> valuemap = new HashMap<>();
 		valuemap.put("language", languageInfoFetcher.apply(getLangType()));
 		return valuemap;
+	}
+	
+	@Override
+	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+		return Optional.ofNullable(authRequestDTO.getMatchInfo())
+				.flatMap(list -> 
+						list.stream()
+						.filter(matchInfo -> matchInfo.getAuthType()
+								.equalsIgnoreCase(getType())).findAny())
+				.isPresent();
 	}
 
 }

@@ -3,10 +3,11 @@ package io.mosip.authentication.service.impl.indauth.service.bio;
 import java.util.Base64;
 import java.util.Map;
 
+import com.machinezoo.sourceafis.FingerprintTemplate;
+
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
-import io.mosip.authentication.service.impl.indauth.builder.BioAuthType;
 
 /**
  * 
@@ -27,16 +28,19 @@ public final class BioMatcherUtil {
 		Object object = props.get(BioInfo.class.getSimpleName());
 		byte[] decodedrefInfo = decodeValue(reqInfo);
 		byte[] decodeEntityInfo = decodeValue(entityInfo);
+		
 		if (object instanceof BioInfo) {
 			BioInfo bioInfo = (BioInfo) object;
 			String make = bioInfo.getDeviceInfo().getMake();
 			if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
+				FingerprintTemplate template1 = new FingerprintTemplate().convert(decodedrefInfo);
+				FingerprintTemplate template2 = new FingerprintTemplate().convert(decodeEntityInfo);
 				if (make.equalsIgnoreCase(COGENT)) {
-					return cogentFingerprintProvider.scoreCalculator(getString(decodedrefInfo),
-							getString(decodeEntityInfo));
+					return cogentFingerprintProvider.scoreCalculator(template1.serialize(),
+							template2.serialize());
 				} else if (make.equalsIgnoreCase(MANTRA)) {
-					return mantraFingerprintProvider.scoreCalculator(getString(decodedrefInfo),
-							getString(decodeEntityInfo));
+					return mantraFingerprintProvider.scoreCalculator(template1.serialize(),
+							template2.serialize());
 				}
 			} else if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType())) {
 				if (make.equalsIgnoreCase(COGENT)) {

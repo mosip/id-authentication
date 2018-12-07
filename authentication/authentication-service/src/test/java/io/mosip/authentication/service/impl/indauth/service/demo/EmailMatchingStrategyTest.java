@@ -7,6 +7,9 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+
 public class EmailMatchingStrategyTest {
 
 	/**

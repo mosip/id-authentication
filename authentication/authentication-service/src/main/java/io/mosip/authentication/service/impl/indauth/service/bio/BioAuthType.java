@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.builder;
+package io.mosip.authentication.service.impl.indauth.service.bio;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,9 +16,9 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 public enum BioAuthType implements AuthType {
 
@@ -34,8 +34,8 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
 			AuthTypeDTO::isBio, "Fingerprint"),
-//	IRIS_IMG("irisImg", Collections.emptySet(), AuthTypeDTO::isBio, "Iris"),
-//	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face")
+	IRIS_IMG("irisImg", Collections.emptySet(), AuthTypeDTO::isBio, "Iris"),
+	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face")
 	;
 	private String type;
 
@@ -121,6 +121,16 @@ public enum BioAuthType implements AuthType {
 		authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 				.forEach(bioinfovalue -> valueMap.put(BioInfo.class.getSimpleName(), bioinfovalue));
 		return valueMap;
+	}
+
+	@Override
+	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+		return Optional.ofNullable(authRequestDTO.getBioInfo())
+				.flatMap(list -> 
+						list.stream()
+						.filter(bioInfo -> bioInfo.getBioType()
+								.equalsIgnoreCase(getType())).findAny())
+				.isPresent();
 	}
 
 }

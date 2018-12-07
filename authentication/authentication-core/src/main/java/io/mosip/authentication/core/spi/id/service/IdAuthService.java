@@ -14,7 +14,7 @@ import io.mosip.authentication.core.exception.IdValidationFailedException;
  * @author Arun Bose The code {@IdAuthService} validates UIN
  * 
  */
-@Service
+
 public interface IdAuthService {
 
 	/**

@@ -10,6 +10,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+
 /**
  * 
  * @author Dinesh Karuppiah

@@ -2,9 +2,9 @@ package io.mosip.authentication.service.impl.indauth.service.bio;
 
 import java.util.Map;
 
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchFunction;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 /**
  * @author Dinesh Karuppiah.T
