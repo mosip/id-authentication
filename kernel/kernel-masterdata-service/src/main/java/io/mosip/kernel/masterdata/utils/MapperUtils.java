@@ -46,21 +46,7 @@ public class MapperUtils {
 	 * #############Public method used for mapping################################
 	 */
 
-	/**
-	 * This method map the values from <code>source</code> to
-	 * <code>destination</code> if name and type of the fields inside the given
-	 * parameters are same.If any of the parameters are <code>null</code> this
-	 * method return <code>null</code>.
-	 * 
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destination
-	 *            where values is going to be mapped
-	 * @return the <code>destination</code> object
-	 */
-	public <S, D> D mapNew(final S source, D destination) {
-		return map(source, destination);
-	}
+	
 
 	/**
 	 * This method map the values from <code>source</code> to
@@ -81,24 +67,7 @@ public class MapperUtils {
 		return destination;
 	}
 
-	/**
-	 * This method takes <code>source</code> and <code>destinationClass</code>, take
-	 * all values from source and create an object of <code>destinationClass</code>
-	 * and map all the values from source to destination if field name and type is
-	 * same.
-	 * 
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destinationClass
-	 *            where values is going to be mapped
-	 * @return the object of <code>destinationClass</code>
-	 * @throws DataAccessLayerException
-	 *             if exception occur during creating of
-	 *             <code>destinationClass</code> object
-	 */
-	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
-		return map(source, destinationClass);
-	}
+
 
 	/**
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
