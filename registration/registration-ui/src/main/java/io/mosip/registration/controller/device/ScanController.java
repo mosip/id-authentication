@@ -71,7 +71,7 @@ public class ScanController extends BaseController {
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
-			popupStage.initOwner(initializeParentRoot.getStage());
+			popupStage.initOwner(fXComponents.getStage());
 			popupStage.show();
 			
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

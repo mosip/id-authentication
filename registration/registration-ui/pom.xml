@@ -60,7 +60,7 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
-										<Main-Class>io.mosip.registration.controller.RegistrationAppInitialization</Main-Class>
+										<Main-Class>io.mosip.registration.controller.Initialization</Main-Class>
 									</manifestEntries>
 								</transformer>
 							</transformers>

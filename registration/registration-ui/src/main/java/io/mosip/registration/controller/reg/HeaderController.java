@@ -16,7 +16,7 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.RegistrationAppInitialization;
+import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -114,7 +114,7 @@ public class HeaderController extends BaseController {
 			SchedulerUtil.stopScheduler();
 
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = RegistrationAppInitialization.getApplicationContext()
+			LoginController loginController = Initialization.getApplicationContext()
 					.getBean(LoginController.class);
 			loginController.loadLoginScreen(initialMode);
 			getScene(loginpage);
