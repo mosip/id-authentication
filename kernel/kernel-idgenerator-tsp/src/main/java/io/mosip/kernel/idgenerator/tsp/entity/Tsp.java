@@ -32,7 +32,7 @@ public class Tsp {
 	 * The TSPID generated.
 	 */
 	@Column(name = "tsp_id", nullable = false)
-	private int tspId;
+	private long tspId;
 
 	/**
 	 * Created time for TSPID.

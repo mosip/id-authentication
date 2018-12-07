@@ -9,7 +9,7 @@ package io.mosip.kernel.idgenerator.tsp.constant;
  */
 public enum TspIdPropertyConstant {
 
-	ID_START_VALUE("1000");
+	ID_BASE("10");
 
 	/**
 	 * The property of TSPID generator.

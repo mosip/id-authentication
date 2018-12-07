@@ -19,6 +19,6 @@ public class TspResponseDTO {
 	/**
 	 * The TSPID generated.
 	 */
-	private int tspId;
+	private long tspId;
 
 }

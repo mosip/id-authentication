@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
+import io.mosip.kernel.core.util.MathUtils;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdPropertyConstant;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
@@ -24,6 +26,9 @@ import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 @Service
 public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO> {
 
+	@Value("${mosip.kernel.tsp.length}")
+	private int tspIdLength;
+
 	/**
 	 * The reference to TspRepository.
 	 */
@@ -38,7 +43,8 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 	@Override
 	public TspResponseDTO generateId() {
 
-		final int initialValue = Integer.parseInt(TspIdPropertyConstant.ID_START_VALUE.getProperty());
+		final long initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
+				tspIdLength - 1);
 
 		Tsp entity = null;
 		try {

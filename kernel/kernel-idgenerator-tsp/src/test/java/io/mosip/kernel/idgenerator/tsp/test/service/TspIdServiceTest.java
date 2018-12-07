@@ -35,7 +35,7 @@ public class TspIdServiceTest {
 		entity.setTspId(1000);
 		when(tspRepository.findMaxTspId()).thenReturn(null);
 		when(tspRepository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateId().getTspId(), is(1000));
+		assertThat(service.generateId().getTspId(), is(1000L));
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class TspIdServiceTest {
 		entityResponse.setTspId(1001);
 		when(tspRepository.findMaxTspId()).thenReturn(entity);
 		when(tspRepository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateId().getTspId(), is(1001));
+		assertThat(service.generateId().getTspId(), is(1001L));
 	}
 
 	@Test(expected = TspIdServiceException.class)
