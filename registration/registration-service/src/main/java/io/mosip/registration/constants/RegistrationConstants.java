@@ -574,6 +574,7 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "PoA";
 	public static final String POI_DOCUMENT = "PoI";
 	public static final String POR_DOCUMENT = "PoR";
+	public static final String DOB_DOCUMENT = "DoB";
 	public static List<String> getPoaDocumentList() {
 		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
@@ -583,6 +584,10 @@ public class RegistrationConstants {
 	}
 
 	public static List<String> getPorDocumentList() {
+		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
+	}
+	
+	public static List<String> getDobDocumentList() {
 		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
 	}
 

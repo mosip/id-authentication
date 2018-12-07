@@ -236,12 +236,21 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private ComboBox<String> porDocuments;
+	
+	@FXML
+	private ComboBox<String> dobDocuments;
 
 	@FXML
 	private VBox porBox;
 	
 	@FXML
+	private VBox dobBox;
+	
+	@FXML
 	private ScrollPane porScroll;
+	
+	@FXML
+	private ScrollPane dobScroll;
 
 	@FXML
 	private AnchorPane documentFields;
@@ -311,6 +320,8 @@ public class RegistrationController extends BaseController {
 	protected Button poiScanBtn;
 	@FXML
 	protected Button porScanBtn;
+	@FXML
+	protected Button dobScanBtn;
 
 	@FXML
 	private AnchorPane fingerPrintCapturePane;
@@ -1524,6 +1535,7 @@ public class RegistrationController extends BaseController {
 			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
 			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
 			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
+			dobDocuments.getItems().addAll(RegistrationConstants.getDobDocumentList());
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1796,6 +1808,27 @@ public class RegistrationController extends BaseController {
 			scanWindow();
 		}
 	}
+	
+	/**
+	 * This method scans and uploads Proof of Date of birth documents
+	 */
+	@FXML
+	private void scanDobDocument() {
+
+		if (dobDocuments.getValue() == null) {
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			dobDocuments.requestFocus();
+
+		} else {
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
+
+			selectedDocument = RegistrationConstants.DOB_DOCUMENT;
+			scanWindow();
+		}
+	}
 
 	/**
 	 * This method will display Scan window to scan and upload documents
@@ -1849,6 +1882,11 @@ public class RegistrationController extends BaseController {
 
 						docName = addDocuments(porDocuments.getValue(), porBox);
 						validateDocuments(docName, porBox, porScroll, byteArray);
+
+					}else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
+
+						docName = addDocuments(dobDocuments.getValue(), dobBox);
+						validateDocuments(docName, dobBox, dobScroll, byteArray);
 
 					}
 
@@ -1975,6 +2013,8 @@ public class RegistrationController extends BaseController {
 		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
 		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+		dobScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		dobScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
 	}
 
 	/**

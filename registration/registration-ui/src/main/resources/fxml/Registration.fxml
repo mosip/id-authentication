@@ -25,7 +25,7 @@
             			<Image url="@../images/Pre-Registration.png" />
          			 </image>
                   </ImageView>
-                  <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="438.0" prefWidth="819.0" visible="false">
+                  <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="438.0" prefWidth="819.0" visible="true">
                  	<children>
                  	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
@@ -58,13 +58,21 @@
                                 <VBox fx:id="porBox" layoutX="195.0" layoutY="125.0" prefHeight="50.0" prefWidth="100.0" styleClass="scanVBox" />
                                  </content>
                               </ScrollPane>
+                         <ComboBox fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="DOB Document" />
+                          <Button fx:id="dobScanBtn" layoutX="300.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" text="%scan" />
+                              <ScrollPane fx:id="dobScroll" layoutX="172.0" layoutY="180.0" prefViewportHeight="50.0" prefViewportWidth="100.0" styleClass="scanScrollPane">
+                                 <content>
+                                <VBox fx:id="dobBox" layoutX="195.0" layoutY="180.0" prefHeight="50.0" prefWidth="100.0" styleClass="scanVBox" />
+                                 </content>
+                              </ScrollPane>
+                      
                       </children>
                    </AnchorPane>
-                   <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
-               	   <Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
-                   <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="280.0" layoutY="325.0" prefHeight="15.0" prefWidth="15.0" />
-                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="290.0" layoutY="325.0" prefHeight="15.0" prefWidth="10.0" />
-                   <Label layoutX="90.0" layoutY="323.0" text="Biometric Exception" />
+                   <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
+               	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
+                   <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="180.0" layoutY="370.0" prefHeight="15.0" prefWidth="15.0" />
+                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="190.0" layoutY="370.0" prefHeight="15.0" prefWidth="10.0" />
+                   <Label layoutX="50.0" layoutY="370.0" text="Biometric Exception" />
                         <Line endX="560.0" layoutX="221.0" layoutY="10.0" startX="-200.0" />
                  	</children>
                   </AnchorPane>
