@@ -632,16 +632,20 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 				if (dtoWithUin.getLangCode().equals(dtoWithOutUin.getLangCode())) {
 
-					if (dtoWithUin.getName().equals(dtoWithOutUin.getName())) {
+					if (dtoWithOutUin.getName() != null && dtoWithUin.getName() != null
+							&& dtoWithUin.getName().equals(dtoWithOutUin.getName())) {
 						score = score + regProcessorIdentityJson.getIdentity().getName().getWeight();
 					}
-					if (dtoWithUin.getGenderCode().equals(dtoWithOutUin.getGenderCode())) {
+					if (dtoWithOutUin.getGenderCode() != null && dtoWithUin.getGenderCode() != null
+							&& dtoWithUin.getGenderCode().equals(dtoWithOutUin.getGenderCode())) {
 						score = score + regProcessorIdentityJson.getIdentity().getGender().getWeight();
 					}
-					if (dtoWithUin.getDob().equals(dtoWithOutUin.getDob())) {
+					if (dtoWithOutUin.getDob() != null && dtoWithUin.getDob() != null
+							&& dtoWithUin.getDob().equals(dtoWithOutUin.getDob())) {
 						score = score + regProcessorIdentityJson.getIdentity().getDob().getWeight();
 					}
-					if (dtoWithUin.getPhoneticName().equals(dtoWithOutUin.getPhoneticName())) {
+					if (dtoWithOutUin.getPhoneticName() != null && dtoWithUin.getPhoneticName() != null
+							&& dtoWithUin.getPhoneticName().equals(dtoWithOutUin.getPhoneticName())) {
 						score = score + regProcessorIdentityJson.getIdentity().getPheoniticName().getWeight();
 					}
 
