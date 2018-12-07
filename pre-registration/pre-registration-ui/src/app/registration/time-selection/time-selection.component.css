@@ -124,6 +124,7 @@
 
   .list {
       list-style-type: none;
+      margin: 0 0 0 -30px;
   }
 
   .list-container {
@@ -146,12 +147,15 @@
     }
     .middle{
         margin: 0;
-        width: 60%;
+        width: 75%;
     }
   }
 
   @media(min-width: 1040px){
       .container{
         margin: 0 0 0 25px;
+      }
+      .middle {
+          width: 85%;
       }
   }

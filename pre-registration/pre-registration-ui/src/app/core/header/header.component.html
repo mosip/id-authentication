@@ -22,7 +22,6 @@
     </div>
   </div>
 </nav>
-
 <!--
   <mat-toolbar>
     <mat-toolbar-row style="background: #d9d9d9;">
@@ -31,4 +30,32 @@
       <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></span>
     </mat-toolbar-row>
   </mat-toolbar>
+-->
+
+<!--
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav role="navigation">
+      <mat-nav-list>
+        <a mat-list-item routerLink="/about-us" (click)="sidenav.close()">About us</a>
+        <a mat-list-item routerLink="/faq" (click)="sidenav.close()">FAQ</a>
+        <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Contact</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar color="primary">
+        <div fxHide.gt-xs>
+          <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+        </div>
+        <div><a routerLink="/">LOGO</a></div>
+        <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
+          <ul fxLayout fxLayoutGap="10px" class="navigation-items">
+            <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/about-us">About us</a></li>
+            <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/faq">FAQ</a></li>
+            <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></li>
+          </ul>
+        </div>
+      </mat-toolbar>
+      <main><router-outlet></router-outlet></main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 -->

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 
 import { Applicant } from '../registration/dashboard/dashboard.modal';
+import { BookingModelRequest } from '../registration/center-selection/booking-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,19 @@ export class DataStorageService {
 
   SEND_FILE_URL =
     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/registration/documents';
-  // BASE_URL = 'http://A2ML29862:9092/v0.1/pre-registration/applications';
+  BASE_URL2 = 'http://a2ml27511:9092/v0.1/pre-registration/applicationData';
   BASE_URL =
     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
+  MASTER_DATA_URL = 'http://localhost:8080/';
+  LANGUAGE_CODE = 'ENG';
+  DISTANCE = 2000;
+
+  AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/book/availability';
+  BOOKING_URL = 'http://localhost:9094/v0.1/pre-registration/book/book';
+
   getUsers(value) {
-    //  value = 'mosip.pre-registration.demographic.create';
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
@@ -25,9 +32,15 @@ export class DataStorageService {
     });
   }
 
-  addUser(identity: any) {
-    // http://preregistration.southindia.cloudapp.azure.com/dev-demographic/
+  getUser(preRegId: string) {
+    return this.httpClient.get(this.BASE_URL2, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('preRegId', '92386049015826')
+    });
+  }
 
+  addUser(identity: any) {
     const obj = {
       id: 'mosip.pre-registration.demographic.create',
       ver: '1.0',
@@ -35,9 +48,11 @@ export class DataStorageService {
       request: identity
     };
 
-    // const req = new HttpRequest('POST', 'http://A2ML27085:9092/v0.1/pre-registration/applications', obj, {
-    //   reportProgress: true // A2ML21989
-    // }); // A2ML27085
+    // console.log(JSON.stringify(obj)); 0 - sent, 1 - upload , 3-download
+
+    // const req = new HttpRequest('POST', this.BASE_URL, obj, {
+    //   reportProgress: true
+    // });
     // return this.httpClient.request(req);
     return this.httpClient.post(this.BASE_URL, obj);
   }
@@ -53,5 +68,26 @@ export class DataStorageService {
       responseType: 'json',
       params: new HttpParams().append('preId', preId)
     });
+  }
+
+  getNearbyRegistrationCenters(coords: any) {
+    return this.httpClient.get(this.MASTER_DATA_URL + 'getcoordinatespecificregistrationcenters/' +
+    this.LANGUAGE_CODE + '/' + coords.longitude + '/' + coords.latitude + '/' + this.DISTANCE);
+  }
+
+  getRegistrationCentersByName(locType: string, text: string) {
+    return this.httpClient.get(this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text);
+  }
+
+  getAvailabilityData(registrationCenterId) {
+    return this.httpClient.get(this.AVAILABILITY_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('RegCenterId', registrationCenterId)
+    });
+  }
+
+  makeBooking(request: BookingModelRequest) {
+    return this.httpClient.post(this.BOOKING_URL, request);
   }
 }
