@@ -15,7 +15,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.reg.RegistrationOfficerPacketController;
+import io.mosip.registration.controller.reg.PacketHandlerController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -53,7 +53,7 @@ public class EODController extends BaseController implements Initializable {
 	private AnchorPane reRegisterAnchorPane;
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
 
 	/*
 	 * (non-Javadoc)

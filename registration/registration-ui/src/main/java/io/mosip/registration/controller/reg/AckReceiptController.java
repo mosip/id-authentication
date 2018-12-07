@@ -51,10 +51,10 @@ import javafx.scene.web.WebView;
 @Controller
 public class AckReceiptController extends BaseController implements Initializable {
 
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
 
 	@Autowired
-	private RegistrationOfficerPacketController packetController;
+	private PacketHandlerController packetController;
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 	@Autowired
