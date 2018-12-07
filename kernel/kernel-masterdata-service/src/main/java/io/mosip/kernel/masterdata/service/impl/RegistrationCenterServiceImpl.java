@@ -25,6 +25,7 @@ import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -305,18 +306,30 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		// registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
 		// RegistrationCenterHierarchyLevelDto.class);
 
-		registrationCentersDtoList = objectMapperUtil.mapRegistrationCenterHierarchyLevel(registrationCentersList);
+		registrationCentersDtoList = objectMapperUtil.mapAllNew(registrationCentersList,
+				RegistrationCenterHierarchyLevelDto.class);
 
 		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		try {
+			Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
+			Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+		} catch (NullPointerException | NumberFormatException latLongException) {
+			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(latLongException));
+		}
 		RegistrationCenter entity = new RegistrationCenter();
 		entity = metaUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
 		RegistrationCenter registrationCenter;

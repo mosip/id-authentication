@@ -3,7 +3,9 @@ package io.mosip.kernel.masterdata.constant;
 public enum ApplicationErrorCode {
 	APPLICATION_FETCH_EXCEPTION("KER-APP-001", "Error occurred while fetching Applications"),
 	APPLICATION_INSERT_EXCEPTION("KER-APP-101", "Error occurred while inserting application details"),
-	APPLICATION_NOT_FOUND_EXCEPTION("KER-APP-002", "Application not found");
+	APPLICATION_NOT_FOUND_EXCEPTION("KER-APP-002", "Application not found"),
+	APPLICATION_REQUEST_EXCEPTION("KER-APP-004", "Bad request found"),
+	;
 	
 	private final String errorCode;
 	private final String errorMessage;
