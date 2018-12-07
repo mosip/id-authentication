@@ -17,7 +17,9 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -65,6 +67,9 @@ public class RegistrationOfficerDetailsController extends BaseController {
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
+	
+	@Autowired
+	MasterSyncService masterSyncService; 
 
 	/**
 	 * Mapping Registration Officer details
@@ -161,6 +166,27 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			pane.getChildren().add((Node) parent);
 			pane.getChildren().add(onBoardRoot);
 
+		}
+	}
+	
+	/**
+	 * Redirecting to Home page
+	 * @throws RegBaseCheckedException 
+	 */
+	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
+		try {
+
+			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Syncing master data");
+		
+			masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+
+		} catch (RuntimeException exception) {
+
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, exception.getMessage());
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
