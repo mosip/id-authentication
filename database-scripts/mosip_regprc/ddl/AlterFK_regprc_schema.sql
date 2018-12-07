@@ -11,5 +11,8 @@ alter table regprc.biometric_exception add constraint fk_bioexcp_reg foreign key
 alter table regprc.registration_transaction add constraint fk_regtrn_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
 alter table regprc.registration_transaction add constraint fk_regtrn_trntyp foreign key (trn_type_code, lang_code) references regprc.transaction_type(code, lang_code) on delete no action on update no action ;
 alter table regprc.qcuser_registration add constraint fk_qcureg_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
-alter table regprc.reg_manual_verification add constraint fk_rmnlver_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
 alter table regprc.individual_demographic_dedup add constraint fk_idemogd_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
+
+alter table regprc.reg_manual_verification add constraint fk_rmnlver_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
+alter table regprc.reg_osi add constraint fk_regosi_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
+alter table regprc.reg_center_machine add constraint fk_rcntrm_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
