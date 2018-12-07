@@ -13,7 +13,7 @@ import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException
 
 public class ValidationUtil {
 	
-	private ValidationUtil() {
+	public ValidationUtil() {
 		
 	}
 	
@@ -31,7 +31,7 @@ public class ValidationUtil {
 		return matcher.matches();
 	}
 
-	public static BaseUncheckedException requestValidator(Map<String, String> requestMap,
+	public static InvalidRequestParameterException requestValidator(Map<String, String> requestMap,
 			Map<String, String> requiredRequestMap) {
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.ID)

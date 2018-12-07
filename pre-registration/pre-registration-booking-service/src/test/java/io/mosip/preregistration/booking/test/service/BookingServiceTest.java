@@ -1,7 +1,8 @@
 package io.mosip.preregistration.booking.test.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -70,9 +71,9 @@ public class BookingServiceTest {
 		availability.setCenterDetails(dateList);
 		availability.setRegCenterId("1");
 		
-		entity.setAvailabilityNo(4);
+		entity.setAvailableKiosks(4);
 		entity.setRegcntrId("1");
-		entity.setRegDate("2018-12-04");
+		entity.setRegDate(LocalDate.parse("2018-12-04"));
 		entity.setToTime(localTime2);
 		entity.setIsActive(true);
 		entity.setFromTime(localTime1);
@@ -85,13 +86,13 @@ public class BookingServiceTest {
 	@Test
 	public void getAvailabilityTest() {
 		logger.info("Availability dto "+availability);
-		List<String> date= new ArrayList<>();
+		List<java.sql.Date> date= new ArrayList<>();
 		List<AvailibityEntity> entityList= new ArrayList<>();
-		date.add("2018-12-04");
+		date.add(java.sql.Date.valueOf("2018-12-04"));
 		entityList.add(entity);
 		logger.info("Availability entity "+entity);
-		Mockito.when(repository.findDate(Mockito.anyString())).thenReturn(date);
-		Mockito.when(repository.findByRegcntrIdAndRegDate(Mockito.anyString(),Mockito.anyString())).thenReturn(entityList);
+		Mockito.when(repository.findDate(Mockito.anyString(),Mockito.any())).thenReturn(date);
+		Mockito.when(repository.findByRegcntrIdAndRegDate(Mockito.anyString(),Mockito.any())).thenReturn(entityList);
 		ResponseDto<AvailabilityDto> responseDto= service.getAvailability("1");
 		logger.info("Response "+responseDto);
 		assertEquals(responseDto.getResponse().getRegCenterId(),"1");

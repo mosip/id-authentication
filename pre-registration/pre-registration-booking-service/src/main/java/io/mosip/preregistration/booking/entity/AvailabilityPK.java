@@ -27,13 +27,11 @@ public class AvailabilityPK implements Serializable{
 	private String regcntrId;
 	
 	@Column(name = "availability_date")
-	private String regDate;
+	private LocalDate regDate;
 	
 	@Column(name = "slot_from_time")
 	private LocalTime fromTime;
 	
-	@Column(name = "slot_to_time")
-	private LocalTime toTime;
 	
 
 }

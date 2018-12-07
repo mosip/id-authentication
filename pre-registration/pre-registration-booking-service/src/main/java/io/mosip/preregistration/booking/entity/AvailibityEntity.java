@@ -2,19 +2,18 @@ package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
-
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,19 +37,17 @@ public class AvailibityEntity implements Serializable {
 	@Id	
 	@AttributeOverrides({ @AttributeOverride(name = "regcntrId", column = @Column(name = "regcntr_id")),
 		@AttributeOverride(name = "regDate", column = @Column(name = "availability_date")),
-		@AttributeOverride(name = "fromTime", column = @Column(name = "slot_from_time")),
-		@AttributeOverride(name = "toTime", column = @Column(name = "slot_to_time"))})
+		@AttributeOverride(name = "fromTime", column = @Column(name = "slot_from_time"))})
 	
 	private String regcntrId;
-	private String regDate;
+	private LocalDate regDate;
 	private LocalTime fromTime;
+	
+	@Column(name = "slot_to_time")
 	private LocalTime toTime;
 	
 	@Column(name = "isActive")
 	private Boolean isActive;
-	
-	@Column(name = "availabilityNo")
-	private int availabilityNo;
 	
 	@Column(name = "available_kiosks")
 	private int availableKiosks;
