@@ -289,6 +289,10 @@ public class RegistrationConstants {
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
+	
+	//Validation Types
+	public static final String VALIDATION_TYPE_FP = "Fingerprint";
+	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
 	// Supervisor Authentication
 	public static final String PWD_MATCH = "Username and Password Match";

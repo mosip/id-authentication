@@ -108,7 +108,7 @@ public class FingerprintFacade {
 	}
 
 	@Autowired
-	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
+	public FingerprintFacade(List<MosipFingerprintProvider> fingerprintProviders) {
 		this.fingerprintProviders = fingerprintProviders;
 	}
 

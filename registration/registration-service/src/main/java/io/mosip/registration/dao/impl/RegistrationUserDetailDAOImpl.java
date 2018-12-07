@@ -14,7 +14,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.UserBiometricRepository;
 
 /**
  * The implementation class of {@link RegistrationCenterDAO}.
@@ -34,6 +36,9 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 	/** The registrationUserDetail repository. */
 	@Autowired
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
+	
+	@Autowired
+	private UserBiometricRepository userBiometricRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -76,8 +81,12 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 
 	}
 	
-	public List<RegistrationUserDetail> getAllActiveUsers() {
-		return registrationUserDetailRepository.findByIsActiveTrue();
+	public List<UserBiometric> getAllActiveUsers(String attrCode) {
+		return userBiometricRepository.findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(attrCode);
 		
+	}
+	
+	public List<UserBiometric> getUserSpecificFingerprintDetails(String userId){
+		return userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrue(userId);
 	}
 }

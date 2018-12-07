@@ -248,10 +248,12 @@ public class PacketUploadController extends BaseController {
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 										synchedPacket.setFileUploadStatus(
 												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+										packetUploadList.add(synchedPacket);
 
 									} else {
 										synchedPacket.setFileUploadStatus(
 												RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+										packetUploadList.add(synchedPacket);
 									}
 								}
 
@@ -286,7 +288,7 @@ public class PacketUploadController extends BaseController {
 								}
 								break;
 							}
-								packetUploadList.add(synchedPacket);
+								
 							this.updateProgress(i, synchedPackets.size());
 						}
 						packetUploadService.updateStatus(packetUploadList);

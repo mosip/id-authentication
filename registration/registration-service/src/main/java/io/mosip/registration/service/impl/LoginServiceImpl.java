@@ -34,6 +34,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -327,7 +328,11 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	public List<RegistrationUserDetail> getAllActiveUsers() {
-		return registrationUserDetailDAO.getAllActiveUsers();
+	public List<UserBiometric> getAllActiveUsers(String attrCode) {
+		return registrationUserDetailDAO.getAllActiveUsers(attrCode);
+	}
+	
+	public List<UserBiometric> getUserSpecificFingerprintDetails(String userId){
+		return registrationUserDetailDAO.getUserSpecificFingerprintDetails(userId);
 	}
 }

@@ -90,7 +90,8 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Autowired
 	private BaseController baseController;
 
-	private FingerprintFacade fingerprintFacade = null;
+	@Autowired
+	private FingerprintFacade fingerprintFacade ;
 
 	@Autowired
 	private AuthenticationService validator;
@@ -132,7 +133,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				fingerPrintConnector.uninitFingerPrintDevice();
 				fingerScannedImage.setImage(fingerprintFacade.getFingerPrintImage());
 
-				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getIsoTemplate())) {
 					// if FP data fetched then retrieve the user specific detail from db.
 					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
@@ -180,7 +181,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	 */
 	public void init(BaseController parentControllerObj) {
 		baseController = parentControllerObj;
-		fingerprintFacade = new FingerprintFacade();
 	}
 
 	/**

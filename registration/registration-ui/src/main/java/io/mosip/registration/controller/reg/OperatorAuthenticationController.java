@@ -130,7 +130,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 				RegistrationConstants.APPLICATION_ID, "Entering the Operator Authentication Page");
 
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
-		fingerprintFacade = new FingerprintFacade();
 		getAuthenticationModes();
 	}
 
@@ -179,10 +178,12 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 
 	}
-	
+
 	/**
 	 * to validate the password and send appropriate message to display
-	 * @param authenticationValidatorDTO - DTO which contains the username and password entered by the user
+	 * 
+	 * @param authenticationValidatorDTO
+	 *            - DTO which contains the username and password entered by the user
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -254,12 +255,7 @@ public class OperatorAuthenticationController extends BaseController implements 
 			if (otpUserId.getText() != null) {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
-						AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-						authenticationValidatorDTO.setOtp(otp.getText());
-						authenticationValidatorDTO.setUserId(otpUserId.getText());
-						AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-								.getValidator("otp");
-						if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
+						if (isValidOTP()) {
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -276,12 +272,7 @@ public class OperatorAuthenticationController extends BaseController implements 
 			}
 		} else {
 			if (otp.getText() != null) {
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				authenticationValidatorDTO.setOtp(otp.getText());
-				authenticationValidatorDTO.setUserId(otpUserId.getText());
-				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-						.getValidator("otp");
-				if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
+				if (isValidOTP()) {
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -291,6 +282,14 @@ public class OperatorAuthenticationController extends BaseController implements 
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 			}
 		}
+	}
+
+	private boolean isValidOTP() {
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setOtp(otp.getText());
+		authenticationValidatorDTO.setUserId(otpUserId.getText());
+		AuthenticationValidatorImplementation authenticationValidatorImplementation = validator.getValidator("otp");
+		return authenticationValidatorImplementation.validate(authenticationValidatorDTO);
 	}
 
 	/**
@@ -485,8 +484,8 @@ public class OperatorAuthenticationController extends BaseController implements 
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
 				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-						.getValidator("Fingerprint");
-				authenticationValidatorImplementation.setFingerPrintType("single");
+						.getValidator(RegistrationConstants.VALIDATION_TYPE_FP);
+				authenticationValidatorImplementation.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
 				fpMatchStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
 			}
 		}
