@@ -1,4 +1,4 @@
-﻿﻿# PRID Generator
+﻿# PRID Generator
 
 #### Background
 
@@ -32,4 +32,4 @@ The Pre-registration application needs to display an acknowledgement number when
 ## Implementation
 
 
-**kernel-ridgenerator** [README](../../kernel/kernel-idgenerator-rid/README.md)
+**kernel-pridgenerator** [README](../../kernel/kernel-idgenerator-prid/README.md)
