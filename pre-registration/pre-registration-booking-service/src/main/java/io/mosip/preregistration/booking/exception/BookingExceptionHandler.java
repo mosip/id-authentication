@@ -163,4 +163,17 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(BookingDataNotFoundException.class)
+	public ResponseEntity<ResponseDto<?>> bookingDataNotFound(final BookingDataNotFoundException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+				ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+
+		ResponseDto<?> responseDto = new ResponseDto<>();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+	}
+
 }

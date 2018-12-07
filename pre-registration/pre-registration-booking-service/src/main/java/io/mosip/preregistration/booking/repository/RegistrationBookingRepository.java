@@ -14,6 +14,8 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	public static final String existsQry = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.status_code = ?2";
 
+	public static final String findByPreIdQry = "SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1";
+
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
@@ -21,5 +23,8 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 */
 	@Query(existsQry)
 	public boolean existsByPreIdandStatusCode(String preregistrationId, String statusCode);
+
+	@Query(findByPreIdQry)
+	public RegistrationBookingEntity findByPreId(String preregistrationId);
 
 }

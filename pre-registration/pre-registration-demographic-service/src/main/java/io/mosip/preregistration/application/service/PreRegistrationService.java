@@ -24,6 +24,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
@@ -35,6 +37,8 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
+import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -44,6 +48,7 @@ import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
@@ -94,6 +99,11 @@ public class PreRegistrationService {
 	private RestTemplateBuilder restTemplateBuilder;
 
 	protected String trueStatus = "true";
+
+	private RestTemplate restTemplate;
+
+	@Value("${appointmentResourse.url}")
+	private String appointmentResourseUrl;
 
 	/*
 	 * (non-Javadoc)
@@ -230,6 +240,12 @@ public class PreRegistrationService {
 					viewDto.setPreId(preRegistrationEntity.getPreRegistrationId());
 					viewDto.setFullname(nameObj.get(RequestCodes.value.toString()).toString());
 					viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
+
+					BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
+							preRegistrationEntity.getPreRegistrationId());
+					if (bookingRegistrationDTO != null) {
+						viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
+					}
 					viewList.add(viewDto);
 				}
 				response.setResponse(viewList);
@@ -424,5 +440,36 @@ public class PreRegistrationService {
 		}
 
 		return response;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
+
+		restTemplate = restTemplateBuilder.build();
+		BookingResponseDTO<BookingRegistrationDTO> resultDto = null;
+		BookingRegistrationDTO bookingRegistrationDTO = null;
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
+					.queryParam("preRegID", preId);
+			HttpHeaders headers = new HttpHeaders();
+			// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<BookingRegistrationDTO> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: " + uriBuilder);
+			ResponseEntity<?> respEntity = (ResponseEntity) restTemplate
+					.exchange(uriBuilder, HttpMethod.GET, httpEntity, BookingResponseDTO.class);
+			if (respEntity.getStatusCode() == HttpStatus.OK) {
+
+				resultDto = (BookingResponseDTO<BookingRegistrationDTO>)respEntity.getBody();
+				System.out.println("resultDto : " + resultDto.getResponse());
+				// bookingRegistrationDTO = (BookingRegistrationDTO)resultDto.getResponse();
+				ObjectMapper mapper = new ObjectMapper();
+				bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
+			}
+		} catch (RestClientException e) {
+			return bookingRegistrationDTO;
+		}
+
+		return bookingRegistrationDTO;
 	}
 }

@@ -17,9 +17,10 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_007, // reg center id not found
 	PRG_BOOK_RCI_008, // date is not selected
 	PRG_BOOK_RCI_009, // Invalid Date and Time
-	PRG_BOOK_RCI_010, // Booking Table not found
+	PRG_BOOK_RCI_010, // Booking Table not accessible
 	PRG_BOOK_RCI_011, // status code updation failed
 	PRG_BOOK_RCI_012, // get status code failed
+	PRG_BOOK_RCI_013, // Booking data not found
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
 }
