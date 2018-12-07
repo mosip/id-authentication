@@ -1,5 +1,6 @@
 package io.mosip.registration.dao;
 
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.MasterSyncDto;
 import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.entity.SyncControl;
@@ -26,6 +27,6 @@ public interface MasterSyncDao {
 	 * @param masterSyncDto the master sync dto
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public MasterSyncResponseDto insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException;
+	public void insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException;
 
 }

@@ -1,7 +1,6 @@
 package io.mosip.registration.service;
 
-import java.util.Map;
-
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -13,8 +12,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  */
 public interface MasterSyncService {
 
-	
-	Map<String,Object> getMasterSync(String masterSyncDetails) throws RegBaseCheckedException;
-	
-	
+	ResponseDTO getMasterSync(String masterSyncDetails) throws RegBaseCheckedException;
+
 }

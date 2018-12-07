@@ -21,8 +21,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
-import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeResponseDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeResponseDto;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
@@ -33,7 +31,6 @@ import io.mosip.registration.dto.mastersync.IdTypeDto;
 import io.mosip.registration.dto.mastersync.LanguageResponseDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterSyncDto;
-import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.dto.mastersync.ReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.dto.mastersync.TitleResponseDto;
@@ -158,9 +155,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public MasterSyncResponseDto insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException {
-
-		MasterSyncResponseDto masterResponse = new MasterSyncResponseDto();
+	public void insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException {
 
 		List<BiometricTypeResponseDto> biometricTypeResponseDtos = masterSyncDto.getBiometrictypes();
 		List<BiometricAttributeResponseDto> biometricAttribute = masterSyncDto.getBiometricattributes();
@@ -253,14 +248,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			reasonCatogryReposiotry.save(reasonCatogryy);
 
-			masterResponse.setMessage("Master Data Sync Sucessful");
-
-		} catch (Exception e) {
-
-			masterResponse.setMessage("Master Data Sync Failure");
-
+		} catch (Exception exception) {
+			
+			throw new RegBaseCheckedException("", exception.getMessage());
 		}
-		return masterResponse;
 
 	}
 

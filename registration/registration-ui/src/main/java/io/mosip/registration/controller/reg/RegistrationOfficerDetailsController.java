@@ -4,7 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.controller.auth.LoginController;
-import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
+import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
@@ -176,27 +177,34 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	 * @throws RegBaseCheckedException
 	 */
 	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
-		Map<String, Object> responseMap = null;
-		MasterSyncResponseDto masterResponse;
+
+		ResponseDTO masterResponse = null;
+
+		String errorMessage = "";
+
 		try {
 
 			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Syncing master data");
 
-			responseMap = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+			masterResponse = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
 
-			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
-
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getSuccessResponseDTO().getMessage());
 
 		} catch (RuntimeException exception) {
 
 			LOGGER.error("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
+			if (null != masterResponse) {
+				List<ErrorResponseDTO> errorMsgList = masterResponse.getErrorResponseDTOs();
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
+				for (ErrorResponseDTO errorResponseDTO : errorMsgList) {
+					errorMessage = errorResponseDTO.getMessage();
+				}
+			}
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, errorMessage);
 		}
 	}
 
