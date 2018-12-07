@@ -347,7 +347,7 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
 	
-	private final ResourceBundle properties = applicationContext.getLocalLanguageProperty();
+	private ResourceBundle applicationProperties;
 
 	@FXML
 	private void initialize() {
@@ -389,6 +389,7 @@ public class RegistrationController extends BaseController {
 						}
 					});
 
+			applicationProperties = applicationContext.getApplicationLanguageBundle();
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleAgeOrDobField = false;
@@ -1479,7 +1480,7 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
-
+			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
 			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
 			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
@@ -1803,7 +1804,7 @@ public class RegistrationController extends BaseController {
 
 		if (dobDocuments.getValue() == null) {
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
 			dobDocuments.requestFocus();
 
 		} else {
@@ -1859,28 +1860,28 @@ public class RegistrationController extends BaseController {
 						docName = addDocuments(poaDocuments.getValue(), poaBox);
 						validateDocuments(docName, poaBox, poaScroll, byteArray);
 						poaDocuments.setValue(null);
-						poaDocuments.setPromptText(properties.getString("poaDocumentLabel"));
+						poaDocuments.setPromptText(applicationProperties.getString("poaDocumentLabel"));
 
 					} else if (selectedDocument.equals(RegistrationConstants.POI_DOCUMENT)) {
 
 						docName = addDocuments(poiDocuments.getValue(), poiBox);
 						validateDocuments(docName, poiBox, poiScroll, byteArray);
 						poiDocuments.setValue(null);
-						poiDocuments.setPromptText(properties.getString("poiDocumentLabel"));
+						poiDocuments.setPromptText(applicationProperties.getString("poiDocumentLabel"));
 
 					} else if (selectedDocument.equals(RegistrationConstants.POR_DOCUMENT)) {
 
 						docName = addDocuments(porDocuments.getValue(), porBox);
 						validateDocuments(docName, porBox, porScroll, byteArray);
 						porDocuments.setValue(null);
-						porDocuments.setPromptText(properties.getString("porDocumentLabel"));
+						porDocuments.setPromptText(applicationProperties.getString("porDocumentLabel"));
 
 					} else if (selectedDocument.equals(RegistrationConstants.DOB_DOCUMENT)) {
 
 						docName = addDocuments(dobDocuments.getValue(), dobBox);
 						validateDocuments(docName, dobBox, dobScroll, byteArray);
 						dobDocuments.setValue(null);
-						dobDocuments.setPromptText(properties.getString("dobDocumentLabel"));
+						dobDocuments.setPromptText(applicationProperties.getString("dobDocumentLabel"));
 
 					}
 
