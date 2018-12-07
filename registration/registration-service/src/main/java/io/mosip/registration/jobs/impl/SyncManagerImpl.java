@@ -2,6 +2,7 @@ package io.mosip.registration.jobs.impl;
 
 import java.sql.Timestamp;
 import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,9 +41,7 @@ public class SyncManagerImpl implements SyncManager {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
 
-	// Need to be removed if the transaction table's primary key ID is Auto -
-	// Generatable
-	private Random random = new Random();
+	
 
 	@Override
 	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException {
@@ -52,7 +51,7 @@ public class SyncManagerImpl implements SyncManager {
 		boolean isNotCreated = syncControl == null;
 		if (syncControl == null) {
 			syncControl = new SyncControl();
-			syncControl.setId(Integer.toString(random.nextInt(10000)));
+			syncControl.setId(UUID.randomUUID().toString());
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
 			syncControl.setIsActive(true);
 			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
@@ -90,10 +89,8 @@ public class SyncManagerImpl implements SyncManager {
 
 		try {
 
-			// TODO to be auto generated and has to be remove from here
-			String transactionId = Integer.toString(random.nextInt(10000000));
-
-			syncTransaction.setId(transactionId);
+			
+			syncTransaction.setId(UUID.randomUUID().toString());
 
 			syncTransaction.setSyncJobId(syncJobId);
 
