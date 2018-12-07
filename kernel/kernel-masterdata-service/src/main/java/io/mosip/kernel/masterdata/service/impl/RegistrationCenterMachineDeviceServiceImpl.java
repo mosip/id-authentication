@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.service.impl;
+ package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

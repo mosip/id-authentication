@@ -29,11 +29,9 @@ public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private TitleRepository titleRepository;
-	
+
 	@Autowired
 	private MapperUtils objectMapperUtil;
-
-	
 
 	/*
 	 * (non-Javadoc)

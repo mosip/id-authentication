@@ -16,24 +16,17 @@ import java.util.stream.Collectors;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.converter.RegistrationCenterConverter;
-import io.mosip.kernel.masterdata.converter.RegistrationCenterHierarchyLevelConverter;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 /**
@@ -49,26 +42,11 @@ import io.mosip.kernel.masterdata.entity.id.HolidayID;
 @SuppressWarnings("unchecked")
 public class MapperUtils {
 
-	@Autowired
-	private DataMapper dataMapperImpl;
-
-	public <E, D> D map(final E entity, D object) {
-		dataMapperImpl.map(entity, object, true, null, null, true);
-		return object;
-	}
-
-	public <D, T> D map(final T entity, Class<D> outCLass) {
-		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
-
-	}
-
-	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
-		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
-	}
-
 	/*
 	 * #############Public method used for mapping################################
 	 */
+
+	
 
 	/**
 	 * This method map the values from <code>source</code> to
@@ -82,12 +60,14 @@ public class MapperUtils {
 	 *            where values is going to be mapped
 	 * @return the <code>destination</code> object
 	 */
-	public <S, D> D mapNew(final S source, D destination) {
+	public <S, D> D map(final S source, D destination) {
 		if (!EmptyCheckUtils.isNullEmpty(source) && !EmptyCheckUtils.isNullEmpty(destination)) {
 			mapValues(source, destination);
 		}
 		return destination;
 	}
+
+
 
 	/**
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
@@ -104,14 +84,14 @@ public class MapperUtils {
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
 	 */
-	public <S, D> D mapNew(final S source, Class<D> destinationClass) {
+	public <S, D> D map(final S source, Class<D> destinationClass) {
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
 			throw new DataAccessLayerException("KER-MSD-991", "Exception in creating destinationClass object", e);
 		}
-		return (D) mapNew(source, destination);
+		return (D) map(source, destination);
 	}
 
 	/**
@@ -129,8 +109,8 @@ public class MapperUtils {
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
 	 */
-	public <S, D> List<D> mapAllNew(final Collection<S> sourceList, Class<D> destinationClass) {
-		return sourceList.stream().map(entity -> mapNew(entity, destinationClass)).collect(Collectors.toList());
+	public <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
+		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
 	}
 
 	/**
@@ -324,29 +304,17 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
+	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
+		Objects.requireNonNull(reasonCategories, "list cannot be null");
+		List<ReasonCategoryDto> reasonCategoryDtos = null;
+		reasonCategoryDtos = reasonCategories.parallelStream()
+				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
+						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
+						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
+				.collect(Collectors.toList());
 
+		return reasonCategoryDtos;
 
-	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
-		List<RegistrationCenterDto> responseDto = new ArrayList<>();
-		list.forEach(p -> {
-			RegistrationCenterDto dto = new RegistrationCenterDto();
-			dataMapperImpl.map(p, dto, new RegistrationCenterConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
-
-		return responseDto;
-	}
-
-	public List<RegistrationCenterDto> mapRegistrationCenter(RegistrationCenter entity) {
-		List<RegistrationCenterDto> responseDto = new ArrayList<>();
-
-		RegistrationCenterDto dto = new RegistrationCenterDto();
-		dataMapperImpl.map(entity, dto, new RegistrationCenterConverter());
-		dataMapperImpl.map(entity, dto, true, null, null, true);
-		responseDto.add(dto);
-
-		return responseDto;
 	}
 
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
@@ -367,19 +335,6 @@ public class MapperUtils {
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
-	}
-
-	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
-		Objects.requireNonNull(reasonCategories, "list cannot be null");
-		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		reasonCategoryDtos = reasonCategories.parallelStream()
-				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
-						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
-						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
-				.collect(Collectors.toList());
-
-		return reasonCategoryDtos;
-
 	}
 
 	public List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
@@ -414,6 +369,5 @@ public class MapperUtils {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-
 
 }

@@ -84,7 +84,6 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
@@ -158,19 +157,19 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private TemplateTypeRepository templateTypeRepository;
-
+	
 	@MockBean
 	private DeviceSpecificationRepository deviceSpecificationRepository;
-
+	
 	@MockBean
 	DeviceTypeRepository deviceTypeRepository;
-
+	
 	@MockBean
 	MachineSpecificationRepository machineSpecificationRepository;
-
+	
 	@MockBean
 	MachineRepository machineRepository;
-
+	
 	@MockBean
 	MachineTypeRepository machineTypeRepository;
 
@@ -842,31 +841,6 @@ public class MasterdataIntegrationTest {
 		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
 		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	public void createRegistrationCenterTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"addressLine1\":\"address test\",\"addressLine2\":\"address test\",\"addressLine3\":\"address test\",\"centerEndTime\":\"19:00:00\",\"centerStartTime\":\"11:00:00\",\"centerTypeCode\":\"REG01\",\"contactPerson\":\"string\",\"contactPhone\":\"string\",\"holidayLocationCode\":\"LOC01\",\"id\":\"string\",\"isActive\":\"true\",\"languageCode\":\"ENG\",\"latitude\":\"12.9222335\",\"locationCode\":\"LOC01\",\"longitude\":\"77.4995968\",\"lunchEndTime\":\"14:00:00\",\"lunchStartTime\":\"13:00:00\",\"name\":\"Test Name\",\"numberOfKiosks\":\"3\",\"perKioskProcessTime\":\"02:00:00\",\"timeZone\":\"UTC\",\"workingHours\":\"9\"}}";
-		Mockito.when(registrationCenterRepository.create(Mockito.any())).thenReturn(registrationCenter);
-		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void createRegistrationCenterExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"addressLine1\":\"address test\",\"addressLine2\":\"address test\",\"addressLine3\":\"address test\",\"centerEndTime\":\"19:00:00\",\"centerStartTime\":\"11:00:00\",\"centerTypeCode\":\"REG01\",\"contactPerson\":\"string\",\"contactPhone\":\"string\",\"holidayLocationCode\":\"LOC01\",\"id\":\"string\",\"isActive\":\"true\",\"languageCode\":\"ENG\",\"latitude\":\"12.9222335\",\"locationCode\":\"LOC01\",\"longitude\":\"77.4995968\",\"lunchEndTime\":\"14:00:00\",\"lunchStartTime\":\"13:00:00\",\"name\":\"Test Name\",\"numberOfKiosks\":\"3\",\"perKioskProcessTime\":\"02:00:00\",\"timeZone\":\"UTC\",\"workingHours\":\"9\"}}";
-		when(registrationCenterRepository.create(Mockito.any())).thenThrow(new RequestException("", "", null));
-		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
-	}
-	
-	@Test
-	public void createRegistrationCenterMasterDataExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"addressLine1\":\"address test\",\"addressLine2\":\"address test\",\"addressLine3\":\"address test\",\"centerEndTime\":\"19:00:00\",\"centerStartTime\":\"11:00:00\",\"centerTypeCode\":\"REG01\",\"contactPerson\":\"string\",\"contactPhone\":\"string\",\"holidayLocationCode\":\"LOC01\",\"id\":\"string\",\"isActive\":\"true\",\"languageCode\":\"ENG\",\"latitude\":\"12.9222335\",\"locationCode\":\"LOC01\",\"longitude\":\"77.4995968\",\"lunchEndTime\":\"14:00:00\",\"lunchStartTime\":\"13:00:00\",\"name\":\"Test Name\",\"numberOfKiosks\":\"3\",\"perKioskProcessTime\":\"02:00:00\",\"timeZone\":\"UTC\",\"workingHours\":\"9\"}}";
-		when(registrationCenterRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "", null));
-		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -1561,7 +1535,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-
+	
 	// ----------------------------------BiometricAttributeCreateApiTest--------------------------------------------------
 	@Test
 	public void createBiometricAttributeTest() throws Exception {
@@ -1623,8 +1597,8 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-
-	// -----------------------------------DeviceSpecificationTest---------------------------------
+	
+	//-----------------------------------DeviceSpecificationTest---------------------------------
 	@Test
 	public void createDeviceSpecificationTest() throws Exception {
 		DeviceSpecification deviceSpecification = new DeviceSpecification();
@@ -1639,7 +1613,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void createDeviceSpecificationExceptionTest() throws Exception {
+	public void createDeviceSpecificationExceptionTest() throws Exception {	
 		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T07:01:16.196Z\", \"request\": { \"brand\": \"HP\", \"description\": \"dercs\", \"deviceTypeCode\": \"6655\", \"id\": \"666555\", \"isActive\": true, \"langCode\": \"ENG\", \"minDriverversion\": \"min driver\", \"model\": \"Model\", \"name\": \"HP\" } }";
 
 		Mockito.when(deviceSpecificationRepository.create(Mockito.any()))
@@ -1647,19 +1621,19 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicespecifications")
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isInternalServerError());
 	}
-
-	// ---------------------------------DeviceTypeTest------------------------------------------------
-
+	
+	//---------------------------------DeviceTypeTest------------------------------------------------
+	
 	@Test
 	public void createDeviceTypeTest() throws Exception {
 		DeviceType deviceType = new DeviceType();
 		deviceType.setCode("1000");
 		deviceType.setLangCode("ENG");
 		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
-
+		
 		Mockito.when(deviceTypeRepository.create(Mockito.any())).thenReturn(deviceType);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceTypeJson)).andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes")
+				.contentType(MediaType.APPLICATION_JSON).content(deviceTypeJson)).andExpect(status().isCreated());
 	}
 
 	@Test
@@ -1667,11 +1641,11 @@ public class MasterdataIntegrationTest {
 		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
 		Mockito.when(deviceTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceTypeJson)).andExpect(status().isInternalServerError());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes")
+				.contentType(MediaType.APPLICATION_JSON).content(deviceTypeJson)).andExpect(status().isInternalServerError());
 	}
-
-	// -------------------------------MachineSpecificationTest-------------------------------
+	
+	//-------------------------------MachineSpecificationTest-------------------------------
 	@Test
 	public void createMachineSpecificationTest() throws Exception {
 
@@ -1680,7 +1654,7 @@ public class MasterdataIntegrationTest {
 		machineSpeicification.setLangCode("ENG");
 
 		String machineSpecJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:08:41.265Z\", \"request\": { \"brand\": \"intel\", \"description\": \"intel Description\", \"id\": \"1000\", \"isActive\": true, \"langCode\": \"ENG\", \"machineTypeCode\": \"1010\", \"minDriverversion\": \"10\", \"model\": \"2014\", \"name\": \"Laptop\" } }";
-
+		
 		Mockito.when(machineSpecificationRepository.create(Mockito.any())).thenReturn(machineSpeicification);
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinespecifications")
 				.contentType(MediaType.APPLICATION_JSON).content(machineSpecJson)).andExpect(status().isCreated());
@@ -1690,26 +1664,25 @@ public class MasterdataIntegrationTest {
 	public void createMachineSpecificationExceptionTest() throws Exception {
 
 		String machineSpecJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:08:41.265Z\", \"request\": { \"brand\": \"intel\", \"description\": \"intel Description\", \"id\": \"1000\", \"isActive\": true, \"langCode\": \"ENG\", \"machineTypeCode\": \"1010\", \"minDriverversion\": \"10\", \"model\": \"2014\", \"name\": \"Laptop\" } }";
-
+		
 		Mockito.when(machineSpecificationRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(machineSpecJson))
-				.andExpect(status().isInternalServerError());
+				.contentType(MediaType.APPLICATION_JSON).content(machineSpecJson)).andExpect(status().isInternalServerError());
 	}
 
-	// -------------------------MachineTest-----------------------------------------
+	//-------------------------MachineTest-----------------------------------------
 	@Test
 	public void createMachineTest() throws Exception {
 
 		Machine machine = new Machine();
 		machine.setId("1000");
 		machine.setLangCode("ENG");
-
+	
 		String machineJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"id\": \"1000\", \"ipAddress\": \"127.0.0.1\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"127.0.0.2\", \"machineSpecId\": \"1010\", \"name\": \"Printer\", \"serialNum\": \"12345\", \"validityDateTime\": \"2018-12-06T10:57:09.103Z\" } }";
 		Mockito.when(machineRepository.create(Mockito.any())).thenReturn(machine);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machines").contentType(MediaType.APPLICATION_JSON)
-				.content(machineJson)).andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machines")
+				.contentType(MediaType.APPLICATION_JSON).content(machineJson)).andExpect(status().isCreated());
 	}
 
 	@Test
@@ -1718,35 +1691,36 @@ public class MasterdataIntegrationTest {
 		String machineJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"id\": \"1000\", \"ipAddress\": \"127.0.0.1\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"127.0.0.2\", \"machineSpecId\": \"1010\", \"name\": \"Printer\", \"serialNum\": \"12345\", \"validityDateTime\": \"2018-12-06T10:57:09.103Z\" } }";
 		Mockito.when(machineRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machines").contentType(MediaType.APPLICATION_JSON)
-				.content(machineJson)).andExpect(status().isInternalServerError());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machines")
+				.contentType(MediaType.APPLICATION_JSON).content(machineJson)).andExpect(status().isInternalServerError());
 	}
-
-	// -----------------------------MachineTypeTest-------------------------------------------
-
+	
+	//-----------------------------MachineTypeTest-------------------------------------------
+	
 	@Test
 	public void createMachineTypeTest() throws Exception {
 
 		MachineType machineType = new MachineType();
 		machineType.setCode("1000");
 		machineType.setLangCode("ENG");
-
+		
 		String machineTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:18:51.265Z\", \"request\": { \"code\": \"1000\", \"description\": \"Printer Description\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
-
+		
 		Mockito.when(machineTypeRepository.create(Mockito.any())).thenReturn(machineType);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(machineTypeJson)).andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinetypes")
+				.contentType(MediaType.APPLICATION_JSON).content(machineTypeJson)).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createMachineTypeExceptionTest() throws Exception {
 
 		String machineTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:18:51.265Z\", \"request\": { \"code\": \"1000\", \"description\": \"Printer Description\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
-
+				
 		Mockito.when(machineTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(machineTypeJson)).andExpect(status().isInternalServerError());
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinetypes")
+				.contentType(MediaType.APPLICATION_JSON).content(machineTypeJson)).andExpect(status().isInternalServerError());
 	}
+
 
 }

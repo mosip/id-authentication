@@ -153,7 +153,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 		
-		objectMapperUtil.mapNew(resultantReasonCategory, codeAndLanguageCodeId);
+		objectMapperUtil.map(resultantReasonCategory, codeAndLanguageCodeId);
 
 		//dataMapper.map(resultantReasonCategory, codeAndLanguageCodeId, true, null, null, true);
 
@@ -184,7 +184,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		}
 
 		//dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
-		objectMapperUtil.mapNew(resultantReasonList, codeLangCodeAndRsnCatCodeId);
+		objectMapperUtil.map(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;
 

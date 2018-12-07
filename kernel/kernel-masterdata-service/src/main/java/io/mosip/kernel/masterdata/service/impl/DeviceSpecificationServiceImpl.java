@@ -40,7 +40,6 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	private MetaDataUtils metaUtils;
 
-	
 	@Autowired
 	private MapperUtils objectMapperUtil;
 
@@ -49,7 +48,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
+			deviceSpecificationList = deviceSpecificationRepository
+					.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -91,12 +91,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public IdResponseDto createDeviceSpecification(
-			RequestDto<DeviceSpecificationDto> deviceSpecifications) {
+	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = metaUtils.setCreateMetaData(
-				deviceSpecifications.getRequest(), DeviceSpecification.class);
+		DeviceSpecification entity = metaUtils.setCreateMetaData(deviceSpecifications.getRequest(),
+				DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException e) {
@@ -105,7 +104,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(renDeviceSpecification, idResponseDto);
+		objectMapperUtil.map(renDeviceSpecification, idResponseDto);
 
 		return idResponseDto;
 	}

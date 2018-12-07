@@ -108,7 +108,7 @@ public class LocationServiceImpl implements LocationService {
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
 				//List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
-				List<LocationDto> locationHierarchies = objectMapperUtil.mapAllNew(locHierList, LocationDto.class);
+				List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
@@ -216,7 +216,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
-         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
 		return locationCodeDto;
 	}
 

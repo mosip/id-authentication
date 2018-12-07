@@ -12,10 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
-import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
  * MetaDataUtils class provide methods to copy values from DTO to entity along
@@ -30,9 +27,6 @@ import io.mosip.kernel.masterdata.entity.Machine;
 @Component
 @SuppressWarnings("unchecked")
 public class MetaDataUtils {
-
-	@Autowired
-	private DataMapper dataMapper;
 
 	@Autowired
 	MapperUtils mapperUtils;
@@ -54,7 +48,7 @@ public class MetaDataUtils {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
 
-		D entity = (D) mapperUtils.mapNew(source, destinationClass);
+		D entity = (D) mapperUtils.map(source, destinationClass);
 
 		setCreatedDateTime(contextUser, entity);
 		return entity;
@@ -67,7 +61,7 @@ public class MetaDataUtils {
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
-			D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
+			D entity = (D) mapperUtils.map(dto, entityClass);
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
@@ -80,7 +74,5 @@ public class MetaDataUtils {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
 	}
-
-	
 
 }

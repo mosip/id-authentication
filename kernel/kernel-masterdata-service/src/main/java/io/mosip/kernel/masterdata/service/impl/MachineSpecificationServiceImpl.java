@@ -44,7 +44,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					e.getErrorText()+ "  " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(renMachineSpecification, idResponseDto);
+		objectMapperUtil.map(renMachineSpecification, idResponseDto);
 			
 		return idResponseDto;	
 	
