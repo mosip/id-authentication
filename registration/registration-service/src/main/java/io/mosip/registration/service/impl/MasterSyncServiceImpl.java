@@ -34,6 +34,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.mastersync.MasterSyncDto;
+import io.mosip.registration.dto.mastersync.MasterSyncResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -85,6 +86,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		ObjectMapper mapper = new ObjectMapper();
 
+		MasterSyncResponseDto masterResponse = new MasterSyncResponseDto();
+
 		SyncControl masterSyncDetails;
 
 		Map<String, Object> masterSyncMap = new HashMap<>();
@@ -107,14 +110,16 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			// lastSyncTime);
 
 			MasterSyncDto masterSyncDto = mapper.readValue(masterJson, MasterSyncDto.class);
-			masterSyncDao.insertMasterSyncData(masterSyncDto);
+			masterResponse = masterSyncDao.insertMasterSyncData(masterSyncDto);
 
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION - MASTER SYNC JSON EXCEPTION ", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + "Runtime error while parsing the master sync json");
-
+			masterResponse.setMessage("Master Data Sync Failure");
 		}
+
+		masterSyncMap.put("masterResponse", masterResponse);
 
 		return masterSyncMap;
 	}
