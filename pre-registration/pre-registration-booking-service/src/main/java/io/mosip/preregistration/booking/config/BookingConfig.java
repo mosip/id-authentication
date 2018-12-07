@@ -26,7 +26,7 @@ public class BookingConfig {
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Booking").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.booking.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/book/*")).build();
+				.paths(PathSelectors.ant("/v0.1/pre-registration/booking/*")).build();
 
 	}
 

@@ -69,10 +69,12 @@ export class MapComponent implements OnInit {
         console.log(this.centers);
 
         this.centers.forEach( center => {
-            this.marker = new OlFeature({
-                geometry: new OlPoint(fromLonLat([center.longitude, center.latitude]))
-            });
-            this.markers.push(this.marker);
+            if (!isNaN(center.latitude)) {
+                this.marker = new OlFeature({
+                    geometry: new OlPoint(fromLonLat([center.longitude, center.latitude]))
+                });
+                this.markers.push(this.marker);
+            }
         });
 
         this.vectorSource = new OlVectorSource({

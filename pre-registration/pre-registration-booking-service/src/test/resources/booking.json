@@ -1,13 +1,21 @@
 {
 		"id": "mosip.pre-registration.booking.book",
 		"ver" : "1.0",
-		"reqTime" : "2018-10-04T07:22:57.086+0000",
+		"reqTime" : "2018-12-06T07:22:57.086+0000",
 		"request" :
-		{
-			"pre_registration_id":"12345",
-			"registration_center_id":"2",
-			"reg_date":"2018-12-04T07:22:57.086+0000",
+		[{
+			"pre_registration_id":"23587986034785",
+			"registration_center_id":"1",
+			"reg_date":"2018-12-06",
 			"time-slot-from":"09:00",
-			"time-slot-to":"09:20"
-		}
+			"time-slot-to":"09:13"
+		},
+		{
+			"pre_registration_id":"31496715428069",
+			"registration_center_id":"1",
+			"reg_date":"2018-12-06",
+			"time-slot-from":"09:00",
+			"time-slot-to":"09:13"
+			}
+		]
 }

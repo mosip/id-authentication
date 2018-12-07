@@ -1,3 +1,4 @@
+<div *ngIf="availabilityData.length !== 0">
 <div class="container">
   <div class="left-button">
       <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
@@ -42,3 +43,7 @@
         <a (click)="scrollRightCard()"><i class="material-icons">arrow_forward</i></a>
     </div>
     </div>
+  </div>
+  <div *ngIf="availabilityData.length === 0">
+    <p>Data for this center hasn't been added yet</p>
+  </div>

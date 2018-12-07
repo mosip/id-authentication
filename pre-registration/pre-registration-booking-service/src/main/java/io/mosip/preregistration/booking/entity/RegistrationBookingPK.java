@@ -1,7 +1,7 @@
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -31,5 +31,5 @@ public class RegistrationBookingPK implements Serializable{
 	 * Booking date and time
 	 */
 	@Column(name="booking_dtimes")
-	private Timestamp bookingDateTime;
+	private LocalDateTime bookingDateTime;
 }

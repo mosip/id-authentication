@@ -25,7 +25,7 @@ public class ResponseDto<T> implements Serializable {
 	private static final long serialVersionUID = 6705845720255847210L;
 	
 	/** The error details. */
-	private List<ExceptionJSONInfo> err;
+	private ExceptionJSONInfo err;
 	
 	private Boolean status;
 	
