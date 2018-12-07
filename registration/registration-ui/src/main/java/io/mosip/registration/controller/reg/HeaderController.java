@@ -73,7 +73,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
+
 	@Autowired
 	JobConfigurationService jobConfigurationService;
 
@@ -121,8 +121,7 @@ public class HeaderController extends BaseController {
 			SchedulerUtil.stopScheduler();
 
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = Initialization.getApplicationContext()
-					.getBean(LoginController.class);
+			LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
 			loginController.loadLoginScreen(initialMode);
 			getScene(loginpage);
 
@@ -178,32 +177,40 @@ public class HeaderController extends BaseController {
 	}
 
 	/**
-	 * Redirecting to Home page
-	 * 
-	 * @throws RegBaseCheckedException
+	 * Sync master data.
+	 *
+	 * @param event the event
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
-		Map<String, Object> responseMap = null;
-		MasterSyncResponseDto masterResponse;
+
+		ResponseDTO masterResponse = null;
+
+		String errorMessage = "";
+
 		try {
 
 			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Syncing master data");
 
-			responseMap = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+			masterResponse = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
 
-			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
-
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getSuccessResponseDTO().getMessage());
 
 		} catch (RuntimeException exception) {
 
 			LOGGER.error("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			masterResponse = (MasterSyncResponseDto) responseMap.get("masterResponse");
+			if (null != masterResponse) {
+				List<ErrorResponseDTO> errorMsgList = masterResponse.getErrorResponseDTOs();
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getMessage());
+				for (ErrorResponseDTO errorResponseDTO : errorMsgList) {
+					errorMessage = errorResponseDTO.getMessage();
+				}
+			}
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, errorMessage);
 		}
 	}
 
@@ -269,19 +276,19 @@ public class HeaderController extends BaseController {
 	public void downloadPreRegData(ActionEvent event) {
 		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
 	}
-	
+
 	@FXML
-	public void syncInitializer(ActionEvent event){
+	public void syncInitializer(ActionEvent event) {
 		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
-		
-		if(responseDTO.getErrorResponseDTOs()!=null) {
+
+		if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		}else if(responseDTO.getSuccessResponseDTO()!=null) {
-			SuccessResponseDTO successResponseDTO=responseDTO.getSuccessResponseDTO();
+		} else if (responseDTO.getSuccessResponseDTO() != null) {
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}
-		
+
 	}
 
 }
