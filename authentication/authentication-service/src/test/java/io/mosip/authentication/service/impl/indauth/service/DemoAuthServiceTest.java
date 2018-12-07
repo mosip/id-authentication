@@ -45,7 +45,6 @@ import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -55,8 +54,8 @@ public class DemoAuthServiceTest {
 	@Autowired
 	private Environment environment;
 
-	@InjectMocks
-	private IdInfoHelper idInfoHelper;
+//	@InjectMocks
+//	private IdInfoHelper idInfoHelper;
 
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
@@ -66,8 +65,8 @@ public class DemoAuthServiceTest {
 
 //	private IdInfoMatcher demomatcher = new IdInfoMatcher();
 
-//	@Mock
-//	private IdInfoHelper idInfoHelper;
+	@Mock
+	private IdInfoHelper idInfoHelper;
 
 	@Mock
 	private IdRepoService idInfoService;
