@@ -2,6 +2,9 @@ package io.mosip.kernel.synchandler.service.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.synchandler.dto.ApplicationDto;
 import io.mosip.kernel.synchandler.dto.HolidayDto;
@@ -38,6 +43,9 @@ public class MasterDataServiceTest {
 	@Autowired
 	private MasterDataService masterDataService;
 
+	@Autowired
+	RestTemplate restemplate;
+	
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
 	private MasterDataResponseDto masterDataResponseDto;
@@ -123,9 +131,11 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void globalConfigsyncSuccess() {
-
-		JSONObject jsonObject = syncConfigDetailsService.getGlobalConfigDetails();
-		Assert.assertEquals("arc_policy_2", jsonObject.get("archivalPolicy"));
+        
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withSuccess());
+		syncConfigDetailsService.getGlobalConfigDetails();
+		
 	}
 
 	@Test
@@ -133,4 +143,21 @@ public class MasterDataServiceTest {
 		JSONObject jsonObject = syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 		Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
 	}
+	
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void registrationConfigsyncFailure() {
+		
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/registration-center-config.json")).andRespond(withBadRequest());
+		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+		}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void globalConfigsyncFailure() {
+		
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withBadRequest());
+		syncConfigDetailsService.getGlobalConfigDetails();
+		}
 }

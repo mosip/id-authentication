@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -36,40 +35,31 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Value("${mosip.kernel.global.config.file.name}")
 	private String globalConfigFileName;
 
-	private String configServerUri = null;
-	private String configLabel = null;
-	private String configProfile = null;
-	private String configAppName = null;
-
 	@Override
 	public JSONObject getGlobalConfigDetails() {
 
-		JSONObject jsonObject = getConfigDetailsResponse(globalConfigFileName);
-
-		return jsonObject;
+		return getConfigDetailsResponse(globalConfigFileName);
 
 	}
 
 	@Override
 	public JSONObject getRegistrationCenterConfigDetails(String regId) {
 
-		JSONObject jsonObject = getConfigDetailsResponse(regCenterfileName);
+		return getConfigDetailsResponse(regCenterfileName);
 
-		return jsonObject;
 	}
 
 	private JSONObject getConfigDetailsResponse(String fileName) {
-		configServerUri = env.getProperty("spring.cloud.config.uri");
-		configLabel = env.getProperty("spring.cloud.config.label");
-		configProfile = env.getProperty("spring.profiles.active");
-		configAppName = env.getProperty("spring.application.name");
+		String configServerUri = env.getProperty("spring.cloud.config.uri");
+		String configLabel = env.getProperty("spring.cloud.config.label");
+		String configProfile = env.getProperty("spring.profiles.active");
+		String configAppName = env.getProperty("spring.application.name");
 		JSONObject result = null;
 		try {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 					.append(configLabel + "/").append(fileName);
 
-			restTemplate = new RestTemplate();
 			result = restTemplate.getForObject(uriBuilder.toString(), JSONObject.class);
 		} catch (Exception e) {
 			throw new MasterDataServiceException(
