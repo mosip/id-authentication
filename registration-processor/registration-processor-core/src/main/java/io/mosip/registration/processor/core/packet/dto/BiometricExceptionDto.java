@@ -7,7 +7,7 @@ package io.mosip.registration.processor.core.packet.dto;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class BiometricException {
+public class BiometricExceptionDto {
 
 	private String language;
 	private String type;
