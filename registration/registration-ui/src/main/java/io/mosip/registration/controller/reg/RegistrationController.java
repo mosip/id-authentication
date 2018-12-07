@@ -1484,11 +1484,11 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
-			ResourceBundle properties = applicationContext.getLocalLanguageProperty();
-			fullNameLocalLanguageLabel.setText(properties.getString("full_name"));
-			addressLine1LocalLanguagelabel.setText(properties.getString("address_line1"));
-			addressLine2LocalLanguagelabel.setText(properties.getString("address_line2"));
-			addressLine3LocalLanguagelabel.setText(properties.getString("address_line3"));
+			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
+			fullNameLocalLanguageLabel.setText(localProperties.getString("full_name"));
+			addressLine1LocalLanguagelabel.setText(localProperties.getString("address_line1"));
+			addressLine2LocalLanguagelabel.setText(localProperties.getString("address_line2"));
+			addressLine3LocalLanguagelabel.setText(localProperties.getString("address_line3"));
 			String userlangTitle = demoGraphicTitlePane.getText();
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
