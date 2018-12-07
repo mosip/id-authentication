@@ -2,7 +2,6 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.URL;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,12 +12,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -160,7 +154,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 			userDTO.setUserId(username.getText());
 			userDTO.setPassword(hashPassword);
 			// Server connection check
-			boolean serverStatus = getConnectionCheck(userDTO);
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username.getText());
 			authenticationValidatorDTO.setPassword(hashPassword);
@@ -168,13 +161,11 @@ public class OperatorAuthenticationController extends BaseController implements 
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
-				if (!serverStatus) {
 					if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
 					}
-				}
 			}
 		}
 
@@ -198,28 +189,6 @@ public class OperatorAuthenticationController extends BaseController implements 
 		}
 	}
 
-	/**
-	 * Checking server status
-	 * 
-	 * @param LoginUserDTO
-	 *            the UserDTO object
-	 * @return boolean
-	 */
-	private boolean getConnectionCheck(LoginUserDTO userObj) {
-		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
-		ResponseEntity<String> tokenId = null;
-		boolean serverStatus = false;
-		try {
-			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
-			if (tokenId.getStatusCode().is2xxSuccessful()) {
-				serverStatus = true;
-			}
-		} catch (RestClientException resourceAccessException) {
-			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
-					resourceAccessException.getMessage());
-		}
-		return serverStatus;
-	}
 
 	/**
 	 * to generate OTP in case of OTP based authentication
