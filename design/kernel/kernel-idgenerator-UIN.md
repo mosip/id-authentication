@@ -25,7 +25,7 @@ The Registration processor module needs to generate a UIN and assign it to an in
 
 
 
-![Module Diagram](_images/kernel-datavalidator-cd.png)
+![Module Diagram](_images/kernel-UINGenerator.jpg)
 
 
 
