@@ -56,7 +56,7 @@ public class DocumentNotFoundTest {
 
 		} catch (DocumentNotFoundException e) {
 			assertThat("Should throw dopcument not found exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_006.toString()));
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString()));
 			assertThat("Should throw dopcument not found exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(DOCUMENT_Not_FOUND));
 		}
