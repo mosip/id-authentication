@@ -167,6 +167,7 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
 		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
+		
 		return gpsResponseMap;
 	}
 
