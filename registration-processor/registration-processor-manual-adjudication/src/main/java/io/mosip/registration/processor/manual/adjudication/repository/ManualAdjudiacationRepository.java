@@ -31,7 +31,7 @@ public interface ManualAdjudiacationRepository<T extends ManualVerificationEntit
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query("SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2)" + " and mve.statusCode=:statusCode")
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode)")
 	public List<ManualVerificationEntity> getFirstApplicantDetails(@Param("statusCode") String statusCode);
 
 	/**
@@ -44,7 +44,9 @@ public interface ManualAdjudiacationRepository<T extends ManualVerificationEntit
 	 *            The manual verifier user Id
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.pkId.regId=:regId and mve.mvUsrId=:mvUserId")
-	public ManualVerificationEntity getByRegId(@Param("regId") String regId, @Param("mvUserId") String mvUserId);
-
+	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.pkId.regId=:regId and mve.mvUsrId=:mvUserId and mve.pkId.matchedRefId=:refId")
+	public ManualVerificationEntity getByRegId(@Param("regId") String regId,@Param("refId") String refId,@Param("mvUserId") String mvUserId);
+	
+	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
+	public ManualVerificationEntity getAssignedApplicantDetails(@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);
 }

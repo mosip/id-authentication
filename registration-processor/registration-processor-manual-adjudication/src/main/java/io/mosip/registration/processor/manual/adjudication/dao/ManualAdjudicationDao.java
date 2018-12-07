@@ -36,10 +36,10 @@ public class ManualAdjudicationDao {
 	 * 
 	 * @return the earliest created unassigned {@link ManualVerificationEntity}
 	 */
-	public List<ManualVerificationEntity> getFirstApplicantDetails() {
-		//TODO Fix this sonar lint issue
+	public List<ManualVerificationEntity> getFirstApplicantDetails(String status) {
+		//TODO TO Fix this sonar lint issue
 		List<ManualVerificationEntity> manualAdjudicationEntitiesList = manualAdjudiacationRepository
-				.getFirstApplicantDetails("PENDING");
+				.getFirstApplicantDetails(status);
 		return manualAdjudicationEntitiesList;
 
 	}
@@ -49,8 +49,12 @@ public class ManualAdjudicationDao {
 	 * @param mvUsrId
 	 * @return
 	 */
-	public ManualVerificationEntity getByRegId(String regId, String mvUsrId) {
-		//TODO Specify comment for this method
-		return manualAdjudiacationRepository.getByRegId(regId, mvUsrId);
+	public ManualVerificationEntity getByRegId(String regId, String refId, String mvUsrId) {
+		//TODO TO Specify comment for this method
+		return manualAdjudiacationRepository.getByRegId(regId, refId, mvUsrId);
+	}
+	
+	public ManualVerificationEntity getAssignedApplicantDetails(String userId, String status) {
+		return manualAdjudiacationRepository.getAssignedApplicantDetails(userId,status);
 	}
 }
