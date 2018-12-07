@@ -215,7 +215,7 @@ public class DocumentUploadServiceTest {
 	@Test(expected = DocumentNotFoundException.class)
 	public void failureGetAllDocumentForPreIdTest() {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_007.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		err.add(errorDetails);
 		ResponseDto errorRes = new ResponseDto<>();

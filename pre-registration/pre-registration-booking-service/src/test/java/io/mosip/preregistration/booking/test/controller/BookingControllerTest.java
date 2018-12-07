@@ -30,6 +30,7 @@ import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
+import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.booking.dto.ResponseDto;
@@ -71,16 +72,17 @@ public class BookingControllerTest {
 		jsonObject = parser.parse(new FileReader(file));
 
 		bookingRequestDTOA.setPre_registration_id("23587986034785");
-		bookingRequestDTOA.setRegistration_center_id("1");
-		bookingRequestDTOA.setSlotFromTime("09:00");
-		bookingRequestDTOA.setSlotToTime("09:13");
-		bookingRequestDTOA.setReg_date("2018-12-06");
+		bookingRequestDTOA.setNewBookingDetails(new BookingRegistrationDTO());
+		bookingRequestDTOA.setOldBookingDetails(new BookingRegistrationDTO());
+//		bookingRequestDTOA.setSlotFromTime("09:00");
+//		bookingRequestDTOA.setSlotToTime("09:13");
+//		bookingRequestDTOA.setReg_date("2018-12-06");
 
 		bookingRequestDTOB.setPre_registration_id("31496715428069");
-		bookingRequestDTOB.setRegistration_center_id("1");
-		bookingRequestDTOB.setSlotFromTime("09:00");
-		bookingRequestDTOB.setSlotToTime("09:13");
-		bookingRequestDTOB.setReg_date("2018-12-06");
+//		bookingRequestDTOB.setRegistration_center_id("1");
+//		bookingRequestDTOB.setSlotFromTime("09:00");
+//		bookingRequestDTOB.setSlotToTime("09:13");
+//		bookingRequestDTOB.setReg_date("2018-12-06");
 
 		bookingDTO.setRequest(bookingList);
 
