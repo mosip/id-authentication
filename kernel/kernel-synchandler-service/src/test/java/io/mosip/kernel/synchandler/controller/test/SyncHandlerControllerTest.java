@@ -25,7 +25,10 @@ import io.mosip.kernel.synchandler.dto.MachineDto;
 import io.mosip.kernel.synchandler.dto.MachineSpecificationDto;
 import io.mosip.kernel.synchandler.dto.MachineTypeDto;
 import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
+import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -38,8 +41,40 @@ public class SyncHandlerControllerTest {
 	@MockBean
 	private MasterDataService masterDataService;
 
+	@MockBean
+	private SyncConfigDetailsService syncConfigDetailsService;
+
+	JSONObject globalConfigMap = null;
+	JSONObject regCentreConfigMap=null;
+
 	@Before
 	public void setup() {
+	
+	     configDetialsSyncSetup();
+	     syncMasterDataSetup();
+		
+	}
+
+	public void configDetialsSyncSetup() {
+		globalConfigMap = new JSONObject();
+		globalConfigMap.put("archivalPolicy", "arc_policy_2");
+		globalConfigMap.put("otpTimeOutInMinutes", 2);
+		globalConfigMap.put("numberOfWrongAttemptsForOtp", 5);
+		globalConfigMap.put("uinLength", 24);
+
+		regCentreConfigMap = new JSONObject();
+
+		regCentreConfigMap.put("fingerprintQualityThreshold", 120);
+		regCentreConfigMap.put("irisQualityThreshold", 25);
+		regCentreConfigMap.put("irisRetryAttempts", 10);
+		regCentreConfigMap.put("faceQualityThreshold", 25);
+		regCentreConfigMap.put("faceRetry", 12);
+		regCentreConfigMap.put("supervisorVerificationRequiredForExceptions", true);
+		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
+
+	}
+	
+	public void syncMasterDataSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		List<ApplicationDto> applications = new ArrayList<>();
 		applications.add(new ApplicationDto("01", "REG FORM", "REG Form", "ENG", true));
@@ -77,5 +112,23 @@ public class SyncHandlerControllerTest {
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
 		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void syncGlobalConfigDetailsSuccess() throws Exception {
+		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void syncRegistrationConfigDetailsSuccess() throws Exception {
+		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString())).thenReturn(globalConfigMap);
+		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void syncGlobalConfigDetailsFailure() throws Exception  {
+		when(syncConfigDetailsService.getGlobalConfigDetails()).thenThrow(new MasterDataServiceException("KER-SYNC-127","Error occured in service"));
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 }

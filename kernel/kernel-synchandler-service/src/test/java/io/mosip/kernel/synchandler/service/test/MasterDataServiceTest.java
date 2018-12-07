@@ -1,7 +1,9 @@
 package io.mosip.kernel.synchandler.service.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.synchandler.dto.ApplicationDto;
 import io.mosip.kernel.synchandler.dto.HolidayDto;
@@ -27,6 +32,8 @@ import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
 import io.mosip.kernel.synchandler.service.MasterDataServiceHelper;
+import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
+import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -36,6 +43,12 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private MasterDataService masterDataService;
+
+	@Autowired
+	RestTemplate restemplate;
+	
+	@Autowired
+	private SyncConfigDetailsService syncConfigDetailsService;
 	private MasterDataResponseDto masterDataResponseDto;
 	private List<ApplicationDto> applications;
 	List<HolidayDto> holidays;
@@ -43,8 +56,25 @@ public class MasterDataServiceTest {
 	List<MachineSpecificationDto> machineSpecifications;
 	List<MachineTypeDto> machineTypes;
 
+	JSONObject globalConfigMap = null;
+	JSONObject regCentreConfigMap = null;
+
 	@Before
 	public void setup() {
+		masterDataSyncSetup();
+		configDetialsSyncSetup();
+	}
+
+	private void mockForSuccess() {
+		when(masterDataServiceHelper.getApplications(Mockito.any())).thenReturn(CompletableFuture.completedFuture(applications));
+		when(masterDataServiceHelper.getHolidays(Mockito.any(), Mockito.anyString())).thenReturn(CompletableFuture.completedFuture(holidays));
+		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any())).thenReturn(CompletableFuture.completedFuture(machines));
+		when(masterDataServiceHelper.getMachineSpecification(Mockito.anyString(), Mockito.any()))
+				.thenReturn(CompletableFuture.completedFuture(machineSpecifications));
+		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any())).thenReturn(CompletableFuture.completedFuture(machineTypes));
+	}
+
+	public void masterDataSyncSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		applications = new ArrayList<>();
 		applications.add(new ApplicationDto("01", "REG FORM", "REG Form", "ENG", true));
@@ -64,18 +94,23 @@ public class MasterDataServiceTest {
 		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop", "Laptop", true));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
+	public void configDetialsSyncSetup() {
+		globalConfigMap = new JSONObject();
+		globalConfigMap.put("archivalPolicy", "arc_policy_2");
+		globalConfigMap.put("otpTimeOutInMinutes", 2);
+		globalConfigMap.put("numberOfWrongAttemptsForOtp", 5);
+		globalConfigMap.put("uinLength", 24);
 
-	private void mockForSuccess() {
-		when(masterDataServiceHelper.getApplications(Mockito.any()))
-				.thenReturn(CompletableFuture.completedFuture(applications));
-		when(masterDataServiceHelper.getHolidays(Mockito.any(), Mockito.anyString()))
-				.thenReturn(CompletableFuture.completedFuture(holidays));
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any()))
-				.thenReturn(CompletableFuture.completedFuture(machines));
-		when(masterDataServiceHelper.getMachineSpecification(Mockito.anyString(), Mockito.any()))
-				.thenReturn(CompletableFuture.completedFuture(machineSpecifications));
-		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any()))
-				.thenReturn(CompletableFuture.completedFuture(machineTypes));
+		regCentreConfigMap = new JSONObject();
+
+		regCentreConfigMap.put("fingerprintQualityThreshold", 120);
+		regCentreConfigMap.put("irisQualityThreshold", 25);
+		regCentreConfigMap.put("irisRetryAttempts", 10);
+		regCentreConfigMap.put("faceQualityThreshold", 25);
+		regCentreConfigMap.put("faceRetry", 12);
+		regCentreConfigMap.put("supervisorVerificationRequiredForExceptions", true);
+		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
+
 	}
 
 	/*
@@ -94,4 +129,36 @@ public class MasterDataServiceTest {
 		masterDataService.syncData("1001", null);
 
 	}
+
+	@Test
+	public void globalConfigsyncSuccess() {
+        
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withSuccess());
+		syncConfigDetailsService.getGlobalConfigDetails();
+		
+	}
+
+	@Test
+	public void registrationConfigsyncSuccess() {
+		JSONObject jsonObject = syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+		Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
+	}
+	
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void registrationConfigsyncFailure() {
+		
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/registration-center-config.json")).andRespond(withBadRequest());
+		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+		}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void globalConfigsyncFailure() {
+		
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withBadRequest());
+		syncConfigDetailsService.getGlobalConfigDetails();
+		}
 }

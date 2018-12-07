@@ -4,23 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.synchandler.constant.SyncConfigDetailsErrorCode;
+import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
+
 /**
- * Implementation class 
+ * Implementation class
+ * 
  * @author Srinivasan
  *
  */
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
-
-	RestTemplate restTemplate = null;
+	@Autowired
+	RestTemplate restTemplate;
 
 	/**
-	 *  Environment instance
+	 * Environment instance
 	 */
 	@Autowired
 	Environment env;
@@ -31,42 +35,37 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Value("${mosip.kernel.global.config.file.name}")
 	private String globalConfigFileName;
 
-	private String configServerUri = null;
-	private String configLabel = null;
-	private String configProfile = null;
-	private String configAppName = null;
-
 	@Override
 	public JSONObject getGlobalConfigDetails() {
 
-		JSONObject jsonObject = getConfigDetailsResponse(globalConfigFileName);
-
-		return jsonObject;
+		return getConfigDetailsResponse(globalConfigFileName);
 
 	}
 
 	@Override
 	public JSONObject getRegistrationCenterConfigDetails(String regId) {
 
-		JSONObject jsonObject = getConfigDetailsResponse(regCenterfileName);
+		return getConfigDetailsResponse(regCenterfileName);
 
-		return jsonObject;
 	}
 
 	private JSONObject getConfigDetailsResponse(String fileName) {
-		configServerUri = env.getProperty("spring.cloud.config.uri");
-		configLabel = env.getProperty("spring.cloud.config.label");
-		configProfile = env.getProperty("spring.profiles.active");
-		configAppName = env.getProperty("spring.application.name");
-		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-				.append(configLabel + "/").append(fileName);
+		String configServerUri = env.getProperty("spring.cloud.config.uri");
+		String configLabel = env.getProperty("spring.cloud.config.label");
+		String configProfile = env.getProperty("spring.profiles.active");
+		String configAppName = env.getProperty("spring.application.name");
 		JSONObject result = null;
 		try {
-			restTemplate = new RestTemplate();
+			StringBuilder uriBuilder = new StringBuilder();
+			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+					.append(configLabel + "/").append(fileName);
+
 			result = restTemplate.getForObject(uriBuilder.toString(), JSONObject.class);
-		} catch (RestClientException e) {
-			// throw appropriate error
+		} catch (Exception e) {
+			throw new MasterDataServiceException(
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 
 		}
 
