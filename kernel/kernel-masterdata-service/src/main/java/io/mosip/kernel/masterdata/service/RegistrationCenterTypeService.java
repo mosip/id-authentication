@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * Interface that provides methods for RegistrationCenterType operations.
@@ -14,10 +16,10 @@ public interface RegistrationCenterTypeService {
 	/**
 	 * Method to add registration center type.
 	 * 
-	 * @param registrationCenterTypeRequestDto
+	 * @param registrationCenterTypeDto
 	 *            the request dto {@link RegistrationCenterTypeRequestDto}.
 	 * @return the response {@link PostResponseDto}.
 	 */
-	PostResponseDto addRegistrationCenterType(RegistrationCenterTypeRequestDto registrationCenterTypeRequestDto);
+	CodeAndLanguageCodeID createRegistrationCenterType(RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto);
 
 }

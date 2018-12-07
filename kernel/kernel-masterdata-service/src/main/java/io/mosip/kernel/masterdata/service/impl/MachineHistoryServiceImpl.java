@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
@@ -21,6 +20,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -38,16 +38,19 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	 */
 	@Autowired
 	MachineHistoryRepository macRepo;
+	
+	/**
+	 * Field to hold ObjectMapperUtil object
+	 */
+	@Autowired
+	private MapperUtils objectMapperUtil;
 
 	/**
 	 * Field to hold ModelMapper object
 	 */
 
-	/**
-	 * Field to hold ObjectMapperUtil object
-	 */
-	@Autowired
-	MapperUtils objMapper;
+	
+	
 
 	/**
 	 * Method used for retrieving Machine history details based on given Machine ID
@@ -79,7 +82,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
 		LocalDateTime lDateAndTime = null;
 		try {
-			lDateAndTime = DateUtils.parseDefaultUTCToLocalDateTime(effDtime);
+			lDateAndTime=LocalDateTime.parse(effDtime);
 		} catch (Exception e) {
 			throw new MasterDataServiceException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
@@ -90,14 +93,15 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		List<MachineHistoryDto> machineHistoryDtoList = null;
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
-			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(id, langCode,
+			macHistoryList = macRepo.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id, langCode,
 					lDateAndTime);
-		} catch (DataAccessException dataAccessLayerException) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());
+					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
-			machineHistoryDtoList = objMapper.mapMachineHistroy(macHistoryList);
+			
+			machineHistoryDtoList =objectMapperUtil.mapAllNew(macHistoryList, MachineHistoryDto.class);
 		} else {
 			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());

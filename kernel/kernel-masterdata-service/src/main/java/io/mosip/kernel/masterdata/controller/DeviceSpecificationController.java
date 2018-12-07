@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 
@@ -44,7 +48,7 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-	@GetMapping("/devicespecifications/{langcode}")
+	@GetMapping("/v1.0/devicespecifications/{langcode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -65,7 +69,7 @@ public class DeviceSpecificationController {
 	 */
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode and DeviceTypeCode")
-	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
+	@GetMapping("/v1.0/devicespecifications/{langcode}/{devicetypecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -78,13 +82,18 @@ public class DeviceSpecificationController {
 	 * 
 	 * @param deviceSpecification
 	 *            input from user Device specification DTO
-	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
+	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/devicespecification")
-	public ResponseEntity<DeviceTypeCodeAndLanguageCodeAndId> saveDeviceSpecification(
-			@RequestBody DeviceSpecificationRequestDto deviceSpecification) {
+	@PostMapping("/v1.0/devicespecifications")
+	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
+	public ResponseEntity<IdResponseDto> createDeviceSpecification(
+		@Valid	@RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
 
-		return new ResponseEntity<>(deviceSpecificationService.saveDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
 	}
 
 }

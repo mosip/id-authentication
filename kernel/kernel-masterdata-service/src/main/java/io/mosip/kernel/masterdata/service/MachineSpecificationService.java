@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCodeAndId;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.MachineTypeCodeAndLanguageCodeAndId;
+import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
  * This interface has abstract methods to fetch and save Machine Specification
@@ -21,7 +21,7 @@ public interface MachineSpecificationService {
 	 * 
 	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
 	 */
-	public MachineTypeCodeAndLanguageCodeAndId saveMachineSpecification(MachineSpecificationRequestDto machineSpecification);
+	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
 
 }

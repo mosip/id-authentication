@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
  */
 
 @RestController
-@RequestMapping(value = "/machineshistory")
+@RequestMapping(value = "/v1.0/machineshistories")
 public class MachineHistoryController {
 
 	/**

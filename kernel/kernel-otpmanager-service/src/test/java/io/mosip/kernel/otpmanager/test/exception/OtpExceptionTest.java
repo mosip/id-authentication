@@ -46,7 +46,7 @@ public class OtpExceptionTest {
 	public void testForExceptionWhenKeyIsNull() throws Exception {
 		when(service.getOtp(Mockito.any())).thenThrow(OtpInvalidArgumentException.class);
 		String json = "{\"key\":null}";
-		mockMvc.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable()).andExpect(jsonPath("$.errors[0].errorCode", is("KER-OTG-001")));
 	}
 
@@ -57,7 +57,7 @@ public class OtpExceptionTest {
 				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/otp/validate?key=test&otp=3212").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/otp/validate?key=test&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
 
@@ -68,7 +68,7 @@ public class OtpExceptionTest {
 				OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/otp/validate?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/otp/validate?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
 

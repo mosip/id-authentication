@@ -33,5 +33,5 @@ public interface LocationService {
 	 * 
 	 * @return 
 	 */
-	public LocationCodeDto saveLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
+	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 }

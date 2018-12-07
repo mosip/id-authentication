@@ -24,7 +24,6 @@ public class RequestDto<T> {
 	private LocalDateTime timestamp;
 	@NotNull
 	@Valid
-	private T request; 
+	private T request;
 
-} 
- 
+}

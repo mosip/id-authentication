@@ -1,13 +1,16 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -61,4 +64,7 @@ public class RegistrationCenterType extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "descr", length = 128)
 	private String descr;
+
+	@OneToMany(mappedBy = "registrationCenterType", fetch = FetchType.LAZY)
+	private List<RegistrationCenter> registrationCenters;
 }

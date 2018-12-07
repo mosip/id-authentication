@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -58,5 +61,23 @@ public class Template extends BaseEntity implements Serializable {
 
 	@Column(name = "template_typ_code", length = 36)
 	private String templateTypeCode;
+	
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "module_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	private ModuleDetail moduleDetail;
+	
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private TemplateFileFormat templateFileFormat;
+	
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private TemplateType templateType;
 
 }

@@ -24,7 +24,16 @@
 				"dateOfBirth": {
 					"$ref": "#/definitions/values"
 				},
+				"dateOfBirthType": {
+					"$ref": "#/definitions/values"
+				},
 				"gender": {
+					"$ref": "#/definitions/values"
+				},
+				"mobileNumber": {
+					"$ref": "#/definitions/values"
+				},
+				"emailId": {
 					"$ref": "#/definitions/values"
 				},
 				"addressLine1": {
@@ -48,12 +57,6 @@
 				"localAdministrativeAuthority": {
 					"$ref": "#/definitions/values"
 				},
-				"mobileNumber": {
-					"$ref": "#/definitions/values"
-				},
-				"emailId": {
-					"$ref": "#/definitions/values"
-				},
 				"CNEOrPINNumber": {
 					"$ref": "#/definitions/values"
 				},
@@ -69,13 +72,37 @@
 				"rightEye": {
 					"$ref": "#/definitions/values"
 				},
-				"biometricScan1": {
+				"leftIndex": {
 					"$ref": "#/definitions/values"
 				},
-				"biometricScan2": {
+				"leftLittle": {
 					"$ref": "#/definitions/values"
 				},
-				"biometricScan3": {
+				"leftMiddle": {
+					"$ref": "#/definitions/values"
+				},
+				"leftRing": {
+					"$ref": "#/definitions/values"
+				},
+				"leftThumb": {
+					"$ref": "#/definitions/values"
+				},
+				"rightIndex": {
+					"$ref": "#/definitions/values"
+				},
+				"rightLittle": {
+					"$ref": "#/definitions/values"
+				},
+				"rightMiddle": {
+					"$ref": "#/definitions/values"
+				}
+				"rightRing": {
+					"$ref": "#/definitions/values"
+				},
+				"rightThumb": {
+					"$ref": "#/definitions/values"
+				},
+				"face": {
 					"$ref": "#/definitions/values"
 				}
 			}

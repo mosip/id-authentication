@@ -9,7 +9,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +37,6 @@ public class RegistrationCenterMachine extends BaseEntity implements Serializabl
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")) })
-	private RegistrationCenterMachineUserID registrationCenterMachinePk;
+	private RegistrationCenterMachineID registrationCenterMachinePk;
 
 }
