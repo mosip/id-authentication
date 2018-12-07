@@ -1,6 +1,7 @@
 package io.mosip.kernel.synchandler.service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
 
@@ -18,6 +19,9 @@ public interface MasterDataService {
 	 * @param machineId
 	 * @param lastUpdated
 	 * @return {@link MasterDataResponseDto}
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated);
+	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
+			throws InterruptedException, ExecutionException;
 }

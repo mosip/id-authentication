@@ -3,9 +3,11 @@ package io.mosip.kernel.synchandler.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.synchandler.constant.MasterDataErrorCode;
@@ -147,7 +149,8 @@ public class MasterDataServiceHelper {
 	@Autowired
 	private ReasonListRepository reasonListRepository;
 
-	public List<MachineDto> getMachines(String id, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<MachineDto>> getMachines(String id, LocalDateTime lastUpdated) {
 		List<Machine> machineDetailList = new ArrayList<>();
 		List<MachineDto> machineDetailDtoList = null;
 		try {
@@ -164,10 +167,11 @@ public class MasterDataServiceHelper {
 			machineDetailDtoList = mapper.mapMachineListDto(machineDetailList);
 		}
 
-		return machineDetailDtoList;
+		return CompletableFuture.completedFuture(machineDetailDtoList);
 	}
 
-	public List<MachineTypeDto> getMachineType(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<MachineTypeDto>> getMachineType(String machineId, LocalDateTime lastUpdated) {
 		List<MachineTypeDto> machineTypeList = null;
 		List<MachineType> machineTypes = null;
 		try {
@@ -184,11 +188,13 @@ public class MasterDataServiceHelper {
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
 			machineTypeList = mapper.mapMachineType(machineTypes);
-		return machineTypeList;
+		return CompletableFuture.completedFuture(machineTypeList);
 
 	}
 
-	public List<MachineSpecificationDto> getMachineSpecification(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<MachineSpecificationDto>> getMachineSpecification(String machineId,
+			LocalDateTime lastUpdated) {
 		List<MachineSpecification> machineSpecification = null;
 		List<MachineSpecificationDto> machineSpecificationDto = null;
 
@@ -207,10 +213,12 @@ public class MasterDataServiceHelper {
 		if (machineSpecification != null && !machineSpecification.isEmpty())
 			machineSpecificationDto = mapper.mapMachineSpecification(machineSpecification);
 
-		return machineSpecificationDto;
+		return CompletableFuture.completedFuture(machineSpecificationDto);
 	}
 
-	public List<RegistrationCenterDto> getRegistrationCenter(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
+			LocalDateTime lastUpdated) {
 		List<RegistrationCenterDto> registrationCenterList = new ArrayList<>();
 		List<RegistrationCenter> list = null;
 		try {
@@ -226,10 +234,12 @@ public class MasterDataServiceHelper {
 			registrationCenterList = mapper.mapRegistrationCenter(list);
 		}
 
-		return registrationCenterList;
+		return CompletableFuture.completedFuture(registrationCenterList);
 	}
 
-	public List<RegistrationCenterTypeDto> getRegistrationCenterType(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<RegistrationCenterTypeDto>> getRegistrationCenterType(String machineId,
+			LocalDateTime lastUpdated) {
 		List<RegistrationCenterTypeDto> registrationCenterTypes = new ArrayList<>();
 		List<RegistrationCenterType> registrationCenterType = null;
 		try {
@@ -247,10 +257,11 @@ public class MasterDataServiceHelper {
 		if (registrationCenterType != null && !registrationCenterType.isEmpty())
 			registrationCenterTypes = mapper.mapAll(registrationCenterType, RegistrationCenterTypeDto.class);
 
-		return registrationCenterTypes;
+		return CompletableFuture.completedFuture(registrationCenterTypes);
 	}
 
-	public List<ApplicationDto> getApplications(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<ApplicationDto>> getApplications(LocalDateTime lastUpdated) {
 		List<ApplicationDto> applications = null;
 		List<Application> applicationList = null;
 		try {
@@ -265,10 +276,11 @@ public class MasterDataServiceHelper {
 		if (!(applicationList.isEmpty())) {
 			applications = mapper.mapAll(applicationList, ApplicationDto.class);
 		}
-		return applications;
+		return CompletableFuture.completedFuture(applications);
 	}
 
-	public List<TemplateDto> getTemplates(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<TemplateDto>> getTemplates(LocalDateTime lastUpdated) {
 		List<TemplateDto> templates = null;
 		List<Template> templateList = null;
 		try {
@@ -284,10 +296,11 @@ public class MasterDataServiceHelper {
 		if (templateList != null && !templateList.isEmpty()) {
 			templates = mapper.mapAll(templateList, TemplateDto.class);
 		}
-		return templates;
+		return CompletableFuture.completedFuture(templates);
 	}
 
-	public List<TemplateFileFormatDto> getTemplateFileFormats(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<TemplateFileFormatDto>> getTemplateFileFormats(LocalDateTime lastUpdated) {
 		List<TemplateFileFormatDto> templateFormats = null;
 		List<TemplateFileFormat> templateTypes = null;
 		try {
@@ -301,17 +314,18 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		templateFormats = mapper.mapAll(templateTypes, TemplateFileFormatDto.class);
-		return templateFormats;
+		return CompletableFuture.completedFuture(templateFormats);
 	}
 
-	public List<PostReasonCategoryDto> getReasonCategory(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<PostReasonCategoryDto>> getReasonCategory(LocalDateTime lastUpdated) {
 		List<PostReasonCategoryDto> reasonCategories = null;
 		List<ReasonCategory> reasons = null;
 		try {
 			if (lastUpdated != null) {
 				reasons = reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
 			} else {
-				reasons = reasonCategoryRepository.findAll();
+				reasons = reasonCategoryRepository.findAllReasons();
 			}
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -320,10 +334,11 @@ public class MasterDataServiceHelper {
 		if (reasons != null && !reasons.isEmpty()) {
 			reasonCategories = mapper.mapAll(reasons, PostReasonCategoryDto.class);
 		}
-		return reasonCategories;
+		return CompletableFuture.completedFuture(reasonCategories);
 	}
 
-	public List<ReasonListDto> getReasonList(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<ReasonListDto>> getReasonList(LocalDateTime lastUpdated) {
 		List<ReasonListDto> reasonList = null;
 		List<ReasonList> reasons = null;
 		try {
@@ -339,10 +354,11 @@ public class MasterDataServiceHelper {
 		if (reasons != null && !reasons.isEmpty())
 			reasonList = mapper.mapAll(reasons, ReasonListDto.class);
 
-		return reasonList;
+		return CompletableFuture.completedFuture(reasonList);
 	}
 
-	public List<HolidayDto> getHolidays(LocalDateTime lastUpdated, String machineId) {
+	@Async
+	public CompletableFuture<List<HolidayDto>> getHolidays(LocalDateTime lastUpdated, String machineId) {
 		List<HolidayDto> holidayList = null;
 		List<Holiday> holidays = null;
 		try {
@@ -359,10 +375,11 @@ public class MasterDataServiceHelper {
 		if (holidays != null && !holidays.isEmpty())
 			holidayList = mapper.mapHolidays(holidays);
 
-		return holidayList;
+		return CompletableFuture.completedFuture(holidayList);
 	}
 
-	public List<BlacklistedWordsDto> getBlackListedWords(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated) {
 		List<BlacklistedWordsDto> blacklistedWords = null;
 		List<BlacklistedWords> words = null;
 
@@ -380,10 +397,11 @@ public class MasterDataServiceHelper {
 			blacklistedWords = mapper.mapAll(words, BlacklistedWordsDto.class);
 		}
 
-		return blacklistedWords;
+		return CompletableFuture.completedFuture(blacklistedWords);
 	}
 
-	public List<BiometricTypeDto> getBiometricTypes(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<BiometricTypeDto>> getBiometricTypes(LocalDateTime lastUpdated) {
 		List<BiometricTypeDto> biometricTypeDtoList = null;
 		List<BiometricType> biometricTypesList = null;
 		try {
@@ -398,10 +416,11 @@ public class MasterDataServiceHelper {
 		if (!(biometricTypesList.isEmpty())) {
 			biometricTypeDtoList = mapper.mapAll(biometricTypesList, BiometricTypeDto.class);
 		}
-		return biometricTypeDtoList;
+		return CompletableFuture.completedFuture(biometricTypeDtoList);
 	}
 
-	public List<BiometricAttributeDto> getBiometricAttributes(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<BiometricAttributeDto>> getBiometricAttributes(LocalDateTime lastUpdated) {
 		List<BiometricAttributeDto> biometricAttrList = null;
 		List<BiometricAttribute> biometricAttrs = null;
 		try {
@@ -417,10 +436,11 @@ public class MasterDataServiceHelper {
 		if (biometricAttrs != null && !biometricAttrs.isEmpty()) {
 			biometricAttrList = mapper.mapAll(biometricAttrs, BiometricAttributeDto.class);
 		}
-		return biometricAttrList;
+		return CompletableFuture.completedFuture(biometricAttrList);
 	}
 
-	public List<TitleDto> getTitles(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<TitleDto>> getTitles(LocalDateTime lastUpdated) {
 		List<TitleDto> titleList = null;
 		List<Title> titles = null;
 		try {
@@ -435,11 +455,12 @@ public class MasterDataServiceHelper {
 		if (titles != null && !titles.isEmpty()) {
 			titleList = mapper.maptitles(titles);
 		}
-		return titleList;
+		return CompletableFuture.completedFuture(titleList);
 
 	}
 
-	public List<LanguageDto> getLanguages(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<LanguageDto>> getLanguages(LocalDateTime lastUpdated) {
 		List<LanguageDto> languageList = null;
 		List<Language> languages = null;
 		try {
@@ -454,10 +475,11 @@ public class MasterDataServiceHelper {
 		if (languages != null && !languages.isEmpty()) {
 			languageList = mapper.mapAll(languages, LanguageDto.class);
 		}
-		return languageList;
+		return CompletableFuture.completedFuture(languageList);
 	}
 
-	public List<GenderDto> getGenders(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<GenderDto>> getGenders(LocalDateTime lastUpdated) {
 		List<GenderDto> genderDto = null;
 		List<Gender> genderType = null;
 
@@ -473,10 +495,11 @@ public class MasterDataServiceHelper {
 		if (!(genderType.isEmpty())) {
 			genderDto = mapper.mapAll(genderType, GenderDto.class);
 		}
-		return genderDto;
+		return CompletableFuture.completedFuture(genderDto);
 	}
 
-	public List<DeviceDto> getDevices(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<DeviceDto>> getDevices(String machineId, LocalDateTime lastUpdated) {
 		List<Device> devices = null;
 		List<DeviceDto> deviceList = null;
 		try {
@@ -491,11 +514,12 @@ public class MasterDataServiceHelper {
 
 		if (devices != null && !devices.isEmpty())
 			deviceList = mapper.mapAll(devices, DeviceDto.class);
-		return deviceList;
+		return CompletableFuture.completedFuture(deviceList);
 	}
 
-	public List<DocumentCategoryDto> getDocumentCategories(LocalDateTime lastUpdated) {
-		List<DocumentCategoryDto> ducumentCategoryList = null;
+	@Async
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated) {
+		List<DocumentCategoryDto> documentCategoryList = null;
 		List<DocumentCategory> documentCategories = null;
 		try {
 			if (lastUpdated != null)
@@ -508,12 +532,13 @@ public class MasterDataServiceHelper {
 		}
 
 		if (documentCategories != null && !documentCategories.isEmpty())
-			ducumentCategoryList = mapper.mapAll(documentCategories, DocumentCategoryDto.class);
+			documentCategoryList = mapper.mapAll(documentCategories, DocumentCategoryDto.class);
 
-		return ducumentCategoryList;
+		return CompletableFuture.completedFuture(documentCategoryList);
 	}
 
-	public List<DocumentTypeDto> getDocumentTypes(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<DocumentTypeDto>> getDocumentTypes(LocalDateTime lastUpdated) {
 		List<DocumentTypeDto> documentTypeList = null;
 		List<DocumentType> documentTypes = null;
 		try {
@@ -529,10 +554,11 @@ public class MasterDataServiceHelper {
 		if (documentTypes != null && !documentTypes.isEmpty())
 			documentTypeList = mapper.mapAll(documentTypes, DocumentTypeDto.class);
 
-		return documentTypeList;
+		return CompletableFuture.completedFuture(documentTypeList);
 	}
 
-	public List<IdTypeDto> getIdTypes(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<IdTypeDto>> getIdTypes(LocalDateTime lastUpdated) {
 		List<IdTypeDto> idTypeList = null;
 		List<IdType> idTypes = null;
 		try {
@@ -546,15 +572,17 @@ public class MasterDataServiceHelper {
 		}
 		if (idTypes != null && !idTypes.isEmpty())
 			idTypeList = mapper.mapAll(idTypes, IdTypeDto.class);
-		return idTypeList;
+		return CompletableFuture.completedFuture(idTypeList);
 	}
 
-	public List<DeviceSpecificationDto> getDeviceSpecifications(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String machineId,
+			LocalDateTime lastUpdated) {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
 			if (lastUpdated != null)
-				deviceSpecificationList = deviceSpecificationRepository.findlatestDeviceTypeByMachineId(machineId,
+				deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByMachineId(machineId,
 						lastUpdated);
 			else
 				deviceSpecificationList = deviceSpecificationRepository.findAll();
@@ -564,11 +592,12 @@ public class MasterDataServiceHelper {
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty())
 			deviceSpecificationDtoList = mapper.mapDeviceSpecification(deviceSpecificationList);
-		return deviceSpecificationDtoList;
+		return CompletableFuture.completedFuture(deviceSpecificationDtoList);
 
 	}
 
-	public List<LocationDto> getLocationHierarchy(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<LocationDto>> getLocationHierarchy(LocalDateTime lastUpdated) {
 		List<LocationDto> responseList = null;
 		List<Location> locations = null;
 		try {
@@ -583,10 +612,11 @@ public class MasterDataServiceHelper {
 		if (!locations.isEmpty()) {
 			responseList = mapper.mapAll(locations, LocationDto.class);
 		}
-		return responseList;
+		return CompletableFuture.completedFuture(responseList);
 	}
 
-	public List<TemplateTypeDto> getTemplateTypes(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<TemplateTypeDto>> getTemplateTypes(LocalDateTime lastUpdated) {
 		List<TemplateTypeDto> templateTypeList = null;
 		List<TemplateType> templateTypes = null;
 		try {
@@ -602,10 +632,11 @@ public class MasterDataServiceHelper {
 		if (templateTypes != null && !templateTypes.isEmpty())
 			templateTypeList = mapper.mapAll(templateTypes, TemplateTypeDto.class);
 
-		return templateTypeList;
+		return CompletableFuture.completedFuture(templateTypeList);
 	}
 
-	public List<DeviceTypeDto> getDeviceType(String machineId, LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<DeviceTypeDto>> getDeviceType(String machineId, LocalDateTime lastUpdated) {
 		List<DeviceTypeDto> deviceTypeList = null;
 		List<DeviceType> deviceTypes = null;
 		try {
@@ -621,10 +652,11 @@ public class MasterDataServiceHelper {
 		if (deviceTypes != null && !deviceTypes.isEmpty()) {
 			deviceTypeList = mapper.mapAll(deviceTypes, DeviceTypeDto.class);
 		}
-		return deviceTypeList;
+		return CompletableFuture.completedFuture(deviceTypeList);
 	}
 
-	public List<ValidDocumentDto> getValidDocuments(LocalDateTime lastUpdated) {
+	@Async
+	public CompletableFuture<List<ValidDocumentDto>> getValidDocuments(LocalDateTime lastUpdated) {
 		List<ValidDocumentDto> validDocumentList = null;
 		List<ValidDocument> validDocuments = null;
 		try {
@@ -640,6 +672,6 @@ public class MasterDataServiceHelper {
 		if (validDocuments != null && !validDocuments.isEmpty()) {
 			validDocumentList = mapper.mapAll(validDocuments, ValidDocumentDto.class);
 		}
-		return validDocumentList;
+		return CompletableFuture.completedFuture(validDocumentList);
 	}
 }
