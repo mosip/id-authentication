@@ -145,7 +145,7 @@ public class HolidayServiceImpl implements HolidayService {
 					ExceptionUtils.parseException(e));
 		}
 		HolidayID holidayId = new HolidayID();
-		mapperUtil.mapNew(holiday, holidayId);
+		mapperUtil.map(holiday, holidayId);
 		return holidayId;
 
 	}

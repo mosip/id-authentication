@@ -83,10 +83,12 @@ public class MachineHistoryServiceImplTest {
 		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
 		machineHistoryList.add(machineHistory);
 		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
-		Mockito.when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-				Mockito.anyString(), Mockito.anyString(), Mockito.any(LocalDateTime.class)))
+		Mockito.when(machineHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.thenReturn(machineHistoryList);
-		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class)).thenReturn(machineHistoryDtoList);
+		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class))
+				.thenReturn(machineHistoryDtoList);
 		MachineHistoryResponseDto actual = machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG",
 				"2018-10-29T00:00:05");
 		Assert.assertNotNull(actual);
@@ -94,27 +96,32 @@ public class MachineHistoryServiceImplTest {
 
 	}
 
-	/*@Test(expected = MasterDataServiceException.class)
-	public void getMachineHistoryIdLangThrowsExcetionTest() {
-		// Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
-		// Mockito.when(machineHistoryRepository
-		// .findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.anyString(),
-		// Mockito.anyString(), Mockito.any()))
-		// .thenReturn(null);
+	/*
+	 * @Test(expected = MasterDataServiceException.class) public void
+	 * getMachineHistoryIdLangThrowsExcetionTest() { //
+	 * Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).
+	 * thenReturn(localDateTime); // Mockito.when(machineHistoryRepository //
+	 * .findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.
+	 * anyString(), // Mockito.anyString(), Mockito.any())) // .thenReturn(null);
+	 * 
+	 * machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG",
+	 * "2018-10-29T00:00:05");
+	 * 
+	 * }
+	 */
 
-		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
-
-	}*/
-
-	/*@Test(expected = MasterDataServiceException.class)
-	public void getMachineHistoryIdLangThrowsDataAccessExcetionTest() {
-		// Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
-		// Mockito.when(machineHistoryRepository
-		// .findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.anyString(),
-		// Mockito.anyString(), Mockito.any(LocalDateTime.class)))
-		// .thenThrow(DataRetrievalFailureException.class);
-		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
-
-	}*/
+	/*
+	 * @Test(expected = MasterDataServiceException.class) public void
+	 * getMachineHistoryIdLangThrowsDataAccessExcetionTest() { //
+	 * Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).
+	 * thenReturn(localDateTime); // Mockito.when(machineHistoryRepository //
+	 * .findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.
+	 * anyString(), // Mockito.anyString(), Mockito.any(LocalDateTime.class))) //
+	 * .thenThrow(DataRetrievalFailureException.class);
+	 * machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG",
+	 * "2018-10-29T00:00:05");
+	 * 
+	 * }
+	 */
 
 }

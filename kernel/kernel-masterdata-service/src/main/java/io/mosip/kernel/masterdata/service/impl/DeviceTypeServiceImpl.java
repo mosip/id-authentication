@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -14,6 +13,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -32,8 +32,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
 
+	
 	@Autowired
-	private DataMapper dataMapper;
+	private MapperUtils objectMapperUtil;
 
 	@Override
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceType) {
@@ -50,7 +51,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		}
 		
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
+		objectMapperUtil.map(renDeviceType, codeLangCodeId);
 		return codeLangCodeId;
 	}
 

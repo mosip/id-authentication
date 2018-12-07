@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineResponseDto;
@@ -54,10 +53,7 @@ public class MachineServiceImpl implements MachineService {
 	
 	@Autowired
 	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private DataMapper dataMapper;
-
+	
 	/**
 	 * Method used for retrieving Machine details based on given Machine ID and
 	 * Language code
@@ -94,7 +90,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machine != null) {
-			machineDto = objectMapperUtil.mapNew(machine, MachineDto.class);
+			machineDto = objectMapperUtil.map(machine, MachineDto.class);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -137,7 +133,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
+			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -180,7 +176,7 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAllNew(machineList, MachineDto.class);
+			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
 	
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -204,7 +200,7 @@ public class MachineServiceImpl implements MachineService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(crtMachine, idResponseDto, true, null, null, true);
+		objectMapperUtil.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
 	}

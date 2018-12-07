@@ -84,7 +84,7 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
-			deviceDtoList = objectMapperUtil.mapAllNew(deviceList, DeviceDto.class);
+			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
 					
 		} else {
 			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -157,7 +157,7 @@ public class DeviceServiceImpl implements DeviceService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(device, idResponseDto, true, null, null, true);
+		objectMapperUtil.map(device, idResponseDto);
 
 		return idResponseDto;
 

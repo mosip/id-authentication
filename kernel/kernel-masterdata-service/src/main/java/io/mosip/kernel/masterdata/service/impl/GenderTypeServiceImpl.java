@@ -92,11 +92,14 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		if (gender.isEmpty()) {
+		if (gender != null && !gender.isEmpty()) {
+			genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
+		}
+		else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
+		
 
 		genderResponseDto = new GenderTypeResponseDto();
 		genderResponseDto.setGenderType(genderListDto);

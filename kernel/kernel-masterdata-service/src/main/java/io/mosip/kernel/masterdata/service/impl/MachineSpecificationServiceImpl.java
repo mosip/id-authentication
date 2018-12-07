@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -14,6 +13,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
@@ -26,7 +26,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	MachineSpecificationRepository machineSpecificationRepository;
 	
 	@Autowired
-	private DataMapper dataMapper;
+	MapperUtils objectMapperUtil;
 
 	@Override
 	public IdResponseDto createMachineSpecification(
@@ -44,7 +44,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					e.getErrorText()+ "  " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-				dataMapper.map(renMachineSpecification, idResponseDto, true, null, null, true);
+		objectMapperUtil.map(renMachineSpecification, idResponseDto);
 			
 		return idResponseDto;	
 	

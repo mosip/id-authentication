@@ -48,7 +48,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.mapNew(templateType, codeLangCodeId);
+		objectMapperUtil.map(templateType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

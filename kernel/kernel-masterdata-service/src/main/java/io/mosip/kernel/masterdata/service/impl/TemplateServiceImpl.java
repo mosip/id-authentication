@@ -128,7 +128,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(templateEntity, idResponseDto);
+		objectMapperUtil.map(templateEntity, idResponseDto);
 
 		return idResponseDto;
 	}

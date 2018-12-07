@@ -32,8 +32,6 @@ import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
-import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -268,7 +266,6 @@ public class MasterDataServiceTest {
 
 		documentTypeSetup();
 
-		deviceTypeSetUp();
 
 	}
 
@@ -565,8 +562,7 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(request);
 	}
 	
-	private DeviceTypeRequestDto reqTypeDto;
-	private DeviceTypeDtoData request;
+
 	private List<DeviceTypeDto> deviceTypeDtoList;
 	private DeviceTypeDto deviceTypeDto;
 
@@ -575,37 +571,6 @@ public class MasterDataServiceTest {
 	private List<CodeAndLanguageCodeID> codeLangCodeIds;
 	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
-	private void deviceTypeSetUp() {
-
-		reqTypeDto = new DeviceTypeRequestDto();
-		request = new DeviceTypeDtoData();
-		deviceTypeDtoList = new ArrayList<>();
-		deviceTypeDto = new DeviceTypeDto();
-
-		deviceTypeDto.setCode("Laptop");
-		deviceTypeDto.setCode("Laptop");
-		deviceTypeDto.setLangCode("ENG");
-		deviceTypeDto.setName("HP");
-		deviceTypeDto.setDescription("Laptop Desc");
-		deviceTypeDtoList.add(deviceTypeDto);
-		//request.setDeviceTypeDtos(deviceTypeDtoList);
-		reqTypeDto.setRequest(request);
-
-		deviceTypeList = new ArrayList<>();
-		deviceType = new DeviceType();
-		deviceType.setCode("Laptop");
-		deviceType.setLangCode("ENG");
-		deviceType.setName("HP");
-		deviceType.setDescription("Laptop Desc");
-		deviceTypeList.add(deviceType);
-
-		codeLangCodeIds = new ArrayList<>();
-		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
-		codeAndLanguageCodeId.setCode("Laptop");
-		codeAndLanguageCodeId.setLangCode("ENG");
-		codeLangCodeIds.add(codeAndLanguageCodeId);
-
-	}
 
 	// ----------------------- ApplicationServiceTest ----------------
 	@Test
@@ -965,23 +930,6 @@ public class MasterDataServiceTest {
 
 	}
 
-	/*@Test
-	public void addDeviceSpecificationsTest() {
-		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn(deviceSpecificationList);
-		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService
-				.saveDeviceSpecifications(deviceSpecificationRequestDto);
-		assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).getId(),
-				deviceSpecPostResponseDto.getResults().get(0).getId());
-	}
-	
-	
-	@Test(expected = MasterDataServiceException.class)
-	public void testaddSpecificationThrowsDataAccessException() {
-		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
-	}*/
-
 	// ------------------ DocumentCategoryServiceTest -----------------
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1311,25 +1259,7 @@ public class MasterDataServiceTest {
 
 	}
 
-	//----------------------------------------DeviceTypeServiceImplTest------------------------------------------------
-	
-	/*
-	 * @Test public void addDeviceTypesTest() {
-	 * Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(
-	 * deviceTypeList); PostResponseDto postResponseDto =
-	 * deviceTypeService.saveDeviceTypes(reqTypeDto);
-	 * assertEquals(request.getDeviceTypeDtos().get(0).getCode(),
-	 * postResponseDto.getResults().get(0).getCode()); }
-	 * 
-	 * @Test(expected = MasterDataServiceException.class) public void
-	 * testaddDeviceTypesThrowsDataAccessException() {
-	 * Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(
-	 * DataRetrievalFailureException.class);
-	 * deviceTypeService.saveDeviceTypes(reqTypeDto); }
-	 */
-
-	// ----------------------------------------------- Blacklisted word validator
-	// ----------------------
+	// ----------------------------------------------- Blacklisted word validator ----------------------
 	@Test
 	public void validateWordNegativeTest() {
 		List<BlacklistedWords> badWords = new ArrayList<>();

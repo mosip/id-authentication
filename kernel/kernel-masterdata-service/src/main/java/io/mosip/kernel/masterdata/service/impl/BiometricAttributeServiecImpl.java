@@ -73,7 +73,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 
-		mapperUtil.mapNew(entity, codeAndLanguageCodeId);
+		mapperUtil.map(entity, codeAndLanguageCodeId);
 
 		return codeAndLanguageCodeId;
 	}
