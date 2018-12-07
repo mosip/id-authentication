@@ -86,7 +86,8 @@ public class OperatorAuthenticationController extends BaseController implements 
 	@FXML
 	private TextField otp;
 
-	private FingerprintFacade fingerprintFacade = null;
+	@Autowired
+	private FingerprintFacade fingerprintFacade ;
 
 	@Value("${QUALITY_SCORE}")
 	private int qualityScore;
