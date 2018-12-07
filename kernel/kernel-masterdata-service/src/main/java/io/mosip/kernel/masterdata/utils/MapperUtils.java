@@ -324,18 +324,7 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	public List<RegistrationCenterHierarchyLevelDto> mapRegistrationCenterHierarchyLevel(
-			List<RegistrationCenter> list) {
-		List<RegistrationCenterHierarchyLevelDto> responseDto = new ArrayList<>();
-		list.forEach(p -> {
-			RegistrationCenterHierarchyLevelDto dto = new RegistrationCenterHierarchyLevelDto();
-			dataMapperImpl.map(p, dto, new RegistrationCenterHierarchyLevelConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
 
-		return responseDto;
-	}
 
 	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
 		List<RegistrationCenterDto> responseDto = new ArrayList<>();
