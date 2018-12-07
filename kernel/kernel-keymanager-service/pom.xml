@@ -81,6 +81,7 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>
