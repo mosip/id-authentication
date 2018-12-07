@@ -34,12 +34,13 @@ public class DeviceSpecificationTest {
 	private DeviceSpecificationRepository deviceSpecificationRepository;
 	
 	List<DeviceSpecification> deviceSpecList;
+	DeviceSpecification deviceSpecification ;
 	
 	@Before
 	public void setUp() {
 		
 		deviceSpecList = new ArrayList<>();
-		DeviceSpecification deviceSpecification = new DeviceSpecification();
+		deviceSpecification = new DeviceSpecification();
 		deviceSpecification.setId("1000");
 		deviceSpecification.setName("Laptop");
 		deviceSpecification.setBrand("HP");
