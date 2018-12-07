@@ -432,7 +432,8 @@ public class PacketInfoMapper {
 			String encodedInputString = phoneticEngine.encode(getName(demoDto.getName(), languageArray[i]),
 					Languages.LanguageSet.from(languageSet));
 			Soundex soundex = new Soundex();
-			entity.setPhoneticName(soundex.encode(encodedInputString));
+			if (soundex.encode(encodedInputString) != null)
+				entity.setPhoneticName(soundex.encode(encodedInputString));
 
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
