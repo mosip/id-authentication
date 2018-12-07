@@ -9,9 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
@@ -19,6 +17,11 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
 
 public enum BioAuthType implements AuthType {
 
@@ -35,8 +38,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
 			AuthTypeDTO::isBio, "Fingerprint"),
 	IRIS_IMG("irisImg", Collections.emptySet(), AuthTypeDTO::isBio, "Iris"),
-	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face")
-	;
+	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face");
 	private String type;
 
 	/**  */
@@ -125,11 +127,8 @@ public enum BioAuthType implements AuthType {
 
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getBioInfo())
-				.flatMap(list -> 
-						list.stream()
-						.filter(bioInfo -> bioInfo.getBioType()
-								.equalsIgnoreCase(getType())).findAny())
+		return Optional.ofNullable(authRequestDTO.getBioInfo()).flatMap(
+				list -> list.stream().filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}
 

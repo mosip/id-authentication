@@ -8,11 +8,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -32,6 +30,11 @@ import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
+
 @Component
 public class IdInfoHelper {
 
@@ -40,13 +43,14 @@ public class IdInfoHelper {
 
 	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
 	public static final String DEFAULT_MATCH_VALUE = "demo.default.match.value";
-	
+
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+
 	/** The environment. */
 
 	public Optional<String> getLanguageName(String languageCode) {
@@ -158,14 +162,13 @@ public class IdInfoHelper {
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
 		}
-	
+
 		Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType
 				.getMatchStrategyType(matchStrategyTypeStr);
 		if (matchStrategyType.isPresent()) {
 			MatchingStrategyType strategyType = matchStrategyType.get();
 			MatchType matchType = input.getMatchType();
-			Optional<MatchingStrategy> matchingStrategy = matchType
-					.getAllowedMatchingStrategy(strategyType);
+			Optional<MatchingStrategy> matchingStrategy = matchType.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Optional<Object> reqInfoOpt = getIdentityInfo(matchType, identityDTO);
@@ -179,7 +182,7 @@ public class IdInfoHelper {
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
 				}
 			}
-	
+
 		}
 		return null;
 	}
@@ -208,7 +211,7 @@ public class IdInfoHelper {
 					}
 					return null;
 				}).filter(Objects::nonNull)).orElseGet(Stream::empty).collect(Collectors.toList());
-	
+
 	}
 
 	/**
@@ -221,26 +224,25 @@ public class IdInfoHelper {
 	 * @return the list
 	 */
 	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType) {
-		
-		if(matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {
+
+		if (matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {
 			return null;
 		} else {
 			Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 			String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-			Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO,
-					this::getLanguageCode);
+			Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, this::getLanguageCode);
 			if (matchingStrategyOpt.isPresent()) {
 				matchingStrategy = matchingStrategyOpt.get();
 				if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
 							this::getLanguageCode, environment);
-					matchValue = matchThresholdOpt.orElseGet(() ->  Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
+					matchValue = matchThresholdOpt
+							.orElseGet(() -> Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
 				}
 			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO,
-					this::getLanguageCode);
-	
+			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this::getLanguageCode);
+
 			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties);
 		}
 	}
@@ -248,13 +250,13 @@ public class IdInfoHelper {
 	public AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
 			List<MatchOutput> listMatchOutputs, AuthType[] authTypes) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-	
+
 		statusInfoBuilder.setStatus(demoMatched);
-	
+
 		buildMatchInfos(listMatchInputs, statusInfoBuilder, authTypes);
-	
+
 		buildUsageDataBits(listMatchOutputs, statusInfoBuilder);
-	
+
 		return statusInfoBuilder.build();
 	}
 
@@ -270,8 +272,7 @@ public class IdInfoHelper {
 			AuthType[] authTypes) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			MatchType matchType = matchInput.getMatchType();
-			boolean hasPartialMatch = matchType
-					.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent();
+			boolean hasPartialMatch = matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent();
 			Category category = matchType.getCategory();
 			if (hasPartialMatch && category.equals(Category.DEMO)) {
 				String ms = matchInput.getMatchStrategyType();
@@ -284,11 +285,10 @@ public class IdInfoHelper {
 				}
 				AuthType authType = matchInput.getAuthType();
 				String authTypeStr = authType.getType();
-	
-				statusInfoBuilder.addMessageInfo(authTypeStr, ms, mt,
-						getLanguageCode(matchType.getLanguageType()));
+
+				statusInfoBuilder.addMessageInfo(authTypeStr, ms, mt, getLanguageCode(matchType.getLanguageType()));
 			}
-	
+
 			statusInfoBuilder.addAuthUsageDataBits(matchType.getUsedBit());
 		});
 	}

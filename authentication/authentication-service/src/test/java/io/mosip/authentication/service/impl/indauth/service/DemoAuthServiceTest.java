@@ -54,16 +54,11 @@ public class DemoAuthServiceTest {
 	@Autowired
 	private Environment environment;
 
-//	@InjectMocks
-//	private IdInfoHelper idInfoHelper;
-
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
-
-//	private IdInfoMatcher demomatcher = new IdInfoMatcher();
 
 	@Mock
 	private IdInfoHelper idInfoHelper;
@@ -73,16 +68,10 @@ public class DemoAuthServiceTest {
 
 	@Before
 	public void before() {
-
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
-//		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
-
-//		ReflectionTestUtils.setField(demomatcher, "idInfoHelper", idInfoHelper);
-
 	}
 
 	@Test
@@ -470,20 +459,19 @@ public class DemoAuthServiceTest {
 
 	}
 
-//	@Test(expected = IdAuthenticationBusinessException.class)
-//	public void TestInValidgetDemoStatus()
-//			throws IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException,
-//			IllegalArgumentException, InvocationTargetException, IdAuthenticationDaoException {
-//		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
-//		Mockito.when(idInfoService.getIdInfo(Mockito.anyString())).thenReturn(null);
-//		AuthRequestDTO authRequestDTO = generateData();
-//		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-//		list.add(new IdentityInfoDTO("en", "mosip"));
-//		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-//		idInfo.put("name", list);
-//		idInfo.put("email", list);
-//		idInfo.put("phone", list);
-//		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212",idInfo);
-//	}
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = generateData();
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", idInfo);
+	}
+
+	@Test
+	public void TestcontstructMatchInput() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		DemoMatchType demoMatchType = DemoMatchType.NAME_PRI;
+		AuthType demoAuthType = null;
+		demoAuthServiceImpl.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
+	}
 
 }
