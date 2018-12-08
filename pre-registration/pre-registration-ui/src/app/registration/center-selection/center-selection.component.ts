@@ -129,6 +129,7 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.bookingDataList = [];
     this.timeSelectionComponent.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
@@ -141,7 +142,7 @@ export class CenterSelectionComponent implements OnInit {
     });
     const request = new BookingModelRequest(this.bookingDataList);
     console.log(request);
-    this.dataService.makeBooking(request).subscribe(response => {
+    this.dataService.makeBooking(request).subscribe(() => {
         const data = {
             case: 'MESSAGE',
             title: 'Success',
