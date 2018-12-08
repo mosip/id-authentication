@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -58,10 +59,10 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		RegistrationCenterType registrationCenterType;
 		try {
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(dataAccessLayerException));
+							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		dataMapper.map(registrationCenterType, codeAndLanguageCodeID, true, null, null, true);

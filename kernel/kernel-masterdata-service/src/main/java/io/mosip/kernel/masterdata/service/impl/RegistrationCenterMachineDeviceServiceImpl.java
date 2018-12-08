@@ -1,6 +1,7 @@
  package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -59,7 +60,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(
 					savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					ResponseRrgistrationCenterMachineDeviceDto.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
 							.getErrorCode(),

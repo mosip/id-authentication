@@ -81,7 +81,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		try {
 			documentType = documentTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

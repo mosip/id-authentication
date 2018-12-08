@@ -140,7 +140,7 @@ public class HolidayServiceImpl implements HolidayService {
 		Holiday holiday;
 		try {
 			holiday = holidayRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -38,10 +39,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				.setCreateMetaData(machineSpecification.getRequest(), MachineSpecification.class);
 		try {
 			 renMachineSpecification = machineSpecificationRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText()+ "  " + ExceptionUtils.parseException(e));
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()+ "  " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		objectMapperUtil.map(renMachineSpecification, idResponseDto);

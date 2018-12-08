@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -37,7 +38,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 
 		try {
 			renMachineType = machineTypeRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()+ "  " + ExceptionUtils.parseException(e));
 		}

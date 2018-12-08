@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -57,7 +58,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		try {
 			genderType = genderTypeRepository.findAll(Gender.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
@@ -88,7 +89,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		try {
 			gender = genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
@@ -120,7 +121,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		Gender gender;
 		try {
 			gender = genderTypeRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

@@ -152,7 +152,7 @@ public class DeviceServiceImpl implements DeviceService {
 		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
 		try {
 			device = deviceRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

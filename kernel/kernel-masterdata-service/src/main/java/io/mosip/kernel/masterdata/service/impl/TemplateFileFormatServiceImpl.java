@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -46,7 +47,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		TemplateFileFormat templateFileFormat;
 		try {
 			templateFileFormat = templateFileFormatRepository.create(entity);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorMessage() + " "

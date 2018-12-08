@@ -209,7 +209,7 @@ public class LocationServiceImpl implements LocationService {
 		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException ex) {
+		} catch (DataAccessLayerException  | DataAccessException   ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));

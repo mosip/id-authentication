@@ -197,7 +197,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			crtMachine = machineRepository.create(entity);
 			machineHistoryRepository.create(entityHistory);
-		} catch (DataAccessLayerException | CannotCreateTransactionException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

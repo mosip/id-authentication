@@ -98,10 +98,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		objectMapperUtil.map(renDeviceSpecification, idResponseDto);

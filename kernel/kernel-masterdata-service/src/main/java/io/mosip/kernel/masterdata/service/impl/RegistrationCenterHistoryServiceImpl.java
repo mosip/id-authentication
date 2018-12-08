@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -57,7 +58,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 			registrationCenters = registrationCenterHistoryRepository
 					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId,
 							langCode, localDateTime);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
