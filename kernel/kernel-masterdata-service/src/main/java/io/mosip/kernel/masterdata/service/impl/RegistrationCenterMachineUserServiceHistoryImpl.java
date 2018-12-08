@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -32,7 +34,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	private MapperUtils objectMapperUtil;
+	private MapperUtils mapperUtils;
 
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
@@ -52,11 +54,17 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
 			String effectiveTimestamp, String registrationCenterId, String machineId, String userId) {
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
+		LocalDateTime lDateAndTime = null;
+		try {
+			lDateAndTime = mapperUtils.parseToLocalDateTime(effectiveTimestamp);
+		} catch (Exception e) {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
+		}
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
 					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
-							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId),
-							LocalDateTime.parse(effectiveTimestamp));
+							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId), lDateAndTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
@@ -73,7 +81,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = objectMapperUtil.mapAll(registrationCenterUserMachines,
+		registrationCenters = mapperUtils.mapAll(registrationCenterUserMachines,
 				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);

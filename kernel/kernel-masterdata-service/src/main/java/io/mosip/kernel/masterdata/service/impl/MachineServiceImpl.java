@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
@@ -196,7 +197,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			crtMachine = machineRepository.create(entity);
 			machineHistoryRepository.create(entityHistory);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | CannotCreateTransactionException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

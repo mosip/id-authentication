@@ -2,11 +2,12 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -81,8 +82,10 @@ public class MachineDto {
 	/**
 	 * Field for is validity of the Device
 	 */
-	//@DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
+	
+	private ZonedDateTime validityDateTimeZ;
 	
 
 }
