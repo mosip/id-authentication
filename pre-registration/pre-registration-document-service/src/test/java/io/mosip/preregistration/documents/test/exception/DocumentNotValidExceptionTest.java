@@ -62,7 +62,7 @@ public class DocumentNotValidExceptionTest {
 
 		} catch (DocumentNotValidException e) {
 			assertThat("Should throw dopcument invalid exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_004.toString()));
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_004.toString()));
 			assertThat("Should throw dopcument invalid exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(DOCUMENT_INVALID_FORMAT));
 		}

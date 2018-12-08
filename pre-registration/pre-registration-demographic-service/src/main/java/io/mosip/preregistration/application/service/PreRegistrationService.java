@@ -4,7 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,17 +28,21 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
-import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
+import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -53,7 +61,9 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
+import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * Pre-Registration service
@@ -83,10 +93,16 @@ public class PreRegistrationService {
 	private PreRegistrationRepository preRegistrationRepository;
 
 	@Autowired
-	private JsonValidator jsonValidator;
+	private JsonValidatorImpl jsonValidator;
 
 	@Value("${resource.url}")
 	private String resourceUrl;
+
+	@Value("${id}")
+	private String id;
+
+	@Value("${ver}")
+	private String ver;
 
 	private JSONParser jsonParser = new JSONParser();
 
@@ -94,6 +110,21 @@ public class PreRegistrationService {
 	private RestTemplateBuilder restTemplateBuilder;
 
 	protected String trueStatus = "true";
+	
+	Map<String, String> requiredRequestMap = new HashMap<>();
+	
+	@PostConstruct
+	public void setup() {
+		requiredRequestMap.put("id", id);
+		requiredRequestMap.put("ver", ver);
+	}
+
+
+	private RestTemplate restTemplate;
+
+	@Value("${appointmentResourse.url}")
+	private String appointmentResourseUrl;
+
 
 	/*
 	 * (non-Javadoc)
@@ -109,57 +140,75 @@ public class PreRegistrationService {
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 		String prid = null;
 		PreRegistrationEntity preRegistrationEntity = null;
+		Map<String, String> inputValidation = new HashMap<>();
 		JSONObject applicantDetailJson;
 		try {
 			applicantDetailJson = (JSONObject) jsonParser.parse(jsonString);
 			JSONObject reqObject = (JSONObject) applicantDetailJson.get(RequestCodes.request.toString());
 			JSONObject demoObj = (JSONObject) reqObject.get(RequestCodes.demographicDetails.toString());
-			jsonValidator.validateJson(demoObj.toString(), "mosip-prereg-identity-json-schema.json");
+			inputValidation.put(RequestCodes.id.toString(),
+					applicantDetailJson.get(RequestCodes.id.toString()).toString());
+			inputValidation.put(RequestCodes.ver.toString(),
+					applicantDetailJson.get(RequestCodes.ver.toString()).toString());
+			inputValidation.put(RequestCodes.reqTime.toString(),
+					applicantDetailJson.get(RequestCodes.reqTime.toString()).toString());
+			inputValidation.put(RequestCodes.request.toString(),
+					applicantDetailJson.get(RequestCodes.request.toString()).toString());
+			
+			InvalidRequestParameterException exception = ValidationUtil.requestValidator(inputValidation, requiredRequestMap);
+			if (exception == null) {
 
-			preRegistrationEntity = new PreRegistrationEntity();
-			prid = (String) reqObject.get(RequestCodes.preRegistrationId.toString());
-			String json = applicantDetailJson.toString();
-			preRegistrationEntity.setLangCode((String) (reqObject.get(RequestCodes.langCode.toString())));
-			preRegistrationEntity.setGroupId("1234567890");
-			preRegistrationEntity.setCr_appuser_id((String) (applicantDetailJson.get(RequestCodes.id.toString())));
-			preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
-			createDto.setDemographicDetails(demoObj);
+				jsonValidator.validateJson(demoObj.toString(), "mosip-prereg-identity-json-schema.json");
 
-			if (prid == null || prid.equals("")) {
-				prid = pridGenerator.generateId();
-
-				preRegistrationEntity.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
+				preRegistrationEntity = new PreRegistrationEntity();
+				prid = (String) reqObject.get(RequestCodes.preRegistrationId.toString());
+				String json = applicantDetailJson.toString();
+				preRegistrationEntity.setLangCode((String) (reqObject.get(RequestCodes.langCode.toString())));
+				preRegistrationEntity.setGroupId("1234567890");
+				preRegistrationEntity.setCr_appuser_id((String) (applicantDetailJson.get(RequestCodes.id.toString())));
 				preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
-				preRegistrationEntity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-				preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
-				preRegistrationEntity.setPreRegistrationId(prid);
-				preRegistrationDao.save(preRegistrationEntity);
-				createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
+				createDto.setDemographicDetails(demoObj);
 
-				createDto.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
-			} else {
-				preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(prid);
+				if (prid == null || prid.equals("")) {
+					prid = pridGenerator.generateId();
 
-				if (preRegistrationEntity != null) {
-					preRegistrationRepository.deleteByPreRegistrationId(prid);
 					preRegistrationEntity.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
-					preRegistrationEntity.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
-					preRegistrationEntity.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
-					preRegistrationEntity.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
-					preRegistrationEntity.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+					preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
+					preRegistrationEntity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
 					preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
 					preRegistrationEntity.setPreRegistrationId(prid);
-
 					preRegistrationDao.save(preRegistrationEntity);
+					createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
 
-					createDto.setCreatedBy(preRegistrationEntity.getCreatedBy());
-					createDto.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
-					createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
-					createDto.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+					createDto.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
 				} else {
-					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
+					preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(prid);
+
+					if (preRegistrationEntity != null) {
+						preRegistrationRepository.deleteByPreRegistrationId(prid);
+						preRegistrationEntity
+								.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
+						preRegistrationEntity.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+						preRegistrationEntity.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
+						preRegistrationEntity.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
+						preRegistrationEntity.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+						preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
+						preRegistrationEntity.setPreRegistrationId(prid);
+
+						preRegistrationDao.save(preRegistrationEntity);
+
+						createDto.setCreatedBy(preRegistrationEntity.getCreatedBy());
+						createDto.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
+						createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+						createDto.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+					} else {
+						throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
+								ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
+					}
 				}
+			} else {
+				
+           throw exception;
 			}
 		} catch (HttpRequestException e) {
 			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
@@ -230,6 +279,12 @@ public class PreRegistrationService {
 					viewDto.setPreId(preRegistrationEntity.getPreRegistrationId());
 					viewDto.setFullname(nameObj.get(RequestCodes.value.toString()).toString());
 					viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
+
+					BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
+							preRegistrationEntity.getPreRegistrationId());
+					if (bookingRegistrationDTO != null) {
+						viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
+					}
 					viewList.add(viewDto);
 				}
 				response.setResponse(viewList);
@@ -424,5 +479,36 @@ public class PreRegistrationService {
 		}
 
 		return response;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
+
+		restTemplate = restTemplateBuilder.build();
+		BookingResponseDTO<BookingRegistrationDTO> resultDto = null;
+		BookingRegistrationDTO bookingRegistrationDTO = null;
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
+					.queryParam("preRegID", preId);
+			HttpHeaders headers = new HttpHeaders();
+			// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<BookingRegistrationDTO> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: " + uriBuilder);
+			ResponseEntity<?> respEntity = (ResponseEntity) restTemplate
+					.exchange(uriBuilder, HttpMethod.GET, httpEntity, BookingResponseDTO.class);
+			if (respEntity.getStatusCode() == HttpStatus.OK) {
+
+				resultDto = (BookingResponseDTO<BookingRegistrationDTO>)respEntity.getBody();
+				System.out.println("resultDto : " + resultDto.getResponse());
+				// bookingRegistrationDTO = (BookingRegistrationDTO)resultDto.getResponse();
+				ObjectMapper mapper = new ObjectMapper();
+				bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
+			}
+		} catch (RestClientException e) {
+			return bookingRegistrationDTO;
+		}
+
+		return bookingRegistrationDTO;
 	}
 }

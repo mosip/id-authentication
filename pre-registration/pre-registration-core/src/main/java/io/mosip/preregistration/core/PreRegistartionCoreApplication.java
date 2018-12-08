@@ -13,7 +13,6 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.*")
 public class PreRegistartionCoreApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PreRegistartionCoreApplication.class, args);
 	}

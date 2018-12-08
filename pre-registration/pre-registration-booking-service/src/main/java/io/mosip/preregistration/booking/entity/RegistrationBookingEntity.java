@@ -1,9 +1,10 @@
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -30,13 +31,13 @@ public class RegistrationBookingEntity implements Serializable {
 	private String registrationCenterId;
 
 	@Column(name = "slot_from_time")
-	private Time slotFromTime;
+	private LocalTime slotFromTime;
 
 	@Column(name = "slot_to_time")
-	private Time slotToTime;
+	private LocalTime slotToTime;
 	
-	@Column(name = "reg_date")
-	private Date regDate;
+	@Column(name = "appointment_date")
+	private LocalDate regDate;
 
 	@Column(name = "status_code")
 	private String status_code;

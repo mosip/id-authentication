@@ -21,4 +21,5 @@ public class PreRegistrationViewDTO {
 	private String fullname;
 	private String appointmentDate;
 	private String statusCode;
+	private BookingRegistrationDTO bookingRegistrationDTO;
 }

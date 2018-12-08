@@ -228,7 +228,7 @@ public class DataSyncServiceTest {
 		final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
 		final TimeZone utc = TimeZone.getTimeZone("UTC");
 		sdf.setTimeZone(utc);
-		Date myDate = DateUtils.parse(sdf.format(fromDate));
+		Date myDate = DateUtils.parseDefaultUTCToDate(sdf.format(fromDate).toString());
 
 		DataSyncRequestDTO dataSyncRequestDTO1 = new DataSyncRequestDTO();
 		dataSyncRequestDTO1.setRegClientId("59276903416082");

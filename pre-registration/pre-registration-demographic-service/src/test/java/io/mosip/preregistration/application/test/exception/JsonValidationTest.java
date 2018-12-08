@@ -15,12 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 
@@ -34,7 +34,7 @@ public class JsonValidationTest {
 	private PreRegistrationService 	preRegistrationService;
 
 	@MockBean
-	private JsonValidator jsonValidator;
+	private JsonValidatorImpl jsonValidator;
 	
 	JSONParser parser = new JSONParser();
 	private JSONObject jsonObject;
