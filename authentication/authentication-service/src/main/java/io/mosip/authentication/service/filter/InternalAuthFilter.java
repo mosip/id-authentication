@@ -4,6 +4,11 @@ import java.util.Map;
 
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
+/**
+ * The Class InternalAuthFilter.
+ * 
+ * @author Sanjay Murali
+ */
 public class InternalAuthFilter extends BaseAuthFilter {
 
 	/* (non-Javadoc)
@@ -27,6 +32,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+		responseBody.replace("txnID", requestBody.get("txnID"));
 		return responseBody;
 	}
 

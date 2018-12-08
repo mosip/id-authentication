@@ -1,14 +1,19 @@
 package io.mosip.authentication.service.filter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -33,8 +40,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -48,7 +57,13 @@ public abstract class BaseAuthFilter implements Filter {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	protected Environment env;
+	
+	@Autowired
+	protected DecryptorImpl decryptor;
+	
+	@Autowired
+	protected KeyManager keyManager;
 
 	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
@@ -88,6 +103,8 @@ public abstract class BaseAuthFilter implements Filter {
 						filterConfig.getServletContext());
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
+		decryptor =  context.getBean(DecryptorImpl.class);
+		keyManager = context.getBean(KeyManager.class);
 		timeFormatter = DateTimeFormatter
 				.ofPattern(env.getProperty("datetime.pattern"));
 	}
@@ -106,6 +123,8 @@ public abstract class BaseAuthFilter implements Filter {
 		ResettableStreamHttpServletRequest requestWrapper =
 				new ResettableStreamHttpServletRequest(
 						(HttpServletRequest) request);
+		
+		String signature = requestWrapper.getHeader("Authorization");
 
 		CharResponseWrapper responseWrapper =
 				new CharResponseWrapper((HttpServletResponse) response);
@@ -119,10 +138,10 @@ public abstract class BaseAuthFilter implements Filter {
 
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
-
+			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			validateSignature(requestBody, signature);
 			Map<String, Object> decodedRequest = decodedRequest(
-					getRequestBody(requestWrapper.getInputStream()));
-
+					requestBody);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Input Request: \n"
 							+ objectWriter.writeValueAsString(decodedRequest));
@@ -158,6 +177,26 @@ public abstract class BaseAuthFilter implements Filter {
 					"Response sent with Request size : "
 							+ ((responseSize > 0) ? responseSize : 1) + " kb");
 		}
+	}
+
+	private boolean validateSignature(Map<String, Object> requestBody, String signature) {
+		boolean isSigned = false;
+		Optional<String> map = Optional.ofNullable(requestBody.get("key"))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> String.valueOf(((Map<String, Object>)obj).get("publicKeyCert")));
+		if(map.isPresent()) {
+			byte[] cert = Base64.getDecoder().decode(map.get());
+			try {
+				X509Certificate certNew = (X509Certificate) CertificateFactory.getInstance("X.509")
+						.generateCertificate(new ByteArrayInputStream(cert));
+				JsonWebSignature jws = new JsonWebSignature();
+				jws.setCompactSerialization(signature);
+				jws.setKey(certNew.getPublicKey());
+				isSigned = jws.verifySignature();
+			} catch (CertificateException | JoseException e) {
+			}
+		}
+		return isSigned;		
 	}
 
 	/**
@@ -248,14 +287,11 @@ public abstract class BaseAuthFilter implements Filter {
 			throws IdAuthenticationAppException {
 		try {
 			if (stringToDecode != null) {
-				return mapper.readValue(
-						Base64.getDecoder().decode(stringToDecode),
-						new TypeReference<Map<String, Object>>() {
-						});
+				return Base64.getDecoder().decode(stringToDecode);
 			} else {
 				return stringToDecode;
 			}
-		} catch (IllegalArgumentException | IOException e) {
+		} catch (IllegalArgumentException e) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorCode(),

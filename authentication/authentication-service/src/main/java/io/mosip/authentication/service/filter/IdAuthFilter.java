@@ -2,6 +2,9 @@ package io.mosip.authentication.service.filter;
 
 import java.util.Map;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -27,6 +30,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 		responseBody.replace("txnID", requestBody.get("txnID"));
 		return responseBody;
 	}
+	
+	public void init(FilterConfig filterConfig) throws ServletException {
+		super.init(filterConfig);
+		
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#decodedRequest(java.util.Map)
@@ -38,6 +47,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			requestBody.replace(REQUEST,
 					decode((String) requestBody.get(REQUEST)));
+			Map<String, Object> request = keyManager.requestData(requestBody, env, decryptor, mapper);
+			requestBody.replace(REQUEST, request);
 			return requestBody;
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(
@@ -67,5 +78,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 							.getErrorMessage());
 		}
 	}
+	
+	/*public byte[] fileReader(String filename) throws IOException {
+		String localpath = env.getProperty(FILEPATH);
+		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
+		String finalpath = MessageFormat.format(localpath, homedirectory);
+		File fileInfo = new File(finalpath + File.separator + filename);
+		File parentFile = fileInfo.getParentFile();
+		byte[] output = null;
+		if (parentFile.exists()) {
+			output = Files.readAllBytes(fileInfo.toPath());
+		}
+		return output;
+	}*/
 
 }
