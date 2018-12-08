@@ -35,7 +35,7 @@ public class VirtualKeyboard {
 
 	  private final VBox root ;
 	  
-	  private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards//keyboard",new Locale(AppConfig.getApplicationProperty("local_language")));
+	  private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards.keyboard",new Locale(AppConfig.getApplicationProperty("local_language")));
 
 	  private String getKey(String keyCode) {
 	  	
