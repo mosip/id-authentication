@@ -401,6 +401,7 @@ public final class DateUtilTest {
 		Date actualDate = DateUtils.parseUTCToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
 		String expectedDateString = DateUtils.formatToUTCString(expectedDate);
 		String actualDateString = DateUtils.getUTCCurrentDateTimeString();
+		LocalDateTime defaultLocal = DateUtils.parseToLocalDateTime(actualDateString);
 
 	}
 

@@ -16,6 +16,7 @@
  */
 package io.mosip.kernel.core.util;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,6 +60,7 @@ public final class DateUtils {
 	 * Default UTC pattern.
 	 */
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 
 	private DateUtils() {
 
@@ -560,8 +562,8 @@ public final class DateUtils {
 	// ---------------------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * This method formats java.time.LocalDateTime to UTC string in default pattern
-	 * - <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * Formats java.time.LocalDateTime to UTC string in default pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
 	 * 
 	 * @param localDateTime
 	 *            java.time.LocalDateTime
@@ -574,7 +576,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method formats java.util.Date to UTC string in default pattern -
+	 * Formats java.util.Date to UTC string in default pattern -
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
 	 * 
 	 * @param date
@@ -589,7 +591,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns a current UTC java.time.LocalDateTime.
+	 * Provides a current UTC java.time.LocalDateTime.
 	 * 
 	 * @return LocalDateTime
 	 * 
@@ -600,7 +602,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns UTC Current DateTime string in default pattern -
+	 * Provides UTC Current DateTime string in default pattern -
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
 	 * 
 	 * @return a date String
@@ -610,7 +612,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns UTC Current DateTime string in provided pattern.
+	 * Provides UTC Current DateTime string in given pattern.
 	 * 
 	 * @param pattern
 	 *            is of type String
@@ -622,8 +624,8 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns a current DateTime string with system zone offset in
-	 * default pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</b>.
+	 * Provides current DateTime string with system zone offset in default pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</b>.
 	 * 
 	 * @return a date String
 	 */
@@ -632,8 +634,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns a java.time.LocalDateTime from UTC string converting to
-	 * system zone offset.
+	 * Converts java.time.LocalDateTime from UTC string at system zone offset.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -649,8 +650,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns a java.time.LocalDateTime from UTC string ignoring zone
-	 * offset.
+	 * Parse java.time.LocalDateTime from UTC string ignoring zone offset.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -667,8 +667,30 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns java.time.LocalDateTime for given utcDateTime string and
-	 * pattern.
+	 * Parse java.time.LocalDateTime from UTC string of pattern
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b> or <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>
+	 * 
+	 * @param utcDateTime
+	 *            is of type String
+	 * 
+	 * @return a LocalDateTime
+	 * 
+	 * @throws java.time.format.DateTimeParseException
+	 * 
+	 * 
+	 * @see java.time.LocalDateTime
+	 */
+	public static LocalDateTime parseToLocalDateTime(String dateTime) {
+		try {
+			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		} catch (Exception e) {
+			// Try Parse with default pattern
+		}
+		return LocalDateTime.parse(dateTime);
+	}
+
+	/**
+	 * Parse java.time.LocalDateTime for given utcDateTime string and pattern.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -687,7 +709,7 @@ public final class DateUtils {
 	 */
 	public static LocalDateTime parseUTCToLocalDateTime(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		simpleDateFormat.setTimeZone(DateUtils.UTC_TIME_ZONE);
+		simpleDateFormat.setTimeZone(UTC_TIME_ZONE);
 		try {
 			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		} catch (ParseException e) {
@@ -699,8 +721,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns a java.time.LocalDateTime from Date converting to system
-	 * zone offset.
+	 * Parse java.time.LocalDateTime from Date converting at system zone offset.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -715,8 +736,8 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method parse given <code>utcDateTime</code> String to java.util.Date
-	 * with default pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * Parse given UTC string of pattern <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> to
+	 * java.util.Date.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -744,8 +765,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method parse given <code>utcDateTime</code> String to java.util.Date
-	 * with given pattern.
+	 * Parse given UTC string of given pattern to java.util.Date.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -773,8 +793,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns java.lang.Date for given dateTime string, pattern and
-	 * timeZone.
+	 * Parse given UTC string of given pattern and timezone to java.util.Date.
 	 * 
 	 * @param dateTime
 	 *            is of type String
