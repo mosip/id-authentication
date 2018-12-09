@@ -364,7 +364,7 @@ public final class DateUtilTest {
 	@Test
 	public void testParseUTCToDefaultLocalDateTime() {
 		LocalDateTime expectedDate = LocalDateTime.now();
-		LocalDateTime actualDate = DateUtils.parseUTCToLocalDateTime(DateUtils.getCurrentDateTimeString());
+		LocalDateTime actualDate = DateUtils.convertUTCToLocalDateTime(DateUtils.getCurrentDateTimeString());
 		assertTrue(expectedDate.withMinute(0).withSecond(0).withNano(0)
 				.compareTo(actualDate.withMinute(0).withSecond(0).withNano(0)) == 0);
 	}
@@ -399,7 +399,7 @@ public final class DateUtilTest {
 	public void testGetUTCCurrentDateTimeString() {
 		LocalDateTime expectedDate = DateUtils.parseDateToLocalDateTime(new Date());
 		Date actualDate = DateUtils.parseUTCToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
-		String expectedDateString = DateUtils.formatToUTCString(expectedDate);
+		String expectedDateString = DateUtils.toISOString(expectedDate);
 		String actualDateString = DateUtils.getUTCCurrentDateTimeString();
 		LocalDateTime defaultLocal = DateUtils.parseToLocalDateTime(actualDateString);
 
@@ -408,14 +408,14 @@ public final class DateUtilTest {
 	@Test
 	public void testFormatUTCCurrentDateTimeString() {
 		Date expectedDate = DateUtils.parseUTCToDate("2018-09-24T11:46:12.640Z");
-		String expectedDateString = DateUtils.formatToUTCString(expectedDate);
+		String expectedDateString = DateUtils.toISOString(expectedDate);
 		String actualDate = DateUtils.getUTCCurrentDateTimeString("yyyy/MM/dd HH:mm:ss");
-		LocalDateTime convLocalDateTime = DateUtils.convertUTCToLocalDateTime(expectedDateString);
+		LocalDateTime convLocalDateTime = DateUtils.parseUTCToLocalDateTime(expectedDateString);
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testParseUTCToDefaultLocalDateTimeException() {
-		DateUtils.parseUTCToLocalDateTime("22-01-2108");
+		DateUtils.convertUTCToLocalDateTime("22-01-2108");
 	}
 
 	@Test(expected = ParseException.class)
