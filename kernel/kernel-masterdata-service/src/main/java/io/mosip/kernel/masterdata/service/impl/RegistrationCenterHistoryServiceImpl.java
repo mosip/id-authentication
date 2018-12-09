@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHistoryDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -42,16 +43,17 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 	 * java.lang.String)
 	 */
 	@Override
-	public RegistrationCenterResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,
-			String effectiveDate) {
+	public RegistrationCenterHistoryResponseDto getRegistrationCenterHistory(String registrationCenterId,
+			String langCode, String effectiveDate) {
 		List<RegistrationCenterHistory> registrationCenters = null;
-		RegistrationCenterResponseDto registrationCenterDto = new RegistrationCenterResponseDto();
+		RegistrationCenterHistoryResponseDto registrationCenterDto = new RegistrationCenterHistoryResponseDto();
 
 		LocalDateTime localDateTime = null;
 		try {
-			localDateTime = mapperUtils.parseToLocalDateTime(effectiveDate);;
+			localDateTime = mapperUtils.parseToLocalDateTime(effectiveDate);
+			;
 		} catch (Exception e) {
-			throw new MasterDataServiceException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
 		}
 		try {
@@ -67,8 +69,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto
-					.setRegistrationCenters(mapperUtils.mapAll(registrationCenters, RegistrationCenterDto.class));
+			registrationCenterDto.setRegistrationCentersHistory(
+					mapperUtils.mapAll(registrationCenters, RegistrationCenterHistoryDto.class));
 		}
 		return registrationCenterDto;
 	}

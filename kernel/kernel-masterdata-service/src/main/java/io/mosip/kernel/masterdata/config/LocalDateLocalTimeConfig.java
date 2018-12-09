@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @author Urvil Joshi
  *
  */
-@Configuration
+// @Configuration
 public class LocalDateLocalTimeConfig {
 	public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
 	public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -81,8 +81,8 @@ public class LocalDateLocalTimeConfig {
 
 	public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 		@Override
-		public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
-				throws IOException {
+		public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator,
+				SerializerProvider serializerProvider) throws IOException {
 			jsonGenerator.writeString(localDateTime.format(UTC_DATE_TIME_FORMAT));
 		}
 	}
@@ -93,9 +93,9 @@ public class LocalDateLocalTimeConfig {
 			try {
 				return LocalDateTime.parse(jsonParser.getValueAsString(), UTC_DATE_TIME_FORMAT);
 			} catch (Exception e) {
-				// Try Parse with default pattern
+				return LocalDateTime.parse(jsonParser.getValueAsString());
 			}
-			return LocalDateTime.parse(jsonParser.getValueAsString());
+
 		}
 	}
 

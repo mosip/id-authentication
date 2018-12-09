@@ -49,9 +49,9 @@ public class MapperUtils {
 		try {
 			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 		} catch (Exception e) {
-			// Try Parse with default pattern
+			return LocalDateTime.parse(dateTime);
 		}
-		return LocalDateTime.parse(dateTime);
+		
 	}
 
 	/*

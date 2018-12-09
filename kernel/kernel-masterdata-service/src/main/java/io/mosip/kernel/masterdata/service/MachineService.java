@@ -1,9 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
 /**
@@ -26,7 +25,7 @@ public interface MachineService {
 	 * @return Machine Detail for given machine id and language code
 	 *
 	 */
-	MachineResponseIdDto getMachineIdLangcode(String id, String langCode);
+	MachineResponseDto getMachine(String id, String langCode);
 
 	/**
 	 * This abstract method to fetch all machines details
@@ -44,7 +43,7 @@ public interface MachineService {
 	 * @return Machine Detail for given machine id and language code
 	 *
 	 */
-	MachineResponseDto getMachineLangcode(String langCode);
+	MachineResponseDto getMachine(String langCode);
 	/**
 	 * Abstract method to save Machine Details to the Database
 	 * 

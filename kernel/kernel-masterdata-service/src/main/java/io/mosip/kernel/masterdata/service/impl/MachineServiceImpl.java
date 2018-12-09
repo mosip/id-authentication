@@ -5,14 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.CannotCreateTransactionException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -43,18 +41,16 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
-	
-	
 
 	/**
 	 * Field to hold ObjectMapperUtil object
 	 */
 	@Autowired
-	MapperUtils objectMapperUtil;
-	
+	MapperUtils mapperUtils;
+
 	@Autowired
 	private MetaDataUtils metaUtils;
-	
+
 	/**
 	 * Method used for retrieving Machine details based on given Machine ID and
 	 * Language code
@@ -80,27 +76,27 @@ public class MachineServiceImpl implements MachineService {
 	 * 
 	 */
 	@Override
-	public MachineResponseIdDto getMachineIdLangcode(String id, String langCode) {
-		Machine machine = null;
-		MachineDto machineDto = null;
-		MachineResponseIdDto machineResponseIdDto = new MachineResponseIdDto();
+	public MachineResponseDto getMachine(String id, String langCode) {
+		List<Machine> machineList = null;
+		List<MachineDto> machineDtoList = null;
+		MachineResponseDto machineResponseIdDto = new MachineResponseDto();
 		try {
-			machine = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
+			machineList = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
-		if (machine != null) {
-			machineDto = objectMapperUtil.map(machine, MachineDto.class);
+		if (machineList != null && !machineList.isEmpty()) {
+			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 		}
-		machineResponseIdDto.setMachine(machineDto);
+		machineResponseIdDto.setMachines(machineDtoList);
 		return machineResponseIdDto;
-
 	}
 
 	/**
@@ -131,10 +127,11 @@ public class MachineServiceImpl implements MachineService {
 
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
+			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -166,7 +163,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 
 	@Override
-	public MachineResponseDto getMachineLangcode(String langCode) {
+	public MachineResponseDto getMachine(String langCode) {
 		MachineResponseDto machineResponseDto = new MachineResponseDto();
 		List<Machine> machineList = null;
 		List<MachineDto> machineDtoList = null;
@@ -174,11 +171,12 @@ public class MachineServiceImpl implements MachineService {
 			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = objectMapperUtil.mapAll(machineList, MachineDto.class);
-	
+			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
+
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -202,7 +200,7 @@ public class MachineServiceImpl implements MachineService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.map(crtMachine, idResponseDto);
+		mapperUtils.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
 	}

@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 /**
  * Service for user machine mapping
  * 
