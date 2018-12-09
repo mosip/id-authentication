@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.filter;
+package io.mosip.kernel.masterdata.httpfilter;
 
 import java.io.IOException;
 

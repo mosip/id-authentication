@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
-import io.mosip.kernel.masterdata.filter.SecurityFilter;
+import io.mosip.kernel.masterdata.httpfilter.SecurityFilter;
 
 
 @Configuration

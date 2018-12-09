@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
-import io.mosip.kernel.masterdata.filter.CorsFilter;
+import io.mosip.kernel.masterdata.httpfilter.CorsFilter;
 
 /**
  * Config class with beans for modelmapper and request logging
