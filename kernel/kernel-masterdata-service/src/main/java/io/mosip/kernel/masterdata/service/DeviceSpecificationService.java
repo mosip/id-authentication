@@ -20,10 +20,10 @@ public interface DeviceSpecificationService {
 	 * This abstract method to fetch Device Specification Details for given language
 	 * code
 	 *
-	 * @param langCode
+	 * @param languageCode
 	 *            Language code given by user
-	 * @return List<DeviceSpecificationDto> Device Specification Details for given
-	 *         language code
+	 * @return List<DeviceSpecificationDto> 
+	 * 			 Device Specification Details for given language code
 	 *
 	 */
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode);
@@ -32,7 +32,7 @@ public interface DeviceSpecificationService {
 	 * This abstract method to fetch Device Specification Details for given language
 	 * code and device Type Code
 	 * 
-	 * @param langCode
+	 * @param languageCode
 	 *            Language Code given by user
 	 * @param deviceTypeCode
 	 *            DeviceTypeCode given by user
@@ -46,9 +46,11 @@ public interface DeviceSpecificationService {
 	/**
 	 * Function to save Device Specification Details to the Database
 	 * 
-	 * @param deviceTypes
+	 * @param RequestDto<DeviceSpecificationDto>
+	 *        input from user DeviceSpecification DTO
 	 * 
-	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
+	 * @return IdResponseDto
+	 *        Device Specification ID which is successfully inserted
 	 */
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 

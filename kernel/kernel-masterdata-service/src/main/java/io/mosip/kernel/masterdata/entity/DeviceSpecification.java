@@ -35,7 +35,7 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id", nullable = false)
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
 	
 	@Column(name = "name", nullable = false, length = 64)

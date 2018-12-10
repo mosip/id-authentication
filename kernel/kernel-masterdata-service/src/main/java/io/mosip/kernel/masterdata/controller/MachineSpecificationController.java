@@ -18,20 +18,31 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+
+/**
+
+ * This controller class to save Machine Specification details.
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @RestController
 @Api(tags = { "MachineSpecifications" })
 public class MachineSpecificationController {
 	
-	
-
+	/**
+	 * Reference to MachineSpecificationService.
+	 */
 	@Autowired
 	MachineSpecificationService machineSpecificationService;
 	/**
 	 * Save machine specification details to the database table
 	 * 
-	 * @param machineSpecification
-	 *            input from user Machine specification DTO
-	 * @return {@link IdResponseDto}
+	 * @param RequestDto<MachineSpecificationDto>
+	 *            input Machine specification DTO from user 
+	 * @return ResponseEntity<IdResponseDto>
+	 * 			  Machine Specification ID which is successfully inserted
 	 */
 	@PostMapping("/v1.0/machinespecifications")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine code and Languge Code", response = IdResponseDto.class)

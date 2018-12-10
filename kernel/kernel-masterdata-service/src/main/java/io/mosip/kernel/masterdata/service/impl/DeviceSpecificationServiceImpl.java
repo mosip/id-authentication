@@ -81,6 +81,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		}
 	}
 
+	
 	@Override
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();

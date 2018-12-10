@@ -38,7 +38,7 @@ public class BlacklistedWordsController {
 	/**
 	 * Fetch the list of blacklisted words based on language code.
 	 * 
-	 * @param langCode
+	 * @param langCode language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
 	@GetMapping("/v1.0/blacklistedwords/{langcode}")
@@ -50,7 +50,7 @@ public class BlacklistedWordsController {
 	 * Takes the list of string as an argument and checks if the list contains any
 	 * blacklisted words.
 	 * 
-	 * @param blacklistedwords
+	 * @param blacklistedwords list of blacklisted words
 	 * @return Valid if word does not belongs to black listed word and Invalid if
 	 *         word belongs to black listed word
 	 */

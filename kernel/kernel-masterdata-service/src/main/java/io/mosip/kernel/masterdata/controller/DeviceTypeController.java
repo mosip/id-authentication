@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * Controller with api to save and get Device Type Details
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
+
 @RestController
 @Api(tags = { "DeviceTypes" })
 public class DeviceTypeController {
@@ -31,7 +40,7 @@ public class DeviceTypeController {
 	/**
 	 * Save list of device Type details to the Database
 	 * 
-	 * @param DeviceTypeRequestDto
+	 * @param RequestDto<DeviceTypeDto>
 	 * 				input from user Device Type DTO
 	 *            
 	 * @return {@link CodeAndLanguageCodeID}

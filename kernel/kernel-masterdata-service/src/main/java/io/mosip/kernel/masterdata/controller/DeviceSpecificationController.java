@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -34,21 +35,32 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
+@Api(tags = { "DeviceSpecification" })
 public class DeviceSpecificationController {
-
+	
+	/**
+	 * Reference to DeviceSpecificationService.
+	 */
 	@Autowired
 	DeviceSpecificationService deviceSpecificationService;
 
-	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode")
+	
 	/**
 	 * Function to fetch list of device specification details based on language code
 	 * 
 	 * @param langCode
 	 *            input from user
-	 * @return {@link DeviceSpecificationResponseDto}
+	 *            
+	 * @return DeviceSpecificationResponseDto
+	 * 				all device Specification details based on given language code
 	 * 
 	 */
 	@GetMapping("/v1.0/devicespecifications/{langcode}")
+	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code", response = DeviceSpecificationResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code ", response = DeviceSpecificationResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Device Specificationfound for the given Languge Code and ID"),
+			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -68,8 +80,12 @@ public class DeviceSpecificationController {
 	 * 
 	 */
 
-	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode and DeviceTypeCode")
 	@GetMapping("/v1.0/devicespecifications/{langcode}/{devicetypecode}")
+	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode", response = DeviceSpecificationResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode ", response = DeviceSpecificationResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Device Specificationfound for specific langCode and DeviceTypeCode"),
+			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -82,8 +98,9 @@ public class DeviceSpecificationController {
 	/**
 	 * Save device specification details to the database table
 	 * 
-	 * @param deviceSpecification
+	 * @param RequestDto<DeviceSpecificationDto>
 	 *            input from user Device specification DTO
+	 *            
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping("/v1.0/devicespecifications")
