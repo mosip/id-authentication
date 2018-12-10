@@ -68,7 +68,7 @@ public class DocumentSizeExceedTest {
 
 		} catch (DocumentSizeExceedException e) {
 			assertThat("Should throw DocumentSizeExceed exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_001.toString()));
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_007.toString()));
 			assertThat("Should throw DocumentSizeExceed exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(DOCUMENT_EXCEEDING_PERMITTED_SIZE));
 
