@@ -26,6 +26,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
@@ -84,7 +85,9 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	@Autowired
 	IdRepoService idInfoService;
-
+	
+	@Autowired
+	private NotificationService notificationService;
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 
@@ -151,7 +154,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
 			// -- send otp notification --
-			sendOtpNotification(otpRequestDto, otp, idInfo,refId, date, time, email, mobileNumber);
+			notificationService.sendOtpNotification(otpRequestDto, otp, idResDTO, email, mobileNumber);
 			saveAutnTxn(otpRequestDto, status, comment, refId);
 
 		}
@@ -272,32 +275,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		return idResDTO;
 	}
 
-	private void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, Map<String, List<IdentityInfoDTO>> idInfo, String refId, String date, String time,
-			String email, String mobileNumber) {
-
-		String maskedUin = null;
-		Map<String, Object> values = new HashMap<>();
-		try {
-			Optional<String> uinOpt = idAuthService.getUIN(String.valueOf(refId));
-			if (uinOpt.isPresent()) {
-				String uin = uinOpt.get();
-				maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
-			}
-			values.put("uin", maskedUin);
-			values.put("otp", otp);
-			values.put("validTime", env.getProperty("otp.expiring.time"));
-			values.put(DATE, date);
-			values.put(TIME, time);
-
-			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
-
-			notificationManager.sendNotification(values, email, mobileNumber, SenderType.OTP,
-					env.getProperty("otp.notification.type"));
-		} catch (BaseCheckedException e) {
-			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
-		}
-	}
-
+	
 	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) {
 		return demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
 	}

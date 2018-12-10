@@ -52,6 +52,7 @@ import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
+import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -145,7 +146,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	UinRepository uinRepository;
-
+	
+	@Autowired
+	private NotificationService notificationService;
 	/**
 	 * Process the authorisation type and authorisation response is returned.
 	 *
@@ -183,7 +186,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
 			if (idInfo != null) {
-				//sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
+			//	notificationService.sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
 			}
 		}
 
@@ -191,63 +194,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
-
-		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
-		String resTime = authResponseDTO.getResTime();
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime(), isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-
-		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime, isoPattern);
-		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
-		String changedDate = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty("notification.date.format")));
-		String changedTime = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty("notification.time.format")));
-
-		values.put(DATE, changedDate);
-		values.put(TIME, changedTime);
-		Optional<String> uinOpt = idAuthService.getUIN(refId);
-		String uin = "";
-
-		if (uinOpt.isPresent()) {
-			uin = uinOpt.get();
-			if (ismaskRequired) {
-				uin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
-			}
-		}
-
-		values.put(UIN2, uin);
-		values.put(AUTH_TYPE,
-
-				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
-						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
-		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
-			values.put(STATUS, "Passed");
-		} else {
-			values.put(STATUS, "Failed");
-		}
-
-		String phoneNumber = null;
-		String email = null;
-		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
-		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
-		String notificationType = null;
-		if (isAuth) {
-			notificationType = env.getProperty("auth.notification.type");
-		} else {
-			notificationType = env.getProperty("internal.auth.notification.type");
-		}
-
-		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
-	}
 
 	/**
 	 * Process the authorisation type and corresponding authorisation service is
