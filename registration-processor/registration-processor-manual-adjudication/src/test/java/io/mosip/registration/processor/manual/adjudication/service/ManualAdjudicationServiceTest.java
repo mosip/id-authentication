@@ -1,4 +1,4 @@
-package registration.processor.manual.adjudication.service.test;
+package io.mosip.registration.processor.manual.adjudication.service;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -23,8 +23,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -46,10 +49,8 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import javassist.bytecode.ByteArray;
 
-@RunWith(MockitoJUnitRunner.class)
-@DataJpaTest
-@RefreshScope
-@ContextConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ManualAdjudicationServiceTest {
 	
 	private List<ManualVerificationEntity> entities;

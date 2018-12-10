@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
@@ -29,12 +31,13 @@ import org.junit.Before;
  * @author M1049617
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ManualAdjudicationDaoTest {
 
 	/** The manualAdjudicationDao dao. */
-	@Mock
-	ManualAdjudicationDao manualAdjudicationDao;
+	@InjectMocks
+	ManualAdjudicationDao manualAdjudicationDao=new ManualAdjudicationDao();
 	
 	/** The manualAdjudiacationRepository repository. */
 	@Mock
@@ -42,6 +45,7 @@ public class ManualAdjudicationDaoTest {
 	@Mock
 	private ManualVerificationEntity manualAdjudicationEntity;
 	
+	ManualVerificationPKEntity manualVerificationPKEntity=new ManualVerificationPKEntity();
 	private List<ManualVerificationEntity> manualAdjudicationEntityList;
 	private String status="PENDING";
 	
@@ -49,6 +53,7 @@ public class ManualAdjudicationDaoTest {
 	public void setUp() {
 		manualAdjudicationEntityList =new ArrayList<ManualVerificationEntity>();
 		manualAdjudicationEntity = new ManualVerificationEntity();
+		manualAdjudicationEntity.setPkId(manualVerificationPKEntity);
 		manualAdjudicationEntity.getPkId().setRegId("12345");
 		manualAdjudicationEntity.getPkId().setMatchedRefType("12345");
 		manualAdjudicationEntity.getPkId().setMatchedRefId("12345");
