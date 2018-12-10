@@ -48,7 +48,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(FingerPrintAuthenticationController.class);
-	
+
 	@FXML
 	private AnchorPane authenticateRootPane;
 	@FXML
@@ -92,11 +92,11 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	private BaseController baseController;
 
 	@Autowired
-	private FingerprintFacade fingerprintFacade ;
+	private FingerprintFacade fingerprintFacade;
 
 	@Autowired
 	private AuthenticationService validator;
-	
+
 	@Autowired
 	private BaseService baseService;
 
@@ -122,11 +122,13 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 			MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
 					.getFingerprintProviderFactory(providerName);
 			int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
-			if (statusCode != 0) {
+			if (statusCode == -1) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_FP_NOT_FOUND);
 
+			} else if (statusCode == -2) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationConstants.DEVICE_ONBOARD_NOTIFICATION);
 			} else {
-				if (baseService.isValidDevice("Fingerprint", providerName)) {
 				// Thread to wait until capture the bio image/ minutia from FP. based on the
 				// error code or success code the respective action will be taken care.
 				waitToCaptureBioImage(5, 2000, fingerprintFacade);
@@ -138,26 +140,31 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getIsoTemplate())) {
 					// if FP data fetched then retrieve the user specific detail from db.
-					AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
-					List<FingerprintDetailsDTO> fingerprintDetailsDTOs=new ArrayList<FingerprintDetailsDTO>();
-					FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+					AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+					List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<FingerprintDetailsDTO>();
+					FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 					fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 					fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 					authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 					authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
-					AuthenticationValidatorImplementation authenticationValidatorImplementation=validator.getValidator("Fingerprint");
+					AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
+							.getValidator("Fingerprint");
 					authenticationValidatorImplementation.setFingerPrintType("single");
-					/*RegistrationUserDetail registrationUserDetail = userDataService
-							.getUserDetail("mosip");
-
-					boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
-							.anyMatch(bio -> fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
-									bio.getBioMinutia()) > fingerPrintScore);*/
+					/*
+					 * RegistrationUserDetail registrationUserDetail = userDataService
+					 * .getUserDetail("mosip");
+					 * 
+					 * boolean isValidFingerPrint =
+					 * registrationUserDetail.getUserBiometric().stream() .anyMatch(bio ->
+					 * fingerPrintConnector.scoreCalculator(fingerprintFacade.getMinutia(),
+					 * bio.getBioMinutia()) > fingerPrintScore);
+					 */
 
 					if (authenticationValidatorImplementation.validate(authenticationValidatorDTO)) {
 						baseController.getFingerPrintStatus(primaryStage);
 					} else {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.AUTHENTICATION_FAILURE);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationConstants.AUTHENTICATION_FAILURE);
 						primaryStage.close();
 					}
 				} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
@@ -169,10 +176,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				}
 				LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 						"Fingerprint validation done");
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION,
-						RegistrationConstants.DEVICE_ONBOARD_NOTIFICATION);
-			}
 			}
 		} catch (IOException e) {
 			LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION_ERROR", APPLICATION_NAME, APPLICATION_ID,
