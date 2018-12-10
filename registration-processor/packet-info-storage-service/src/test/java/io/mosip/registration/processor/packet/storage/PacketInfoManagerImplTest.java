@@ -598,63 +598,6 @@ public class PacketInfoManagerImplTest {
 	}
 
 	@Test
-	public void performDedupeTest() {
-		Date date = new Date(1995, 04, 16);
-		DemographicDedupeDto uinDto = new DemographicDedupeDto();
-		uinDto.setRegId("2018782130000103122018105604");
-		uinDto.setGenderCode("mâle");
-		uinDto.setLangCode("fr");
-		uinDto.setName("IbrahimAli");
-		uinDto.setPhoneticName("I165");
-		uinDto.setUin("1234567");
-		uinDto.setDob(date);
-
-		DemographicDedupeDto uinDto1 = new DemographicDedupeDto();
-		uinDto1.setRegId("2018782130000103122018105604");
-		uinDto1.setGenderCode("الذكر");
-		uinDto1.setLangCode("ar");
-		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setPhoneticName("A165");
-		uinDto1.setUin("1234567");
-		uinDto1.setDob(date);
-
-		List<DemographicDedupeDto> idsWithUin = new ArrayList<>();
-		idsWithUin.add(uinDto1);
-		idsWithUin.add(uinDto);
-
-		List<DemographicDedupeDto> idWithOutUin = new ArrayList<>();
-		DemographicDedupeDto demoDto1 = new DemographicDedupeDto();
-		demoDto1.setRegId("2018782130000103122018100224");
-		demoDto1.setGenderCode("الذكر");
-		demoDto1.setLangCode("ar");
-		demoDto1.setName("ابراهيمعلي");
-		demoDto1.setPhoneticName("A165");
-		demoDto1.setDob(date);
-
-		DemographicDedupeDto demoDto = new DemographicDedupeDto();
-		demoDto.setRegId("2018782130000103122018100224");
-		demoDto.setGenderCode("mâle");
-		demoDto.setLangCode("fr");
-		demoDto.setName("IbrahimAli");
-		demoDto.setPhoneticName("I165");
-		demoDto.setDob(date);
-
-		idWithOutUin.add(demoDto);
-		idWithOutUin.add(demoDto1);
-
-		Mockito.when(utility.getThreshold()).thenReturn(60);
-		// Mockito.when(packetInfoDao.getAllDemoWithUIN()).thenReturn(idsWithUin);
-		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(idWithOutUin);
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
-
-		// Set<String> duplicateList =
-		// packetInfoManagerImpl.performDedupe("2018782130000103122018100224");
-		// assertEquals("", "2018782130000103122018105604",
-		// duplicateList.iterator().next());
-
-	}
-
-	@Test
 	public void findDemoByIdTest() {
 		List<DemographicDedupeDto> depdupeList = new ArrayList<>();
 		Date date = new Date(1995, 04, 16);
@@ -683,7 +626,9 @@ public class PacketInfoManagerImplTest {
 
 		List<DemographicDedupeDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
 
-		assertEquals("", "2018782130000103122018105604", result.iterator().next().getRegId());
+		assertEquals(
+				"Fetching all dedupe records from db based on id. Verifing id, expected id is 2018782130000103122018105604",
+				"2018782130000103122018105604", result.iterator().next().getRegId());
 
 	}
 
@@ -700,6 +645,40 @@ public class PacketInfoManagerImplTest {
 				.thenReturn(regCenterMachineDto);
 		RegistrationCenterMachineDto resultDto = packetInfoManagerImpl
 				.getRegistrationCenterMachine("2018782130000103122018100224");
-		assertEquals("", "2018782130000103122018100224", resultDto.getRegId());
+		assertEquals(
+				"Fetching regCenterMachine records from db . verifing first record,expected id is 2018782130000103122018100224",
+				"2018782130000103122018100224", resultDto.getRegId());
 	}
+
+	@Test
+	public void getApplicantFingerPrintImageNameByIdTest() {
+		List<String> applicantFingerPrintImages = new ArrayList<>();
+		applicantFingerPrintImages.add("LeftThumb");
+		applicantFingerPrintImages.add("RightThumb");
+
+		Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(applicantFingerPrintImages);
+
+		List<String> resultList = packetInfoManagerImpl
+				.getApplicantFingerPrintImageNameById("2018782130000103122018100224");
+		assertEquals(
+				"Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb",
+				"LeftThumb", resultList.get(0));
+
+	}
+
+	@Test
+	public void getApplicantIrisImageNameByIdTest() {
+		List<String> applicantIrisImageList = new ArrayList<>();
+		applicantIrisImageList.add("LeftEye");
+		applicantIrisImageList.add("RightEye");
+
+		Mockito.when(packetInfoDao.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(applicantIrisImageList);
+		List<String> resultList = packetInfoManagerImpl.getApplicantIrisImageNameById("2018782130000103122018100224");
+		assertEquals(
+				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
+				"LeftEye", resultList.get(0));
+	}
+
 }

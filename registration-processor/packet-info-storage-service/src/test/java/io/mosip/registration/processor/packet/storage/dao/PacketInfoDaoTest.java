@@ -157,9 +157,11 @@ public class PacketInfoDaoTest {
 		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = new ArrayList<>();
 		individualDemographicDedupeEntityList.add(dedupeEntity);
 
-		Mockito.when(demographicDedupeRepository.getAllDemoWithUIN()).thenReturn(individualDemographicDedupeEntityList);
+		Mockito.when(demographicDedupeRepository.getAllDemoWithUIN(ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(individualDemographicDedupeEntityList);
+		Date date = new Date(1995, 04, 16);
 
-		List<DemographicDedupeDto> demoDtoList = packetInfodao.getAllDemoWithUIN();
+		List<DemographicDedupeDto> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date);
 
 		assertEquals("2018782130000224092018121229", demoDtoList.get(0).getRegId());
 	}

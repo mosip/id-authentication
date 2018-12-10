@@ -168,7 +168,6 @@ public class PacketInfoDao {
 				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
 			}
 
-			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
 	}
@@ -182,13 +181,8 @@ public class PacketInfoDao {
 				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
 			}
 
-			return demographicDedupeDtoList;
 		}
 		return demographicDedupeDtoList;
-	}
-
-	public String findUINById(String regId) {
-		return demographicDedupeRepository.getUINById(regId).get(0);
 	}
 
 	public List<String> getApplicantIrisImageNameById(String regId) {

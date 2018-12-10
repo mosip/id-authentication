@@ -39,9 +39,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public List<E> getAllDemoWithUIN(@Param("pheoniticName") String pheoniticName, @Param("gender") String gender,
 			@Param("dob") Date dob);
 
-	@Query("SELECT uin.uinRefId FROM IndividualDemographicDedupeEntity uin WHERE uin.id.regId=:regId ")
-	public List<String> getUINById(@Param("regId") String regId);
-
 	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
 	public List<String> getApplicantIrisImageNameById(@Param("regId") String regId);
 

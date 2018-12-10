@@ -621,11 +621,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	@Override
-	public String findUINById(String regId) {
-		return packetInfoDao.findUINById(regId);
-	}
-
-	@Override
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
 		return packetInfoDao.getApplicantFingerPrintImageNameById(regId);
 	}

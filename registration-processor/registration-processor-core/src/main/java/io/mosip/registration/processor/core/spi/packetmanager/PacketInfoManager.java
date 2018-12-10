@@ -75,15 +75,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<DemographicDedupeDto> findDemoById(String regId);
 
 	/**
-	 * Find UIN by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the string
-	 */
-	public String findUINById(String regId);
-
-	/**
 	 * Gets the applicant finger print image name by id.
 	 *
 	 * @param regId
