@@ -1,9 +1,5 @@
 package io.mosip.kernel.idgenerator.tokenid.test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
