@@ -59,6 +59,7 @@ import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -97,6 +98,7 @@ import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
+import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
@@ -300,6 +302,11 @@ public class MasterdataIntegrationTest {
 	private RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory;
 
 	private ObjectMapper mapper;
+	
+	@MockBean
+	private MachineHistoryRepository machineHistoryRepository;
+	
+	
 
 	@Before
 	public void setUp() {
@@ -341,6 +348,27 @@ public class MasterdataIntegrationTest {
 		machineSetUp();
 
 		DeviceSpecsetUp();
+		
+		machineHistorySetUp();
+	}
+	
+	List<MachineHistory> machineHistoryList;
+	
+	private void machineHistorySetUp(){
+		LocalDateTime eDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
+		LocalDateTime vDate = LocalDateTime.of(2022, Month.JANUARY, 1, 10, 10, 30);
+		machineHistoryList = new ArrayList<>();
+		MachineHistory machineHistory = new MachineHistory();
+		machineHistory.setId("1000");
+		machineHistory.setName("Laptop");
+		machineHistory.setIpAddress("129.0.0.0");
+		machineHistory.setMacAddress("129.0.0.0");
+		machineHistory.setEffectDateTime(eDate);
+		machineHistory.setValidityDateTime(vDate);
+		machineHistory.setIsActive(true);
+		machineHistory.setLangCode("ENG");
+		machineHistoryList.add(machineHistory);
+		
 	}
 
 	List<DeviceSpecification> deviceSpecList;
@@ -1935,14 +1963,14 @@ public class MasterdataIntegrationTest {
 	}
 
 	// ---------------------------------------------
-//	@Test
-//	public void createDeviceTest() throws Exception {
-//		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
-//
-//		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
-//		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-//				.content(deviceJson)).andExpect(status().isCreated());
-//	}
+	/*@Test
+	public void createDeviceTest() throws Exception {
+		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
+
+		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
+				.content(deviceJson)).andExpect(status().isCreated());
+	}*/
 
 	@Test
 	public void createDeviceExceptionTest() throws Exception {
@@ -1952,6 +1980,26 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
 				.content(deviceJson)).andExpect(status().isInternalServerError());
+	}
+	
+	//-----------------------------------------MachineHistory---------------------------------------------
+	@Test
+	public void getMachineHistroyIdLangEffDTimeSuccessTest() throws Exception {
+		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getMachineHistroyIdLangEffDTimeNullResponseTest() throws Exception {
+		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getMachineHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
+		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
 	}
 
 }

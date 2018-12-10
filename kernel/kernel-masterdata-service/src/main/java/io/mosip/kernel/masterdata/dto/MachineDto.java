@@ -2,7 +2,6 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -57,7 +56,7 @@ public class MachineDto {
 	 * Field for machine IP address
 	 */
 	
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 17)
 	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;
 	/**

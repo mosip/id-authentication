@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +30,7 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 @AutoConfigureMockMvc
 public class MachineHisStoryTest {
 	
-	@MockBean
-	private MachineHistoryRepository machineHistoryRepository;
+	
 	
 	/*@MockBean
 	private MachineHistoryService machineHistoryService;*/
@@ -40,10 +38,13 @@ public class MachineHisStoryTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@MockBean
+	private MachineHistoryRepository machineHistoryRepository;
+	
 	List<MachineHistory> machineHistoryList;
 	
 	@Before
-	public void setUp(){
+	public void machineHistorySetUp(){
 		LocalDateTime eDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		LocalDateTime vDate = LocalDateTime.of(2022, Month.JANUARY, 1, 10, 10, 30);
 		machineHistoryList = new ArrayList<>();
