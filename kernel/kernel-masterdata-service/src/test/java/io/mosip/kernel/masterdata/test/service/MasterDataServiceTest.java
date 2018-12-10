@@ -30,7 +30,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -232,9 +231,7 @@ public class MasterDataServiceTest {
 	private List<DeviceSpecification> deviceSpecificationList ;
 	private DeviceSpecification deviceSpecification;
 	
-	private DeviceSpecificationListDto deviceSpecificationListDto;
-	private List<DeviceSpecificationDto> deviceSpecificationDtos ;
-	private DeviceSpecificationDto deviceSpecificationDto ;
+	
 	
 	
 	@Before
