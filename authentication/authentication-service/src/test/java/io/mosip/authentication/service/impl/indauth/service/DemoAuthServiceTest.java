@@ -473,9 +473,8 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
 	}
 
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
-
 		AuthRequestDTO authRequestDTO = null;
 		String refId = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
