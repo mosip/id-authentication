@@ -20,12 +20,14 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,7 @@ import sun.security.pkcs11.SunPKCS11;
  *
  */
 @Component
-public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore {
+public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore, InitializingBean {
 
 	/**
 	 * Common name for generating certificate
@@ -73,33 +75,33 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	private String country;
 
 	/**
-	 * The keystore pass
+	 * Path of SoftHSM config file
 	 */
-	private final String keystorePass;
+	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
+	private String configPath;
+
+	/**
+	 * The type of keystore, e.g. PKCS11
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-type}")
+	private String keystoreType;
+
+	/**
+	 * The passkey for Keystore
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}")
+	private String keystorePass;
 
 	/**
 	 * The Keystore instance
 	 */
-	private final KeyStore keyStore;
+	private KeyStore keyStore;
 
-	/**
-	 * Constructor to initialize Softhsm Keystore
-	 * 
-	 * @param configPath
-	 *            The config path
-	 * @param keystoreType
-	 *            The keystore pass
-	 * @param keystorePass
-	 *            The Keystore instance
-	 */
-	public KeyStoreImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
-			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
-			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
-
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		Provider provider = setupProvider(configPath);
 		addProvider(provider);
 		this.keyStore = getKeystoreInstance(keystoreType, provider);
-		this.keystorePass = keystorePass;
 		loadKeystore();
 	}
 
@@ -116,7 +118,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 			provider = new SunPKCS11(configPath);
 		} catch (ProviderException providerException) {
 			throw new NoSuchSecurityProviderException(KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorCode(),
-					KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage());
+					KeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage(), providerException);
 		}
 		return provider;
 	}
@@ -136,8 +138,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 */
 	private void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
-			throw new NoSuchSecurityProviderException(
-					KeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
+			throw new NoSuchSecurityProviderException(KeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
 					KeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorMessage());
 		}
 	}
@@ -304,11 +305,12 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * security.KeyPair, java.lang.String)
 	 */
 	@Override
-	public void storeAsymmetricKey(KeyPair keyPair, String alias, int validityInMinutes) {
+	public void storeAsymmetricKey(KeyPair keyPair, String alias, LocalDateTime validityFrom,
+			LocalDateTime validityTo) {
 
 		X509Certificate[] chain = new X509Certificate[1];
 		chain[0] = CertificateUtility.generateX509Certificate(keyPair, commonName, organizationalUnit, organization,
-				country, validityInMinutes);
+				country, validityFrom, validityTo);
 		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
 		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 
@@ -382,5 +384,15 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
+	}
+
+	/**
+	 * Sets keystore
+	 * 
+	 * @param keyStore
+	 *            keyStore
+	 */
+	public void setKeyStore(KeyStore keyStore) {
+		this.keyStore = keyStore;
 	}
 }

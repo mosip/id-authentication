@@ -6,6 +6,7 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -101,10 +102,12 @@ public interface KeyStore {
 	 *            the keypair
 	 * @param alias
 	 *            the alias
-	 * @param validityInMinutes
-	 *            validity In Minutes
+	 * @param validityFrom
+	 *            validityFrom
+	 * @param validityTo
+	 *            validityTo
 	 */
-	void storeAsymmetricKey(KeyPair keyPair, String alias, int validityInMinutes);
+	void storeAsymmetricKey(KeyPair keyPair, String alias, LocalDateTime validityFrom, LocalDateTime validityTo);
 
 	/**
 	 * Delete key form keystore

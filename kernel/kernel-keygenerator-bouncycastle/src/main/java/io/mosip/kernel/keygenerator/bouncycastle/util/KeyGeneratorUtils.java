@@ -53,7 +53,7 @@ public class KeyGeneratorUtils {
 		} catch (java.security.NoSuchAlgorithmException e) {
 			throw new NoSuchAlgorithmException(
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
 		}
 		SecureRandom random = new SecureRandom();
 		generator.init(keylength, random);
@@ -80,7 +80,7 @@ public class KeyGeneratorUtils {
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION
 							.getErrorCode(),
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION
-							.getErrorMessage());
+							.getErrorMessage(),e);
 		}
 		SecureRandom random = new SecureRandom();
 		generator.initialize(keylength, random);

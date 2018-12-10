@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -194,25 +194,25 @@ public class LocationServiceImpl implements LocationService {
 	 * parameter sent {@inheritDoc}
 	 */
 	@Override
-	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
-		LocationCodeDto locationCodeDto = null;
+		PostLocationCodeResponseDto locationCodeDto = null;
 
 		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException | DataAccessException ex) {
+		} catch (DataAccessLayerException  | DataAccessException   ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		// locationCodeDto = MapperUtils.map(locationResultantEntity,
-		// LocationCodeDto.class);
-		locationCodeDto = MapperUtils.map(locationResultantEntity, LocationCodeDto.class);
+		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
+	
 
 }

@@ -622,8 +622,8 @@ public final class DateUtils {
 	}
 
 	/**
-	 * Provides current DateTime string with system zone offset and in default ISO pattern -
-	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</b>.
+	 * Provides current DateTime string with system zone offset and in default ISO
+	 * pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</b>.
 	 * 
 	 * @return a date String
 	 */
@@ -640,6 +640,7 @@ public final class DateUtils {
 	 * @return a LocalDateTime
 	 * 
 	 * @throws java.time.format.DateTimeParseException
+	 *             if not able to parse the utcDateTime string for the pattern.
 	 * 
 	 * 
 	 * @see java.time.LocalDateTime
@@ -668,13 +669,13 @@ public final class DateUtils {
 	 * Parses UTC string of pattern <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b> or
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> to java.time.LocalDateTime.
 	 * 
-	 * @param utcDateTime
+	 * @param dateTime
 	 *            is of type String
 	 * 
 	 * @return a LocalDateTime
 	 * 
 	 * @throws java.time.format.DateTimeParseException
-	 * 
+	 *             if not able to parse the utcDateTime string for the pattern
 	 * 
 	 * @see java.time.LocalDateTime
 	 */
@@ -721,7 +722,7 @@ public final class DateUtils {
 	/**
 	 * Parses Date to java.time.LocalDateTime adjusted for system time zone.
 	 * 
-	 * @param utcDateTime
+	 * @param date
 	 *            is of type String
 	 * 
 	 * @return a LocalDateTime
