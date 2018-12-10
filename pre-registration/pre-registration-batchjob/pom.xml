@@ -9,9 +9,9 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>pre-registration-batchjob-service</artifactId>
+	<artifactId>pre-registration-batchjob</artifactId>
 
-	<name>pre-registration-batchjob-service</name>
+	<name>pre-registration-batchjob</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>

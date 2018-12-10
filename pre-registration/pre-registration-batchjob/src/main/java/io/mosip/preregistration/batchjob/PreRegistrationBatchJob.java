@@ -10,10 +10,10 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-public class PreRegistrationBatchJobService 
+public class PreRegistrationBatchJob 
 {
     public static void main( String[] args )
     {
-        SpringApplication.run(PreRegistrationBatchJobService.class, args);
+        SpringApplication.run(PreRegistrationBatchJob.class, args);
     }
 }
