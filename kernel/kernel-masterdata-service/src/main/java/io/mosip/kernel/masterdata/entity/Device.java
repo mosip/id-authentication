@@ -27,12 +27,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@Table(name = "device_master", schema = "master")
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "device_master", schema = "master")
 public class Device extends BaseEntity implements Serializable {
 
 	/**
