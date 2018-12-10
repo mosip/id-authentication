@@ -92,7 +92,7 @@ public class RegistrationConstants {
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
-	
+
 	// LOCK ACCOUNT
 	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = bundle.getString("USER_ACCOUNT_LOCK_MESSAGE_NUMBER");
 	public static final String USER_ACCOUNT_LOCK_MESSAGE = bundle.getString("USER_ACCOUNT_LOCK_MESSAGE");
@@ -215,11 +215,14 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
 	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
 	public static final String FINGERPRINT_DUPLICATION_ALERT = bundle.getString("FINGERPRINT_DUPLICATION_ALERT");
-	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
-	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR  = bundle.getString("FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR");
-	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP  = bundle.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
+	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle
+			.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
+	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle
+			.getString("FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR");
+	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP = bundle
+			.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
 	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
-	
+
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
 	public static final String LOGIN_METHOD_OTP = "OTP";
@@ -294,8 +297,8 @@ public class RegistrationConstants {
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
-	
-	//Validation Types
+
+	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
@@ -574,12 +577,13 @@ public class RegistrationConstants {
 	public static final String GPS_SIGNAL = "$GP";
 
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
-		
+
 	// Documents
 	public static final String POA_DOCUMENT = "PoA";
 	public static final String POI_DOCUMENT = "PoI";
 	public static final String POR_DOCUMENT = "PoR";
 	public static final String DOB_DOCUMENT = "DoB";
+
 	public static List<String> getPoaDocumentList() {
 		return Arrays.asList("Aadhar", "Passport", "VoterId", "Licence");
 	}
@@ -591,7 +595,7 @@ public class RegistrationConstants {
 	public static List<String> getPorDocumentList() {
 		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
 	}
-	
+
 	public static List<String> getDobDocumentList() {
 		return Arrays.asList("Document1", "Document2", "Document3", "Document4");
 	}
@@ -606,7 +610,7 @@ public class RegistrationConstants {
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
 	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
-	public static final List<String> VER = Arrays.asList("1.0","1.1","1.2");
+	public static final List<String> VER = Arrays.asList("1.0", "1.1", "1.2");
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
 	public static final String PRE_REG_SUCCESS_MESSAGE = "Got Pre registartion ";
@@ -617,7 +621,7 @@ public class RegistrationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
 
-	// Iris & Fingerprint Capture for Individual Registration	
+	// Iris & Fingerprint Capture for Individual Registration
 	public static final String IRIS_THRESHOLD = "iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
@@ -627,20 +631,20 @@ public class RegistrationConstants {
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
 	public static final String FINGERPRINT = "Fingerprint";
-	public static final String LEFTPALM = "LeftPalm";
-	public static final String RIGHTPALM = "RightPalm";
-	public static final String THUMBS = "BothThumbs";
+	public static final String LEFTPALM = "leftSlap";
+	public static final String RIGHTPALM = "rightSlap";
+	public static final String THUMBS = "thumbs";
 	public static final String PERCENTAGE = "%";
 	public static final String ISO_FILE_NAME = "ISOTemplate";
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
-	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/LeftPalm.jpg";
+	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/leftSlap.jpg";
 	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
-	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightPalm.jpg";
+	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightSlap.jpg";
 	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
-	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumb.jpg";
+	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumbs.jpg";
 	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
 	/** Exception codes **/
@@ -733,19 +737,23 @@ public class RegistrationConstants {
 	public static final String USER_REG_IRIS_SCAN_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-001";
 	public static final String USER_REG_FINGERPRINT_SCAN_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FSC-003";
 	public static final String USER_REG_FINGERPRINT_PAGE_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-001";
-	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-002";
-	public static final String USER_REG_FINGERPRINT_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-003";
-	public static final String USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-004";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE
+			+ "FCC-002";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_PREV_SECTION_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE
+			+ "FCC-003";
+	public static final String USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE
+			+ "FCC-004";
 	public static final String USER_REG_FINGERPRINT_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-005";
-	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE + "FCC-006";
+	public static final String USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP = USER_REG_FINGERPRINT_CAPTURE_EXP_CODE
+			+ "FCC-006";
 	public static final String USER_REG_IRIS_SAVE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-008";
 	public static final String USER_REG_GET_IRIS_QUALITY_SCORE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-009";
 	public static final String USER_REG_IRIS_STUB_IMAGE_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "IFC-002";
-	
-	//Exception for Registration - Document Scan and Upload
+
+	// Exception for Registration - Document Scan and Upload
 	public static final String USER_REG_DOC_SCAN_UPLOAD_EXP = USER_REGISTRATION_EXP_CODE + "SCN-001";
-	
-	//Scan
+
+	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
 	// To be moved to Logger Constants
@@ -762,20 +770,20 @@ public class RegistrationConstants {
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
-	public static final String ADDRESS_LINE1_REGEX="^.{1,50}$";
-	public static final String MOBILE_NUMBER_REGEX="\\d++";
-	public static final int MOBILE_NUMBER_LENGTH=9;
-	public static final String EMAIL_ID_REGEX="^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
-	public static final String EMAIL_ID_REGEX_INITIAL="([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
-	public static final String CNI_OR_PIN_NUMBER_REGEX="\\d{0,30}";
-	public static final String AGE_REGEX="\\d{1,2}";
-	public static final String UIN_REGEX="\\d{1,30}";
-	
-	//master sync 
-	
+	public static final String ADDRESS_LINE1_REGEX = "^.{1,50}$";
+	public static final String MOBILE_NUMBER_REGEX = "\\d++";
+	public static final int MOBILE_NUMBER_LENGTH = 9;
+	public static final String EMAIL_ID_REGEX = "^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
+	public static final String EMAIL_ID_REGEX_INITIAL = "([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
+	public static final String CNI_OR_PIN_NUMBER_REGEX = "\\d{0,30}";
+	public static final String AGE_REGEX = "\\d{1,2}";
+	public static final String UIN_REGEX = "\\d{1,30}";
+
+	// master sync
+
 	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
-	public static final String MASTER_SYNC_FAILURE="Master Sync Failure";
-	public static final String MASTER_SYNC_SUCCESS="Master Sync Successful";
-	public static final String MASTER_SYNC="MASTER_SYNC";
+	public static final String MASTER_SYNC_FAILURE = "Master Sync Failure";
+	public static final String MASTER_SYNC_SUCCESS = "Master Sync Successful";
+	public static final String MASTER_SYNC = "MASTER_SYNC";
 }

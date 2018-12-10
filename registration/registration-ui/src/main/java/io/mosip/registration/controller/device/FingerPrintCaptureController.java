@@ -164,7 +164,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					AnchorPane sourcePane = (AnchorPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
-
+					scanBtn.setDisable(true);
+					
 					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
