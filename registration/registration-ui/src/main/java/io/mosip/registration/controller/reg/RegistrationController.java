@@ -1776,38 +1776,15 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 
-		if (poaDocuments.getValue() == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
-			poaDocuments.requestFocus();
-		} else if (!poaBox.getChildren().isEmpty() && poaBox.getChildren().stream().noneMatch(index -> index.getId().contains(poaDocuments.getValue()))){
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
-		} else {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Address Documents");
-
-			selectedDocument = RegistrationConstants.POA_DOCUMENT;
-			scanWindow();
-		}
-	}
+		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POA_DOCUMENT_EMPTY);	}
 
 	/**
 	 * This method scans and uploads Proof of Identity documents
 	 */
 	@FXML
 	private void scanPoiDocument() {
-
-		if (poiDocuments.getValue() == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
-			poiDocuments.requestFocus();
-		} else if (!poiBox.getChildren().isEmpty() && poiBox.getChildren().stream().noneMatch(index -> index.getId().contains(poiDocuments.getValue()))){
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
-		} else {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Identity Documents");
-
-			selectedDocument = RegistrationConstants.POI_DOCUMENT;
-			scanWindow();
-		}
+		
+		scanDocument(poiDocuments, poiBox, RegistrationConstants.POI_DOCUMENT, RegistrationConstants.POI_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -1815,19 +1792,8 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void scanPorDocument() {
-
-		if (porDocuments.getValue() == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
-			porDocuments.requestFocus();
-		} else if (!porBox.getChildren().isEmpty() && porBox.getChildren().stream().noneMatch(index -> index.getId().contains(porDocuments.getValue()))){
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
-		} else {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
-
-			selectedDocument = RegistrationConstants.POR_DOCUMENT;
-			scanWindow();
-		}
+		
+		scanDocument(porDocuments, porBox, RegistrationConstants.POR_DOCUMENT, RegistrationConstants.POR_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -1836,18 +1802,27 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanDobDocument() {
 
-		if (dobDocuments.getValue() == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
-			dobDocuments.requestFocus();
-		} else if (!dobBox.getChildren().isEmpty() && dobBox.getChildren().stream().noneMatch(index -> index.getId().contains(dobDocuments.getValue()))){
+		scanDocument(dobDocuments, dobBox, RegistrationConstants.DOB_DOCUMENT, RegistrationConstants.DOB_DOCUMENT_EMPTY);
+	}
+	
+	/**
+	 * This method scans and uploads documents
+	 */
+	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
+		
+		if (documents.getValue() == null) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
+			documents.requestFocus();
+		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream().noneMatch(index -> index.getId().contains(documents.getValue()))){
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Proof of Relation Documents");
+					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
 
-			selectedDocument = RegistrationConstants.DOB_DOCUMENT;
+			selectedDocument = document;
 			scanWindow();
 		}
+
 	}
 
 	/**
