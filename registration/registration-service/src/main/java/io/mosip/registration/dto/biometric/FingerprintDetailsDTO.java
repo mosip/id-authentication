@@ -14,22 +14,22 @@ public class FingerprintDetailsDTO extends BaseDTO {
 
 	/** The finger print. */
 	private byte[] fingerPrint;
-	
+
 	/** The finger print. */
-	private byte[] fingerPrintISOTemplate;
-	
+	private byte[] fingerPrintISOImage;
+
 	/** The fingerprint image name. */
 	protected String fingerprintImageName;
-	
+
 	/** The quality score. */
 	protected double qualityScore;
-	
+
 	/** The is force captured. */
 	protected boolean isForceCaptured;
-	
+
 	/** The finger type. */
 	protected String fingerType;
-	
+
 	/** The num retry. */
 	protected int numRetry;
 
@@ -44,7 +44,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public byte[] getFingerPrint() {
 		return fingerPrint;
 	}
-	
+
 	/**
 	 * Sets the finger print.
 	 *
@@ -53,7 +53,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setFingerPrint(byte[] fingerPrint) {
 		this.fingerPrint = fingerPrint;
 	}
-	
+
 	/**
 	 * Gets the fingerprint image name.
 	 *
@@ -62,7 +62,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public String getFingerprintImageName() {
 		return fingerprintImageName;
 	}
-	
+
 	/**
 	 * Sets the fingerprint image name.
 	 *
@@ -71,7 +71,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setFingerprintImageName(String fingerprintImageName) {
 		this.fingerprintImageName = fingerprintImageName;
 	}
-	
+
 	/**
 	 * Gets the quality score.
 	 *
@@ -80,7 +80,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public double getQualityScore() {
 		return qualityScore;
 	}
-	
+
 	/**
 	 * Sets the quality score.
 	 *
@@ -89,7 +89,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
-	
+
 	/**
 	 * Checks if is force captured.
 	 *
@@ -98,7 +98,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public boolean isForceCaptured() {
 		return isForceCaptured;
 	}
-	
+
 	/**
 	 * Sets the force captured.
 	 *
@@ -107,7 +107,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setForceCaptured(boolean isForceCaptured) {
 		this.isForceCaptured = isForceCaptured;
 	}
-	
+
 	/**
 	 * Gets the finger type.
 	 *
@@ -116,7 +116,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public String getFingerType() {
 		return fingerType;
 	}
-	
+
 	/**
 	 * Sets the finger type.
 	 *
@@ -125,7 +125,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setFingerType(String fingerType) {
 		this.fingerType = fingerType;
 	}
-	
+
 	/**
 	 * Gets the num retry.
 	 *
@@ -134,7 +134,7 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public int getNumRetry() {
 		return numRetry;
 	}
-	
+
 	/**
 	 * Sets the num retry.
 	 *
@@ -151,5 +151,13 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	public void setSegmentedFingerprints(List<FingerprintDetailsDTO> segmentedFingerprints) {
 		this.segmentedFingerprints = segmentedFingerprints;
 	}
-	
+
+	public byte[] getFingerPrintISOImage() {
+		return fingerPrintISOImage;
+	}
+
+	public void setFingerPrintISOImage(byte[] fingerPrintISOImage) {
+		this.fingerPrintISOImage = fingerPrintISOImage;
+	}
+
 }

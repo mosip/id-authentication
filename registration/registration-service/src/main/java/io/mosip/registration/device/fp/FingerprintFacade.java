@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
@@ -184,21 +185,31 @@ public class FingerprintFacade {
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
-		try (Stream<Path> paths = Files.walk(Paths.get(path))) {
-			paths.filter(Files::isRegularFile).forEach(e -> {
-				try {
-					File file = e.getFileName().toFile();
-					FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
-					if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
-						byte[] isoTemplateBytes = Files.readAllBytes(e.toAbsolutePath());
-						segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
-					}
-					if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
-						byte[] isoImageBytes = Files.readAllBytes(e.toAbsolutePath());
-						segmentedDetailsDTO.setFingerPrint(isoImageBytes);
-					}
-					segmentedDetailsDTO.setFingerType(e.toFile().getParentFile().getName());
-					segmentedDetailsDTO.setFingerprintImageName(e.toFile().getParentFile().getName());
+		try (Stream<Path> paths = Files.list(Paths.get(path))) {
+			
+			List<Path> folders = paths.filter(Files::isDirectory).collect(Collectors.toList());
+			
+			for (Path folderPath : folders) {
+				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
+				try (Stream<Path> filesStream = Files.list(folderPath);) {
+					filesStream.filter(Files::isRegularFile).forEach(e -> {
+						try {
+							File file = e.getFileName().toFile();
+							if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
+								byte[] isoTemplateBytes = Files.readAllBytes(e.toAbsolutePath());
+								segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+							}
+							if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
+								byte[] isoImageBytes = Files.readAllBytes(e.toAbsolutePath());
+								segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+							}
+						} catch (IOException ioException) {
+							LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+									ioException.getMessage());
+						}
+					});
+					segmentedDetailsDTO.setFingerType(folderPath.toFile().getName());
+					segmentedDetailsDTO.setFingerprintImageName(folderPath.toFile().getName());
 					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
 					segmentedDetailsDTO.setForceCaptured(false);
 					segmentedDetailsDTO.setQualityScore(90);
@@ -208,11 +219,9 @@ public class FingerprintFacade {
 						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
 					}
 					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-				} catch (IOException ioException) {
-					LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
-							ioException.getMessage());
 				}
-			});
+			}
+			
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),

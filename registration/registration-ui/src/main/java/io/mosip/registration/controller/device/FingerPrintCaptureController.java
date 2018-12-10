@@ -165,7 +165,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
-					
+
 					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
@@ -429,9 +429,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 				for (FingerprintDetailsDTO segmentedFingerprintDetailsDTO : fingerprintDetailsDTO
 						.getSegmentedFingerprints()) {
-					if (segmentedFingerprintDetailsDTO.getFingerType().contains(RegistrationConstants.ISO_FILE_NAME)) {
-						segmentedFingerprintDetailsDTOs.add(segmentedFingerprintDetailsDTO);
-					}
+					segmentedFingerprintDetailsDTOs.add(segmentedFingerprintDetailsDTO);
 				}
 			}
 
