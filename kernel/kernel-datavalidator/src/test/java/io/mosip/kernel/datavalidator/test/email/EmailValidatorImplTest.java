@@ -17,10 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
-import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
+import io.mosip.kernel.core.datavalidator.spi.EmailValidator;
 
 /**
- * Test class for testing EmailValidator class
+ * Test class for testing emailvalidatorImpl class
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -31,7 +31,7 @@ import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 public class EmailValidatorImplTest {
 
 	@Autowired
-	EmailValidatorImpl emailvalidator;
+	EmailValidator emailValidatorImpl;
 
 	@Value("${mosip.kernel.email.test.true}")
 	String emailTrue;
@@ -64,63 +64,63 @@ public class EmailValidatorImplTest {
 	String emailWithSpace;
 
 	@Test
-	public void emailValidatorTestTrue() {
+	public void emailvalidatorImplTestTrue() {
 
-		assertEquals(true, emailvalidator.validateEmail(emailTrue));
+		assertEquals(true, emailValidatorImpl.validateEmail(emailTrue));
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testNull() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(emailNull);
+		emailValidatorImpl.validateEmail(emailNull);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testEmpty() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(emailEmpty);
+		emailValidatorImpl.validateEmail(emailEmpty);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testMaxLenght() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(emailMaxLength);
+		emailValidatorImpl.validateEmail(emailMaxLength);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testMinLenght() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(emailMinLength);
+		emailValidatorImpl.validateEmail(emailMinLength);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testMaxDomainLenght() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(domainMaxLength);
+		emailValidatorImpl.validateEmail(domainMaxLength);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testMinDomainLenght() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(domainMinLength);
+		emailValidatorImpl.validateEmail(domainMinLength);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testInvalideSpecialCharDomainName() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(domainInvalideSpecialChar);
+		emailValidatorImpl.validateEmail(domainInvalideSpecialChar);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testInvalideSpecialChar() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(invalideSpecialChar);
+		emailValidatorImpl.validateEmail(invalideSpecialChar);
 	}
 
 	@Test(expected = InvalideEmailException.class)
 	public void testSpace() throws InvalideEmailException {
 
-		emailvalidator.validateEmail(emailWithSpace);
+		emailValidatorImpl.validateEmail(emailWithSpace);
 	}
 
 }

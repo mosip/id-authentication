@@ -1,10 +1,11 @@
-FROM java:8
+FROM openjdk:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+ARG active_profile
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
 
-ADD target/kernel-auditmanager-service-1.0.0-SNAPSHOT.jar /KernelAuditManagerService.jar
+COPY ./target/kernel-auditmanager-service-*.jar kernel-auditmanager-service.jar
 
 EXPOSE 8081
 
-ENTRYPOINT ["java","-jar","/KernelAuditManagerService.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-auditmanager-service.jar"]

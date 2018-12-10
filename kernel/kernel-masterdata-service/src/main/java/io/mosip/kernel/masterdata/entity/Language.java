@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,19 +37,19 @@ public class Language extends BaseEntity implements Serializable {
 	 */
 	@Id
 	@Column(name = "code", unique = true, nullable = false, length = 3)
-	private String languageCode;
+	private String code;
 
 	/**
 	 * Field for language name
 	 */
 	@Column(name = "name", nullable = false, length = 64)
-	private String languageName;
+	private String name;
 
 	/**
 	 * Field for language family
 	 */
 	@Column(name = "family", length = 64)
-	private String languageFamily;
+	private String family;
 
 	/**
 	 * Field for language native name

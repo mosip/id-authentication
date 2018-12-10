@@ -43,12 +43,13 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.MailRequestDto;
 import io.mosip.authentication.service.integration.dto.SmsRequestDto;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.server.HttpServer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
 public class NotificationManagerTest {
 
 	@Mock

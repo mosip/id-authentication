@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * related to master data
  * 
  * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
 @SpringBootApplication
 public class MasterDataBootApplication {
+
 	/**
 	 * Function to run the Master-Data-Service application
 	 * 
@@ -22,4 +24,5 @@ public class MasterDataBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MasterDataBootApplication.class, args);
 	}
+
 }

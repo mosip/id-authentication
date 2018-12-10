@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * 
@@ -11,29 +13,38 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
  * 
  */
 public interface ApplicationService {
-	
+
 	/**
 	 * Get All Applications
 	 * 
 	 * @return {@link List<ApplicationDto>}
 	 */
-	public List<ApplicationDto> getAllApplication();
+	public ApplicationResponseDto getAllApplication();
 
 	/**
-	 * Get All Applications by language  code
+	 * Get All Applications by language code
 	 * 
 	 * @param languageCode
 	 * @return {@link List<ApplicationDto>}
 	 */
-	public List<ApplicationDto> getAllApplicationByLanguageCode(String languageCode);
+	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode);
 
 	/**
-	 * Get An Application by code and language  code
+	 * Get An Application by code and language code
 	 * 
 	 * @param code
 	 * @param languageCode
 	 * @return {@link ApplicationDto}
 	 */
-	public ApplicationDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
+	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
+
+	/**
+	 * To create an Application
+	 * 
+	 * @param application
+	 *			the application data
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> application);
 
 }

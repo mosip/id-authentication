@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception.systemexception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * TimeoutException occurs when time exceeds specified time limit.
@@ -26,7 +26,7 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public TimeoutException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT, message);
+		super(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode(), message);
 	}
 	
 	/**
@@ -36,9 +36,6 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public TimeoutException(String message,Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT + EMPTY_SPACE, message,cause);
+		super(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode() + EMPTY_SPACE, message,cause);
 	}
-	
-	
-
 }

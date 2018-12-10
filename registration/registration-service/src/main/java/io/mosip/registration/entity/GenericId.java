@@ -17,7 +17,7 @@ public class GenericId implements Serializable {
 	private String code;
 	@Column(name = "is_active", nullable = false)
 	@Type(type = "true_false")
-	private boolean isActive;
+	private Boolean isActive;
 
 	/**
 	 * @return the code
@@ -37,7 +37,7 @@ public class GenericId implements Serializable {
 	/**
 	 * @return the isActive
 	 */
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
 
@@ -45,7 +45,7 @@ public class GenericId implements Serializable {
 	 * @param isActive
 	 *            the isActive to set
 	 */
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 

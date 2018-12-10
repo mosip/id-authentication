@@ -49,6 +49,8 @@ import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.DemoRepository;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
  * Test class for OTPFacadeImpl. Mockito with PowerMockito.
@@ -58,7 +60,7 @@ import io.mosip.authentication.service.repository.DemoRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
 public class OTPFacadeImplTest {
 
 	OtpRequestDTO otpRequestDto;
@@ -81,6 +83,10 @@ public class OTPFacadeImplTest {
 	IdAuthService idAuthService;
 	@InjectMocks
 	IdTemplateManager idTemplateManager;
+	
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+	
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 	@InjectMocks
@@ -108,6 +114,9 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
+		
+		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
+		ReflectionTestUtils.setField(idTemplateManager, "templateManager", templateManagerBuilder.enableCache(false).build());
 	}
 
 	@Test

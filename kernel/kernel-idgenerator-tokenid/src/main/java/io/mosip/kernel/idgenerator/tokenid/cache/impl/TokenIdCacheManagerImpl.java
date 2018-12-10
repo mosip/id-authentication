@@ -22,7 +22,7 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 public class TokenIdCacheManagerImpl implements TokenIdCacheManager {
 
 	/**
-	 * Creates instance of database class {@link TokenIdRepository}}
+	 * Creates instance of database class {@link TokenIdRepository}
 	 */
 	@Autowired
 	private TokenIdRepository tokenGenRepository;
@@ -31,7 +31,7 @@ public class TokenIdCacheManagerImpl implements TokenIdCacheManager {
 
 	/**
 	 * This method fetches the list of TokenId from database
-	 * {@link TokenIdRepository}} and add in the Set.
+	 * {@link TokenIdRepository} and add in the Set.
 	 * 
 	 */
 	@PostConstruct
@@ -44,7 +44,7 @@ public class TokenIdCacheManagerImpl implements TokenIdCacheManager {
 	}
 
 	/**
-	 * {@inheritDoc}}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean contains(String tokenId) {
@@ -53,7 +53,7 @@ public class TokenIdCacheManagerImpl implements TokenIdCacheManager {
 	}
 
 	/**
-	 * {@inheritDoc}}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean add(String tokenId) {

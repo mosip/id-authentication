@@ -3,6 +3,7 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
@@ -22,7 +24,6 @@ import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
-import io.mosip.registration.dao.RegistrationUserPasswordDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -70,12 +71,6 @@ public class LoginServiceImpl implements LoginService {
 	private RegistrationAppLoginDAO registrationAppLoginDAO;
 
 	/**
-	 * Class to retrieve the Registration Officer Credentials from DB
-	 */
-	@Autowired
-	private RegistrationUserPasswordDAO registrationUserPasswordDAO;
-
-	/**
 	 * Class to retrieve the Registration Officer Details from DB
 	 */
 	@Autowired
@@ -110,26 +105,7 @@ public class LoginServiceImpl implements LoginService {
 
 		return registrationAppLoginDAO.getModesOfLogin();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#validateUserPassword(
-	 * java.lang.String,java.lang.String)
-	 */
-	@Override
-	public boolean validateUserPassword(String userId, String hashPassword) {
-		// Validating Registration Officer Credentials
-
-		LOGGER.debug("REGISTRATION - VALIDATECREDENTIALS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Validating User credentials");
-
-		auditFactory.audit(AuditEvent.VALIDATE_USER_CRED, AppModule.VALIDATE_USER,
-				"Validating User credentials", "refId", "refIdType");
-
-		return registrationUserPasswordDAO.getPassword(userId, hashPassword);
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -237,7 +213,7 @@ public class LoginServiceImpl implements LoginService {
 
                  }
 
-          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
+          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // create Error Response
                  response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
@@ -269,9 +245,6 @@ public class LoginServiceImpl implements LoginService {
           SuccessResponseDTO successResponse;
           OtpValidatorResponseDto otpValidatorResponseDto = null;
 
-          // Validator response service api creation
-          final String SERVICE_NAME = RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME;
-
           // prepare request params to pass through URI
           Map<String, String> requestParamMap = new HashMap<String, String>();
           requestParamMap.put(RegistrationConstants.USERNAME_KEY, key);
@@ -279,14 +252,14 @@ public class LoginServiceImpl implements LoginService {
 
           try {
                  // Obtain otpValidatorResponseDto from service delegate util
-                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap);
+                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
                  if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
                               && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
 
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-                 successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
+                        successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
                         response.setSuccessResponseDTO(successResponse);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Success Response Created");
@@ -294,15 +267,15 @@ public class LoginServiceImpl implements LoginService {
                  } else {
 
                        // Create Error response
-                       response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                       getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                     APPLICATION_ID, "Error Response Created");
 
                  }
 
-          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
+          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // Create Error response
-                 response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                 getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response Created");
 
@@ -314,8 +287,25 @@ public class LoginServiceImpl implements LoginService {
           return response;
 
     }
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
+	 * registration.entity.RegistrationUserDetail)
+	 */
+	public void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
 
+		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Updating Login Params");
 
+		registrationUserDetailDAO.updateLoginParams(registrationUserDetail);
+		
+		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Updated Login Params");
+
+	}
+	
 	private ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
 		// Create list of Error Response
 		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<ErrorResponseDTO>();

@@ -1,6 +1,5 @@
 package io.mosip.registration.entity;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -10,8 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * UserBiometric entity details
@@ -27,25 +24,24 @@ public class UserBiometric extends RegistrationCommonFields {
 	private UserBiometricId userBiometricId;
 	
 	@Lob
-	@Column(name = "bio_raw_image", nullable = true, updatable = false)
+	@Column(name = "bio_raw_image")
 	private byte[] bioRawImage;
-	@Column(name = "bio_minutia", nullable = true, updatable = false)
+	@Column(name = "bio_minutia")
 	private String bioMinutia;
 	@Lob
-	@Column(name = "bio_iso_image", nullable = true, updatable = false)
+	@Column(name = "bio_iso_image")
 	private byte[] bioIsoImage;
-	@Column(name = "quality_score", precision = 5, scale = 3, nullable = true, updatable = false)
-	private BigDecimal qualityScore;
-	@Column(name = "no_of_retry", nullable = true, updatable = false)
-	private int numberOfRetry;
-	@Column(name = "is_deleted", nullable = true, updatable = false)
-	@Type(type = "true_false")
-	private boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true, updatable = false)
+	@Column(name = "quality_score")
+	private Integer qualityScore;
+	@Column(name = "no_of_retry")
+	private Integer numberOfRetry;
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 
 	@ManyToOne
-	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "usr_id", insertable = false, updatable = false)
 	private RegistrationUserDetail registrationUserDetail;
 
 	public RegistrationUserDetail getRegistrationUserDetail() {
@@ -119,7 +115,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	/**
 	 * @return the qualityScore
 	 */
-	public BigDecimal getQualityScore() {
+	public int getQualityScore() {
 		return qualityScore;
 	}
 
@@ -127,7 +123,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	 * @param qualityScore
 	 *            the qualityScore to set
 	 */
-	public void setQualityScore(BigDecimal qualityScore) {
+	public void setQualityScore(int qualityScore) {
 		this.qualityScore = qualityScore;
 	}
 
@@ -149,7 +145,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -157,7 +153,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

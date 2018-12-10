@@ -1,10 +1,12 @@
-FROM java:8
+FROM openjdk:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+ARG active_profile
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
 
-ADD target/kernel-smsnotification-service-1.0.0-SNAPSHOT.jar /KernelSmsNotificationService.ja
+COPY ./target/kernel-smsnotification-service-*.jar kernel-smsnotification-service.jar
 
 EXPOSE 8084
 
-ENTRYPOINT ["java","-jar","/KernelSmsNotificationService.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-smsnotification-service.jar"]
+

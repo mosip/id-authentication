@@ -24,17 +24,6 @@ public interface LoginService {
 	Map<String, Object> getModesOfLogin();
 
 	/**
-	 * validating user credentials
-	 * 
-	 * @param userId
-	 *            entered userId
-	 * @param hashPassword
-	 *            entered password with hashing
-	 * @return boolean true or false
-	 */
-	boolean validateUserPassword(String userId, String hashPassword);
-
-	/**
 	 * fetching user details
 	 * 
 	 * @param userId
@@ -81,5 +70,15 @@ public interface LoginService {
 	 */
 
 	ResponseDTO validateOTP(String key, String otp);
-
+	
+	/**
+	 *updating login params on invalid login attempts
+	 * 
+	 * @param registrationUserDetail
+	 *            user details
+	 */
+	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+		
 }
+
+

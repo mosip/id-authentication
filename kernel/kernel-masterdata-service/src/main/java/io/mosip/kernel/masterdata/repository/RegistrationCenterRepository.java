@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 /**
  * @author Dharmesh Khandelwal
  * @author Abhishek Kumar
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -49,7 +50,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
-	RegistrationCenter findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String id, String languageCode);
+	@Query("FROM RegistrationCenter WHERE id= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
+	RegistrationCenter findByIdAndLanguageCode(String id, String languageCode);
 
 	String findRegistrationCenterHolidayLocationCodeByIdAndLanguageCode(String id, String languageCode);
 
@@ -63,9 +65,30 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return List<RegistrationCenter> fetched from database
 	 */
-	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locationCode,
-			String languageCode);
+	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
+	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
 
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.process_end_time,r.process_start_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND loc.name = ?3", nativeQuery = true)
-	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel, String text);
+	/**
+	 * This method trigger query to fetch registration centers based on hierarchy
+	 * level,text input and language code
+	 * 
+	 * @param languageCode
+	 *            provided by user
+	 * @param hierarchyLevel
+	 *            provided by user
+	 * @param text
+	 *            provided by user
+	 * @return List<RegistrationCenter> fetched from database
+	 */
+	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND UPPER(loc.name) = UPPER(?3) AND r.is_deleted=false or r.is_deleted IS NULL ", nativeQuery = true)
+	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel,
+			String text);
+
+	/**
+	 * This method trigger query to fetch all registration centers based on deletion
+	 * condition.
+	 * 
+	 * @return the list of registration centers.
+	 */
+	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
 }

@@ -16,11 +16,11 @@ public class UserBiometricId implements Serializable {
 
 	private static final long serialVersionUID = 4356301394048825993L;
 
-	@Column(name = "usr_id", length = 64, nullable = false, updatable = false)
+	@Column(name = "usr_id")
 	private String usrId;
-	@Column(name = "bmtyp_code", length = 36, nullable = false, updatable = false)
+	@Column(name = "bmtyp_code")
 	private String bioTypeCode;
-	@Column(name = "bmatt_code", length = 36, nullable = false, updatable = false)
+	@Column(name = "bmatt_code")
 	private String bioAttributeCode;
 
 	/**

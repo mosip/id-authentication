@@ -1,17 +1,17 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -21,13 +21,14 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
 @NamedNativeQueries({
-		@NamedNativeQuery(name = "RegistrationCenter.findRegistrationCentersByLat", query = "SELECT id, name, cntrtyp_code, addr_line1, addr_line2, addr_line3,number_of_kiosks,per_kiosk_process_time,process_end_time,process_start_time,latitude, longitude, location_code,holiday_loc_code,contact_phone,working_hours, lang_code, is_active, cr_by, cr_dtimes, upd_by,upd_dtimes, is_deleted, del_dtimes FROM (SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.process_end_time,r.process_start_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by, r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes,(2 * 3961 * asin(sqrt((sin(radians((:latitude - CAST(r.latitude AS FLOAT)) / 2))) ^ 2 + cos(radians(CAST(r.latitude AS FLOAT))) * cos(radians(:latitude)) * (sin(radians((:longitude - CAST(r.longitude AS FLOAT)) / 2))) ^ 2))) AS distance FROM master.registration_center r) ss where distance < :proximitydistance and lang_code = :langcode and is_deleted=false and is_active=true order by distance asc;", resultClass = RegistrationCenter.class) })
+		@NamedNativeQuery(name = "RegistrationCenter.findRegistrationCentersByLat", query = "SELECT id, name, cntrtyp_code, addr_line1, addr_line2, addr_line3,number_of_kiosks,per_kiosk_process_time,center_end_time,center_start_time,latitude, longitude, location_code,holiday_loc_code,contact_phone,working_hours, lang_code, is_active, cr_by, cr_dtimes, upd_by,upd_dtimes, is_deleted, del_dtimes,time_zone,contact_person,lunch_start_time,lunch_end_time FROM (SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.is_active, r.cr_by, r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes,(2 * 3961 * asin(sqrt((sin(radians((:latitude - CAST(r.latitude AS FLOAT)) / 2))) ^ 2 + cos(radians(CAST(r.latitude AS FLOAT))) * cos(radians(:latitude)) * (sin(radians((:longitude - CAST(r.longitude AS FLOAT)) / 2))) ^ 2))) AS distance FROM master.registration_center r) ss where distance < :proximitydistance and lang_code = :langcode and is_deleted=false order by distance asc;", resultClass = RegistrationCenter.class) })
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,8 +63,18 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "longitude", length = 32)
 	private String longitude;
 
-	@Column(name = "location_code", nullable = false, length = 36)
-	private String locationCode;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	private Location locationCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "cntrtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	
+	private RegistrationCenterType registrationCenterType;
 
 	@Column(name = "contact_phone", length = 16)
 	private String contactPhone;
@@ -80,37 +91,26 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "per_kiosk_process_time")
 	private LocalTime perKioskProcessTime;
 
-	@Column(name = "process_start_time")
-	private LocalTime processStartTime;
+	@Column(name = "center_start_time")
+	private LocalTime centerStartTime;
 
-	@Column(name = "process_end_time")
-	private LocalTime processEndTime;
+	@Column(name = "center_end_time")
+	private LocalTime centerEndTime;
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
+	@Column(name = "time_zone", length = 64)
+	private String timeZone;
 
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
+	@Column(name = "contact_person", length = 128)
+	private String contactPerson;
 
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtimes;
+	@Column(name = "lunch_start_time")
+	private LocalTime lunchStartTime;
 
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
+	@Column(name = "lunch_end_time")
+	private LocalTime lunchEndTime;
 
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtimes;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtimes;
 	
-	@OneToOne(mappedBy="code",cascade = CascadeType.ALL)
-	
-	private LocationHierarcyLevel location;
 }

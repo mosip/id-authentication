@@ -5,21 +5,18 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.Type;
-
 @MappedSuperclass
 public class RegistrationCommonFields {
 
-	@Column(name = "IS_ACTIVE", nullable = false, updatable = true)
-	@Type(type = "true_false")
+	@Column(name = "IS_ACTIVE")
 	protected Boolean isActive;
-	@Column(name = "CR_BY", length = 24, nullable = false, updatable = true)
+	@Column(name = "CR_BY")
 	protected String crBy;
-	@Column(name = "CR_DTIMES", nullable = false, updatable = true)
+	@Column(name = "CR_DTIMES")
 	protected Timestamp crDtime;
-	@Column(name = "UPD_BY", length = 24, nullable = true, updatable = true)
+	@Column(name = "UPD_BY")
 	protected String updBy;
-	@Column(name = "UPD_DTIMES", nullable = true, updatable = false)
+	@Column(name = "UPD_DTIMES")
 	protected Timestamp updDtimes;
 
 	/**

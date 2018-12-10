@@ -4,19 +4,23 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+
 
 /**
  * 
@@ -39,9 +43,18 @@ public class IdTemplateManager {
 	private static final String TEMPLATES = "templates/";
 
 	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
+	
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+	
+	private TemplateManager templateManager;
 
-	private TemplateManager templateManager = new TemplateConfigureBuilder().encodingType(ENCODE_TYPE)
-			.enableCache(false).resourceLoader(CLASSPATH).build();
+	
+	@PostConstruct
+	public void idTemplateManagerPostConstruct() {
+		templateManager = templateManagerBuilder.encodingType(ENCODE_TYPE)
+				.enableCache(false).resourceLoader(CLASSPATH).build();
+	}
 
 	/**
 	 * To apply Template for PDF Generation

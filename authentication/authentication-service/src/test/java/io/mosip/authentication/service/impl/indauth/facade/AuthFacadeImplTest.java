@@ -70,6 +70,8 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,7 +84,7 @@ import io.mosip.authentication.service.integration.OTPManager;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
 public class AuthFacadeImplTest {
 
 
@@ -120,7 +122,10 @@ public class AuthFacadeImplTest {
 
 	@InjectMocks
 	private IdTemplateManager idTemplateManager;
-
+	
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+	
 	@Mock
 	private IDAMappingConfig idMappingConfig;
 
@@ -155,6 +160,9 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", messageSource);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationManager", notificationManager);
+		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
+		ReflectionTestUtils.setField(idTemplateManager, "templateManager", templateManagerBuilder.enableCache(false).build());
+
 
 
 

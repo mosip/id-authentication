@@ -1,22 +1,21 @@
 package io.mosip.registration.processor.packet.storage.dto;
 
-import java.io.Serializable;
 
-import io.mosip.registration.processor.core.packet.dto.Demographic;
-import io.mosip.registration.processor.core.packet.dto.Photograph;
+import java.util.List;
+
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class ApplicantInfoDto extends Demographic implements Serializable{
+public class ApplicantInfoDto {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private Photograph applicantPhoto;
 	
+	private PhotographDto applicantPhotograph;
+	private List<DemographicDedupeDto> demoDedupeList;
+
+
 
 	
 }

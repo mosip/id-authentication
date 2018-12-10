@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
 import io.mosip.kernel.packetuploader.http.PacketUploaderHttpBootApplication;
+import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.http.exception.PacketLocationSecurityException;
 import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 
@@ -43,8 +44,8 @@ public class PacketUploaderExceptionTest {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet4.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet4.zip").getFile().toPath()));
 		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code", isA(String.class)));
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/v1.0/packet/upload").file(packet)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
@@ -52,26 +53,27 @@ public class PacketUploaderExceptionTest {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet4.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/aa.txt").getFile().toPath()));
 		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code", isA(String.class)));
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/v1.0/packet/upload").file(packet)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void uploadFileDirectoryException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.upload(packet)).thenThrow(DirectoryNotEmptyException.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
-				.andExpect(jsonPath("$.code", isA(String.class)));
+		when(service.upload(packet)).thenThrow(new DirectoryNotEmptyException(PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorCode(),
+				PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage(),null));
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/v1.0/packet/upload").file(packet)).andExpect(status().isInternalServerError())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void uploadSecurityException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.upload(packet)).thenThrow(PacketLocationSecurityException.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
-				.andExpect(jsonPath("$.code", isA(String.class)));
+		when(service.upload(packet)).thenThrow( new PacketLocationSecurityException(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION, null));
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/v1.0/packet/upload").file(packet)).andExpect(status().isInternalServerError())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 }

@@ -1,4 +1,4 @@
-package io.mosip.pregistration.datasync.test.service;
+/*package io.mosip.pregistration.datasync.test.service;
 
 import static org.junit.Assert.*;
 
@@ -54,10 +54,10 @@ import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
 import io.mosip.pregistration.datasync.service.DataSyncService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
-/**
+*//**
  * @author M1046129
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DataSyncServiceTest {
@@ -320,3 +320,4 @@ public class DataSyncServiceTest {
 	}
 
 }
+*/

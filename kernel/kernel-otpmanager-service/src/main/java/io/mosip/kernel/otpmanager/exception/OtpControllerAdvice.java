@@ -1,16 +1,16 @@
 package io.mosip.kernel.otpmanager.exception;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 
 /**
@@ -22,10 +22,6 @@ import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
  */
 @RestControllerAdvice
 public class OtpControllerAdvice {
-	/**
-	 * This variable represents the errors.
-	 */
-	String err = "errors";
 
 	/**
 	 * This method handles MethodArgumentNotValidException.
@@ -35,15 +31,16 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<Error>>> otpGeneratorValidity(
-			final MethodArgumentNotValidException exception) {
-		Error error = new Error(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
-				OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
-		ArrayList<Error> errorList = new ArrayList<>();
-		errorList.add(error);
-		Map<String, ArrayList<Error>> map = new HashMap<>();
-		map.put(err, errorList);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	public ResponseEntity<ErrorResponse<ServiceError>> otpGeneratorValidity(final MethodArgumentNotValidException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+		fieldErrors.forEach(x -> {
+			ServiceError error = new ServiceError(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
+					OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
+			errorResponse.getErrors().add(error);
+		});
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	/**
@@ -54,10 +51,12 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(OtpInvalidArgumentException.class)
-	public ResponseEntity<Object> otpValidationArgumentValidity(final OtpInvalidArgumentException exception) {
-		Map<String, List<Error>> map = new HashMap<>();
-		map.put(err, exception.getList());
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	public ResponseEntity<ErrorResponse<ServiceError>> otpValidationArgumentValidity(
+			final OtpInvalidArgumentException exception) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().addAll(exception.getList());
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	/**
@@ -68,9 +67,11 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(RequiredKeyNotFoundException.class)
-	public ResponseEntity<Object> otpValidationKeyNullValidity(final RequiredKeyNotFoundException exception) {
-		Map<String, List<Error>> map = new HashMap<>();
-		map.put(err, exception.getList());
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	public ResponseEntity<ErrorResponse<ServiceError>> otpValidationKeyNullValidity(
+			final RequiredKeyNotFoundException exception) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().addAll(exception.getList());
+		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
 	}
 }

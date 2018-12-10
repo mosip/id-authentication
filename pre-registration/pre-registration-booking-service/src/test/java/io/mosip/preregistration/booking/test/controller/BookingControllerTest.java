@@ -67,16 +67,21 @@ public class BookingControllerTest {
 				classLoader.getResource("booking.json").getFile().trim().replaceAll("\\u0020", "%20"));
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
-		bookingRequestDTO.setPre_registration_id("23587986034785");
-		oldBooking.setRegistration_center_id("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setReg_date("2018-12-06");
 
-		newBooking.setRegistration_center_id("1");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setReg_date("2018-12-06");
+		bookingRequestDTO.setPre_registration_id("23587986034785");
+		bookingRequestDTO.setNewBookingDetails(new BookingRegistrationDTO());
+		bookingRequestDTO.setOldBookingDetails(new BookingRegistrationDTO());
+//		bookingRequestDTOA.setSlotFromTime("09:00");
+//		bookingRequestDTOA.setSlotToTime("09:13");
+//		bookingRequestDTOA.setReg_date("2018-12-06");
+
+
+		//bookingRequestDTOB.setPre_registration_id("31496715428069");
+//		bookingRequestDTOB.setRegistration_center_id("1");
+//		bookingRequestDTOB.setSlotFromTime("09:00");
+//		bookingRequestDTOB.setSlotToTime("09:13");
+//		bookingRequestDTOB.setReg_date("2018-12-06");
+
 
 		bookingDTO.setRequest(bookingList);
 

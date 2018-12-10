@@ -8,17 +8,16 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum TemplateErrorCode {
 
-	TEMPLATE_FETCH_EXCEPTION("KER-TEM-001",
-			"Error ocurred while fetching template"), TEMPLATE_MAPPING_EXCEPTION("KER-TEM-002",
-					"Error occured while mapping template"), TEMPLATE_NOT_FOUND("KER-TEM-003",
-							"No template found.");
-	
+	TEMPLATE_FETCH_EXCEPTION("KER-TEM-045", "Error ocurred while fetching Templates"),
+	TEMPLATE_INSERT_EXCEPTION("KER-TEM-145","Exception during inserting data into db"),
+	TEMPLATE_NOT_FOUND("KER-TEM-046", "Template not found.");
+
 	private final String errorCode;
 	private final String errorMessage;
-	
+
 	private TemplateErrorCode(final String errorCode, final String errorMessage) {
-		    this.errorCode = errorCode;
-		    this.errorMessage = errorMessage;
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
 	}
 
 	public String getErrorCode() {
@@ -28,5 +27,5 @@ public enum TemplateErrorCode {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-	
+
 }

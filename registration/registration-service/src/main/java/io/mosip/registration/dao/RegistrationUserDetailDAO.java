@@ -17,7 +17,14 @@ public interface RegistrationUserDetailDAO {
 	 * 
 	 * @return {@link RegistrationUserDetail} based on the userId
 	 */
-
 	RegistrationUserDetail getUserDetail(String userId);
+
+	/**
+	 * This method is used update login params
+	 * 
+	 * @param registrationUserDetail
+	 *            user details
+	 */
+	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
 
 }

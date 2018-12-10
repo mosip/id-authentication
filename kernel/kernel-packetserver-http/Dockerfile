@@ -1,6 +1,10 @@
-FROM java:8
+FROM openjdk:8
 
-ADD target/kernel-packetserver-http-1.0.0-SNAPSHOT.jar /KernelHttpPacketServer.jar
+ARG active_profile
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
+
+COPY ./target/kernel-packetserver-http-*.jar kernel-packetserver-http.jar
 
 RUN mkdir /packet-dir
 
@@ -8,4 +12,4 @@ VOLUME /packet-dir
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","/KernelHttpPacketServer.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-packetserver-http.jar"]

@@ -18,6 +18,8 @@ import lombok.Data;
  */
 
 @Data
+
+
 public class MachineHistoryDto {
 
 	/**
@@ -61,7 +63,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold created date and time
 	 */
-	private LocalDateTime createdtime;
+	private LocalDateTime createdDateTime;
 
 	/**
 	 * Field to hold updater name
@@ -71,7 +73,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold updated date and time
 	 */
-	private LocalDateTime updatedtime;
+	private LocalDateTime updatedDateTime;
 
 	/**
 	 * Field to hold is deleted
@@ -81,11 +83,13 @@ public class MachineHistoryDto {
 	/**
 	 * Field to hold deleted date and time
 	 */
-	private LocalDateTime deletedtime;
+	private LocalDateTime deletedDateTime;
 
 	/**
 	 * Field to hold Effective Date and time
 	 */
 	private LocalDateTime effectDtimes;
+	
+	private LocalDateTime valEndDtimes;
 
 }

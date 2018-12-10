@@ -5,7 +5,9 @@ import java.security.KeyPairGenerator;
 
 import javax.crypto.SecretKey;
 
-import io.mosip.kernel.keygenerator.bouncycastle.config.KeyGeneratorConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
 
 /**
@@ -15,32 +17,52 @@ import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
  *
  * @since 1.0.0
  */
+@Component
 public class KeyGenerator {
 
 	/**
-	 * No Args Constructor for this class
+	 * Symmetric key algorithm Name
 	 */
-	private KeyGenerator() {
-	}
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
+	private String symmetricKeyAlgorithm;
+
+	/**
+	 * Symmetric key length
+	 */
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-length}")
+	private int symmetricKeyLength;
+
+	/**
+	 * Asymmetric key algorithm Name
+	 */
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
+	private String asymmetricKeyAlgorithm;
+
+	/**
+	 * Asymmetric key length
+	 */
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
+	private int asymmetricKeyLength;
 
 	/**
 	 * This method generates symmetric key
 	 * 
-	 * @return generated symmetric key
+	 * @return generated {@link SecretKey}
 	 */
-	public static SecretKey getSymmetricKey() {
-
-		javax.crypto.KeyGenerator generator = KeyGeneratorUtils.getKeyGenerator(KeyGeneratorConfig.SYMMETRIC_ALGORITHM);
+	public SecretKey getSymmetricKey() {
+		javax.crypto.KeyGenerator generator = KeyGeneratorUtils
+				.getKeyGenerator(symmetricKeyAlgorithm, symmetricKeyLength);
 		return generator.generateKey();
 	}
 
 	/**
 	 * This method generated Asymmetric key pairs
 	 * 
-	 * @return {@link AsymmetricKeyPair} which contain public nad private key
+	 * @return {@link KeyPair} which contain public nad private key
 	 */
-	public static KeyPair getAsymmetricKey() {
-		KeyPairGenerator generator = KeyGeneratorUtils.getKeyPairGenerator(KeyGeneratorConfig.ASYMMETRIC_ALGORITHM);
+	public KeyPair getAsymmetricKey() {
+		KeyPairGenerator generator = KeyGeneratorUtils.getKeyPairGenerator(
+				asymmetricKeyAlgorithm, asymmetricKeyLength);
 		return generator.generateKeyPair();
 
 	}

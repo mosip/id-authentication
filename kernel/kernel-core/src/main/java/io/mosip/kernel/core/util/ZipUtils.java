@@ -43,106 +43,108 @@ public class ZipUtils {
 	private ZipUtils() {
 
 	}
-	
+
 	/**
 	 * Method used for zipping a Byte Array
 	 * 
 	 * @param input
 	 *            pass Byte Array want to zip it
-	 * @param return
-	 *            returned zipped Byte Array
+	 * 
+	 * @return zipped Byte Array
+	 * 
 	 * @throws IOException
 	 *             when file unable to read
 	 * 
 	 */
-	public static byte[] zipByteArray(byte[] input)throws IOException{
-	    byte[] byReturn = null;
-	    Deflater oDeflate = new Deflater(Deflater.DEFLATED, false);
-	    oDeflate.setInput(input);
-	    oDeflate.finish();
-	    try (ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()){
-	   
-	      while (! oDeflate.finished() ){
-	        byte[] byRead = new byte[1024];
-	        int iBytesRead = oDeflate.deflate(byRead);
-	        if (iBytesRead == byRead.length){
-	          oZipStream.write(byRead);
-	        }
-	        else {
-	          oZipStream.write(byRead, 0, iBytesRead);
-	        }
-	      }
-	      oDeflate.end();
-	      byReturn = oZipStream.toByteArray();
-	    }catch (java.io.IOException e) {
+	public static byte[] zipByteArray(byte[] input) throws IOException {
+		byte[] byReturn = null;
+		Deflater oDeflate = new Deflater(Deflater.DEFLATED, false);
+		oDeflate.setInput(input);
+		oDeflate.finish();
+		try (ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()) {
+
+			while (!oDeflate.finished()) {
+				byte[] byRead = new byte[1024];
+				int iBytesRead = oDeflate.deflate(byRead);
+				if (iBytesRead == byRead.length) {
+					oZipStream.write(byRead);
+				} else {
+					oZipStream.write(byRead, 0, iBytesRead);
+				}
+			}
+			oDeflate.end();
+			byReturn = oZipStream.toByteArray();
+		} catch (java.io.IOException e) {
 			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
-	   
-	    return byReturn;
-	  }
-	
+
+		return byReturn;
+	}
+
 	/**
 	 * Method used for unzipping a zipped Byte Array
 	 * 
 	 * @param input
 	 *            pass zipped Byte Array want to unzip it
-	 * @param return
-	 *            returned unzipped Byte Array
+	 * 
+	 * @return returned unzipped Byte Array
+	 * 
 	 * @throws IOException
 	 *             when file unable to read
+	 * 
 	 * @throws DataFormatException
 	 *             Attempting to unzip file that is not zipped
+	 * 
+	 * @see io.mosip.kernel.core.exception.IOException
 	 */
-	
-	 public static byte[] unzipByteArray(byte[] input)
-	           throws IOException, java.io.IOException  {
-	    byte[] byReturn = null;
+	public static byte[] unzipByteArray(byte[] input) throws IOException {
+		byte[] byReturn = null;
 
-	    Inflater oInflate = new Inflater(false);
-	    oInflate.setInput(input);
+		Inflater oInflate = new Inflater(false);
+		oInflate.setInput(input);
 
-	    try(ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()){
-	      while (! oInflate.finished() ){
-	        byte[] byRead = new byte[1024];
-	        int iBytesRead = oInflate.inflate(byRead);
-	        if (iBytesRead == byRead.length){
-	          oZipStream.write(byRead);
-	        }
-	        else {
-	          oZipStream.write(byRead, 0, iBytesRead);
-	        }
-	      }
-	      byReturn = oZipStream.toByteArray();
-	    }
-	    catch (java.util.zip.DataFormatException e){
-	    	throw new DataFormatException(ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getErrorCode(),
+		try (ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()) {
+			while (!oInflate.finished()) {
+				byte[] byRead = new byte[1024];
+				int iBytesRead = oInflate.inflate(byRead);
+				if (iBytesRead == byRead.length) {
+					oZipStream.write(byRead);
+				} else {
+					oZipStream.write(byRead, 0, iBytesRead);
+				}
+			}
+			byReturn = oZipStream.toByteArray();
+		} catch (java.util.zip.DataFormatException e) {
+			throw new DataFormatException(ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getMessage(), e.getCause());
-	    }catch (java.io.IOException e) {
+		} catch (java.io.IOException e) {
 			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
-	    
-	    return byReturn;
-	  }
-	
-	
+
+		return byReturn;
+	}
+
 	/**
 	 * Method used for zipping a single file
 	 * 
 	 * @param inputFile
-	 *            pass single input file address as string, want to Zip it
-	 *            example : String inputFile = "D:\\Testfiles\\test.txt";
+	 *            pass single input file address as string, want to Zip it example :
+	 *            String inputFile = "D:\\Testfiles\\test.txt";
 	 * @param outputFile
-	 *            pass Zip file address as string example: String outputZipFile
-	 *            = "D:\\Testfiles\\compressed.zip";
+	 *            pass Zip file address as string example: String outputZipFile =
+	 *            "D:\\Testfiles\\compressed.zip"
+	 * 
+	 * @return true if zip file is created
+	 * 
 	 * @throws FileNotFoundException
 	 *             when file is not found
 	 * @throws IOException
 	 *             when file unable to read
 	 * 
 	 */
-	
+
 	public static boolean zipFile(String inputFile, String outputFile) throws IOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputFile));
@@ -187,12 +189,17 @@ public class ZipUtils {
 	 * @param inputMultFile
 	 *            pass list of file names as array of String example : String[]
 	 *            inputMultFile = {"D:\\Testfiles\\test.txt",
-	 *            "D:\\Testfiles\\test.txt"};
+	 *            "D:\\Testfiles\\test.txt"}
+	 * 
 	 * @param outputFile
 	 *            pass Zip file address as string example: String
-	 *            outputMulFile="D:\\Testfiles\\compressedMult.zip";
+	 *            outputMulFile="D:\\Testfiles\\compressedMult.zip"
+	 * 
+	 * @return true if zip file is created
+	 * 
 	 * @throws FileNotFoundException
 	 *             when file is not found
+	 * 
 	 * @throws IOException
 	 *             when file unable to read
 	 */
@@ -226,11 +233,16 @@ public class ZipUtils {
 	 * @param inputDir
 	 *            pass Directory name need to be zip example : String inputDir =
 	 *            "D:\\Testfiles\\TestDir";
+	 * 
 	 * @param destDirectory
 	 *            pass Zip file address as string example: String outputDir
 	 *            ="D:\\Testfiles\\compressedDir.zip";
+	 * 
+	 * @return true if zip directory is created
+	 * 
 	 * @throws FileNotFoundException
 	 *             when file is not found
+	 * 
 	 * @throws IOException
 	 *             when file unable to read
 	 */
@@ -252,21 +264,21 @@ public class ZipUtils {
 	}
 
 	/**
-	 * Inner method of zipDirectory Method, called for zip all files of the
-	 * given Directory
+	 * Inner method of zipDirectory Method, called for zip all files of the given
+	 * Directory
 	 * 
 	 * @param fileToZip
 	 *            files from given Directory
 	 * @param fileName
 	 *            file names from given Directory
+	 * @return true if zip created in directory
 	 * @throws FileNotFoundException
 	 *             when file is not found
 	 * @throws IOException
 	 *             when file unable to read
 	 */
 
-	private static boolean zipFileInDir(File fileToZip, String fileName, ZipOutputStream zipOut)
-			throws IOException {
+	private static boolean zipFileInDir(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
 
 		if (fileToZip.isHidden()) {
 			return false;
@@ -293,8 +305,8 @@ public class ZipUtils {
 	}
 
 	/**
-	 * This method to UnZip files from Zipped File. It will unZip only zip
-	 * files, not zippedDir.
+	 * This method to UnZip files from Zipped File. It will unZip only zip files,
+	 * not zippedDir.
 	 * 
 	 * @param inputZipFile
 	 *            pass Zip file address as String example : String inputDir =
@@ -303,6 +315,8 @@ public class ZipUtils {
 	 * @param outputUnZip
 	 *            pass UpZipfile address as string example : String inputDir =
 	 *            "D:\\Testfiles\\unzip";
+	 * 
+	 * @return true if given zipped file is unziped
 	 * 
 	 * @throws FileNotFoundException
 	 *             when file is not found
@@ -363,8 +377,8 @@ public class ZipUtils {
 	}
 
 	/**
-	 * Extracts a zip file specified by the zipFilePath to a directory specified
-	 * by destDirectory (will be created if does not exists)
+	 * Extracts a zip file specified by the zipFilePath to a directory specified by
+	 * destDirectory (will be created if does not exists)
 	 * 
 	 * @param zipFilePath
 	 *            input zipped directory example: zipFilePath =
@@ -372,6 +386,9 @@ public class ZipUtils {
 	 * @param destDirectory
 	 *            output unziped Directory example : outputUnZipDir =
 	 *            "D:\\Testfiles\\unZipDir";
+	 * 
+	 * @return true zip file extracted in given directory
+	 * 
 	 * @throws FileNotFoundException
 	 *             when file is not found
 	 * @throws IOException

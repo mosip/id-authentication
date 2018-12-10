@@ -2,6 +2,7 @@ package io.mosip.registration.test.packetStatusSync;
 
 import static org.mockito.Mockito.when;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ public class RegPacketStatusServiceTest {
 	RegPacketStatusServiceImpl packetStatusService;
 
 	@Test
-	public void packetSyncStatusSuccessTest() throws HttpClientErrorException, RegBaseCheckedException {
+	public void packetSyncStatusSuccessTest() throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
 		LinkedHashMap<String, String> registration = new LinkedHashMap<>();
 		registration.put("registrationId", "12345");
@@ -44,7 +45,7 @@ public class RegPacketStatusServiceTest {
 	}
 	
 	@Test
-	public void packetSyncStatusFailureTest() throws HttpClientErrorException, RegBaseCheckedException {
+	public void packetSyncStatusFailureTest() throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(registrations);
 		Assert.assertNotNull(packetStatusService.packetSyncStatus().getErrorResponseDTOs());

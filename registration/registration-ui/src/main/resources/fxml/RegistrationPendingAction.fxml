@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="PendingActionRootPane" prefHeight="288.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationPendingActionController">
+   <children>
+      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" prefHeight="288.0" prefWidth="900.0">
+         <children>
+            <AnchorPane fx:id="pendingActionImageAnchorPane" layoutX="268.0" layoutY="10.0" prefHeight="278.0" prefWidth="404.0">
+               <children>
+                  <ImageView fx:id="pendingActionImageView" fitHeight="272.0" fitWidth="396.0" layoutX="2.0" layoutY="4.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+            <TableView fx:id="pendingActionTable" layoutX="14.0" layoutY="10.0" prefHeight="278.0" prefWidth="247.0">
+               <columns>
+                  <TableColumn fx:id="id" prefWidth="245.0" text="Registration ID" />
+                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="Registrtion ID" visible="false" />
+               </columns>
+            </TableView>
+            <Button fx:id="submitBtn" layoutX="806.0" layoutY="263.0" mnemonicParsing="false" onAction="#pendingActionSubmit" prefHeight="10.0" prefWidth="80.0" text="Authenticate">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <ToggleButton fx:id="rejectionBtn" layoutX="810.0" layoutY="14.0" mnemonicParsing="false" onAction="#pendingActionRejectPacket" prefHeight="20.0" prefWidth="80.0" text="Reject">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </ToggleButton>
+            <ToggleButton fx:id="approvalBtn" layoutX="722.0" layoutY="14.0" mnemonicParsing="false" onAction="#pendingActionApprovePacket" prefHeight="20.0" prefWidth="80.0" text="Approve">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </ToggleButton>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

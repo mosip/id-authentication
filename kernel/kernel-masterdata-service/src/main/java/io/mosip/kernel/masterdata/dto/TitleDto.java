@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class TitleDto {
 	private String titleCode;
 	private String titleName;
 	private String titleDescription;
+	private Boolean isActive;
 
 }
