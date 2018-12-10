@@ -187,17 +187,17 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
 		documentDetailsDTO.setDocumentCategory("PoI");
-		documentDetailsDTO.setDocumentOwner("Self");
 		documentDetailsDTO.setDocumentType("PAN");
+		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
+		documentDetailsDTO.setDocumentOwner("Self");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setDocumentCategory("PoA");
-		documentDetailsResidenceDTO.setDocumentOwner("hof");
 		documentDetailsResidenceDTO.setDocumentType("passport");
+		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
+		documentDetailsResidenceDTO.setDocumentOwner("hof");
 
 		docdetailsList.add(documentDetailsDTO);
 		docdetailsList.add(documentDetailsResidenceDTO);

@@ -1481,7 +1481,7 @@ public class RegistrationController extends BaseController {
 						} else {
 							if (dobBox.getChildren().isEmpty()) {
 								generateAlert(RegistrationConstants.ALERT_ERROR,
-										RegistrationConstants.POR_DOCUMENT_EMPTY);
+										RegistrationConstants.DOB_DOCUMENT_EMPTY);
 							} else {
 								gotoNext = true;
 							}
