@@ -40,8 +40,8 @@ public class LocationController {
 
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
-	 * 
-	 * @return List<LocationHierarchyDto>
+	 * @param langcode language code
+	 * @return  list of location hierarchies
 	 */
 	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -56,12 +56,12 @@ public class LocationController {
 	}
 
 	/**
-	 * This API fetches location hierarchy details based on location code and
-	 * language code arguments
 	 * 
-	 * @param locCode
+	 * @param locationCode
+	 *                location code
 	 * @param langCode
-	 * @return List<LocationHierarchyDto>
+	 *                language code
+	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/{locationcode}/{langcode}")
 	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,

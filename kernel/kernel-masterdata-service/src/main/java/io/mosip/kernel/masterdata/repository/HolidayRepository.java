@@ -30,9 +30,9 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 
 	/**
 	 * get all the holidays for a specific location code
-	 * @param locationCode
-	 * @param langCode
-	 * @param year
+	 * @param locationCode - location code Eg: IND
+	 * @param langCode - language code Eg:ENG
+	 * @param year - Eg:1971
 	 * @return
 	 */
 
