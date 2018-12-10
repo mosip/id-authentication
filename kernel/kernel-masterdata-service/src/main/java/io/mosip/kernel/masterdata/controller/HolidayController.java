@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.service.HolidayService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class for Holiday table
@@ -27,6 +28,7 @@ import io.mosip.kernel.masterdata.service.HolidayService;
  *
  */
 @RestController
+@Api(tags = { "Holiday" })
 @RequestMapping("/v1.0/holidays")
 public class HolidayController {
 

@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -31,6 +32,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
+@Api(tags = { "BlacklistedWords" })
 public class BlacklistedWordsController {
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;

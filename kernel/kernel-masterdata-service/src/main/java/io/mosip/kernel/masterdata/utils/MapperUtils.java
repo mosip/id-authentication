@@ -50,12 +50,7 @@ public class MapperUtils {
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		try {
 			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
-		} catch (Exception e) {
-			return LocalDateTime.parse(dateTime);
-		}
-
 	}
 
 	/*

@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller APIs to get Biometric types details
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.service.BiometricTypeService;
  *
  */
 @RestController
+@Api(tags = { "BiometricType" })
 @RequestMapping("/v1.0/biometrictypes")
 public class BiometricTypeController {
 

@@ -37,8 +37,8 @@ public class Config {
 	}
 
 	@Bean
-	public FilterRegistrationBean registerCORSFilterBean() {
-		FilterRegistrationBean corsBean = new FilterRegistrationBean();
+	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
+		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<Filter>();
 		corsBean.setFilter(registerCORSFilter());
 		corsBean.setOrder(1);
 		return corsBean;

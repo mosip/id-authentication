@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
+@Api(tags = { "MachineHistory" })
 @RequestMapping(value = "/v1.0/machineshistories")
 public class MachineHistoryController {
 

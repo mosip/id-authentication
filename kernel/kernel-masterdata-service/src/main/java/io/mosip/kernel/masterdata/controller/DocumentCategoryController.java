@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class to fetch or create document categories.
@@ -26,6 +27,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
  *
  */
 @RestController
+@Api(tags = { "DocumentCategory" })
 public class DocumentCategoryController {
 
 	@Autowired

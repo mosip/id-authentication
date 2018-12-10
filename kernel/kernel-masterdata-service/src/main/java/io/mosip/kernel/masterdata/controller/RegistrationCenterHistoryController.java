@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller with api to fetch registration center history
@@ -17,6 +18,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
  *
  */
 @RestController
+@Api(tags = { "RegistrationCenterHistory" })
 public class RegistrationCenterHistoryController {
 
 	/**

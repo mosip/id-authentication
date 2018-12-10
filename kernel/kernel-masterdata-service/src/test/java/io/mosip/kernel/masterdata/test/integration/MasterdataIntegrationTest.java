@@ -42,7 +42,6 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -1248,8 +1247,8 @@ public class MasterdataIntegrationTest {
 				.perform(get("/v1.0/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
-		RegistrationCenterHierarchyLevelResponseDto returnResponse = mapper.readValue(
-				result.getResponse().getContentAsString(), RegistrationCenterHierarchyLevelResponseDto.class);
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(
+				result.getResponse().getContentAsString(), RegistrationCenterResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
 	}

@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
+import io.swagger.annotations.Api;
 
 /** 
  * Controller APIs to get Application types details
@@ -23,6 +24,8 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
  * @since 1.0.0
  *
  */
+
+@Api(tags = { "Application" })
 @RestController
 @RequestMapping("/v1.0/applicationtypes")
 public class ApplicationController {

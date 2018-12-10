@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -25,6 +26,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  */
 @RestController
+@Api(tags = { "TemplateType" })
 public class TemplateTypeController {
 
 	@Autowired

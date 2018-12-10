@@ -15,10 +15,8 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -49,7 +47,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class RegistrationCenterServiceImpl implements RegistrationCenterService {
 
-
 	/**
 	 * Reference to RegistrationCenterRepository.
 	 */
@@ -62,7 +59,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private HolidayRepository holidayRepository;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,7 +68,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(String registrationCenterId, int year,
 			String langCode) {
-		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
+		List<RegistrationCenterDto> registrationCenters;
 		List<RegistrationCenter> registrationCenterEntity = new ArrayList<>();
 		RegistrationCenterHolidayDto registrationCenterHolidayResponse = null;
 		RegistrationCenterDto registrationCenterDto = null;
@@ -95,13 +91,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			// registrationCenterDto = MapperUtils.map(registrationCenter,
-			// RegistrationCenterDto.class);
 			registrationCenterEntity.add(registrationCenter);
-			// registrationCenterDto=
-
-			// registrationCenters =
-			// MapperUtils.mapRegistrationCenter(registrationCenterEntity);
 			registrationCenters = MapperUtils.mapAll(registrationCenterEntity, RegistrationCenterDto.class);
 			registrationCenterDto = registrationCenters.get(0);
 			try {
@@ -138,7 +128,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			centers = registrationCenterRepository.findRegistrationCentersByLat(latitude, longitude,
 					proximityDistance * MasterDataConstant.METERTOMILECONVERSION, langCode);
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -148,9 +138,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCenters = null;
-		// registrationCenters = MapperUtils.mapAll(centers,
-		// RegistrationCenterDto.class);
-		// registrationCenters = MapperUtils.mapRegistrationCenter(centers);
 		registrationCenters = MapperUtils.mapAll(centers, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
@@ -173,7 +160,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLanguageCode(locationCode,
 					langCode);
 
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -183,10 +170,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
-		// registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
-		// RegistrationCenterDto.class);
-		// registrationCentersDtoList =
-		// MapperUtils.mapRegistrationCenter(registrationCentersList);
 		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
@@ -207,7 +190,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter = null;
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -217,12 +200,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 
-		// registrationCenterDto = MapperUtils.map(registrationCenter,
-		// RegistrationCenterDto.class);
-		// registrationCenters =
-		// MapperUtils.mapRegistrationCenter(registrationCenter);
-		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter,
-				RegistrationCenterDto.class);
+		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter, RegistrationCenterDto.class);
 		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
 		response.setRegistrationCenters(registrationCenters);
@@ -241,7 +219,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			registrationCentersList = registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -253,10 +231,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		List<RegistrationCenterDto> registrationCenters = null;
-		// registrationCenters = MapperUtils.mapAll(registrationCentersList,
-		// RegistrationCenterDto.class);
-		// registrationCenters =
-		// MapperUtils.mapRegistrationCenter(registrationCentersList);
 		registrationCenters = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
@@ -272,14 +246,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
 			String languageCode, String hierarchyLevel, String text) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
 			registrationCentersList = registrationCenterRepository
 					.findRegistrationCenterHierarchyLevelName(languageCode, hierarchyLevel, text);
 
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -288,15 +262,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
-		List<RegistrationCenterHierarchyLevelDto> registrationCentersDtoList = null;
+		List<RegistrationCenterDto> registrationCentersDtoList = null;
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
 
-		// registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
-		// RegistrationCenterHierarchyLevelDto.class);
-
-		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
-				RegistrationCenterHierarchyLevelDto.class);
-
-		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
 	}
@@ -322,7 +291,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter;
 		try {
 			registrationCenter = registrationCenterRepository.create(entity);
-		} catch (DataAccessLayerException |  DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));

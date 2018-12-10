@@ -43,6 +43,7 @@ public class LocalDateLocalTimeConfig {
 		javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer());
 		javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
 		javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+		javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
 		objectMapper.registerModule(javaTimeModule);
 		return objectMapper;
 	}
@@ -90,11 +91,7 @@ public class LocalDateLocalTimeConfig {
 	public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 		@Override
 		public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
-			try {
-				return LocalDateTime.parse(jsonParser.getValueAsString(), UTC_DATE_TIME_FORMAT);
-			} catch (Exception e) {
-				return LocalDateTime.parse(jsonParser.getValueAsString());
-			}
+			return LocalDateTime.parse(jsonParser.getValueAsString(), UTC_DATE_TIME_FORMAT);
 		}
 	}
 }
