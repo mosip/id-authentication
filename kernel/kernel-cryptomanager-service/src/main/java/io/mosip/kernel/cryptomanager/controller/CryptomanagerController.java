@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /** Rest Controller for Cryptographic Service
  * 
@@ -28,31 +31,25 @@ import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 @CrossOrigin
 @RestController
 @RequestMapping("/v1.0")
+@Api(value="Operation related to Encryption and Decryption",tags = { "cryptomanager" })
 public class CryptomanagerController {
 
 	/**
-	 * 
+	 * {@link CryptomanagerService} instance
 	 */
 	@Autowired
 	CryptomanagerService cryptoService;
 
-	
-	/**
-	 * @param cryptoRequestDto
-	 * @return
-	 */
-	@PostMapping(value = "/encrypt")
-	public CryptomanagerResponseDto encrypt(@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
+	@ApiOperation(value = "Encrypt the data",response = CryptomanagerResponseDto.class)
+	@PostMapping(value = "/encrypt",produces= "application/json")
+	public CryptomanagerResponseDto encrypt(@ApiParam("Data to encrypt in base64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.encrypt(cryptoRequestDto);
 	}
 
 	
-	/**
-	 * @param cryptoRequestDto
-	 * @return
-	 */
-	@PostMapping(value = "/decrypt")
-	public CryptomanagerResponseDto decrypt(@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
+	@ApiOperation(value = "Decrypt the data",response = CryptomanagerResponseDto.class)
+	@PostMapping(value = "/decrypt",produces= "application/json")
+	public CryptomanagerResponseDto decrypt(@ApiParam("Data to decrypt in base64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.decrypt(cryptoRequestDto);
 	}
 }
