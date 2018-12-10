@@ -27,18 +27,16 @@ public class CryptoUtil {
 	 *            encrypted Data
 	 * @param key
 	 *            encrypted Key
+	 * @param keySplitter
+	 *            keySplitter
 	 * @return byte array consisting data,key and key splitter
 	 */
-	public static byte[] combineByteArray(byte[] data, byte[] key,
-			String keySplitter) {
+	public static byte[] combineByteArray(byte[] data, byte[] key, String keySplitter) {
 		byte[] keySplitterBytes = keySplitter.getBytes();
-		byte[] combinedArray = new byte[key.length + keySplitterBytes.length
-				+ data.length];
+		byte[] combinedArray = new byte[key.length + keySplitterBytes.length + data.length];
 		System.arraycopy(key, 0, combinedArray, 0, key.length);
-		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length,
-				keySplitterBytes.length);
-		System.arraycopy(data, 0, combinedArray,
-				key.length + keySplitterBytes.length, data.length);
+		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length, keySplitterBytes.length);
+		System.arraycopy(data, 0, combinedArray, key.length + keySplitterBytes.length, data.length);
 		return combinedArray;
 	}
 
@@ -51,17 +49,15 @@ public class CryptoUtil {
 	 *            keySplitterindex initialization value
 	 * @param keySplitter
 	 *            keysplitter value
-	 * @return
+	 * @return keyDemiliterIndex
 	 */
-	public static int getSplitterIndex(byte[] encryptedData,
-			int keyDemiliterIndex, String keySplitter) {
+	public static int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex, String keySplitter) {
 		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
 		final int keySplitterLength = keySplitter.length();
 		for (byte data : encryptedData) {
 			if (data == keySplitterFirstByte) {
 				final String keySplit = new String(
-						copyOfRange(encryptedData, keyDemiliterIndex,
-								keyDemiliterIndex + keySplitterLength));
+						copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
 				if (keySplitter.equals(keySplit)) {
 					break;
 				}
