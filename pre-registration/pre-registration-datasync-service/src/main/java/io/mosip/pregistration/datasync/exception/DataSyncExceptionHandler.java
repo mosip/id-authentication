@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.pregistration.datasync.code.StatusCodes;
+import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
-import io.mosip.pregistration.datasync.dto.ResponseDTO;
 import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
@@ -25,7 +25,7 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
 
-	/** 
+	/**
 	 * DataSyncRecordNotFoundException Handling
 	 * 
 	 * @param e
@@ -34,12 +34,12 @@ public class DataSyncExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(DataSyncRecordNotFoundException.class)
-	public ResponseEntity<ResponseDTO> dataSyncRecordNotFound(final DataSyncRecordNotFoundException e,
+	public ResponseEntity<DataSyncResponseDTO> dataSyncRecordNotFound(final DataSyncRecordNotFoundException e,
 			WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_004.toString(),
 				StatusCodes.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
 
-		ResponseDTO responseDto = new ResponseDTO();
+		DataSyncResponseDTO responseDto = new DataSyncResponseDTO();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		responseDto.setStatus("false");
@@ -59,12 +59,12 @@ public class DataSyncExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(ReverseDataFailedToStoreException.class)
-	public ResponseEntity<ResponseDTO> reverseDataSyncRecordNotFound(final ReverseDataFailedToStoreException e,
+	public ResponseEntity<DataSyncResponseDTO> reverseDataSyncRecordNotFound(final ReverseDataFailedToStoreException e,
 			WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(),
 				StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 
-		ResponseDTO responseDto = new ResponseDTO();
+		DataSyncResponseDTO responseDto = new DataSyncResponseDTO();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		responseDto.setStatus("false");
@@ -84,12 +84,12 @@ public class DataSyncExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(RecordNotFoundForDateRange.class)
-	public ResponseEntity<ResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
+	public ResponseEntity<DataSyncResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_001.toString(),
 				StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
 		err.add(errorDetails);
-		ResponseDTO errorRes = new ResponseDTO();
+		DataSyncResponseDTO errorRes = new DataSyncResponseDTO();
 		errorRes.setErr(err);
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -105,12 +105,12 @@ public class DataSyncExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<ResponseDTO> databaseerror(final TablenotAccessibleException e, WebRequest request) {
+	public ResponseEntity<DataSyncResponseDTO> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_APP_002.toString(),
 				StatusCodes.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
 		err.add(errorDetails);
-		ResponseDTO errorRes = new ResponseDTO();
+		DataSyncResponseDTO errorRes = new DataSyncResponseDTO();
 		errorRes.setErr(err);
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -126,11 +126,11 @@ public class DataSyncExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(ZipFileCreationException.class)
-	public ResponseEntity<ResponseDTO> zipNotCreated(final ZipFileCreationException e, WebRequest request) {
+	public ResponseEntity<DataSyncResponseDTO> zipNotCreated(final ZipFileCreationException e, WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_005.toString(),
 				StatusCodes.FAILED_TO_CREATE_A_ZIP_FILE.toString());
 
-		ResponseDTO responseDto = new ResponseDTO();
+		DataSyncResponseDTO responseDto = new DataSyncResponseDTO();
 
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		responseDto.setStatus("false");

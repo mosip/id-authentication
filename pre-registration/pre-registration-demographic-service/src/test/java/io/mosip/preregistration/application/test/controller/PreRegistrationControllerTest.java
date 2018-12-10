@@ -7,9 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,14 +27,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.preregistration.application.controller.PreRegistrationController;
-import io.mosip.preregistration.application.dto.CreateDto;
-import io.mosip.preregistration.application.dto.DeleteDto;
-import io.mosip.preregistration.application.dto.ExceptionInfoDto;
-import io.mosip.preregistration.application.dto.ResponseDto;
-import io.mosip.preregistration.application.dto.StatusDto;
-import io.mosip.preregistration.application.dto.ViewDto;
+import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
+import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
@@ -58,7 +54,6 @@ public class PreRegistrationControllerTest {
 
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
-		ValidationReport dto = new ValidationReport();
 		ClassLoader classLoader = getClass().getClassLoader();
 		JSONParser parser = new JSONParser();
 		File file = new File(classLoader.getResource("pre-registration.json").getFile());
@@ -69,15 +64,15 @@ public class PreRegistrationControllerTest {
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
-		ResponseDto<CreateDto> response = new ResponseDto();
-		List<CreateDto> saveList = new ArrayList<CreateDto>();
-		CreateDto createDto = new CreateDto();
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
+		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 
 		createDto.setPrId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
-		Mockito.when(preRegistrationService.addRegistration(Mockito.any())).thenReturn(response);
+		Mockito.when(preRegistrationService.addPreRegistration(Mockito.any())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -92,7 +87,7 @@ public class PreRegistrationControllerTest {
 		ObjectMapper mapperObj = new ObjectMapper();
 
 		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService)
-				.addRegistration(Mockito.any());
+				.addPreRegistration(Mockito.any());
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -104,13 +99,13 @@ public class PreRegistrationControllerTest {
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
-		ResponseDto<CreateDto> response = new ResponseDto();
-		List<CreateDto> saveList = new ArrayList<CreateDto>();
-		CreateDto createDto = new CreateDto();
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
+		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 		createDto.setPrId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
-		Mockito.when(preRegistrationService.addRegistration(Mockito.any())).thenReturn(response);
+		Mockito.when(preRegistrationService.addPreRegistration(Mockito.any())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -124,15 +119,15 @@ public class PreRegistrationControllerTest {
 	public void getAllApplicationTest() throws Exception {
 
 		String userId = "9988905333";
-		ResponseDto<ViewDto> response = new ResponseDto();
-		List<ViewDto> viewList = new ArrayList<>();
-		ViewDto viewDto = new ViewDto();
+		ResponseDTO<PreRegistrationViewDTO> response = new ResponseDTO();
+		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
+		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreId("1234");
-		viewDto.setStatus_code("Pending_Appointment");
+		viewDto.setStatusCode("Pending_Appointment");
 		viewList.add(viewDto);
 		response.setResponse(viewList);
 
-		Mockito.when(preRegistrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
+		Mockito.when(preRegistrationService.getAllApplicationDetails(Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applications/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -145,9 +140,9 @@ public class PreRegistrationControllerTest {
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
-		ResponseDto<StatusDto> response = new ResponseDto<>();
-		List<StatusDto> statusList = new ArrayList<StatusDto>();
-		StatusDto statusDto = new StatusDto();
+		ResponseDTO<PreRegistartionStatusDTO> response = new ResponseDTO<>();
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
+		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
 		statusDto.setPreRegistartionId(preId);
 		statusDto.setStatusCode("Pending_Appointment");
 		statusList.add(statusDto);
@@ -164,9 +159,9 @@ public class PreRegistrationControllerTest {
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
-		ResponseDto<DeleteDto> response = new ResponseDto();
-		List<DeleteDto> DeleteList = new ArrayList<DeleteDto>();
-		DeleteDto deleteDto = new DeleteDto();
+		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO();
+		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
+		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
 		deleteDto.setPrId("3");
 		deleteDto.setDeletedBy("9527832358");
