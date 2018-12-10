@@ -13,9 +13,11 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -61,6 +63,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The rid validator. */
 	@Autowired
 	private RidValidator<String> ridValidator;
+	
+	private int LANCODE_LENGTH = 3;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -101,20 +105,20 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventType = EventType.SYSTEM.toString();
 				description = "Registartion Id's sync is unsuccessful";
 			}
-
-			// auditLogRequestBuilder.createAuditRequestBuilder(description, eventId,
-			// eventName, eventType,
-			// AuditLogConstant.MULTIPLE_ID.toString());
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 		return synchResponseList;
 
 	}
 
 	/**
-	 * Validate sync.
+	 * Validate RegiId with Kernel RidValiator.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return the list
 	 */
 	private List<SyncResponseDto> validateSync(SyncRegistrationDto registrationDto,
@@ -127,9 +131,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					if (ridValidator.validateId(registrationDto.getRegistrationId())) {
 						if (registrationDto.getParentRegistrationId() != null) {
 							if (validateRegIdAndParentRegId(registrationDto, syncResponseList)) {
-								if (ridValidator.validateId(registrationDto.getParentRegistrationId())) {
-									syncResponseList = validateRegId(registrationDto, syncResponseList);
-								}
+								syncResponseList = validateParentRegId(registrationDto, syncResponseList);
 							}
 						} else {
 							syncResponseList = validateRegId(registrationDto, syncResponseList);
@@ -148,10 +150,44 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	}
 
 	/**
+	 * Validate parent RegId by Kernel RidValiator.
+	 *
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
+	 * @return the list
+	 */
+	private List<SyncResponseDto> validateParentRegId(SyncRegistrationDto registrationDto,
+			List<SyncResponseDto> syncResponseList) {
+		SyncResponseDto syncResponseDto = new SyncResponseDto();
+		try {
+			if (ridValidator.validateId(registrationDto.getParentRegistrationId())) {
+				syncResponseList = validateRegId(registrationDto, syncResponseList);
+			}
+		} catch (InvalidIDException e) {
+			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
+				syncResponseDto.setMessage("Prid Length Must Be 29");
+			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
+				syncResponseDto.setMessage("Prid Must Be Numeric Only");
+			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
+				syncResponseDto.setMessage("Invalid Time Stamp Found in Prid");
+			}
+			syncResponseList.add(syncResponseDto);
+		}
+		return syncResponseList;
+	}
+
+	/**
 	 * Validate status code.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return true, if successful
 	 */
 	private boolean validateStatusCode(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
@@ -186,12 +222,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/**
 	 * Validate language code.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return true, if successful
 	 */
 	private boolean validateLanguageCode(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
-		if (registrationDto.getLangCode().length() == 3) {
+		if (registrationDto.getLangCode().length() == LANCODE_LENGTH) {
 			return true;
 		} else {
 			SyncResponseDto syncResponseDto = new SyncResponseDto();
@@ -207,8 +245,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/**
 	 * Validate reg id and parent reg id.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return true, if successful
 	 */
 	private boolean validateRegIdAndParentRegId(SyncRegistrationDto registrationDto,
@@ -229,8 +269,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/**
 	 * Validate registration ID.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return true, if successful
 	 */
 	private boolean validateRegistrationID(SyncRegistrationDto registrationDto,
@@ -251,8 +293,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/**
 	 * Validate reg id.
 	 *
-	 * @param registrationDto the registration dto
-	 * @param syncResponseList the sync response list
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
 	 * @return the list
 	 */
 	public List<SyncResponseDto> validateRegId(SyncRegistrationDto registrationDto,
