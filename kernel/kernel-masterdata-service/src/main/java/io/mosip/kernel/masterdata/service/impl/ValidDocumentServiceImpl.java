@@ -32,12 +32,6 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Autowired
 	private ValidDocumentRepository documentRepository;
 
-	/**
-	 * Reference to MetaDataUtils
-	 */
-	@Autowired
-	private MetaDataUtils metaUtils;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,7 +42,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Override
 	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document) {
 
-		ValidDocument validDocument = metaUtils.setCreateMetaData(document.getRequest(), ValidDocument.class);
+		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document.getRequest(), ValidDocument.class);
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException  | DataAccessException   e) {

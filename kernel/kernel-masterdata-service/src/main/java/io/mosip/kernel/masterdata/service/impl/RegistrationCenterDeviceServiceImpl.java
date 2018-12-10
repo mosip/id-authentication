@@ -32,12 +32,6 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
-
-	@Autowired
-	private MapperUtils mapperUtils;
-
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -48,20 +42,20 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
-			RegistrationCenterDevice registrationCenterDevice = metadataUtils.setCreateMetaData(requestDto.getRequest(),
+			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto.getRequest(),
 					RegistrationCenterDevice.class);
 			RegistrationCenterDevice savedRegistrationCenterDevice = registrationCenterDeviceRepository
 					.create(registrationCenterDevice);
 
-			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = metadataUtils
+			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
 			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
 
-			registrationCenterDeviceDto = mapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),
+			registrationCenterDeviceDto = MapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),
 					ResponseRegistrationCenterDeviceDto.class);
 
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()

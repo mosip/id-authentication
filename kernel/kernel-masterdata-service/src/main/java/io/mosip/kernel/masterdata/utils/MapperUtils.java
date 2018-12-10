@@ -43,15 +43,19 @@ import io.mosip.kernel.masterdata.entity.id.HolidayID;
 @SuppressWarnings("unchecked")
 public class MapperUtils {
 
+	private MapperUtils() {
+		super();
+	}
+
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-	public LocalDateTime parseToLocalDateTime(String dateTime) {
+	public static LocalDateTime parseToLocalDateTime(String dateTime) {
 		try {
 			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 		} catch (Exception e) {
 			return LocalDateTime.parse(dateTime);
 		}
-		
+
 	}
 
 	/*
@@ -70,10 +74,10 @@ public class MapperUtils {
 	 *            where values is going to be mapped
 	 * @return the <code>destination</code> object
 	 */
-	public <S, D> D map(final S source, D destination) {
-		if (!EmptyCheckUtils.isNullEmpty(source) && !EmptyCheckUtils.isNullEmpty(destination)) {
-			mapValues(source, destination);
-		}
+	public static <S, D> D map(final S source, D destination) {
+		Objects.requireNonNull(source, "source should not be null");
+		Objects.requireNonNull(destination, "destination should not be null");
+		mapValues(source, destination);
 		return destination;
 	}
 
@@ -92,7 +96,8 @@ public class MapperUtils {
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
 	 */
-	public <S, D> D map(final S source, Class<D> destinationClass) {
+	public static <S, D> D map(final S source, Class<D> destinationClass) {
+		Objects.requireNonNull(source, "source should not be null");
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
@@ -117,7 +122,9 @@ public class MapperUtils {
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
 	 */
-	public <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
+	public static <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
+		Objects.requireNonNull(sourceList, "sourceList should not be null");
+		Objects.requireNonNull(destinationClass, "destinationClass should not be null");
 		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
 	}
 
@@ -136,8 +143,10 @@ public class MapperUtils {
 	 * @throws DataAccessLayerException
 	 *             if error raised during mapping values
 	 */
-	public <S, D> void mapFieldValues(S source, D destination) {
+	public static <S, D> void mapFieldValues(S source, D destination) {
 
+		Objects.requireNonNull(source, "source should not be null");
+		Objects.requireNonNull(destination, "destination should not be null");
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		Field[] destinationFields = destination.getClass().getDeclaredFields();
 
@@ -145,7 +154,9 @@ public class MapperUtils {
 
 	}
 
-	public <D, S> void mapLocalDateTimeField(S source, D destination) {
+	public static <D, S> void mapLocalDateTimeField(S source, D destination) {
+		Objects.requireNonNull(source, "source should not be null");
+		Objects.requireNonNull(destination, "destination should not be null");
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		Field[] destinationFields = destination.getClass().getDeclaredFields();
 		try {
@@ -180,7 +191,7 @@ public class MapperUtils {
 	 * #############Private method used for mapping################################
 	 */
 
-	private <S, D> void mapValues(S source, D destination) {
+	private static <S, D> void mapValues(S source, D destination) {
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
@@ -190,7 +201,7 @@ public class MapperUtils {
 		}
 	}
 
-	private <S, D> void mapDtoToEntity(S source, D destination) {
+	private static <S, D> void mapDtoToEntity(S source, D destination) {
 		Field[] fields = destination.getClass().getDeclaredFields();
 		setBaseFieldValue(source, destination);// map super class values
 		for (Field field : fields) {
@@ -212,7 +223,7 @@ public class MapperUtils {
 		}
 	}
 
-	private <S, D> void mapEntityToDto(S source, D destination) {
+	private static <S, D> void mapEntityToDto(S source, D destination) {
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		/*
 		 * Here source is a Entity so we need to take values from Entity object and set
@@ -249,7 +260,7 @@ public class MapperUtils {
 		}
 	}
 
-	private <S, D> void setBaseFieldValue(S source, D destination) {
+	private static <S, D> void setBaseFieldValue(S source, D destination) {
 
 		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
 		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
@@ -272,7 +283,8 @@ public class MapperUtils {
 
 	}
 
-	private <D, S> void mapFieldValues(S source, D destination, Field[] sourceFields, Field[] destinationFields) {
+	private static <D, S> void mapFieldValues(S source, D destination, Field[] sourceFields,
+			Field[] destinationFields) {
 		try {
 			for (Field sfield : sourceFields) {
 				// Do not set values either static or final
@@ -305,14 +317,15 @@ public class MapperUtils {
 		}
 	}
 
-	private <S, D> void setFieldValue(S source, D destination, Field ef, Field dtf) throws IllegalAccessException {
+	private static <S, D> void setFieldValue(S source, D destination, Field ef, Field dtf)
+			throws IllegalAccessException {
 		dtf.set(destination, ef.get(source));
 		dtf.setAccessible(false);
 		ef.setAccessible(false);
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
+	public static List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		reasonCategoryDtos = reasonCategories.parallelStream()
@@ -325,7 +338,7 @@ public class MapperUtils {
 
 	}
 
-	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
+	public static List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
 		holidays.forEach(holiday -> {
@@ -345,7 +358,7 @@ public class MapperUtils {
 		return holidayDtos;
 	}
 
-	public List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
+	public static List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
 
 		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
 		for (Object[] object : locationList) {
@@ -358,7 +371,7 @@ public class MapperUtils {
 		return locationHierarchyDtos;
 	}
 
-	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
+	public static List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
 		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = new ArrayList<>();
 		objects.forEach(arr -> {
 			DeviceLangCodeDtypeDto deviceLangCodeDtypeDto = new DeviceLangCodeDtypeDto();

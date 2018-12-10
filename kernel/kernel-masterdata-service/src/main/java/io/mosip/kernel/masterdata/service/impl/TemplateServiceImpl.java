@@ -32,12 +32,6 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateRepository templateRepository;
 
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
-
 	private List<Template> templateList;
 
 	private List<TemplateDto> templateDtoList;
@@ -56,7 +50,7 @@ public class TemplateServiceImpl implements TemplateService {
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
@@ -79,7 +73,7 @@ public class TemplateServiceImpl implements TemplateService {
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
@@ -106,7 +100,7 @@ public class TemplateServiceImpl implements TemplateService {
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
@@ -116,19 +110,19 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Override
 	public IdResponseDto createTemplate(TemplateDto template) {
-		Template entity = metaUtils.setCreateMetaData(template, Template.class);
+		Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 		Template templateEntity;
 		try {
 			templateEntity = templateRepository.create(entity);
 
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.map(templateEntity, idResponseDto);
+		MapperUtils.map(templateEntity, idResponseDto);
 
 		return idResponseDto;
 	}

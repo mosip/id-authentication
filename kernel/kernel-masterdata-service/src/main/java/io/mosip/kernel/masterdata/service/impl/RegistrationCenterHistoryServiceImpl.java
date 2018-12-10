@@ -29,8 +29,6 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterHistoryService {
 
-	@Autowired
-	private MapperUtils mapperUtils;
 
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
@@ -50,7 +48,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 
 		LocalDateTime localDateTime = null;
 		try {
-			localDateTime = mapperUtils.parseToLocalDateTime(effectiveDate);
+			localDateTime = MapperUtils.parseToLocalDateTime(effectiveDate);
 			;
 		} catch (Exception e) {
 			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
@@ -70,7 +68,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
 			registrationCenterDto.setRegistrationCentersHistory(
-					mapperUtils.mapAll(registrationCenters, RegistrationCenterHistoryDto.class));
+					MapperUtils.mapAll(registrationCenters, RegistrationCenterHistoryDto.class));
 		}
 		return registrationCenterDto;
 	}

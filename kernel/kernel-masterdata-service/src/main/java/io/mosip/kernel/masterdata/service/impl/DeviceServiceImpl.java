@@ -40,15 +40,6 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	DeviceRepository deviceRepository;
 
-	/**
-	 * Field to hold ObjectMapperUtil object
-	 */
-	@Autowired
-	MapperUtils objectMapperUtil;
-
-	@Autowired
-	MetaDataUtils metaDataUtils;
-
 	@Autowired
 	DataMapper dataMapper;
 
@@ -84,8 +75,8 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
-			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
-					
+			deviceDtoList = MapperUtils.mapAll(deviceList, DeviceDto.class);
+
 		} else {
 			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -129,7 +120,7 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
 		}
 		if (objectList != null && !objectList.isEmpty()) {
-			deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);
+			deviceLangCodeDtypeDtoList = MapperUtils.mapDeviceDto(objectList);
 		} else {
 			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -147,17 +138,17 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
-		Device device;
+		Device device = null;
 
-		Device entity = metaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
 		try {
 			device = deviceRepository.create(entity);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.map(device, idResponseDto);
+		MapperUtils.map(device, idResponseDto);
 
 		return idResponseDto;
 
