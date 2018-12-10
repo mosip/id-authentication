@@ -91,7 +91,6 @@ public class RegistrationConstants {
 	public static final String FP_DEVICE_ERROR = bundle.getString("FP_DEVICE_ERROR");
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
-	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
 	// LOCK ACCOUNT
 	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = bundle.getString("USER_ACCOUNT_LOCK_MESSAGE_NUMBER");
@@ -163,7 +162,6 @@ public class RegistrationConstants {
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
-	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -631,20 +629,20 @@ public class RegistrationConstants {
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
 	public static final String FINGERPRINT = "Fingerprint";
-	public static final String LEFTPALM = "leftSlap";
-	public static final String RIGHTPALM = "rightSlap";
-	public static final String THUMBS = "thumbs";
+	public static final String LEFTPALM = "LeftPalm";
+	public static final String RIGHTPALM = "RightPalm";
+	public static final String THUMBS = "BothThumbs";
 	public static final String PERCENTAGE = "%";
 	public static final String ISO_FILE_NAME = "ISOTemplate";
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
-	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/leftSlap.jpg";
+	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/LeftPalm.jpg";
 	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
-	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightSlap.jpg";
+	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightPalm.jpg";
 	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
-	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumbs.jpg";
+	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumb.jpg";
 	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
 	/** Exception codes **/
@@ -780,10 +778,15 @@ public class RegistrationConstants {
 	public static final String UIN_REGEX = "\\d{1,30}";
 
 	// master sync
-
+	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE = "REG-MDS‌-002";
+	public static final String MASTER_SYNC_FAILURE_MSG_CODE = "REG-MDS‌-003";
+	public static final String MASTER_SYNC_FAILURE_MSG_INFO = "Error in sync";
+	public static final String MASTER_SYNC_FAILURE_MSG = "Sync failure";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_INFO = "Client not online";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG = "You must be connected to the internet to sync data";
 	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
-	public static final String MASTER_SYNC_FAILURE = "Master Sync Failure";
-	public static final String MASTER_SYNC_SUCCESS = "Master Sync Successful";
+	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 }

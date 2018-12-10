@@ -23,6 +23,7 @@ public class LoggerConstants {
 	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING - ";
 	private static final String PKT_APPROVAL = APP_NAME + "REGISTRATION_APPROVAL - ";
 	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
+	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -51,5 +52,6 @@ public class LoggerConstants {
 	public static final String LOG_REG_SCAN_CONTROLLER = USER_REGISTRATION + "SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
 	public static final String LOG_REG_IRIS_FACADE = USER_REGISTRATION + "IRIS_FACADE";
+	public static final String LOG_REG_MASTER_SYNC = MASTER_SYNC + "MASTER_SYNC_CONTROLLER";
 
 }

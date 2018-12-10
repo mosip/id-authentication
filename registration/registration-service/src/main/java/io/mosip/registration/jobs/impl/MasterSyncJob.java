@@ -50,7 +50,7 @@ public class MasterSyncJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		
+
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 
@@ -103,12 +103,12 @@ public class MasterSyncJob extends BaseJob {
 
 	@Override
 	public ResponseDTO executeJob(String jobId) {
-		
+
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
-		
+
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
@@ -122,15 +122,11 @@ public class MasterSyncJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		ResponseDTO responseDTO = null;
-		
 		try {
-			
 			responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-		
-		} catch (RegBaseCheckedException exception) {
-
-			LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
+					regBaseCheckedException.getMessage());
 		}
 
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
