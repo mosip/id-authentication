@@ -20,11 +20,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
+ * Configuration class for LocalDate, LocalTime LocalDateTime.
+ * 
  * @author Sagar Mahapatra
  * @author Urvil Joshi
  *
  */
-// @Configuration
+@Configuration
 public class LocalDateLocalTimeConfig {
 	public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
 	public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -41,13 +43,11 @@ public class LocalDateLocalTimeConfig {
 		javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer());
 		javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
 		javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-		// javaTimeModule.addDeserializer(LocalDateTime.class, new
-		// LocalDateTimeDeserializer());
 		objectMapper.registerModule(javaTimeModule);
 		return objectMapper;
 	}
 
-	public class LocalTimeDeserializer extends JsonDeserializer<LocalTime> {
+	public static class LocalTimeDeserializer extends JsonDeserializer<LocalTime> {
 		@Override
 		public LocalTime deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
 			return LocalTime.parse(jsonParser.getValueAsString(), TIME_FORMAT);
@@ -55,7 +55,7 @@ public class LocalDateLocalTimeConfig {
 
 	}
 
-	public class LocalTimeSerializer extends JsonSerializer<LocalTime> {
+	public static class LocalTimeSerializer extends JsonSerializer<LocalTime> {
 		@Override
 		public void serialize(LocalTime localTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
 				throws IOException {
@@ -63,7 +63,7 @@ public class LocalDateLocalTimeConfig {
 		}
 	}
 
-	public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
+	public static class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
 		@Override
 		public LocalDate deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
 			return LocalDate.parse(jsonParser.getValueAsString(), DATE_FORMAT);
@@ -71,7 +71,7 @@ public class LocalDateLocalTimeConfig {
 
 	}
 
-	public class LocalDateSerializer extends JsonSerializer<LocalDate> {
+	public static class LocalDateSerializer extends JsonSerializer<LocalDate> {
 		@Override
 		public void serialize(LocalDate localDate, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
 				throws IOException {
@@ -79,7 +79,7 @@ public class LocalDateLocalTimeConfig {
 		}
 	}
 
-	public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+	public static class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 		@Override
 		public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator,
 				SerializerProvider serializerProvider) throws IOException {
@@ -87,7 +87,7 @@ public class LocalDateLocalTimeConfig {
 		}
 	}
 
-	public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+	public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 		@Override
 		public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
 			try {
@@ -95,8 +95,6 @@ public class LocalDateLocalTimeConfig {
 			} catch (Exception e) {
 				return LocalDateTime.parse(jsonParser.getValueAsString());
 			}
-
 		}
 	}
-
 }
