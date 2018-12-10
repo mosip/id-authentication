@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
@@ -29,7 +31,8 @@ import org.junit.Before;
  * @author M1049617
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ManualAdjudicationDaoTest {
 
 	/** The manualAdjudicationDao dao. */
