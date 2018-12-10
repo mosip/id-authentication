@@ -55,6 +55,7 @@ public class MasterSyncServiceTest {
 
 	@BeforeClass
 	public static void beforeClass() {
+
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
@@ -98,12 +99,11 @@ public class MasterSyncServiceTest {
 		masterSyncDetails.setLangCode("eng");
 		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		// Mockito.when(masterSyncDao.getMasterSyncStatus(Mockito.anyString())).thenReturn(masterSyncDetails);
+		Mockito.when(masterSyncDao.getMasterSyncStatus(Mockito.anyString())).thenReturn(masterSyncDetails);
 
-		// Mockito.when(mapper.readValue(Mockito.anyString(),
-		// MasterSyncDto.class)).thenReturn(masterSyncDto);
+		Mockito.when(mapper.readValue(Mockito.anyString(), MasterSyncDto.class)).thenReturn(masterSyncDto);
 
-		// Mockito.when(masterSyncServiceImpl.getMasterSync("MDS_J00001")).thenReturn(masterSyncResponse);
+		//Mockito.when(masterSyncServiceImpl.getMasterSync("MDS_J00001")).thenReturn(masterSyncResponse);
 
 	}
 

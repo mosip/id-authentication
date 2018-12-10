@@ -780,10 +780,15 @@ public class RegistrationConstants {
 	public static final String UIN_REGEX = "\\d{1,30}";
 
 	// master sync
-
+	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE = "REG-MDS‌-002";
+	public static final String MASTER_SYNC_FAILURE_MSG_CODE = "REG-MDS‌-003";
+	public static final String MASTER_SYNC_FAILURE_MSG_INFO = "Error in sync";
+	public static final String MASTER_SYNC_FAILURE_MSG = "Sync failure";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_INFO = "Client not online";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG = "You must be connected to the internet to sync data";
 	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
-	public static final String MASTER_SYNC_FAILURE = "Master Sync Failure";
-	public static final String MASTER_SYNC_SUCCESS = "Master Sync Successful";
+	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 }
