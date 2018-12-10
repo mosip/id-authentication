@@ -38,6 +38,8 @@ import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
+import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.service.impl.ManualAdjudicationServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -176,7 +178,7 @@ public class ManualAdjudicationServiceTest {
 	}
 	
 	
-	@Test
+	@Test(expected=NoRecordAssignedException.class)
 	public void updatePacketStatusMethodCheck()
 	{
 		Mockito.when(manualAdjudicationDao.getByRegId(any(),any(),any())).thenReturn(manualVerificationEntity);
@@ -186,17 +188,21 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode("APPROVED");
 
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		manualVerificationDTO.setStatusCode("PENDING");
+		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(),any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		manualVerificationDTO.setStatusCode(null);
-
 		
+		Mockito.when(manualAdjudicationDao.getByRegId(any(),any(),any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-
-
+		
+	}
+	@Test(expected=InvalidUpdateException.class)
+	public void updatePacketStatusExceptionCheck()
+	{
+		manualVerificationDTO.setStatusCode("");
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 
 	}
 
