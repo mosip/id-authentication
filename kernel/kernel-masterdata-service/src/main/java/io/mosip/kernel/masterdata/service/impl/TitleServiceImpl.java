@@ -71,7 +71,7 @@ public class TitleServiceImpl implements TitleService {
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;
 		List<TitleDto> titleDto = null;
-		List<Title> title = new ArrayList<>();
+		List<Title> title = null;
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
