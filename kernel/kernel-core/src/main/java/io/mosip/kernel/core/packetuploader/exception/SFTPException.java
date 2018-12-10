@@ -23,7 +23,7 @@ public class SFTPException extends BaseUncheckedException {
 	 *            The error code for this exception
 	 * @param errorMessage
 	 *            The error message for this exception
-	 * @param rootCause
+	 * @param cause
 	 *            Cause of this exception
 	 */
 	public SFTPException(String errorCode, String errorMessage, Throwable cause) {
