@@ -52,8 +52,11 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.util.dataprovider.DataProvider;
+import io.mosip.registration.util.kernal.RIDGenerator;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -81,7 +84,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -665,7 +667,8 @@ public class RegistrationController extends BaseController {
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
 			DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
-			OSIDataDTO osiDataDTO = new OSIDataDTO();
+			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
+			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			if (validateDemographicPaneTwo()) {
 				demographicInfoDTO.setFullName(fullName.getText());
 				if (ageDatePicker.getValue() != null) {
@@ -696,6 +699,9 @@ public class RegistrationController extends BaseController {
 					}
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 					demographicInfoDTO.setParentOrGuardianName(parentName.getText());
+					registrationMetaDataDTO.setApplicationType("Child");
+				} else {
+					registrationMetaDataDTO.setApplicationType("Adult");
 				}
 				demographicDTO.setDemoInUserLang(demographicInfoDTO);
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
@@ -869,11 +875,15 @@ public class RegistrationController extends BaseController {
 
 		} else {
 			try {
+				DataProvider.setApplicantDocumentDTO(getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO());
 				setPreviewContent();
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage()); 
 			}
 		}
 
@@ -2084,6 +2094,9 @@ public class RegistrationController extends BaseController {
 	private void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
+		// Set the RID
+		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+
 		// Create objects for Biometric DTOS
 		BiometricDTO biometricDTO = new BiometricDTO();
 		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
@@ -2105,7 +2118,9 @@ public class RegistrationController extends BaseController {
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 
 		// Create object for RegistrationMetaData DTO
-		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
+		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
