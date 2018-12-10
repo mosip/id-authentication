@@ -223,12 +223,14 @@ public class OSIValidator {
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				&& registrationStatusDto.getApplicantType().equalsIgnoreCase(ApplicantType.CHILD.name())
 				&& regOsi.getIntroducerTyp().equalsIgnoreCase(IntroducerType.PARENT.name())) {
+
 			String introducerUin = regOsi.getIntroducerUin();
 			String introducerRid = regOsi.getIntroducerRegId();
 			if (introducerUin == null && introducerRid == null) {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
+
 			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
 
 				introducerUin = getIntroducerUIN(introducerRid);
@@ -238,13 +240,15 @@ public class OSIValidator {
 							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
-
 			}
-			return validateIntroducer(regOsi, registrationId, introducerUin);
+			if (introducerUin != null) {
+				return validateIntroducer(regOsi, registrationId, introducerUin);
+			} else {
+				return false;
+			}
 
-		} else {
-			return true;
 		}
+		return true;
 
 	}
 
