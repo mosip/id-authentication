@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -325,18 +325,7 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	public static List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
-		Objects.requireNonNull(reasonCategories, "list cannot be null");
-		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		reasonCategoryDtos = reasonCategories.parallelStream()
-				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
-						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
-						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
-				.collect(Collectors.toList());
-
-		return reasonCategoryDtos;
-
-	}
+	
 
 	public static List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
@@ -356,6 +345,19 @@ public class MapperUtils {
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
+	}
+
+	public static List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
+		Objects.requireNonNull(reasonCategories, "list cannot be null");
+		List<ReasonCategoryDto> reasonCategoryDtos = null;
+		reasonCategoryDtos = reasonCategories.parallelStream()
+				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
+						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
+						mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
+				.collect(Collectors.toList());
+
+		return reasonCategoryDtos;
+
 	}
 
 	public static List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
