@@ -34,15 +34,6 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
 
-	@Autowired
-	MapperUtils objMapper;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
 		List<DeviceSpecification> deviceSpecificationList = null;
@@ -57,7 +48,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
-			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
+			deviceSpecificationDtoList = MapperUtils.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
 			return deviceSpecificationDtoList;
 		} else {
 			throw new DataNotFoundException(
@@ -81,7 +72,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							+ ExceptionUtils.parseException(e));
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty()) {
-			deviceSpecificationDtoList = objMapper.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
+			deviceSpecificationDtoList = MapperUtils.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
 			return deviceSpecificationDtoList;
 		} else {
 			throw new DataNotFoundException(
@@ -94,7 +85,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = metaUtils.setCreateMetaData(deviceSpecifications.getRequest(),
+		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications.getRequest(),
 				DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
@@ -105,7 +96,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.map(renDeviceSpecification, idResponseDto);
+		MapperUtils.map(renDeviceSpecification, idResponseDto);
 
 		return idResponseDto;
 	}

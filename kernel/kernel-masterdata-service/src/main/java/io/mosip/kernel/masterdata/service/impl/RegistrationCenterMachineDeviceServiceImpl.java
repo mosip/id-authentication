@@ -33,11 +33,6 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	@Autowired
 	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
-
-	@Autowired
-	private MapperUtils mapperUtils;
 
 	@Override
 	public ResponseRrgistrationCenterMachineDeviceDto saveRegistrationCenterMachineAndDevice(
@@ -45,19 +40,19 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 
 		try {
-			RegistrationCenterMachineDevice registrationCenterMachineDevice = metadataUtils
+			RegistrationCenterMachineDevice registrationCenterMachineDevice = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDevice.class);
 
 			RegistrationCenterMachineDevice savedRegistrationCenterMachineDevice = registrationCenterMachineDeviceRepository
 					.create(registrationCenterMachineDevice);
 
-			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = metadataUtils
+			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDeviceHistory.class);
 			registrationCenterMachineDeviceHistory
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
 
-			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(
+			responseRrgistrationCenterMachineDeviceDto = MapperUtils.map(
 					savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					ResponseRrgistrationCenterMachineDeviceDto.class);
 		} catch (DataAccessLayerException  | DataAccessException   e) {

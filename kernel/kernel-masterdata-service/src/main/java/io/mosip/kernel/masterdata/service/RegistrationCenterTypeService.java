@@ -16,7 +16,7 @@ public interface RegistrationCenterTypeService {
 	 * Method to add registration center type.
 	 * 
 	 * @param registrationCenterTypeDto
-	 *            the request dto {@link RegistrationCenterTypeRequestDto}.
+	 *            the request dto {@link RegistrationCenterTypeDto}.
 	 * @return the response {@link CodeAndLanguageCodeID}.
 	 */
 	CodeAndLanguageCodeID createRegistrationCenterType(RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto);

@@ -44,16 +44,6 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Autowired
 	private DataMapper dataMapper;
-	/**
-	 * Autowired reference for {@link MapperUtils}
-	 */
-	@Autowired
-	private MapperUtils mapperUtil;
-	/**
-	 * Autowired reference for {@link MetaDataUtils}
-	 */
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -73,7 +63,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (words != null && !words.isEmpty()) {
-			wordsDto = mapperUtil.mapAll(words, BlacklistedWordsDto.class);
+			wordsDto = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
 		} else {
 			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
 					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
@@ -124,7 +114,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Override
 	public WordAndLanguageCodeID createBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		BlacklistedWords entity = metaUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
+		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
 				BlacklistedWords.class);
 		BlacklistedWords blacklistedWords;
 		try {
