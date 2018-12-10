@@ -326,6 +326,8 @@
     -fx-text-fill: black;
     -fx-font-size: 10px;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-pref-height: 28px;
+    -fx-pref-width: 68px;
 }
 
 .imagePane {

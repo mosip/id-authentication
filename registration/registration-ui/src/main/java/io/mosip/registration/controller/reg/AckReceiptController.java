@@ -204,5 +204,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void goToNewRegistrationPage() {
 		packetController.createPacket();
 	}
+	
+	@FXML
+	@Override
+	public void goToHomePage() {
+		registrationController.goToHomePage();
+	}
 
 }

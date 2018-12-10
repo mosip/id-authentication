@@ -1,25 +1,25 @@
 package io.mosip.registration.util.dataprovider;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
-import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
-import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.kernal.RIDGenerator;
 
@@ -37,12 +37,12 @@ public class DataProvider {
 		filePath = "/dataprovider".concat(filePath);
 
 		try {
-			InputStream file = DataProvider.class.getResourceAsStream(filePath);
-			byte[] bytesArray = new byte[(int) file.available()];
-			file.read(bytesArray);
-			file.close();
+			BufferedImage bufferedImage = ImageIO.read(DataProvider.class.getResourceAsStream(filePath));
+			
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 
-			return bytesArray;
+			return byteArrayOutputStream.toByteArray();
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DATA_PROVIDER_UTIL,
 					"Unable to read the Image bytes", ioException);
@@ -56,31 +56,20 @@ public class DataProvider {
 
 		if(capturePhotoUsingDevice.equals("N")) {
 			registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO(registrationDTO.getDemographicDTO()));
-		} else if(capturePhotoUsingDevice.equals("Y")){
-			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
-		}		
-		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
+		}
+		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO(registrationDTO.getBiometricDTO()));
 		return registrationDTO;
 
 	}
 
-	private static BiometricDTO getBiometricDTO() throws RegBaseCheckedException {
-		BiometricDTO biometricDTO = new BiometricDTO();
-		biometricDTO.setApplicantBiometricDTO(DataProvider.buildBioMerticDTO(DataProvider.APPLICANT));
+	private static BiometricDTO getBiometricDTO(BiometricDTO biometricDTO) throws RegBaseCheckedException {
 		biometricDTO.setIntroducerBiometricDTO(DataProvider.buildBioMerticDTO("introducer"));
-		biometricDTO.setSupervisorBiometricDTO(DataProvider.buildBioMerticDTO("supervisor"));
-		biometricDTO.setOperatorBiometricDTO(DataProvider.buildBioMerticDTO("operator"));
 		return biometricDTO;
 	}
 
 	private static BiometricInfoDTO buildBioMerticDTO(String persontype) throws RegBaseCheckedException {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 		biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
-		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
-			biometricInfoDTO.setFingerPrintBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
-			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			biometricInfoDTO.setIrisBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
-		}
 		return biometricInfoDTO;
 	}
 
@@ -116,100 +105,25 @@ public class DataProvider {
 		return fingerprintDetailsDTO;
 	}
 
-	private static List<BiometricExceptionDTO> getExceptionFingerprintDetailsDTO() {
-		List<BiometricExceptionDTO> fingerExcepList = new ArrayList<>();
-
-		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftThumb", "Due to accident",
-				DataProvider.PERMANANENT));
-		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftForefinger", "Due to accident",
-				DataProvider.PERMANANENT));
-		return fingerExcepList;
-	}
-
-	private static BiometricExceptionDTO buildBiometricExceptionDTO(String biometricType, String missingBiometric,
-			String exceptionDescription, String exceptionType) {
-		BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
-		biometricExceptionDTO.setBiometricType(biometricType);
-		biometricExceptionDTO.setMissingBiometric(missingBiometric);
-		biometricExceptionDTO.setExceptionDescription(exceptionDescription);
-		biometricExceptionDTO.setExceptionType(exceptionType);
-		return biometricExceptionDTO;
-	}
-
-	private static List<IrisDetailsDTO> getIrisDetailsDTO() throws RegBaseCheckedException {
-		List<IrisDetailsDTO> irisList = new ArrayList<>();
-		irisList.add(DataProvider.buildIrisDetailsDTO("/eye.jpg", "LeftEye.jpg", "LeftEye", false, 79.0));
-
-		return irisList;
-	}
-
-	private static IrisDetailsDTO buildIrisDetailsDTO(String iris, String irisImageName, String irisType,
-			boolean isForcedCaptured, double qualityScore) throws RegBaseCheckedException {
-		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIris(DataProvider.getImageBytes(iris));
-		irisDetailsDTO.setIrisImageName(irisImageName);
-		irisDetailsDTO.setIrisType(irisType);
-		irisDetailsDTO.setForceCaptured(isForcedCaptured);
-		irisDetailsDTO.setQualityScore(qualityScore);
-		irisDetailsDTO.setNumOfIrisRetry(2);
-		return irisDetailsDTO;
-	}
-
-	private static List<BiometricExceptionDTO> getExceptionIrisDetailsDTO() {
-		LinkedList<BiometricExceptionDTO> irisExcepList = new LinkedList<>();
-		irisExcepList
-				.add(DataProvider.buildBiometricExceptionDTO("iris", "RightEye", "By birth", DataProvider.PERMANANENT));
-
-		return irisExcepList;
-	}
-
 	private static DemographicDTO getDemographicDTO(DemographicDTO demographicDTO) throws RegBaseCheckedException {
-		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
+		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO(demographicDTO.getApplicantDocumentDTO()));
 		return demographicDTO;
 	}
 
-	private static ApplicantDocumentDTO setApplicantDocumentDTO() throws RegBaseCheckedException {
-		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
+	private static ApplicantDocumentDTO setApplicantDocumentDTO(ApplicantDocumentDTO applicantDocumentDTO) throws RegBaseCheckedException {
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
 		applicantDocumentDTO.setHasExceptionPhoto(false);
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
-		applicantDocumentDTO.setAcknowledgeReceipt(DataProvider.getImageBytes("/acknowledgementReceipt.jpg"));
-		applicantDocumentDTO.setAcknowledgeReceiptName("RegistrationAcknowledgement");
 		return applicantDocumentDTO;
-	}
-
-	private static List<DocumentDetailsDTO> getDocumentDetailsDTO() throws RegBaseCheckedException {
-
-		List<DocumentDetailsDTO> docdetailsList = new ArrayList<>();
-
-		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
-		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentCategory("PoI");
-		documentDetailsDTO.setDocumentType("PAN");
-		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
-		documentDetailsDTO.setDocumentOwner("Self");
-
-		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
-		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentCategory("PoA");
-		documentDetailsResidenceDTO.setDocumentType("passport");
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
-		documentDetailsResidenceDTO.setDocumentOwner("hof");
-
-		docdetailsList.add(documentDetailsDTO);
-		docdetailsList.add(documentDetailsResidenceDTO);
-
-		return docdetailsList;
 	}
 
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {
 
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
-		registrationMetaDataDTO.setRegistrationCategory("Document Based");
-		registrationMetaDataDTO.setApplicationType("New Registration");
+		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationMetaDataDTO.setApplicationType("Child");
 		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
 		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
 		return registrationMetaDataDTO;
@@ -244,11 +158,11 @@ public class DataProvider {
 		audit.setHostIp(RegistrationConstants.LOCALHOST);
 		audit.setApplicationId("1");
 		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
+		audit.setSessionUserId("mosip");
+		audit.setSessionUserName("mosip");
 		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
+		audit.setIdType("application");
+		audit.setCreatedBy("mosip");
 		audit.setModuleId("1");
 		audit.setModuleName("New Registration");
 		audit.setDescription(description);
