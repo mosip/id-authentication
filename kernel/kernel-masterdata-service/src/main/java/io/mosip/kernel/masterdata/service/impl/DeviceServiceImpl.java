@@ -144,7 +144,7 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_CREATE_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
