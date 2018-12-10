@@ -1,12 +1,13 @@
 package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,16 +19,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -35,11 +33,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registration.processor.status.service.TransactionService;
-import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
-
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;;
+import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;;
 
 @RunWith(MockitoJUnitRunner.class)
 @DataJpaTest
@@ -66,13 +60,7 @@ public class RegistrationStatusServiceTest {
 	private RegistrationStatusDao registrationStatusDao;
 
 	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
-
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
-
-	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder ;
 
 	@Before
 	public void setup()
@@ -99,17 +87,21 @@ public class RegistrationStatusServiceTest {
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
+//		AuditResponseDto auditResponseDto=new AuditResponseDto();
+//		auditResponseDto.setStatus(true);
+//		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+
 
 		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
+		//AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		//AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f.setAccessible(true);
-		f.set(coreAuditRequestBuilder, auditRequestBuilder);
-		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+	//	Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+	//	f.setAccessible(true);
+	//	f.set(auditLogRequestBuilder, auditRequestBuilder);
+	//	Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+	//	f1.setAccessible(true);
+	//	f1.set(auditRequestBuilder, auditRequest1);
 
 	}
 

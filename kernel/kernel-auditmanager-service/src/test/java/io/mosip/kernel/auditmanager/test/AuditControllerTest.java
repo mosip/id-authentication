@@ -16,8 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.auditmanager.controller.AuditManagerController;
+import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
 
 @RunWith(SpringRunner.class)

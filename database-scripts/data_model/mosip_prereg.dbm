@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,543" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_prereg" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all the pre registration related data and transactions.]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="ids" rect-visible="true" fill-color="#83af1f">
+	<role name="postgres"/>
+</schema>
+
+<table name="prid">
+	<schema name="ids"/>
+	<role name="postgres"/>
+	<position x="50" y="50"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="14"/>
+	</column>
+	<column name="created_at">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="prid_pkey" type="pk-constr" table="ids.prid">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<schema name="prereg" rect-visible="true" fill-color="#5aa578">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="applicant_demographic">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_demographic table stores applicant demographic details]]></comment>
+	<position x="50.1162" y="195"/>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="group_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="demog_detail">
+		<type name="json" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_appuser_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appldem_prereg_id" type="pk-constr" table="prereg.applicant_demographic">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_document">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[applicant_document table stores applicant demographic document proof submitted details]]></comment>
+	<position x="397.132" y="195"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="doc_cat_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_typ_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_file_format" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_store">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_appldoc_prereg_id" type="pk-constr" table="prereg.applicant_document">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_appldoc_prereg_id" table="prereg.applicant_document"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="prereg_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_cat_code"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_typ_code"/>
+		</idxelement>
+</index>
+
+<table name="user_login">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[user_login table stores registered individual email and/or mobile number]]></comment>
+	<position x="778.749" y="195"/>
+	<column name="login_id" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Value of the login_id is either mobile or email.  User have the option to select the login id preference or update email or mobile, in this case login_id also need to be updated]]></comment>
+	</column>
+	<column name="mobile">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="email">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="last_login_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_active">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_usrlgn_login_id" type="pk-constr" table="prereg.user_login">
+		<columns names="login_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_usrlgn_mobile" table="prereg.user_login"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="mobile"/>
+		</idxelement>
+</index>
+
+<index name="idx_usrlgn_email" table="prereg.user_login"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="email"/>
+		</idxelement>
+</index>
+
+<table name="transaction_type">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Transaction type table to store various transactions that are processd within pre-registration module/application.]]></comment>
+	<position x="779.116" y="501"/>
+	<column name="code" alias="cd" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Code of the transaction types available in pre-registration module/application]]></comment>
+	</column>
+	<column name="descr" alias="descr" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Description of the transaction types of pre-registration module/application]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Active status of a transaction type]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="ttype_pk" type="pk-constr" table="prereg.transaction_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="pre_registration_transaction" alias="prereg_trn">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Transaction table to store various transactions that are processd within pre-registration module/application.]]></comment>
+	<position x="784.116" y="753"/>
+	<column name="id" alias="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Transaction id of the transactions that were recorded in pre-registration module/application]]></comment>
+	</column>
+	<column name="trn_type_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Transaction type code of the transaction being processed.]]></comment>
+	</column>
+	<column name="parent_prereg_trn_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_code" alias="stat" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Current status of the transaction. Refers to code field of master.status_list table.]]></comment>
+	</column>
+	<column name="status_comments" alias="scom">
+		<type name="character varying" length="1024"/>
+		<comment><![CDATA[Comments provided by the actor during the transaction processing.]]></comment>
+	</column>
+	<column name="lang_code" alias="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code in which status and other items are stored]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="preg_trn_pk" type="pk-constr" table="prereg.pre_registration_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="processed_prereg_list" alias="pprlst">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store all the pre-registration list received from registration processor within pre-registration module]]></comment>
+	<position x="267.116" y="748"/>
+	<column name="prereg_id" alias="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-registration id that was consumed by registration processor to generate UIN]]></comment>
+	</column>
+	<column name="first_received_dtimes" not-null="true">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Datetime when the pre-registration id was first recevied]]></comment>
+	</column>
+	<column name="status_code" alias="stat" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[status of the pre-registration status update into actual tables]]></comment>
+	</column>
+	<column name="status_comments" alias="scom">
+		<type name="character varying" length="1024"/>
+		<comment><![CDATA[status comments of the pre-registration status update into actual tables]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pprlst_pk" type="pk-constr" table="prereg.processed_prereg_list">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="prereg_trn_id" index="4"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="pprlst_pregtrn_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="pre_registration_transaction_has_many_processed_pre_registratio" type="rel1n" alias="pprlst_prereg_trn_id_fk"
+	 src-col-pattern="prereg_trn_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="pprlst_pregtrn_fk"
+	 custom-color="#83af1f"
+	 src-table="prereg.pre_registration_transaction"
+	 dst-table="prereg.processed_prereg_list"
+	 src-required="false" dst-required="false"/>
+
+<table name="i_processed_prereg_list" alias="ipprlst">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store all the pre-registration list received from registration processor within pre-registration module]]></comment>
+	<position x="268.116" y="511"/>
+	<column name="prereg_id" alias="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-registration id that was consumed by registration processor to generate UIN]]></comment>
+	</column>
+	<column name="received_dtimes" not-null="true">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Datetime when the pre-registration id was recevied]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="ipprlst_pk" type="pk-constr" table="prereg.i_processed_prereg_list">
+		<columns names="prereg_id,received_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_appldoc_appldem" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.applicant_demographic" table="prereg.applicant_document">
+	<columns names="prereg_id" ref-type="src-columns"/>
+	<columns names="prereg_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_applicant_document_applicant_demographic" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="prereg.applicant_document"
+	 dst-table="prereg.applicant_demographic" reference-fk="fk_appldoc_appldem"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="prereguser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="ids" type="schema"/>
+	<roles names="postgres"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="ids" type="schema"/>
+	<roles names="prereguser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="ids.prid" type="table"/>
+	<roles names="postgres"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="prereg" type="schema"/>
+	<roles names="prereguser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.user_login" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.user_login" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

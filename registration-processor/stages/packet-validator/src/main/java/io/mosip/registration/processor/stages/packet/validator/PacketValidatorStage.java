@@ -15,21 +15,18 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.packet.dto.Demographic;
-import io.mosip.registration.processor.core.packet.dto.MetaData;
-import io.mosip.registration.processor.core.packet.dto.PacketInfo;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.stages.exception.utils.ExceptionMessages;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
@@ -62,17 +59,13 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The file manager. */
-	@Autowired
-	FileManager<DirectoryPathDto, InputStream> fileManager;
-
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The packet info manager. */
 	@Autowired
-	private PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManager;
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -82,7 +75,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/**
 	 * Deploy verticle.
@@ -92,8 +85,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
@@ -106,18 +103,20 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
-			PacketInfo packetInfo = (PacketInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-					PacketInfo.class);
+			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+					PacketMetaInfo.class);
 
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
 			FilesValidation filesValidation = new FilesValidation(adapter);
-			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetInfo);
+			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
 
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
-				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
+				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+						packetMetaInfo.getIdentity());
+
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
@@ -127,14 +126,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			if (isFilesValidated && isCheckSumValidated) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
-				packetInfoManager.savePacketData(packetInfo);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+				packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 				InputStream demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-				Demographic demographicData = (Demographic) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
-						Demographic.class);
-				packetInfoManager.saveDemographicData(demographicData, packetInfo.getMetaData());
+				packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
+						packetMetaInfo.getIdentity().getMetaData());
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -144,8 +141,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
 				}
 
-				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 
 			}
 			if (!isFilesValidated) {
@@ -159,12 +155,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 		} catch (IOException e) {
-			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
@@ -172,13 +168,20 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			
+			if(isTransactionSuccessful) {
+				description = "Packet uploaded to file system";
+				eventId=EventId.RPR_402.toString();
+				eventName = EventName.UPDATE.toString();
+				eventType = EventType.BUSINESS.toString();
+			}else {
+				
+				description = "Packet uploading to file system is unsuccessful";
+				eventId=EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+			}
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 
 		}

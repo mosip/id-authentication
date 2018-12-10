@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Response Dto for Template details
@@ -11,8 +9,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 public class TemplateDto {
 
 	private String id;
@@ -33,5 +31,7 @@ public class TemplateDto {
 
 	private String templateTypeCode;
 
-	private String languageCode;
+	private String langCode;
+	
+	private Boolean isActive;
 }

@@ -21,7 +21,10 @@ public interface PacketUploaderService {
 	 * @param packet
 	 *            packet to store
 	 * @return {@link PacketUploaderResponceDTO} with file information
-	 * @throws IOException 
+	 * @throws IOException
+	 *             signals that an <b>I/O exception</b> of some sort has occurred.<br>
+	 *             This class is the general class of exceptions produced by
+	 *             failed or interrupted I/O operations.
 	 */
 	PacketUploaderResponceDTO upload(MultipartFile packet) throws IOException;
 

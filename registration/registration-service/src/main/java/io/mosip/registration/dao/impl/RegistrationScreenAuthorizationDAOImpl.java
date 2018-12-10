@@ -55,8 +55,6 @@ public class RegistrationScreenAuthorizationDAOImpl implements RegistrationScree
 		authorizationDTO.setAuthorizationScreenId(authList);
 		authorizationDTO.setAuthorizationRoleCode(roleCode);
 		if (!authorizationList.isEmpty()) {
-			authorizationDTO
-					.setAuthorizationAppId(authorizationList.get(0).getRegistrationScreenAuthorizationId().getAppId());
 			authorizationDTO.setAuthorizationIsPermitted(authorizationList.get(0).isPermitted());
 
 		}

@@ -174,7 +174,7 @@ public class BookingServiceTest {
 		bookingEntity.setStatus_code(StatusCodes.Booked.toString().trim());
 		bookingEntity.setLang_code("12L");
 		bookingEntity.setCrBy("987654321");
-		bookingEntity.setCrDate(LocalDateTime.parse(bookingDTO.getReqTime()));
+		bookingEntity.setCrDate(Timestamp.valueOf(LocalDateTime.parse(bookingDTO.getReqTime())));
 		bookingEntity.setRegDate(LocalDate.parse(oldBooking.getReg_date()));
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
 		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
@@ -237,7 +237,7 @@ public class BookingServiceTest {
 		parameterException = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 
 		Mockito.when(bookingAvailabilityRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-				LocalTime.parse("09:00"), LocalTime.parse("09:13"), "2018-12-07", "1")).thenReturn(entity);
+				LocalTime.parse("09:00"), LocalTime.parse("09:13"), LocalDate.parse("2018-12-07"), "1")).thenReturn(entity);
 
 		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
 				StatusCodes.Booked.toString())).thenReturn(true);

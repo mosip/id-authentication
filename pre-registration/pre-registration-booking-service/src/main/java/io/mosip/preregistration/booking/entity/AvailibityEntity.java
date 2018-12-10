@@ -45,7 +45,7 @@ public class AvailibityEntity implements Serializable {
 	
 	@Column(name = "slot_to_time")
 	private LocalTime toTime;
-	
+
 	@Column(name = "available_kiosks")
 	private int availableKiosks;
 

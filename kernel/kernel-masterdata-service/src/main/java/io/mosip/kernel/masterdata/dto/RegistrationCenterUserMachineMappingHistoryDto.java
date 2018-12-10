@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class RegistrationCenterUserMachineMappingHistoryDto {
 
 	/**
@@ -28,5 +28,7 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	 * User Id for response
 	 */
 	private String usrId;
+	
+	private Boolean isActive;
 
 }

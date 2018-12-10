@@ -1,10 +1,11 @@
-FROM java:8
+FROM openjdk:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+ARG active_profile
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
 
-ADD target/kernel-idgenerator-uin-1.0.0-SNAPSHOT.jar /KerneUinGeneratorService.jar
+COPY ./target/kernel-idgenerator-uin-*.jar kernel-idgenerator-uin.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","/KerneUinGeneratorService.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-idgenerator-uin.jar"]

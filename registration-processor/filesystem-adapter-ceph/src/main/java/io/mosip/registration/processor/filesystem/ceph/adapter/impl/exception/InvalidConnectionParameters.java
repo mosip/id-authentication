@@ -2,8 +2,7 @@ package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception;
 
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * InvalidConnectionParameter Exception occurs when
@@ -19,10 +18,10 @@ public class InvalidConnectionParameters extends BaseUncheckedException {
 	}
 
 	public InvalidConnectionParameters(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_INVALID_CONNECTION_PARAMETERS, message);
+		super(PlatformErrorMessages.RPR_FAC_INVALID_CONNECTION_PARAMETERS.getCode(), message);
 	}
 
 	public InvalidConnectionParameters(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_INVALID_CONNECTION_PARAMETERS + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_FAC_INVALID_CONNECTION_PARAMETERS.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

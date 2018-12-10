@@ -1,30 +1,50 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * DTO class for IdType.
+ * DTO class for holding the idtype request.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class IdTypeDto {
 	/**
-	 * the id code.
+	 * The id code.
 	 */
+	@NotNull
+	@Size(min = 1, max = 36)
 	private String code;
+
 	/**
-	 * the id description.
+	 * The id description.
 	 */
+	@Size(min = 1, max = 128)
 	private String descr;
+
 	/**
-	 * the language code.
+	 * The name of the idtype.
 	 */
+	@NotNull
+	@Size(min = 1, max = 64)
+	private String name;
+
+	/**
+	 * The language code.
+	 */
+	@NotNull
+	@Size(min = 1, max = 3)
 	private String langCode;
+
+	/**
+	 * The idtype is active or not.
+	 */
+	@NotNull
+	private Boolean isActive;
 }

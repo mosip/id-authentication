@@ -16,16 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvailableException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class PacketNotAvailableExceptionTest {
-	private static final String PACKET_NOT_AVAILABLE_EXCEPTION = "This is packet not available exception";
+
 	private static final Logger log = LoggerFactory.getLogger(PacketNotAvailableExceptionTest.class);
 
 	@Mock
@@ -34,7 +33,7 @@ public class PacketNotAvailableExceptionTest {
 	@Test
 	public void TestPacketNotAvailableException() {
 
-		PacketNotAvailableException ex = new PacketNotAvailableException(PACKET_NOT_AVAILABLE_EXCEPTION);
+		PacketNotAvailableException ex = new PacketNotAvailableException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -54,9 +53,9 @@ public class PacketNotAvailableExceptionTest {
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_AVAILABLE));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getCode()));
 			assertThat("Should throw packet_not_available exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PACKET_NOT_AVAILABLE_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage()));
 
 		}
 	}

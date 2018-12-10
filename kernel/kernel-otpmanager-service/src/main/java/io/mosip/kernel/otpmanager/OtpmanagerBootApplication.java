@@ -18,6 +18,7 @@ public class OtpmanagerBootApplication {
 	 * Main method to run spring boot application
 	 * 
 	 * @param args
+	 *            the argument
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(OtpmanagerBootApplication.class, args);

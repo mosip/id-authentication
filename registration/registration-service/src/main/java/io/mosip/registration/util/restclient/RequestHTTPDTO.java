@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 /**
  * This class holds the request of http data
@@ -15,6 +16,7 @@ public class RequestHTTPDTO {
 	private HttpEntity<?> httpEntity;
 	private Class<?> clazz;
 	private URI uri;
+	private SimpleClientHttpRequestFactory simpleClientHttpRequestFactory;
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
@@ -47,5 +49,13 @@ public class RequestHTTPDTO {
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
+
+	public SimpleClientHttpRequestFactory getSimpleClientHttpRequestFactory() {
+		return simpleClientHttpRequestFactory;
+	}
+
+	public void setSimpleClientHttpRequestFactory(SimpleClientHttpRequestFactory simpleClientHttpRequestFactory) {
+		this.simpleClientHttpRequestFactory = simpleClientHttpRequestFactory;
+	}	
 
 }

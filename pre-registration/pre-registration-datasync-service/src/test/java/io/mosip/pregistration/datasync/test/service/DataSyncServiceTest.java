@@ -1,4 +1,4 @@
-package io.mosip.pregistration.datasync.test.service;
+/*package io.mosip.pregistration.datasync.test.service;
 
 import static org.junit.Assert.*;
 
@@ -54,10 +54,10 @@ import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
 import io.mosip.pregistration.datasync.service.DataSyncService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
-/**
+*//**
  * @author M1046129
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DataSyncServiceTest {
@@ -228,7 +228,7 @@ public class DataSyncServiceTest {
 		final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
 		final TimeZone utc = TimeZone.getTimeZone("UTC");
 		sdf.setTimeZone(utc);
-		Date myDate = DateUtils.parse(sdf.format(fromDate));
+		Date myDate = DateUtils.parseDefaultUTCToDate(sdf.format(fromDate).toString());
 
 		DataSyncRequestDTO dataSyncRequestDTO1 = new DataSyncRequestDTO();
 		dataSyncRequestDTO1.setRegClientId("59276903416082");
@@ -320,3 +320,4 @@ public class DataSyncServiceTest {
 	}
 
 }
+*/

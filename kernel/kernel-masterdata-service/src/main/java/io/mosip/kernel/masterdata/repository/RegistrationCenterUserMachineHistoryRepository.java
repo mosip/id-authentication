@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 
 /**
  * Repository class for user machine mapping
@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 @Repository
 public interface RegistrationCenterUserMachineHistoryRepository
 		extends
-			BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterUserMachineHistoryId> {
+			BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserID> {
 	/**
 	 * This method trigger query to fetch registration centers based on center
 	 * id,user id,machine id and effective date
@@ -30,6 +30,6 @@ public interface RegistrationCenterUserMachineHistoryRepository
 	 *            effective time as provided by user
 	 * @return List of {@link RegistrationCenterUserMachineHistory} fetched by query
 	 */
-	List<RegistrationCenterUserMachineHistory> findByIdAndEffectivetimesLessThanEqual(
-			RegistrationCenterUserMachineHistoryId id, LocalDateTime effectivetimes);
+	List<RegistrationCenterUserMachineHistory> findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
+			RegistrationCenterMachineUserID id, LocalDateTime effectivetimes);
 }

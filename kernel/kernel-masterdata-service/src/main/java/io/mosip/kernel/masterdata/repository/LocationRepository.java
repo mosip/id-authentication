@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -14,10 +15,14 @@ import io.mosip.kernel.masterdata.entity.Location;
  */
 @Repository
 public interface LocationRepository extends BaseRepository<Location, String> {
-
-	List<Location> findLocationHierarchyByCodeAndLanguageCode(String locCode,String languagecode);
 	
+	List<Location> findLocationHierarchyByIsDeletedIsNullOrIsDeletedFalse();
+	@Query(value="FROM Location l where l.code=?1 and l.languageCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
+	List<Location> findLocationHierarchyByCodeAndLanguageCode(String locCode,String languagecode);
+	@Query(value="FROM Location l where parentLocCode=?1 and languageCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
 	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCode(String parentLocCode,
 			String languageCode);
+	@Query(value="select distinct hierarchy_level, hierarchy_level_name, is_active from master.location where lang_code='ENG' and (is_deleted='f' or is_deleted=null)",nativeQuery=true)
+	List<Object[]> findDistinctLocationHierarchyByIsDeletedFalse(String langCode);
 
 }

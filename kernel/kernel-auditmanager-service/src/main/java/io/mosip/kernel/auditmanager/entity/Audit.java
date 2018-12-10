@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "app_audit_log", schema = "audit")
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Audit extends BaseAudit {

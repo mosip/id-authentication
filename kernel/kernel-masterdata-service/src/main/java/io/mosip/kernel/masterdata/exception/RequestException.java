@@ -1,10 +1,12 @@
+
 package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Customized exception for template not found
+ * Customized exception class for invalid request provided by the user.
  * 
+ * @see io.mosip.kernel.core.exception.BaseUncheckedException
  * @author Bal Vikash Sharma
  * @since 1.0.0
  *
@@ -26,5 +28,19 @@ public class RequestException extends BaseUncheckedException {
 	 */
 	public RequestException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
+	}
+
+	/**
+	 * Constructor the initialize Handler exception
+	 * 
+	 * @param errorCode
+	 *            The error code for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 * @param rootCause
+	 *            the specified cause
+	 */
+	public RequestException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 }

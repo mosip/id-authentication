@@ -3,11 +3,12 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-import io.mosip.registration.processor.core.packet.dto.HashSequence;
-import io.mosip.registration.processor.core.packet.dto.PacketInfo;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 
 /**
@@ -27,7 +28,8 @@ public class CheckSumValidation {
 	/**
 	 * Instantiates a new check sum validation.
 	 *
-	 * @param adapter the adapter
+	 * @param adapter
+	 *            the adapter
 	 */
 	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
@@ -37,13 +39,16 @@ public class CheckSumValidation {
 	/**
 	 * Checksumvalidation.
 	 *
-	 * @param registrationId the registration id
-	 * @param packetInfo the packet info
+	 * @param registrationId
+	 *            the registration id
+	 * @param packetInfo
+	 *            the packet info
 	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public boolean checksumvalidation(String registrationId, PacketInfo packetInfo) throws IOException {
-		HashSequence hashSequence = packetInfo.getHashSequence();
+	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException {
+		List<FieldValueArray> hashSequence = identity.getHashSequence();
 
 		// Getting checksum from HMAC File
 		InputStream hmacFileStream = adapter.getFile(registrationId, HMAC_FILE);
@@ -51,7 +56,7 @@ public class CheckSumValidation {
 
 		// Generating checksum using hashSequence
 		CheckSumGeneration checkSumGeneration = new CheckSumGeneration(adapter);
-		byte[] generatedHash = checkSumGeneration.generatePacketInfoHash(hashSequence, registrationId);
+		byte[] generatedHash = checkSumGeneration.generateIdentityHash(hashSequence, registrationId);
 
 		return Arrays.equals(generatedHash, hmacFileHashByte);
 	}

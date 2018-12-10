@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.manager.exception.systemexception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * This is BadGatewayException.
@@ -25,7 +25,7 @@ public class BadGatewayException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public BadGatewayException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_BAD_GATEWAY, message);
+		super(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getCode(), message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class BadGatewayException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public BadGatewayException(String message,Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_BAD_GATEWAY + EMPTY_SPACE, message,cause);
+		super(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getCode() + EMPTY_SPACE, message,cause);
 	}
 }

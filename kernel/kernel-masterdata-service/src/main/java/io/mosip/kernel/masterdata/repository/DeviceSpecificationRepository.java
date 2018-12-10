@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -24,7 +25,8 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 *            
 	 * @return Device specific Details fetched from database
 	 */
-	List<DeviceSpecification> findByLangCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
+
+	List<DeviceSpecification> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 	
 	/**
 	 * This method trigger query to fetch the Device specific detail for the given language
@@ -37,5 +39,6 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 *            
 	 * @return Device specific Details fetched from database
 	 */
-	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode, String deviceTypeCode);
+	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false)")
+	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode, String deviceTypeCode);
 }

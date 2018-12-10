@@ -18,17 +18,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import freemarker.template.Template;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.templatemanager.freemarker.builder.TemplateConfigureBuilder;
+import io.mosip.kernel.templatemanager.freemarker.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
 public class TemplatemanagerTest {
-
+	
 	@Mock
 	private Template mockTemplate;
 	private Map<String, Object> valuesMap;
@@ -44,7 +46,7 @@ public class TemplatemanagerTest {
 
 	@Before
 	public void setup() {
-		templateManager = new TemplateConfigureBuilder().build();
+		templateManager = new TemplateManagerBuilderImpl().build();
 	}
 
 	@Before

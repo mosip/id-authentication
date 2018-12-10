@@ -28,7 +28,6 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 //	@Query(value = findall, nativeQuery = true)
 	public List<AvailibityEntity> findByRegcntrIdAndRegDate(String regcntrId, LocalDate regDate);
 
-
 	@Query(value = distDate, nativeQuery = true)
 	public List<java.sql.Date> findDate(@Param("regcntrId") String regcntrId, @Param("toDate") LocalDate toDate);
 	
@@ -41,6 +40,6 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	 */
 	public AvailibityEntity findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 			@Param("slot_from_time") LocalTime slot_from_time, @Param("slot_to_time") LocalTime slot_to_time,
-			@Param("reg_date") String reg_date, @Param("regcntr_id") String regcntr_id);
+			@Param("availability_date") LocalDate reg_date, @Param("regcntr_id") String regcntr_id);
 
 }

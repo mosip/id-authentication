@@ -3,20 +3,24 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
-import io.mosip.kernel.masterdata.dto.GenderTypeResponseDto;
-import io.mosip.kernel.masterdata.entity.GenderType;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.Gender;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This class contains service methods to fetch gender type data from DB
@@ -32,7 +36,13 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	GenderTypeRepository genderTypeRepository;
 
 	@Autowired
-	private ModelMapper mapper;
+	private MapperUtils objectMapperUtil;
+
+	@Autowired
+	private DataMapper dataMapper;
+
+	@Autowired
+	private MetaDataUtils metaDataUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -43,17 +53,16 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	public GenderTypeResponseDto getAllGenderTypes() {
 		GenderTypeResponseDto genderResponseDto = null;
 		List<GenderTypeDto> genderDto = null;
-		List<GenderType> genderType = null;
+		List<Gender> genderType = null;
 
 		try {
-			genderType = genderTypeRepository.findAll(GenderType.class);
+			genderType = genderTypeRepository.findAll(Gender.class);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
+					ExceptionUtils.parseException(e));
 		}
 		if (!(genderType.isEmpty())) {
-			genderDto = mapper.map(genderType, new TypeToken<List<GenderTypeDto>>() {
-			}.getType());
+			genderDto = objectMapperUtil.mapAll(genderType, GenderTypeDto.class);
 		} else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
@@ -67,32 +76,55 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#
-	 * getGenderTypeByLanguageCode(java.lang.String)
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#getGenderTypeByLangCode(
+	 * java.lang.String)
 	 */
 	@Override
-	public GenderTypeResponseDto getGenderTypeByLanguageCode(String languageCode) {
+	public GenderTypeResponseDto getGenderTypeByLangCode(String langCode) {
 		GenderTypeResponseDto genderResponseDto = null;
 		List<GenderTypeDto> genderListDto = null;
-		List<GenderType> gender = new ArrayList<>();
+		List<Gender> gender = new ArrayList<>();
 
 		try {
-			gender = genderTypeRepository.findGenderByLanguageCode(languageCode);
+			gender = genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessLayerException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
+					ExceptionUtils.parseException(e));
 		}
 		if (gender.isEmpty()) {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		genderListDto = mapper.map(gender, new TypeToken<List<GenderTypeDto>>() {
-		}.getType());
+		genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
 
 		genderResponseDto = new GenderTypeResponseDto();
 		genderResponseDto.setGenderType(genderListDto);
 
 		return genderResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#createGenderType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID createGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
+		Gender entity = metaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
+		Gender gender;
+		try {
+			gender = genderTypeRepository.create(entity);
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(gender, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
+
 	}
 
 }

@@ -32,10 +32,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PDFGeneratorImpl.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
 
 	private static final String OTP_SMS_TEMPLATE_TXT = "otp-sms-template.txt";

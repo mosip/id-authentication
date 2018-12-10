@@ -1,8 +1,11 @@
 package io.mosip.kernel.virusscanner.clamav.test;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.mockito.Matchers.any;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +51,8 @@ public class VirusScannerServiceTest {
 	private File folder;
 	private ScanResult virusFound;
 	private ScanResult virusNotFound;
+	private File doc;
+	private byte[] byteArray;
 
 	@Before
 	public void setup() {
@@ -56,6 +61,8 @@ public class VirusScannerServiceTest {
 		folder = new File(classLoader.getResource("files").getFile());
 		virusNotFound = new ScanResult(Status.OK);
 		virusFound = new ScanResult(Status.VIRUS_FOUND);
+		doc= new File(classLoader.getResource("files/test1.docx").getFile());
+	    byteArray = new byte[(int) doc.length()]; 
 	}
 
 	@Test
@@ -85,5 +92,34 @@ public class VirusScannerServiceTest {
 			Boolean result = virusScanner.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	
+	}
+	
+	@Test
+	public void nonInfectedDocCheck() throws ClamavException, IOException{
+			Mockito.when(clamavClient.scan(any(InputStream.class))).thenReturn(virusNotFound);
+			Boolean result = virusScanner.scanDocument(byteArray);
+			assertEquals(Boolean.TRUE, result);
+	
+	}
+	
+	@Test
+	public void InfectedDocCheck() throws ClamavException, IOException{
+			Mockito.when(clamavClient.scan(any(InputStream.class))).thenReturn(virusFound);
+			Boolean result = virusScanner.scanDocument(byteArray);
+			assertEquals(Boolean.FALSE, result);
+	}
+	
+	@Test
+	public void nonInfectedDocumentCheck() throws ClamavException, IOException{
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusNotFound);
+			Boolean result = virusScanner.scanDocument(doc);
+			assertEquals(Boolean.TRUE, result);
+	}
+	
+	@Test
+	public void InfectedDocumentCheck() throws ClamavException, IOException{
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusFound);
+			Boolean result = virusScanner.scanDocument(doc);
+			assertEquals(Boolean.FALSE, result);
 	}
 }

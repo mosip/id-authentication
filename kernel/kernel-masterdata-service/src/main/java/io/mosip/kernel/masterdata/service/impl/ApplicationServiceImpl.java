@@ -1,21 +1,34 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
+/**
+ * Service API for Application
+ * 
+ * @author Neha
+ * @since 1.0.0
+ *
+ */
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -23,74 +36,124 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private ApplicationRepository applicationRepository;
 
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MetaDataUtils metaUtils;
 
 	@Autowired
-	private ModelMapper modelMapper;
+	private DataMapper dataMapper;
 
 	private List<Application> applicationList;
-
-	private List<ApplicationDto> applicationDtoList;
 
 	/**
 	 * Get All Applications
 	 * 
-	 * @return {@link List<ApplicationDto>}
+	 * @return {@link ApplicationResponseDto}
 	 */
 	@Override
-	public List<ApplicationDto> getAllApplication() {
+	public ApplicationResponseDto getAllApplication() {
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class);
+			applicationList = applicationRepository.findAllByIsDeletedFalse(Application.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationDtoList = objectMapperUtil.mapAll(applicationList, ApplicationDto.class);
+			applicationList.forEach(application -> {
+				ApplicationDto applicationDto = new ApplicationDto();
+				dataMapper.map(application, applicationDto, true, null, null, true);
+				applicationDtoList.add(applicationDto);
+			});
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return applicationDtoList;
+		ApplicationResponseDto applicationResponseDto = new ApplicationResponseDto();
+		applicationResponseDto.setApplicationtypes(applicationDtoList);
+		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by language code
+	 * 
+	 * @param languageCode
+	 * 
+	 * @return {@link ApplicationResponseDto}
+	 */
 	@Override
-	public List<ApplicationDto> getAllApplicationByLanguageCode(String languageCode) {
-
+	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationDtoList = objectMapperUtil.mapAll(applicationList, ApplicationDto.class);
+			applicationList.forEach(application -> {
+				ApplicationDto applicationDto = new ApplicationDto();
+				dataMapper.map(application, applicationDto, true, null, null, true);
+				applicationDtoList.add(applicationDto);
+			});
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return applicationDtoList;
+		ApplicationResponseDto applicationResponseDto = new ApplicationResponseDto();
+		applicationResponseDto.setApplicationtypes(applicationDtoList);
+		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by code and language code
+	 * 
+	 * @param code
+	 * @param languageCode
+	 * 
+	 * @return {@link ApplicationResponseDto}
+	 */
 	@Override
-	public ApplicationDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
+	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
 		Application application;
-		ApplicationDto applicationDto;
+		ApplicationDto applicationDto = new ApplicationDto();
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(code,
-					languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
-			applicationDto = modelMapper.map(application, ApplicationDto.class);
-
+			dataMapper.map(application, applicationDto, true, null, null, true);
+			applicationDtoList.add(applicationDto);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return applicationDto;
+		ApplicationResponseDto applicationResponseDto = new ApplicationResponseDto();
+		applicationResponseDto.setApplicationtypes(applicationDtoList);
+		return applicationResponseDto;
 	}
 
+	/**
+	 * Get All Applications by language code
+	 * 
+	 * @param applicationRequestDto
+	 * 
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	@Override
+	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {
+		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
+				Application.class);
+		Application application;
+		try {
+			application = applicationRepository.create(entity);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
+		}
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		dataMapper.map(application, codeLangCodeId, true, null, null, true);
+		return codeLangCodeId;
+	}
 }

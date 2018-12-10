@@ -465,5 +465,14 @@ public class Logfactory {
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
 	}
+	
+	public static void stop(String appendersName) {
+		LoggerImpl.stop(appendersName);
+	}
+
+	
+	public static void stopAll() {
+		LoggerImpl.stopAll();
+	}
 
 }

@@ -41,8 +41,8 @@ public class TokenIdFilterUtils {
 
 	/**
 	 * Checks if the input id is valid by passing the id through
-	 * {@link #SEQUENCE_LIMIT} filter, {@link #REPEATING_LIMIT} filter and
-	 * {@link #REPEATING_BLOCK_LIMIT} filters
+	 *  SEQUENCE_LIMIT filter,  #REPEATING_LIMIT filter and
+	 *  REPEATING_BLOCK_LIMIT filters
 	 * 
 	 * @param id
 	 *            The input id to validate
@@ -54,7 +54,7 @@ public class TokenIdFilterUtils {
 	}
 
 	/**
-	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
+	 * Checks the input id for SEQUENCE_LIMIT filter
 	 * 
 	 * @param id
 	 *            The input id to validate

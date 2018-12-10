@@ -42,7 +42,6 @@ import xyz.capybara.clamav.commands.scan.Scan;
  */
 @Component
 public class DocumentUploadService {
-
 	@Autowired
 	@Qualifier("documentRepositoery")
 	private DocumentRepository documentRepository;
@@ -167,6 +166,7 @@ public class DocumentUploadService {
 			if (documentEntities == null) {
 				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
+
 				for (DocumentEntity doc : documentEntities) {
 					DocumentGetAllDto allDocDto = new DocumentGetAllDto();
 					allDocDto.setDoc_cat_code(doc.getDoc_cat_code());
@@ -229,7 +229,6 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ResponseDto<DocResponseDto> deleteAllByPreId(String preregId) {
 		DocResponseDto deleteAllDto = new DocResponseDto();
 		List<DocResponseDto> deleteAllList = new ArrayList<>();

@@ -3,6 +3,7 @@ package io.mosip.kernel.otpmanager.exception;
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ServiceError;
 
 /**
  * Class to handle exception when entity response is not found a particular key.
@@ -21,7 +22,7 @@ public class RequiredKeyNotFoundException extends BaseUncheckedException {
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<Error> list;
+	private final List<ServiceError> list;
 
 	/**
 	 * Constructor for MosipRequiredKeyNotFoundExceptionHandler class.
@@ -29,7 +30,7 @@ public class RequiredKeyNotFoundException extends BaseUncheckedException {
 	 * @param list
 	 *            The error list.
 	 */
-	public RequiredKeyNotFoundException(List<Error> list) {
+	public RequiredKeyNotFoundException(List<ServiceError> list) {
 		this.list = list;
 	}
 
@@ -38,7 +39,7 @@ public class RequiredKeyNotFoundException extends BaseUncheckedException {
 	 * 
 	 * @return The error list.
 	 */
-	public List<Error> getList() {
+	public List<ServiceError> getList() {
 		return list;
 	}
 }

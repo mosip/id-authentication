@@ -11,19 +11,32 @@
 
  ```
  
+ 
+ **Maven Dependency**
+ 
+ ```
+ <dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>${project.version}</version>
+ </dependency>
+ ```
+  
+ 
  3- Usage Sample
  
- Usage1:
  
  ```
-<TBA>
- 
- ```
+	@Autowired
+	VirusScanner<Boolean, String> virusScannerImpl;
+	
+	boolean isClean = false;
 
- Usage2:
- 
- ```
-<TBA>
+			try {
+				isClean = virusScannerImpl.scanFile("filepath");
+			} catch (VirusScanFailedException e) {
+				....
+			}
  
  ```
 

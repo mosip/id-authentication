@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
@@ -496,8 +495,8 @@ public class BookingService {
 		return statusCode;
 	}
 
-	private BookingStatusDTO bookingAPI(BookingDTO bookingDTO, BookingRequestDTO bookingRequestDTO,
-			RegistrationBookingPK bookingPK) throws DataAccessLayerException, DateTimeException {
+	private synchronized BookingStatusDTO bookingAPI(BookingDTO bookingDTO, BookingRequestDTO bookingRequestDTO,
+			RegistrationBookingPK bookingPK) {
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		BookingRegistrationDTO registrationDTO = bookingRequestDTO.getNewBookingDetails();
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
@@ -505,64 +504,59 @@ public class BookingService {
 		String preRegStatusCode = callGetStatusRestService(bookingRequestDTO.getPre_registration_id());
 		if (preRegStatusCode != null
 				&& preRegStatusCode.trim().equalsIgnoreCase(StatusCodes.Pending_Appointment.toString().trim())) {
-			// booking flow
-			synchronized (bookingRequestDTO) {
-				AvailibityEntity availableEntity = bookingAvailabilityRepository
-						.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-								LocalTime.parse(registrationDTO.getSlotFromTime().toString()),
-								LocalTime.parse(registrationDTO.getSlotToTime().toString()),
-								registrationDTO.getReg_date().toString(), registrationDTO.getRegistration_center_id());
+			AvailibityEntity availableEntity = bookingAvailabilityRepository
+					.findByFromTimeAndToTimeAndRegDateAndRegcntrId(LocalTime.parse(registrationDTO.getSlotFromTime()),
+							LocalTime.parse(registrationDTO.getSlotToTime()), LocalDate.parse(registrationDTO.getReg_date()),
+							registrationDTO.getRegistration_center_id());
 
-				if (availableEntity != null && availableEntity.getAvailableKiosks() > 0) {
+			if (availableEntity != null && availableEntity.getAvailableKiosks() > 0) {
 
-					boolean slotExistsFlag = registrationBookingRepository.existsByPreIdandStatusCode(
-							bookingRequestDTO.getPre_registration_id(), StatusCodes.Booked.toString());
+				boolean slotExistsFlag = registrationBookingRepository.existsByPreIdandStatusCode(
+						bookingRequestDTO.getPre_registration_id(), StatusCodes.Booked.toString());
 
-					if (!slotExistsFlag) {
-						bookingPK.setPreregistrationId(bookingRequestDTO.getPre_registration_id());
+				if (!slotExistsFlag) {
+					bookingPK.setPreregistrationId(bookingRequestDTO.getPre_registration_id());
 
-						DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-						bookingPK.setBookingDateTime(LocalDateTime.parse(bookingDTO.getReqTime(), format));
+					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+					bookingPK.setBookingDateTime(LocalDateTime.parse(bookingDTO.getReqTime(), format));
 
-						entity.setBookingPK(bookingPK);
-						entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
-						entity.setStatus_code(StatusCodes.Booked.toString().trim());
-						entity.setLang_code("12L");
-						entity.setCrBy("987654321");
-						entity.setCrDate(LocalDateTime.parse(bookingDTO.getReqTime()));
-						entity.setRegDate(LocalDate.parse(registrationDTO.getReg_date()));
-						entity.setSlotFromTime(LocalTime.parse(registrationDTO.getSlotFromTime()));
-						entity.setSlotToTime(LocalTime.parse(registrationDTO.getSlotToTime()));
+					entity.setBookingPK(bookingPK);
+					entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
+					entity.setStatus_code(StatusCodes.Booked.toString().trim());
+					entity.setLang_code("12L");
+					entity.setCrBy("987654321");
+					entity.setCrDate(Timestamp.valueOf(LocalDateTime.parse(bookingDTO.getReqTime())));
+					entity.setRegDate(LocalDate.parse(registrationDTO.getReg_date()));
+					entity.setSlotFromTime(LocalTime.parse(registrationDTO.getSlotFromTime()));
+					entity.setSlotToTime(LocalTime.parse(registrationDTO.getSlotToTime()));
 
-						RegistrationBookingEntity registrationBookingEntity = registrationBookingRepository
-								.save(entity);
+					RegistrationBookingEntity registrationBookingEntity = registrationBookingRepository.save(entity);
 
-						if (registrationBookingEntity != null) {
-							/* Pre registration status code update */
-							callUpdateStatusRestService(bookingRequestDTO.getPre_registration_id(),
-									StatusCodes.Booked.toString().trim());
+					if (registrationBookingEntity != null) {
+						/* Pre registration status code update */
+						callUpdateStatusRestService(bookingRequestDTO.getPre_registration_id(),
+								StatusCodes.Booked.toString().trim());
 
-							/* No. of Availability. update */
-							availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
-							bookingAvailabilityRepository.update(availableEntity);
+						/* No. of Availability. update */
+						availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
+						bookingAvailabilityRepository.update(availableEntity);
 
-							bookingStatusDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
-							bookingStatusDTO.setBooking_status(StatusCodes.Booked.toString());
-							bookingStatusDTO.setBooking_message("APPOINTMENT_SUCCESSFULLY_BOOKED");
+						bookingStatusDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
+						bookingStatusDTO.setBooking_status(StatusCodes.Booked.toString());
+						bookingStatusDTO.setBooking_message("APPOINTMENT_SUCCESSFULLY_BOOKED");
 
-						} else {
-							throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-									ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
-						}
 					} else {
-						throw new BookingTimeSlotAlreadyBooked(ErrorCodes.PRG_BOOK_RCI_004.toString(),
-								ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_BOOKED.toString());
-
+						throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
+								ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
 					}
 				} else {
-					throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
-							ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
+					throw new BookingTimeSlotAlreadyBooked(ErrorCodes.PRG_BOOK_RCI_004.toString(),
+							ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_BOOKED.toString());
+
 				}
+			} else {
+				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
+						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
 			}
 		} else {
 			throw new AppointmentCannotBeBookedException(ErrorCodes.PRG_BOOK_RCI_001.toString(),

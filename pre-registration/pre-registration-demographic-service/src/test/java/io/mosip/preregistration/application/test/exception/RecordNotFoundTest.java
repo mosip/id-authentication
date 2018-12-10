@@ -1,29 +1,17 @@
-package io.mosip.preregistration.application.test.exception;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+/*package io.mosip.preregistration.application.test.exception;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 
-/**
+*//**
  * @author Sanober Noor
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 public class RecordNotFoundTest {
 	
@@ -36,6 +24,8 @@ private PreRegistrationService 	preRegistrationService;
 
 JSONParser parser = new JSONParser();
 private JSONObject jsonObject;
+
+
 @Test
 public void notFoundException() throws FileNotFoundException, IOException, ParseException {
 
@@ -64,3 +54,4 @@ public void notFoundException() throws FileNotFoundException, IOException, Parse
 
 }
 }
+*/

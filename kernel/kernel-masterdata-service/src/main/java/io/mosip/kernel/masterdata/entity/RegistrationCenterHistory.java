@@ -4,9 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +24,7 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +41,7 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
 
-	@Column(name = "cntr_typ_code", length = 36)
+	@Column(name = "cntrtyp_code", length = 36)
 	private String centerTypeCode;
 
 	@Column(name = "addr_line1", length = 256)
@@ -72,35 +77,33 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "per_kiosk_process_time")
 	private LocalTime perKioskProcessTime;
 
-	@Column(name = "process_start_time")
-	private LocalTime processStartTime;
+	@Column(name = "center_start_time")
+	private LocalTime centerStartTime;
 
-	@Column(name = "process_end_time")
-	private LocalTime processEndTime;
+	@Column(name = "center_end_time")
+	private LocalTime centerEndTime;
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
+	@Column(name = "time_zone", length = 64)
+	private String timeZone;
 
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
+	@Column(name = "contact_person", length = 128)
+	private String contactPerson;
 
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtimes;
+	@Column(name = "lunch_start_time")
+	private LocalTime lunchStartTime;
 
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
+	@Column(name = "lunch_end_time")
+	private LocalTime lunchEndTime;
 
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtimes;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtimes;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	private Location location;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;

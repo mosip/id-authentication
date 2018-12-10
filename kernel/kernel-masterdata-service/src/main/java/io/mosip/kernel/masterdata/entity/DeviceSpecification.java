@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,11 +17,12 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
- * @author M1046571
+ * @author Uday
+ * @author Megha Tanga
  * 
  *
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,19 +37,32 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	@Id
 	@Column(name = "id", nullable = false)
 	private String id;
+	
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
+	
 	@Column(name = "brand", nullable = false, length = 32)
 	private String brand;
+	
 	@Column(name = "model", nullable = false, length = 16)
 	private String model;
+	
 	@Column(name = "dtyp_code", nullable = false, length = 36)
 	private String deviceTypeCode;
+	
 	@Column(name = "min_driver_ver", nullable = false, length = 16)
 	private String minDriverversion;
+	
 	@Column(name = "descr", length = 256)
 	private String description;
+	
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
+
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "dtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private DeviceType deviceType;
 
 }

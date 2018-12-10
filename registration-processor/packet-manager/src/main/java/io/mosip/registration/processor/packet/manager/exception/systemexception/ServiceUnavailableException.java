@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.manager.exception.systemexception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * ServiceUnavailableException occurs when service is not available.
@@ -25,7 +25,7 @@ public class ServiceUnavailableException extends BaseUncheckedException{
 	 * @param message the message
 	 */
 	public ServiceUnavailableException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_SERVICE_UNAVAILABLE, message);
+		super(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode(), message);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class ServiceUnavailableException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public ServiceUnavailableException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_SERVICE_UNAVAILABLE + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode() + EMPTY_SPACE, message, cause);
 	}
 
 }

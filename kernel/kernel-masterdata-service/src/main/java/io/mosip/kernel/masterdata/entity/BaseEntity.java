@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseEntity {
+	
 
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
@@ -22,18 +23,18 @@ public class BaseEntity {
 	private String createdBy;
 
 	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtimes;
+	private LocalDateTime createdDateTime;
 
-	@Column(name = "upd_by", length = 24)
+	@Column(name = "upd_by")
 	private String updatedBy;
 
 	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtimes;
+	private LocalDateTime updatedDateTime;
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
 	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtimes;
+	private LocalDateTime deletedDateTime;
 
 }

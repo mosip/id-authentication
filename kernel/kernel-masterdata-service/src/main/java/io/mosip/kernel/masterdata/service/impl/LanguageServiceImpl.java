@@ -6,15 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  *
@@ -34,17 +39,18 @@ public class LanguageServiceImpl implements LanguageService {
 	 * Helper class to map objects.
 	 */
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/**
-	 * This method fetch all Languages present in database.
+	 * Helper class to map dto to entity.
+	 */
+	@Autowired
+	private MetaDataUtils metaDataUtils;
+
+	/**
+	 * (non-Javadoc)
 	 * 
-	 * @throws LanguageFetchException
-	 *             when exception raise during fetch of Language details.
-	 * @throws LanguageNotFoundException
-	 *             when no records found for given parameter(langCode).
-	 * @throws LanguageMappingException
-	 *             when error occurs while mapping.
+	 * @see LanguageService#getAllLaguages()
 	 */
 	@Override
 	public LanguageResponseDto getAllLaguages() {
@@ -53,10 +59,10 @@ public class LanguageServiceImpl implements LanguageService {
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAll(Language.class);
+			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
+					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage(), dataAccessException);
 		}
 
 		if (languages != null && !languages.isEmpty()) {
@@ -68,6 +74,24 @@ public class LanguageServiceImpl implements LanguageService {
 
 		languageResponseDto.setLanguages(languageDtos);
 		return languageResponseDto;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see LanguageService#saveLanguage(RequestDto)
+	 */
+	public CodeResponseDto saveLanguage(RequestDto<LanguageDto> requestDto) {
+
+		try {
+			Language language = metaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
+			Language savedLanguage = languageRepository.create(language);
+			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
 	}
 
 }

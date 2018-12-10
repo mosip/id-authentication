@@ -13,10 +13,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.ServiceUnavailableException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
  * @author M1022006
@@ -24,8 +24,6 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 @RunWith(SpringRunner.class)
 public class ServiceUnavailableExceptionTest {
-
-	private static final String SERVICE_UNAVAILABLE_EXCEPTION = "This service unavailable exception";
 
 	@MockBean
 	private FileManager<DirectoryPathDto, File> fileManager;
@@ -35,7 +33,7 @@ public class ServiceUnavailableExceptionTest {
 	@Test
 	public void TestServiceUnavailableException() throws IOException {
 		String fileName = "sample";
-		ServiceUnavailableException ex = new ServiceUnavailableException(SERVICE_UNAVAILABLE_EXCEPTION);
+		ServiceUnavailableException ex = new ServiceUnavailableException(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -44,9 +42,9 @@ public class ServiceUnavailableExceptionTest {
 
 		} catch (ServiceUnavailableException e) {
 			assertThat("Should throw ServiceUnavailable Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_FSS_SERVICE_UNAVAILABLE));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode()));
 			assertThat("Should throw ServiceUnavailable Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(SERVICE_UNAVAILABLE_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage()));
 		}
 
 	}

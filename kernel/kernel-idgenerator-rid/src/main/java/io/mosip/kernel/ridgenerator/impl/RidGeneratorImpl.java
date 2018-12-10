@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
-import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-
 import io.mosip.kernel.ridgenerator.exception.EmptyInputException;
 import io.mosip.kernel.ridgenerator.exception.InputLengthException;
 import io.mosip.kernel.ridgenerator.exception.NullValueException;
@@ -28,6 +27,12 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 @Component
 public class RidGeneratorImpl implements RidGenerator<String> {
 
+	@Value("${mosip.kernel.rid.centerid.length}")
+	private int centerIdLength;
+
+	@Value("${mosip.kernel.rid.dongleid.length}")
+	private int dongleIdLength;
+
 	@Autowired
 	RidRepository ridRepository;
 
@@ -40,14 +45,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 */
 	@Override
 	public String generateId(String centreId, String dongleId) {
-
 		validateInput(centreId, dongleId);
-
-		centreId = StringUtils.removeLeftChar(centreId,
-				Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty()));
-
-		dongleId = StringUtils.removeLeftChar(dongleId,
-				Integer.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty()));
 
 		String randomDigitRid = sequenceNumberGenerator(dongleId);
 
@@ -71,16 +69,12 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 		}
 		if (centreId.isEmpty() || dongleId.isEmpty()) {
 
-			throw new EmptyInputException(
-					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
+			throw new EmptyInputException(RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
-		if (centreId.length() < Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty())
-				|| dongleId.length() < Integer
-						.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty())) {
+		if (centreId.length() != centerIdLength || dongleId.length() != dongleIdLength) {
 
-			throw new InputLengthException(
-					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
+			throw new InputLengthException(RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
 

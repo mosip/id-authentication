@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -17,17 +20,19 @@ import lombok.NoArgsConstructor;
  * @author Srinivasan
  *
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "location", schema = "master")
+
 public class Location extends BaseEntity implements Serializable {
 
 	/**
-	 * 
+	 *  generated serial Id 
 	 */
+
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
@@ -48,5 +53,8 @@ public class Location extends BaseEntity implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
+
+	@OneToMany(mappedBy = "locationCode", fetch = FetchType.LAZY)
+	private List<RegistrationCenter> registrationCenters;
 
 }

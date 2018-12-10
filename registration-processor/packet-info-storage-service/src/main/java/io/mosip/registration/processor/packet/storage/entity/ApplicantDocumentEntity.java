@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ApplicantDocumentEntity.
  *
@@ -25,10 +26,10 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	@Column(name = "cr_by")
 	private String crBy = "MOSIP_SYSTEM";
 
-	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	/** The cr dtimes. */
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
 	/** The doc file format. */
 	@Column(name = "doc_file_format", nullable = false)
@@ -54,10 +55,16 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	/** The upd dtimes. */
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
+
+
+	/** The del dtimes. */
+	@Column(name = "del_dtimes")
+	@UpdateTimestamp
+	private LocalDateTime delDtimes;
 
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
@@ -111,21 +118,21 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	}
 
 	/**
-	 * Gets the cr dtimesz.
+	 * Gets the cr dtimes.
 	 *
-	 * @return the cr dtimesz
+	 * @return the cr dtimes
 	 */
-	public LocalDateTime getCrDtimesz() {
-		return this.crDtimesz;
+	public LocalDateTime getCrDtimes() {
+		return this.crDtimes;
 	}
 
 	/**
-	 * Sets the cr dtimesz.
+	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimesz the new cr dtimesz
+	 * @param crDtimes the new cr dtimes
 	 */
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+	public void setCrDtimes(LocalDateTime crDtimes) {
+		this.crDtimes = crDtimes;
 	}
 
 	/**
@@ -237,21 +244,21 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	}
 
 	/**
-	 * Gets the upd dtimesz.
+	 * Gets the upd dtimes.
 	 *
-	 * @return the upd dtimesz
+	 * @return the upd dtimes
 	 */
-	public LocalDateTime getUpdDtimesz() {
-		return this.updDtimesz;
+	public LocalDateTime getUpdDtimes() {
+		return this.updDtimes;
 	}
 
 	/**
-	 * Sets the upd dtimesz.
+	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimesz the new upd dtimesz
+	 * @param updDtimes the new upd dtimes
 	 */
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+	public void setUpdDtimes(LocalDateTime updDtimes) {
+		this.updDtimes = updDtimes;
 	}
 
 }
