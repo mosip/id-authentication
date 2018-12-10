@@ -49,14 +49,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class RegistrationCenterServiceImpl implements RegistrationCenterService {
 
-	/**
-	 * Reference to model mapper.
-	 */
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	/**
 	 * Reference to RegistrationCenterRepository.
@@ -70,11 +62,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private HolidayRepository holidayRepository;
 
-	/**
-	 * Reference to ObjectMapperUtil.
-	 */
-	@Autowired
-	private MapperUtils mapperUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -108,14 +95,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			// registrationCenterDto = objectMapperUtil.map(registrationCenter,
+			// registrationCenterDto = MapperUtils.map(registrationCenter,
 			// RegistrationCenterDto.class);
 			registrationCenterEntity.add(registrationCenter);
 			// registrationCenterDto=
 
 			// registrationCenters =
-			// objectMapperUtil.mapRegistrationCenter(registrationCenterEntity);
-			registrationCenters = objectMapperUtil.mapAll(registrationCenterEntity, RegistrationCenterDto.class);
+			// MapperUtils.mapRegistrationCenter(registrationCenterEntity);
+			registrationCenters = MapperUtils.mapAll(registrationCenterEntity, RegistrationCenterDto.class);
 			registrationCenterDto = registrationCenters.get(0);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
@@ -129,7 +116,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			}
 			if (holidays != null)
-				holidayDto = mapperUtil.mapHolidays(holidays);
+				holidayDto = MapperUtils.mapHolidays(holidays);
 		}
 		registrationCenterHolidayResponse = new RegistrationCenterHolidayDto();
 		registrationCenterHolidayResponse.setRegistrationCenter(registrationCenterDto);
@@ -161,10 +148,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCenters = null;
-		// registrationCenters = objectMapperUtil.mapAll(centers,
+		// registrationCenters = MapperUtils.mapAll(centers,
 		// RegistrationCenterDto.class);
-		// registrationCenters = objectMapperUtil.mapRegistrationCenter(centers);
-		registrationCenters = objectMapperUtil.mapAll(centers, RegistrationCenterDto.class);
+		// registrationCenters = MapperUtils.mapRegistrationCenter(centers);
+		registrationCenters = MapperUtils.mapAll(centers, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -196,11 +183,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
-		// registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+		// registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
 		// RegistrationCenterDto.class);
 		// registrationCentersDtoList =
-		// objectMapperUtil.mapRegistrationCenter(registrationCentersList);
-		registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList, RegistrationCenterDto.class);
+		// MapperUtils.mapRegistrationCenter(registrationCentersList);
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
@@ -230,11 +217,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 
-		// registrationCenterDto = objectMapperUtil.map(registrationCenter,
+		// registrationCenterDto = MapperUtils.map(registrationCenter,
 		// RegistrationCenterDto.class);
 		// registrationCenters =
-		// objectMapperUtil.mapRegistrationCenter(registrationCenter);
-		RegistrationCenterDto registrationCenterDto = objectMapperUtil.map(registrationCenter,
+		// MapperUtils.mapRegistrationCenter(registrationCenter);
+		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter,
 				RegistrationCenterDto.class);
 		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
@@ -266,11 +253,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		List<RegistrationCenterDto> registrationCenters = null;
-		// registrationCenters = objectMapperUtil.mapAll(registrationCentersList,
+		// registrationCenters = MapperUtils.mapAll(registrationCentersList,
 		// RegistrationCenterDto.class);
 		// registrationCenters =
-		// objectMapperUtil.mapRegistrationCenter(registrationCentersList);
-		registrationCenters = objectMapperUtil.mapAll(registrationCentersList, RegistrationCenterDto.class);
+		// MapperUtils.mapRegistrationCenter(registrationCentersList);
+		registrationCenters = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -303,10 +290,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		List<RegistrationCenterHierarchyLevelDto> registrationCentersDtoList = null;
 
-		// registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+		// registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
 		// RegistrationCenterHierarchyLevelDto.class);
 
-		registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList,
 				RegistrationCenterHierarchyLevelDto.class);
 
 		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
@@ -331,7 +318,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongException));
 		}
 		RegistrationCenter entity = new RegistrationCenter();
-		entity = metaUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
 		RegistrationCenter registrationCenter;
 		try {
 			registrationCenter = registrationCenterRepository.create(entity);

@@ -42,14 +42,6 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
 
-	/**
-	 * Field to hold ObjectMapperUtil object
-	 */
-	@Autowired
-	MapperUtils mapperUtils;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	/**
 	 * Method used for retrieving Machine details based on given Machine ID and
@@ -88,7 +80,7 @@ public class MachineServiceImpl implements MachineService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
+			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
 		} else {
 
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -131,7 +123,7 @@ public class MachineServiceImpl implements MachineService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
+			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -175,7 +167,7 @@ public class MachineServiceImpl implements MachineService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
-			machineDtoList = mapperUtils.mapAll(machineList, MachineDto.class);
+			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -188,8 +180,8 @@ public class MachineServiceImpl implements MachineService {
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine;
-		Machine entity = metaUtils.setCreateMetaData(machine.getRequest(), Machine.class);
-		MachineHistory entityHistory = metaUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
+		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
+		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 		try {
@@ -200,7 +192,7 @@ public class MachineServiceImpl implements MachineService {
 					ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		mapperUtils.map(crtMachine, idResponseDto);
+		MapperUtils.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
 	}

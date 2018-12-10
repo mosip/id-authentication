@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -36,15 +35,6 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Autowired
 	GenderTypeRepository genderTypeRepository;
 
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private DataMapper dataMapper;
-
-	@Autowired
-	private MetaDataUtils metaDataUtils;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,12 +48,12 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		try {
 			genderType = genderTypeRepository.findAll(Gender.class);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		if (!(genderType.isEmpty())) {
-			genderDto = objectMapperUtil.mapAll(genderType, GenderTypeDto.class);
+			genderDto = MapperUtils.mapAll(genderType, GenderTypeDto.class);
 		} else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
@@ -89,18 +79,16 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		try {
 			gender = genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		if (gender != null && !gender.isEmpty()) {
-			genderListDto = objectMapperUtil.mapAll(gender, GenderTypeDto.class);
-		}
-		else {
+			genderListDto = MapperUtils.mapAll(gender, GenderTypeDto.class);
+		} else {
 			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		
 
 		genderResponseDto = new GenderTypeResponseDto();
 		genderResponseDto.setGenderType(genderListDto);
@@ -117,16 +105,16 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
-		Gender entity = metaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
+		Gender entity = MetaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
 		Gender gender;
 		try {
 			gender = genderTypeRepository.create(entity);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(gender, codeLangCodeId, true, null, null, true);
+		MapperUtils.map(gender, codeLangCodeId);
 		return codeLangCodeId;
 
 	}

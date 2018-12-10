@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +76,7 @@ public class DeviceController {
 			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseEntity<IdResponseDto> saveDevice(@RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdResponseDto> saveDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
 		return new ResponseEntity<>(deviceService.saveDevice(deviceRequestDto), HttpStatus.CREATED);
 	}

@@ -28,19 +28,13 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
-
-	@Autowired
-	private MapperUtils objectMapperUtil;
 
 	@Override
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceType) {
 		DeviceType renDeviceType = null;
 
-		DeviceType entity = metaUtils.setCreateMetaData(deviceType.getRequest(), DeviceType.class);
+		DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType.getRequest(), DeviceType.class);
 
 		try {
 			renDeviceType = deviceTypeRepository.create(entity);
@@ -51,7 +45,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.map(renDeviceType, codeLangCodeId);
+		MapperUtils.map(renDeviceType, codeLangCodeId);
 		return codeLangCodeId;
 	}
 

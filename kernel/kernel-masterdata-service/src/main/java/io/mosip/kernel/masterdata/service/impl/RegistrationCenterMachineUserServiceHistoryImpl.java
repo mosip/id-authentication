@@ -31,12 +31,6 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 public class RegistrationCenterMachineUserServiceHistoryImpl implements RegistrationCenterMachineUserHistoryService {
 
 	/**
-	 * ModelMapper instance
-	 */
-	@Autowired
-	private MapperUtils mapperUtils;
-
-	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
 	 */
 	@Autowired
@@ -56,7 +50,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
 		LocalDateTime lDateAndTime = null;
 		try {
-			lDateAndTime = mapperUtils.parseToLocalDateTime(effectiveTimestamp);
+			lDateAndTime = MapperUtils.parseToLocalDateTime(effectiveTimestamp);
 		} catch (Exception e) {
 			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
@@ -81,7 +75,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = mapperUtils.mapAll(registrationCenterUserMachines,
+		registrationCenters = MapperUtils.mapAll(registrationCenterUserMachines,
 				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);

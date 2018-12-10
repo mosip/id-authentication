@@ -4,7 +4,6 @@ import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 

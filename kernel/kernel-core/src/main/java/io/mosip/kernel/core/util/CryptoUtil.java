@@ -4,43 +4,60 @@ import static java.util.Arrays.copyOfRange;
 
 import org.apache.commons.codec.binary.Base64;
 
+/**
+ * Crypto Util for common methods in various module
+ * 
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
 public class CryptoUtil {
 
 	/**
-	 * @param data
-	 * @param key
-	 * @return
+	 * Private Constructor for this class
 	 */
-	public static byte[] combineByteArray(byte[] data, byte[] key,
-			String keySplitter) {
+	private CryptoUtil() {
+
+	}
+
+	/**
+	 * Combine data,key and key splitter
+	 * 
+	 * @param data
+	 *            encrypted Data
+	 * @param key
+	 *            encrypted Key
+	 * @param keySplitter
+	 *            keySplitter
+	 * @return byte array consisting data,key and key splitter
+	 */
+	public static byte[] combineByteArray(byte[] data, byte[] key, String keySplitter) {
 		byte[] keySplitterBytes = keySplitter.getBytes();
-		byte[] combinedArray = new byte[key.length + keySplitterBytes.length
-				+ data.length];
+		byte[] combinedArray = new byte[key.length + keySplitterBytes.length + data.length];
 		System.arraycopy(key, 0, combinedArray, 0, key.length);
-		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length,
-				keySplitterBytes.length);
-		System.arraycopy(data, 0, combinedArray,
-				key.length + keySplitterBytes.length, data.length);
+		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length, keySplitterBytes.length);
+		System.arraycopy(data, 0, combinedArray, key.length + keySplitterBytes.length, data.length);
 		return combinedArray;
 	}
 
 	/**
-	 * @param cryptoRequestDto
+	 * Get splitter index for detaching key splitter from key and data
+	 * 
+	 * @param encryptedData
+	 *            whole encrypted data
 	 * @param keyDemiliterIndex
-	 * @param cipherKeyandDataLength
-	 * @param keySplitterLength
-	 * @param keySplitterFirstByte
-	 * @return
+	 *            keySplitterindex initialization value
+	 * @param keySplitter
+	 *            keysplitter value
+	 * @return keyDemiliterIndex
 	 */
-	public static int getSplitterIndex(byte[] encryptedData,
-			int keyDemiliterIndex, String keySplitter) {
+	public static int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex, String keySplitter) {
 		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
 		final int keySplitterLength = keySplitter.length();
 		for (byte data : encryptedData) {
 			if (data == keySplitterFirstByte) {
 				final String keySplit = new String(
-						copyOfRange(encryptedData, keyDemiliterIndex,
-								keyDemiliterIndex + keySplitterLength));
+						copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
 				if (keySplitter.equals(keySplit)) {
 					break;
 				}
@@ -51,16 +68,22 @@ public class CryptoUtil {
 	}
 
 	/**
+	 * Encodes to BASE64
+	 * 
 	 * @param data
-	 * @return
+	 *            data to encode
+	 * @return encoded data
 	 */
 	public static String encodeBase64(byte[] data) {
 		return Base64.encodeBase64URLSafeString(data);
 	}
 
 	/**
+	 * Decodes from BASE64
+	 * 
 	 * @param data
-	 * @return
+	 *            data to decode
+	 * @return decoded data
 	 */
 	public static byte[] decodeBase64(String data) {
 		return Base64.decodeBase64(data);

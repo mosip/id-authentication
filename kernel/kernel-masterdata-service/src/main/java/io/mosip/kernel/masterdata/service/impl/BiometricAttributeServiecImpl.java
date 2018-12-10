@@ -31,11 +31,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class BiometricAttributeServiecImpl implements BiometricAttributeService {
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
-	@Autowired
-	private MapperUtils mapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	@Override
 	public List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode) {
@@ -51,7 +46,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 							+ ExceptionUtils.parseException(e));
 		}
 		if (attributes != null && !attributes.isEmpty()) {
-			attributesDto = mapperUtil.mapAll(attributes, BiometricAttributeDto.class);
+			attributesDto = MapperUtils.mapAll(attributes, BiometricAttributeDto.class);
 		} else {
 			throw new DataNotFoundException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -62,10 +57,10 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 
 	@Override
 	public CodeAndLanguageCodeID createBiometricAttribute(BiometricAttributeDto biometricAttribute) {
-		BiometricAttribute entity = metaUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
+		BiometricAttribute entity = MetaDataUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
 		try {
 			entity = biometricAttributeRepository.create(entity);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -73,7 +68,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 
-		mapperUtil.map(entity, codeAndLanguageCodeId);
+		MapperUtils.map(entity, codeAndLanguageCodeId);
 
 		return codeAndLanguageCodeId;
 	}
