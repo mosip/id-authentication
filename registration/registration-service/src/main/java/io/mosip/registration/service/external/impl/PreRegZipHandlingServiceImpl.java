@@ -301,10 +301,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	@Override
 	public byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket) {
 
-		MosipDecryptor.symmetricDecrypt(Base64.getDecoder().decode(symmetricKey), encryptedPacket,
+		return MosipDecryptor.symmetricDecrypt(Base64.getDecoder().decode(symmetricKey), encryptedPacket,
 				MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
-		return encryptedPacket;
-
 	}
 
 }

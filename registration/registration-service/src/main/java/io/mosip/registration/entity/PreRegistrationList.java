@@ -19,11 +19,11 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	@Id
 	@Column(name = "id", length = 36, nullable = false)	
 	private String id;
-	@Column(name = "pre_reg_id", length = 64, nullable = false)	
+	@Column(name = "prereg_id", length = 64, nullable = false)	
 	private String preRegId;
-	@Column(name = "pre_reg_type", length = 64, nullable = true)
+	@Column(name = "prereg_type", length = 64, nullable = true)
 	private String preRegType;
-	@Column(name = "parent_pre_reg_id", length = 64, nullable = true)
+	@Column(name = "parent_prereg_id", length = 64, nullable = true)
 	private String parentPreRegId;
 	@Column(name = "appointment_date",nullable = true)
 	private Date appointmentDate;
