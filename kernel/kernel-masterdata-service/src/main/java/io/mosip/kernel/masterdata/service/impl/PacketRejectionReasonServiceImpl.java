@@ -145,7 +145,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonCategory = reasonRepository.create(reasonCategories);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
@@ -153,7 +153,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 		
-		objectMapperUtil.mapNew(resultantReasonCategory, codeAndLanguageCodeId);
+		objectMapperUtil.map(resultantReasonCategory, codeAndLanguageCodeId);
 
 		//dataMapper.map(resultantReasonCategory, codeAndLanguageCodeId, true, null, null, true);
 
@@ -176,7 +176,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonList = reasonListRepository.create(reasonList);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -184,7 +184,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		}
 
 		//dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
-		objectMapperUtil.mapNew(resultantReasonList, codeLangCodeAndRsnCatCodeId);
+		objectMapperUtil.map(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;
 

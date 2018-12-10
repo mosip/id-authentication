@@ -38,7 +38,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 
 	
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
-	Machine findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+	List<Machine> findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given language

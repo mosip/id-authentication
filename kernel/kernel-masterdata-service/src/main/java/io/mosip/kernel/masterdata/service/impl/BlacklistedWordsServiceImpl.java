@@ -129,10 +129,10 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		BlacklistedWords blacklistedWords;
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(dataAccessLayerException));
+							+ ExceptionUtils.parseException(e));
 		}
 		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
 		dataMapper.map(blacklistedWords, wordAndLanguageCodeID, true, null, null, true);

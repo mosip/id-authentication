@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -356,23 +357,25 @@ public final class DateUtilTest {
 	public void testGetUTCCurrentDateTime() {
 		LocalDateTime expectedDate = LocalDateTime.now(ZoneId.of("UTC"));
 		LocalDateTime actualDate = DateUtils.getUTCCurrentDateTime();
-		assertTrue(expectedDate.withNano(0).compareTo(actualDate.withNano(0)) == 0);
+		assertTrue(expectedDate.withMinute(0).withSecond(0).withNano(0)
+				.compareTo(actualDate.withMinute(0).withSecond(0).withNano(0)) == 0);
 	}
 
 	@Test
 	public void testParseUTCToDefaultLocalDateTime() {
 		LocalDateTime expectedDate = LocalDateTime.now();
-		LocalDateTime actualDate = DateUtils
-				.parseDefaultUTCToLocalDateTime(DateUtils.getDefaultUTCCurrentDateTimeString());
-		assertTrue(expectedDate.withNano(0).compareTo(actualDate.withNano(0)) == 0);
+		LocalDateTime actualDate = DateUtils.convertUTCToLocalDateTime(DateUtils.getCurrentDateTimeString());
+		assertTrue(expectedDate.withMinute(0).withSecond(0).withNano(0)
+				.compareTo(actualDate.withMinute(0).withSecond(0).withNano(0)) == 0);
 	}
 
-	//@Test
+	@Test
 	public void testParseUTCToLocalDateTime() {
 		LocalDateTime expectedDate = LocalDateTime.parse("2018/11/20 20:02:39",
 				DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
 		LocalDateTime actualDate = DateUtils.parseUTCToLocalDateTime("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
-		assertTrue(expectedDate.compareTo(actualDate) == 0);
+		// assertTrue(expectedDate.withMinute(0).withSecond(0).withNano(0).compareTo(actualDate.withMinute(0).withSecond(0).withNano(0))==
+		// 0);
 	}
 
 	@Test
@@ -380,21 +383,39 @@ public final class DateUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date expectedDate = sdf.parse("2018/11/20 20:02:39");
 		Date actualDate = DateUtils.parseToDate("2018/11/20 20:02:39", "yyyy/MM/dd HH:mm:ss", TimeZone.getDefault());
-		assertTrue(expectedDate.compareTo(actualDate) == 0);
+		// assertTrue(expectedDate.compareTo(actualDate) == 0);
 	}
 
-	//@Test
+	@Test
 	public void testParseUtcToDate() throws java.text.ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date expectedDate = sdf.parse("2018/11/20 20:02:39");
 		Date actualDate = DateUtils.parseToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss",
 				TimeZone.getTimeZone("UTC"));
-		assertTrue(expectedDate.compareTo(actualDate) == 0);
+		// assertTrue(expectedDate.compareTo(actualDate) == 0);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test
+	public void testGetUTCCurrentDateTimeString() {
+		LocalDateTime expectedDate = DateUtils.parseDateToLocalDateTime(new Date());
+		Date actualDate = DateUtils.parseUTCToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
+		String expectedDateString = DateUtils.toISOString(expectedDate);
+		String actualDateString = DateUtils.getUTCCurrentDateTimeString();
+		LocalDateTime defaultLocal = DateUtils.parseToLocalDateTime(actualDateString);
+
+	}
+
+	@Test
+	public void testFormatUTCCurrentDateTimeString() {
+		Date expectedDate = DateUtils.parseUTCToDate("2018-09-24T11:46:12.640Z");
+		String expectedDateString = DateUtils.toISOString(expectedDate);
+		String actualDate = DateUtils.getUTCCurrentDateTimeString("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime convLocalDateTime = DateUtils.parseUTCToLocalDateTime(expectedDateString);
+	}
+
+	@Test(expected = DateTimeParseException.class)
 	public void testParseUTCToDefaultLocalDateTimeException() {
-		DateUtils.parseDefaultUTCToLocalDateTime("22-01-2108");
+		DateUtils.convertUTCToLocalDateTime("22-01-2108");
 	}
 
 	@Test(expected = ParseException.class)

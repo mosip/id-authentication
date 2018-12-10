@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseDto;
-import io.mosip.kernel.masterdata.dto.MachineResponseIdDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.swagger.annotations.Api;
@@ -50,9 +49,9 @@ public class MachineController {
 	 * @return machine detail based on given Machine ID and Language code
 	 */
 	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
-	public MachineResponseIdDto getMachineIdLangcode(@PathVariable("id") String machineId,
+	public MachineResponseDto getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode ) {
-		return machineService.getMachineIdLangcode(machineId, langCode);
+		return machineService.getMachine(machineId, langCode);
 
 	}
 
@@ -66,7 +65,7 @@ public class MachineController {
 
 	@GetMapping(value = "/v1.0/machines/{langcode}")
 	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
-		return machineService.getMachineLangcode(langCode);
+		return machineService.getMachine(langCode);
 
 	}
 

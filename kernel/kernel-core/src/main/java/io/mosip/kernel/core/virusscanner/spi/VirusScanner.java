@@ -40,7 +40,7 @@ public interface VirusScanner<U, V> {
 	/**
 	 * Scan byte array.
 	 *
-	 * @param byte[]
+	 * @param array
 	 *            array
 	 * 
 	 * @return the u
@@ -50,7 +50,7 @@ public interface VirusScanner<U, V> {
 	/**
 	 * Scan File.
 	 *
-	 * @param File
+	 * @param doc
 	 *            object
 	 * 
 	 * @return the u

@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -19,7 +18,7 @@ public interface DeviceTypeService {
 	 * 
 	 * @param deviceTypes
 	 * 
-	 * @return {@link PostResponseDto}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceTypes);
 

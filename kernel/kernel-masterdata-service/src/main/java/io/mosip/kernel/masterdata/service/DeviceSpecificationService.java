@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
  * This interface has abstract methods to fetch and save Device Specification
  * Details
  * 
+ * @author Uday Kumar
  * @author Megha Tanga
  * @since 1.0.0
  *
@@ -39,7 +40,7 @@ public interface DeviceSpecificationService {
 	 *         language code and deviceTypeCode
 	 *
 	 */
-	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(String languageCode,
+	public List<DeviceSpecificationDto> findDeviceSpecByLangCodeAndDevTypeCode(String languageCode,
 			String deviceTypeCode);
 
 	/**

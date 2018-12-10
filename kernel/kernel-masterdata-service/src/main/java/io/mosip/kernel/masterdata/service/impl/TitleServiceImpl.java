@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -29,11 +30,9 @@ public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private TitleRepository titleRepository;
-	
+
 	@Autowired
 	private MapperUtils objectMapperUtil;
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -47,7 +46,7 @@ public class TitleServiceImpl implements TitleService {
 		List<Title> titles = null;
 		try {
 			titles = titleRepository.findAll(Title.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -78,7 +77,7 @@ public class TitleServiceImpl implements TitleService {
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}

@@ -26,41 +26,47 @@ import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DeviceSpecificationControllerTest1 {
-                
-                @Autowired
-                public MockMvc mockMvc;
-                
-                @MockBean
-                private DeviceSpecificationService deviceSpecificationService;
-                
-                List<DeviceSpecificationDto> deviceSpecificationDtos;
-                
-                @Before
-                public void setUp() {
-                                
-                                deviceSpecificationDtos = new ArrayList<>();
-                                DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
-                                deviceSpecificationDto.setId("1000");
-                                deviceSpecificationDto.setName("Laptop");
-                                deviceSpecificationDto.setDeviceTypeCode("LaptopCode");
-                                deviceSpecificationDto.setLangCode("ENG");
-                                deviceSpecificationDto.setModel("HP");
-                                deviceSpecificationDtos.add(deviceSpecificationDto);
-                                
-                }
-                
-                
-                @Test
-                public void getDeviceSpecificationByLanguageCodeTest() throws Exception {
-                Mockito.when(deviceSpecificationService.findDeviceSpecificationByLangugeCode(Mockito.anyString())).thenReturn(deviceSpecificationDtos);
-                                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devicespecifications/ENG")).andExpect(status().isOk());
-                }
-                
-                @Test
-                public void getDeviceSpecificationByLanguageCodeAndDeviceTypeCodeTest() throws Exception {
-                Mockito.when(deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(Mockito.anyString(), Mockito.anyString())).thenReturn(deviceSpecificationDtos);
-                mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devicespecifications/ENG/LaptopCode")).andExpect(status().isOk());
-                }
+
+	@Autowired
+	public MockMvc mockMvc;
+
+	@MockBean
+	private DeviceSpecificationService deviceSpecificationService;
+	
+
+	List<DeviceSpecificationDto> deviceSpecificationDtos;
+	
+
+	@Before
+	public void setUp() {
+
+		deviceSpecificationDtos = new ArrayList<>();
+		DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
+		deviceSpecificationDto.setId("1000");
+		deviceSpecificationDto.setName("Laptop");
+		deviceSpecificationDto.setDeviceTypeCode("LaptopCode");
+		deviceSpecificationDto.setLangCode("ENG");
+		deviceSpecificationDto.setModel("HP");
+		deviceSpecificationDtos.add(deviceSpecificationDto);
+
+		
+
+	}
+
+	@Test
+	public void getDeviceSpecificationByLanguageCodeTest() throws Exception {
+		Mockito.when(deviceSpecificationService.findDeviceSpecificationByLangugeCode(Mockito.anyString()))
+				.thenReturn(deviceSpecificationDtos);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devicespecifications/ENG")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getDeviceSpecificationByLanguageCodeAndDeviceTypeCodeTest() throws Exception {
+		Mockito.when(deviceSpecificationService
+				.findDeviceSpecByLangCodeAndDevTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(deviceSpecificationDtos);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devicespecifications/ENG/LaptopCode"))
+				.andExpect(status().isOk());
+	}
 
 }
-
