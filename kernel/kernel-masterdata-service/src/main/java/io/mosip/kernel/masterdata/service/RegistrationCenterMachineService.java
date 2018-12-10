@@ -11,6 +11,6 @@ import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
  */
 public interface RegistrationCenterMachineService {
 
-	public ResponseRrgistrationCenterMachineDto saveRegistrationCenterAndMachine(
+	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto);
 }

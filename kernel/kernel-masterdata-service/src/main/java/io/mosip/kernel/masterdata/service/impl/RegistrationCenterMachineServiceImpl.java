@@ -34,7 +34,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 
 
 	@Override
-	public ResponseRrgistrationCenterMachineDto saveRegistrationCenterAndMachine(
+	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
 

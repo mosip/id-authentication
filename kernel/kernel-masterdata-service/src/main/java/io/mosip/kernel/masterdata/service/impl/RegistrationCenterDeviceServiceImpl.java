@@ -35,10 +35,10 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see RegistrationCenterDeviceService#saveRegistrationCenterAndDevice(RequestDto)
+	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestDto)
 	 */
 	@Override
-	public ResponseRegistrationCenterDeviceDto saveRegistrationCenterAndDevice(
+	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
