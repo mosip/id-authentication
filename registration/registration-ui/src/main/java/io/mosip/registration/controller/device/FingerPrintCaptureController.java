@@ -21,12 +21,12 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.RegistrationDTO;
 
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
-import io.mosip.registration.util.biometric.FingerprintFacade;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

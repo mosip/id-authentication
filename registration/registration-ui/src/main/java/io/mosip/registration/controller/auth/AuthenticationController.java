@@ -22,7 +22,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
-import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.device.fp.FingerprintFacade;
+import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -32,8 +33,6 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
-import io.mosip.registration.util.biometric.FingerprintFacade;
-import io.mosip.registration.util.biometric.MosipFingerprintProvider;
 import io.mosip.registration.util.common.OTPGenerator;
 import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
@@ -53,7 +52,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationController.class); 	
 
 	@FXML
 	private AnchorPane temporaryLogin;

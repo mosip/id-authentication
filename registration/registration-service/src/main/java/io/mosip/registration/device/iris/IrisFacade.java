@@ -1,4 +1,4 @@
-package io.mosip.registration.util.biometric;
+package io.mosip.registration.device.iris;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package io.mosip.registration.util.biometric;
+package io.mosip.registration.device.webcam;
 
 import java.awt.image.BufferedImage;
 
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.sarxos.webcam.Webcam;
+
+import io.mosip.registration.device.webcam.impl.LogitechPhotoProvider;
 
 /**
  * It takes a decision based on the input provider name and initialize the

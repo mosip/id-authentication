@@ -24,7 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.util.biometric.LogitechPhotoProvider;
+import io.mosip.registration.device.webcam.impl.LogitechPhotoProvider;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Webcam.class })

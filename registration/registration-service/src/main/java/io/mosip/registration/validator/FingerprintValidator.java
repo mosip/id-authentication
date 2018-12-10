@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
+import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.LoginService;
-import io.mosip.registration.util.biometric.MosipFingerprintProvider;
 
 @Component
 public class FingerprintValidator extends AuthenticationValidatorImplementation {

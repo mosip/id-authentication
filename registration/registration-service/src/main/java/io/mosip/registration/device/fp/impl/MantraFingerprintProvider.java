@@ -1,10 +1,11 @@
-package io.mosip.registration.util.biometric;
+package io.mosip.registration.device.fp.impl;
 
 import org.springframework.stereotype.Component;
 
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
+import io.mosip.registration.device.fp.FingerprintProvider;
 
 /**
  * Mantra finger print device specific functionality implemented. 

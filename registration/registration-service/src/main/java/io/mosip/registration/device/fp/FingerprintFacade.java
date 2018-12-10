@@ -1,4 +1,4 @@
-package io.mosip.registration.util.biometric;
+package io.mosip.registration.device.fp;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
