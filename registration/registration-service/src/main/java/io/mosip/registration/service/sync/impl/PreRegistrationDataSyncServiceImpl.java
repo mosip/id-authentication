@@ -36,7 +36,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
-import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 @Service
@@ -133,7 +132,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/** Get Pre Registration Packet */
-		getPreRegistration(responseDTO, preRegistrationId, null);
+		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -155,7 +154,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		
 		String symmetricKey=null;
 
-		boolean isJob = (syncJobId != null);
+		boolean isJob = (!RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(syncJobId));
 
 		/** Get Packet From REST call */
 		if (preRegistration == null) {
@@ -164,13 +163,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			Map<String, String> requestParamMap = new HashMap<>();
 			requestParamMap.put(RegistrationConstants.PRE_REGISTRATION_ID, preRegistrationId);
 
-			String triggerPoint = null;
-			if(isJob) {
-				triggerPoint = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
-			} else {
-				triggerPoint = getUserIdFromSession();
-				syncJobId = RegistrationConstants.JOB_TRIGGER_POINT_USER;
-			}
+			String triggerPoint = isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : getUserIdFromSession();
 
 			try {
 				/** REST call to get packet */
@@ -182,8 +175,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService.encryptAndSavePreRegPacket(preRegistrationId,
 							packet);
 					
-					//encryptedPacket = preRegistrationDTO.getEncryptedPacket();
-					//symmetricKey = preRegistrationDTO.getSymmetricKey();
+					encryptedPacket = preRegistrationDTO.getEncryptedPacket();
+					symmetricKey = preRegistrationDTO.getSymmetricKey();
 					
 					// Transaction
 					SyncTransaction syncTransaction = syncManager.createSyncTransaction(
@@ -198,7 +191,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					/** set success response */
 					setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
 
-				} else {
+				} else if (!isJob) {
+					/*
+					 * set error message if the packet is not available both in db as well as the
+					 * REST service
+					 */
 					setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 					return;
 				}
@@ -221,20 +218,31 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		/** Only for Manual Trigger */
 		if (!isJob) {
-			if (preRegistration != null) {
+			try {
+				if (preRegistration != null) {
 
-				try {
 					encryptedPacket = FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath()));
 					symmetricKey = preRegistration.getPacketSymmetricKey();
-				} catch (IOException e) {
-					setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
-					return;
-				}
-			}
 
-			byte[] decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(symmetricKey, encryptedPacket);
-			/** set decrypted packet into Response */
-			setPacketToResponse(responseDTO, decryptedPacket, preRegistrationId);
+				}
+
+				byte[] decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(symmetricKey, encryptedPacket);
+				/** set decrypted packet into Response */
+				setPacketToResponse(responseDTO, decryptedPacket, preRegistrationId);
+
+			} catch (IOException exception) {
+				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
+						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						exception.getMessage());
+				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+				return;
+			} catch (RegBaseUncheckedException exception) {
+				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
+						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						exception.getMessage());
+				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+				return;
+			}
 		}
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",

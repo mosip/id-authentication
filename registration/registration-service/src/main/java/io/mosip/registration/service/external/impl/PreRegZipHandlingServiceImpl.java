@@ -113,9 +113,15 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				}
 			}
 		} catch (IOException exception) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
+		} catch (RuntimeException exception) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, exception.toString());
 		}
 		return registrationDTO;
 	}
@@ -219,6 +225,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			}
 		} catch (JSONException | IOException exception) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		}
 		return registrationDTO;
@@ -278,10 +286,13 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 
 			return filePath;
-		} catch (io.mosip.kernel.core.exception.IOException e) {
-			
+		} catch (io.mosip.kernel.core.exception.IOException exception) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 			throw new RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,
 					runtimeException.toString());
 		}
