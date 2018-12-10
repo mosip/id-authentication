@@ -5,7 +5,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
@@ -15,6 +14,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
@@ -22,12 +22,6 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 
 	@Autowired
 	private TemplateFileFormatRepository templateFileFormatRepository;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private DataMapper dataMapper;
 
 	/**
 	 * Method to create a templatefileformat
@@ -37,12 +31,12 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	 * @return {@link CodeAndLanguageCodeID}
 	 * 
 	 * @throws MasterDataServiceException
-	 * 					If the insertion of data fails
+	 *             If the insertion of data fails
 	 */
 	@Override
 	public CodeAndLanguageCodeID createTemplateFileFormat(
 			RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
-		TemplateFileFormat entity = metaUtils.setCreateMetaData(
+		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(
 				templateFileFormatRequestDto.getRequest().getTemplateFileFormat(), TemplateFileFormat.class);
 		TemplateFileFormat templateFileFormat;
 		try {
@@ -54,7 +48,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(templateFileFormat, codeLangCodeId, true, null, null, true);
+		MapperUtils.map(templateFileFormat, codeLangCodeId);
 		return codeLangCodeId;
 	}
 }

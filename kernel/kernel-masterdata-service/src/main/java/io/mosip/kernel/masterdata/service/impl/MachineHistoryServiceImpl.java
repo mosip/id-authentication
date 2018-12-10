@@ -40,11 +40,6 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	@Autowired
 	MachineHistoryRepository macRepo;
 
-	/**
-	 * Field to hold ObjectMapperUtil object
-	 */
-	@Autowired
-	private MapperUtils mapperUtils;
 
 	/**
 	 * Field to hold ModelMapper object
@@ -80,7 +75,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
 		LocalDateTime lDateAndTime = null;
 		try {
-			lDateAndTime = mapperUtils.parseToLocalDateTime(effDtime);
+			lDateAndTime = MapperUtils.parseToLocalDateTime(effDtime);
 		} catch (Exception e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
@@ -101,7 +96,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
 
-			machineHistoryDtoList = mapperUtils.mapAll(macHistoryList, MachineHistoryDto.class);
+			machineHistoryDtoList = MapperUtils.mapAll(macHistoryList, MachineHistoryDto.class);
 		} else {
 			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());

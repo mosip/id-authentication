@@ -99,7 +99,8 @@ Usage:3 KeyPair
 		keyPairGenerator.initialize(2048);
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-		keystoreImpl.storeAsymmetricKey(keyPair, "test-alias-private", 365);
+		keyStoreImpl.storeAsymmetricKey(keyPair, "test-alias-private", LocalDateTime.now(),
+				LocalDateTime.now().plusDays(365));
 
 		PrivateKey privateKey = keystoreImpl.getPrivateKey("test-alias-private");
 

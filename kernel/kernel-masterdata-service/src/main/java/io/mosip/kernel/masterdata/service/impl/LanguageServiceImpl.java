@@ -36,18 +36,6 @@ public class LanguageServiceImpl implements LanguageService {
 	private LanguageRepository languageRepository;
 
 	/**
-	 * Helper class to map objects.
-	 */
-	@Autowired
-	private MapperUtils mapperUtil;
-
-	/**
-	 * Helper class to map dto to entity.
-	 */
-	@Autowired
-	private MetaDataUtils metaDataUtils;
-
-	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see LanguageService#getAllLaguages()
@@ -66,7 +54,7 @@ public class LanguageServiceImpl implements LanguageService {
 		}
 
 		if (languages != null && !languages.isEmpty()) {
-			languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
+			languageDtos = MapperUtils.mapAll(languages, LanguageDto.class);
 		} else {
 			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
@@ -84,10 +72,10 @@ public class LanguageServiceImpl implements LanguageService {
 	public CodeResponseDto saveLanguage(RequestDto<LanguageDto> requestDto) {
 
 		try {
-			Language language = metaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
+			Language language = MetaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
 			Language savedLanguage = languageRepository.create(language);
-			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+			return MapperUtils.map(savedLanguage, CodeResponseDto.class);
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
 							+ ExceptionUtils.parseException(e));

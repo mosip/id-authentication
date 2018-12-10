@@ -26,4 +26,18 @@ public class NoSuchSecurityProviderException extends BaseUncheckedException {
 	public NoSuchSecurityProviderException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
+
+	/**
+	 * Constructor initialize NoSuchSecurityProviderException
+	 * 
+	 * @param errorCode
+	 *            The errorcode for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 * @param cause
+	 *            The cause
+	 */
+	public NoSuchSecurityProviderException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
+	}
 }

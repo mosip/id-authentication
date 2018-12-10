@@ -36,9 +36,6 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	DataMapper dataMapper;
 
 	@Autowired
-	private MetaDataUtils metaDataUtils;
-
-	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
 	private List<BiometricTypeDto> biometricTypeDtoList;
 	private List<BiometricType> biometricTypesList;
@@ -173,7 +170,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
-		BiometricType entity = metaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
+		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
 				BiometricType.class);
 		BiometricType biometricType;
 		try {

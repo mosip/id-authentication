@@ -26,18 +26,13 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class TemplateTypeServiceImpl implements TemplateTypeService {
 
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private MapperUtils objectMapperUtil;
 
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
 
 	@Override
 	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType) {
-		TemplateType entity = metaUtils.setCreateMetaData(tempalteType, TemplateType.class);
+		TemplateType entity = MetaDataUtils.setCreateMetaData(tempalteType, TemplateType.class);
 		TemplateType templateType;
 		try {
 			templateType = templateTypeRepository.create(entity);
@@ -49,7 +44,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.map(templateType, codeLangCodeId);
+		MapperUtils.map(templateType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}
