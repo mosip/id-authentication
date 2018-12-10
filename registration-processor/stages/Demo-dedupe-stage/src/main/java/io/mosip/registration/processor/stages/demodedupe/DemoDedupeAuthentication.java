@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,12 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
@@ -67,13 +71,13 @@ public class DemoDedupeAuthentication {
 
 	/** The request. */
 	RequestDTO request = new RequestDTO();
-	
+
 	/** The auth secure DTO. */
 	AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-	
+
 	/** The match info. */
 	MatchInfo matchinfo = new MatchInfo();
-	
+
 	/** The pin info info. */
 	PinInfo pininfo = new PinInfo();
 
@@ -81,14 +85,21 @@ public class DemoDedupeAuthentication {
 	@Autowired
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	@Autowired
+	private PacketInfoDao packetInfoDao;
+
 	/**
 	 * Authenticate duplicates.
 	 *
-	 * @param regId the reg id
-	 * @param duplicateUins the duplicate ids
+	 * @param regId
+	 *            the reg id
+	 * @param duplicateUins
+	 *            the duplicate ids
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
 			throws ApisResourceAccessException, IOException {
@@ -108,17 +119,23 @@ public class DemoDedupeAuthentication {
 		return isDuplicate;
 
 	}
-	
+
 	/**
 	 * Authenticate biometric.
 	 *
-	 * @param biometriclist the biometriclist
-	 * @param type the type
-	 * @param duplicateUin the duplicate id
-	 * @param regId the reg id
+	 * @param biometriclist
+	 *            the biometriclist
+	 * @param type
+	 *            the type
+	 * @param duplicateUin
+	 *            the duplicate id
+	 * @param regId
+	 *            the reg id
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private boolean authenticateBiometric(List<String> biometriclist, String type, String duplicateUin, String regId)
 			throws ApisResourceAccessException, IOException {
@@ -136,19 +153,24 @@ public class DemoDedupeAuthentication {
 				}
 			}
 		}
-		
+
 		return isDuplicate;
 	}
 
 	/**
 	 * Validate biometric.
 	 *
-	 * @param biometricName the biometric name
-	 * @param biometricByte the biometric byte
-	 * @param type the type
-	 * @param duplicateUin the duplicate id
+	 * @param biometricName
+	 *            the biometric name
+	 * @param biometricByte
+	 *            the biometric byte
+	 * @param type
+	 *            the type
+	 * @param duplicateUin
+	 *            the duplicate id
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
 	 */
 	private boolean validateBiometric(String biometricName, byte[] biometricByte, String type, String duplicateUin)
 			throws ApisResourceAccessException {
@@ -173,7 +195,7 @@ public class DemoDedupeAuthentication {
 		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(false);
 		authRequestDTO.setAuthType(authTypeDTO);
-		
+
 		identityInfoDTO.setValue(new String(biometricByte));
 		List<IdentityInfoDTO> biometricData = new ArrayList<>();
 		biometricData.add(identityInfoDTO);
@@ -182,24 +204,23 @@ public class DemoDedupeAuthentication {
 
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-		
+
 		// sending request to get authentication response
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-		
-		if (authResponseDTO.getStatus().equalsIgnoreCase("y")) {
-			return true;
-		} else {
-			return false;
-		}
+
+		return "y".equalsIgnoreCase(authResponseDTO.getStatus()) ? true : false;
 	}
 
 	/**
 	 * Sets the biometric.
 	 *
-	 * @param biometricName the biometric name
-	 * @param biometricData the biometric data
-	 * @param type the type
+	 * @param biometricName
+	 *            the biometric name
+	 * @param biometricData
+	 *            the biometric data
+	 * @param type
+	 *            the type
 	 */
 	private void setBiometric(String biometricName, List<IdentityInfoDTO> biometricData, String type) {
 		if (type.equalsIgnoreCase(PacketFiles.IRIS.name())) {
@@ -210,12 +231,14 @@ public class DemoDedupeAuthentication {
 			setFingerBiometric(biometricName, biometricData);
 		}
 	}
-	
+
 	/**
 	 * Sets the iris biometric.
 	 *
-	 * @param biometricName the biometric name
-	 * @param biometricData the biometric data
+	 * @param biometricName
+	 *            the biometric name
+	 * @param biometricData
+	 *            the biometric data
 	 */
 	private void setIrisBiometric(String biometricName, List<IdentityInfoDTO> biometricData) {
 		if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(biometricName)) {
@@ -229,8 +252,10 @@ public class DemoDedupeAuthentication {
 	/**
 	 * Sets the finger biometric.
 	 *
-	 * @param biometricName the biometric name
-	 * @param biometricData the biometric data
+	 * @param biometricName
+	 *            the biometric name
+	 * @param biometricData
+	 *            the biometric data
 	 */
 	private void setFingerBiometric(String biometricName, List<IdentityInfoDTO> biometricData) {
 		if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(biometricName)) {
@@ -254,5 +279,24 @@ public class DemoDedupeAuthentication {
 		} else if (PacketFiles.RIGHTRING.name().equalsIgnoreCase(biometricName)) {
 			identityDTO.setRightRing(biometricData);
 		}
+	}
+
+	public Set<DemographicDedupeDto> performDedupe(String refId) {
+		List<DemographicDedupeDto> idWithOutUin = packetInfoDao.findDemoById(refId);// Record with out uin and need to
+																					// perform dedupe
+		Set<DemographicDedupeDto> duplicateRegIds = new HashSet<>();
+		List<DemographicDedupeDto> uinDtos;
+		for (DemographicDedupeDto demoDto : idWithOutUin) {
+			uinDtos = packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
+					demoDto.getDob());
+			if (uinDtos != null && !uinDtos.isEmpty()) {
+				duplicateRegIds.addAll(uinDtos);
+				break;
+
+			}
+
+		}
+		return duplicateRegIds;
+
 	}
 }

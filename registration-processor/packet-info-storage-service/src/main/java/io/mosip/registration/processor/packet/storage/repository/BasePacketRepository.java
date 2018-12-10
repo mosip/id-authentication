@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.storage.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -30,19 +31,20 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 
 	@Query("SELECT osi FROM RegOsiEntity osi WHERE osi.id.regId=:regId")
 	public List<E> findByRegOsiId(@Param("regId") String regId);
-	
+
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
 	public List<E> findDemoById(@Param("regId") String regId);
-	
-	@Query("SELECT  demo FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL")
-	public List<E> getAllDemoWithUIN();
-	
+
+	@Query("SELECT  demo FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL and demo.phoneticName:=pheoniticName and demo.gender:=gender and demo.dob:=dob")
+	public List<E> getAllDemoWithUIN(@Param("pheoniticName") String pheoniticName, @Param("gender") String gender,
+			@Param("dob") Date dob);
+
 	@Query("SELECT uin.uinRefId FROM IndividualDemographicDedupeEntity uin WHERE uin.id.regId=:regId ")
 	public List<String> getUINById(@Param("regId") String regId);
-	
+
 	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
 	public List<String> getApplicantIrisImageNameById(@Param("regId") String regId);
-	
+
 	@Query("SELECT applicant.imageName FROM ApplicantFingerprintEntity applicant WHERE applicant.id.regId=:regId")
 	public List<String> getApplicantFingerPrintImageNameById(@Param("regId") String regId);
 

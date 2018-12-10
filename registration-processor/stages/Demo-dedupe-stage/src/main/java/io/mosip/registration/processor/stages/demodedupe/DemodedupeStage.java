@@ -20,6 +20,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -96,12 +97,12 @@ public class DemodedupeStage extends MosipVerticleManager {
 					.getRegistrationStatus(registrationId);
 
 			// Potential Duplicate Ids after performing demo dedupe
-			Set<String> duplicateIds = packetInfoManager.performDedupe(registrationId);
+			Set<DemographicDedupeDto> duplicateIds = demoDedupeAuthentication.performDedupe(registrationId);
 
 			if (!duplicateIds.isEmpty()) {
 
-				for (String id : duplicateIds) {
-					duplicateUINList.add(packetInfoManager.findUINById(id));
+				for (DemographicDedupeDto id : duplicateIds) {
+					duplicateUINList.add(id.getUin());
 				}
 
 				// authenticating duplicateIds with provided packet biometrics
@@ -118,7 +119,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 				}
-				
+
 			} else {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_SUCCESSFUL);
@@ -131,11 +132,11 @@ public class DemodedupeStage extends MosipVerticleManager {
 			isTransactionSuccessful = true;
 
 		} catch (IOException | ApisResourceAccessException e) {
-			log.error(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage(), e );
+			log.error(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-		} catch (Exception ex ) {
-			log.error(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage(), ex );
+		} catch (Exception ex) {
+			log.error(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
@@ -153,7 +154,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationId);
 
 		}
-		
+
 		return object;
 	}
 

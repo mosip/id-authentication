@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,10 +159,10 @@ public class PacketInfoDao {
 		return demo;
 	}
 
-	public List<DemographicDedupeDto> getAllDemoWithUIN() {
+	public List<DemographicDedupeDto> getAllDemoWithUIN(String pheoniticName, String gender, Date dob) {
 		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
 		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
-				.getAllDemoWithUIN();
+				.getAllDemoWithUIN(pheoniticName, gender, dob);
 		if (individualDemographicDedupeEntityList != null) {
 			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
 				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));

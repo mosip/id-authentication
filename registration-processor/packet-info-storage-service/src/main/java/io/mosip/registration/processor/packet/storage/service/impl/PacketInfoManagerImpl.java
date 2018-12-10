@@ -6,10 +6,8 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -615,52 +613,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
 
 		return packetInfoDao.getRegistrationCenterMachine(regid);
-	}
-
-	@Override
-	public Set<String> performDedupe(String refId) {
-		int score = 0;
-		int threshold = utility.getThreshold();
-		Set<String> duplicateRegIds = new HashSet<>();
-		List<DemographicDedupeDto> idsWithUin = packetInfoDao.getAllDemoWithUIN();
-
-		List<DemographicDedupeDto> idWithOutUin = packetInfoDao.findDemoById(refId);
-
-		for (DemographicDedupeDto dtoWithUin : idsWithUin) {
-
-			for (DemographicDedupeDto dtoWithOutUin : idWithOutUin) {
-
-				if (dtoWithUin.getLangCode().equals(dtoWithOutUin.getLangCode())) {
-
-					if (dtoWithOutUin.getName() != null && dtoWithUin.getName() != null
-							&& dtoWithUin.getName().equals(dtoWithOutUin.getName())) {
-						score = score + regProcessorIdentityJson.getIdentity().getName().getWeight();
-					}
-					if (dtoWithOutUin.getGenderCode() != null && dtoWithUin.getGenderCode() != null
-							&& dtoWithUin.getGenderCode().equals(dtoWithOutUin.getGenderCode())) {
-						score = score + regProcessorIdentityJson.getIdentity().getGender().getWeight();
-					}
-					if (dtoWithOutUin.getDob() != null && dtoWithUin.getDob() != null
-							&& dtoWithUin.getDob().equals(dtoWithOutUin.getDob())) {
-						score = score + regProcessorIdentityJson.getIdentity().getDob().getWeight();
-					}
-					if (dtoWithOutUin.getPhoneticName() != null && dtoWithUin.getPhoneticName() != null
-							&& dtoWithUin.getPhoneticName().equals(dtoWithOutUin.getPhoneticName())) {
-						score = score + regProcessorIdentityJson.getIdentity().getPheoniticName().getWeight();
-					}
-
-					if (score > threshold) {
-						duplicateRegIds.add(dtoWithUin.getRegId());
-						score = 0;
-						break;
-					}
-				}
-
-			}
-
-		}
-		return duplicateRegIds;
-
 	}
 
 	@Override

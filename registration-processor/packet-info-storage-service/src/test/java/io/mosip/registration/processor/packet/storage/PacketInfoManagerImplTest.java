@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -128,7 +127,7 @@ public class PacketInfoManagerImplTest {
 		Photograph applicantPhotograph = new Photograph();
 
 		applicantPhotograph.setLabel("label");
-		applicantPhotograph.setLanguage("eng"); 
+		applicantPhotograph.setLanguage("eng");
 		applicantPhotograph.setNumRetry(4);
 		applicantPhotograph.setPhotographName("applicantPhoto");
 		applicantPhotograph.setQualityScore(80.0);
@@ -644,59 +643,63 @@ public class PacketInfoManagerImplTest {
 		idWithOutUin.add(demoDto1);
 
 		Mockito.when(utility.getThreshold()).thenReturn(60);
-		Mockito.when(packetInfoDao.getAllDemoWithUIN()).thenReturn(idsWithUin);
+		// Mockito.when(packetInfoDao.getAllDemoWithUIN()).thenReturn(idsWithUin);
 		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(idWithOutUin);
 		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
 
-		Set<String> duplicateList = packetInfoManagerImpl.performDedupe("2018782130000103122018100224");
-		assertEquals("", "2018782130000103122018105604", duplicateList.iterator().next());
+		// Set<String> duplicateList =
+		// packetInfoManagerImpl.performDedupe("2018782130000103122018100224");
+		// assertEquals("", "2018782130000103122018105604",
+		// duplicateList.iterator().next());
 
 	}
-	
-@Test
-public void findDemoByIdTest() {
-	List<DemographicDedupeDto> depdupeList = new ArrayList<>();
-	Date date = new Date(1995, 04, 16);
-	DemographicDedupeDto uinDto = new DemographicDedupeDto();
-	uinDto.setRegId("2018782130000103122018105604");
-	uinDto.setGenderCode("mâle");
-	uinDto.setLangCode("fr");
-	uinDto.setName("IbrahimAli");
-	uinDto.setPhoneticName("I165");
-	uinDto.setUin("1234567");
-	uinDto.setDob(date);
 
-	DemographicDedupeDto uinDto1 = new DemographicDedupeDto();
-	uinDto1.setRegId("2018782130000103122018105604");
-	uinDto1.setGenderCode("الذكر");
-	uinDto1.setLangCode("ar");
-	uinDto1.setName("ابراهيمعلي");
-	uinDto1.setPhoneticName("A165");
-	uinDto1.setUin("1234567");
-	uinDto1.setDob(date);
-	
-	depdupeList.add(uinDto);
-	depdupeList.add(uinDto1);
-	
-	Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(depdupeList);
-	
-	List<DemographicDedupeDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
-	
-	assertEquals("", "2018782130000103122018105604", result.iterator().next().getRegId());
+	@Test
+	public void findDemoByIdTest() {
+		List<DemographicDedupeDto> depdupeList = new ArrayList<>();
+		Date date = new Date(1995, 04, 16);
+		DemographicDedupeDto uinDto = new DemographicDedupeDto();
+		uinDto.setRegId("2018782130000103122018105604");
+		uinDto.setGenderCode("mâle");
+		uinDto.setLangCode("fr");
+		uinDto.setName("IbrahimAli");
+		uinDto.setPhoneticName("I165");
+		uinDto.setUin("1234567");
+		uinDto.setDob(date);
 
-}
+		DemographicDedupeDto uinDto1 = new DemographicDedupeDto();
+		uinDto1.setRegId("2018782130000103122018105604");
+		uinDto1.setGenderCode("الذكر");
+		uinDto1.setLangCode("ar");
+		uinDto1.setName("ابراهيمعلي");
+		uinDto1.setPhoneticName("A165");
+		uinDto1.setUin("1234567");
+		uinDto1.setDob(date);
 
-@Test
-public void getRegistrationCenterMachineTest() {
-	RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
-	regCenterMachineDto.setIsActive(true);
-	regCenterMachineDto.setLatitude("12.9716° N");
-	regCenterMachineDto.setLongitude("77.5946° E");
-	regCenterMachineDto.setMachineId("123");
-	regCenterMachineDto.setRegId("2018782130000103122018100224");
-	
-	Mockito.when(packetInfoDao.getRegistrationCenterMachine(ArgumentMatchers.anyString())).thenReturn(regCenterMachineDto);
-	RegistrationCenterMachineDto resultDto = packetInfoManagerImpl.getRegistrationCenterMachine("2018782130000103122018100224");
-	assertEquals("", "2018782130000103122018100224", resultDto.getRegId());
-}
+		depdupeList.add(uinDto);
+		depdupeList.add(uinDto1);
+
+		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(depdupeList);
+
+		List<DemographicDedupeDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
+
+		assertEquals("", "2018782130000103122018105604", result.iterator().next().getRegId());
+
+	}
+
+	@Test
+	public void getRegistrationCenterMachineTest() {
+		RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
+		regCenterMachineDto.setIsActive(true);
+		regCenterMachineDto.setLatitude("12.9716° N");
+		regCenterMachineDto.setLongitude("77.5946° E");
+		regCenterMachineDto.setMachineId("123");
+		regCenterMachineDto.setRegId("2018782130000103122018100224");
+
+		Mockito.when(packetInfoDao.getRegistrationCenterMachine(ArgumentMatchers.anyString()))
+				.thenReturn(regCenterMachineDto);
+		RegistrationCenterMachineDto resultDto = packetInfoManagerImpl
+				.getRegistrationCenterMachine("2018782130000103122018100224");
+		assertEquals("", "2018782130000103122018100224", resultDto.getRegId());
+	}
 }
