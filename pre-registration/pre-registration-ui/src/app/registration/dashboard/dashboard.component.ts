@@ -66,9 +66,9 @@ export class DashBoardComponent implements OnInit {
           for (let index = 0; index < applicants['response'].length; index++) {
             const applicant: Applicant = {
               applicationID: applicants['response'][index]['preId'],
-              name: applicants['response'][index]['firstname'],
+              name: applicants['response'][index]['fullname'],
               appointmentDateTime: applicants['response'][index]['appointmentDate'],
-              status: applicants['response'][index]['status_code']
+              status: applicants['response'][index]['statusCode']
             };
             this.users.push(applicant);
           }

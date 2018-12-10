@@ -42,7 +42,7 @@ export class CenterSelectionComponent implements OnInit {
   showMap = false;
   showMessage = false;
   enableNextButton = false;
-  bookingDataList: BookingModel[] = [];
+  bookingDataList = [];
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
@@ -134,8 +134,13 @@ export class CenterSelectionComponent implements OnInit {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
-            const bookingData = new BookingModel(name.preRegId, this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
-            this.bookingDataList.push(bookingData);
+            const bookingData = new BookingModel(this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
+            const requestObject = {
+              newBookingDetails: bookingData,
+              oldBookingDetails: null,
+              pre_registration_id: name.preRegId
+            };
+            this.bookingDataList.push(requestObject);
           });
         }
       });

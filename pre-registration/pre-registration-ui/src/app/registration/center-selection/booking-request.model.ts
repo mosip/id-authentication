@@ -1,10 +1,9 @@
-import { BookingModel } from './booking.model';
 
 export class BookingModelRequest {
     id = 'mosip.pre-registration.booking.book';
     ver = '1.0';
-    reqTime = new Date().toDateString();
+    reqTime = '2018-10-17T07:22:57.086';
 
-    constructor(private request: BookingModel[]) {}
+    constructor(private request: any) {}
 }
 

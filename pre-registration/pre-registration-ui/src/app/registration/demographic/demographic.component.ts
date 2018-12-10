@@ -303,7 +303,7 @@ export class DemographicComponent implements OnInit {
       createdDateTime: '',
       updatedBy: '',
       updatedDateTime: '',
-      statusCode: 'Expired',
+      statusCode: 'Pending_Appointment',
       langCode: 'en',
       demographicDetails: new DemoIdentityModel(identity)
     };
