@@ -34,13 +34,12 @@ import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
- * The Class DemoDedupeAuthentication.
+ * The Class DemoDedupe.
  *
  * @author M1048358 Alok Ranjan
  */
-
 @Component
-public class DemoDedupeAuthentication {
+public class DemoDedupe {
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -87,6 +86,32 @@ public class DemoDedupeAuthentication {
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
+
+	/**
+	 * Perform demodedupe.
+	 * 
+	 * @param refId
+	 * @return duplicate Ids
+	 */
+	public Set<DemographicDedupeDto> performDedupe(String refId) {
+
+		List<DemographicDedupeDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
+
+		Set<DemographicDedupeDto> duplicateDtos = new HashSet<>();
+		List<DemographicDedupeDto> demoDtos;
+		
+		for (DemographicDedupeDto demoDto : applicantDemoDto) {
+			demoDtos = packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
+					demoDto.getDob());
+			if (demoDtos != null && !demoDtos.isEmpty()) {
+				duplicateDtos.addAll(demoDtos);
+				break;
+
+			}
+		}
+
+		return duplicateDtos;
+	}
 
 	/**
 	 * Authenticate duplicates.
@@ -281,22 +306,4 @@ public class DemoDedupeAuthentication {
 		}
 	}
 
-	public Set<DemographicDedupeDto> performDedupe(String refId) {
-		List<DemographicDedupeDto> idWithOutUin = packetInfoDao.findDemoById(refId);// Record with out uin and need to
-																					// perform dedupe
-		Set<DemographicDedupeDto> duplicateRegIds = new HashSet<>();
-		List<DemographicDedupeDto> uinDtos;
-		for (DemographicDedupeDto demoDto : idWithOutUin) {
-			uinDtos = packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
-					demoDto.getDob());
-			if (uinDtos != null && !uinDtos.isEmpty()) {
-				duplicateRegIds.addAll(uinDtos);
-				break;
-
-			}
-
-		}
-		return duplicateRegIds;
-
-	}
 }

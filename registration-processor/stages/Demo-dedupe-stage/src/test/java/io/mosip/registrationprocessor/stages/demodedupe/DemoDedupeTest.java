@@ -1,5 +1,6 @@
 package io.mosip.registrationprocessor.stages.demodedupe;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -26,19 +28,24 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.stages.demodedupe.DemoDedupeAuthentication;
+import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 @PrepareForTest({ IOUtils.class, HMACUtils.class })
-public class DemoDedupeAuthenticationTest {
+public class DemoDedupeTest {
 	
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	@Mock
+	private PacketInfoDao packetInfoDao;
 	
 	@Mock
 	private InputStream inputStream;
@@ -53,7 +60,7 @@ public class DemoDedupeAuthenticationTest {
 	RegistrationProcessorRestClientService<Object> restClientService;
 	
 	@InjectMocks
-	private DemoDedupeAuthentication demoDedupeAuthentication;
+	private DemoDedupe demoDedupe;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -82,6 +89,36 @@ public class DemoDedupeAuthenticationTest {
 	}
 	
 	@Test
+	public void testDedupeDuplicateFound() {
+		String regId = "1234567890";
+		
+		DemographicDedupeDto dto1 = new DemographicDedupeDto();
+		DemographicDedupeDto dto2 = new DemographicDedupeDto();
+		List<DemographicDedupeDto> Dtos = new ArrayList<>();
+		Dtos.add(dto1);
+		Dtos.add(dto2);
+		
+		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
+		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
+		
+		Set<DemographicDedupeDto> duplicates = demoDedupe.performDedupe(regId);
+		assertEquals(false, duplicates.isEmpty() );
+	}
+	
+	@Test
+	public void testDemodedupeEmpty() {
+		String regId = "1234567890";
+		
+		List<DemographicDedupeDto> Dtos = new ArrayList<>();
+		
+		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
+		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
+		
+		Set<DemographicDedupeDto> duplicates = demoDedupe.performDedupe(regId);
+		assertEquals(true, duplicates.isEmpty() );
+	}
+	
+	@Test
 	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException {
 		
 		String regId = "1234567890";
@@ -90,7 +127,7 @@ public class DemoDedupeAuthenticationTest {
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
 		
-		boolean result = demoDedupeAuthentication.authenticateDuplicates(regId, duplicateIds);
+		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 		
 		assertTrue(result);
 	}
@@ -106,7 +143,7 @@ public class DemoDedupeAuthenticationTest {
 		
 		authResponseDTO.setStatus("n");
 		
-		boolean result = demoDedupeAuthentication.authenticateDuplicates(regId, duplicateIds);
+		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 		
 		assertFalse(result);
 	}

@@ -19,10 +19,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -55,10 +52,6 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
@@ -70,7 +63,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Autowired
-	DemoDedupeAuthentication demoDedupeAuthentication;
+	DemoDedupe demoDedupe;
 
 	/**
 	 * Deploy verticle.
@@ -97,16 +90,16 @@ public class DemodedupeStage extends MosipVerticleManager {
 					.getRegistrationStatus(registrationId);
 
 			// Potential Duplicate Ids after performing demo dedupe
-			Set<DemographicDedupeDto> duplicateIds = demoDedupeAuthentication.performDedupe(registrationId);
+			Set<DemographicDedupeDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
 
-			if (!duplicateIds.isEmpty()) {
+			if (!duplicateDtos.isEmpty()) {
 
-				for (DemographicDedupeDto id : duplicateIds) {
+				for (DemographicDedupeDto id : duplicateDtos) {
 					duplicateUINList.add(id.getUin());
 				}
 
 				// authenticating duplicateIds with provided packet biometrics
-				boolean isDuplicateAfterAuth = demoDedupeAuthentication.authenticateDuplicates(registrationId,
+				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId,
 						duplicateUINList);
 
 				if (isDuplicateAfterAuth) {
