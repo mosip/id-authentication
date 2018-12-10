@@ -44,13 +44,13 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * reason repository instance
 	 */
 	@Autowired
-	ReasonCategoryRepository reasonRepository;
+	private ReasonCategoryRepository reasonRepository;
 
 	/**
 	 * reason list repository instance
 	 */
 	@Autowired
-	ReasonListRepository reasonListRepository;
+	private ReasonListRepository reasonListRepository;
 
 	/**
 	 * Method fetches all the reasons from Database irrespective of code or
@@ -140,8 +140,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		MapperUtils.map(resultantReasonCategory, codeAndLanguageCodeId);
 
-		// MapperUtils.map(resultantReasonCategory, codeAndLanguageCodeId, true, null,
-		// null, true);
+		
 
 		return codeAndLanguageCodeId;
 
@@ -169,8 +168,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 
-		// MapperUtils.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null,
-		// null, true);
+		
 		MapperUtils.map(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;

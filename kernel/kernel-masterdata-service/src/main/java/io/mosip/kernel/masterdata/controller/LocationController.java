@@ -36,7 +36,7 @@ public class LocationController {
 	 * Creates an instance of {@link LocationService}
 	 */
 	@Autowired
-	LocationService locationHierarchyService;
+	private LocationService locationHierarchyService;
 
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
