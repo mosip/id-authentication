@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -32,7 +34,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	private MapperUtils objectMapperUtil;
+	private MapperUtils mapperUtils;
 
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
@@ -52,11 +54,17 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
 			String effectiveTimestamp, String registrationCenterId, String machineId, String userId) {
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
+		LocalDateTime lDateAndTime = null;
+		try {
+			lDateAndTime = mapperUtils.parseToLocalDateTime(effectiveTimestamp);
+		} catch (Exception e) {
+			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
+		}
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
 					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
-							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId),
-							LocalDateTime.parse(effectiveTimestamp));
+							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId), lDateAndTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
@@ -73,7 +81,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = objectMapperUtil.mapAll(registrationCenterUserMachines,
+		registrationCenters = mapperUtils.mapAll(registrationCenterUserMachines,
 				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);

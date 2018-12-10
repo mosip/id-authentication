@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -39,11 +40,12 @@ import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
@@ -334,6 +336,45 @@ public class MasterdataIntegrationTest {
 		registrationCenterDeviceSetup();
 		registrationCenterMachineSetup();
 		registrationCenterMachineDeviceSetup();
+
+		machineSetUp();
+
+		DeviceSpecsetUp();
+	}
+
+	List<DeviceSpecification> deviceSpecList;
+	DeviceSpecification deviceSpecification;
+
+	@Before
+	public void DeviceSpecsetUp() {
+
+		deviceSpecList = new ArrayList<>();
+		deviceSpecification = new DeviceSpecification();
+		deviceSpecification.setId("1000");
+		deviceSpecification.setName("Laptop");
+		deviceSpecification.setBrand("HP");
+		deviceSpecification.setModel("G-Series");
+		deviceSpecification.setMinDriverversion("version 7");
+		deviceSpecification.setDescription("HP Laptop");
+		deviceSpecification.setIsActive(true);
+		deviceSpecList.add(deviceSpecification);
+	}
+
+	private List<Machine> machineList;
+	private Machine machine;
+
+	private void machineSetUp() {
+		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
+		machineList = new ArrayList<>();
+		machine = new Machine();
+		machine.setId("1000");
+		machine.setName("HP");
+		machine.setSerialNum("1234567890");
+		machine.setMacAddress("100.100.100.80");
+		machine.setLangCode("ENG");
+		machine.setIsActive(true);
+		machine.setValidityDateTime(specificDate);
+		machineList.add(machine);
 	}
 
 	private void registrationCenterDeviceSetup() {
@@ -415,18 +456,29 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	List<Device> deviceList;
+	List<Object[]> objectList;
+
 	private void deviceSetup() {
-		List<Device> deviceList = new ArrayList<>();
-		device = new Device();
-		device.setId("1001");
-		device.setName("laptop");
-		device.setSerialNum("1234567890");
-		device.setIpAddress("100.100.100.80");
-		device.setMacAddress("100.100.100.80");
-		device.setDeviceSpecId("laptop_id");
+		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
+		Timestamp validDateTime = Timestamp.valueOf(specificDate);
+		deviceList = new ArrayList<>();
+		Device device = new Device();
+		device.setId("1000");
+		device.setName("Printer");
 		device.setLangCode("ENG");
 		device.setIsActive(true);
+		device.setMacAddress("127.0.0.0");
+		device.setIpAddress("127.0.0.10");
+		device.setSerialNum("234");
+		device.setDeviceSpecId("234");
+		device.setValidityDateTime(specificDate);
 		deviceList.add(device);
+
+		objectList = new ArrayList<>();
+		Object objects[] = { "1001", "Laptop", "129.0.0.0", "123", "129.0.0.0", "1212", "ENG", true, validDateTime,
+				"LaptopCode" };
+		objectList.add(objects);
 	}
 
 	private void addValidDocumentSetUp() {
@@ -1129,10 +1181,10 @@ public class MasterdataIntegrationTest {
 		MvcResult result = mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
-		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
-				RegistrationCenterResponseDto.class);
+		RegistrationCenterHistoryResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterHistoryResponseDto.class);
 
-		assertThat(returnResponse.getRegistrationCenters().get(0).getId(), is("1"));
+		assertThat(returnResponse.getRegistrationCentersHistory().get(0).getId(), is("1"));
 	}
 
 	@Test
@@ -1598,6 +1650,54 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -----------------------------------DeviceSpecificationTest---------------------------------
+
+	// -----------------------------------DeviceSpecificationTest---------------------------------
+	@Test
+	public void findDeviceSpecLangcodeSuccessTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(deviceSpecList);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}", "ENG")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void findDeviceSpecLangcodeNullResponseTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(null);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}", "ENG")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void findDeviceSpecLangcodeFetchExceptionTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}", "ENG"))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void findDeviceSpecByLangCodeAndDevTypeCodeSuccessTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.anyString(), Mockito.anyString())).thenReturn(deviceSpecList);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}/{devicetypecode}", "ENG", "laptop"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void findDeviceSpecByLangCodeAndDevTypeCodeNullResponseTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}/{devicetypecode}", "ENG", "laptop"))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void findDeviceSpecByLangCodeAndDevTypeCodeFetchExceptionTest() throws Exception {
+		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}/{devicetypecode}", "ENG", "laptop"))
+				.andExpect(status().isInternalServerError());
+	}
+
 	@Test
 	public void createDeviceSpecificationTest() throws Exception {
 		DeviceSpecification deviceSpecification = new DeviceSpecification();
@@ -1722,4 +1822,13 @@ public class MasterdataIntegrationTest {
 				.content(machineTypeJson)).andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void createDeviceExceptionTest() throws Exception {
+		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
+
+		Mockito.when(deviceRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
+				.content(deviceJson)).andExpect(status().isInternalServerError());
+	}
 }

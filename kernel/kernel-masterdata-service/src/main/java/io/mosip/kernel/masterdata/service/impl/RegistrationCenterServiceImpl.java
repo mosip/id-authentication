@@ -151,7 +151,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			centers = registrationCenterRepository.findRegistrationCentersByLat(latitude, longitude,
 					proximityDistance * MasterDataConstant.METERTOMILECONVERSION, langCode);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -186,7 +186,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLanguageCode(locationCode,
 					langCode);
 
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -220,7 +220,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter = null;
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -254,7 +254,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			registrationCentersList = registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -292,7 +292,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCentersList = registrationCenterRepository
 					.findRegistrationCenterHierarchyLevelName(languageCode, hierarchyLevel, text);
 
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
@@ -335,10 +335,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter;
 		try {
 			registrationCenter = registrationCenterRepository.create(entity);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException |  DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(dataAccessLayerException));
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(registrationCenter.getId());

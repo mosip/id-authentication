@@ -121,7 +121,7 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateEntity = templateRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));

@@ -73,7 +73,7 @@ public class DeviceSpecificationController {
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
-				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(langCode, deviceTypeCode);
+				.findDeviceSpecByLangCodeAndDevTypeCode(langCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 		
 	}

@@ -63,7 +63,7 @@ public class DeviceSpecificationControllerTest1 {
 	@Test
 	public void getDeviceSpecificationByLanguageCodeAndDeviceTypeCodeTest() throws Exception {
 		Mockito.when(deviceSpecificationService
-				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.findDeviceSpecByLangCodeAndDevTypeCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(deviceSpecificationDtos);
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/devicespecifications/ENG/LaptopCode"))
 				.andExpect(status().isOk());

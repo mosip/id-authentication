@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +42,17 @@ import io.mosip.kernel.masterdata.entity.id.HolidayID;
 @Component
 @SuppressWarnings("unchecked")
 public class MapperUtils {
+
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+	public LocalDateTime parseToLocalDateTime(String dateTime) {
+		try {
+			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		} catch (Exception e) {
+			return LocalDateTime.parse(dateTime);
+		}
+		
+	}
 
 	/*
 	 * #############Public method used for mapping################################

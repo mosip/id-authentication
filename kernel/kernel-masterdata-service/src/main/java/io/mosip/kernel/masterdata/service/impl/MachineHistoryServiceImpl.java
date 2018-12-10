@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -38,19 +39,16 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	 */
 	@Autowired
 	MachineHistoryRepository macRepo;
-	
+
 	/**
 	 * Field to hold ObjectMapperUtil object
 	 */
 	@Autowired
-	private MapperUtils objectMapperUtil;
+	private MapperUtils mapperUtils;
 
 	/**
 	 * Field to hold ModelMapper object
 	 */
-
-	
-	
 
 	/**
 	 * Method used for retrieving Machine history details based on given Machine ID
@@ -82,9 +80,9 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
 		LocalDateTime lDateAndTime = null;
 		try {
-			lDateAndTime=LocalDateTime.parse(effDtime);
+			lDateAndTime = mapperUtils.parseToLocalDateTime(effDtime);
 		} catch (Exception e) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage());
 		}
@@ -93,15 +91,17 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		List<MachineHistoryDto> machineHistoryDtoList = null;
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
-			macHistoryList = macRepo.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id, langCode,
-					lDateAndTime);
+			macHistoryList = macRepo
+					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id,
+							langCode, lDateAndTime);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {
-			
-			machineHistoryDtoList =objectMapperUtil.mapAll(macHistoryList, MachineHistoryDto.class);
+
+			machineHistoryDtoList = mapperUtils.mapAll(macHistoryList, MachineHistoryDto.class);
 		} else {
 			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());

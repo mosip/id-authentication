@@ -145,7 +145,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonCategory = reasonRepository.create(reasonCategories);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
@@ -176,7 +176,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonList = reasonListRepository.create(reasonList);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
