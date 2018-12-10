@@ -4,7 +4,12 @@
 
 
 	<packaging>jar</packaging>
-
+	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${basedir}/lib</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
@@ -63,6 +68,24 @@
 			<groupId>org.bitbucket.b_c</groupId>
 			<artifactId>jose4j</artifactId>
 			<version>0.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>Mantra</groupId>
+			<artifactId>MFS100</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- Commons Lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
+				<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
 		</dependency>
 
 
