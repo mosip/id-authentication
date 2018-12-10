@@ -37,7 +37,10 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DeviceSpecification" })
 public class DeviceSpecificationController {
-
+	
+	/**
+	 * Reference to DeviceSpecificationService.
+	 */
 	@Autowired
 	DeviceSpecificationService deviceSpecificationService;
 
@@ -47,7 +50,9 @@ public class DeviceSpecificationController {
 	 * 
 	 * @param langCode
 	 *            input from user
-	 * @return {@link DeviceSpecificationResponseDto}
+	 *            
+	 * @return DeviceSpecificationResponseDto
+	 * 				all device Specification details based on given language code
 	 * 
 	 */
 	@GetMapping("/v1.0/devicespecifications/{langcode}")
@@ -93,8 +98,9 @@ public class DeviceSpecificationController {
 	/**
 	 * Save device specification details to the database table
 	 * 
-	 * @param deviceSpecification
+	 * @param RequestDto<DeviceSpecificationDto>
 	 *            input from user Device specification DTO
+	 *            
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping("/v1.0/devicespecifications")

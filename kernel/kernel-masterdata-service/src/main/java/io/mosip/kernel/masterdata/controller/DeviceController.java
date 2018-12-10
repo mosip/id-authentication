@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
 public class DeviceController {
 
 	/**
-	 * Reference to MachineDetailService.
+	 * Reference to DeviceService.
 	 */
 	@Autowired
 	private DeviceService deviceService;
@@ -46,7 +46,11 @@ public class DeviceController {
 	/**
 	 * Get api to fetch a all device details based on language code
 	 * 
-	 * @return all device details
+	 * @param langCode
+	 * 				pass language code as String
+	 * 
+	 * @return DeviceResponseDto
+	 * 				all device details based on given language code
 	 */
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
@@ -61,7 +65,14 @@ public class DeviceController {
 	/**
 	 * Get api to fetch a all device details based on device type and language code
 	 * 
-	 * @return all device details
+	 * @param langCode
+	 * 			pass language code as String
+	 * 
+	 * @param deviceType
+	 * 			pass device Type id as String
+	 * 
+	 * @return DeviceLangCodeResponseDto
+	 * 				all device details based on given device type and language code
 	 */
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
@@ -78,9 +89,10 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param deviceRequestDto
-	 *            input parameters
-	 * @return code of entered row of device
+	 * @param RequestDto
+	 * 			 input parameter deviceRequestDto
+	 * 
+	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping()
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
