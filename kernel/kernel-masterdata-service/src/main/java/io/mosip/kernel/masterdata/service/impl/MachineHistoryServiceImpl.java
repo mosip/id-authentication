@@ -84,7 +84,8 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		} catch (Exception e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage());
+					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage()+ "  "
+							+ ExceptionUtils.parseException(e));
 		}
 
 		List<MachineHistory> macHistoryList = null;
