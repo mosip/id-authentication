@@ -640,11 +640,11 @@ public class RegistrationConstants {
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
-	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
+	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/LEFT HAND";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/leftSlap.jpg";
-	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
+	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/RIGHT HAND";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightSlap.jpg";
-	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
+	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/THUMB";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumbs.jpg";
 	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
