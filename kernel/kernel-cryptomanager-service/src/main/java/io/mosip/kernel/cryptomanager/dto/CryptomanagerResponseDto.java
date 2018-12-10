@@ -6,6 +6,8 @@
  */
 package io.mosip.kernel.cryptomanager.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +20,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(description = "Class representing a CryptoManager Response")
 public class CryptomanagerResponseDto {
 /**
  * 
  */
+@ApiModelProperty(notes = "Data encrypted/decrypted in BASE64 encoding")	
 private String data;
 }

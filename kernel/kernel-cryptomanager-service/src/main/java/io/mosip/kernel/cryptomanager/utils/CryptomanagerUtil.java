@@ -19,7 +19,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -80,16 +79,8 @@ public class CryptomanagerUtil {
 	/**
 	 * 
 	 */
-	private RestTemplate restTemplate;
-
-	/**
-	 * @param builder
-	 */
 	@Autowired
-	public CryptomanagerUtil(RestTemplateBuilder builder) {
-		this.restTemplate = builder.build();
-	}
-	
+	private RestTemplate restTemplate;
 	
 	/**
 	 * @param cryptoRequestDto
