@@ -227,10 +227,9 @@ public class MasterdataIntegrationTest {
 
 	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
-	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"isDeleted\": false }}";
-	private static final String REASON_EMPTY_LIST_REQUEST = "{ \"request\": }";
-	private static final String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true ,\"isDeleted\": false} }";
-	private static final String REASON_EMPTY_CATEGORY_LIST = "{ \"request\": }";
+	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true }}";
+
+	private static final String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true } }";
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -1948,6 +1947,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+
 	public void getDeviceLangCodeAndDeviceTypeNullResponseTest() throws Exception {
 		when(deviceRepository.findByLangCodeAndDtypeCode(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(get("/v1.0/devices/{languagecode}/{deviceType}", "ENG", "LaptopCode"))

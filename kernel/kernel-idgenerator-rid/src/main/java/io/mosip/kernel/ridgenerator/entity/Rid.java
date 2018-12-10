@@ -20,7 +20,7 @@ public class Rid {
 	 * the dongleId.
 	 */
 	@Id
-	@Column(name="dongle_Id")
+	@Column(name = "dongle_Id")
 	private String dongleId;
 
 	/**
@@ -33,7 +33,7 @@ public class Rid {
 	/**
 	 * Getter for dongleId.
 	 * 
-	 * @return
+	 * @return dongleId
 	 */
 	public String getDongleId() {
 		return dongleId;
@@ -43,6 +43,7 @@ public class Rid {
 	 * Setter for dongleId.
 	 * 
 	 * @param dongleId
+	 *            dongleId
 	 */
 	public void setDongleId(String dongleId) {
 		this.dongleId = dongleId;
@@ -51,7 +52,7 @@ public class Rid {
 	/**
 	 * Getter for sequencyId.
 	 * 
-	 * @return
+	 * @return sequenceId
 	 */
 	public int getSequenceId() {
 		return sequenceId;
@@ -61,6 +62,7 @@ public class Rid {
 	 * Setter for sequenceId.
 	 * 
 	 * @param sequenceId
+	 *            sequenceId
 	 */
 	public void setSequenceId(int sequenceId) {
 		this.sequenceId = sequenceId;

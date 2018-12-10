@@ -10,6 +10,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -46,27 +47,29 @@ public class CertificateUtility {
 	 * 
 	 * @param keyPair
 	 *            the keypair
-	 * @param validityInMinutes
-	 *            validity In Minutes
-	 * @param country
-	 *            country
-	 * @param organization
-	 *            organization
-	 * @param organizationalUnit
-	 *            organizationalUnit
 	 * @param commonName
 	 *            commonName
-	 * @return the certificate
+	 * @param organizationalUnit
+	 *            organizationalUnit
+	 * @param organization
+	 *            organization
+	 * @param country
+	 *            country
+	 * @param validityFrom
+	 *            validityFrom
+	 * @param validityTo
+	 *            validityTo
+	 * @return The certificate
 	 */
-	public static X509CertImpl generateX509Certificate(KeyPair keyPair, String commonName, String organizationalUnit,
-			String organization, String country, int validityInMinutes) {
+	public static X509Certificate generateX509Certificate(KeyPair keyPair, String commonName, String organizationalUnit,
+			String organization, String country, LocalDateTime validityFrom, LocalDateTime validityTo) {
 
 		X509CertImpl cert = null;
 		try {
 			X500Name distinguishedName = new X500Name(commonName, organizationalUnit, organization, country);
 			PrivateKey privkey = keyPair.getPrivate();
 			X509CertInfo info = new X509CertInfo();
-			CertificateValidity interval = setCertificateValidity(validityInMinutes);
+			CertificateValidity interval = setCertificateValidity(validityFrom, validityTo);
 			BigInteger sn = new BigInteger(64, new SecureRandom());
 			info.set(X509CertInfo.VALIDITY, interval);
 			info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
@@ -78,12 +81,10 @@ public class CertificateUtility {
 			info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algo));
 			cert = signCertificate(privkey, info);
 			algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
-			info.set(CertificateAlgorithmId.NAME + KeymanagerConstant.DOT + CertificateAlgorithmId.ALGORITHM,
-					algo);
+			info.set(CertificateAlgorithmId.NAME + KeymanagerConstant.DOT + CertificateAlgorithmId.ALGORITHM, algo);
 			cert = signCertificate(privkey, info);
 		} catch (IOException | CertificateException e) {
-			throw new KeystoreProcessingException(
-					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
@@ -105,8 +106,7 @@ public class CertificateUtility {
 			cert.sign(privkey, KeymanagerConstant.SIGNATURE_ALGORITHM);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			throw new KeystoreProcessingException(
-					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
@@ -115,13 +115,13 @@ public class CertificateUtility {
 	/**
 	 * Set certificate validity for specific duration
 	 * 
-	 * @param validityInMinutes
-	 *            validity in minutes
+	 * @param validityFrom
+	 *            validityFrom
+	 * @param validityTo
+	 *            validityTo
 	 * @return certificate validity
 	 */
-	private static CertificateValidity setCertificateValidity(int validityInMinutes) {
-		LocalDateTime since = LocalDateTime.now();
-		LocalDateTime until = since.plusMinutes(validityInMinutes);
-		return new CertificateValidity(Timestamp.valueOf(since), Timestamp.valueOf(until));
+	private static CertificateValidity setCertificateValidity(LocalDateTime validityFrom, LocalDateTime validityTo) {
+		return new CertificateValidity(Timestamp.valueOf(validityFrom), Timestamp.valueOf(validityTo));
 	}
 }

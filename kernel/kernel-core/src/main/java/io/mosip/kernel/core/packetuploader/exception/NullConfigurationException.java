@@ -10,10 +10,21 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class NullConfigurationException extends BaseUncheckedException {
 
+	/**
+	 * Unique id for serialization
+	 */
 	private static final long serialVersionUID = -2256564750997889337L;
 
 
-	public NullConfigurationException(String errorCode, String errorMessage, Throwable cause) {
-		super(errorCode, errorMessage, cause);
+	/**
+	 * Constructor with errorCode and errorMessage
+	 * 
+	 * @param errorCode
+	 *            The error code for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 */
+	public NullConfigurationException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage);
 	}
 }
