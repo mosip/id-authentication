@@ -99,9 +99,9 @@ public class MasterSyncServiceTest {
 		masterSyncDetails.setLangCode("eng");
 		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		Mockito.when(masterSyncDao.getMasterSyncStatus(Mockito.anyString())).thenReturn(masterSyncDetails);
+		//Mockito.when(masterSyncDao.getMasterSyncStatus(Mockito.anyString())).thenReturn(masterSyncDetails);
 
-		Mockito.when(mapper.readValue(Mockito.anyString(), MasterSyncDto.class)).thenReturn(masterSyncDto);
+		//Mockito.when(mapper.readValue(Mockito.anyString(), MasterSyncDto.class)).thenReturn(masterSyncDto);
 
 		//Mockito.when(masterSyncServiceImpl.getMasterSync("MDS_J00001")).thenReturn(masterSyncResponse);
 
