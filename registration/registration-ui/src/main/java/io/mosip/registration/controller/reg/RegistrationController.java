@@ -1171,11 +1171,17 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			// to populate date of birth based on age
-			ageField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+			ageField.textProperty().addListener(new ChangeListener<String>() {
 				@Override
-				public void handle(KeyEvent event) {
-					// to auto-populate DOB based on age
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (ageField.getText().length() > 2) {
+						String age = ageField.getText().substring(0, 2);
+						ageField.setText(age);
+					}
+					// to populate date of birth based on age
+					
 					if (ageField.getText().length() > 0) {
 						DateTimeFormatter formatter = DateTimeFormatter
 								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
@@ -1184,16 +1190,6 @@ public class RegistrationController extends BaseController {
 						dob.append(Calendar.getInstance().getWeekYear() - Integer.parseInt(ageField.getText()));
 						LocalDate date = LocalDate.parse(dob, formatter);
 						ageDatePicker.setValue(date);
-					}
-				}
-			});
-			ageField.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (ageField.getText().length() > 2) {
-						String age = ageField.getText().substring(0, 2);
-						ageField.setText(age);
 					}
 					if (!newValue.matches("\\d*")) {
 						ageField.setText(newValue.replaceAll("[^\\d]", ""));
