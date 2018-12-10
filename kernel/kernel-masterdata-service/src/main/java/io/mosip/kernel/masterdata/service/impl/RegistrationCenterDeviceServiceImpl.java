@@ -37,8 +37,13 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private MapperUtils mapperUtils;
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see RegistrationCenterDeviceService#saveRegistrationCenterAndDevice(RequestDto)
+	 */
 	@Override
-	public ResponseRegistrationCenterDeviceDto mapRegistrationCenterAndDevice(
+	public ResponseRegistrationCenterDeviceDto saveRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
@@ -61,7 +66,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()
 							+ ": " + ExceptionUtils.parseException(e));
 		}
- 
+
 		return registrationCenterDeviceDto;
 	}
 

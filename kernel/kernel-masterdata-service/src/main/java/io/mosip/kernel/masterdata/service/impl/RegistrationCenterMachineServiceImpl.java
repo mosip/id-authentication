@@ -38,10 +38,10 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	private MapperUtils mapperUtils;
 
 	@Override
-	public ResponseRrgistrationCenterMachineDto mapRegistrationCenterAndMachine(
+	public ResponseRrgistrationCenterMachineDto saveRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
- 
+
 		try {
 			RegistrationCenterMachine registrationCenterMachine = metadataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachine.class);

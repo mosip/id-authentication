@@ -1,8 +1,9 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Blacklisted word DTO.
@@ -11,23 +12,15 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class BlacklistedWordsDto {
-	/**
-	 * The blacklisted word.
-	 */
+	@NotNull
+	@Size(min = 1, max = 128)
 	private String word;
-	/**
-	 * The description of the word.
-	 */
-	private String description;
-	/**
-	 * The language code of the word.
-	 */
+	@NotNull
+	@Size(min = 1, max = 3)
 	private String langCode;
-	/**
-	 * variable that sets the word is active or not.
-	 */
+	@Size(min = 1, max = 256)
+	private String description;
+	@NotNull
 	private Boolean isActive;
 }

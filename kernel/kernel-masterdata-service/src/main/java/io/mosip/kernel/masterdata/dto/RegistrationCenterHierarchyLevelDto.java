@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 public class RegistrationCenterHierarchyLevelDto {
 	private String id;
 	

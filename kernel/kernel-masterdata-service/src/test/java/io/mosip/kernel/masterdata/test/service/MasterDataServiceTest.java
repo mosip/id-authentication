@@ -31,7 +31,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDtoData;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
@@ -50,6 +49,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -234,7 +234,6 @@ public class MasterDataServiceTest {
 	private List<DeviceSpecification> deviceSpecificationList ;
 	private DeviceSpecification deviceSpecification;
 	
-	private DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
 	private DeviceSpecificationListDto deviceSpecificationListDto;
 	private List<DeviceSpecificationDto> deviceSpecificationDtos ;
 	private DeviceSpecificationDto deviceSpecificationDto ;
@@ -454,17 +453,10 @@ public class MasterDataServiceTest {
 		deviceSpecification.setDeviceTypeCode("Laptop");
 		deviceSpecification.setLangCode("ENG");
 		deviceSpecificationList.add(deviceSpecification);
+				
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId("1111");
 		
-		deviceSpecificationRequestDto = new DeviceSpecificationRequestDto();
-		deviceSpecificationListDto = new DeviceSpecificationListDto();
-		deviceSpecificationDtos = new ArrayList<>();
-		deviceSpecificationDto = new DeviceSpecificationDto();
-		deviceSpecificationDto.setId("100");
-		deviceSpecificationDto.setDeviceTypeCode("Laptop");
-		deviceSpecificationDto.setLangCode("ENG");
-		deviceSpecificationDtos.add(deviceSpecificationDto);
-		// deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
-		deviceSpecificationRequestDto.setRequest(deviceSpecificationListDto);
 	}
 
 	private void blackListedSetup() {
@@ -891,7 +883,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void findDeviceSpecificationByLangugeCodeTest() {
 		String languageCode = "ENG";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode))
 				.thenReturn(deviceSpecifications);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -905,7 +897,7 @@ public class MasterDataServiceTest {
 	public void noDeviceSpecRecordsFoudExceptionTest() {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode))
 				.thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 	}
@@ -913,7 +905,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void noDeviceSpecRecordsFoudExceptionForNullTest() {
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode)).thenReturn(null);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode)).thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 
 	}
@@ -921,7 +913,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void dataDeviceSpecAccessExceptionInGetAllTest() {
 		String languageCode = "eng";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 	}
@@ -930,7 +922,7 @@ public class MasterDataServiceTest {
 	public void findDeviceSpecificationByLangugeCodeAndDeviceTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(languageCode,
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode,
 				deviceTypeCode)).thenReturn(deviceSpecificationListWithDeviceTypeCode);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -949,7 +941,7 @@ public class MasterDataServiceTest {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(deviceTypeCode,
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode,
 				deviceTypeCode)).thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 	}
@@ -958,7 +950,7 @@ public class MasterDataServiceTest {
 	public void noRecordsFoudExceptionnDeviceSpecificationByDevicTypeCodeForNullTest() {
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(deviceTypeCode,
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode,
 				deviceTypeCode)).thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
@@ -968,7 +960,7 @@ public class MasterDataServiceTest {
 	public void dataAccessExceptionnDeviceSpecificationByDevicTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(languageCode,
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode,
 				deviceTypeCode)).thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
@@ -1165,13 +1157,13 @@ public class MasterDataServiceTest {
 	@Test
 	public void locationHierarchySaveTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
-		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
+		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 	
 	@Test(expected=MasterDataServiceException.class)
 	public void locationHierarchySaveNegativeTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
-		locationHierarchyService.saveLocationHierarchy(requestLocationDto);
+		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 	
 	
