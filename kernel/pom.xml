@@ -126,7 +126,7 @@
 
 		
 		<module>kernel-idrepo-service</module>
-		<module>kernel-idgenerator-tsp</module>
+		<module>kernel-tspidgenerator-service</module>
 	</modules>
 
 	<dependencies>

@@ -34,7 +34,7 @@ public class TspIdExceptionTest {
 
 		when(tspRepository.findMaxTspId())
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(get("/idgenerator/tsp").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/tsp").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -42,7 +42,7 @@ public class TspIdExceptionTest {
 	public void TspIdServiceInsertExceptionTest() throws Exception {
 		when(tspRepository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(get("/idgenerator/tsp").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/tsp").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
 }

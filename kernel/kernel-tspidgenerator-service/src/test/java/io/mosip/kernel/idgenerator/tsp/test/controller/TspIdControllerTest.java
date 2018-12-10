@@ -35,7 +35,7 @@ public class TspIdControllerTest {
 		TspResponseDTO dto=new TspResponseDTO();
 		dto.setTspId(1000);
 		when(tspIdGeneratorService.generateId()).thenReturn(dto);
-		mockMvc.perform(get("/idgenerator/tsp").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1.0/tsp").contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(jsonPath("$.tspId", is(1000)));
 	}
 	

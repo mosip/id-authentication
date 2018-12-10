@@ -10,9 +10,9 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kernel-idgenerator-tsp</artifactId>
+	<artifactId>kernel-tspidgenerator-service</artifactId>
 
-	<name>kernel-idgenerator-tsp</name>
+	<name>kernel-tspidgenerator-service</name>
 
 	<dependencies>
 		<dependency>
