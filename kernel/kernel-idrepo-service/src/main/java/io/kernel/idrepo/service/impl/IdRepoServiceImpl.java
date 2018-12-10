@@ -70,6 +70,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -78,18 +79,25 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
+	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
+	/** The Constant DECRYPT_ENTITY. */
 	private static final String DECRYPT_ENTITY = "decryptEntity";
 
+	/** The Constant ENCRYPT_IDENTITY. */
 	private static final String ENCRYPT_IDENTITY = "encryptIdentity";
 
+	/** The Constant ID_REPO_SERVICE_IMPL. */
 	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
+	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
 	/** The Constant DATETIME_PATTERN. */
@@ -149,12 +157,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private UinDetailHistoryRepo uinDetailHistoryRepo;
 
+	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
 
+	/** The encryptor. */
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
+	/** The decryptor. */
 	@Autowired
 	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
@@ -219,7 +230,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO retrieveIdentity(String uin) throws IdRepoAppException {
 		try {
-			checkUIN(uin);
+			validateUIN(uin);
 			return constructIdResponse(MOSIP_ID_READ, retrieveIdentityByUin(uin));
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, MOSIP_ID_READ);
@@ -250,7 +261,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO updateIdentity(IdRequestDTO request) throws IdRepoAppException {
 		try {
-			checkUIN(request.getUin());
+			validateUIN(request.getUin());
 			Uin dbUinData = retrieveIdentityByUin(request.getUin());
 			Uin uinObject = null;
 			if (!request.getStatus().equals(dbUinData.getStatusCode())) {
@@ -278,6 +289,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
+	/**
+	 * Find difference.
+	 *
+	 * @param leftValue the left value
+	 * @param rightValue the right value
+	 * @return the list
+	 */
 	private List<Map<String, String>> findDifference(List<Map<String, String>> leftValue,
 			List<Map<String, String>> rightValue) {
 		if (!leftValue.containsAll(rightValue)) {
@@ -342,13 +360,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.idrepo.spi.IdRepoService#generateUIN()
+	/**
+	 * Generate UIN.
+	 *
+	 * @return the string
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@Override
-	public String generateUIN() throws IdRepoAppException {
+	private String generateUIN() throws IdRepoAppException {
 		try {
 			ObjectNode body = restTemplate
 					.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, ObjectNode.class).getBody();
@@ -362,13 +380,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.idrepo.spi.IdRepoService#checkUIN(java.lang.String)
+	/**
+	 * Validate UIN.
+	 *
+	 * @param uin the uin
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@Override
-	public void checkUIN(String uin) throws IdRepoAppException {
+	private void validateUIN(String uin) throws IdRepoAppException {
 		ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 		if (uinRepo.existsByUin(uin)) {
 			String status = uinRepo.getStatusByUin(uin);
@@ -381,15 +399,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.core.idrepo.spi.IdRepoService#constructIdResponse(java.lang.
-	 * String, java.lang.Object)
+	/**
+	 * Construct id response.
+	 *
+	 * @param id the id
+	 * @param uin the uin
+	 * @return the id response DTO
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@Override
-	public IdResponseDTO constructIdResponse(String id, Uin uin) throws IdRepoAppException {
+	private IdResponseDTO constructIdResponse(String id, Uin uin) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
 
 		idResponse.setId(id);
@@ -425,6 +443,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		return idResponse;
 	}
 
+	/**
+	 * Encrypt identity.
+	 *
+	 * @param identity the identity
+	 * @return the byte[]
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	private byte[] encryptIdentity(byte[] identity) throws IdRepoAppException {
 		try {
 			// Generate SessionKey (AES 256)
@@ -459,6 +484,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
+	/**
+	 * Decrypt identity.
+	 *
+	 * @param identity the identity
+	 * @return the byte[]
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	private byte[] decryptIdentity(byte[] identity) throws IdRepoAppException {
 
 		try {
@@ -502,6 +534,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @param keyType the key type
+	 * @return the key
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	public byte[] getKey(String keyType) throws IdRepoAppException {
 		try {
 			String localpath = env.getProperty("sample.privatekey.filepath");
