@@ -27,7 +27,6 @@ import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -404,8 +403,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			fpUserId.setEditable(true);
 			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
-			fingerPrintLabel.setLayoutX(336);
-			fingerPrintLabel.setLayoutY(138);
+			fingerPrintLabel.setLayoutX(311);
+			fingerPrintLabel.setLayoutY(126);
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 			fpUserId.setEditable(false);
@@ -472,7 +471,6 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to submit the registration after successful authentication
 	 */
 	public void submitRegistration() {
-		packetHandlerController.showReciept((RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA), capturePhotoUsingDevice);
+		packetHandlerController.showReciept(capturePhotoUsingDevice);
 	}
 }

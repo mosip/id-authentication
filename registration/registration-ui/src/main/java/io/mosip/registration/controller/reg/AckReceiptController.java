@@ -50,7 +50,7 @@ import javafx.scene.web.WebView;
 @Controller
 public class AckReceiptController extends BaseController implements Initializable {
 
-	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AckReceiptController.class);
 
 	@Autowired
 	private PacketHandlerController packetController;
@@ -203,6 +203,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	public void goToNewRegistrationPage() {
 		packetController.createPacket();
+	}
+	
+	@FXML
+	@Override
+	public void goToHomePage() {
+		registrationController.goToHomePage();
 	}
 
 }

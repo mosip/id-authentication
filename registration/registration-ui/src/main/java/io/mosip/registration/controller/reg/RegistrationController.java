@@ -52,8 +52,11 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.util.dataprovider.DataProvider;
+import io.mosip.registration.util.kernal.RIDGenerator;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -81,7 +84,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -665,7 +667,8 @@ public class RegistrationController extends BaseController {
 			LocationDTO locationDTO = new LocationDTO();
 			AddressDTO addressDTO = new AddressDTO();
 			DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
-			OSIDataDTO osiDataDTO = new OSIDataDTO();
+			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
+			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			if (validateDemographicPaneTwo()) {
 				demographicInfoDTO.setFullName(fullName.getText());
 				if (ageDatePicker.getValue() != null) {
@@ -696,6 +699,9 @@ public class RegistrationController extends BaseController {
 					}
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 					demographicInfoDTO.setParentOrGuardianName(parentName.getText());
+					registrationMetaDataDTO.setApplicationType("Child");
+				} else {
+					registrationMetaDataDTO.setApplicationType("Adult");
 				}
 				demographicDTO.setDemoInUserLang(demographicInfoDTO);
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
@@ -869,11 +875,15 @@ public class RegistrationController extends BaseController {
 
 		} else {
 			try {
+				DataProvider.setApplicantDocumentDTO(getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO());
 				setPreviewContent();
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage()); 
 			}
 		}
 
@@ -890,6 +900,7 @@ public class RegistrationController extends BaseController {
 		poaScanBtn.setVisible(false);
 		poiScanBtn.setVisible(false);
 		porScanBtn.setVisible(false);
+		dobScanBtn.setVisible(false);
 		prevAddressButton.setVisible(false);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
@@ -1171,11 +1182,17 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			// to populate date of birth based on age
-			ageField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+			ageField.textProperty().addListener(new ChangeListener<String>() {
 				@Override
-				public void handle(KeyEvent event) {
-					// to auto-populate DOB based on age
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (ageField.getText().length() > 2) {
+						String age = ageField.getText().substring(0, 2);
+						ageField.setText(age);
+					}
+					// to populate date of birth based on age
+					
 					if (ageField.getText().length() > 0) {
 						DateTimeFormatter formatter = DateTimeFormatter
 								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
@@ -1184,16 +1201,6 @@ public class RegistrationController extends BaseController {
 						dob.append(Calendar.getInstance().getWeekYear() - Integer.parseInt(ageField.getText()));
 						LocalDate date = LocalDate.parse(dob, formatter);
 						ageDatePicker.setValue(date);
-					}
-				}
-			});
-			ageField.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (ageField.getText().length() > 2) {
-						String age = ageField.getText().substring(0, 2);
-						ageField.setText(age);
 					}
 					if (!newValue.matches("\\d*")) {
 						ageField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -2087,6 +2094,9 @@ public class RegistrationController extends BaseController {
 	private void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
+		// Set the RID
+		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+
 		// Create objects for Biometric DTOS
 		BiometricDTO biometricDTO = new BiometricDTO();
 		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
@@ -2108,7 +2118,9 @@ public class RegistrationController extends BaseController {
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 
 		// Create object for RegistrationMetaData DTO
-		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
+		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);

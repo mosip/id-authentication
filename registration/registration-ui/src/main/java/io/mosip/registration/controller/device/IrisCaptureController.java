@@ -21,7 +21,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -67,7 +66,7 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private ScanController scanController;
 	@Autowired
-	private IrisFacade irisFacade;
+	private io.mosip.registration.device.iris.IrisFacade irisFacade;
 
 	private Pane selectedIris;
 
@@ -84,8 +83,8 @@ public class IrisCaptureController extends BaseController {
 
 			// Set Threshold
 			String irisThreshold = AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD);
-			leftIrisThreshold.setText(irisThreshold);
-			rightIrisThreshold.setText(irisThreshold);
+			leftIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
+			rightIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
 
 			// Disable Scan button
 			scanIris.setDisable(true);
@@ -131,6 +130,7 @@ public class IrisCaptureController extends BaseController {
 			Pane sourcePane = (Pane) mouseEvent.getSource();
 			sourcePane.requestFocus();
 			selectedIris = sourcePane;
+			scanIris.setDisable(true);
 
 			// Get the Iris from RegistrationDTO based on selected Iris Pane
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
@@ -149,7 +149,7 @@ public class IrisCaptureController extends BaseController {
 			if (irisDetailsDTO == null || isExceptionIris
 					|| irisDetailsDTO.getQualityScore() < Double
 							.parseDouble(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD))
-					|| !irisDetailsDTO.isForceCaptured()) {
+					|| irisDetailsDTO.isForceCaptured()) {
 				scanIris.setDisable(false);
 			}
 

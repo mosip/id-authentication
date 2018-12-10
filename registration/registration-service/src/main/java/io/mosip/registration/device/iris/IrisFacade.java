@@ -1,9 +1,12 @@
 package io.mosip.registration.device.iris;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Component;
 
@@ -66,10 +69,12 @@ public class IrisFacade {
 			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
-			InputStream inputStream = this.getClass().getResourceAsStream("/images/scanned-iris.png");
+			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/images/scanned-iris.png"));
+			
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 
-			byte[] scannedIrisBytes = new byte[inputStream.available()];
-			inputStream.read(scannedIrisBytes);
+			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new HashMap<>();

@@ -4,9 +4,10 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRIN
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -135,10 +138,13 @@ public class FingerprintFacade {
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration");
-			InputStream inputStream = this.getClass().getResourceAsStream(path);
 
-			byte[] scannedFingerPrintBytes = new byte[inputStream.available()];
-			inputStream.read(scannedFingerPrintBytes);
+			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(path));
+			
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "jpeg" , byteArrayOutputStream);
+
+			byte[] scannedFingerPrintBytes = byteArrayOutputStream.toByteArray();
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedFingerPrints = new HashMap<>();

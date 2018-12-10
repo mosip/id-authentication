@@ -12,7 +12,7 @@
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="937.0">
          <children>
-            <WebView fx:id="webView" layoutX="79.0" layoutY="28.0" prefHeight="571.0" prefWidth="810.0" />
+            <WebView fx:id="webView" layoutX="79.0" layoutY="36.0" prefHeight="563.0" prefWidth="810.0" />
             <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="34.0" layoutY="4.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/Home.png" />
@@ -24,6 +24,11 @@
                   <Button layoutX="430.0" layoutY="3.0" mnemonicParsing="false" onAction="#saveReceipt" prefWidth="60.8" text="Save" />
                </children>
             </AnchorPane>
+            <Label layoutX="417.0" layoutY="11.0" text="Registration" underline="true">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
          </children></AnchorPane>
   </content>
 </ScrollPane>

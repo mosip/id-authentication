@@ -13,14 +13,14 @@
          <children>
             <Button layoutX="400.0" layoutY="244.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
             <TextField fx:id="username" layoutX="316.0" layoutY="125.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
-            <Label fx:id="passwdLabel" layoutX="326.0" layoutY="77.0" text="Registration Officer Verification" />
+            <Label fx:id="passwdLabel" layoutX="336.0" layoutY="77.0" text="Registration Officer Verification" />
             <PasswordField fx:id="password" layoutX="316.0" layoutY="180.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="otpBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
             <Button layoutX="297.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
-            <Label fx:id="otpLabel" layoutX="307.0" layoutY="58.0" text="Registration Officer Verification" />
+            <Label fx:id="otpLabel" layoutX="317.0" layoutY="58.0" text="Registration Officer Verification" />
             <Button layoutX="485.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
             <TextField fx:id="otpUserId" layoutX="297.0" layoutY="108.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
             <TextField fx:id="otp" layoutX="297.0" layoutY="159.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
@@ -33,18 +33,14 @@
       </AnchorPane>
       <AnchorPane fx:id="fingerprintBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Label fx:id="fingerPrintLabel" layoutX="357.0" layoutY="139.0" text="RO Fingerprint Authentication">
-            	<font>
-					<Font size="13.0" />
-				</font>
-			</Label>
-            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="349.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
+            <Label fx:id="fingerPrintLabel" layoutX="352.0" layoutY="123.0" text="RO Fingerprint Authentication" />
+            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="360.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
             	<image>
 					<Image url="@../images/fingerprint.jpg" />
 				</image>
 			</ImageView>
-            <Button layoutX="480.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
-            <TextField fx:id="fpUserId" layoutX="325.0" layoutY="178.0" prefHeight="39.0" prefWidth="236.0" promptText="Username" />
+            <Button layoutX="490.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
+            <TextField fx:id="fpUserId" layoutX="306.0" layoutY="174.0" prefHeight="39.0" prefWidth="308.0" promptText="Username" />
          </children>
       </AnchorPane>
    </children>

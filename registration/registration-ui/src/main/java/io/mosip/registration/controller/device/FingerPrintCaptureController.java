@@ -164,7 +164,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					AnchorPane sourcePane = (AnchorPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
-
+					scanBtn.setDisable(true);
+					
 					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
@@ -448,7 +449,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 
 			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
-				if (fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+				if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 					isValid = true;
 				} else {
 					generateAlert(RegistrationConstants.ALERT_INFORMATION,
