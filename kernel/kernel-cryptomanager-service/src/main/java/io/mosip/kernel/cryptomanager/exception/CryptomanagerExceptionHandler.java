@@ -31,7 +31,7 @@ import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 
 /**
- * Rest Controller Advice for Crypto Service
+ * Rest Controller Advice for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
  *

@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Key Manager decrypt-symmetric-key response
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
@@ -19,6 +21,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeymanagerSymmetricKeyResponseDto {
-	
+
+	/**
+	 * Decrypted Symmetric key
+	 */
 	private String symmetricKey;
 }

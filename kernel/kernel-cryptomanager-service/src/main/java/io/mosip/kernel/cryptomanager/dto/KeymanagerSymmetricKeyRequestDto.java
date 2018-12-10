@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Key Manager decrypt-symmetric-key request
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
@@ -21,12 +23,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeymanagerSymmetricKeyRequestDto {
-	
+
+	/**
+	 * Application Id
+	 */
 	private String applicationId;
 
+	/**
+	 * Timestamp as metadata
+	 */
 	private LocalDateTime timeStamp;
 
+	/**
+	 * Refrence Id
+	 */
 	private String referenceId;
 
+	/**
+	 * Encrypted Symmetric key
+	 */
 	private String encryptedSymmetricKey;
 }
