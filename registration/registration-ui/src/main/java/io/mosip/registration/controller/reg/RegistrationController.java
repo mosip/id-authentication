@@ -890,6 +890,7 @@ public class RegistrationController extends BaseController {
 		poaScanBtn.setVisible(false);
 		poiScanBtn.setVisible(false);
 		porScanBtn.setVisible(false);
+		dobScanBtn.setVisible(false);
 		prevAddressButton.setVisible(false);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
