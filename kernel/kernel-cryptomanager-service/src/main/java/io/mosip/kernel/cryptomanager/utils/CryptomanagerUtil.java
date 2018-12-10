@@ -41,48 +41,48 @@ import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
 public class CryptomanagerUtil {
 
 	/**
-	 * 
+	 *  Asymmetric Algorithm Name
 	 */
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 
 	/**
-	 * 
+	 * Symmetric Algorithm Name
 	 */
 	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
 	/**
-	 * 
+	 * Keymanager URL to Get PublicKey
 	 */
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 
 	/**
-	 * 
+	 * Keymanager URL to Decrypt Symmetric key
 	 */
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String decryptSymmetricKeyUrl;
 	
 	/**
-	 * 
+	 * Key Splitter
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
 
 	/**
-	 * Data Mapper instance.
+	 * {@link DataMapper} instance.
 	 */
 	@Autowired
 	private DataMapper dataMapper;
 	
 	/**
-	 * 
+	 * {@link RestTemplate} instance
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	/**
+	/** Calls Keymanager service to get public key 
 	 * @param cryptoRequestDto
 	 * @return
 	 */
