@@ -160,9 +160,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		ManualVerificationEntity manualVerificationEntity;
-		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
-				&&!manualVerificationDTO.getStatusCode()
-						.equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
+		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())&& !manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
