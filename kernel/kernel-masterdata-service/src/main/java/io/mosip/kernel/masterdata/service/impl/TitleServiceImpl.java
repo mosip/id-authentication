@@ -31,8 +31,6 @@ public class TitleServiceImpl implements TitleService {
 	@Autowired
 	private TitleRepository titleRepository;
 
-	@Autowired
-	private MapperUtils objectMapperUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -51,7 +49,7 @@ public class TitleServiceImpl implements TitleService {
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (titles != null && !titles.isEmpty()) {
-			titleDto = objectMapperUtil.mapAll(titles, TitleDto.class);
+			titleDto = MapperUtils.mapAll(titles, TitleDto.class);
 		} else {
 			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 					TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
@@ -73,7 +71,7 @@ public class TitleServiceImpl implements TitleService {
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;
 		List<TitleDto> titleDto = null;
-		List<Title> title = new ArrayList<>();
+		List<Title> title = null;
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
@@ -85,7 +83,7 @@ public class TitleServiceImpl implements TitleService {
 			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 					TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 		}
-		titleDto = objectMapperUtil.mapAll(title, TitleDto.class);
+		titleDto = MapperUtils.mapAll(title, TitleDto.class);
 
 		titleResponseDto = new TitleResponseDto();
 		titleResponseDto.setTitleList(titleDto);

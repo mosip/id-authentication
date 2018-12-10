@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
@@ -21,11 +20,12 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch list of valid document types and to create
- * document types based on list provided.
+ * This class have methods to fetch list of valid document category and to create
+ * document category based on list provided.
  * 
  * @author Neha
  * @author Ritesh Sinha
@@ -34,12 +34,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Service
 public class DocumentCategoryServiceImpl implements DocumentCategoryService {
-
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private DataMapper dataMapper;
 
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
@@ -76,7 +70,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		if (!(documentCategoryList.isEmpty())) {
 			documentCategoryList.forEach(documentCategory -> {
 				DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
-				dataMapper.map(documentCategory, documentCategoryDto, true, null, null, true);
+				MapperUtils.map(documentCategory, documentCategoryDto);
 				documentCategoryDtoList.add(documentCategoryDto);
 			});
 		} else {
@@ -119,7 +113,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		if (!(documentCategoryList.isEmpty())) {
 			documentCategoryList.forEach(documentCategory -> {
 				DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
-				dataMapper.map(documentCategory, documentCategoryDto, true, null, null, true);
+				MapperUtils.map(documentCategory, documentCategoryDto);
 				documentCategoryDtoList.add(documentCategoryDto);
 			});
 		} else {
@@ -165,7 +159,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		}
 
 		if (documentCategory != null) {
-			documentCategoryDto = dataMapper.map(documentCategory, DocumentCategoryDto.class, true, null, null, true);
+			documentCategoryDto = MapperUtils.map(documentCategory, DocumentCategoryDto.class);
 		} else {
 			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -185,7 +179,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
-		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
+		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
 			documentCategory = documentCategoryRepository.create(entity);
@@ -197,7 +191,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
+		MapperUtils.map(documentCategory, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

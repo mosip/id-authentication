@@ -35,15 +35,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	DataMapper dataMapper;
-
-	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
-	@Autowired
-	private MapperUtils mapperUtil;
 
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
@@ -57,7 +49,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (documents != null && !documents.isEmpty()) {
-			listOfDocumentTypeDto = mapperUtil.mapAll(documents, DocumentTypeDto.class);
+			listOfDocumentTypeDto = MapperUtils.mapAll(documents, DocumentTypeDto.class);
 		} else {
 			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -76,18 +68,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
-		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
+		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
 		DocumentType documentType;
 		try {
 			documentType = documentTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
+		MapperUtils.map(documentType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

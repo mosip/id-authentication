@@ -38,9 +38,9 @@ public class RegistrationCenterMachineController {
 			@ApiResponse(code = 201, message = "When registration center and machine mapped", response = ResponseRrgistrationCenterMachineDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
-	public ResponseEntity<ResponseRrgistrationCenterMachineDto> saveRegistrationCenterAndMachine(
+	public ResponseEntity<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
 			@Valid @RequestBody RequestDto<RegistrationCenterMachineDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterMachineService.saveRegistrationCenterAndMachine(requestDto),
+		return new ResponseEntity<>(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto),
 				HttpStatus.CREATED);
 	}
 

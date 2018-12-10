@@ -36,8 +36,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private ApplicationRepository applicationRepository;
 
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	@Autowired
 	private DataMapper dataMapper;
@@ -144,7 +142,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {
-		Application entity = metaUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
+		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
 				Application.class);
 		Application application;
 		try {

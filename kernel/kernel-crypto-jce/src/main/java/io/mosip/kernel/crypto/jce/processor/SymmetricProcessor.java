@@ -90,11 +90,11 @@ public class SymmetricProcessor {
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(),e);
 		}
 		byte[] processData = process(data, cipher);
 		System.arraycopy(processData, 0, output, 0, processData.length);
@@ -118,11 +118,11 @@ public class SymmetricProcessor {
 			throw new InvalidDataException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
-							.getErrorMessage());
+							.getErrorMessage(),e);
 		} catch (IllegalBlockSizeException e) {
 			throw new InvalidDataException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage(),e);
 		}
 	}
 
@@ -150,15 +150,15 @@ public class SymmetricProcessor {
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(),e);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new InvalidDataException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage(),e);
 		}
 		return process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
 	}

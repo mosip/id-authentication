@@ -5,8 +5,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,8 +28,9 @@ import io.mosip.kernel.masterdata.entity.BaseEntity;
 @SuppressWarnings("unchecked")
 public class MetaDataUtils {
 
-	@Autowired
-	MapperUtils mapperUtils;
+	private MetaDataUtils() {
+		super();
+	}
 
 	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
@@ -44,24 +45,30 @@ public class MetaDataUtils {
 	 * @throws DataAccessLayerException
 	 *             if any error occurs while mapping values
 	 */
-	public <T, D extends BaseEntity> D setCreateMetaData(final T source, Class<? extends BaseEntity> destinationClass) {
+	public static <T, D extends BaseEntity> D setCreateMetaData(final T source,
+			Class<? extends BaseEntity> destinationClass) {
+		Objects.requireNonNull(source, "source should not be null");
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = authN.getName();
+		String contextUser = "TestAdmin";
+		if(!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
 
-		D entity = (D) mapperUtils.map(source, destinationClass);
+		D entity = (D) MapperUtils.map(source, destinationClass);
 
 		setCreatedDateTime(contextUser, entity);
 		return entity;
 	}
 
-	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
+	public static <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
+		Objects.requireNonNull(dtoList, "dtoList should not be null");
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
-			D entity = (D) mapperUtils.map(dto, entityClass);
+			D entity = (D) MapperUtils.map(dto, entityClass);
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
@@ -70,7 +77,7 @@ public class MetaDataUtils {
 
 	}
 
-	private <D extends BaseEntity> void setCreatedDateTime(String contextUser, D entity) {
+	private static <D extends BaseEntity> void setCreatedDateTime(String contextUser, D entity) {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
 	}

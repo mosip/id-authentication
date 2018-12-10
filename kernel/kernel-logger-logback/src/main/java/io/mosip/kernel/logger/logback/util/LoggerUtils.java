@@ -39,7 +39,7 @@ public class LoggerUtils {
 		} catch (JAXBException e) {
 			throw new XMLConfigurationParseException(
 					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSE.getValue(),
-					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSEMESSAGE.getValue());
+					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSEMESSAGE.getValue(),e);
 		}
 
 	}

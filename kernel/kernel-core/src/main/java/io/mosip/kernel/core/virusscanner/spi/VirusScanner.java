@@ -40,20 +40,26 @@ public interface VirusScanner<U, V> {
 	/**
 	 * Scan byte array.
 	 *
-	 * @param byte[]
+	 * @param array
 	 *            array
 	 * 
 	 * @return the u
+	 * 
+	 * @throws IOException
+	 *             if exception occurs while failed or interrupted I/O operations
 	 */
 	U scanDocument(byte[] array) throws IOException;
 
 	/**
 	 * Scan File.
 	 *
-	 * @param File
+	 * @param doc
 	 *            object
 	 * 
 	 * @return the u
+	 * 
+	 * @throws IOException
+	 *             if exception occurs while failed or interrupted I/O operations
 	 */
 	U scanDocument(File doc) throws IOException;
 }
