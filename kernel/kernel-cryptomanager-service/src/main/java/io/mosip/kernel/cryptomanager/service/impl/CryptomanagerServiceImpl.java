@@ -87,11 +87,9 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	public CryptomanagerResponseDto decrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		int keyDemiliterIndex = 0;
 		byte[] encryptedHybridData = CryptoUtil.decodeBase64(cryptoRequestDto.getData());
-		final int keySplitterLength = keySplitter.length();
-		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex,
-				keySplitterLength,keySplitter);
+		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex,keySplitter);
         byte[] encryptedKey = copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
-		byte[] encryptedData = copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitterLength,
+		byte[] encryptedData = copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
 				encryptedHybridData.length);
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey=cryptoUtil.getDecryptedSymmetricKey(cryptoRequestDto);
