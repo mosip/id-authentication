@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -33,6 +34,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1.0/devices")
+@Api(tags = { "Device" })
 public class DeviceController {
 
 	/**
@@ -47,6 +49,11 @@ public class DeviceController {
 	 * @return all device details
 	 */
 	@GetMapping(value = "/{languagecode}")
+	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
+			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public DeviceResponseDto getDeviceLang(@PathVariable("languagecode") String langCode) {
 		return deviceService.getDeviceLangCode(langCode);
 	}
@@ -57,6 +64,11 @@ public class DeviceController {
 	 * @return all device details
 	 */
 	@GetMapping(value = "/{languagecode}/{deviceType}")
+	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceLangCodeResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and Device Type"),
+			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(@PathVariable("languagecode") String langCode,
 			@PathVariable("deviceType") String deviceType) {
 		return deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType);

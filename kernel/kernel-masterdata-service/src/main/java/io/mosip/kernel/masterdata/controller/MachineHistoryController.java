@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller with api to get Machine History Details
@@ -42,6 +45,11 @@ public class MachineHistoryController {
 	 *         code and effective date time
 	 */
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
+	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineHistoryResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time", response = MachineHistoryResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine History Details found for the given Languge Code, ID and Effective date time"),
+			@ApiResponse(code = 500, message = "While retrieving Machine History Details any error occured") })
 	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("id") String id,
 			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
