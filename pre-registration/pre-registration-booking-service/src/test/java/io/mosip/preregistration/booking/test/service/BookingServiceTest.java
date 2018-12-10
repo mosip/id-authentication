@@ -43,12 +43,21 @@ import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.PreRegResponseDto;
+import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.booking.dto.RequestDto;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
+import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
+import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
+import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.service.BookingService;
@@ -73,7 +82,7 @@ public class BookingServiceTest {
 	@MockBean
 	private RegistrationBookingRepository registrationBookingRepository;
 
-	@Mock
+	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -102,6 +111,10 @@ public class BookingServiceTest {
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 
+	Map<String, String> requestMap1 = new HashMap<>();
+	private RequestDto<CancelBookingDTO> cancelRequestdto = new RequestDto<>();
+	private CancelBookingDTO cancelbookingDto = new CancelBookingDTO();
+	
 	@Value("${version}")
 	String versionUrl;
 
@@ -204,6 +217,19 @@ public class BookingServiceTest {
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
 
+		cancelRequestdto.setReqTime("2018-12-06T07:22:57.086");
+		cancelRequestdto.setRequest(cancelbookingDto);
+		cancelRequestdto.setId("mosip.pre-registration.booking.book");
+		cancelRequestdto.setVer("1.0");
+		cancelbookingDto.setPre_registration_id("23587986034785");
+		cancelbookingDto.setReg_date("2018-12-04");
+		cancelbookingDto.setRegistration_center_id("1");
+		cancelbookingDto.setSlotFromTime("09:00");
+		cancelbookingDto.setSlotToTime("09:13");
+		requestMap1.put("id", cancelRequestdto.getId());
+		requestMap1.put("ver", cancelRequestdto.getVer());
+		requestMap1.put("reqTime", cancelRequestdto.getReqTime());
+		requestMap1.put("request", cancelRequestdto.getRequest().toString());
 	}
 
 	@Test
@@ -258,5 +284,167 @@ public class BookingServiceTest {
 		// ResponseDto<List<BookingStatusDTO>> result =
 		// service.bookAppointment(bookingDTO);
 		// assertEquals(responseDto, result);
+	}
+	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
+	public void cancelAppointmentSuccessTest() {
+		parameterException = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(true);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		Mockito.when(bookingAvailabilityRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+				LocalTime.parse("09:00"), LocalTime.parse("09:13"), LocalDate.parse("2018-12-04"), "1"))
+				.thenReturn(entity);
+
+		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
+				StatusCodes.Booked.toString())).thenReturn(true);
+
+		Mockito.when(registrationBookingRepository.deleteByPreregistrationId("23587986034785")).thenReturn(1);
+
+		ResponseEntity<ResponseDto> resp = null;
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(ResponseDto.class))).thenReturn(resp);
+		entity.setAvailableKiosks(entity.getAvailableKiosks() + 1);
+		Mockito.when(bookingAvailabilityRepository.update(entity)).thenReturn(entity);
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getResponse().getMessage(), "APPOINTMENT_SUCCESSFULLY_CANCELED");
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test(expected = CancelAppointmentFailedException.class)
+	public void AppointmentCanceledFailedExceptionTest() throws Exception {
+		CancelAppointmentFailedException exception = new CancelAppointmentFailedException();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(false);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		Mockito.when(bookingAvailabilityRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+				LocalTime.parse("09:00"), LocalTime.parse("09:13"), LocalDate.parse("2018-12-04"), "1"))
+				.thenReturn(entity);
+
+		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
+				StatusCodes.Booked.toString())).thenReturn(true);
+
+		Mockito.when(registrationBookingRepository.deleteByPreregistrationId("23587986034785")).thenReturn(0);
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test(expected = AvailablityNotFoundException.class)
+	public void AvailablityNotFoundExceptionTest() throws Exception {
+		AvailablityNotFoundException exception = new AvailablityNotFoundException();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(false);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		System.out.println("Response:" + res);
+		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
+				StatusCodes.Booked.toString())).thenReturn(true);
+
+		Mockito.when(bookingAvailabilityRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+				LocalTime.parse("09:00"), LocalTime.parse("09:13"), LocalDate.parse("2014-12-04"), "1"))
+				.thenReturn(null);
+
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test(expected = AppointmentCannotBeCanceledException.class)
+	public void AppointmentCannotBeCanceledExceptionTest() throws Exception {
+		AppointmentCannotBeCanceledException exception = new AppointmentCannotBeCanceledException();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(false);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
+				StatusCodes.Booked.toString())).thenReturn(false);
+
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test(expected = AppointmentAlreadyCanceledException.class)
+	public void AppointmentAlreadyCanceledExceptionTest() throws Exception {
+		AppointmentAlreadyCanceledException exception = new AppointmentAlreadyCanceledException();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Canceled.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(false);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
 	}
 }

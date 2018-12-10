@@ -24,6 +24,9 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_015, //No time slots are assigned to that registration center
 	PRG_BOOK_RCI_013, // Booking data not found
 	PRG_BOOK_RCI_016,//availability table is not accessable
+	PRG_BOOK_RCI_017, //Appointment time slot is already canceled.
+	PRG_BOOK_RCI_018, //Appointment can not be canceled.
+	PRG_BOOK_RCI_019, //Cancel Appointmenct  failed
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
 }
