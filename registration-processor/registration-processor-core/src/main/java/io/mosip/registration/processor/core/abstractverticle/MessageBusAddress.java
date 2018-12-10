@@ -97,5 +97,8 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant STRUCTURE_BUS_OUT. */
 	public static final MessageBusAddress OSI_BUS_OUT = new MessageBusAddress("osi-bus-out");
+	
+	/** The Constant MANUAL_VERIFICATION_BUS */
+	public static final MessageBusAddress MANUAL_VERIFICATION_BUS = new MessageBusAddress("manual-verification-bus");
 
 }

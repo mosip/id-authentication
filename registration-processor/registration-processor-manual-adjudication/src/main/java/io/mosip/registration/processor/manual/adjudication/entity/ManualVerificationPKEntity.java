@@ -74,32 +74,4 @@ public class ManualVerificationPKEntity implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof ManualVerificationPKEntity)) {
-			return false;
-		}
-		ManualVerificationPKEntity castOther = (ManualVerificationPKEntity) other;
-		return this.regId.equals(castOther.regId) && this.matchedRefId.equals(castOther.matchedRefId)
-				&& this.matchedRefType.equals(castOther.matchedRefType);
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.regId.hashCode();
-		hash = hash * prime + this.matchedRefId.hashCode();
-		hash = hash * prime + this.matchedRefType.hashCode();
-
-		return hash;
-	}
 }

@@ -37,10 +37,8 @@ public class ManualAdjudicationDao {
 	 * @return the earliest created unassigned {@link ManualVerificationEntity}
 	 */
 	public List<ManualVerificationEntity> getFirstApplicantDetails(String status) {
-		//TODO TO Fix this sonar lint issue
-		List<ManualVerificationEntity> manualAdjudicationEntitiesList = manualAdjudiacationRepository
+		return manualAdjudiacationRepository
 				.getFirstApplicantDetails(status);
-		return manualAdjudicationEntitiesList;
 
 	}
 
