@@ -48,6 +48,7 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -66,7 +67,7 @@ public class PacketReceiverServiceTest {
 	private InternalRegistrationStatusDto mockDto;
 
 	@Mock
-    private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+    private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
