@@ -69,7 +69,7 @@ public class FingerprintFacade {
 		return fingerprintProvider.getFingerPrintImage();
 	}
 
-	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) throws IOException {
+	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) {
 
 		Map<String, Object> fingerMap = null;
 
@@ -84,13 +84,15 @@ public class FingerprintFacade {
 			} else if (fingerType.equals(RegistrationConstants.THUMBS)) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
 			}
-			fpDetailsDTO.setFingerPrint((byte[]) fingerMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
-			fpDetailsDTO.setFingerprintImageName(fingerType.concat(RegistrationConstants.DOT)
-					.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
-			fpDetailsDTO.setFingerType(fingerType);
-			fpDetailsDTO.setForceCaptured(false);
-			fpDetailsDTO.setNumRetry(2);
-			fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
+			if (fpDetailsDTO.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY)) {
+				fpDetailsDTO.setFingerPrint((byte[]) fingerMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
+				fpDetailsDTO.setFingerprintImageName(fingerType.concat(RegistrationConstants.DOT)
+						.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
+				fpDetailsDTO.setFingerType(fingerType);
+				fpDetailsDTO.setForceCaptured(false);
+
+				fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
+			}
 		} catch (RegBaseCheckedException e) {
 
 		} finally {
@@ -178,11 +180,31 @@ public class FingerprintFacade {
 
 		try (Stream<Path> paths = Files.walk(Paths.get(path))) {
 			paths.filter(Files::isRegularFile).forEach(e -> {
-				File file = e.getFileName().toFile();
-				if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
-					readFingerFromFileSTUB(e, fingerprintDetailsDTO, RegistrationConstants.ISO_FILE_NAME);
-				} else if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
-					readFingerFromFileSTUB(e, fingerprintDetailsDTO, RegistrationConstants.ISO_IMAGE_FILE_NAME);
+				try {
+					File file = e.getFileName().toFile();
+					FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
+					if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
+						byte[] isoTemplateBytes = Files.readAllBytes(e.toAbsolutePath());
+						segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+					}
+					if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
+						byte[] isoImageBytes = Files.readAllBytes(e.toAbsolutePath());
+						segmentedDetailsDTO.setFingerPrint(isoImageBytes);
+					}
+					segmentedDetailsDTO.setFingerType(e.toFile().getParentFile().getName());
+					segmentedDetailsDTO.setFingerprintImageName(e.toFile().getParentFile().getName());
+					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
+					segmentedDetailsDTO.setForceCaptured(false);
+					segmentedDetailsDTO.setQualityScore(90);
+
+					if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
+						List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
+						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+					}
+					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
+				} catch (IOException ioException) {
+					LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage());
 				}
 			});
 		} catch (IOException ioException) {
@@ -199,34 +221,6 @@ public class FingerprintFacade {
 					runtimeException.getMessage(), runtimeException.getCause()));
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
-	}
-
-	/**
-	 * Reading finger based on the isoFile type.
-	 *
-	 * @param path        the path
-	 * @param isoFileType the iso file type
-	 */
-	private void readFingerFromFileSTUB(Path path, FingerprintDetailsDTO fingerprintDetailsDTO, String isoFileType) {
-		try {
-			FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
-			byte[] allBytes = Files.readAllBytes(path.toAbsolutePath());
-
-			segmentedDetailsDTO.setFingerPrint(allBytes);
-			segmentedDetailsDTO.setFingerType(path.toFile().getParentFile().getName().concat(isoFileType));
-			segmentedDetailsDTO.setFingerprintImageName(path.toFile().getParentFile().getName().concat(isoFileType));
-			segmentedDetailsDTO.setNumRetry(1);
-			segmentedDetailsDTO.setForceCaptured(false);
-			segmentedDetailsDTO.setQualityScore(90);
-
-			if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
-				List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<FingerprintDetailsDTO>(5);
-				fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
-			}
-			fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-		}
 	}
 
 }

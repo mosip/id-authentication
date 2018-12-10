@@ -15,6 +15,9 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	/** The finger print. */
 	private byte[] fingerPrint;
 	
+	/** The finger print. */
+	private byte[] fingerPrintISOTemplate;
+	
 	/** The fingerprint image name. */
 	protected String fingerprintImageName;
 	

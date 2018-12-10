@@ -10,12 +10,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -162,7 +164,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					AnchorPane sourcePane = (AnchorPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
-					scanBtn.setDisable(false);
+
+					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
+					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
+
+					if (fpDetailsDTO == null
+							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)
+									&& fpDetailsDTO.getQualityScore() < leftHandSlapThresholdScore)
+							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)
+									&& fpDetailsDTO.getQualityScore() < rightHandSlapThresholdScore)
+							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)
+									&& fpDetailsDTO.getQualityScore() < thumbsThresholdScore)) {
+						scanBtn.setDisable(false);
+					}
 				}
 			};
 
@@ -171,11 +185,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			rightHandPalmPane.setOnMouseClicked(mouseClick);
 			thumbPane.setOnMouseClicked(mouseClick);
 
-			leftSlapThresholdScoreLbl
-					.setText(String.valueOf(leftHandSlapThresholdScore) + RegistrationConstants.PERCENTAGE);
-			rightSlapThresholdScoreLbl
-					.setText(String.valueOf(rightHandSlapThresholdScore) + RegistrationConstants.PERCENTAGE);
-			thumbsThresholdScoreLbl.setText(String.valueOf(thumbsThresholdScore) + RegistrationConstants.PERCENTAGE);
+			leftSlapThresholdScoreLbl.setText(getQualityScore(leftHandSlapThresholdScore));
+
+			rightSlapThresholdScoreLbl.setText(getQualityScore(rightHandSlapThresholdScore));
+			thumbsThresholdScoreLbl.setText(getQualityScore(thumbsThresholdScore));
 
 			RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
@@ -185,11 +198,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							if (item.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
 								leftHandPalmImageview
 										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+								leftSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
 							} else if (item.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
 								rightHandPalmImageview
 										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+								rightSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
 							} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
 								thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+								thumbsQualityScore.setText(getQualityScore(item.getQualityScore()));
 							}
 						});
 			} else {
@@ -211,14 +227,22 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 	}
 
+	private String getQualityScore(Double qulaityScore) {
+		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+
 	public void scan() {
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to capture fingerprint for user registration");
+			FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
-			scanController.init(this, "Fingerprint");
+			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < noOfRetriesThreshold) {
 
-			scanBtn.setDisable(true);
+				scanController.init(this, "Fingerprint");
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, "You have reached the maximum number of retries.");
+			}
 
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingersplaced ended");
@@ -236,97 +260,42 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	public void scan(Stage popupStage) {
 
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.REGISTRATION_DATA);
+
 			FingerprintDetailsDTO detailsDTO = null;
 
-			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = registrationDTO.getBiometricDTO()
+			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 					.getApplicantBiometricDTO().getFingerprintDetailsDTO();
 
 			if (fingerprintDetailsDTOs == null || fingerprintDetailsDTOs.isEmpty()) {
 				fingerprintDetailsDTOs = new ArrayList<>(3);
-				registrationDTO.getBiometricDTO().getApplicantBiometricDTO()
+				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 						.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 			}
 
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
-				if (fingerprintDetailsDTOs != null) {
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
 
-					for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-						if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
-							detailsDTO = fingerprintDetailsDTO;
-							break;
-						}
-					}
-					if (detailsDTO == null) {
-						detailsDTO = new FingerprintDetailsDTO();
-						fingerprintDetailsDTOs.add(detailsDTO);
-					}
-				}
-				fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, RegistrationConstants.LEFTPALM);
+						RegistrationConstants.LEFTHAND_SEGMENTED_FINGERPRINT_PATH, leftHandPalmImageview,
 
-				fingerPrintFacade.segmentFingerPrintImage(detailsDTO,
-						RegistrationConstants.LEFTHAND_SEGMENTED_FINGERPRINT_PATH);
-
-				scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-
-				leftHandPalmImageview.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-				leftSlapQualityScore
-						.setText(String.valueOf(detailsDTO.getQualityScore()) + RegistrationConstants.PERCENTAGE);
+						leftSlapQualityScore, popupStage);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
-				if (fingerprintDetailsDTOs != null) {
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
-					for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-						if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
-							detailsDTO = fingerprintDetailsDTO;
-							break;
-						}
-					}
-					if (detailsDTO == null) {
-						detailsDTO = new FingerprintDetailsDTO();
-						fingerprintDetailsDTOs.add(detailsDTO);
-					}
-				}
-				fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, RegistrationConstants.RIGHTPALM);
+						RegistrationConstants.RIGHTHAND_SEGMENTED_FINGERPRINT_PATH, rightHandPalmImageview,
 
-				fingerPrintFacade.segmentFingerPrintImage(detailsDTO,
-						RegistrationConstants.RIGHTHAND_SEGMENTED_FINGERPRINT_PATH);
-				scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-
-				rightHandPalmImageview.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-				rightSlapQualityScore
-						.setText(String.valueOf(detailsDTO.getQualityScore()) + RegistrationConstants.PERCENTAGE);
+						rightSlapQualityScore, popupStage);
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
-				if (fingerprintDetailsDTOs != null) {
 
-					for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-						if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
-							detailsDTO = fingerprintDetailsDTO;
-							break;
-						}
-					}
-					if (detailsDTO == null) {
-						detailsDTO = new FingerprintDetailsDTO();
-						fingerprintDetailsDTOs.add(detailsDTO);
-					}
-				}
-				fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, RegistrationConstants.THUMBS);
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
-				fingerPrintFacade.segmentFingerPrintImage(detailsDTO,
-						RegistrationConstants.THUMB_SEGMENTED_FINGERPRINT_PATH);
-				scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+						RegistrationConstants.THUMB_SEGMENTED_FINGERPRINT_PATH, thumbImageview, thumbsQualityScore,
+						popupStage);
 
-				thumbImageview.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-				thumbsQualityScore
-						.setText(String.valueOf(detailsDTO.getQualityScore()) + RegistrationConstants.PERCENTAGE);
 			}
-
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
-			popupStage.close();
 
 		} catch (IOException ioException) {
 
@@ -346,6 +315,41 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
 
+	}
+
+	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
+			String fingerType, String segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
+			Stage popupStage) throws IOException {
+
+		ImageView imageView = fingerImageView;
+		Label qualityScoreLabel = scoreLabel;
+		if (fingerprintDetailsDTOs != null) {
+
+			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
+				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
+					detailsDTO = fingerprintDetailsDTO;
+					detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
+					break;
+				}
+			}
+			if (detailsDTO == null) {
+				detailsDTO = new FingerprintDetailsDTO();
+				fingerprintDetailsDTOs.add(detailsDTO);
+			}
+		}
+		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+
+		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+
+		scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
+
+		popupStage.close();
+
+		imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+		qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
+		scanBtn.setDisable(true);
 	}
 
 	/**
@@ -382,7 +386,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
-			registrationController.getDemoGraphicTitlePane().setExpanded(true);
+			if (validateFingerPrints()) {
+				registrationController.getDemoGraphicTitlePane().setExpanded(true);
+			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration ended");
 		} catch (RuntimeException runtimeException) {
@@ -474,15 +480,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
 				return fingerprintDetailsDTO.getQualityScore() >= leftHandSlapThresholdScore
 						|| (fingerprintDetailsDTO.getQualityScore() < leftHandSlapThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold);
+								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
 				return fingerprintDetailsDTO.getQualityScore() >= rightHandSlapThresholdScore
 						|| (fingerprintDetailsDTO.getQualityScore() < rightHandSlapThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold);
+								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
 				return fingerprintDetailsDTO.getQualityScore() >= thumbsThresholdScore
 						|| (fingerprintDetailsDTO.getQualityScore() < thumbsThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold);
+								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+						|| fingerprintDetailsDTO.isForceCaptured();
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints ended");
@@ -493,5 +502,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							"Exception while validating the quality score of captured Fingerprints: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
+	}
+
+	private Stream<FingerprintDetailsDTO> getFingerprintBySelectedPane() {
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.stream().filter(fingerprint -> {
+					String fingerType;
+					if (StringUtils.containsIgnoreCase(selectedPane.getId(), leftHandPalmPane.getId())) {
+						fingerType = RegistrationConstants.LEFTPALM;
+					} else {
+						if (StringUtils.containsIgnoreCase(selectedPane.getId(), rightHandPalmPane.getId())) {
+							fingerType = RegistrationConstants.RIGHTPALM;
+						} else {
+							fingerType = RegistrationConstants.THUMBS;
+						}
+					}
+					return fingerprint.getFingerType().contains(fingerType);
+				});
+	}
+
+	private RegistrationDTO getRegistrationDTOFromSession() {
+		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }
