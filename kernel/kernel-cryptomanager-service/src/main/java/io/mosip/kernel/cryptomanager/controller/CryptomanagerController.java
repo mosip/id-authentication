@@ -49,7 +49,7 @@ public class CryptomanagerController {
 	 */
 	@ApiOperation(value = "Encrypt the data",response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/encrypt",produces= "application/json")
-	public CryptomanagerResponseDto encrypt(@ApiParam("Data to encrypt in base64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
+	public CryptomanagerResponseDto encrypt(@ApiParam("Data to encrypt in BASE64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.encrypt(cryptoRequestDto);
 	}
 
@@ -63,7 +63,7 @@ public class CryptomanagerController {
 	 */
 	@ApiOperation(value = "Decrypt the data",response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/decrypt",produces= "application/json")
-	public CryptomanagerResponseDto decrypt(@ApiParam("Data to decrypt in base64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
+	public CryptomanagerResponseDto decrypt(@ApiParam("Data to decrypt in BASE64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptoRequestDto) {
 		return cryptoService.decrypt(cryptoRequestDto);
 	}
 }
