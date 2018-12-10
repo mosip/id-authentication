@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.manual.adjudication.service;
 
-
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 
@@ -52,7 +52,7 @@ import javassist.bytecode.ByteArray;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ManualAdjudicationServiceTest {
-	
+
 	private List<ManualVerificationEntity> entities;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@InjectMocks
@@ -69,21 +69,19 @@ public class ManualAdjudicationServiceTest {
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 	@Mock
 	ManualAdjudicationDao manualAdjudicationDao;
-	
+
 	private InternalRegistrationStatusDto registrationStatusDto;
 	private ManualVerificationPKEntity PKId;
 	private ManualVerificationDTO manualVerificationDTO;
 	private ManualVerificationEntity manualVerificationEntity;
-	
-	
-	
+
 	@Before
-	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-	
+	public void setup()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		manualVerificationEntity = new ManualVerificationEntity();
 		manualVerificationDTO = new ManualVerificationDTO();
-		registrationStatusDto= new InternalRegistrationStatusDto();
+		registrationStatusDto = new InternalRegistrationStatusDto();
 		PKId = new ManualVerificationPKEntity();
 		dto.setName("User");
 		dto.setOffice("Office");
@@ -107,83 +105,87 @@ public class ManualAdjudicationServiceTest {
 		registrationStatusDto.setStatusComment("");
 		entities = new ArrayList<>();
 		entities.add(manualVerificationEntity);
-		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name())).thenReturn(entities);
+		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+				.thenReturn(entities);
 	}
+
 	@Test
-	public void assignStatusMethodCheck()
-	{
-		
-	    Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(), ManualVerificationStatus.ASSIGNED.name())).thenReturn(manualVerificationEntity);
-		manualAdjudicationService.assignStatus(dto);
+	public void assignStatusMethodCheck() {
+
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(),
+				ManualVerificationStatus.ASSIGNED.name())).thenReturn(manualVerificationEntity);
+		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignStatus(dto);
+		assertEquals(this.manualVerificationDTO, manualVerificationDTO);
 	}
+
 	@Test
-	public void assignStatusMethodNullEntityCheck()
-	{
-		//manualVerificationEntity.setStatusCode("PENDING");
+	public void assignStatusMethodNullEntityCheck() {
+		// manualVerificationEntity.setStatusCode("PENDING");
 		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
 		manualAdjudicationService.assignStatus(dto);
 	}
+
 	@Test
-	public void getApplicantFileMethodCheck() 
-	{
-		String regId="Id"; 
-		String fileName=PacketFiles.APPLICANTPHOTO.name();
+	public void getApplicantFileMethodCheck() {
+		String regId = "Id";
+		String fileName = PacketFiles.APPLICANTPHOTO.name();
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),anyString())).thenReturn(fileInStream);
-		
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.PROOFOFADDRESS.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.PROOFOFIDENTITY.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.EXCEPTIONPHOTO.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.RIGHTPALM.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.LEFTPALM.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.BOTHTHUMBS.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.LEFTEYE.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		fileName=PacketFiles.RIGHTEYE.name();
-		file=manualAdjudicationService.getApplicantFile(regId, fileName);
-		
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(fileInStream);
+
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.PROOFOFADDRESS.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.PROOFOFIDENTITY.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.EXCEPTIONPHOTO.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.RIGHTPALM.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.LEFTPALM.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.BOTHTHUMBS.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.LEFTEYE.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+		fileName = PacketFiles.RIGHTEYE.name();
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
+
 	}
+
 	@Test
-	public void getApplicantDataMethodCheck()
-	{
-		String regId="Id"; 
-		String fileName=PacketFiles.DEMOGRAPHICINFO.name();
+	public void getApplicantDataMethodCheck() {
+		String regId = "Id";
+		String fileName = PacketFiles.DEMOGRAPHICINFO.name();
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),anyString())).thenReturn(fileInStream);
-		file=manualAdjudicationService.getApplicantData(regId, fileName);
-		fileName=PacketFiles.PACKETMETAINFO.name();
-		file=manualAdjudicationService.getApplicantData(regId, fileName);
-		
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(fileInStream);
+		file = manualAdjudicationService.getApplicantData(regId, fileName);
+		fileName = PacketFiles.PACKETMETAINFO.name();
+		file = manualAdjudicationService.getApplicantData(regId, fileName);
+
 	}
-	@Test(expected=InvalidFileNameException.class)
+
+	@Test(expected = InvalidFileNameException.class)
 	public void testExceptionIngetApplicantFile() throws Exception {
-		String regId="Id"; 
-		String fileName="";
+		String regId = "Id";
+		String fileName = "";
 		manualAdjudicationService.getApplicantFile(regId, fileName);
 	}
-	@Test(expected=InvalidFileNameException.class)
+
+	@Test(expected = InvalidFileNameException.class)
 	public void testExceptionIngetApplicantData() throws Exception {
-		String regId="Id"; 
-		String fileName="";
+		String regId = "Id";
+		String fileName = "";
 		manualAdjudicationService.getApplicantData(regId, fileName);
 	}
-	
-	
-	@Test(expected=NoRecordAssignedException.class)
-	public void updatePacketStatusMethodCheck()
-	{
-		Mockito.when(manualAdjudicationDao.getByRegId(any(),any(),any())).thenReturn(manualVerificationEntity);
+
+	@Test(expected = NoRecordAssignedException.class)
+	public void updatePacketStatusMethodCheck() {
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(),any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
+				.thenReturn(manualVerificationEntity);
 
 		manualVerificationDTO.setStatusCode("APPROVED");
 
@@ -191,20 +193,19 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(),any())).thenReturn(null);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		
-		Mockito.when(manualAdjudicationDao.getByRegId(any(),any(),any())).thenReturn(null);
+
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		
+
 	}
-	@Test(expected=InvalidUpdateException.class)
-	public void updatePacketStatusExceptionCheck()
-	{
+
+	@Test(expected = InvalidUpdateException.class)
+	public void updatePacketStatusExceptionCheck() {
 		manualVerificationDTO.setStatusCode("");
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 
 	}
 
-	
 }
