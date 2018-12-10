@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping("/v1.0")
-@Api(tags = { "keymanager" },value="Operation related to Keymanagement")
+@Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
 	/**
@@ -53,11 +53,12 @@ public class KeymanagerController {
 	 *            Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
+	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
-			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId") Optional<String> referenceId) {
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(
+			@ApiParam("Application id of the application requesting public key") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp of the request as metadata") @RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
+			@ApiParam("Reference id of the application requesting public key as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId),
 				HttpStatus.OK);
@@ -71,10 +72,10 @@ public class KeymanagerController {
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
-	@ApiOperation(value = "Decrypt the encrypted Symmetric key",response = SymmetricKeyResponseDto.class)
+	@ApiOperation(value = "Decrypt the encrypted symmetric key", response = SymmetricKeyResponseDto.class)
 	@PostMapping(value = "/symmetricKey")
-	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(@ApiParam("Symmetric key to encrypt in BASE64 encoding with meta-data")
-			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
+	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(
+			@ApiParam("Encrypted symmetric key in base64 encoding with metadata") @RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
 		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.CREATED);
 	}
