@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -176,10 +177,14 @@ public class RestHelper {
 		RequestBodyUriSpec method;
 
 		if (request.getHeaders() != null) {
-			webClient = WebClient.builder().baseUrl(request.getUri())
+			webClient = WebClient.builder()
+					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
+					.baseUrl(request.getUri())
 					.defaultHeader(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().toString()).build();
 		} else {
-			webClient = WebClient.builder().baseUrl(request.getUri()).build();
+			webClient = WebClient.builder()
+					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
+					.baseUrl(request.getUri()).build();
 		}
 
 		method = webClient.method(request.getHttpMethod());
