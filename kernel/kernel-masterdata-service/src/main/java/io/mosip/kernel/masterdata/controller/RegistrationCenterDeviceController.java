@@ -38,9 +38,9 @@ public class RegistrationCenterDeviceController {
 			@ApiResponse(code = 201, message = "When registration center and device mapped", response = ResponseRegistrationCenterDeviceDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and device") })
-	public ResponseEntity<ResponseRegistrationCenterDeviceDto> saveRegistrationCenterAndDevice(
+	public ResponseEntity<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
 			@Valid @RequestBody RequestDto<RegistrationCenterDeviceDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterDeviceService.saveRegistrationCenterAndDevice(requestDto),
+		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto),
 				HttpStatus.CREATED);
 	}
 }

@@ -35,7 +35,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 
 
 	@Override
-	public ResponseRrgistrationCenterMachineDeviceDto saveRegistrationCenterMachineAndDevice(
+	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 

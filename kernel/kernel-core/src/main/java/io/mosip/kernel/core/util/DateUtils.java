@@ -560,7 +560,7 @@ public final class DateUtils {
 	// ---------------------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * Formats java.time.LocalDateTime to UTC string in default ISO pattern -
+	 * Converts java.time.LocalDateTime to UTC string in default ISO pattern -
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
 	 * 
 	 * @param localDateTime
@@ -570,11 +570,13 @@ public final class DateUtils {
 	 */
 
 	public static String toISOString(LocalDateTime localDateTime) {
-		return localDateTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		ZonedDateTime zonedtime = localDateTime.atZone(ZoneId.systemDefault());
+		ZonedDateTime converted = zonedtime.withZoneSameInstant(ZoneOffset.UTC);
+		return converted.toString();
 	}
 
 	/**
-	 * Formats java.util.Date to UTC string in default ISO pattern -
+	 * Converts java.util.Date to UTC string in default ISO pattern -
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
 	 * 
 	 * @param date
@@ -588,6 +590,21 @@ public final class DateUtils {
 		return df.format(date);
 	}
 
+	
+	/**
+	 * Formats java.time.LocalDateTime to UTC string in default ISO pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> ignoring zone offset.
+	 * 
+	 * @param localDateTime
+	 *            java.time.LocalDateTime
+	 * 
+	 * @return a date String
+	 */
+
+	public static String formatToISOString(LocalDateTime localDateTime) {
+		return localDateTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+	}
+	
 	/**
 	 * Provides current UTC java.time.LocalDateTime.
 	 * 

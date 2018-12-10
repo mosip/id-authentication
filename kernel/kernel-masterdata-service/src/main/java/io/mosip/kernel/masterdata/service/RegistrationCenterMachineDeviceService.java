@@ -27,6 +27,6 @@ public interface RegistrationCenterMachineDeviceService {
 	 *         
 	 *         
 	 */
-	public ResponseRrgistrationCenterMachineDeviceDto saveRegistrationCenterMachineAndDevice(
+	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto);
 }

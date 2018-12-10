@@ -49,7 +49,10 @@ public class MetaDataUtils {
 			Class<? extends BaseEntity> destinationClass) {
 		Objects.requireNonNull(source, "source should not be null");
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = authN.getName();
+		String contextUser = "TestAdmin";
+		if(!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
 
 		D entity = (D) MapperUtils.map(source, destinationClass);
 

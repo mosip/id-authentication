@@ -16,13 +16,36 @@ import io.mosip.kernel.masterdata.service.MachineSpecificationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-
+/**
+ * This class have methods to save  a Machine Specification Details
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @Service
 public class MachineSpecificationServiceImpl implements MachineSpecificationService {
 
+	/**
+	 * Field to hold Machine Repository object
+	 */
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
 
+	/**
+	 * Method used to save Machine Specification details 
+	 * 
+	 * @return IdResponseDto
+	 * 		   Machine Specification ID which is successfully inserted
+	 * 
+	 * @param RequestDto<MachineSpecificationDto>
+	 *             input from user Machine Specification DTO
+	 * 
+	 * @throws MasterDataServiceException
+	 *             While inserting Machine Specification Detail If fails to insert  required Machine Specification
+	 *             Detail
+	 * 
+	 */
 	@Override
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
 
