@@ -448,7 +448,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 
 			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
-				if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+				if (fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 					isValid = true;
 				} else {
 					generateAlert(RegistrationConstants.ALERT_INFORMATION,
