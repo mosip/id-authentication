@@ -14,11 +14,14 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 /**
  * This controller class is to handle the preview screen of the Biometric
@@ -60,6 +63,12 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private ImageView exceptionPhoto;
+	
+	@FXML
+	private Text leftEyeQualityScore;
+	
+	@FXML
+	private Text rightEyeQualityScore;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -88,6 +97,7 @@ public class BiometricPreviewController extends BaseController {
 					individualPhoto.setImage(new Image(byteArrayInputStream));
 				}
 			}
+
 			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
 				byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
 						.getExceptionPhoto();
@@ -95,6 +105,20 @@ public class BiometricPreviewController extends BaseController {
 					ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
 					exceptionPhoto.setImage(new Image(inputStream));
 				}
+			}
+
+		}
+
+		for (IrisDetailsDTO capturedIris : registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO()) {
+			if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
+				leftEye.setImage(convertBytesToImage(capturedIris.getIris()));
+				leftEyeQualityScore.setText(String.format("%s %s",
+						String.valueOf(Math.round(capturedIris.getQualityScore())), RegistrationConstants.PERCENTAGE));
+			} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
+				rightEye.setImage(convertBytesToImage(capturedIris.getIris()));
+				rightEyeQualityScore.setText(String.format("%s %s",
+						String.valueOf(Math.round(capturedIris.getQualityScore())), RegistrationConstants.PERCENTAGE));
 			}
 		}
 	}

@@ -60,6 +60,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private RegistrationController registrationController;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -190,7 +192,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			SessionContext.getInstance().setMapObject(addr);
 		}
 
-		goToHomePage();
+		registrationController.goToHomePage();
 	}
 
 	private void generateNotificationAlert(String alertMessage) {
