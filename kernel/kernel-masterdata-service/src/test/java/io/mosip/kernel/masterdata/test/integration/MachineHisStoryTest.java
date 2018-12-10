@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.masterdata.service.MachineHistoryService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -32,8 +31,7 @@ public class MachineHisStoryTest {
 	
 	
 	
-	/*@MockBean
-	private MachineHistoryService machineHistoryService;*/
+	
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -82,9 +80,5 @@ public class MachineHisStoryTest {
 		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
 	}
 	
-	/*@Test
-	public void getMachineHistroyIdLangEffDTimeDateParseExceptionTest() throws Exception {
-		when(machineHistoryService.getMachineHistroyIdLangEffDTime(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(DateTimeParseException.class);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
-	}*/
+	
 }
