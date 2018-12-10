@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 
 /**
  * Controller class for TSPID generator.
@@ -30,6 +32,8 @@ public class TspGeneratorController {
 	 * 
 	 * @return the TSPID.
 	 */
+	@ApiOperation(value = "Generate TSP ID", response = TspResponseDTO.class)
+	@ApiResponse(code = 200, message = "TSp Id successfully generated")
 	@GetMapping("/idgenerator/tsp")
 	public ResponseEntity<TspResponseDTO> generateId() {
 

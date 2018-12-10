@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.core.util.MathUtils;
+import io.mosip.kernel.idgenerator.tsp.constant.TspIdExceptionConstant;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdPropertyConstant;
 import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
@@ -26,6 +27,9 @@ import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 @Service
 public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO> {
 
+	/**
+	 * Length of TspId.
+	 */
 	@Value("${mosip.kernel.tsp.length}")
 	private int tspIdLength;
 
@@ -47,24 +51,28 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 				tspIdLength - 1);
 
 		Tsp entity = null;
+		
 		try {
 
 			entity = tspRepository.findMaxTspId();
 
 		} catch (DataAccessLayerException e) {
-			throw new TspIdServiceException("xxxx", "Error Occur While Fetching Id", e);
+			throw new TspIdServiceException(TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorCode(),
+					TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 
 		if (entity == null) {
 			entity = new Tsp();
-			entity.setId(1);
 			entity.setTspId(initialValue);
+			entity.setCreatedBy("admin");
 			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 			entity.setCreatedDateTime(time);
 
 		} else {
-
-			entity.setTspId(entity.getTspId() + 1);
+			long lastGeneratedId = entity.getTspId();
+			entity = new Tsp();
+			entity.setTspId(lastGeneratedId + 1);
+			entity.setCreatedBy("admin");
 			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 			entity.setCreatedDateTime(time);
 
@@ -74,7 +82,8 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 			tspRepository.save(entity);
 
 		} catch (DataAccessLayerException e) {
-			throw new TspIdServiceException("xxxx", "Error Occur While Inserting Id", e);
+			throw new TspIdServiceException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
+					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
 
 		TspResponseDTO tspDto = new TspResponseDTO();

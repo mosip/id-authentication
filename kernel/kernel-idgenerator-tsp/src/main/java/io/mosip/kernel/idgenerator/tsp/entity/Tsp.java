@@ -17,20 +17,14 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "tsp_id", schema = "ids")
+@Table(name = "tspid", schema = "ids")
 @Data
 public class Tsp {
 
 	/**
-	 * Primary id for tsp_id table.
-	 */
-	@Id
-	@Column(name = "id", nullable = false)
-	private int id;
-
-	/**
 	 * The TSPID generated.
 	 */
+	@Id
 	@Column(name = "tsp_id", nullable = false)
 	private long tspId;
 
@@ -40,4 +34,33 @@ public class Tsp {
 	@Column(name = "cr_dtimes", nullable = false)
 	private LocalDateTime createdDateTime;
 
+	/**
+	 * Updated By
+	 */
+	@Column(name = "upd_by")
+	private String updatedBy;
+
+	/**
+	 * Update date time
+	 */
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updatedDateTime;
+
+	/**
+	 * Is Deleted Or Not
+	 */
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+
+	/**
+	 * Deleted date time.
+	 */
+	@Column(name = "del_dtimes")
+	private LocalDateTime deletedDateTime;
+
+	/**
+	 * Created by.
+	 */
+	@Column(name = "cr_by", nullable = false, length = 24)
+	private String createdBy;
 }
