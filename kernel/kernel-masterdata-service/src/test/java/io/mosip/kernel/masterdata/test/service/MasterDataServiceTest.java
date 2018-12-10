@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
@@ -82,8 +82,10 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -122,6 +124,7 @@ public class MasterDataServiceTest {
 
 	@MockBean
 	private BiometricTypeRepository biometricTypeRepository;
+	
 
 	@Autowired
 	private BiometricTypeService biometricTypeService;
@@ -133,6 +136,10 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
+	
+	@Autowired
+	private MachineHistoryService machineHistoryService;
+	
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
 
@@ -1290,4 +1297,6 @@ public class MasterDataServiceTest {
 		wordsList.add("allowed");
 		blacklistedWordsService.validateWord(wordsList);
 	}
+	
+	
 }
