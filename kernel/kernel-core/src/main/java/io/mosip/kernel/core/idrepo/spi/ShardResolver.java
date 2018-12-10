@@ -13,5 +13,5 @@ public interface ShardResolver {
 	 * @param id the id
 	 * @return the shrad
 	 */
-	String getShrad(String id);
+	String getShard(String id);
 }

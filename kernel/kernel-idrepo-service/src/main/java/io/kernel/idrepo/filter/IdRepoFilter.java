@@ -12,7 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.google.common.collect.Lists;
 
 import io.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -46,7 +49,7 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		
 		Instant requestTime = Instant.now();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		
+		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getServletPath());
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request body : \n" 
 		+ IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()));
@@ -65,6 +68,13 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " 
 		+ Duration.between(requestTime, responseTime).toMillis());
+	}
+	
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		AntPathMatcher pathMatcher = new AntPathMatcher();
+	    return Lists.newArrayList("").stream()
+	        .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
 	}
 
 }

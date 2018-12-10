@@ -1,11 +1,14 @@
 package io.kernel.idrepo.validator;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -15,13 +18,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import io.kernel.idrepo.config.IdRepoLogger;
 import io.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -130,13 +132,11 @@ public class IdRequestValidator implements Validator {
 			validateRequest(request.getRequest(), errors);
 		}
 
-		if (!errors.hasErrors()
-				&& (request.getId().equals(id.get("update")) || request.getId().equals(id.get("read")))) {
+		if (!errors.hasErrors() && (request.getId().equals(id.get("update")))) {
 			validateUin(request.getUin(), errors);
 		}
 
-		if (!errors.hasErrors()
-				&& (request.getId().equals(id.get("read")) || request.getId().equals(id.get("create")))) {
+		if (!errors.hasErrors() && (request.getId().equals(id.get("create")))) {
 			validateRegId(request.getRegistrationId(), errors);
 		}
 	}
@@ -248,20 +248,35 @@ public class IdRequestValidator implements Validator {
 		} else {
 			try {
 				jsonValidator.validateJson(mapper.writeValueAsString(request), SCHEMA_NAME);
-			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException e) {
+				Map<String, Map<String, List<Map<String, String>>>> requestMap = mapper.readValue(
+						mapper.writeValueAsBytes(request),
+						new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {
+						});
+				Optional<Boolean> isInvalidLang = requestMap.get("identity").values().parallelStream()
+						.map(listOfMap -> listOfMap.parallelStream().filter(map -> map.containsKey("language"))
+								.anyMatch(map -> !Lists
+										.newArrayList(env.getProperty("mosip.idrepo.primary-lang").toUpperCase(),
+												env.getProperty("mosip.idrepo.secondary-lang").toUpperCase())
+										.contains(map.get("language").toUpperCase())))
+						.findFirst();
+				if (isInvalidLang.isPresent() && isInvalidLang.get()) {
+					mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+							VALIDATE_REQUEST + " - Invalid language");
+					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+				}
+			} catch (IOException | JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
+					| FileIOException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
-				errors.rejectValue(REQUEST, e.getErrorCode(), e.getErrorText());
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			} catch (NullJsonSchemaException | ConfigServerConnectionException | HttpRequestException
 					| NullJsonNodeException | UnidentifiedJsonException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(REQUEST, e.getErrorCode(), e.getErrorText());
-			} catch (JsonProcessingException e) {
-				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
+						IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage());
 			}
 		}
 	}

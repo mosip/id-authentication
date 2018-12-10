@@ -21,7 +21,7 @@ public class DefaultShardResolver implements ShardResolver {
 	 * @see io.kernel.core.idrepo.shard.ShardResolver#getShrad(java.lang.String)
 	 */
 	@Override
-	public String getShrad(String id) {
+	public String getShard(String id) {
 		if (pattern.matcher(id).matches()) {
 			return "shard1";
 		} else {

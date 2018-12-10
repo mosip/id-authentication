@@ -48,7 +48,7 @@ public class DefaultShardResolverTest {
 	 */
 	@Test
 	public void testGetShrad() {
-		assertEquals(driverManagerDataSource1, resolver.getShrad("1234"));
-		assertEquals(driverManagerDataSource2, resolver.getShrad("5678"));
+		assertEquals(driverManagerDataSource1, resolver.getShard("1234"));
+		assertEquals(driverManagerDataSource2, resolver.getShard("5678"));
 	}
 }
