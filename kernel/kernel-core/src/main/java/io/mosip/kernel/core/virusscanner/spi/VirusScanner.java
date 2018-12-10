@@ -44,6 +44,9 @@ public interface VirusScanner<U, V> {
 	 *            array
 	 * 
 	 * @return the u
+	 * 
+	 * @throws IOException
+	 *             if exception occurs while failed or interrupted I/O operations
 	 */
 	U scanDocument(byte[] array) throws IOException;
 
@@ -54,6 +57,9 @@ public interface VirusScanner<U, V> {
 	 *            object
 	 * 
 	 * @return the u
+	 * 
+	 * @throws IOException
+	 *             if exception occurs while failed or interrupted I/O operations
 	 */
 	U scanDocument(File doc) throws IOException;
 }
