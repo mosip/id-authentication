@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.manual.adjudication.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import java.io.IOException;
@@ -27,9 +27,9 @@ import io.mosip.registration.processor.manual.adjudication.dto.FileRequestDto;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
-import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
+import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificationStage;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ManualAdjudicationController.class)
@@ -40,6 +40,9 @@ public class ManualAdjudicationControllerTest {
 	
 	@MockBean
 	ManualAdjudicationService manualAdjudicationService;
+	
+	@MockBean
+	ManualVerificationStage manualVerificationStage;
 	
 	@Autowired
 	ObjectMapper objectMapper;

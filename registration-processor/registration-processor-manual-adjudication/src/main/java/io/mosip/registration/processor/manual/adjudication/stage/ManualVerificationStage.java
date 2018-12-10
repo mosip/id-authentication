@@ -27,11 +27,14 @@ public class ManualVerificationStage extends MosipVerticleManager {
 	private String localhost;
 
 	private MosipEventBus mosipEventBus;
-
-	public void sendMessage(MessageDTO messageDTO) {
+	
+	public void deployStage() {
 		if (this.mosipEventBus == null) {
 			this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		}
+	}
+
+	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.MANUAL_VERIFICATION_BUS, messageDTO);
 	}
 

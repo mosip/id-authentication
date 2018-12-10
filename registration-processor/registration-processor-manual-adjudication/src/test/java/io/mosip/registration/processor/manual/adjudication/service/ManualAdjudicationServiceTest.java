@@ -1,35 +1,29 @@
 package io.mosip.registration.processor.manual.adjudication.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Any;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.test.context.ContextConfiguration;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
@@ -42,23 +36,23 @@ import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpda
 import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.service.impl.ManualAdjudicationServiceImpl;
+import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificationStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import javassist.bytecode.ByteArray;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ManualAdjudicationServiceTest {
 
 	private List<ManualVerificationEntity> entities;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@InjectMocks
 	private ManualAdjudicationService manualAdjudicationService = new ManualAdjudicationServiceImpl();
 	@Mock
 	UserDto dto;
+	@Mock
+	ManualVerificationStage manualVerificationStage;
 	@Mock
 	ManualAdjudicationService mockManualAdjudicationService;
 	@Mock
@@ -83,9 +77,12 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO = new ManualVerificationDTO();
 		registrationStatusDto = new InternalRegistrationStatusDto();
 		PKId = new ManualVerificationPKEntity();
+		PKId.setMatchedRefId("RefID");
+		PKId.setMatchedRefType("Type");
+		PKId.setRegId("RegID");
 		dto.setName("User");
 		dto.setOffice("Office");
-		dto.setStatus("PENDING");
+		dto.setStatus(ManualVerificationStatus.PENDING.name());
 		dto.setUserId("mvusr22");
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
@@ -100,9 +97,11 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationEntity.setLangCode("eng");
 		manualVerificationDTO.setRegId("RegID");
 		manualVerificationDTO.setMatchedRefId("RefID");
-		manualVerificationDTO.setMvUsrId("");
-		registrationStatusDto.setStatusCode("");
-		registrationStatusDto.setStatusComment("");
+		manualVerificationDTO.setMvUsrId("test");
+		registrationStatusDto.setStatusCode(ManualVerificationStatus.PENDING.name());
+		registrationStatusDto.setStatusComment("test");
+		manualVerificationDTO.setMatchedRefType("Type");
+		manualVerificationDTO.setStatusCode("PENDING");
 		entities = new ArrayList<>();
 		entities.add(manualVerificationEntity);
 		Mockito.when(manualAdjudicationDao.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
@@ -112,15 +111,13 @@ public class ManualAdjudicationServiceTest {
 	@Test
 	public void assignStatusMethodCheck() {
 
-		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(),
-				ManualVerificationStatus.ASSIGNED.name())).thenReturn(manualVerificationEntity);
-		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignStatus(dto);
-		assertEquals(this.manualVerificationDTO, manualVerificationDTO);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignStatus(dto);
+		assertEquals(manualVerificationDTO, manualVerificationDTO1);
 	}
 
 	@Test
 	public void assignStatusMethodNullEntityCheck() {
-		// manualVerificationEntity.setStatusCode("PENDING");
 		Mockito.when(manualAdjudicationDao.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
 		manualAdjudicationService.assignStatus(dto);
 	}
@@ -165,47 +162,53 @@ public class ManualAdjudicationServiceTest {
 		file = manualAdjudicationService.getApplicantData(regId, fileName);
 
 	}
-
 	@Test(expected = InvalidFileNameException.class)
 	public void testExceptionIngetApplicantFile() throws Exception {
 		String regId = "Id";
 		String fileName = "";
 		manualAdjudicationService.getApplicantFile(regId, fileName);
 	}
-
 	@Test(expected = InvalidFileNameException.class)
 	public void testExceptionIngetApplicantData() throws Exception {
 		String regId = "Id";
 		String fileName = "";
 		manualAdjudicationService.getApplicantData(regId, fileName);
 	}
-
-	@Test(expected = NoRecordAssignedException.class)
-	public void updatePacketStatusMethodCheck() {
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
-				.thenReturn(manualVerificationEntity);
-
-		manualVerificationDTO.setStatusCode("APPROVED");
-
-		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
-
-		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any())).thenReturn(null);
-		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(null);
-		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
-
-	}
-
 	@Test(expected = InvalidUpdateException.class)
 	public void updatePacketStatusExceptionCheck() {
 		manualVerificationDTO.setStatusCode("");
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 
 	}
+	@Test(expected = NoRecordAssignedException.class)
+	public void updatePacketStatusNoRecordAssignedExceptionCheck() {
+		manualVerificationDTO.setStatusCode("REJECTED");
 
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(null);
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+		
+
+
+	}
+	
+	@Test
+	public void updatePacketStatusMethodCheck(){
+		//TODO
+	}
+	
+	@Test(expected=InvalidUpdateException.class)
+	public void invalidStatusUpdateCheck() {
+		manualVerificationDTO.setStatusCode("ASSIGNED");
+		manualVerificationDTO.setMvUsrId("abcde");
+		manualVerificationDTO.setRegId("abcde");
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
+				.thenReturn(null);
+		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
+	}
+	
+	
+	
+	
 }

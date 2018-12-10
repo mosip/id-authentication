@@ -6,30 +6,20 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.manual.adjudication.repository.ManualAdjudiacationRepository;
-import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
-import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
-
 import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
-
 /**
- * 
- * @author M1049617
+ * The Class ManualAdjudicationDaoTest.
  *
+ * @author M1049387
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,57 +28,92 @@ public class ManualAdjudicationDaoTest {
 	/** The manualAdjudicationDao dao. */
 	@InjectMocks
 	ManualAdjudicationDao manualAdjudicationDao=new ManualAdjudicationDao();
-	
+
 	/** The manualAdjudiacationRepository repository. */
 	@Mock
 	ManualAdjudiacationRepository<ManualVerificationEntity, ManualVerificationPKEntity> manualAdjudiacationRepository;
+	
+	/** The manual verification entity. */
 	@Mock
-	private ManualVerificationEntity manualAdjudicationEntity;
-	
+	private ManualVerificationEntity manualVerificationEntity;
+
+	/** The manual verification PK entity. */
 	ManualVerificationPKEntity manualVerificationPKEntity=new ManualVerificationPKEntity();
+
+	/** The manual adjudication entity list. */
 	private List<ManualVerificationEntity> manualAdjudicationEntityList;
+
+	/** The status. */
 	private String status="PENDING";
-	
+
+	/**
+	 * Sets the up.
+	 */
 	@Before
 	public void setUp() {
 		manualAdjudicationEntityList =new ArrayList<ManualVerificationEntity>();
-		manualAdjudicationEntity = new ManualVerificationEntity();
-		manualAdjudicationEntity.setPkId(manualVerificationPKEntity);
-		manualAdjudicationEntity.getPkId().setRegId("12345");
-		manualAdjudicationEntity.getPkId().setMatchedRefType("12345");
-		manualAdjudicationEntity.getPkId().setMatchedRefId("12345");
-		manualAdjudicationEntity.setCrBy("USER");
-		manualAdjudicationEntity.setIsActive(false);
-		manualAdjudicationEntity.setMvUsrId("mvuser");
-		manualAdjudicationEntity.setMatchedScore(BigDecimal.TEN);
-		manualAdjudicationEntity.setStatusCode("APPROVED");
-		manualAdjudicationEntity.setMvUsrId("mv");
-		
-		Mockito.when(manualAdjudiacationRepository.save(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
-		Mockito.when(manualAdjudiacationRepository.getByRegId(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
+		manualVerificationEntity = new ManualVerificationEntity();
+		manualVerificationEntity.setPkId(manualVerificationPKEntity);
+		manualVerificationEntity.getPkId().setRegId("12345");
+		manualVerificationEntity.getPkId().setMatchedRefType("12345");
+		manualVerificationEntity.getPkId().setMatchedRefId("12345");
+		manualVerificationEntity.setCrBy("USER");
+		manualVerificationEntity.setIsActive(false);
+		manualVerificationEntity.setMvUsrId("mvuser");
+		manualVerificationEntity.setMatchedScore(BigDecimal.TEN);
+		manualVerificationEntity.setStatusCode("APPROVED");
+		manualVerificationEntity.setMvUsrId("mv");
+		manualAdjudicationEntityList.add(manualVerificationEntity);
 
-		Mockito.when(manualAdjudiacationRepository.getFirstApplicantDetails(ArgumentMatchers.any()))
-				.thenReturn(manualAdjudicationEntityList);
-		
-		
-		
-	}
-	@Test
-	public void updateTest() {
-		Mockito.when(manualAdjudiacationRepository.save(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
-		manualAdjudicationEntity= manualAdjudicationDao.update(manualAdjudicationEntity);
+		Mockito.when(manualAdjudiacationRepository.save(ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudiacationRepository.getByRegId(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudiacationRepository.getFirstApplicantDetails(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntityList);
+		Mockito.when(manualAdjudiacationRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+
+
+
 	}
 	
+	/**
+	 * Update test.
+	 */
+	@Test
+	public void updateTest() {
+		ManualVerificationEntity manualAdjudicationEntityResult= manualAdjudicationDao.update(manualVerificationEntity);
+		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
+	}
+
+	/**
+	 * Gets the first applicant details test.
+	 *
+	 * @return the first applicant details test
+	 */
 	@Test
 	public void getFirstApplicantDetailsTest() {
 		List<ManualVerificationEntity> manualAdjudicationEntitiesResult= manualAdjudicationDao.getFirstApplicantDetails(status);
+		assertEquals(manualAdjudicationEntityList, manualAdjudicationEntitiesResult);
 	}
+	
+	/**
+	 * Gets the by reg id test.
+	 *
+	 * @return the by reg id test
+	 */
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualAdjudicationEntity.getPkId().getRegId(), manualAdjudicationEntity.getPkId().getMatchedRefId(), manualAdjudicationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualVerificationEntity.getPkId().getRegId(), manualVerificationEntity.getPkId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
+		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
+	
+	/**
+	 * Gets the assigned applicant details test.
+	 *
+	 * @return the assigned applicant details test
+	 */
 	@Test
 	public void getAssignedApplicantDetailsTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getAssignedApplicantDetails(manualAdjudicationEntity.getMvUsrId(), manualAdjudicationEntity.getStatusCode());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getAssignedApplicantDetails(manualVerificationEntity.getMvUsrId(), manualVerificationEntity.getStatusCode());
+		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
+
 	}
 }

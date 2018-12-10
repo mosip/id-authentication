@@ -100,5 +100,11 @@ public class MessageBusAddress implements Serializable {
 	
 	/** The Constant MANUAL_VERIFICATION_BUS */
 	public static final MessageBusAddress MANUAL_VERIFICATION_BUS = new MessageBusAddress("manual-verification-bus");
+	
+	/** The Constant UIN_GENERATION_BUS_IN */
+	public static final MessageBusAddress UIN_GENERATION_BUS_IN = new MessageBusAddress("uin-generation-bus-in");
+	
+	/** The Constant UIN_GENERATION_BUS_OUT */
+	public static final MessageBusAddress UIN_GENERATION_BUS_OUT = new MessageBusAddress("uin-generation-bus-out");
 
 }
