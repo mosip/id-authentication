@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Key manager get-public-key response
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
@@ -21,11 +23,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeymanagerPublicKeyResponseDto {
-    
+
+	/**
+	 * Public key in BASE64 encodeding
+	 */
 	private String publicKey;
 
+	/**
+	 * Timestamp of issuance
+	 */
 	private LocalDateTime issuedAt;
 
+	/**
+	 * Timestamp of expiry
+	 */
 	private LocalDateTime expiryAt;
 
 }

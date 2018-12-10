@@ -4,7 +4,7 @@ import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyRequestDto;
 
-/**Custom converter for KeyManagerPublicKeyRequestDto and CryptoRequestDto
+/**Custom converter for {@link KeymanagerPublicKeyRequestDto} and {@link CryptomanagerRequestDto}
  * 
  * @author Urvil Joshi
  *

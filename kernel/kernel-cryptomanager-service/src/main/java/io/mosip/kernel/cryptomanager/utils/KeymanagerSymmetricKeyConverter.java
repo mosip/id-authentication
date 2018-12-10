@@ -5,7 +5,7 @@ import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 
 
-/**Custom converter for KeyManagerSymmetricKeyRequestDto and CryptoRequestDto
+/**Custom converter for {@link KeymanagerSymmetricKeyRequestDto} and {@link CryptomanagerRequestDto}
  * 
  * @author Urvil Joshi
  *

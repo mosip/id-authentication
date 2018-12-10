@@ -19,6 +19,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Crypto-Manager-Request model
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
@@ -28,27 +30,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(description = "Class representing a CryptoManager Request")
 public class CryptomanagerRequestDto {
-/**
- * 
- */
-@ApiModelProperty(notes = "Application id of decrypting module", example = "REGISTRATION", required = true)	
-@NotBlank(message=CryptomanagerConstant.INVALID_REQUEST)
-private String applicationId;
-/**
- * 
- */
-@ApiModelProperty(notes = "Refrence Id", example = "REF01")
-private String referenceId;
-/**
- * 
- */
-@ApiModelProperty(notes = "Timestamp", example = "2018-12-10T06:12:52.994Z", required = true)
-@NotNull
-private LocalDateTime timeStamp;
-/**
- * 
- */
-@ApiModelProperty(notes = "Data in BASE64 encoding to encrypt/decrypt", required = true)
-@NotBlank(message=CryptomanagerConstant.INVALID_REQUEST)
-private String data; 
+	/**
+	 * Application id of decrypting module
+	 */
+	@ApiModelProperty(notes = "Application id of decrypting module", example = "REGISTRATION", required = true)
+	@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
+	private String applicationId;
+	/**
+	 * Refrence Id
+	 */
+	@ApiModelProperty(notes = "Refrence Id", example = "REF01")
+	private String referenceId;
+	/**
+	 * Timestamp
+	 */
+	@ApiModelProperty(notes = "Timestamp", example = "2018-12-10T06:12:52.994Z", required = true)
+	@NotNull
+	private LocalDateTime timeStamp;
+	/**
+	 * Data in BASE64 encoding to encrypt/decrypt
+	 */
+	@ApiModelProperty(notes = "Data in BASE64 encoding to encrypt/decrypt", required = true)
+	@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
+	private String data;
 }

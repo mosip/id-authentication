@@ -105,7 +105,7 @@ public class KeymanagerUtil {
 		int keyDemiliterIndex = 0;
 		final int cipherKeyandDataLength = key.length;
 		final int keySplitterLength = keySplitter.length();
-		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitterLength, keySplitter);
+		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitter);
 		byte[] encryptedKey = copyOfRange(key, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(key, keyDemiliterIndex + keySplitterLength, cipherKeyandDataLength);
 		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedKey);
