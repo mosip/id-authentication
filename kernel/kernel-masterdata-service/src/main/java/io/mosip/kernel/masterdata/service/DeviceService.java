@@ -19,19 +19,34 @@ public interface DeviceService {
 	/**
 	 * This abstract method to fetch all Devices details
 	 * 
-	 * @return Returning all Devices Details
+	 * @param langCode
+	 * 			language code from user
+	 * @return DeviceResponseDto
+	 * 			Returning all Devices Details
 	 *
 	 */
 	public DeviceResponseDto getDeviceLangCode(String langCode);
-
+	
+	/**
+	 * This abstract method to fetch Devices details for given Language code and DeviceType Code
+	 * 
+	 * @param langCode
+	 * 			language code from user
+	 * @param devideTypeCode
+	 * 			devideTypeCode from user
+	 * @return DeviceLangCodeResponseDto
+	 * 			Returning all Devices Details for given Language code and DeviceType Code
+	 *
+	 */
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
 
 	/**
 	 * This method is used to add a new Device to master data
 	 * 
-	 * @param deviceRequestDto
-	 *            DTO containing input parameters to add a new device
-	 * @return code of the entered device
+	 * @param RequestDto<DeviceDto>
+	 *          Device DTO to insert data 
+	 * @return IdResponseDto
+	 * 			Device ID which is successfully inserted
 	 */
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceRequestDto);
 

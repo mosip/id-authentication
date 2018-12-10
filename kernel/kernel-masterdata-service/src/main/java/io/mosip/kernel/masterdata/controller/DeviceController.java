@@ -92,7 +92,8 @@ public class DeviceController {
 	 * @param RequestDto
 	 * 			 input parameter deviceRequestDto
 	 * 
-	 * @return {@link IdResponseDto}
+	 * @return ResponseEntity<IdResponseDto>
+	 * 			Machine Id which is inserted successfully
 	 */
 	@PostMapping()
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)

@@ -35,13 +35,14 @@ public class MachineHistoryController {
 	 * Language code and effective date time
 	 * 
 	 * @param id
-	 *            machine Id
+	 *            input machine Id from User
 	 * @param langCode
-	 *            Language Code
-	 * @param effdatetimes
-	 *            effective date and time
+	 *            input Language Code from user
+	 * @param dateAndTime
+	 *            input effective date and time from user
 	 * 
-	 * @return returning machine history detail based on given Machine ID, Language
+	 * @return MachineHistoryResponseDto
+	 * 			returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
