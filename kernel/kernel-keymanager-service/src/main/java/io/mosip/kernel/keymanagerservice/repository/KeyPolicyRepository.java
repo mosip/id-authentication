@@ -18,7 +18,13 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 @Repository
 public interface KeyPolicyRepository extends BaseRepository<KeyPolicy, String> {
 
+	/**
+	 * Function to find KeyPolicy by applicationId
+	 * 
+	 * @param applicationId
+	 *            applicationId
+	 * @return KeyPolicy
+	 */
 	Optional<KeyPolicy> findByApplicationId(String applicationId);
-
 
 }

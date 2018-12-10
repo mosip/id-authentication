@@ -17,19 +17,24 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 public interface KeymanagerService {
 
 	/**
-	 * @param appId
-	 * @param timeStamp
-	 * @param machineId
-	 * @param encryptedSymmetricKey
-	 * @return
+	 * Function to decrypt symmetric key
+	 * 
+	 * @param symmetricKeyRequestDto
+	 *            symmetricKeyRequestDto
+	 * @return {@link SymmetricKeyResponseDto} instance
 	 */
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto);
 
 	/**
+	 * Function to get public key
+	 * 
 	 * @param applicationId
+	 *            applicationId
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param referenceId
-	 * @return
+	 *            referenceId
+	 * @return {@link PublicKeyResponse} instance
 	 */
 	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
 			Optional<String> referenceId);

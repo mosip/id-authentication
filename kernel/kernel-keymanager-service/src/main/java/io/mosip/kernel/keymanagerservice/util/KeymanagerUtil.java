@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.kernel.keymanagerservice.util;
 
 import static java.util.Arrays.copyOfRange;
@@ -24,6 +21,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.BaseEntity;
 
 /**
+ * Utility class for Keymanager
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -56,11 +55,18 @@ public class KeymanagerUtil {
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	/**
-	 * 
+	 * Field for symmetric Algorithm Name
 	 */
 	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
+	/**
+	 * Function to set metadata
+	 * 
+	 * @param entity
+	 *            entity
+	 * @return Entity with metadata
+	 */
 	public <T extends BaseEntity> T setMetaData(T entity) {
 		String contextUser = "defaultadmin@mosip.io";
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
@@ -70,18 +76,36 @@ public class KeymanagerUtil {
 		return entity;
 	}
 
+	/**
+	 * Function to encrypt key
+	 * 
+	 * @param privateKey
+	 *            privateKey
+	 * @param masterKey
+	 *            masterKey
+	 * @return encrypted key
+	 */
 	public byte[] encryptKey(PrivateKey privateKey, PublicKey masterKey) {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		byte[] encryptedPrivateKey = encryptor.symmetricEncrypt(symmetricKey, privateKey.getEncoded());
 		byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(masterKey, symmetricKey.getEncoded());
-		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey,keySplitter);
+		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey, keySplitter);
 	}
 
+	/**
+	 * Function to decrypt key
+	 * 
+	 * @param key
+	 *            key
+	 * @param privateKey
+	 *            privateKey
+	 * @return decrypted key
+	 */
 	public byte[] decryptKey(byte[] key, PrivateKey privateKey) {
 		int keyDemiliterIndex = 0;
 		final int cipherKeyandDataLength = key.length;
 		final int keySplitterLength = keySplitter.length();
-		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitterLength,keySplitter);
+		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitterLength, keySplitter);
 		byte[] encryptedKey = copyOfRange(key, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(key, keyDemiliterIndex + keySplitterLength, cipherKeyandDataLength);
 		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedKey);

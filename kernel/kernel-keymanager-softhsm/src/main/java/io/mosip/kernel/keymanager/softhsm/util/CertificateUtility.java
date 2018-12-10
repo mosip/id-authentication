@@ -47,17 +47,19 @@ public class CertificateUtility {
 	 * 
 	 * @param keyPair
 	 *            the keypair
-	 * @param validityInMinutes
-	 *            validity In Minutes
-	 * @param country
-	 *            country
-	 * @param organization
-	 *            organization
-	 * @param organizationalUnit
-	 *            organizationalUnit
 	 * @param commonName
 	 *            commonName
-	 * @return the certificate
+	 * @param organizationalUnit
+	 *            organizationalUnit
+	 * @param organization
+	 *            organization
+	 * @param country
+	 *            country
+	 * @param validityFrom
+	 *            validityFrom
+	 * @param validityTo
+	 *            validityTo
+	 * @return The certificate
 	 */
 	public static X509Certificate generateX509Certificate(KeyPair keyPair, String commonName, String organizationalUnit,
 			String organization, String country, LocalDateTime validityFrom, LocalDateTime validityTo) {
@@ -113,8 +115,10 @@ public class CertificateUtility {
 	/**
 	 * Set certificate validity for specific duration
 	 * 
-	 * @param validityInMinutes
-	 *            validity in minutes
+	 * @param validityFrom
+	 *            validityFrom
+	 * @param validityTo
+	 *            validityTo
 	 * @return certificate validity
 	 */
 	private static CertificateValidity setCertificateValidity(LocalDateTime validityFrom, LocalDateTime validityTo) {

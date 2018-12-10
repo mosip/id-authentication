@@ -74,12 +74,21 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	@Value("${mosip.kernel.keymanager.softhsm.certificate.country}")
 	private String country;
 
+	/**
+	 * Path of SoftHSM config file
+	 */
 	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
 	private String configPath;
 
+	/**
+	 * The type of keystore, e.g. PKCS11
+	 */
 	@Value("${mosip.kernel.keymanager.softhsm.keystore-type}")
 	private String keystoreType;
 
+	/**
+	 * The passkey for Keystore
+	 */
 	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}")
 	private String keystorePass;
 
@@ -377,6 +386,12 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 		}
 	}
 
+	/**
+	 * Sets keystore
+	 * 
+	 * @param keyStore
+	 *            keyStore
+	 */
 	public void setKeyStore(KeyStore keyStore) {
 		this.keyStore = keyStore;
 	}

@@ -11,6 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
+ * Entity class for KeyStore
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -23,16 +25,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KeyStore extends BaseEntity {
 
+	/**
+	 * The field alias
+	 */
 	@Id
 	@Column(name = "id", nullable = false, length = 36)
 	private String alias;
 
+	/**
+	 * The field publicKey
+	 */
 	@Column(name = "public_key")
 	private byte[] publicKey;
 
+	/**
+	 * The field privateKey
+	 */
 	@Column(name = "private_key")
 	private byte[] privateKey;
 
+	/**
+	 * The field masterAlias
+	 */
 	@Column(name = "master_key")
 	private String masterAlias;
 
