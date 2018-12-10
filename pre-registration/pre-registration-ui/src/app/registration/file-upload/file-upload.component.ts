@@ -3,6 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { RegistrationService } from '../registration.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
+interface Applicant {
+  name: string;
+  files: any[];
+  preId: string;
+}
+
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
@@ -10,6 +16,11 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 })
 export class FileUploadComponent implements OnInit {
   applicantName;
+  applicant: Applicant = {
+    name: '',
+    files: [],
+    preId: ''
+  };
   uploadedFile;
   numberOfApplicants = 0;
   fileType;
@@ -97,35 +108,13 @@ export class FileUploadComponent implements OnInit {
 
   fileToUpload: File = null;
   DataSent = false;
-  applicants: any[] = [
-    {
-      name: 'Ravi Balaji',
-      seq: 1,
-      files: ['f1', 'f2', 'f3', 'f1']
-    },
-    {
-      name: 'Shashank Agrawal',
-      seq: 2,
-      files: ['f4', 'f5', 'f6', 'f1']
-    },
-    {
-      name: 'Agnitra Banerjee',
-      seq: 3,
-      files: ['f7', 'f8', 'f9', 'f1']
-    },
-    {
-      name: 'Chacha Kumar',
-      seq: 4,
-      files: ['f10', 'f11', 'f12', 'f1']
-    }
-  ];
-
+  applicants: Applicant[] = [];
   step = 1;
 
   constructor(private registration: RegistrationService, private router: Router, private route: ActivatedRoute) {}
 
-  setStep(applicant) {
-    this.step = applicant.seq;
+  setStep(applicant, step) {
+    this.step = step + 1;
     this.applicantName = applicant.name;
   }
 
@@ -141,12 +130,22 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      this.numberOfApplicants = +params['id'];
+    this.registration.getUsers().forEach(element => {
+      this.applicant.name = element.identity.FullName[0].value;
+      this.applicant.preId = element.preRegId;
+      this.applicants.push(this.applicant);
+      console.log(element);
     });
   }
 
   handleFileInput(event) {
+    // console.log(event, 'event from drag and drop');
+    // const files = event;
+    // for (const app of this.applicants) {
+    //   if (app.name === this.applicantName) {
+    //     app.files[this.documentIndex] = files.item(0);
+    //   }
+    // }
     const files = event.target.files;
     console.log(event.target.value);
     this.uploadedFile = event.target.value;
@@ -161,6 +160,16 @@ export class FileUploadComponent implements OnInit {
     for (const app of this.applicants) {
       if (app.name === this.applicantName) {
         app.files[this.documentIndex] = files.item(0);
+      }
+    }
+  }
+
+  handleFileDrop(fileList) {
+    console.log(fileList, 'event from drag and drop');
+    const files = fileList;
+    for (const app of this.applicants) {
+      if (app.name === this.applicantName) {
+        app.files[this.documentIndex] = files[0];
       }
     }
   }

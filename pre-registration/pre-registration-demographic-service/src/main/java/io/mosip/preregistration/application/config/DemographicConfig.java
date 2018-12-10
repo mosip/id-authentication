@@ -14,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class DemographicConfig {
 
 	/**
-	 *Swaager configuration 
+	 * Swaager configuration
 	 *
 	 */
 	@Bean

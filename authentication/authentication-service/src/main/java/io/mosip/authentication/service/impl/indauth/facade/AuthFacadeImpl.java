@@ -173,20 +173,22 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = new AuthResponseBuilder(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
+		String refId = null;
 		try {
 			idInfo = getIdEntity(idResDTO);
+			refId = String.valueOf(idResDTO.get("registrationId"));
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, String.valueOf(idResDTO.get("registrationId")), isAuth);
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId, isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
-			if (idInfo != null) {
-			//	notificationService.sendAuthNotification(authRequestDTO, idRepoResponse.getRegistrationId(), authResponseDTO, idInfo, isAuth);
+			if (idInfo != null && refId != null) {
+				notificationService.sendAuthNotification(authRequestDTO,  refId, authResponseDTO, idInfo, isAuth);
 			}
 		}
 
