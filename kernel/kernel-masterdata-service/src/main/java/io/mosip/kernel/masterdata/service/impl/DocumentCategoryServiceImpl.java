@@ -45,7 +45,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private DocumentCategoryRepository documentCategoryRepository;
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
-	
+
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
 
 	/**
@@ -185,16 +185,15 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
-		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest(),
-				DocumentCategory.class);
+		DocumentCategory entity = metaUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
 			documentCategory = documentCategoryRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
-			throw new MasterDataServiceException(
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();

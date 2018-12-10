@@ -87,7 +87,7 @@ public class LanguageServiceImpl implements LanguageService {
 			Language language = metaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
 			Language savedLanguage = languageRepository.create(language);
 			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
 							+ ExceptionUtils.parseException(e));

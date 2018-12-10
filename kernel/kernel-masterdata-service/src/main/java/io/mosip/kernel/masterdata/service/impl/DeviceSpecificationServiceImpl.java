@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -42,14 +41,15 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	private MetaDataUtils metaUtils;
 
 	@Autowired
-	private DataMapper dataMapper;
+	private MapperUtils objectMapperUtil;
 
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
+			deviceSpecificationList = deviceSpecificationRepository
+					.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -67,7 +67,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(String languageCode,
+	public List<DeviceSpecificationDto> findDeviceSpecByLangCodeAndDevTypeCode(String languageCode,
 			String deviceTypeCode) {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
@@ -91,21 +91,21 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public IdResponseDto createDeviceSpecification(
-			RequestDto<DeviceSpecificationDto> deviceSpecifications) {
+	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = metaUtils.setCreateMetaData(
-				deviceSpecifications.getRequest(), DeviceSpecification.class);
+		DeviceSpecification entity = metaUtils.setCreateMetaData(deviceSpecifications.getRequest(),
+				DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					e.getErrorText() + "  " + ExceptionUtils.parseException(e));
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		dataMapper.map(renDeviceSpecification, idResponseDto, true, null, null, true);
+		objectMapperUtil.map(renDeviceSpecification, idResponseDto);
 
 		return idResponseDto;
 	}

@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-
-
 public class RegistrationCenterUserMachineMappingHistoryDto {
 
 	/**
@@ -30,5 +28,8 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	private String usrId;
 	
 	private Boolean isActive;
+	
+	private LocalDateTime effectDateTime;
+	
 
 }

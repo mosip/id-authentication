@@ -108,7 +108,7 @@ public class LocationServiceImpl implements LocationService {
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
 				//List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
-				List<LocationDto> locationHierarchies = objectMapperUtil.mapAllNew(locHierList, LocationDto.class);
+				List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
@@ -209,14 +209,14 @@ public class LocationServiceImpl implements LocationService {
 		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException ex) {
+		} catch (DataAccessLayerException  | DataAccessException   ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
 
 		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
-         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
+         locationCodeDto=objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
 		return locationCodeDto;
 	}
 

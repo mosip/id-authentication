@@ -18,6 +18,13 @@ import io.mosip.kernel.keymanagerservice.entity.KeyStore;
 @Repository
 public interface KeyStoreRepository extends BaseRepository<KeyStore, String> {
 
+	/**
+	 * Function to find KeyStore by alias
+	 * 
+	 * @param alias
+	 *            alias
+	 * @return KeyStore
+	 */
 	Optional<KeyStore> findByAlias(String alias);
 
 }

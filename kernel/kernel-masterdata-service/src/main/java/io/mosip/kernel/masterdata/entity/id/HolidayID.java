@@ -10,6 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidhant Agarwal
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ *
+ */
 @Embeddable
 @Data
 @NoArgsConstructor
@@ -17,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class HolidayID implements Serializable {
 
 	private static final long serialVersionUID = -1631873932622755759L;
-	
+
 	@Column(name = "location_code", nullable = false, length = 36)
 	private String locationCode;
 

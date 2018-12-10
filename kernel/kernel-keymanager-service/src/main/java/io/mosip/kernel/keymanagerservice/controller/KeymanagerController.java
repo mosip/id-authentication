@@ -34,9 +34,23 @@ import io.swagger.annotations.Api;
 @Api(tags = { "keymanager" })
 public class KeymanagerController {
 
+	/**
+	 * Instance for KeymanagerService
+	 */
 	@Autowired
 	KeymanagerService keymanagerService;
 
+	/**
+	 * Request mapping to get Public Key
+	 * 
+	 * @param applicationId
+	 *            Application id of the application requesting publicKey
+	 * @param timeStamp
+	 *            Timestamp of the request
+	 * @param referenceId
+	 *            Reference id of the application requesting publicKey
+	 * @return {@link PublicKeyResponse} instance
+	 */
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@PathVariable("applicationId") String applicationId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
@@ -46,6 +60,14 @@ public class KeymanagerController {
 				HttpStatus.OK);
 	}
 
+	/**
+	 * Request mapping to decrypt symmetric key
+	 * 
+	 * @param symmetricKeyRequestDto
+	 *            having encrypted symmetric key
+	 * 
+	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
+	 */
 	@PostMapping(value = "/symmetricKey")
 	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(
 			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {

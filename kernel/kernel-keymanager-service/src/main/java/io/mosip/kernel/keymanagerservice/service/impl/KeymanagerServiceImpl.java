@@ -59,7 +59,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
-	 * Keystore to handles and store cryptographic keys.
+	 * Keystore instance to handles and store cryptographic keys.
 	 */
 	@Autowired
 	KeyStore keyStore;
@@ -77,19 +77,19 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	/**
-	 * 
+	 * {@link KeyAliasRepository} instance
 	 */
 	@Autowired
 	KeyAliasRepository keyAliasRepository;
 
 	/**
-	 * 
+	 * {@link KeyPolicyRepository} instance
 	 */
 	@Autowired
 	KeyPolicyRepository keyPolicyRepository;
 
 	/**
-	 * 
+	 * {@link KeyStoreRepository} instance
 	 */
 	@Autowired
 	KeyStoreRepository keyStoreRepository;
@@ -128,14 +128,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to get Public key from HSM
+	 * 
 	 * @param applicationId
+	 *            applicationId
 	 * @param timeStamp
-	 * @param referenceId
-	 * @param alias
-	 * @param keyResponseDto
-	 * @return
-	 * @throws NoUniqueAliasException
-	 * @throws InvalidApplicationIdException
+	 *            timeStamp
+	 * @return {@link PublicKeyResponse} instance
 	 */
 	private PublicKeyResponse<PublicKey> getPublicKeyFromHSM(String applicationId, LocalDateTime timeStamp) {
 
@@ -165,11 +164,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to get public key from DB store
+	 * 
 	 * @param applicationId
+	 *            applicationId
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param referenceId
-	 * @return
-	 * @throws NoUniqueAliasException
+	 *            referenceId
+	 * @return {@link PublicKeyResponse} instance
 	 */
 	private PublicKeyResponse<byte[]> getPublicKeyFromDBStore(String applicationId, LocalDateTime timeStamp,
 			String referenceId) {
@@ -212,7 +215,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException e) {
 				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage()+e.getErrorText());
+						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage() + e.getErrorText());
 			}
 			storeKeyInDBStore(alias, masterAlias, keypair.getPublic().getEncoded(), encryptedPrivateKey);
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
@@ -223,10 +226,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to get key alias
+	 * 
 	 * @param applicationId
-	 * @param string
+	 *            applicationId
+	 * @param referenceId
+	 *            referenceId
 	 * @param timeStamp
-	 * @return
+	 *            timeStamp
+	 * @return keyalias
 	 */
 	private Map<String, List<KeyAlias>> getKeyAliases(String applicationId, String referenceId,
 			LocalDateTime timeStamp) {
@@ -243,11 +251,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to get Expiry policy
+	 * 
 	 * @param applicationId
+	 *            applicationId
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param keyAlias
-	 * @return
-	 * @throws InvalidApplicationIdException
+	 *            keyAlias
+	 * @return expiry datetime
 	 */
 	private LocalDateTime getExpiryPolicy(String applicationId, LocalDateTime timeStamp, List<KeyAlias> keyAlias) {
 		Optional<KeyPolicy> keyPolicy = keyPolicyRepository.findByApplicationId(applicationId);
@@ -305,11 +317,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * @param privateKey
+	 * Function to get Private Key
+	 * 
 	 * @param referenceId
+	 *            referenceId
 	 * @param fetchedKeyAlias
-	 * @return
-	 * @throws CryptoException
+	 *            fetchedKeyAlias
+	 * @return Private key
 	 */
 	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
 
@@ -336,11 +350,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to store key in alias
+	 * 
 	 * @param applicationId
+	 *            applicationId
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param referenceId
+	 *            referenceId
 	 * @param alias
+	 *            alias
 	 * @param expiryDateTime
+	 *            expiryDateTime
 	 */
 	private void storeKeyInAlias(String applicationId, LocalDateTime timeStamp, String referenceId, String alias,
 			LocalDateTime expiryDateTime) {
@@ -354,9 +375,16 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to store key in DB store
+	 * 
 	 * @param alias
-	 * @param bs
+	 *            alias
+	 * @param masterAlias
+	 *            masterAlias
+	 * @param publicKey
+	 *            publicKey
 	 * @param encryptedPrivateKey
+	 *            encryptedPrivateKey
 	 */
 	private void storeKeyInDBStore(String alias, String masterAlias, byte[] publicKey, byte[] encryptedPrivateKey) {
 		io.mosip.kernel.keymanagerservice.entity.KeyStore keyDbStore = new io.mosip.kernel.keymanagerservice.entity.KeyStore();
@@ -368,9 +396,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to check valid timestamp
+	 * 
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param keyAlias
-	 * @return
+	 *            keyAlias
+	 * @return true if timestamp is valid, else false
 	 */
 	private boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
 		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
@@ -379,11 +411,17 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to check if timestamp is overlapping
+	 * 
 	 * @param timeStamp
+	 *            timeStamp
 	 * @param policyExpiryTime
+	 *            policyExpiryTime
 	 * @param keyGenerationTime
+	 *            keyGenerationTime
 	 * @param keyExpiryTime
-	 * @return
+	 *            keyExpiryTime
+	 * @return true if timestamp is overlapping, else false
 	 */
 	private boolean isOverlapping(LocalDateTime timeStamp, LocalDateTime policyExpiryTime,
 			LocalDateTime keyGenerationTime, LocalDateTime keyExpiryTime) {
@@ -391,8 +429,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
+	 * Function to check is reference id is valid
+	 * 
 	 * @param referenceId
-	 * @return
+	 *            referenceId
+	 * @return true if referenceId is valid, else false
 	 */
 	private boolean isValidReferenceId(String referenceId) {
 		return referenceId != null && !referenceId.trim().isEmpty();

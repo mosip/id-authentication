@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * 
  * @author Neha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -120,14 +121,14 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateEntity = templateRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(templateEntity, idResponseDto);
+		objectMapperUtil.map(templateEntity, idResponseDto);
 
 		return idResponseDto;
 	}

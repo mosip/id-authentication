@@ -54,9 +54,9 @@ public class GenderTypeController {
 	/**
 	 * Post API to enter a new Gender Type Data
 	 * 
-	 * @param genderRequestDto
-	 *            input columns for adding data
-	 * @return added row of gender type
+	 * @param gender
+	 *            input dto to enter a new gender data
+	 * @return primary key of entered row of gender
 	 */
 	@PostMapping("/v1.0/gendertype")
 	public ResponseEntity<CodeAndLanguageCodeID> createGenderType(

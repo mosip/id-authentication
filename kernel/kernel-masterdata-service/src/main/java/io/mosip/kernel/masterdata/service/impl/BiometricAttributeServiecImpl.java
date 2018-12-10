@@ -65,7 +65,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		BiometricAttribute entity = metaUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
 		try {
 			entity = biometricAttributeRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -73,7 +73,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 
-		mapperUtil.mapNew(entity, codeAndLanguageCodeId);
+		mapperUtil.map(entity, codeAndLanguageCodeId);
 
 		return codeAndLanguageCodeId;
 	}

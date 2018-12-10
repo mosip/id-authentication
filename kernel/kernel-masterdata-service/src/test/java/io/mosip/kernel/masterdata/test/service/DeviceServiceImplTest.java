@@ -69,7 +69,7 @@ public class DeviceServiceImplTest {
 		deviceDtoList.add(deviceDto);
 		Mockito.when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(deviceList);
-		Mockito.when(objectMapperUtil.mapAllNew(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
+		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
 		DeviceResponseDto actual = deviceServiceImpl.getDeviceLangCode("ENG");
 		assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);

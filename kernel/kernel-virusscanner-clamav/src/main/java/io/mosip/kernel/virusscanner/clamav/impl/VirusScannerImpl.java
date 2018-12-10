@@ -110,7 +110,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	/**
 	 * This Method is used to scan byte array
 	 * 
-	 * @param byte[]
+	 * @param docArray
 	 *            array
 	 * 
 	 * @return a true if file is virus free and false if file is infected
@@ -146,7 +146,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	/**
 	 * This Method is used to scan File
 	 * 
-	 * @param File
+	 * @param doc
 	 *            object
 	 * 
 	 * @return a true if file is virus free and false if file is infected

@@ -135,7 +135,6 @@ public class KeyStoreImplTest {
 		Enumeration<String> enumeration = mock(Enumeration.class);
 		when(keyStore.aliases()).thenReturn(enumeration);
 		assertThat(keyStoreImpl.getAllAlias(), isA(List.class));
-		;
 	}
 
 	@Test
@@ -143,7 +142,6 @@ public class KeyStoreImplTest {
 		Key key = mock(Key.class);
 		when(keyStore.getKey(Mockito.anyString(), Mockito.any())).thenReturn(key);
 		assertThat(keyStoreImpl.getKey("alias"), isA(Key.class));
-		;
 	}
 
 	@Test
