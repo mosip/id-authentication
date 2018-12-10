@@ -14,6 +14,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 
 import javafx.fxml.FXML;
@@ -35,6 +36,18 @@ public class BiometricPreviewController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
+
+	/** The left hand slap threshold score. */
+	@Value("${leftHand_Slap_Threshold_Score}")
+	private double leftHandSlapThresholdScore;
+
+	/** The right hand slap threshold score. */
+	@Value("${rightHand_Slap_Threshold_Score}")
+	private double rightHandSlapThresholdScore;
+
+	/** The thumbs threshold score. */
+	@Value("${thumbs_Threshold_Score}")
+	private double thumbsThresholdScore;
 
 	@FXML
 	private Button nextBtn;
@@ -63,13 +76,30 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private ImageView exceptionPhoto;
-	
+
 	@FXML
 	private Text leftEyeQualityScore;
-	
+
 	@FXML
 	private Text rightEyeQualityScore;
 
+	@FXML
+	private Text leftPalmQualityScore;
+
+	@FXML
+	private Text rightPalmQualityScore;
+
+	@FXML
+	private Text thumbsQualityScore;
+
+	@FXML
+	private Text leftPalmThresholdScoreLbl;
+
+	@FXML
+	private Text rightPalmThresholdScoreLbl;
+
+	@FXML
+	private Text thumbsThresholdScoreLbl;
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -88,6 +118,11 @@ public class BiometricPreviewController extends BaseController {
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
+
+		leftPalmThresholdScoreLbl.setText(getQualityScore(leftHandSlapThresholdScore));
+		rightPalmThresholdScoreLbl.setText(getQualityScore(rightHandSlapThresholdScore));
+		thumbsThresholdScoreLbl.setText(getQualityScore(thumbsThresholdScore));
+
 		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
 
 			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
@@ -107,18 +142,34 @@ public class BiometricPreviewController extends BaseController {
 				}
 			}
 
+			for (FingerprintDetailsDTO fpDetailsDTO : registrationDTOContent.getBiometricDTO()
+					.getApplicantBiometricDTO().getFingerprintDetailsDTO()) {
+				if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+					leftPalm.setImage(convertBytesToImage(fpDetailsDTO.getFingerPrint()));
+					leftPalmQualityScore.setText(getQualityScore(fpDetailsDTO.getQualityScore()));
+
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+					rightPalm.setImage(convertBytesToImage(fpDetailsDTO.getFingerPrint()));
+					rightPalmQualityScore.setText(getQualityScore(fpDetailsDTO.getQualityScore()));
+
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
+					thumb.setImage(convertBytesToImage(fpDetailsDTO.getFingerPrint()));
+					thumbsQualityScore.setText(getQualityScore(fpDetailsDTO.getQualityScore()));
+
+				}
+			}
+
 		}
 
 		for (IrisDetailsDTO capturedIris : registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
 				.getIrisDetailsDTO()) {
 			if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
 				leftEye.setImage(convertBytesToImage(capturedIris.getIris()));
-				leftEyeQualityScore.setText(String.format("%s %s",
-						String.valueOf(Math.round(capturedIris.getQualityScore())), RegistrationConstants.PERCENTAGE));
+				leftEyeQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
+
 			} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
 				rightEye.setImage(convertBytesToImage(capturedIris.getIris()));
-				rightEyeQualityScore.setText(String.format("%s %s",
-						String.valueOf(Math.round(capturedIris.getQualityScore())), RegistrationConstants.PERCENTAGE));
+				rightEyeQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
 			}
 		}
 	}
@@ -143,5 +194,9 @@ public class BiometricPreviewController extends BaseController {
 	 */
 	public void goToHomePage() {
 		registrationController.goToHomePage();
+	}
+
+	private String getQualityScore(Double qulaityScore) {
+		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
 	}
 }
