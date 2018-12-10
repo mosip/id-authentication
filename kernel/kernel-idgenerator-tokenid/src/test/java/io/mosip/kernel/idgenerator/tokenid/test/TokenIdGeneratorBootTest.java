@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -25,6 +26,7 @@ public class TokenIdGeneratorBootTest {
 	
 	
 	@Test
+	@Ignore
 	public void idGeneratorTest() throws Exception {
 		TokenIdGeneratorImpl tokenIdGen=PowerMockito.spy(new TokenIdGeneratorImpl());
 		PowerMockito.when(tokenIdGen,"appendChecksum",Mockito.anyInt(),Mockito.anyString(),Mockito.anyString()).thenReturn(Mockito.anyString());
