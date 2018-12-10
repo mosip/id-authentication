@@ -10,11 +10,22 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class EmptyPathException extends BaseUncheckedException {
 
+	/**
+	 * Unique id for serialization
+	 */
 	private static final long serialVersionUID = -4601559589099809931L;
 
 
-	public EmptyPathException(String errorCode, String errorMessage, Throwable cause) {
-		super(errorCode, errorMessage, cause);
+	/**
+	 * Constructor with errorCode and errorMessage
+	 * 
+	 * @param errorCode
+	 *            The error code for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 */
+	public EmptyPathException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage);
 	}
 
 }
