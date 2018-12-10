@@ -1546,6 +1546,10 @@ public class RegistrationController extends BaseController {
 			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
 			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
 			dobDocuments.getItems().addAll(RegistrationConstants.getDobDocumentList());
+			
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
