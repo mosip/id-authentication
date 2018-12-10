@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiParam;
 @CrossOrigin
 @RestController
 @RequestMapping("/v1.0")
-@Api(tags = { "keymanager" },value="Operation related to Keymanagement")
+@Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
 	/**
