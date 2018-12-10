@@ -22,4 +22,12 @@ public class TablenotAccessibleException extends BaseUncheckedException {
 	public TablenotAccessibleException(String message, Throwable cause) {
 		super(PreIssuanceExceptionCodes.TABLE_NOT_FOUND_EXCEPTION+ EMPTY_SPACE, message, cause);
 	}
+	
+	public TablenotAccessibleException(String errorCode,String message) {
+		super(errorCode, message);
+	}
+	
+	public TablenotAccessibleException(String errorCode,String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
 }
