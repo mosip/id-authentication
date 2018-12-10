@@ -1,6 +1,7 @@
 package io.mosip.registration.device.fp.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import MFS100.FingerData;
@@ -18,13 +19,14 @@ import io.mosip.registration.service.BaseService;
 @Component
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
+	@Autowired
+	@Lazy
+	private BaseService baseService;
+	
 	/** The fp device. */
 	private MFS100 fpDevice = new MFS100(this);
 
 	private String fingerPrintType = "";
-
-	@Autowired
-	private BaseService baseService;
 
 	/**
 	 * This method initialize the device and capture the image from device. it waits

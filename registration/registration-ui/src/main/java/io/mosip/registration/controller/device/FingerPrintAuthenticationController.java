@@ -97,9 +97,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Autowired
 	private AuthenticationService validator;
 
-	@Autowired
-	private BaseService baseService;
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		deviceCmbBox.getItems().clear();
