@@ -364,8 +364,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		if (isSupervisor) {
 			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			otpLabel.setLayoutX(336);
-			otpLabel.setLayoutY(72);
+			otpLabel.setLayoutX(342);
+			otpLabel.setLayoutY(58);
 			otpUserId.setEditable(true);
 		} else {
 			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -384,8 +384,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		if (isSupervisor) {
 			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			passwdLabel.setLayoutX(336);
-			passwdLabel.setLayoutY(79);
+			passwdLabel.setLayoutX(351);
+			passwdLabel.setLayoutY(80);
 			username.setEditable(true);
 		} else {
 			username.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -404,6 +404,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			fpUserId.setEditable(true);
 			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
+			fingerPrintLabel.setLayoutX(336);
+			fingerPrintLabel.setLayoutY(138);
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 			fpUserId.setEditable(false);

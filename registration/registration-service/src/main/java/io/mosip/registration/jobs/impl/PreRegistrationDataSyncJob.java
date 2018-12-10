@@ -29,7 +29,7 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
  * @since 1.0.0
  *
  */
-@Component
+@Component(value = "preRegistrationDataSyncJob")
 public class PreRegistrationDataSyncJob extends BaseJob{
 	
 	private static final Logger LOGGER = AppConfig.getLogger(PreRegistrationDataSyncJob.class);

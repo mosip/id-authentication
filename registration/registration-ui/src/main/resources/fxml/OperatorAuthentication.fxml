@@ -11,20 +11,20 @@
    <children>
       <AnchorPane fx:id="pwdBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Button layoutX="385.0" layoutY="236.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
-            <TextField fx:id="username" layoutX="314.0" layoutY="125.0" promptText="Username" />
-            <Label fx:id="passwdLabel" layoutX="388.0" layoutY="86.0" text="RO Login" />
-            <PasswordField fx:id="password" layoutX="313.0" layoutY="176.0" promptText="Password" />
+            <Button layoutX="400.0" layoutY="244.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
+            <TextField fx:id="username" layoutX="316.0" layoutY="125.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
+            <Label fx:id="passwdLabel" layoutX="326.0" layoutY="77.0" text="Registration Officer Verification" />
+            <PasswordField fx:id="password" layoutX="316.0" layoutY="180.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="otpBasedLogin" prefHeight="550.0" prefWidth="850.0">
+      <AnchorPane fx:id="otpBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Button layoutX="313.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
-            <Label fx:id="otpLabel" layoutX="388.0" layoutY="56.0" text="RO Login" />
-            <Button layoutX="456.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
-            <TextField fx:id="otpUserId" layoutX="313.0" layoutY="108.0" promptText="Username" />
-            <TextField fx:id="otp" layoutX="313.0" layoutY="159.0" promptText="Enter OTP" />
-            <Label fx:id="otpValidity" layoutX="313.0" layoutY="267.0">
+            <Button layoutX="297.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
+            <Label fx:id="otpLabel" layoutX="307.0" layoutY="58.0" text="Registration Officer Verification" />
+            <Button layoutX="485.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
+            <TextField fx:id="otpUserId" layoutX="297.0" layoutY="108.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
+            <TextField fx:id="otp" layoutX="297.0" layoutY="159.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
+            <Label fx:id="otpValidity" layoutX="297.0" layoutY="268.0">
                <font>
                   <Font size="10.0" />
                </font>
@@ -33,18 +33,18 @@
       </AnchorPane>
       <AnchorPane fx:id="fingerprintBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
          <children>
-            <Label fx:id="fingerPrintLabel" layoutX="36.0" layoutY="32.0" text="RO Fingerprint Authentication">
+            <Label fx:id="fingerPrintLabel" layoutX="357.0" layoutY="139.0" text="RO Fingerprint Authentication">
             	<font>
 					<Font size="13.0" />
 				</font>
 			</Label>
-            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="36.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="349.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
             	<image>
 					<Image url="@../images/fingerprint.jpg" />
 				</image>
 			</ImageView>
-            <Button layoutX="165.0" layoutY="196.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
-            <TextField fx:id="fpUserId" layoutX="36.0" layoutY="71.0" prefHeight="39.0" prefWidth="191.0" promptText="Username" />
+            <Button layoutX="480.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
+            <TextField fx:id="fpUserId" layoutX="325.0" layoutY="178.0" prefHeight="39.0" prefWidth="236.0" promptText="Username" />
          </children>
       </AnchorPane>
    </children>
