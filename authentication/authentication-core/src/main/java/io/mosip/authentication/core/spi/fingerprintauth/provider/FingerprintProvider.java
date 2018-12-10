@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
+import java.util.Base64;
+
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
@@ -51,4 +53,23 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			// TODO need to create and add exception
 		}
 	}
+
+	public double matchMinutiea(String reqInfo, String entityInfo) {
+		byte[] decodedrefInfo = decodeValue(reqInfo);
+		byte[] decodeEntityInfo = decodeValue(entityInfo);
+		FingerprintTemplate template1 = new FingerprintTemplate().convert(decodedrefInfo);
+		FingerprintTemplate template2 = new FingerprintTemplate().convert(decodeEntityInfo);
+		return this.scoreCalculator(template1.serialize(), template2.serialize());
+	}
+
+	public double matchImage(String reqInfo, String entityInfo) {
+		byte[] decodedrefInfo = decodeValue(reqInfo);
+		byte[] decodeEntityInfo = decodeValue(entityInfo);
+		return this.scoreCalculator(decodedrefInfo, decodeEntityInfo);
+	}
+
+	private static byte[] decodeValue(String value) {
+		return Base64.getDecoder().decode(value);
+	}
+
 }

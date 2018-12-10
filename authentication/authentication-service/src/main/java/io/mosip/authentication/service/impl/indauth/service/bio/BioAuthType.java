@@ -5,18 +5,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 
 /**
  * 
@@ -30,13 +36,39 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
 					BioMatchType.FGRMIN_RIGHT_LITTLE),
-			AuthTypeDTO::isBio, "Fingerprint"),
+			AuthTypeDTO::isBio, "Fingerprint") {
+		
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
+				Function<LanguageType, String> languageInfoFetcher) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+					.forEach((BioInfo bioinfovalue) -> {
+						BiFunction<String,String, Double> func = getFingerPrintProvider(bioinfovalue)::matchMinutiea;
+						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+					});
+			return valueMap;
+		}
+	},
 	FGR_IMG("fgrImg",
 			setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
 					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
-			AuthTypeDTO::isBio, "Fingerprint"),
+			AuthTypeDTO::isBio, "Fingerprint") {
+		
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
+				Function<LanguageType, String> languageInfoFetcher) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+					.forEach((BioInfo bioinfovalue) -> {
+						BiFunction<String,String, Double> func = getFingerPrintProvider(bioinfovalue)::matchImage;
+						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+					});
+			return valueMap;
+		}
+	},
 	IRIS_IMG("irisImg", Collections.emptySet(), AuthTypeDTO::isBio, "Iris"),
 	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face");
 	private String type;
@@ -47,6 +79,11 @@ public enum BioAuthType implements AuthType {
 	private Predicate<? super AuthTypeDTO> authTypePredicate;
 
 	private String displayName;
+	
+	private static MantraFingerprintProvider mantraFingerprintProvider = new MantraFingerprintProvider();
+
+	private static CogentFingerprintProvider cogentFingerprintProvider = new CogentFingerprintProvider();
+
 
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
@@ -116,20 +153,24 @@ public enum BioAuthType implements AuthType {
 		return LanguageType.PRIMARY_LANG;
 	}
 
-	@Override
-	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			Function<LanguageType, String> languageInfoFetcher) {
-		Map<String, Object> valueMap = new HashMap<>();
-		authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-				.forEach(bioinfovalue -> valueMap.put(BioInfo.class.getSimpleName(), bioinfovalue));
-		return valueMap;
-	}
+	
 
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
 		return Optional.ofNullable(authRequestDTO.getBioInfo()).flatMap(
 				list -> list.stream().filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
+	}
+	
+	private static FingerprintProvider getFingerPrintProvider(BioInfo bioinfovalue) {
+		FingerprintProvider provider = null;
+		if(bioinfovalue.getDeviceInfo().getMake() == "mantra") {
+			provider = mantraFingerprintProvider;
+		} else if (bioinfovalue.getDeviceInfo().getMake() == "cogent"){
+			provider = cogentFingerprintProvider;
+		}
+		
+		return provider;
 	}
 
 }

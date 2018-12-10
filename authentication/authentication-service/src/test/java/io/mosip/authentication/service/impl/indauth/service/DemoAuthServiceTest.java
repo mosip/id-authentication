@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -472,6 +471,16 @@ public class DemoAuthServiceTest {
 		DemoMatchType demoMatchType = DemoMatchType.NAME_PRI;
 		AuthType demoAuthType = null;
 		demoAuthServiceImpl.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
+	}
+
+	@Test
+	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
+
+		AuthRequestDTO authRequestDTO = null;
+		String refId = "";
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoEntity);
+
 	}
 
 }
