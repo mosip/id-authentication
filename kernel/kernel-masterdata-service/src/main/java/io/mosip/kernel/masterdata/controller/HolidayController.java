@@ -47,7 +47,7 @@ public class HolidayController {
 	 * This method returns list of holidays for a particular holiday id
 	 * 
 	 * @param holidayId
-	 *            input parameter
+	 *            input parameter holiday id
 	 * @return list of holidays for a particular holiday id
 	 */
 	@GetMapping("/{holidayid}")
@@ -60,8 +60,10 @@ public class HolidayController {
 	 * and holiday id
 	 * 
 	 * @param holidayId
+	 * 			input parameter holiday id
 	 * @param langCode
-	 * @return
+	 * 			input parameter language code
+	 * @return {@link HolidayResponseDto}
 	 */
 	@GetMapping("/{holidayid}/{langcode}")
 	public HolidayResponseDto getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,

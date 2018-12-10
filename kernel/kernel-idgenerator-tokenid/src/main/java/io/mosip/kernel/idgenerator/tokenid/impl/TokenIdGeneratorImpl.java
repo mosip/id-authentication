@@ -60,7 +60,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 		String generatedTokenId = null;
 		while (!unique) {
 			generatedTokenId = this.generateTokenId();
-			if (generatedTokenId!=null && tokenIdCacheManager.contains(generatedTokenId)) {
+			if (tokenIdCacheManager.contains(generatedTokenId)) {
 				unique = false;
 			} else {
 				unique = true;

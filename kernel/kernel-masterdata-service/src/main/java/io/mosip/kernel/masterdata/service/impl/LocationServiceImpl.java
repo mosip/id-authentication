@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * implemented from {@link LocationService}}
  * 
  * @author Srinivasan
+ * @since 1.0.0
  *
  */
 @Service
@@ -39,7 +40,7 @@ public class LocationServiceImpl implements LocationService {
 	 * creates an instance of repository class {@link LocationRepository}}
 	 */
 	@Autowired
-	LocationRepository locationRepository;
+	private LocationRepository locationRepository;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> parentHierarchyList = null;
@@ -99,8 +100,7 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				// List<LocationDto> locationHierarchies = MapperUtils.mapAll(locHierList,
-				// LocationDto.class);
+				
 				List<LocationDto> locationHierarchies = MapperUtils.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
@@ -209,7 +209,7 @@ public class LocationServiceImpl implements LocationService {
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
+		
          locationCodeDto=MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
