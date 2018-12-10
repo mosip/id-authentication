@@ -91,7 +91,8 @@ public class RegistrationConstants {
 	public static final String FP_DEVICE_ERROR = bundle.getString("FP_DEVICE_ERROR");
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
-
+	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
+	
 	// LOCK ACCOUNT
 	public static final String USER_ACCOUNT_LOCK_MESSAGE_NUMBER = bundle.getString("USER_ACCOUNT_LOCK_MESSAGE_NUMBER");
 	public static final String USER_ACCOUNT_LOCK_MESSAGE = bundle.getString("USER_ACCOUNT_LOCK_MESSAGE");

@@ -22,6 +22,7 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.collections.FXCollections;
@@ -95,6 +96,9 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@Autowired
 	private AuthenticationService validator;
+	
+	@Autowired
+	private BaseService baseService;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -119,11 +123,10 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 					.getFingerprintProviderFactory(providerName);
 			int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
 			if (statusCode != 0) {
-
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_FP_NOT_FOUND);
 
 			} else {
-
+				if (baseService.isValidDevice("Fingerprint", providerName)) {
 				// Thread to wait until capture the bio image/ minutia from FP. based on the
 				// error code or success code the respective action will be taken care.
 				waitToCaptureBioImage(5, 2000, fingerprintFacade);
@@ -166,6 +169,10 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 				}
 				LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 						"Fingerprint validation done");
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationConstants.DEVICE_ONBOARD_NOTIFICATION);
+			}
 			}
 		} catch (IOException e) {
 			LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION_ERROR", APPLICATION_NAME, APPLICATION_ID,

@@ -72,7 +72,14 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	/*
+	 * To get the serial numbe rof the device
+	 */
+	@Override
+	public String getSerialNumber() {
+		return fpDevice.GetDeviceInfo().SerialNo();
+	}
 	
 
 }

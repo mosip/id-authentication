@@ -43,4 +43,5 @@ public interface MosipFingerprintProvider {
 
 	WritableImage getFingerPrintImage()throws IOException;
 
+	String getSerialNumber();
 }

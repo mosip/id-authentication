@@ -30,6 +30,7 @@ import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.DeviceMasterRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
@@ -89,6 +90,12 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Autowired
 	private RegistrationUserDetailRepository userDetailRepository;
+	
+	/**
+	 * deviceMasterRepository instance creation using autowired annotation
+	 */
+	@Autowired
+	private DeviceMasterRepository deviceMasterRepository;
 
 	/*
 	 * (non-Javadoc) Getting station id based on mac address
@@ -318,4 +325,20 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		registrationCenterMachineDeviceRepository.saveAll(regCentreMachineDevices);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.MachineMappingDAO#isValidDevice(java.lang.String, java.lang.String, java.sql.Timestamp)
+	 */
+	@Override
+	public boolean isValidDevice(String serialNumber, String deviceType,Timestamp currentDate) {
+		
+		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID, " isValidDevice DAO Method called");
+		
+		Long regDeviceMaster = deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(deviceType,
+				serialNumber,currentDate);	
+
+		return regDeviceMaster != 0 ? true : false;
+	}
+	
+	 	
 }

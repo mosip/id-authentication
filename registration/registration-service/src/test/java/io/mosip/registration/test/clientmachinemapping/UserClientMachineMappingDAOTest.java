@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.DeviceMasterRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
@@ -71,7 +73,8 @@ public class UserClientMachineMappingDAOTest {
 	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 	@Mock
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
-
+	@Mock
+	private DeviceMasterRepository deviceMasterRepository;
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
@@ -349,6 +352,13 @@ public class UserClientMachineMappingDAOTest {
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
+	}
+	@Test
+	public void isValidDeviceTest()  {
+		Mockito.when(deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(Mockito.anyString(),
+				Mockito.anyString(),Mockito.anyObject())).thenReturn(1L);
+		boolean a=machineMappingDAOImpl.isValidDevice("SF0001", "Fingerprint",new Timestamp(new Date().getTime()));
+		Assert.assertSame(true, a);		
 	}
 
 }
