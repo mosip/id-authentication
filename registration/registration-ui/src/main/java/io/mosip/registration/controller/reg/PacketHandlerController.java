@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -89,9 +90,11 @@ public class PacketHandlerController extends BaseController {
 		}
 	}
 
-	public void showReciept(RegistrationDTO registrationDTO, String capturePhotoUsingDevice) {
+	public void showReciept(String capturePhotoUsingDevice) {
 
 		try {
+			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+					.get(RegistrationConstants.REGISTRATION_DATA);
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
