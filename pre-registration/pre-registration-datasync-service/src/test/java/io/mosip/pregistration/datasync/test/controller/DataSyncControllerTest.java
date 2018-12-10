@@ -32,9 +32,10 @@ import io.mosip.pregistration.datasync.code.StatusCodes;
 import io.mosip.pregistration.datasync.controller.DataSyncController;
 import io.mosip.pregistration.datasync.dto.DataSyncDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
+import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
-import io.mosip.pregistration.datasync.dto.ResponseDTO;
-import io.mosip.pregistration.datasync.dto.ResponseDataSyncDTO;
+import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
+import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.pregistration.datasync.service.DataSyncService;
@@ -60,7 +61,7 @@ public class DataSyncControllerTest {
 	ExceptionJSONInfo exceptionJSONInfo = null;
 	String status = "";
 	@SuppressWarnings("rawtypes")
-	ResponseDTO responseDto = new ResponseDTO<>();
+	DataSyncResponseDTO responseDto = new DataSyncResponseDTO<>();
 	Timestamp resTime = null;
 	String filename = "";
 	byte[] bytes = null;
@@ -105,14 +106,14 @@ public class DataSyncControllerTest {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Test
 	public void successRetrievePreidsTest() throws Exception {
 
 		exceptionJSONInfo = new ExceptionJSONInfo("", "");
-		List responseList = new ArrayList<>();
-		responseList.add(bytes);
-		responseList.add(filename);
+		PreRegArchiveDTO responseList = new PreRegArchiveDTO();
+		responseList.setZipBytes(bytes);
+		responseList.setFileName(filename);
 		errlist.add(exceptionJSONInfo);
 		responseDto.setResponse(responseList);
 
@@ -145,20 +146,19 @@ public class DataSyncControllerTest {
 		dataSyncDTO.setReqTime(new Timestamp(System.currentTimeMillis()));
 		dataSyncDTO.setVer("1.0");
 
-		ResponseDataSyncDTO responseDataSyncDTO = new ResponseDataSyncDTO();
-		List<ResponseDataSyncDTO> responseDataSyncList = new ArrayList<>();
+		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		ArrayList<String> list = new ArrayList<>();
 		list.add("1");
 
-		responseDataSyncDTO.setPreRegistrationIds(list);
-		responseDataSyncDTO.getTransactionId();
-		@SuppressWarnings("rawtypes")
-		ResponseDTO<ResponseDataSyncDTO> responseDto = new ResponseDTO();
-		responseDataSyncList.add(responseDataSyncDTO);
+		preRegistrationIdsDTO.setPreRegistrationIds(list);
+		preRegistrationIdsDTO.getTransactionId();
+//		@SuppressWarnings("rawtypes")
+//		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO();
+		
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-		responseDto.setResponse(responseDataSyncList);
+		responseDto.setResponse(preRegistrationIdsDTO);
 
 		Mockito.when(dataSyncService.retrieveAllPreRegid(Mockito.any())).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/data-sync/datasync")
@@ -172,13 +172,13 @@ public class DataSyncControllerTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void reverseDatasyncSuccessTest() throws Exception {
-		ResponseDTO<ReverseDataSyncDTO> responseDto = new ResponseDTO<>();
+		DataSyncResponseDTO<String> responseDto = new DataSyncResponseDTO<>();	
 		List responseList = new ArrayList<>();
 		responseList.add(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-		responseDto.setResponse(responseList);
+		responseDto.setResponse(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		Mockito.when(dataSyncService.storeConsumedPreRegistrations(Mockito.any())).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/data-sync/reverseDataSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
