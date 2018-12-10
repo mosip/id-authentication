@@ -32,11 +32,6 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	@Autowired
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
-
-	@Autowired
-	private MapperUtils mapperUtils;
 
 	@Override
 	public ResponseRrgistrationCenterMachineDto saveRegistrationCenterAndMachine(
@@ -44,17 +39,17 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
 
 		try {
-			RegistrationCenterMachine registrationCenterMachine = metadataUtils
+			RegistrationCenterMachine registrationCenterMachine = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachine.class);
 			RegistrationCenterMachine savedRegistrationCenterMachine = registrationCenterMachineRepository
 					.create(registrationCenterMachine);
 
-			RegistrationCenterMachineHistory registrationCenterMachineHistory = metadataUtils
+			RegistrationCenterMachineHistory registrationCenterMachineHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineHistory.class);
 			registrationCenterMachineHistory.setEffectivetimes(savedRegistrationCenterMachine.getCreatedDateTime());
 			registrationCenterMachineHistoryRepository.create(registrationCenterMachineHistory);
 
-			responseRrgistrationCenterMachineDto = mapperUtils.map(
+			responseRrgistrationCenterMachineDto = MapperUtils.map(
 					savedRegistrationCenterMachine.getRegistrationCenterMachinePk(),
 					ResponseRrgistrationCenterMachineDto.class);
 		} catch (DataAccessLayerException  | DataAccessException   e) {

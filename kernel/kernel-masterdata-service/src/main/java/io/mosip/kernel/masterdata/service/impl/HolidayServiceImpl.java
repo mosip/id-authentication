@@ -33,11 +33,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private HolidayRepository holidayRepository;
-	@Autowired
-	private MapperUtils mapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaDataUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -57,7 +52,7 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
-			holidayDto = mapperUtil.mapHolidays(holidays);
+			holidayDto = MapperUtils.mapHolidays(holidays);
 		} else {
 			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
@@ -87,7 +82,7 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
-			holidayDto = mapperUtil.mapHolidays(holidays);
+			holidayDto = MapperUtils.mapHolidays(holidays);
 		} else {
 			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
@@ -117,7 +112,7 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
-			holidayList = mapperUtil.mapHolidays(holidays);
+			holidayList = MapperUtils.mapHolidays(holidays);
 		} else {
 			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
@@ -136,16 +131,16 @@ public class HolidayServiceImpl implements HolidayService {
 	 */
 	@Override
 	public HolidayID saveHoliday(RequestDto<HolidayDto> holidayDto) {
-		Holiday entity = metaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
+		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
 		Holiday holiday;
 		try {
 			holiday = holidayRepository.create(entity);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		HolidayID holidayId = new HolidayID();
-		mapperUtil.map(holiday, holidayId);
+		MapperUtils.map(holiday, holidayId);
 		return holidayId;
 
 	}

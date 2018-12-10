@@ -19,34 +19,27 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
 public class MachineTypeServiceImpl implements MachineTypeService {
-	
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
-	
-	@Autowired
-	MapperUtils objectMapperUtil;
 
 	@Override
-	public CodeAndLanguageCodeID  createMachineType(RequestDto<MachineTypeDto> machineType) {
-		MachineType renMachineType= null;
+	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType) {
+		MachineType renMachineType = null;
 
-		MachineType entity = metaUtils.setCreateMetaData(machineType.getRequest(),
-				MachineType.class);
+		MachineType entity = MetaDataUtils.setCreateMetaData(machineType.getRequest(), MachineType.class);
 
 		try {
 			renMachineType = machineTypeRepository.create(entity);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()+ "  " + ExceptionUtils.parseException(e));
+					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage() + "  "
+							+ ExceptionUtils.parseException(e));
 		}
-		
+
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.map(renMachineType, codeLangCodeId);
+		MapperUtils.map(renMachineType, codeLangCodeId);
 		return codeLangCodeId;
 	}
 
-	
 }

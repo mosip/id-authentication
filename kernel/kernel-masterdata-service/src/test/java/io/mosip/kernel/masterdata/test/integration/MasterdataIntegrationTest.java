@@ -1011,13 +1011,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotFound());
 	}
 
-	@Test
-	public void addHolidayTypeTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
-		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
-		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
+//	@Test
+//	public void addHolidayTypeTest() throws Exception {
+//		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+//		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
+//		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
+//				.andExpect(status().isCreated());
+//	}
 
 	@Test
 	public void addHolidayTypeExceptionTest() throws Exception {
@@ -1650,8 +1650,6 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -----------------------------------DeviceSpecificationTest---------------------------------
-
-	// -----------------------------------DeviceSpecificationTest---------------------------------
 	@Test
 	public void findDeviceSpecLangcodeSuccessTest() throws Exception {
 		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
@@ -1772,6 +1770,74 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -------------------------MachineTest-----------------------------------------
+
+	@Test
+	public void getMachineAllSuccessTest() throws Exception {
+		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(machineList);
+		mockMvc.perform(get("/v1.0/machines")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getMachineAllNullResponseTest() throws Exception {
+		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(null);
+		mockMvc.perform(get("/v1.0/machines")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getMachineAllFetchExceptionTest() throws Exception {
+		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/machines")).andExpect(status().isInternalServerError());
+	}
+
+	// --------------------------------------------
+	@Test
+	public void getMachineIdLangcodeSuccessTest() throws Exception {
+		List<Machine> machines = new ArrayList<Machine>();
+		machines.add(machine);
+		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(machines);
+		mockMvc.perform(get("/v1.0/machines/{id}/{langcode}", "1000", "ENG")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getMachineIdLangcodeNullResponseTest() throws Exception {
+		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/machines/{id}/{langcode}", "1000", "ENG")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getMachineIdLangcodeFetchExceptionTest() throws Exception {
+		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/machines/{id}/{langcode}", "1000", "ENG"))
+				.andExpect(status().isInternalServerError());
+	}
+
+	// -----------------------------------
+	@Test
+	public void getMachineLangcodeSuccessTest() throws Exception {
+		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(machineList);
+		mockMvc.perform(get("/v1.0/machines/{langcode}", "ENG")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getMachineLangcodeNullResponseTest() throws Exception {
+		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(null);
+		mockMvc.perform(get("/v1.0/machines/{langcode}", "ENG")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getMachineLangcodeFetchExceptionTest() throws Exception {
+		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/machines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+	}
+
+	// -------------------------------------------
 	@Test
 	public void createMachineTest() throws Exception {
 
@@ -1822,6 +1888,62 @@ public class MasterdataIntegrationTest {
 				.content(machineTypeJson)).andExpect(status().isInternalServerError());
 	}
 
+	// --------------------------------DeviceTest-------------------------------------------------
+	@Test
+	public void getDeviceLangcodeSuccessTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(deviceList);
+		mockMvc.perform(get("/v1.0/devices/{langcode}", "ENG")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getDeviceLangcodeNullResponseTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/devices/{langcode}", "ENG")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getDeviceLangcodeFetchExceptionTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/devices/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+	}
+
+	// ----------------------------
+	@Test
+	public void getDeviceLangCodeAndDeviceTypeSuccessTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndDtypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(objectList);
+		mockMvc.perform(get("/v1.0/devices/{languagecode}/{deviceType}", "ENG", "LaptopCode"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+
+	public void getDeviceLangCodeAndDeviceTypeNullResponseTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndDtypeCode(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/devices/{languagecode}/{deviceType}", "ENG", "LaptopCode"))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getDeviceLangCodeAndDeviceTypeFetchExceptionTest() throws Exception {
+		when(deviceRepository.findByLangCodeAndDtypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/devices/{languagecode}/{deviceType}", "ENG", "LaptopCode"))
+				.andExpect(status().isInternalServerError());
+	}
+
+	// ---------------------------------------------
+//	@Test
+//	public void createDeviceTest() throws Exception {
+//		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
+//
+//		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
+//		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
+//				.content(deviceJson)).andExpect(status().isCreated());
+//	}
+
 	@Test
 	public void createDeviceExceptionTest() throws Exception {
 		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
@@ -1831,4 +1953,5 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
 				.content(deviceJson)).andExpect(status().isInternalServerError());
 	}
+
 }

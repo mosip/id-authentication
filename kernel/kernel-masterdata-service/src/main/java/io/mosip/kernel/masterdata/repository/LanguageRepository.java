@@ -24,7 +24,7 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	 * and <b>isDeleted</b> is <b>false</b> present in MOSIP system.
 	 * 
 	 * @see Language
-	 * @return List<Language>
+	 * @return list of language
 	 */
 	public List<Language> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
