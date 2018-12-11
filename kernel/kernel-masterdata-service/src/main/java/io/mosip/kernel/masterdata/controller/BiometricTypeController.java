@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.swagger.annotations.Api;
@@ -42,31 +43,22 @@ public class BiometricTypeController {
 		return biometricTypeService.getAllBiometricTypes();
 	}
 
-	/**
-	 * API to fetch all Biometric types details based on language code
-	 * 
-	 * @return All Biometric types of specific language
-	 */
 	@GetMapping("/{langcode}")
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
-	/**
-	 * API to fetch a Biometric type details using id and language code
-	 * 
-	 * @return A Biometric type
-	 */
 	@GetMapping("/{code}/{langcode}")
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode);
 	}
-	
+
 	/**
 	 * API to create a Biometric type
 	 * 
 	 * @param biometricType
+	 *            is of type {@link BiometricType}
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */

@@ -20,7 +20,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the all Machine details code.
 	 * 
-	 * @return List<Machine>
+	 * @return List
 	 * 		 MachineDetail fetched from database
 	 * 
 	 */
@@ -35,7 +35,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 *          Machine Id provided by user
 	 * @param langCode
 	 *          languageCode provided by user
-	 * @return List<Machine>
+	 * @return List
 	 * 		 MachineDetail fetched from database
 	 */
 
@@ -50,7 +50,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @param langCode
 	 *            langCode provided by user
 	 * 
-	 * @return List<Machine>
+	 * @return List
 	 * 			MachineDetail fetched from database
 	 */
 

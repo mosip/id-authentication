@@ -21,7 +21,8 @@ public interface MachineHistoryService {
 	 *            Language code given by user
 	 * @param effDateTime
 	 *            Effective date and time given by user
-	 * @return List<MachineHistoryDto> Return Machine History Detail for given
+	 * @return MachineHistoryResponseDto 
+	 * 				Return Machine History Detail for given
 	 *         machine id and language code
 	 *
 	 */

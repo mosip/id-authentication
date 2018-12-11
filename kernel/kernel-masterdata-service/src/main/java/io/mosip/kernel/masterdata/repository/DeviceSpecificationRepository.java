@@ -23,7 +23,8 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * @param langCode
 	 *            languageCode provided by user
 	 *            
-	 * @return Device specific Details fetched from database
+	 * @return List
+	 * 			Device specific Details fetched from database
 	 */
 	@Query("FROM DeviceSpecification d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false)")
 	List<DeviceSpecification> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
@@ -37,7 +38,8 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * @param deviceTypeCode
 	 *            Device Type Code provided by user
 	 *            
-	 * @return Device specific Details fetched from database
+	 * @return List
+	 * 		Device specific Details fetched from database
 	 */
 	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false)")
 	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode, String deviceTypeCode);

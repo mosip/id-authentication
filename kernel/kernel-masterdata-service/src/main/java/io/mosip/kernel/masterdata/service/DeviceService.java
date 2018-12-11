@@ -43,7 +43,7 @@ public interface DeviceService {
 	/**
 	 * This method is used to add a new Device to master data
 	 * 
-	 * @param RequestDto<DeviceDto>
+	 * @param deviceRequestDto
 	 *          Device DTO to insert data 
 	 * @return IdResponseDto
 	 * 			Device ID which is successfully inserted

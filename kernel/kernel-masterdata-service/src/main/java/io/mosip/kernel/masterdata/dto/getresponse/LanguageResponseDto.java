@@ -13,11 +13,8 @@ import lombok.Data;
  * given by the MOSIP system respectively.
  * 
  * @author Bal Vikash Sharma
- * @Version 1.0.0
  */
 @Data
-
-
 @JsonInclude(Include.NON_NULL)
 public class LanguageResponseDto {
 
