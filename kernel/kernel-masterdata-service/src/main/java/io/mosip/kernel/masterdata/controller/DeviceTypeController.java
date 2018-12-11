@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
-@Api(tags = { "DeviceTypes" })
+@Api(tags = { "DeviceType" })
 public class DeviceTypeController {
 
 	/**

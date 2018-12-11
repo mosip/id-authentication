@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.swagger.annotations.Api;
 
 /**
  * This controller class provides registration centers details based on user
@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
  *
  */
 @RestController
+@Api(tags = { "Registration" })
 public class RegistrationCenterController {
 
 	/**
@@ -136,7 +137,7 @@ public class RegistrationCenterController {
 	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
 	 */
 	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevelname}/{name}")
-	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
+	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevelname") String hierarchyLevel,
 			@PathVariable("name") String text) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,

@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class for fetching gender data from DB
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.service.GenderTypeService;
  *
  */
 @RestController
+@Api(tags = { "GenderType" })
 public class GenderTypeController {
 	@Autowired
 	private GenderTypeService genderTypeService;

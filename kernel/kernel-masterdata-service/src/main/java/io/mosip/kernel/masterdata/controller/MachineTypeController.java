@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@Api(tags = { "MachineTypes" })
+@Api(tags = { "MachineType" })
 public class MachineTypeController {
 	
 

@@ -90,11 +90,6 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag("languages", "Operation performed on Language"),
-						new Tag("registrationcenterdevice", "Api to map Registration center and Device"),
-						new Tag("registrationcentermachine", "Api to map Registration center and machine"),
-						new Tag("registrationcentermachinedevice",
-								"Api to map Registration, center machine and Device"))
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
 				.build();
 

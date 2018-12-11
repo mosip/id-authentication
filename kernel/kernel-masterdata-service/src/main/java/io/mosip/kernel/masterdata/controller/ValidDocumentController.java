@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class to create valid document in table.
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.service.ValidDocumentService;
  *
  */
 @RestController
+@Api(tags = { "ValidDocument" })
 public class ValidDocumentController {
 
 	@Autowired

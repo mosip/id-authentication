@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
+import io.swagger.annotations.Api;
 
 /**
  * * Controller with api for crud operation related to
@@ -17,6 +18,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistorySe
  *
  */
 @RestController
+@Api(tags = { "RegistrationCenterUserMachineHistory" })
 public class RegistrationCenterUserMachineHistoryController {
 
 	/**

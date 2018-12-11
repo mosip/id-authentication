@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.swagger.annotations.Api;
 
 /**
  * 
@@ -29,6 +30,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
  *
  */
 @RestController
+@Api(tags = { "Location" })
 @RequestMapping(value = "/v1.0/locations")
 public class LocationController {
 

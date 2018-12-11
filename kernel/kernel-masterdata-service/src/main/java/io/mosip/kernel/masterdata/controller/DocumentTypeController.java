@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -32,6 +33,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
+@Api(tags = { "DocumentType" })
 public class DocumentTypeController {
 	@Autowired
 	DocumentTypeService documentTypeService;
