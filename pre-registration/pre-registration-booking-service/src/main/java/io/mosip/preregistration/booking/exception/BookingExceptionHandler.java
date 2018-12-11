@@ -244,5 +244,6 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
+	
 
 }

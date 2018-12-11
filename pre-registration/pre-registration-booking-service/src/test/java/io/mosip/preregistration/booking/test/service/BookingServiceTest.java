@@ -54,10 +54,17 @@ import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
+import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
+import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.service.BookingService;
@@ -316,8 +323,8 @@ public class BookingServiceTest {
 
 		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
 				StatusCodes.Booked.toString())).thenReturn(true);
-
-		Mockito.when(registrationBookingRepository.deleteByPreregistrationId("23587986034785")).thenReturn(1);
+		Mockito.when(registrationBookingRepository.findByPreId("23587986034785")).thenReturn(bookingEntity);
+		Mockito.when(registrationBookingRepository.save(bookingEntity)).thenReturn(bookingEntity);
 
 		ResponseEntity<ResponseDto> resp = null;
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
@@ -356,8 +363,8 @@ public class BookingServiceTest {
 
 		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
 				StatusCodes.Booked.toString())).thenReturn(true);
-
-		Mockito.when(registrationBookingRepository.deleteByPreregistrationId("23587986034785")).thenReturn(0);
+		Mockito.when(registrationBookingRepository.findByPreId("23587986034785")).thenReturn(bookingEntity);
+		Mockito.when(registrationBookingRepository.save(bookingEntity)).thenReturn(null);
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
 	}
@@ -403,7 +410,7 @@ public class BookingServiceTest {
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
-		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Pending_Appointment.toString());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
 
@@ -416,9 +423,7 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
 
-		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
-				StatusCodes.Booked.toString())).thenReturn(false);
-
+		
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
 	}
@@ -446,5 +451,75 @@ public class BookingServiceTest {
 
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test(expected = BookingDataNotFoundException.class)
+	public void BookingDataNotFoundExceptionExceptionTest() throws Exception {
+		BookingDataNotFoundException exception = new BookingDataNotFoundException();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
+		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.Booked.toString());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		PreRegResponseDto preRegResponse = new PreRegResponseDto();
+		preRegResponse.setResponse(statusList);
+		preRegResponse.setErr(null);
+		preRegResponse.setStatus(false);
+
+		ResponseEntity<PreRegResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(PreRegResponseDto.class))).thenReturn(res);
+
+		Mockito.when(bookingAvailabilityRepository.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+				LocalTime.parse("09:00"), LocalTime.parse("09:13"), LocalDate.parse("2018-12-04"), "1"))
+				.thenReturn(entity);
+
+		Mockito.when(registrationBookingRepository.existsByPreIdandStatusCode("23587986034785",
+				StatusCodes.Booked.toString())).thenReturn(false);
+		
+		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
+		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
+	}
+	
+	@Test
+	public void mandatoryFieldCheckedSuccessTest() throws Exception {
+		boolean flag = service.mandatoryParameterCheckforCancel(cancelbookingDto);
+		assertEquals(flag, true);
+	}
+	
+	
+	
+	@Test(expected=BookingPreIdNotFoundException.class)
+	public void checkedPreIdFailureTest() throws Exception {
+		
+		cancelbookingDto.setPre_registration_id(null);
+		service.mandatoryParameterCheckforCancel(cancelbookingDto);
+	}
+	
+	
+	@Test(expected=BookingRegistrationCenterIdNotFoundException.class)
+	public void bookingRegistrationCenterIdNotFoundExceptionTest() throws Exception {
+		
+		cancelbookingDto.setRegistration_center_id(null);
+		service.mandatoryParameterCheckforCancel(cancelbookingDto);
+	}
+	
+	@Test(expected=BookingDateNotSeletectedException.class)
+	public void bookingDateNotSeletectedExceptionTest() throws Exception {
+		
+		cancelbookingDto.setReg_date(null);
+		service.mandatoryParameterCheckforCancel(cancelbookingDto);
+	}
+	
+	@Test(expected=BookingTimeSlotNotSeletectedException.class)
+	public void bookingTimeSlotNotSeletectedExceptionTest() throws Exception {
+		
+		cancelbookingDto.setSlotFromTime(null);
+		cancelbookingDto.setSlotToTime(null);
+		service.mandatoryParameterCheckforCancel(cancelbookingDto);
 	}
 }
