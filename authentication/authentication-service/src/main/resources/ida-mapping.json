@@ -17,7 +17,7 @@
 				],
 			"age" :
 				[
-					"age"
+					"dateOfBirth"
 				],
 			"gender" : 
 				[
@@ -62,9 +62,9 @@
 					"addressLine1", 
 					"addressLine2", 
 					"addressLine3", 
-					"location1",
-					"location2",
-					"location3",
+					"city",
+					"region",
+					"province",
 					"pinCode"
 				],
 			"otp" : 
@@ -132,6 +132,14 @@
 			"rightThumb" :
 				[
 					"rightThumb"
+				],
+			"leftEye" :
+				[
+					"leftEye"
+				],
+			"rightEye" :
+				[
+					"rightEye"
 				],
 			"face" : 
 				[
