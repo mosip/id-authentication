@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
@@ -161,7 +161,7 @@ public class PacketInfoDaoTest {
 				ArgumentMatchers.any())).thenReturn(individualDemographicDedupeEntityList);
 		Date date = new Date(1995, 04, 16);
 
-		List<DemographicDedupeDto> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date);
+		List<DemographicInfoDto> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date);
 
 		assertEquals("2018782130000224092018121229", demoDtoList.get(0).getRegId());
 	}
@@ -174,7 +174,7 @@ public class PacketInfoDaoTest {
 		Mockito.when(demographicDedupeRepository.findDemoById(ArgumentMatchers.anyString()))
 				.thenReturn(demographicDedupeEntityList);
 
-		List<DemographicDedupeDto> demographicDedupeDtoList = packetInfodao
+		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao
 				.findDemoById("2018782130000224092018121229");
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
 	}

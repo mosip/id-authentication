@@ -23,7 +23,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -603,7 +603,7 @@ public class OSIValidator {
 	 * @return the uin
 	 */
 	private String getIntroducerUIN(String intoducerRid) {
-		List<DemographicDedupeDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
+		List<DemographicInfoDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
 		if (!demographicDedupeDtoList.isEmpty()) {
 			return demographicDedupeDtoList.get(0).getUin();
 		}

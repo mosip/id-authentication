@@ -29,7 +29,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -45,7 +45,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class DemodedupeStageTest {
 
 	@Mock
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -53,8 +53,8 @@ public class DemodedupeStageTest {
 	@Mock
 	private DemoDedupe demoDedupe;
 
-	MessageDTO dto = new MessageDTO();
-	Set<DemographicDedupeDto> duplicateDtos = new HashSet<>();
+	private MessageDTO dto = new MessageDTO();
+	private Set<DemographicInfoDto> duplicateDtos = new HashSet<>();
 
 	@InjectMocks
 	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
@@ -84,8 +84,8 @@ public class DemodedupeStageTest {
 
 		MockitoAnnotations.initMocks(this);
 
-		DemographicDedupeDto dto1 = new DemographicDedupeDto();
-		DemographicDedupeDto dto2 = new DemographicDedupeDto();
+		DemographicInfoDto dto1 = new DemographicInfoDto();
+		DemographicInfoDto dto2 = new DemographicInfoDto();
 		duplicateDtos.add(dto1);
 		duplicateDtos.add(dto2);
 
@@ -103,7 +103,7 @@ public class DemodedupeStageTest {
 	@Test
 	public void testDemoDedupeSuccess() {
 
-		Set<DemographicDedupeDto> emptyDuplicateDtoSet = new HashSet<>();
+		Set<DemographicInfoDto> emptyDuplicateDtoSet = new HashSet<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
 		MessageDTO messageDto = demodedupeStage.process(dto);

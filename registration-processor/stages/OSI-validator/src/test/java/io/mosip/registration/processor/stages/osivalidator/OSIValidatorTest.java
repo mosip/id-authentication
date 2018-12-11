@@ -29,7 +29,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -94,9 +94,9 @@ public class OSIValidatorTest {
 	@InjectMocks
 	OSIValidator osiValidator;
 
-	List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+	List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
 
-	DemographicDedupeDto demographicDedupeDto = new DemographicDedupeDto();
+	DemographicInfoDto demographicInfoDto = new DemographicInfoDto();
 
 	/**
 	 * Sets the up.
@@ -106,7 +106,7 @@ public class OSIValidatorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		demographicDedupeDto.setUin("1234");
+		demographicInfoDto.setUin("1234");
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		regOsiDto.setOfficerId("O1234");
 		regOsiDto.setOfficerFingerpImageName("fingerprint");
@@ -132,7 +132,7 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerPhotoName("IntroducerPhotoName");
 		regOsiDto.setIntroducerIrisType("RIGHTEYE");
 		registrationStatusDto.setApplicantType("Child");
-		demographicDedupeDtoList.add(demographicDedupeDto);
+		demographicDedupeDtoList.add(demographicInfoDto);
 
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);

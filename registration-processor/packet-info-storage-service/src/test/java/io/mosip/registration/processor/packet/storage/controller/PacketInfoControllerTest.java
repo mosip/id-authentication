@@ -27,7 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
@@ -87,8 +87,8 @@ public class PacketInfoControllerTest {
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
 
-		DemographicDedupeDto demoDto = new DemographicDedupeDto();
-		List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+		DemographicInfoDto demoDto = new DemographicInfoDto();
+		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
 		demoDto.setUin("PEN1345T");
 		demoDto.setName("firstName");

@@ -39,7 +39,7 @@ import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -551,8 +551,8 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
-		DemographicDedupeDto demoDto = new DemographicDedupeDto();
-		List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+		DemographicInfoDto demoDto = new DemographicInfoDto();
+		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
 		demoDto.setName("firstName+LastName");
 		demoDto.setLangCode("ar");
@@ -599,9 +599,9 @@ public class PacketInfoManagerImplTest {
 
 	@Test
 	public void findDemoByIdTest() {
-		List<DemographicDedupeDto> depdupeList = new ArrayList<>();
+		List<DemographicInfoDto> depdupeList = new ArrayList<>();
 		Date date = new Date(1995, 04, 16);
-		DemographicDedupeDto uinDto = new DemographicDedupeDto();
+		DemographicInfoDto uinDto = new DemographicInfoDto();
 		uinDto.setRegId("2018782130000103122018105604");
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
@@ -610,7 +610,7 @@ public class PacketInfoManagerImplTest {
 		uinDto.setUin("1234567");
 		uinDto.setDob(date);
 
-		DemographicDedupeDto uinDto1 = new DemographicDedupeDto();
+		DemographicInfoDto uinDto1 = new DemographicInfoDto();
 		uinDto1.setRegId("2018782130000103122018105604");
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
@@ -624,7 +624,7 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(depdupeList);
 
-		List<DemographicDedupeDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
+		List<DemographicInfoDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
 
 		assertEquals(
 				"Fetching all dedupe records from db based on id. Verifing id, expected id is 2018782130000103122018105604",
