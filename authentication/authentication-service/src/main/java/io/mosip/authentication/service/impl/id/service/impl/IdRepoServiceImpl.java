@@ -58,30 +58,30 @@ public class IdRepoServiceImpl implements IdRepoService {
 	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
-		Map<String, Object> requestSync = null;
+		Map<String, Object> response = null;
 
 		try {
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null,
-					Map.class);
+			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
 			Map<String, String> params = new HashMap<>();
 			params.put("uin", uin);
 			buildRequest.setPathVariables(params);
-			requestSync = restHelper.requestSync(buildRequest);
+			response = restHelper.requestSync(buildRequest);
+			response.put("uin", uin);
 
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		} catch (IDDataValidationException e) {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.SERVER_ERROR, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
-		return requestSync;
+		return response;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) throws IdAuthenticationBusinessException {
-		
+	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
+			throws IdAuthenticationBusinessException {
+
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			String value = mapper.writeValueAsString(idResponseDTO);

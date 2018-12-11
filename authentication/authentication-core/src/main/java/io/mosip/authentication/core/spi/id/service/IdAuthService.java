@@ -21,7 +21,7 @@ public interface IdAuthService {
 	 * @return
 	 * @throws IdValidationFailedException
 	 */
-	Map<String, Object> validateUIN(String uin) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByUinNumber(String uin) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID
@@ -30,15 +30,17 @@ public interface IdAuthService {
 	 * @return
 	 * @throws IdValidationFailedException
 	 */
-	String validateVID(String vid) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException;
 
-	/***
-	 * Retrieve UIN
-	 * 
-	 * @param uinRefId
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	/**
+	 * Process the IdType and validates the Idtype and upon validation reference Id
+	 * is returned in AuthRequestDTO.
+	 *
+	 * @param idvIdType idType
+	 * @param idvId     id-number
+	 * @return map
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-
-	public Optional<String> getUIN(String uinRefId) throws IdAuthenticationBusinessException;
+	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException;
 }

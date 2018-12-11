@@ -95,27 +95,23 @@ public class KycServiceImpl implements KycService {
 	 * @return the map 
 	 */
     @Override
-    public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired, Map<String, List<IdentityInfoDTO>> identityInfo)
-	    throws IdAuthenticationBusinessException {
-	KycInfo kycInfo = new KycInfo();
-	Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
-		isSecLangInfoRequired);
-	kycInfo.setIdentity(filteredIdentityInfo);
-	Optional<String> uinOpt = idAuthService.getUIN(refId);
-	
-	if (uinOpt.isPresent() && ePrintReq) {
-		String uin = uinOpt.get();
+    public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired, Map<String, List<IdentityInfoDTO>> identityInfo)
+			throws IdAuthenticationBusinessException {
+		KycInfo kycInfo = new KycInfo();
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
+				isSecLangInfoRequired);
+		kycInfo.setIdentity(filteredIdentityInfo);
+
 		Object maskedUin = uin;
-	    if (env.getProperty("uin.masking.required", Boolean.class)) {
-		maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
-	    }
-	    Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-	    String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
-	    kycInfo.setEPrint(ePrintInfo);
-	    kycInfo.setIdvId(maskedUin.toString());
+		if (env.getProperty("uin.masking.required", Boolean.class)) {
+			maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
+		}
+		Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+		String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
+		kycInfo.setEPrint(ePrintInfo);
+		kycInfo.setIdvId(maskedUin.toString());
+		return kycInfo;
 	}
-	return kycInfo;
-    }
 
 
     /**

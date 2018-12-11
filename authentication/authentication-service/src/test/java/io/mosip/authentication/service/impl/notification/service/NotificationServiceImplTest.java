@@ -148,7 +148,7 @@ public class NotificationServiceImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
-		Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
+		//Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
@@ -189,7 +189,7 @@ public class NotificationServiceImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("");
-		Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
+		//Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");

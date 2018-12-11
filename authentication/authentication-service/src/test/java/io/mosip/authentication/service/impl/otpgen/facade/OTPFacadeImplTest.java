@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.otpgen.facade;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class OTPFacadeImplTest {
 		String productid = "IDA";
 		String refId = "8765";
 		String otp = "987654";
-		Mockito.when(idAuthService.validateUIN(unqueId)).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
@@ -159,7 +160,7 @@ public class OTPFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 
 		Optional<String> uinOpt = Optional.of("426789089018");
-		Mockito.when(idAuthService.getUIN(refId)).thenReturn(uinOpt);
+		//Mockito.when(idAuthService.getUIN(refId)).thenReturn(uinOpt);
 
 		ReflectionTestUtils.setField(notificationManager, "environment", env);
 		ReflectionTestUtils.setField(notificationManager, "idTemplateManager", idTemplateManager);
@@ -201,7 +202,7 @@ public class OTPFacadeImplTest {
 		String refId = "8765";
 		String otp = null;
 
-		Mockito.when(idAuthService.validateUIN(unqueId)).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
@@ -234,31 +235,28 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto, status, comment, refId);
 	}
 
-	@Ignore
+	
 	@Test
 	public void testGetRefIdForUIN() {
 		String uniqueID = otpRequestDto.getIdvId();
-		String actualrefid = ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
-		String expactedRefId = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
-		assertEquals(actualrefid, expactedRefId);
+		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByUinNumber", uniqueID);
+		assertNotNull(invokeMethod);
 	}
 
 	@Test
 	public void test_WhenInvalidID_ForUIN_RefIdIsNull() throws IdAuthenticationBusinessException {
 		otpRequestDto.setIdvId("cvcvcjhg76");
 		String uniqueID = otpRequestDto.getIdvId();
-		ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByUinNumber", uniqueID);
 	}
 
 	@Test
 	public void testGetRefIdForVID() {
 		String uniqueID = otpRequestDto.getIdvId();
 		otpRequestDto.setIdvIdType(IdType.VID.getType());
-		String actualrefid = ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
-		String expactedRefId = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVidNumber", uniqueID);
 
-		assertEquals(actualrefid, expactedRefId);
+		assertNotNull(invokeMethod);
 	}
 
 	@Test
@@ -266,8 +264,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto.setIdvId("cvcvcjhg76");
 		otpRequestDto.setIdvIdType(IdType.VID.getType());
 		String uniqueID = otpRequestDto.getIdvId();
-		ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVidNumber", uniqueID);
 	}
 
 	@Ignore
@@ -292,7 +289,7 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
-		Mockito.when(idAuthService.getUIN(refId)).thenReturn(uinOpt);
+		//Mockito.when(idAuthService.getUIN(refId)).thenReturn(uinOpt);
 
 		String[] dateAndTime = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getDateAndTime",
 				otpRequestDto.getReqTime());

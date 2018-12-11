@@ -113,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 	
-	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO,
+	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
@@ -136,17 +136,12 @@ public class NotificationServiceImpl implements NotificationService {
 
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
-		Optional<String> uinOpt = idAuthService.getUIN(refId);
-		String uin = "";
-
-		if (uinOpt.isPresent()) {
-			uin = uinOpt.get();
-			if (ismaskRequired) {
-				uin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
-			}
+		String maskedUin = "";
+		if (ismaskRequired) {
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
 		}
 
-		values.put(UIN2, uin);
+		values.put(UIN2, maskedUin);
 		values.put(AUTH_TYPE,
 
 				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
@@ -172,7 +167,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 	
 	
-	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, Map<String, Object> idResDTO, 
+	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, Map<String, Object> idResDTO,
 			String email, String mobileNumber) {
 		
 		
@@ -183,11 +178,8 @@ public class NotificationServiceImpl implements NotificationService {
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
 		try {
-			Optional<String> uinOpt = idAuthService.getUIN(String.valueOf(idResDTO.get("registrationId")));
-			if (uinOpt.isPresent()) {
-				String uin = uinOpt.get();
-				maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
-			}
+			String uin = String.valueOf(idResDTO.get("uin"));
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));

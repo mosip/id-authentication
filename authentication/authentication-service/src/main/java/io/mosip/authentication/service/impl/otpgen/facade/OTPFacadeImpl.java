@@ -85,7 +85,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	@Autowired
 	IdRepoService idInfoService;
-	
+
 	@Autowired
 	private NotificationService notificationService;
 	/** The mosip logger. */
@@ -111,7 +111,8 @@ public class OTPFacadeImpl implements OTPFacade {
 		String date = null;
 		String time = null;
 
-		 Map<String, Object> idResDTO = getRefId(otpRequestDto);
+		Map<String, Object> idResDTO = idAuthService.processIdType(otpRequestDto.getIdvIdType(),
+				otpRequestDto.getIdvId());
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
 
@@ -144,12 +145,12 @@ public class OTPFacadeImpl implements OTPFacade {
 			otpResponseDTO.setTxnId(txnID);
 			status = "Y";
 			comment = "OTP_GENERATED";
-			
+
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
 			otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
-			
+
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
@@ -241,41 +242,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		autntxnrepository.saveAndFlush(autnTxn);
 	}
 
-	/**
-	 * Obtain the reference id for IDType.
-	 *
-	 * @param otpRequestDto the otp request dto
-	 * @return the ref id
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	private Map<String, Object> getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
-		Map<String, Object> idResDTO = null;
-		Optional<IdType> idType = IdType.getIDType(otpRequestDto.getIdvIdType());
-		String uniqueID = otpRequestDto.getIdvId();
-		if (idType.isPresent()) {
-			if (idType.get() == IdType.UIN) {
-				idResDTO = idAuthService.validateUIN(uniqueID);
-				if (idResDTO == null) {
-					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdvIdType(), "Reference Id for UID",
-							" UID-refId: " + idResDTO);
-				}
-			} else {
-				String refId = idAuthService.validateVID(uniqueID);
-
-				if (idResDTO == null) {
-					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdvIdType(), "Reference Id for VID",
-							" VID-refId: " + idResDTO);
-				}
-			}
-			mosipLogger.info("NA", idType.get().getType(), "NA",
-					" reference id of ID Type " + idType.get().getType() + idResDTO);
-		}
-
-		return idResDTO;
-	}
-
-	
 	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) {
 		return demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
 	}
