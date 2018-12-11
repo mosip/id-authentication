@@ -219,49 +219,54 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Location> locationLists = MAPPER_FACADE.mapAsList(locationsList, Location.class);
 			locationRepository.saveAll(locationLists);
 
-			ReasonCategory reasonCatogryy = new ReasonCategory();
-
-			reasonCatogryy.setCode(reasonCatogryType.getCode());
-			reasonCatogryy.setDescription(reasonCatogryType.getDescription());
-			reasonCatogryy.setLangCode(reasonCatogryType.getLangCode());
-			reasonCatogryy.setName(reasonCatogryType.getName());
-			reasonCatogryy.setIsActive(true);
-			reasonCatogryy.setCrBy(SessionContext.getInstance().getUserContext().getName());
-			reasonCatogryy.setCrDtime(new Timestamp(System.currentTimeMillis()));
-
-			Set<ReasonListDto> reasonListtoSet = reasonCatogryType.getReasonLists().stream()
-					.collect(Collectors.toSet());
-
-			Set<ReasonList> setReasonList = new HashSet<>();
-
-			for (ReasonListDto result : reasonListtoSet) {
-
-				ReasonList reasonList = new ReasonList();
-				reasonList.setName(result.getName());
-				reasonList.setCode(result.getCode());
-				reasonList.setLangCode(result.getLangCode());
-				reasonList.setDescription(result.getDescription());
-				reasonList.setName(result.getName());
-				reasonList.setCrBy(SessionContext.getInstance().getUserContext().getName());
-				reasonList.setCrDtime(new Timestamp(System.currentTimeMillis()));
-				reasonList.setIsActive(true);
-				reasonList.setReasonCategoryCode(reasonCatogryy);
-				setReasonList.add(reasonList);
-			}
-
-			reasonCatogryy.setReasons(setReasonList);
-
-			reasonCatogryReposiotry.save(reasonCatogryy);
+			reasonCatogryReposiotry.save(getResponseCategory(reasonCatogryType));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
-			sucessResponse = "Exception in inserting data";
+			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 
-			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE + sucessResponse,
 					regBaseUncheckedException.getMessage());
 		}
 
 		return sucessResponse;
+
+	}
+
+	private ReasonCategory getResponseCategory(ReasonCategoryDto reasonCatogryType) {
+
+		ReasonCategory reasonCatogryy = new ReasonCategory();
+
+		reasonCatogryy.setCode(reasonCatogryType.getCode());
+		reasonCatogryy.setDescription(reasonCatogryType.getDescription());
+		reasonCatogryy.setLangCode(reasonCatogryType.getLangCode());
+		reasonCatogryy.setName(reasonCatogryType.getName());
+		reasonCatogryy.setIsActive(true);
+		reasonCatogryy.setCrBy(SessionContext.getInstance().getUserContext().getName());
+		reasonCatogryy.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		Set<ReasonListDto> reasonListtoSet = reasonCatogryType.getReasonLists().stream().collect(Collectors.toSet());
+
+		Set<ReasonList> setReasonList = new HashSet<>();
+
+		for (ReasonListDto result : reasonListtoSet) {
+
+			ReasonList reasonList = new ReasonList();
+			reasonList.setName(result.getName());
+			reasonList.setCode(result.getCode());
+			reasonList.setLangCode(result.getLangCode());
+			reasonList.setDescription(result.getDescription());
+			reasonList.setName(result.getName());
+			reasonList.setCrBy(SessionContext.getInstance().getUserContext().getName());
+			reasonList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			reasonList.setIsActive(true);
+			reasonList.setReasonCategoryCode(reasonCatogryy);
+			setReasonList.add(reasonList);
+		}
+
+		reasonCatogryy.setReasons(setReasonList);
+
+		return reasonCatogryy;
 
 	}
 
