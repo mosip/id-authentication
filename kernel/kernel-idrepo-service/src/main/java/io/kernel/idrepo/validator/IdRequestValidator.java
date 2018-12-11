@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -20,6 +21,7 @@ import org.springframework.validation.Validator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import io.kernel.idrepo.config.IdRepoLogger;
 import io.kernel.idrepo.dto.IdRequestDTO;
@@ -37,6 +39,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
 /**
@@ -46,6 +49,8 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
  */
 @Component
 public class IdRequestValidator implements Validator {
+
+	private static final String LANGUAGE = "language";
 
 	private static final String VALIDATE_REQUEST = "validateRequest - \n";
 
@@ -154,7 +159,6 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
-
 	/**
 	 * Validate uin.
 	 *
@@ -229,33 +233,49 @@ public class IdRequestValidator implements Validator {
 						mapper.writeValueAsBytes(request),
 						new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {
 						});
-				Optional<Boolean> isInvalidLang = requestMap.get("identity").values().parallelStream()
-						.map(listOfMap -> listOfMap.parallelStream().filter(map -> map.containsKey("language"))
-								.anyMatch(map -> !Lists
-										.newArrayList(env.getProperty("mosip.idrepo.primary-lang").toUpperCase(),
-												env.getProperty("mosip.idrepo.secondary-lang").toUpperCase())
-										.contains(map.get("language").toUpperCase())))
-						.findFirst();
-				if (isInvalidLang.isPresent() && isInvalidLang.get()) {
+
+				Optional<Boolean> isInvalidLang = checkForInvalidLang(requestMap);
+				if ((isInvalidLang.isPresent() && isInvalidLang.get()) || checkForDuplicates(requestMap)) {
 					mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 							VALIDATE_REQUEST + " - Invalid language");
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 				}
-			} catch (IOException | JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-					| FileIOException e) {
+			} catch (UnidentifiedJsonException | IOException | JsonValidationProcessingException | JsonIOException
+					| JsonSchemaIOException | FileIOException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			} catch (NullJsonSchemaException | ConfigServerConnectionException | HttpRequestException
-					| NullJsonNodeException | UnidentifiedJsonException e) {
+					| NullJsonNodeException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
 						IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage());
 			}
 		}
+	}
+
+	private Optional<Boolean> checkForInvalidLang(Map<String, Map<String, List<Map<String, String>>>> requestMap) {
+		return requestMap.get("identity").values().parallelStream()
+				.map(listOfMap -> listOfMap.parallelStream().filter(map -> map.containsKey(LANGUAGE))
+						.peek(leftMap -> leftMap.replace(LANGUAGE, leftMap.get(LANGUAGE).toUpperCase()))
+						.anyMatch(map -> !Lists
+								.newArrayList(env.getProperty("mosip.idrepo.primary-lang").toUpperCase(),
+										env.getProperty("mosip.idrepo.secondary-lang").toUpperCase())
+								.contains(map.get(LANGUAGE).toUpperCase())))
+				.findFirst();
+	}
+
+	private boolean checkForDuplicates(Map<String, Map<String, List<Map<String, String>>>> requestMap) {
+		TreeSet<Map<String, String>> identitySet = Sets.newTreeSet((Map<String, String> map1,
+				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
+		return requestMap.get("identity").values().parallelStream()
+				.peek(identitySet::addAll)
+				.peek(listOfMap -> System.err.println("list-> " + listOfMap))
+				.peek(listOfMap -> System.err.println("identitySet-> " + identitySet))
+				.anyMatch(listOfMap -> listOfMap.size() != identitySet.size());
 	}
 
 	/**
@@ -272,7 +292,8 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 		} else {
 			try {
-				DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(env.getProperty("datetime.pattern"));
+				DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
+						env.getProperty("datetime.pattern"));
 				timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty("datetime.timezone")));
 				if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
 					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

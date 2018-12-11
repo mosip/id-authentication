@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
@@ -39,8 +40,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 import io.kernel.idrepo.config.IdRepoLogger;
@@ -68,6 +71,7 @@ import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
@@ -272,16 +276,21 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				Map<String, Map<String, List<Map<String, String>>>> requestData = convertToMap(request.getRequest());
 				Map<String, Map<String, List<Map<String, String>>>> dbData = (Map<String, Map<String, List<Map<String, String>>>>) convertToObject(
 						decryptIdentity(dbUinData.getUinDetail().getUinData()), Map.class);
-				Maps.difference(requestData.get(IDENTITY), dbData.get(IDENTITY)).entriesDiffering()
+				MapDifference<String, List<Map<String, String>>> mapDifference = Maps
+						.difference(requestData.get(IDENTITY), dbData.get(IDENTITY));
+				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.get(IDENTITY).put(key, value));
+				mapDifference.entriesDiffering()
 						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData.get(IDENTITY)
 								.put(key, findDifference(value.leftValue(), value.rightValue())));
-				Maps.difference(requestData.get(IDENTITY), dbData.get(IDENTITY)).entriesOnlyOnLeft()
-						.forEach((key, value) -> dbData.get(IDENTITY).put(key, value));
 
 				uinObject = updateIdenityInfo(dbUinData, encryptIdentity(convertToBytes(dbData)));
 			}
 
-			return constructIdResponse(MOSIP_ID_UPDATE, uinObject);
+			if (Objects.isNull(uinObject)) {
+				return constructIdResponse(MOSIP_ID_UPDATE, dbUinData);
+			} else {
+				return constructIdResponse(MOSIP_ID_UPDATE, uinObject);
+			}
 		} catch (JsonProcessingException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"));
@@ -299,12 +308,20 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	private List<Map<String, String>> findDifference(List<Map<String, String>> leftValue,
 			List<Map<String, String>> rightValue) {
-		if (!leftValue.containsAll(rightValue)) {
-			leftValue.parallelStream().filter(leftMap -> !rightValue.contains(leftMap)).forEach(rightValue::add);
-			rightValue.parallelStream().filter(rightMap -> !leftValue.contains(rightMap)).forEach(leftValue::add);
-		}
-		leftValue.sort((map1, map2) -> map1.get(LANGUAGE).compareTo(map2.get(LANGUAGE)));
-		rightValue.sort((map1, map2) -> map1.get(LANGUAGE).compareTo(map2.get(LANGUAGE)));
+
+		TreeSet<Map<String, String>> leftValueSet = Sets.newTreeSet((Map<String, String> map1,
+				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
+		leftValueSet.addAll(leftValue);
+		leftValue.clear();
+
+		TreeSet<Map<String, String>> rightValueSet = Sets.newTreeSet((Map<String, String> map1,
+				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
+		rightValueSet.addAll(rightValue);
+		rightValue.clear();
+
+		leftValue.addAll(Sets.difference(rightValueSet, leftValueSet).copyInto(leftValueSet));
+		rightValue.addAll(Sets.difference(leftValueSet, rightValueSet).copyInto(rightValueSet));
+
 		IntStream.range(0, leftValue.size())
 				.filter(i -> leftValue.get(i).get(LANGUAGE).equalsIgnoreCase(rightValue.get(i).get(LANGUAGE)))
 				.forEach(i -> Maps.difference(leftValue.get(i), rightValue.get(i)).entriesDiffering().entrySet()
