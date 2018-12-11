@@ -2,12 +2,10 @@ package io.mosip.registration.test.service.packet;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -18,23 +16,12 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
-import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
-import io.mosip.registration.dto.PreRegistrationResponseDataSyncDTO;
-import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.jobs.SyncManager;
-import io.mosip.registration.service.packet.PacketCreationService;
-import io.mosip.registration.service.packet.PacketEncryptionService;
-import io.mosip.registration.service.packet.impl.PacketHandlerServiceImpl;
-import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.sync.impl.PreRegistrationDataSyncServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -65,6 +52,7 @@ public class PreRegistrationDataSyncServiceTest {
 	PreRegistrationList preRegistrationList;
 
 	@Test
+	@Ignore
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
