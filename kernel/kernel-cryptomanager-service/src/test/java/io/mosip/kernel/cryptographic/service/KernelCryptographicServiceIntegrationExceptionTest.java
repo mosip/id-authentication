@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,9 +88,45 @@ public void testInvalidSpecEncrypt() throws Exception {
 	mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isInternalServerError());
 }
 
+@Test	
+public void testMethodArgumentNotValidException() throws Exception {
+	String requestBody="{\"applicationId\": \"\",\"data\": \"\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+	mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
+}
+@Test	
+public void testHttpClientErrorException() throws Exception {
+    server.expect(requestTo("http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123")).andRespond(withBadRequest());
+    String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+	mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isInternalServerError());
+}
 
+@Test	
+public void testHttpServerErrorException() throws Exception {
+    server.expect(requestTo("http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123")).andRespond(withServerError());
+    String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+	mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isInternalServerError());
+}
 
+@Test	
+public void testInvalidFormatException() throws Exception {
+	server.expect(requestTo("http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123")).andRespond(withServerError());
+	String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-0\"}";
+	mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
+}
 
+@Test	
+public void testIllegalArgumentException() throws Exception {
+    String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+	mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
+}
+
+@Test	
+public void testInvalidDataException() throws Exception {
+	KeymanagerSymmetricKeyResponseDto dto= new KeymanagerSymmetricKeyResponseDto(CryptoUtil.encodeBase64(secretKey.getEncoded()));
+	server.expect(requestTo("http://localhost:8088/keymanager/v1.0/symmetricKey")).andRespond(withSuccess(objectMapper.writeValueAsString(dto), MediaType.APPLICATION_JSON));
+	String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dGVzdCAjS0VZX1NQTElUVEVSI3Rlc3Q\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+	mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
+}
 	
 	
 }

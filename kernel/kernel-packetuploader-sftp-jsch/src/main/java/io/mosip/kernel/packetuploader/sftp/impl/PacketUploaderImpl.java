@@ -33,6 +33,7 @@ public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChanne
 	 */
 	public SFTPChannel createSFTPChannel(SFTPServer sftpServer)  {
 		PacketUploaderUtils.checkConfiguration(sftpServer);
+		PacketUploaderUtils.checkKey(sftpServer);
         JSch jsch = new JSch();
 		if (sftpServer.getPrivateKeyFileName() != null) {
 			PacketUploaderUtils.addIdentity(jsch, sftpServer);

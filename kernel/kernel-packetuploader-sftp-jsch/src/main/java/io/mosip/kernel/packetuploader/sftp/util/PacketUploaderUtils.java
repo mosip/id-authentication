@@ -141,7 +141,7 @@ public class PacketUploaderUtils {
 					PacketUploaderExceptionConstant.MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION.getErrorCode(),
 					PacketUploaderExceptionConstant.MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION.getErrorMessage());
 		}
-		checkKey(sftpServer);
+		
 	}
 
 	/**
