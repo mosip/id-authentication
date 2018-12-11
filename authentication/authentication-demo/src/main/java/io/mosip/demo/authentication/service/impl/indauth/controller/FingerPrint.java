@@ -1,6 +1,5 @@
 package io.mosip.demo.authentication.service.impl.indauth.controller;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,10 +7,8 @@ import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -45,32 +42,34 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class FingerPrint {
 
-	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
+	public static void main(String[] args)
+			throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		FingerPrint fp = new FingerPrint();
-		fp.saveFPData("Rk1SACAyMAAAAAFuAAABPAFiAMUAxQEAAAAoOICiALRdQ4CsAOSGZICiAJQuQ0C0AJWsQ0ByAMHeUIBqAL7EUEB7AOqAUEBnAKa4ZEBuAJO4ZECuAHbRUICkAQ58XUBcANsuQ0EAAMzRZEDeAHHUZED8AO4nSUCPAFcaZEDzAQ4MZEBrASmEV0CNAVQAQ0C6AKqmZICUAOB0XUB6AMxcSYCwAO8bZEB3AKLKZECBAJLHZIDgAKjIZEBlANgaQ0DkAJzNZIDSAP8bZEDkAPAnZIDEARIKZECiAGIKXUChASACXUBlAQYCXYB5AGCwZEDPAFTmV0B/AEscSUDqAVB/NYDAAKytZEDNALixZICSAOUGXYDZALm4ZECMAI7JSYC6AIbBV0CnAH22UIDOAIbIZEBuAOsASUCVAQv9XYD1ALDPZED5AOCxUIDNAGnSZEBbAPoRXUD8AITXV0BLAIOuUEDPAS8GZEBVAFwkNQAA");
+		fp.saveFPData(
+				"Rk1SACAyMAAAAAFuAAABPAFiAMUAxQEAAAAoOICiALRdQ4CsAOSGZICiAJQuQ0C0AJWsQ0ByAMHeUIBqAL7EUEB7AOqAUEBnAKa4ZEBuAJO4ZECuAHbRUICkAQ58XUBcANsuQ0EAAMzRZEDeAHHUZED8AO4nSUCPAFcaZEDzAQ4MZEBrASmEV0CNAVQAQ0C6AKqmZICUAOB0XUB6AMxcSYCwAO8bZEB3AKLKZECBAJLHZIDgAKjIZEBlANgaQ0DkAJzNZIDSAP8bZEDkAPAnZIDEARIKZECiAGIKXUChASACXUBlAQYCXYB5AGCwZEDPAFTmV0B/AEscSUDqAVB/NYDAAKytZEDNALixZICSAOUGXYDZALm4ZECMAI7JSYC6AIbBV0CnAH22UIDOAIbIZEBuAOsASUCVAQv9XYD1ALDPZED5AOCxUIDNAGnSZEBbAPoRXUD8AITXV0BLAIOuUEDPAS8GZEBVAFwkNQAA");
 	}
 
 	@GetMapping(value = "/scan")
 	@ApiOperation(value = "Scans the Fingerprint and returns encoded ISO Template", response = String.class)
-	public String fingerprint() throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
+	public String fingerprint()
+			throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		FingerprintDevice fp = new FingerprintDevice(new FingerprintEvent());
-		System.err.println(fp.Init());
 		if (fp.Init() == 0) {
-			System.err.println(fp.GetLastError());
 			FingerData data = new FingerData();
 			int result = fp.AutoCapture(data, 10000, false, true); // fingerdata, timeout, onPreview, detectFinger
 			fp.StopCapture();
 			fp.Uninit();
 			String encodedString = Base64.getEncoder().encodeToString(data.ISOTemplate());
-
-			return saveFPData(encodedString);
+//			return saveFPData(encodedString);
+			return encodedString;
 		} else {
 			System.err.println(fp.GetLastError());
 			return "failed";
 		}
 	}
 
-	private String saveFPData(String encodedString) throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
+	private String saveFPData(String encodedString)
+			throws KeyManagementException, NoSuchAlgorithmException, JSONException {
 
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
@@ -81,19 +80,21 @@ public class FingerPrint {
 		req.setRegistrationId(RandomStringUtils.randomNumeric(10));
 		IdentityDTO identityDTO = new IdentityDTO();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue(encodedString);
 		identityDTO.setLeftIndex(Collections.singletonList(identityInfoDTO));
 		req.setRequest(identityDTO);
 		req.setStatus("REGISTERED");
 		req.setTimestamp("2018-12-10T14:29:10.301+0000");
 		req.setVer("1.0");
-		
-		ResponseEntity<IdResponseDTO> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST, getHeaders(req), IdResponseDTO.class);
+
+		ResponseEntity<IdResponseDTO> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST, getHeaders(req),
+				IdResponseDTO.class);
 		System.err.println("UIN >>>>>>>>>>>" + response.getBody().getResponse().getEntity());
-		String uin=response.getBody().getResponse().getEntity();
+		String uin = response.getBody().getResponse().getEntity();
 		String[] data = uin.split("/");
 		File file = new File("D:\\ScannedFingerprintTemplate.txt");
-		
+
 		try {
 			file.createNewFile();
 			FileWriter fileWriter = new FileWriter(file);
@@ -103,21 +104,21 @@ public class FingerPrint {
 			fileWriter.write("\r\n");
 			fileWriter.write("UIN:");
 			fileWriter.write("\r\n");
-			fileWriter.write(data[data.length-1]);
+			fileWriter.write(data[data.length - 1]);
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return response.getBody().getResponse().getEntity();
 	}
 
-private HttpEntity getHeaders(IdRequestDTO req) throws JSONException {
-HttpHeaders headers = new HttpHeaders();
-    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-    return new HttpEntity(req, headers);
-    }
+	private HttpEntity getHeaders(IdRequestDTO req) throws JSONException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		return new HttpEntity(req, headers);
+	}
 
 	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -165,13 +166,13 @@ HttpHeaders headers = new HttpHeaders();
 		}
 
 	}
-	
+
 	class TestErrorHandler extends DefaultResponseErrorHandler {
 
-	    @Override
-	    public void handleError(ClientHttpResponse response) throws IOException {
-	        //conversion logic for decoding conversion
-	        System.err.println(IOUtils.toString(response.getBody(), Charset.defaultCharset()));
-	    }
+		@Override
+		public void handleError(ClientHttpResponse response) throws IOException {
+			// conversion logic for decoding conversion
+			System.err.println(IOUtils.toString(response.getBody(), Charset.defaultCharset()));
+		}
 	}
 }
