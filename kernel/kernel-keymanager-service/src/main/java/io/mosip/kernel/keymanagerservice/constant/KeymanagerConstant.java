@@ -7,12 +7,12 @@ package io.mosip.kernel.keymanagerservice.constant;
  * @since 1.0.0
  *
  */
-public class KeyManagerConstant {
+public class KeymanagerConstant {
 
 	/**
 	 * Private constructor for KeyManagerConstant
 	 */
-	private KeyManagerConstant() {
+	private KeymanagerConstant() {
 	}
 
 	/**
