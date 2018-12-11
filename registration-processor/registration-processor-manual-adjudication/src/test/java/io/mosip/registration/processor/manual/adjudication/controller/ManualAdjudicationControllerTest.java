@@ -2,6 +2,7 @@ package io.mosip.registration.processor.manual.adjudication.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.IOException;
 
@@ -22,12 +23,15 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 import io.mosip.registration.processor.manual.adjudication.dto.FileRequestDto;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
+import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
+import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificationStage;
 
@@ -73,12 +77,11 @@ public class ManualAdjudicationControllerTest {
 		manualVerificationDTO.setRegId("123456789");
 		manualVerificationDTO.setMvUsrId("USER1");
 		manualVerificationDTO.setMatchedRefId("987654321");
-		Mockito.when(manualAdjudicationService.assignStatus(userDto)).thenReturn(manualVerificationDTO);
-		Mockito.when(manualAdjudicationService.updatePacketStatus(manualVerificationDTO)).thenReturn(manualVerificationDTO);
 	}
 	
 	@Test
 	public void startVerificationSuccessTest() {
+		Mockito.when(manualAdjudicationService.assignStatus(userDto)).thenReturn(manualVerificationDTO);
 		String userDto = null;
 		try {
 			userDto = jsonUserDto.write(this.userDto).getJson();
@@ -97,6 +100,7 @@ public class ManualAdjudicationControllerTest {
 	
 	@Test
 	public void updatePacketStatusSuccessTest() {
+		Mockito.when(manualAdjudicationService.updatePacketStatus(manualVerificationDTO)).thenReturn(manualVerificationDTO);
 		String manualVerificationDto = null;
 		this.manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
 		try {
@@ -204,5 +208,45 @@ public class ManualAdjudicationControllerTest {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	@Test
+	public void noRecordAssignedExceptionHandlerTest() {
+		Mockito.when(manualAdjudicationService.assignStatus(any())).thenThrow(new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(), PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage()));
+		String userDto = null;
+		try {
+			userDto = jsonUserDto.write(this.userDto).getJson();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/start").content(userDto).contentType(MediaType.APPLICATION_JSON);
+		try {
+			this.mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void invalidStatusUpdateExceptionTest() {
+		String manualVerificationDto = null;
+		Mockito.when(manualAdjudicationService.updatePacketStatus(any())).thenThrow(new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(), PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage()));
+		this.manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
+		try {
+			manualVerificationDto = jsonManualVerificationDto.write(this.manualVerificationDTO).getJson();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/packetStatus").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		try {
+			this.mockMvc.perform(requestBuilder).andExpect(status().isForbidden());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

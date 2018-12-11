@@ -192,8 +192,33 @@ public class ManualAdjudicationServiceTest {
 	}
 	
 	@Test
-	public void updatePacketStatusMethodCheck(){
-		//TODO
+	public void updatePacketStatusApprovalMethodCheck(){
+		ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
+		manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
+		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
+		manualVerificationDTO.setMvUsrId("abcde");
+		manualVerificationDTO.setRegId("abcde");
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
+				.thenReturn(null);
+		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
+		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
+	}
+	
+	@Test
+	public void updatePacketStatusRejectionMethodCheck(){
+		ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
+		manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
+		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
+		manualVerificationDTO.setMvUsrId("abcde");
+		manualVerificationDTO.setRegId("abcde");
+		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
+				.thenReturn(null);
+		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
+		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
 	}
 	
 	@Test(expected=InvalidUpdateException.class)
@@ -205,7 +230,7 @@ public class ManualAdjudicationServiceTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
-		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
 	
 	

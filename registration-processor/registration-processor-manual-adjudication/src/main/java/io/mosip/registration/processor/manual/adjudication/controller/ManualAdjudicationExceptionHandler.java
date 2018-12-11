@@ -64,11 +64,8 @@ public class ManualAdjudicationExceptionHandler {
 	@ExceptionHandler(NoRecordAssignedException.class)
 	public ResponseEntity<ExceptionJSONInfo> noRecordAssignedExceptionHandler(final NoRecordAssignedException e,
 			WebRequest request) {
-		NoRecordAssignedException noRecordAssignedException=new NoRecordAssignedException(
-				PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
-				PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
-		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(noRecordAssignedException.getErrorCode(),
-				noRecordAssignedException.getLocalizedMessage());
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(),
+				e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
 	@ExceptionHandler(InvalidUpdateException.class)
