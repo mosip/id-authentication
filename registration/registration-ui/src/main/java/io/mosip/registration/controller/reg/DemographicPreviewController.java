@@ -14,10 +14,13 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -60,7 +63,7 @@ public class DemographicPreviewController extends BaseController {
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
 	}
-	
+
 	private void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
 				applicationContext.getApplicationLanguageBundle());
@@ -68,7 +71,8 @@ public class DemographicPreviewController extends BaseController {
 	}
 
 	/**
-	 * This method is used to handle the edit action of registration preview screen
+	 * This method is used to handle the edit action of registration preview
+	 * screen
 	 */
 	public void handleEdit() {
 		try {
@@ -80,15 +84,36 @@ public class DemographicPreviewController extends BaseController {
 	}
 
 	/**
-	 * This method is used to handle the next button action of registration preview
-	 * screen
+	 * This method is used to handle the next button action of registration
+	 * preview screen
 	 */
 	public void handleNextBtnAction() {
 		try {
 			if (isInPane1) {
 				demoGraphicVbox.getChildren().clear();
 				getDemoGraphicPane2Content().setVisible(true);
-				demoGraphicVbox.getChildren().add(getDemoGraphicPane2Content());
+				demographicPreview.setDisable(false);
+				AnchorPane demoGraphicPane2 = getDemoGraphicPane2Content();
+				demoGraphicPane2.lookup("#poaDocuments").setDisable(true);
+				demoGraphicPane2.lookup("#poiDocuments").setDisable(true);
+				demoGraphicPane2.lookup("#porDocuments").setDisable(true);
+				demoGraphicPane2.lookup("#dobDocuments").setDisable(true);
+				demoGraphicPane2.lookup("#biometricException").setDisable(true);
+				demoGraphicPane2.lookup("#childSpecificFields").setDisable(true);
+				String vBoxesId[] = { "#poaBox", "#poiBox", "#porBox", "#dobBox" };
+				for (String vBoxId : vBoxesId) {
+					VBox vbox = (VBox) demoGraphicPane2.lookup(vBoxId);
+					for (Node node : vbox.getChildren()) {
+						GridPane paneGrid = (GridPane) node;
+						for (Node gridNode : paneGrid.getChildren()) {
+							if (gridNode instanceof ImageView) {
+								gridNode.setVisible(false);
+							}
+						}
+					}
+				}
+
+				demoGraphicVbox.getChildren().add(demoGraphicPane2);
 				isInPane1 = false;
 			} else {
 				isInPane1 = true;
@@ -106,7 +131,7 @@ public class DemographicPreviewController extends BaseController {
 	public void goToHomePage() {
 		registrationController.goToHomePage();
 	}
-	
+
 	private AnchorPane getDemoGraphicPane1Content() {
 		return (AnchorPane) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_PANE1_DATA);

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
 <ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
   <content>
@@ -27,7 +28,7 @@
                   </ImageView>
                   <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="438.0" prefWidth="819.0" visible="false">
                  	<children>
-                 	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
+                 	 <AnchorPane id="childSpecificFields" fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
                             <Label layoutX="25.0" layoutY="8.0" text="%parent_or_guardian_name" />
                             <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
@@ -37,31 +38,31 @@
                    </AnchorPane>
                    <AnchorPane fx:id="documentFields" layoutX="36.0" layoutY="134.0" prefHeight="123.0" prefWidth="389.0">
                       <children>
-                      <ComboBox fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
+                      <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
                             <ScrollPane fx:id="poaScroll" layoutX="172.0" layoutY="12.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
                                 <content>
-                                	<VBox fx:id="poaBox" layoutX="195.0" layoutY="12.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                	<VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
                                  </content>
                              </ScrollPane>
                           <Button fx:id="poaScanBtn" layoutX="350.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" />
-                          <ComboBox fx:id="poiDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POI Document" />
+                          <ComboBox id="poiDocuments" fx:id="poiDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POI Document" />
                             <ScrollPane fx:id="poiScroll" layoutX="172.0" layoutY="72.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
                                 <content>
-                                	<VBox fx:id="poiBox" layoutX="195.0" layoutY="72.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                	<VBox id="poiBox" fx:id="poiBox" layoutX="195.0" layoutY="72.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
                                  </content>
                              </ScrollPane>
                           <Button fx:id="poiScanBtn" layoutX="350.0" layoutY="72.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" />
-                          <ComboBox fx:id="porDocuments" layoutX="10.0" layoutY="130.0" prefWidth="150.0" promptText="POR Document" />
+                          <ComboBox id="porDocuments" fx:id="porDocuments" layoutX="10.0" layoutY="130.0" prefWidth="150.0" promptText="POR Document" />
                             <ScrollPane fx:id="porScroll" layoutX="172.0" layoutY="130.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
                                 <content>
-                                	<VBox fx:id="porBox" layoutX="195.0" layoutY="130.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                	<VBox id="porBox" fx:id="porBox" layoutX="195.0" layoutY="130.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
                                  </content>
                              </ScrollPane>
                           <Button fx:id="porScanBtn" layoutX="350.0" layoutY="130.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" />
-                          <ComboBox fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="DOB Document" />
+                          <ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="DOB Document" />
                             <ScrollPane fx:id="dobScroll" layoutX="172.0" layoutY="190.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
                                 <content>
-                                	<VBox fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                	<VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
                                  </content>
                              </ScrollPane>
                           <Button fx:id="dobScanBtn" layoutX="350.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" text="%scan" />
@@ -69,9 +70,13 @@
                    </AnchorPane>
                    <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
                	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
-                   <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="180.0" layoutY="370.0" prefHeight="15.0" prefWidth="15.0" />
-                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="190.0" layoutY="370.0" prefHeight="15.0" prefWidth="10.0" />
-                   <Label layoutX="50.0" layoutY="370.0" text="Biometric Exception" />
+                        <AnchorPane id="biometricException" layoutX="50.0" layoutY="370.0">
+                           <children>
+                         <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="15.0" />
+                         <Label text="Biometric Exception" />
+                         <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="10.0" />
+                           </children>
+                        </AnchorPane>
                         <Line endX="560.0" layoutX="221.0" layoutY="10.0" startX="-200.0" />
                  	</children>
                   </AnchorPane>
