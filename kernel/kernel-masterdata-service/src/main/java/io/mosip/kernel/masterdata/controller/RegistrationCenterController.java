@@ -134,7 +134,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param text
 	 *            input from user
-	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
+	 * @return {@link RegistrationCenterResponseDto}
 	 */
 	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevelname}/{name}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
