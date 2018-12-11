@@ -43,7 +43,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+		LOGGER.error("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
 				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 
@@ -60,7 +60,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage, Throwable throwable) {
 		super(errorCode, errorMessage, throwable);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+		LOGGER.error("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
 				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 }
