@@ -32,6 +32,8 @@ public class MetaDataUtils {
 		super();
 	}
 
+	private static String contextUser = "TestAdmin";
+
 	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
@@ -49,7 +51,6 @@ public class MetaDataUtils {
 	public static <T, D extends BaseEntity> D setCreateMetaData(final T source,
 			Class<? extends BaseEntity> destinationClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = "TestAdmin";
 		if (!EmptyCheckUtils.isNullEmpty(authN)) {
 			contextUser = authN.getName();
 		}
@@ -64,7 +65,10 @@ public class MetaDataUtils {
 			Class<? extends BaseEntity> entityClass) {
 		Objects.requireNonNull(dtoList, "dtoList should not be null");
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		String contextUser = authN.getName();
+
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
