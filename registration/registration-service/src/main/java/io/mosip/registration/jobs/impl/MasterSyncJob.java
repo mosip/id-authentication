@@ -74,8 +74,10 @@ public class MasterSyncJob extends BaseJob {
 			// Get Job Map
 			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
 
+			// Executing parent job first.
 			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, syncJobId);
 
+			// Execute child jobs only after parent job success
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				executeChildJob(syncJobId, jobMap);
 			}
