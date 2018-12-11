@@ -66,10 +66,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private IdRepoService idRepoService;
 
-	/** The id auth service. */
-	@Autowired
-	private IdAuthService idAuthService;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,23 +168,22 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *
 	 * @param idvIdType idType
 	 * @param idvId     id-number
-	 * @return map
+	 * @return map map
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	@Autowired
 	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = idAuthService.getIdRepoByUinNumber(idvId);
+				idResDTO = getIdRepoByUinNumber(idvId);
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 			try {
-				idResDTO = idAuthService.getIdRepoByVidNumber(idvId);
+				idResDTO = getIdRepoByVidNumber(idvId);
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
