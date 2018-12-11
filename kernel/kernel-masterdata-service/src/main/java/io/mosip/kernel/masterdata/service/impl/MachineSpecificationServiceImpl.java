@@ -32,19 +32,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
 
-	/**
-	 * Method used to save Machine Specification details 
-	 * 
-	 * @return IdResponseDto
-	 * 		   Machine Specification ID which is successfully inserted
-	 * 
-	 * @param RequestDto
-	 *             input from user Machine Specification DTO
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While inserting Machine Specification Detail If fails to insert  required Machine Specification
-	 *             Detail
-	 * 
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#createMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {

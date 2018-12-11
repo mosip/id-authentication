@@ -34,6 +34,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#findDeviceSpecificationByLangugeCode(java.lang.String)
+	 */
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
 		List<DeviceSpecification> deviceSpecificationList = null;
@@ -57,6 +60,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#findDeviceSpecByLangCodeAndDevTypeCode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecByLangCodeAndDevTypeCode(String languageCode,
 			String deviceTypeCode) {
@@ -82,6 +88,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#createDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();

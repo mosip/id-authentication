@@ -33,21 +33,11 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
 	
-	/**
-	 * Method used to save Machine Type details 
-	 * 
-	 * @return CodeAndLanguageCodeID
-	 * 		   Machine type code and language code which is successfully inserted
-	 * 
-	 * @param RequestDto
-	 *             input from user Machine type DTO
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While inserting Machine type Detail If fails to insert  required Machine type
-	 *             Detail
-	 * 
-	 */
+	
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineTypeService#createMachineType(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType) {
 		MachineType renMachineType = null;
