@@ -33,12 +33,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
@@ -223,14 +226,18 @@ public class MasterdataIntegrationTest {
 	RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	private List<ReasonCategory> reasoncategories;
-
+   
+	private PostReasonCategoryDto postReasonCategoryDto;
+	
 	private List<ReasonList> reasonList;
+	
+	private ReasonListDto reasonListDto;
 
 	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
-	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true }}";
+	private static String REASON_LIST_REQUEST = null;
 
-	private static final String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true } }";
+	private static String REASON_CATEGORY_REQUEST = null;
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -632,11 +639,24 @@ public class MasterdataIntegrationTest {
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonListObj = new ReasonList();
+		reasonListDto = new ReasonListDto();
+		postReasonCategoryDto= new PostReasonCategoryDto();
+		postReasonCategoryDto.setCode("RC1");
+		postReasonCategoryDto.setDescription("Reason category");
+		postReasonCategoryDto.setIsActive(true);
+		postReasonCategoryDto.setLangCode("ENG");
+		postReasonCategoryDto.setName("Reason category");
 		reasonList = new ArrayList<>();
 		reasonListObj.setCode("RL1");
 		reasonListObj.setLangCode("ENG");
 		reasonListObj.setRsnCatCode("RC1");
 		reasonListObj.setDescription("reasonList");
+		reasonListDto.setCode("RL1");
+		reasonListDto.setDescription("REASONLIST");
+		reasonListDto.setLangCode("ENG");
+		reasonListDto.setIsActive(true);
+		reasonListDto.setName("Reason List 1");
+		reasonListDto.setRsnCatCode("RC1");
 		reasonList.add(reasonListObj);
 		reasonCategory.setReasonList(reasonList);
 		reasonCategory.setCode("RC1");
@@ -650,6 +670,20 @@ public class MasterdataIntegrationTest {
 		reasonListId.setCode("RL1");
 		reasonListId.setLangCode("ENG");
 		reasonListId.setRsnCatCode("RC1");
+		RequestDto<ReasonListDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.create.packetrejection.reason");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(reasonListDto);
+		RequestDto<PostReasonCategoryDto> requestDto1 = new RequestDto<>();
+		requestDto1.setId("mosip.create.packetrejection.reason");
+		requestDto1.setVer("1.0.0");
+		requestDto1.setRequest(postReasonCategoryDto);
+		try {
+			REASON_LIST_REQUEST=mapper.writeValueAsString(requestDto);
+			REASON_CATEGORY_REQUEST=mapper.writeValueAsString(requestDto1);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void idTypeSetup() {
