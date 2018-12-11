@@ -32,6 +32,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 /**
  * 
  * @author Dinesh Karuppiah.T
+ * @author Rakesh Roshan
  */
 
 @PropertySource("classpath:sample-output.properties")
