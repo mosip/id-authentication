@@ -167,38 +167,45 @@ public class ManualVerificationDTO implements Serializable {
 		if (matchedRefId == null) {
 			if (other.matchedRefId != null)
 				return false;
-		} else if (!matchedRefId.equals(other.matchedRefId))
+		} else if (!matchedRefId.equals(other.matchedRefId)) {
 			return false;
+		}
 		if (matchedRefType == null) {
 			if (other.matchedRefType != null)
 				return false;
-		} else if (!matchedRefType.equals(other.matchedRefType))
+		} else if (!matchedRefType.equals(other.matchedRefType)) {
 			return false;
+		}
 		if (mvUsrId == null) {
 			if (other.mvUsrId != null)
 				return false;
-		} else if (!mvUsrId.equals(other.mvUsrId))
+		} else if (!mvUsrId.equals(other.mvUsrId)) {
 			return false;
+		}
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		if (office == null) {
 			if (other.office != null)
 				return false;
-		} else if (!office.equals(other.office))
+		} else if (!office.equals(other.office)) {
 			return false;
+		}
 		if (regId == null) {
 			if (other.regId != null)
 				return false;
-		} else if (!regId.equals(other.regId))
+		} else if (!regId.equals(other.regId)) {
 			return false;
+		}
 		if (statusCode == null) {
 			if (other.statusCode != null)
 				return false;
-		} else if (!statusCode.equals(other.statusCode))
+		} else if (!statusCode.equals(other.statusCode)) {
 			return false;
+		}
 		return true;
 	}
 	
