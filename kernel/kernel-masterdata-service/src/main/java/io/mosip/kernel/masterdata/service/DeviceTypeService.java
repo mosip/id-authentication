@@ -17,8 +17,9 @@ public interface DeviceTypeService {
 	 * Abstract method to save Device Type Details to the Database
 	 * 
 	 * @param deviceTypes
-	 * 
+	 * 				input from user
 	 * @return CodeAndLanguageCodeID
+	 * 			returning code and LanguageCode
 	 */
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceTypes);
 
