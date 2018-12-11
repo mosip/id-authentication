@@ -20,6 +20,7 @@ import net.minidev.json.JSONObject;
  * Sync Handler Controller
  * 
  * @author Abhishek Kumar
+ * @author Srinivasan
  * @since 29-11-2018
  */
 @RestController
@@ -44,12 +45,11 @@ public class SyncHandlerController {
 	}
 
 	/**
-	 * This API method would fetch all synced registration center config details
+	 * * This API method would fetch all synced registration center config details
 	 * from server
 	 * 
-	 * @param regId
-	 *            registration center id
-	 * @return JSONObject configuration response
+	 * @param regId - registration Id
+	 * @return JSONObject
 	 */
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {

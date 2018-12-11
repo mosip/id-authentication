@@ -17,7 +17,7 @@ public interface SyncConfigDetailsService {
 	/**
 	 * This service will fetch all Registration center specific config details from server
 	 *
-	 * @param regId
+	 * @param regId - registration Id
 	 * @return JSONObject - registration center config synced data
 	 */
 	public JSONObject  getRegistrationCenterConfigDetails(String regId);
