@@ -40,7 +40,7 @@ public class DeviceTypeController {
 	/**
 	 * Save list of device Type details to the Database
 	 * 
-	 * @param RequestDto
+	 * @param deviceTypes
 	 * 				input from user Device Type DTO
 	 *            
 	 * @return {@link CodeAndLanguageCodeID}

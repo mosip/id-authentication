@@ -34,7 +34,7 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            language code provided by user
 	 * @param effectDtimes
 	 *            effective Date and time provided by user in the format "yyyy-mm-ddThh:mm:ss"
-	 * @return List<MachineHistory> fetched from database
+	 * @return List fetched from database
 	 */
 	
   
