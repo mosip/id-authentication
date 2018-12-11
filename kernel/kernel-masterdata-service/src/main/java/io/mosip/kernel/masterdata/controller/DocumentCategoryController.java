@@ -54,14 +54,6 @@ public class DocumentCategoryController {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
 	}
 
-	/**
-	 * API to create document category
-	 * 
-	 * @param category
-	 *            The request DocumentCategory Dto.
-	 * 
-	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
-	 */
 	@PostMapping("/v1.0/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {

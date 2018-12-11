@@ -89,7 +89,7 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param RequestDto
+	 * @param deviceRequestDto
 	 * 			 input parameter deviceRequestDto
 	 * 
 	 * @return ResponseEntity

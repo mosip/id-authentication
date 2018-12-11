@@ -37,6 +37,12 @@ public class BiometricAttributeController {
 	 * biometric attribute controller with api to get list of biometric attributes
 	 * best on biometric code type and language code.
 	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param biometricTypeCode
+	 *            input from user
+	 * @return {@link BiometricAttributeResponseDto}
+	 * 
 	 */
 	@Autowired
 	BiometricAttributeService biometricAttributeService;
@@ -54,7 +60,7 @@ public class BiometricAttributeController {
 	 * Service to create Biometric Attribute in table.
 	 * 
 	 * @param biometricAttribute
-	 *            input from user Biometric Attribute DTO
+	 *            Input from user Biometric Attribute DTO
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
 	@PostMapping("/v1.0/biometricattributes")

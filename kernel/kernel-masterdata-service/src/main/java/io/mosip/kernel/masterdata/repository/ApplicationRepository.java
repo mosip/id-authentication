@@ -41,7 +41,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * 
 	 * @param code
 	 *            -code
-	 * @param langCode
+	 * @param languageCode
 	 *            - language code
 	 * @return {@link Application}
 	 */

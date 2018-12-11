@@ -35,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -49,6 +50,8 @@ import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
@@ -246,11 +249,15 @@ public class MasterdataIntegrationTest {
 
 	private List<ReasonList> reasonList;
 
+	private PostReasonCategoryDto postReasonCategoryDto;
+
+	private ReasonListDto reasonListDto;
+
 	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
-	private static final String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true }}";
+	private String reasonListRequest = null;
 
-	private static final String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true } }";
+	private String reasonCategoryRequest = null;
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -746,6 +753,19 @@ public class MasterdataIntegrationTest {
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonListObj = new ReasonList();
+		reasonListDto= new ReasonListDto();
+		postReasonCategoryDto= new PostReasonCategoryDto();
+		postReasonCategoryDto.setCode("RC1");
+		postReasonCategoryDto.setDescription("Reason category");
+		postReasonCategoryDto.setIsActive(true);
+		postReasonCategoryDto.setLangCode("ENG");
+		postReasonCategoryDto.setName("Reason category");
+		reasonListDto.setCode("RL1");
+		reasonListDto.setDescription("REASONLIST");
+		reasonListDto.setLangCode("ENG");
+		reasonListDto.setIsActive(true);
+		reasonListDto.setName("Reason List 1");
+		reasonListDto.setRsnCatCode("RC1");
 		reasonList = new ArrayList<>();
 		reasonListObj.setCode("RL1");
 		reasonListObj.setLangCode("ENG");
@@ -764,6 +784,21 @@ public class MasterdataIntegrationTest {
 		reasonListId.setCode("RL1");
 		reasonListId.setLangCode("ENG");
 		reasonListId.setRsnCatCode("RC1");
+		RequestDto<ReasonListDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.create.packetrejection.reason");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(reasonListDto);
+		RequestDto<PostReasonCategoryDto> requestDto1 = new RequestDto<>();
+		requestDto1.setId("mosip.create.packetrejection.reason");
+		requestDto1.setVer("1.0.0");
+		requestDto1.setRequest(postReasonCategoryDto);
+		try {
+			reasonListRequest=mapper.writeValueAsString(requestDto);
+			reasonCategoryRequest=mapper.writeValueAsString(requestDto1);
+		} catch (JsonProcessingException e) {
+			
+			e.printStackTrace();
+		}
 	}
 
 	private void idTypeSetup() {
@@ -1274,28 +1309,28 @@ public class MasterdataIntegrationTest {
 	public void createReasonCateogryTest() throws Exception {
 		Mockito.when(reasonRepository.create(Mockito.any())).thenReturn(reasoncategories.get(0));
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isCreated());
+				.content(reasonCategoryRequest.getBytes())).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createReasonListTest() throws Exception {
 		Mockito.when(reasonListRepository.create(Mockito.any())).thenReturn(reasonList.get(0));
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isCreated());
+				.content(reasonListRequest.getBytes())).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createReasonCateogryFetchExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isInternalServerError());
+				.content(reasonCategoryRequest.getBytes())).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void createReasonListFetchExceptionTest() throws Exception {
 		Mockito.when(reasonListRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
-				.content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isInternalServerError());
+				.content(reasonListRequest.getBytes())).andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------RegistrationCenterTest----------------------------------

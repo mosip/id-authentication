@@ -39,9 +39,9 @@ public class MachineSpecificationController {
 	/**
 	 * Save machine specification details to the database table
 	 * 
-	 * @param RequestDto<MachineSpecificationDto>
+	 * @param machineSpecification
 	 *            input Machine specification DTO from user 
-	 * @return ResponseEntity<IdResponseDto>
+	 * @return ResponseEntity
 	 * 			  Machine Specification ID which is successfully inserted
 	 */
 	@PostMapping("/v1.0/machinespecifications")

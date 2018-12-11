@@ -46,7 +46,7 @@ public class MachineController {
 	 * 
 	 * @param machineId
 	 * 			pass Machine ID as String
-	 * @param langcode
+	 * @param langCode
 	 * 			pass language code as String
 	 * @return MachineResponseDto
 	 * 			machine detail based on given Machine ID and Language code
@@ -105,10 +105,10 @@ public class MachineController {
 	/**
 	 * Save machine  details to the database table
 	 * 
-	 * @param RequestDto<MachineDto>
+	 * @param machine
 	 *            input from user Machine  DTO
 	 *            
-	 * @return ResponseEntity<IdResponseDto>
+	 * @return ResponseEntity
 	 * 			Machine Id which is inserted successfully 
 	 */
 	@PostMapping("/v1.0/machines")
