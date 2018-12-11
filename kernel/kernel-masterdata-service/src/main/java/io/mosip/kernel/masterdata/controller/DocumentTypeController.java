@@ -38,6 +38,15 @@ public class DocumentTypeController {
 	@Autowired
 	DocumentTypeService documentTypeService;
 
+	/**
+	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param documentcategoryCode
+	 *            input from user
+	 * @return {@link ValidDocumentTypeResponseDto}}
+	 */
+
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
 	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
@@ -48,7 +57,12 @@ public class DocumentTypeController {
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);
 
 	}
-
+	/**
+	 * 
+	 * @param types
+	 *            Input from user DocumentTypeDto
+	 * @return {@link CodeAndLanguageCodeID }
+	 */
 	@PostMapping("/v1.0/documenttypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
