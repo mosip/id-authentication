@@ -155,11 +155,11 @@ public class OTPFacadeImpl implements OTPFacade {
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
 
-			if(email != null) {
+			if(email != null && email.length() > 0) {
 				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			}
 			
-			if(mobileNumber != null) {
+			if(mobileNumber != null && mobileNumber.length() > 0) {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
 			

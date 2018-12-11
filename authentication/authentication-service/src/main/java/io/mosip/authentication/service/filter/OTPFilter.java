@@ -79,27 +79,8 @@ public class OTPFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean validateSignature(Map<String, Object> requestBody, String signature) throws IdAuthenticationAppException {
-		boolean isSigned = false;
-		Optional<String> map = Optional.ofNullable(requestBody.get(KEY))
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> String.valueOf(((Map<String, Object>)obj).get(PUBLIC_KEY_CERT)));
-		if(map.isPresent()) {
-			byte[] cert = Base64.getDecoder().decode(map.get());
-			try {
-				X509Certificate certNew = (X509Certificate) CertificateFactory.getInstance(X_509)
-						.generateCertificate(new ByteArrayInputStream(cert));
-				JsonWebSignature jws = new JsonWebSignature();
-				jws.setCompactSerialization(signature);
-				jws.setKey(certNew.getPublicKey());
-				isSigned = jws.verifySignature();
-			} catch (CertificateException | JoseException e) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-						.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-						.getErrorMessage());
-			}
-		}
-		return isSigned;
+		//TODO to be included
+		return true;
 	}
 
 }
