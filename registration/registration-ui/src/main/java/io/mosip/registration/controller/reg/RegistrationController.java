@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -355,6 +356,9 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
+	
+	@Autowired
+	private IdValidator<String> pridValidatorImpl;
 
 	@FXML
 	private void initialize() {
@@ -541,6 +545,9 @@ public class RegistrationController extends BaseController {
 
 		if (StringUtils.isEmpty(preRegId)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
+			return;
+		} else if(pridValidatorImpl.validateId(preRegId)) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_NOT_VALID);
 			return;
 		}
 

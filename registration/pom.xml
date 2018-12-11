@@ -150,6 +150,16 @@
 			</dependency>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idgenerator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>

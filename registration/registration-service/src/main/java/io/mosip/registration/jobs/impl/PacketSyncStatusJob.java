@@ -76,8 +76,10 @@ public class PacketSyncStatusJob extends BaseJob {
 			// Get Job Map
 			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
 			
+			//Run the Parent JOB always first
 			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,syncJobId);
-
+			
+			//To run the child jobs after the parent job Success
 			if(responseDTO.getSuccessResponseDTO()!=null) {
 				executeChildJob(syncJobId, jobMap);
 			}
