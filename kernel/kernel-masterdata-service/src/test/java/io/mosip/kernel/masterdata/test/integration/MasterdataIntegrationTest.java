@@ -36,6 +36,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
@@ -235,6 +237,7 @@ public class MasterdataIntegrationTest {
 
 	RegistrationCenterHistory center;
 	Device device;
+	private DeviceDto deviceDto;
 
 	List<RegistrationCenterHistory> centers = new ArrayList<>();
 
@@ -273,6 +276,8 @@ public class MasterdataIntegrationTest {
 	private Language language;
 
 	private Gender genderType;
+	
+	private GenderTypeDto genderDto;
 
 	private ValidDocument validDocument;
 	private Holiday holiday;
@@ -300,11 +305,9 @@ public class MasterdataIntegrationTest {
 	private RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory;
 
 	private ObjectMapper mapper;
-	
+
 	@MockBean
 	private MachineHistoryRepository machineHistoryRepository;
-	
-	
 
 	@Before
 	public void setUp() {
@@ -346,13 +349,13 @@ public class MasterdataIntegrationTest {
 		machineSetUp();
 
 		DeviceSpecsetUp();
-		
+
 		machineHistorySetUp();
 	}
-	
+
 	List<MachineHistory> machineHistoryList;
-	
-	private void machineHistorySetUp(){
+
+	private void machineHistorySetUp() {
 		LocalDateTime eDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		LocalDateTime vDate = LocalDateTime.of(2022, Month.JANUARY, 1, 10, 10, 30);
 		machineHistoryList = new ArrayList<>();
@@ -366,7 +369,7 @@ public class MasterdataIntegrationTest {
 		machineHistory.setIsActive(true);
 		machineHistory.setLangCode("ENG");
 		machineHistoryList.add(machineHistory);
-		
+
 	}
 
 	List<DeviceSpecification> deviceSpecList;
@@ -487,10 +490,22 @@ public class MasterdataIntegrationTest {
 	List<Object[]> objectList;
 
 	private void deviceSetup() {
+		
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		Timestamp validDateTime = Timestamp.valueOf(specificDate);
+		deviceDto = new DeviceDto();
+		deviceDto.setDeviceSpecId("123");
+		deviceDto.setId("1");
+		deviceDto.setIpAddress("asd");
+		deviceDto.setIsActive(true);
+		deviceDto.setLangCode("asd");
+		deviceDto.setMacAddress("asd");
+		deviceDto.setName("asd");
+		deviceDto.setSerialNum("asd");
+		
+		
 		deviceList = new ArrayList<>();
-		Device device = new Device();
+		device = new Device();
 		device.setId("1000");
 		device.setName("Printer");
 		device.setLangCode("ENG");
@@ -652,7 +667,7 @@ public class MasterdataIntegrationTest {
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
+		holiday = new Holiday();
 
 		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
@@ -677,6 +692,13 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void genderTypeSetup() {
+		
+		genderDto = new GenderTypeDto();
+		genderDto.setCode("1");
+		genderDto.setGenderName("abc");
+		genderDto.setIsActive(true);
+		genderDto.setLangCode("ENG");
+		
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
 		genderType = new Gender();
@@ -1038,13 +1060,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotFound());
 	}
 
-//	@Test
-//	public void addHolidayTypeTest() throws Exception {
-//		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
-//		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
-//		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
-//				.andExpect(status().isCreated());
-//	}
+	@Test
+	public void addHolidayTypeTest() throws Exception {
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
+		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
 
 	@Test
 	public void addHolidayTypeExceptionTest() throws Exception {
@@ -1208,8 +1230,8 @@ public class MasterdataIntegrationTest {
 		MvcResult result = mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
-		RegistrationCenterHistoryResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
-				RegistrationCenterHistoryResponseDto.class);
+		RegistrationCenterHistoryResponseDto returnResponse = mapper
+				.readValue(result.getResponse().getContentAsString(), RegistrationCenterHistoryResponseDto.class);
 
 		assertThat(returnResponse.getRegistrationCentersHistory().get(0).getId(), is("1"));
 	}
@@ -1247,8 +1269,8 @@ public class MasterdataIntegrationTest {
 				.perform(get("/v1.0/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
-		RegistrationCenterResponseDto returnResponse = mapper.readValue(
-				result.getResponse().getContentAsString(), RegistrationCenterResponseDto.class);
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
 	}
@@ -1579,19 +1601,27 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addGenderTypeTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\":\"true\", \"langCode\": \"ENG\"}}";
+		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(genderDto);
+		String content = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.create(Mockito.any())).thenReturn(genderType);
-		mockMvc.perform(post("/v1.0/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/gendertype").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void addGenderTypeExceptionTest() throws Exception {
 
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\", \"request\": { \"code\": \"string12345\", \"genderName\": \"string\", \"isActive\": \"true\", \"langCode\": \"ENG\"}}";
+		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(genderDto);
+		String content = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
-		mockMvc.perform(post("/v1.0/gendertype").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/gendertype").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -1962,43 +1992,64 @@ public class MasterdataIntegrationTest {
 	}
 
 	// ---------------------------------------------
-	/*@Test
+
+	@Test
 	public void createDeviceTest() throws Exception {
-		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
+		RequestDto<DeviceDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceDto);
+		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceJson)).andExpect(status().isCreated());
-	}*/
+				.content(content)).andExpect(status().isCreated());
+	}
 
 	@Test
 	public void createDeviceExceptionTest() throws Exception {
-		String deviceJson = "{ \"id\": \"string\", \"request\": { \"deviceSpecId\": \"234\", \"id\": \"1000\", \"ipAddress\": \"129.0.0.10\", \"isActive\": true, \"langCode\": \"ENG\", \"macAddress\": \"129.0.0.0\", \"name\": \"Printer\", \"serialNum\": \"234\", \"validityDateTime\": \"2018-12-07T11:37:36.862Z\" }, \"timestamp\": \"2018-12-07T11:37:36.862Z\", \"ver\": \"string\" }";
+		RequestDto<DeviceDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceDto);
+		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceJson)).andExpect(status().isInternalServerError());
+				.content(content)).andExpect(status().isInternalServerError());
 	}
-	
-	//-----------------------------------------MachineHistory---------------------------------------------
+
+	// -----------------------------------------MachineHistory---------------------------------------------
 	@Test
 	public void getMachineHistroyIdLangEffDTimeSuccessTest() throws Exception {
-		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isOk());
+		when(machineHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void getMachineHistroyIdLangEffDTimeNullResponseTest() throws Exception {
-		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isNotFound());
+		when(machineHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getMachineHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
-		when(machineHistoryRepository.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG","2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
+		when(machineHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+								.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isInternalServerError());
 	}
 
 }
