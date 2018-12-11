@@ -22,12 +22,11 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
-import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Service
@@ -46,9 +45,6 @@ public class BaseService {
 
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-
-	@Autowired
-	private FingerprintFacade fingerprintFacade;
 
 	@Value("${PROVIDER_NAME}")
 	private String fingerprintProviderName;
@@ -149,6 +145,14 @@ public class BaseService {
 		return userId;
 	}
 
+	/**
+	 * To check the device is valid or not
+	 * 
+	 * @param deviceType
+	 * @param deviceProvider
+	 * @param serialNo
+	 * @return
+	 */
 	public boolean isValidDevice(String deviceType, String deviceProvider, String serialNo) {
 
 		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
