@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.test.integration;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -37,15 +38,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+
+import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
+import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
@@ -159,13 +167,18 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private BiometricAttributeRepository biometricAttributeRepository;
+	private BiometricAttributeDto biometricAttributeDto;
+	private BiometricAttribute biometricAttribute;
 
 	@MockBean
 	private TemplateRepository templateRepository;
+	private Template template;
+	private TemplateDto templateDto;
 
 	@MockBean
 	private TemplateTypeRepository templateTypeRepository;
-
+	private TemplateType templateType;
+	private TemplateTypeDto templateTypeDto;
 	@MockBean
 	private DeviceSpecificationRepository deviceSpecificationRepository;
 
@@ -226,18 +239,18 @@ public class MasterdataIntegrationTest {
 	RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	private List<ReasonCategory> reasoncategories;
-   
-	private PostReasonCategoryDto postReasonCategoryDto;
-	
+
 	private List<ReasonList> reasonList;
+	
+	private PostReasonCategoryDto postReasonCategoryDto;
 	
 	private ReasonListDto reasonListDto;
 
 	private CodeLangCodeAndRsnCatCodeID reasonListId;
 
-	private static String REASON_LIST_REQUEST = null;
+	private static String REASON_LIST_REQUEST = "{ \"request\":  { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"rsnCatCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true }}";
 
-	private static String REASON_CATEGORY_REQUEST = null;
+	private static  String REASON_CATEGORY_REQUEST = "{ \"request\": { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" ,\"isActive\": true } }";
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -283,7 +296,7 @@ public class MasterdataIntegrationTest {
 	private Language language;
 
 	private Gender genderType;
-	
+
 	private GenderTypeDto genderDto;
 
 	private ValidDocument validDocument;
@@ -358,6 +371,64 @@ public class MasterdataIntegrationTest {
 		DeviceSpecsetUp();
 
 		machineHistorySetUp();
+		biometricAttributeTestSetup();
+		templateTestSetup();
+		templateTypeTestSetup();
+	}
+
+	private void biometricAttributeTestSetup() {
+		// creating data coming from user
+		biometricAttributeDto = new BiometricAttributeDto();
+		biometricAttributeDto.setCode("BA222");
+		biometricAttributeDto.setLangCode("ENG");
+		biometricAttributeDto.setName("black_iric");
+		biometricAttributeDto.setBiometricTypeCode("iric");
+		biometricAttributeDto.setIsActive(Boolean.TRUE);
+
+		biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("BA222");
+		biometricAttribute.setLangCode("ENG");
+		biometricAttribute.setName("black_iric");
+		biometricAttribute.setBiometricTypeCode("iric");
+		biometricAttribute.setIsActive(Boolean.TRUE);
+
+	}
+
+	private void templateTestSetup() {
+		templateDto = new TemplateDto();
+		templateDto.setId("T222");
+		templateDto.setLangCode("ENG");
+		templateDto.setName("Email template");
+		templateDto.setTemplateTypeCode("EMAIL");
+		templateDto.setFileFormatCode("XML");
+		templateDto.setModuleId("preregistation");
+		templateDto.setIsActive(Boolean.TRUE);
+
+		template = new Template();
+		template.setId("T222");
+		template.setLangCode("ENG");
+		template.setName("Email template");
+		template.setTemplateTypeCode("EMAIL");
+		template.setFileFormatCode("XML");
+		template.setModuleId("preregistation");
+		template.setIsActive(Boolean.TRUE);
+
+	}
+
+	private void templateTypeTestSetup() {
+
+		templateTypeDto = new TemplateTypeDto();
+		templateTypeDto.setCode("TTC222");
+		templateTypeDto.setLangCode("ENG");
+		templateTypeDto.setDescription("Template type desc");
+		templateTypeDto.setIsActive(Boolean.TRUE);
+
+		templateType = new TemplateType();
+		templateType.setCode("TTC222");
+		templateType.setLangCode("ENG");
+		templateType.setDescription("Template type desc");
+		templateType.setIsActive(Boolean.TRUE);
+
 	}
 
 	List<MachineHistory> machineHistoryList;
@@ -497,7 +568,7 @@ public class MasterdataIntegrationTest {
 	List<Object[]> objectList;
 
 	private void deviceSetup() {
-		
+
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		Timestamp validDateTime = Timestamp.valueOf(specificDate);
 		deviceDto = new DeviceDto();
@@ -509,8 +580,7 @@ public class MasterdataIntegrationTest {
 		deviceDto.setMacAddress("asd");
 		deviceDto.setName("asd");
 		deviceDto.setSerialNum("asd");
-		
-		
+
 		deviceList = new ArrayList<>();
 		device = new Device();
 		device.setId("1000");
@@ -639,24 +709,25 @@ public class MasterdataIntegrationTest {
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonListObj = new ReasonList();
-		reasonListDto = new ReasonListDto();
+		reasonList = new ArrayList<>();
+		reasonListDto= new ReasonListDto();
 		postReasonCategoryDto= new PostReasonCategoryDto();
 		postReasonCategoryDto.setCode("RC1");
 		postReasonCategoryDto.setDescription("Reason category");
 		postReasonCategoryDto.setIsActive(true);
 		postReasonCategoryDto.setLangCode("ENG");
 		postReasonCategoryDto.setName("Reason category");
-		reasonList = new ArrayList<>();
-		reasonListObj.setCode("RL1");
-		reasonListObj.setLangCode("ENG");
-		reasonListObj.setRsnCatCode("RC1");
-		reasonListObj.setDescription("reasonList");
 		reasonListDto.setCode("RL1");
 		reasonListDto.setDescription("REASONLIST");
 		reasonListDto.setLangCode("ENG");
 		reasonListDto.setIsActive(true);
 		reasonListDto.setName("Reason List 1");
 		reasonListDto.setRsnCatCode("RC1");
+		reasonList.add(reasonListObj);
+		reasonListObj.setCode("RL1");
+		reasonListObj.setLangCode("ENG");
+		reasonListObj.setRsnCatCode("RC1");
+		reasonListObj.setDescription("reasonList");
 		reasonList.add(reasonListObj);
 		reasonCategory.setReasonList(reasonList);
 		reasonCategory.setCode("RC1");
@@ -678,9 +749,10 @@ public class MasterdataIntegrationTest {
 		requestDto1.setId("mosip.create.packetrejection.reason");
 		requestDto1.setVer("1.0.0");
 		requestDto1.setRequest(postReasonCategoryDto);
+		
 		try {
-			REASON_LIST_REQUEST=mapper.writeValueAsString(requestDto);
 			REASON_CATEGORY_REQUEST=mapper.writeValueAsString(requestDto1);
+			REASON_LIST_REQUEST=mapper.writeValueAsString(requestDto);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -726,13 +798,13 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void genderTypeSetup() {
-		
+
 		genderDto = new GenderTypeDto();
 		genderDto.setCode("1");
 		genderDto.setGenderName("abc");
 		genderDto.setIsActive(true);
 		genderDto.setLangCode("ENG");
-		
+
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
 		genderType = new Gender();
@@ -960,24 +1032,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/blacklistedwords/{langcode}", " ")).andExpect(status().isNotFound());
 	}
 
-	@Test
-	public void addBlackListedWordTest() throws Exception {
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setLangCode("TST");
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
-		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
-		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void addBlackListedWordExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
-		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
-	}
-
 	// -----------------------------GenderTypeTest----------------------------------
 	@Test
 	public void getGenderByLanguageCodeFetchExceptionTest() throws Exception {
@@ -1141,25 +1195,6 @@ public class MasterdataIntegrationTest {
 		IdTypeResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				IdTypeResponseDto.class);
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
-	}
-
-	@Test
-	public void createIdTypeTest() throws Exception {
-		IdType idType = new IdType();
-		idType.setCode("IDT001");
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
-		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void createIdTypeExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(idTypeRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------PacketRejectionTest----------------------------------
@@ -1613,24 +1648,6 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	// -----------------------------------registration-center-type----------------------------------------
-	@Test
-	public void addRegistrationCenterTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(registrationCenterTypeRepository.create(Mockito.any())).thenReturn(regCenterType);
-		mockMvc.perform(post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(registrationCenterTypeRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
-	}
-
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -1681,62 +1698,79 @@ public class MasterdataIntegrationTest {
 	// ----------------------------------BiometricAttributeCreateApiTest--------------------------------------------------
 	@Test
 	public void createBiometricAttributeTest() throws Exception {
-		BiometricAttribute biometricAttribute = new BiometricAttribute();
-		biometricAttribute.setCode("BA222");
-		biometricAttribute.setLangCode("ENG");
-		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"code\": \"BA222\", \"name\": \"sample data\", \"description\": \"sample data desc\", \"biometricTypeCode\": \"4\", \"langCode\": \"ENG\", \"isActive\": true }}";
+
+		RequestDto<BiometricAttributeDto> requestDto = new RequestDto<BiometricAttributeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(biometricAttributeDto);
+		String content = mapper.writeValueAsString(requestDto);
 		Mockito.when(biometricAttributeRepository.create(Mockito.any())).thenReturn(biometricAttribute);
-		mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createBiometricAttributeExceptionTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"\", \"request\": { \"code\": \"BA222\", \"name\": \"sample data\", \"description\": \"sample data desc\", \"biometricTypeCode\": \"4\", \"langCode\": \"ENG\", \"isActive\": true }}";
+		RequestDto<BiometricAttributeDto> requestDto = new RequestDto<BiometricAttributeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(biometricAttributeDto);
+		String content = mapper.writeValueAsString(requestDto);
 		when(biometricAttributeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 	}
 
 	// ----------------------------------TemplateCreateApiTest--------------------------------------------------
 	@Test
 	public void createTemplateTest() throws Exception {
-		Template template = new Template();
-		template.setId("T222");
-		String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"id\": \"T222\",    \"name\": \"Email template\",    \"description\": null,    \"fileFormatCode\": \"xml\",    \"model\": null,    \"fileText\": null,    \"moduleId\": \"preregistation\",    \"moduleName\": null,    \"templateTypeCode\": \"EMAIL\",    \"langCode\": \"ENG\",    \"isActive\": true  }}";
+		RequestDto<TemplateDto> requestDto = new RequestDto<TemplateDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateDto);
+		String content = mapper.writeValueAsString(requestDto);
 		Mockito.when(templateRepository.create(Mockito.any())).thenReturn(template);
-		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createTemplateExceptionTest() throws Exception {
-		String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"id\": \"TT22\",    \"name\": \"Email template\",    \"description\": null,    \"fileFormatCode\": \"xml\",    \"model\": null,    \"fileText\": null,    \"moduleId\": \"preregistation\",    \"moduleName\": null,    \"templateTypeCode\": \"EMAIL\",    \"langCode\": \"ENG\",    \"isActive\": true  }}";
+		RequestDto<TemplateDto> requestDto = new RequestDto<TemplateDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateDto);
+		String content = mapper.writeValueAsString(requestDto);
 		when(templateRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 	}
 
 	// ----------------------------------TemplateTypeCreateApiTest--------------------------------------------------
 	@Test
 	public void createTemplateTypeTest() throws Exception {
-		TemplateType templateType = new TemplateType();
-		templateType.setCode("TTC222");
-		templateType.setLangCode("ENG");
-		String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"code\": \"TTC222\",    \"description\": \"Template type desc\",    \"isActive\": true,    \"langCode\": \"ENG\"  }}";
+		RequestDto<TemplateTypeDto> requestDto = new RequestDto<TemplateTypeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateTypeDto);
+		String content = mapper.writeValueAsString(requestDto);
 		Mockito.when(templateTypeRepository.create(Mockito.any())).thenReturn(templateType);
-		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createTemplatetypeExceptionTest() throws Exception {
-		String json = "{ \"id\": \"string\",  \"ver\": \"string\",  \"timestamp\": \"\",  \"request\": {    \"code\": \"TTC222\",    \"description\": \"Template type desc\",    \"isActive\": true,    \"langCode\": \"ENG\"  }}";
+		RequestDto<TemplateTypeDto> requestDto = new RequestDto<TemplateTypeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateTypeDto);
+		String content = mapper.writeValueAsString(requestDto);
 		when(templateTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -2036,8 +2070,9 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isCreated());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -2050,8 +2085,9 @@ public class MasterdataIntegrationTest {
 
 		Mockito.when(deviceRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------
@@ -2085,5 +2121,120 @@ public class MasterdataIntegrationTest {
 				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
 				.andExpect(status().isInternalServerError());
 	}
+
+	@Test
+	public void addBlackListedWordTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		BlacklistedWords blacklistedWords = new BlacklistedWords();
+		blacklistedWords.setLangCode("TST");
+		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
+		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addBlackListedWordExceptionTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void addRegistrationCenterTypeListTest() throws Exception {
+		RequestDto<RegistrationCenterTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterTypeDto registrationCenterTypeDto = new RegistrationCenterTypeDto();
+		registrationCenterTypeDto.setCode("testcode");
+		registrationCenterTypeDto.setDescr("testdescription");
+		registrationCenterTypeDto.setIsActive(true);
+		registrationCenterTypeDto.setLangCode("ENG");
+		registrationCenterTypeDto.setName("testname");
+		requestDto.setRequest(registrationCenterTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterTypeRepository.create(Mockito.any())).thenReturn(regCenterType);
+		mockMvc.perform(
+				post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
+		RequestDto<RegistrationCenterTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterTypeDto registrationCenterTypeDto = new RegistrationCenterTypeDto();
+		registrationCenterTypeDto.setCode("testcode");
+		registrationCenterTypeDto.setDescr("testdescription");
+		registrationCenterTypeDto.setIsActive(true);
+		registrationCenterTypeDto.setLangCode("ENG");
+		registrationCenterTypeDto.setName("testname");
+		requestDto.setRequest(registrationCenterTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(
+				post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void createIdTypeTest() throws Exception {
+		RequestDto<IdTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		IdTypeDto idTypeDto = new IdTypeDto();
+		idTypeDto.setCode("testcode");
+		idTypeDto.setDescr("testdescription");
+		idTypeDto.setIsActive(true);
+		idTypeDto.setLangCode("ENG");
+		idTypeDto.setName("testname");
+		requestDto.setRequest(idTypeDto);
+		String content = mapper.writeValueAsString(requestDto);
+		IdType idType = new IdType();
+		idType.setCode("IDT001");
+		when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
+		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createIdTypeExceptionTest() throws Exception {
+		RequestDto<IdTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		IdTypeDto idTypeDto = new IdTypeDto();
+		idTypeDto.setCode("testcode");
+		idTypeDto.setDescr("testdescription");
+		idTypeDto.setIsActive(true);
+		idTypeDto.setLangCode("ENG");
+		idTypeDto.setName("testname");
+		requestDto.setRequest(idTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(idTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
 
 }

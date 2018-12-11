@@ -424,20 +424,6 @@ public class MasterdataControllerTest {
 		blackListedWordsResponse.setWord("testword");
 
 	}
-
-	// --------------------------------BlackListedWordsControllerTest--------------------------
-	@Test
-	public void addBlackListedWordTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
-		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
-		wordAndLanguageCodeID.setLangCode("TST");
-		wordAndLanguageCodeID.setWord("testword");
-		Mockito.when(blacklistedWordsService.createBlackListedWord(Mockito.any())).thenReturn(wordAndLanguageCodeID);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON)
-				.content(json)).andExpect(status().isCreated());
-
-	}
-
 	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {

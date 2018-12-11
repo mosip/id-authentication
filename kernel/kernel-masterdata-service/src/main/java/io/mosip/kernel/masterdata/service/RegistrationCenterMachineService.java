@@ -16,6 +16,8 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 public interface RegistrationCenterMachineService {
 
 	/**
+	 * This method used to create mapping between registration center and machine.
+	 * 
 	 * @param requestDto
 	 *            contains {@link RegistrationCenterMachineDto} which must contain
 	 *            registration center id and machine id.
