@@ -18,8 +18,10 @@ public interface MachineSpecificationService {
 	 * Function to save Machine Specification Details to the Database
 	 * 
 	 * @param machineSpecification
+	 * 			input from user
 	 * 
 	 * @return IdResponseDto
+	 *           returning id
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 

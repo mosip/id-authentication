@@ -18,8 +18,10 @@ public interface MachineTypeService {
 	 * Abstract method to save Machine Type Details to the Database
 	 * 
 	 * @param machineType
+	 * 			input from user
 	 * 
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return CodeAndLanguageCodeID
+	 * 				returning code and language code 
 	 */
    public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType);
 

@@ -51,8 +51,10 @@ public interface MachineService {
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
+	 *        input from user
 	 * 
 	 * @return IdResponseDto
+	 *      returning id
 	 */
 	
 	 public IdResponseDto createMachine(RequestDto<MachineDto> machine);
