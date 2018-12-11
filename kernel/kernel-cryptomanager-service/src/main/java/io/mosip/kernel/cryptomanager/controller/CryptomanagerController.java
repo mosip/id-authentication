@@ -32,8 +32,7 @@ import io.swagger.annotations.ApiParam;
 @CrossOrigin
 @RestController
 @RequestMapping("/v1.0")
-@Api(value = "Operation related to Encryption and Decryption", tags = {
-		"cryptomanager"})
+@Api(value = "Operation related to Encryption and Decryption", tags = { "cryptomanager" })
 public class CryptomanagerController {
 
 	/**
@@ -45,8 +44,7 @@ public class CryptomanagerController {
 	/**
 	 * Controller for Encrypt the data
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} request
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
 	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
@@ -59,8 +57,7 @@ public class CryptomanagerController {
 	/**
 	 * Controller for Decrypt the data
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} request
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
 	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)

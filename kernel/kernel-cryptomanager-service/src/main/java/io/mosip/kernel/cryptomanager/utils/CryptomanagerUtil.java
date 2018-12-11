@@ -99,8 +99,10 @@ public class CryptomanagerUtil {
 		        .queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp())
 		        .queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
 		try {
-			KeymanagerPublicKeyResponseDto keyManagerResponseDto = restTemplate.getForObject(builder.buildAndExpand(uriParams).toUri(),KeymanagerPublicKeyResponseDto.class);
-			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
+			KeymanagerPublicKeyResponseDto keyManagerResponseDto = restTemplate
+					.getForObject(builder.buildAndExpand(uriParams).toUri(), KeymanagerPublicKeyResponseDto.class);
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(
+					new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
 					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
