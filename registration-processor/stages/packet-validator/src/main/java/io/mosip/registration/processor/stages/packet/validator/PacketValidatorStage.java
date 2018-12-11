@@ -22,10 +22,10 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -57,7 +57,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
 	@Autowired
-	FilesystemCephAdapterImpl adapter;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";

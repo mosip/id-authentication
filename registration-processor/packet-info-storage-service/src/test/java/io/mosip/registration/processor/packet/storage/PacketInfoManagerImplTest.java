@@ -40,8 +40,8 @@ import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -109,7 +109,7 @@ public class PacketInfoManagerImplTest {
 	private PacketInfoDao packetInfoDao;
 
 	@Mock
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	private Identity identity;
 	private ApplicantDocumentEntity applicantDocumentEntity;
