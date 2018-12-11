@@ -39,6 +39,10 @@ public class MetaDataUtils {
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.
 	 * 
+	 * @param <T>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            is the source
 	 * @param destinationClass
