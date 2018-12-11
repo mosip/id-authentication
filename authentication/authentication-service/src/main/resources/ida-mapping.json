@@ -93,6 +93,46 @@
 					"rightRing",
 					"rightThumb"
 				],
+			"leftIndex" :
+				[
+					"leftIndex"
+				],
+			"leftLittle" :
+				[
+					"leftLittle"
+				],
+			"leftMiddle" :
+				[
+					"leftMiddle"
+				],
+			"leftRing" :
+				[
+					"leftRing"
+				],
+			"leftThumb" :
+				[
+					"leftThumb"
+				],
+			"rightIndex" :
+				[
+					"rightIndex"
+				],
+			"rightLittle" :
+				[
+					"rightLittle"
+				],
+			"rightMiddle" :
+				[
+					"rightMiddle"
+				],
+			"rightRing" :
+				[
+					"rightRing"
+				],
+			"rightThumb" :
+				[
+					"rightThumb"
+				],
 			"face" : 
 				[
 					"face"
