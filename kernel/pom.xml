@@ -83,6 +83,7 @@
 		<sshd.version>1.4.0</sshd.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
