@@ -98,10 +98,14 @@ public class DemoDedupeTest {
 		Dtos.add(dto1);
 		Dtos.add(dto2);
 		
-		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
-		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
+		List<String> stringList = new ArrayList<>();
+		stringList.add("12345678");
+		stringList.add("987654321");
 		
-		Set<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
+		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
+		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any(), anyString())).thenReturn(stringList);
+		
+		Set<String> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals(false, duplicates.isEmpty() );
 	}
 	
@@ -110,11 +114,12 @@ public class DemoDedupeTest {
 		String regId = "1234567890";
 		
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
+		List<String> stringList = new ArrayList<>();
 		
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
-		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
+		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any(), anyString())).thenReturn(stringList);
 		
-		Set<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
+		Set<String> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals(true, duplicates.isEmpty() );
 	}
 	
