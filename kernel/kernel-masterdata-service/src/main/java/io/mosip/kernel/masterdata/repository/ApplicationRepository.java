@@ -27,7 +27,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * Get all Application types of a specific language
 	 * using language code
 	 * 
-	 * @param langCode
+	 * @param langCode -language code
 	 * @return {@link List<Application>}
 	 */
 	public List<Application> findAllByLangCodeAndIsDeletedFalse(String languageCode);
@@ -35,9 +35,9 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	/**
 	 * Get Application type by specific id and language code
 	 * 
-	 * @param code
-	 * @param langCode
-	 * @return {@linkplain Application}
+	 * @param code   -code
+	 * @param langCode - language code
+	 * @return {@link Application}
 	 */
 	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
 	

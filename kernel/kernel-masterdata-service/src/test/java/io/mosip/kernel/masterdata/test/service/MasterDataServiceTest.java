@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +85,6 @@ import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**

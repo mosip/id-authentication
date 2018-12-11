@@ -1548,8 +1548,8 @@ public class MasterdataIntegrationTest {
 				registrationCenterUserMachineHistoryId, localDateTimeUTCFormat))
 						.thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
-				.concat("/1/1/1"))
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError()).andReturn();
+				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
+				.andReturn();
 	}
 
 	@Test

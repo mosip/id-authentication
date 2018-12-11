@@ -29,6 +29,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
@@ -39,6 +42,8 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
@@ -72,6 +77,7 @@ import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import ma.glasnost.orika.Mapper;
 
 /**
  * 
@@ -145,8 +151,7 @@ public class MasterdataControllerTest {
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private static final String LOCATION_JSON_EXPECTED_GET = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
-	private static final String LOCATION_JSON_EXPECTED_POST = "{ \"id\": \"string\", \"request\": { \"code\": \"string\", \"hierarchyLevel\": 0, \"hierarchyName\": \"string\", \"isActive\": true, \"languageCode\": \"str\", \"name\": \"string\", \"parentLocCode\": \"string\" }, \"timestamp\": \"2018-11-30T11:05:49.799Z\", \"ver\": \"string\" }";
+	private static String LOCATION_JSON_EXPECTED_POST = null;
 	LocationHierarchyDto locationHierarchyDto = null;
 	@MockBean
 	private LocationService locationService;
@@ -179,9 +184,12 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateFileFormatService templateFileFormatService;
+	
+	private ObjectMapper mapper;
 
 	@Before
 	public void setUp() {
+		mapper=new ObjectMapper();
 		biometricTypeSetup();
 
 		applicationSetup();
@@ -196,6 +204,8 @@ public class MasterdataControllerTest {
 		documentTypeSetup();
 
 		idTypeSetup();
+		
+		locationSetup();
 
 		// TODO MachineDetailControllerTest
 		// TODO MachineHistoryControllerTest
@@ -279,9 +289,10 @@ public class MasterdataControllerTest {
 		locationDto.setCode("KAR");
 		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(1);
-		locationDto.setHierarchyName(null);
+		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
+		locationDto.setIsActive(true);
 
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
@@ -296,6 +307,17 @@ public class MasterdataControllerTest {
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setIsActive(true);
 		locationCodeDto.setParentLocCode("IND");
+		RequestDto<LocationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.create.location");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(locationDto);
+		
+		try {
+			LOCATION_JSON_EXPECTED_POST=mapper.writeValueAsString(requestDto);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void idTypeSetup() {
