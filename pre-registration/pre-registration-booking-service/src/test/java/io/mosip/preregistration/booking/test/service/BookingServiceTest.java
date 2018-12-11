@@ -37,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
@@ -46,18 +47,25 @@ import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.PreRegResponseDto;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
+import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
+import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.dto.RequestDto;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
+import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
+import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.service.BookingService;
@@ -102,7 +110,7 @@ public class BookingServiceTest {
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 	BookingRegistrationDTO oldBooking= new BookingRegistrationDTO();
 	BookingRegistrationDTO newBooking= new BookingRegistrationDTO();
-	public ResponseDto<List<BookingStatusDTO>> responseDto = new ResponseDto<>();
+	ResponseDto<List<BookingStatusDTO>> responseDto = new ResponseDto<>();
 	BookingStatusDTO statusDTOA = new BookingStatusDTO();
 	BookingStatusDTO statusDTOB = new BookingStatusDTO();
 	Map<String, String> requiredRequestMap = new HashMap<>();
@@ -110,10 +118,15 @@ public class BookingServiceTest {
 	Map<String, String> requestMap = new HashMap<>();
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
+	RegistrationCenterResponseDto regCenDto= new RegistrationCenterResponseDto();
 
 	Map<String, String> requestMap1 = new HashMap<>();
 	private RequestDto<CancelBookingDTO> cancelRequestdto = new RequestDto<>();
 	private CancelBookingDTO cancelbookingDto = new CancelBookingDTO();
+	DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	LocalTime localTime1;
+	LocalTime localTime2;
+	
 	
 	@Value("${version}")
 	String versionUrl;
@@ -127,13 +140,13 @@ public class BookingServiceTest {
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException {
 
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		
 		String date1 = "2016-11-09 09:00:00";
 		String date2 = "2016-11-09 09:20:00";
 		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
 		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalTime localTime1 = localDateTime1.toLocalTime();
-		LocalTime localTime2 = localDateTime2.toLocalTime();
+		localTime1 = localDateTime1.toLocalTime();
+		localTime2 = localDateTime2.toLocalTime();
 		slots.setAvailability(4);
 		slots.setFromTime(localTime1);
 		slots.setToTime(localTime2);
@@ -284,6 +297,79 @@ public class BookingServiceTest {
 		// ResponseDto<List<BookingStatusDTO>> result =
 		// service.bookAppointment(bookingDTO);
 		// assertEquals(responseDto, result);
+	}
+	
+	@Test(expected=RecordNotFoundException.class)
+	public void getAvailabilityFailureTest() {
+		logger.info("Availability dto "+availability);
+		List<java.sql.Date> date= new ArrayList<>();
+		List<AvailibityEntity> entityList= new ArrayList<>();
+		entityList.add(entity);
+		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(),Mockito.any())).thenReturn(date);
+		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDate(Mockito.anyString(),Mockito.any())).thenReturn(entityList);
+		service.getAvailability("1");
+	}
+	
+	@Test(expected=AvailablityNotFoundException.class)
+	public void getAvailabilityTableFailureTest()  throws Exception{
+		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+				ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString(),null);
+		List<java.sql.Date> date= new ArrayList<>();
+		List<AvailibityEntity> entityList= new ArrayList<>();
+		entityList.add(entity);
+		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(),Mockito.any())).thenThrow(exception);
+		service.getAvailability("1");
+	}
+	
+	@Test
+	public void addAvailabilityServiceTest() {
+		
+		String date1 = "2016-11-09 09:00:00";
+		String date2 = "2016-11-09 17:00:00";
+		String date3 = "2016-11-09 00:20:00";
+		String date4 = "2016-11-09 13:00:00";
+		String date5 = "2016-11-09 14:20:00";
+		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
+		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
+		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
+		LocalTime startTime = localDateTime1.toLocalTime();
+		LocalTime endTime= localDateTime2.toLocalTime();
+		LocalTime perKioskTime=localDateTime3.toLocalTime();
+		LocalTime LunchStartTime=LocalDateTime.parse(date4, format).toLocalTime();
+		LocalTime LunchEndTime=LocalDateTime.parse(date5, format).toLocalTime();
+		RegistrationCenterDto centerDto= new RegistrationCenterDto();
+		List<RegistrationCenterDto> centerList= new ArrayList<>();
+		centerDto.setId("1");
+		centerDto.setLanguageCode("LOC01");
+		centerDto.setCenterStartTime(startTime);
+		centerDto.setCenterEndTime(endTime);
+		centerDto.setPerKioskProcessTime(perKioskTime);
+		centerDto.setLunchStartTime(LunchStartTime);
+		centerDto.setLunchEndTime(LunchEndTime);
+		centerDto.setNumberOfKiosks((short) 4);
+		centerList.add(centerDto);
+		regCenDto.setRegistrationCenters(centerList);
+		RegistrationCenterHolidayDto CenholidayDto= new RegistrationCenterHolidayDto();
+		HolidayDto holiday= new HolidayDto();
+		List<HolidayDto> holidayList= new ArrayList<>();
+		holiday.setHolidayDate("2018-12-12");
+		holidayList.add(holiday);
+		CenholidayDto.setHolidays(holidayList);
+		
+		ResponseDto<String> response= new ResponseDto<>();
+
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		
+		ResponseEntity<RegistrationCenterResponseDto> rescenter = new ResponseEntity<>(regCenDto, HttpStatus.OK);
+		ResponseEntity<RegistrationCenterHolidayDto> resHoliday = new ResponseEntity<>(CenholidayDto, HttpStatus.OK);
+		
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(RegistrationCenterResponseDto.class))).thenReturn(rescenter);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(RegistrationCenterHolidayDto.class))).thenReturn(resHoliday);
+		response= service.addAvailability();
+		assertEquals(response.getResponse(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 	}
 	
 

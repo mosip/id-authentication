@@ -73,6 +73,7 @@ import io.mosip.preregistration.booking.exception.CancelAppointmentFailedExcepti
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
@@ -153,10 +154,7 @@ public class BookingService {
 			List<RegistrationCenterDto> regCenter = responseEntity.getBody().getRegistrationCenters();
 
 			if (regCenter.isEmpty()) {
-				response.setResTime(new Timestamp(System.currentTimeMillis()));
-				response.setStatus(false);
-				response.setResponse("No data is present in registration center master table");
-				return response;
+				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(), ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
 			} else {
 				for (RegistrationCenterDto regDto : regCenter) {
 					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + regDto.getId() + "/"
@@ -252,7 +250,7 @@ public class BookingService {
 		} 
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);
-		response.setResponse("Master Data is synched successfully");
+		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
 		return response;
 
 	}
@@ -309,7 +307,7 @@ public class BookingService {
 						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
 
 			}
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException e) {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		} 

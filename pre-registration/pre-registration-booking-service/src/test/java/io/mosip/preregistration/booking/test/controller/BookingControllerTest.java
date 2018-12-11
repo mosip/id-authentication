@@ -129,6 +129,8 @@ public class BookingControllerTest {
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@Test
