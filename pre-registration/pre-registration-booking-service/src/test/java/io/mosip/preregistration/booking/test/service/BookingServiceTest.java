@@ -57,6 +57,7 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
@@ -280,12 +281,23 @@ public class BookingServiceTest {
 
 		entity.setAvailableKiosks(entity.getAvailableKiosks() - 1);
 		Mockito.when(bookingAvailabilityRepository.update(entity)).thenReturn(entity);
-
+		service.bookAppointment(bookingDTO);
 		// ResponseDto<List<BookingStatusDTO>> result =
-		// service.bookAppointment(bookingDTO);
+		// 
 		// assertEquals(responseDto, result);
 	}
-	
+	@Test
+	public void isMandatoryTest() {
+		//Mockito.when(service.isMandatory("")).thenReturn(false);
+		service.isMandatory(null);
+		
+	}
+	@Test(expected=BookingPreIdNotFoundException.class)
+	 public void mandatoryParameterCheckTest() {
+		bookingRequestDTO.setPre_registration_id(null);
+		service.mandatoryParameterCheck(bookingRequestDTO);
+		
+	 }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
