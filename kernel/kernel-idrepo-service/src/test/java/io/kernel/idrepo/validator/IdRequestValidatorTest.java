@@ -248,7 +248,6 @@ public class IdRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
-		request.setVer("1.0");
 		request.setRegistrationId("1234");
 		request.setUin("1234");
 		request.setStatus("REGISTERED");

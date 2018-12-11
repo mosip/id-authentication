@@ -1,7 +1,6 @@
 package io.kernel.idrepo.validator;
 
 import java.io.IOException;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +10,6 @@ import java.util.TimeZone;
 import javax.annotation.Resource;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
@@ -74,9 +72,6 @@ public class IdRequestValidator implements Validator {
 	/** The Constant UIN. */
 	private static final String UIN = "uin";
 
-	/** The Constant VER. */
-	private static final String VER = "ver";
-
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
@@ -128,7 +123,6 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
-			validateVer(request.getVer(), errors);
 			validateStatus(request.getStatus(), errors);
 			validateRequest(request.getRequest(), errors);
 		}
@@ -160,24 +154,6 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
-	/**
-	 * Validate ver.
-	 *
-	 * @param ver
-	 *            the ver
-	 * @param errors
-	 *            the errors
-	 */
-	private void validateVer(String ver, Errors errors) {
-		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if (!ver.equals(env.getProperty("mosip.idrepo.version"))) {
-			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
-		}
-
-	}
 
 	/**
 	 * Validate uin.

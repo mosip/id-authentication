@@ -1,6 +1,5 @@
 package io.kernel.idrepo.exception;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,7 +8,6 @@ import javax.servlet.ServletException;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +32,7 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdRepoExceptionHandler.
@@ -50,10 +49,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String SESSION_ID = "sessionId";
 
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
-
-	/** The env. */
-	@Autowired
-	private Environment env;
 
 	/** The mapper. */
 	@Autowired
@@ -142,8 +137,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setId("mosip.id.error");
 		}
 
-		response.setVer(env.getProperty("mosip.idrepo.version"));
-
 		if (e instanceof BaseCheckedException) {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
@@ -155,7 +148,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setErr(errors);
 		}
 
-		response.setTimestamp(mapper.convertValue(new Date(), String.class));
+		response.setTimestamp(DateUtils.getDefaultUTCCurrentDateTimeString());
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));

@@ -13,9 +13,6 @@ public class BaseIdRequestResponseDTO {
 	/** The id. */
 	private String id;
 	
-	/** The ver. */
-	private String ver;
-	
 	/** The timestamp. */
 	private String timestamp;
 }

@@ -291,8 +291,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Find difference.
 	 *
-	 * @param leftValue the left value
-	 * @param rightValue the right value
+	 * @param leftValue
+	 *            the left value
+	 * @param rightValue
+	 *            the right value
 	 * @return the list
 	 */
 	private List<Map<String, String>> findDifference(List<Map<String, String>> leftValue,
@@ -363,7 +365,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * Generate UIN.
 	 *
 	 * @return the string
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private String generateUIN() throws IdRepoAppException {
 		try {
@@ -382,8 +385,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Validate UIN.
 	 *
-	 * @param uin the uin
-	 * @throws IdRepoAppException the id repo app exception
+	 * @param uin
+	 *            the uin
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private void validateUIN(String uin) throws IdRepoAppException {
 		ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
@@ -401,20 +406,20 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Construct id response.
 	 *
-	 * @param id the id
-	 * @param uin the uin
+	 * @param id
+	 *            the id
+	 * @param uin
+	 *            the uin
 	 * @return the id response DTO
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private IdResponseDTO constructIdResponse(String id, Uin uin) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
 
 		idResponse.setId(id);
 
-		idResponse.setVer(env.getProperty("mosip.idrepo.version"));
-
-		idResponse.setTimestamp(
-				DateUtils.formatDate(now(), env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone("GMT")));
+		idResponse.setTimestamp(DateUtils.getDefaultUTCCurrentDateTimeString());
 
 		idResponse.setRegistrationId(uin.getUinRefId());
 
@@ -445,9 +450,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Encrypt identity.
 	 *
-	 * @param identity the identity
+	 * @param identity
+	 *            the identity
 	 * @return the byte[]
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private byte[] encryptIdentity(byte[] identity) throws IdRepoAppException {
 		try {
@@ -460,9 +467,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					"encryptedData - \n" + Base64.getEncoder().encodeToString(encryptedData) + "\n");
 
 			// hash data using HMAC SHA256
-			String hash = HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
+			byte[] hash = HMACUtils.generateHash(Base64.getEncoder().encodeToString(encryptedData).getBytes());
 
-			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY, "hash - \n" + hash + "\n");
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY,
+					"hash - \n" + Base64.getEncoder().encodeToString(hash) + "\n");
 
 			// Encrypt session Key using public Key
 			byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(
@@ -472,7 +480,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					"encryptedsessionKey - \n" + Base64.getEncoder().encodeToString(encryptedsessionKey) + "\n");
 
 			// Append Hash | Encrypted session key | Encrypted Data
-			StringBuilder builder = new StringBuilder(Base64.getEncoder().encodeToString(hash.getBytes()));
+			StringBuilder builder = new StringBuilder(Base64.getEncoder().encodeToString(hash));
 			builder.append('|');
 			builder.append(Base64.getEncoder().encodeToString(encryptedsessionKey));
 			builder.append('|');
@@ -486,9 +494,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Decrypt identity.
 	 *
-	 * @param identity the identity
+	 * @param identity
+	 *            the identity
 	 * @return the byte[]
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private byte[] decryptIdentity(byte[] identity) throws IdRepoAppException {
 
@@ -501,10 +511,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 			// HMAC Decrypted Data record
 			// Compare HMAC
-			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY,
-					"HASH - \n" + new String(Base64.getDecoder().decode(hash)) + "\n");
-			if (new String(Base64.getDecoder().decode(hash))
-					.contentEquals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData.getBytes())))) {
+			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY, "HASH - \n" + hash + "\n");
+			if (hash.equals(Base64.getEncoder().encodeToString(HMACUtils.generateHash(encryptedData.getBytes())))) {
 
 				// Decrypt session Key with private Key
 				byte[] sessionKey = decryptor
@@ -536,9 +544,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Gets the key.
 	 *
-	 * @param keyType the key type
+	 * @param keyType
+	 *            the key type
 	 * @return the key
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	public byte[] getKey(String keyType) throws IdRepoAppException {
 		try {
