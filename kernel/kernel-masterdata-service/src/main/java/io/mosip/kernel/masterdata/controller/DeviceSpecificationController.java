@@ -98,7 +98,7 @@ public class DeviceSpecificationController {
 	/**
 	 * Save device specification details to the database table
 	 * 
-	 * @param RequestDto
+	 * @param deviceSpecification
 	 *            input from user Device specification DTO
 	 *            
 	 * @return {@link IdResponseDto}
