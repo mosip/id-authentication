@@ -69,6 +69,7 @@ public class SyncRegistrationServiceTest {
 	@InjectMocks
 	private SyncRegistrationService<SyncResponseDto,SyncRegistrationDto> syncRegistrationService = new SyncRegistrationServiceImpl();
 
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 	
@@ -183,6 +184,36 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto8.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto8.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
 		
+		SyncRegistrationDto syncRegistrationDto9 = new SyncRegistrationDto();
+		syncRegistrationDto9.setRegistrationId("27847657360002520181208183050");
+		syncRegistrationDto9.setLangCode("eng");
+		syncRegistrationDto9.setIsActive(true);
+		syncRegistrationDto9.setIsDeleted(false);
+		syncRegistrationDto9.setParentRegistrationId("12345678901234567890123456799");
+		syncRegistrationDto9.setStatusComment("NEW");
+		syncRegistrationDto9.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto9.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		
+		SyncRegistrationDto syncRegistrationDto10 = new SyncRegistrationDto();
+		syncRegistrationDto10.setRegistrationId("27847657360002520181208183050");
+		syncRegistrationDto10.setLangCode("eng");
+		syncRegistrationDto10.setIsActive(true);
+		syncRegistrationDto10.setIsDeleted(false);
+		syncRegistrationDto10.setParentRegistrationId("1234567890123456789012345ABCD");
+		syncRegistrationDto10.setStatusComment("NEW");
+		syncRegistrationDto10.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto10.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		
+		SyncRegistrationDto syncRegistrationDto11 = new SyncRegistrationDto();
+		syncRegistrationDto11.setRegistrationId("27847657360002520181208183050");
+		syncRegistrationDto11.setLangCode("eng");
+		syncRegistrationDto11.setIsActive(true);
+		syncRegistrationDto11.setIsDeleted(false);
+		syncRegistrationDto11.setParentRegistrationId("123456789012345678");
+		syncRegistrationDto11.setStatusComment("NEW");
+		syncRegistrationDto11.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto11.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		
 		entities.add(syncRegistrationDto);
 		entities.add(syncRegistrationDto1);
 		entities.add(syncRegistrationDto2);
@@ -192,7 +223,9 @@ public class SyncRegistrationServiceTest {
 		entities.add(syncRegistrationDto6);
 		entities.add(syncRegistrationDto7);
 		entities.add(syncRegistrationDto8);
-
+		entities.add(syncRegistrationDto9);
+		entities.add(syncRegistrationDto10);
+		entities.add(syncRegistrationDto11);
 		
 		syncResponseDto = new SyncResponseDto();
 		syncResponseDto.setRegistrationId(syncRegistrationDto.getRegistrationId());
@@ -217,25 +250,6 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setUpdatedBy("MOSIP");
 
 		Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenReturn(true);
-		
-//		AuditResponseDto auditResponseDto=new AuditResponseDto();
-//		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
-
-
-	/*	AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
-
-		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f.setAccessible(true);
-		f.set(clientAuditRequestBuilder, auditRequestBuilder);
-
-		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
-
-		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
-		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);*/
 
 	}
 
@@ -286,11 +300,51 @@ public class SyncRegistrationServiceTest {
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is true", true, result);
 	}
 	
+	/**
+	 * Gets the sync registration id failure test.
+	 *
+	 * @return the sync registration id failure test
+	 */
 	@Test
 	public void getSyncRegistrationIdFailureTest() {
 		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(), RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
 		Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenThrow(exp);
-		syncRegistrationService.sync(entities);
+		syncRegistrationService.sync(entities);	
 	}
-
+	
+	/**
+	 * Gets the sync prid in valid length failure test.
+	 *
+	 * @return the sync prid in valid length failure test
+	 */
+	@Test
+	public void getSyncPridInValidLengthFailureTest() {
+		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(), RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
+		Mockito.when(ridValidator.validateId("123456789012345678")).thenThrow(exp);
+		syncRegistrationService.sync(entities);	
+	}
+	
+	/**
+	 * Gets the sync prid in valid time stamp failure test.
+	 *
+	 * @return the sync prid in valid time stamp failure test
+	 */
+	@Test
+	public void getSyncPridInValidTimeStampFailureTest() {
+		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode(), RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorMessage());
+		Mockito.when(ridValidator.validateId("12345678901234567890123456799")).thenThrow(exp);
+		syncRegistrationService.sync(entities);	
+	}
+	
+	/**
+	 * Gets the sync prid in valid format failure test.
+	 *
+	 * @return the sync prid in valid format failure test
+	 */
+	@Test
+	public void getSyncPridInValidFormatFailureTest() {
+		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID.getErrorCode(), RidExceptionProperty.INVALID_RID.getErrorMessage());
+		Mockito.when(ridValidator.validateId("1234567890123456789012345ABCD")).thenThrow(exp);
+		syncRegistrationService.sync(entities);	
+	}
 }
