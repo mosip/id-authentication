@@ -2,10 +2,13 @@ package io.mosip.kernel.synchandler.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.synchandler.constant.MasterDataErrorCode;
 import io.mosip.kernel.synchandler.dto.ApplicationDto;
 import io.mosip.kernel.synchandler.dto.BiometricAttributeDto;
 import io.mosip.kernel.synchandler.dto.BiometricTypeDto;
@@ -33,6 +36,7 @@ import io.mosip.kernel.synchandler.dto.TemplateTypeDto;
 import io.mosip.kernel.synchandler.dto.TitleDto;
 import io.mosip.kernel.synchandler.dto.ValidDocumentDto;
 import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
 import io.mosip.kernel.synchandler.service.MasterDataServiceHelper;
 
@@ -57,34 +61,35 @@ public class MasterDataServiceImpl implements MasterDataService {
 	 */
 
 	@Override
-	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated) {
+	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
+			throws InterruptedException, ExecutionException {
 		MasterDataResponseDto response = new MasterDataResponseDto();
-		List<ApplicationDto> applications = null;
-		List<MachineDto> machineDetails = null;
-		List<RegistrationCenterTypeDto> registrationCenterTypes = null;
-		List<RegistrationCenterDto> registrationCenters = null;
-		List<TemplateDto> templates = null;
-		List<TemplateFileFormatDto> templateFileFormats = null;
-		List<PostReasonCategoryDto> reasonCategory = null;
-		List<HolidayDto> holidays = null;
-		List<BlacklistedWordsDto> blacklistedWords = null;
-		List<BiometricTypeDto> biometricTypes = null;
-		List<BiometricAttributeDto> biometricAttributes = null;
-		List<TitleDto> titles = null;
-		List<LanguageDto> languages = null;
-		List<GenderDto> genders = null;
-		List<DeviceDto> devices = null;
-		List<DocumentCategoryDto> documentCategories = null;
-		List<DocumentTypeDto> documentTypes = null;
-		List<IdTypeDto> idTypes = null;
-		List<DeviceSpecificationDto> deviceSpecifications = null;
-		List<LocationDto> locationHierarchy = null;
-		List<MachineSpecificationDto> machineSpecification = null;
-		List<MachineTypeDto> machineType = null;
-		List<TemplateTypeDto> templateTypes = null;
-		List<DeviceTypeDto> deviceTypes = null;
-		List<ValidDocumentDto> validDocumentsMapping = null;
-		List<ReasonListDto> reasonList = null;
+		CompletableFuture<List<ApplicationDto>> applications = null;
+		CompletableFuture<List<MachineDto>> machineDetails = null;
+		CompletableFuture<List<RegistrationCenterTypeDto>> registrationCenterTypes = null;
+		CompletableFuture<List<RegistrationCenterDto>> registrationCenters = null;
+		CompletableFuture<List<TemplateDto>> templates = null;
+		CompletableFuture<List<TemplateFileFormatDto>> templateFileFormats = null;
+		CompletableFuture<List<PostReasonCategoryDto>> reasonCategory = null;
+		CompletableFuture<List<HolidayDto>> holidays = null;
+		CompletableFuture<List<BlacklistedWordsDto>> blacklistedWords = null;
+		CompletableFuture<List<BiometricTypeDto>> biometricTypes = null;
+		CompletableFuture<List<BiometricAttributeDto>> biometricAttributes = null;
+		CompletableFuture<List<TitleDto>> titles = null;
+		CompletableFuture<List<LanguageDto>> languages = null;
+		CompletableFuture<List<GenderDto>> genders = null;
+		CompletableFuture<List<DeviceDto>> devices = null;
+		CompletableFuture<List<DocumentCategoryDto>> documentCategories = null;
+		CompletableFuture<List<DocumentTypeDto>> documentTypes = null;
+		CompletableFuture<List<IdTypeDto>> idTypes = null;
+		CompletableFuture<List<DeviceSpecificationDto>> deviceSpecifications = null;
+		CompletableFuture<List<LocationDto>> locationHierarchy = null;
+		CompletableFuture<List<MachineSpecificationDto>> machineSpecification = null;
+		CompletableFuture<List<MachineTypeDto>> machineType = null;
+		CompletableFuture<List<TemplateTypeDto>> templateTypes = null;
+		CompletableFuture<List<DeviceTypeDto>> deviceTypes = null;
+		CompletableFuture<List<ValidDocumentDto>> validDocumentsMapping = null;
+		CompletableFuture<List<ReasonListDto>> reasonList = null;
 		// get data
 		applications = serviceHelper.getApplications(lastUpdated);
 		machineDetails = serviceHelper.getMachines(machineId, lastUpdated);
@@ -113,32 +118,39 @@ public class MasterDataServiceImpl implements MasterDataService {
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated);
 		reasonList = serviceHelper.getReasonList(lastUpdated);
 		// set data
-		response.setApplications(applications);
-		response.setMachineDetails(machineDetails);
-		response.setRegistrationCenterTypes(registrationCenterTypes);
-		response.setRegistrationCenter(registrationCenters);
-		response.setTemplates(templates);
-		response.setTemplateFileType(templateFileFormats);
-		response.setReasonCategory(reasonCategory);
-		response.setReasonList(reasonList);
-		response.setHolidays(holidays);
-		response.setBlackListedWords(blacklistedWords);
-		response.setBiometricTypes(biometricTypes);
-		response.setBiometricattributes(biometricAttributes);
-		response.setTitles(titles);
-		response.setLanguages(languages);
-		response.setGenders(genders);
-		response.setDevices(devices);
-		response.setDocumentCategories(documentCategories);
-		response.setDocumentTypes(documentTypes);
-		response.setIdTypes(idTypes);
-		response.setDeviceSpecifications(deviceSpecifications);
-		response.setLocationHierarchy(locationHierarchy);
-		response.setMachineSpecification(machineSpecification);
-		response.setMachineType(machineType);
-		response.setTemplatesTypes(templateTypes);
-		response.setDeviceTypes(deviceTypes);
-		response.setValidDocumentMapping(validDocumentsMapping);
+
+		CompletableFuture.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
+				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
+				validDocumentsMapping).join();
+
+		response.setMachineDetails(machineDetails.get());
+		response.setApplications(applications.get());
+		response.setRegistrationCenterTypes(registrationCenterTypes.get());
+		response.setRegistrationCenter(registrationCenters.get());
+		response.setTemplates(templates.get());
+		response.setTemplateFileType(templateFileFormats.get());
+		response.setReasonCategory(reasonCategory.get());
+		response.setReasonList(reasonList.get());
+		response.setHolidays(holidays.get());
+		response.setBlackListedWords(blacklistedWords.get());
+		response.setBiometricTypes(biometricTypes.get());
+		response.setBiometricattributes(biometricAttributes.get());
+		response.setTitles(titles.get());
+		response.setLanguages(languages.get());
+		response.setGenders(genders.get());
+		response.setDevices(devices.get());
+		response.setDocumentCategories(documentCategories.get());
+		response.setDocumentTypes(documentTypes.get());
+		response.setIdTypes(idTypes.get());
+		response.setDeviceSpecifications(deviceSpecifications.get());
+		response.setLocationHierarchy(locationHierarchy.get());
+		response.setMachineSpecification(machineSpecification.get());
+		response.setMachineType(machineType.get());
+		response.setTemplatesTypes(templateTypes.get());
+		response.setDeviceTypes(deviceTypes.get());
+		response.setValidDocumentMapping(validDocumentsMapping.get());
 
 		return response;
 	}

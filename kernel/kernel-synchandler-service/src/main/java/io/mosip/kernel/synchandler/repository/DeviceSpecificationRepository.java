@@ -47,5 +47,5 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	List<DeviceSpecification> findDeviceTypeByMachineId(String machineId);
 
 	@Query(value = "SELECT ds.id, ds.name, ds.brand, ds.model, ds.dtyp_code, ds.min_driver_ver, ds.descr, ds.lang_code, ds.is_active, ds.cr_by, ds.cr_dtimes, ds.upd_by, ds.upd_dtimes, ds.is_deleted, ds.del_dtimes FROM master.device_spec ds  , master.device_master dm, master.reg_center_machine_device rcmd where  dm.dspec_id= ds.id and dm.id = rcmd.device_id and rcmd.machine_id = ?1 and (ds.cr_dtimes > ?2 or ds.upd_dtimes > ?2 or ds.del_dtimes > ?2)", nativeQuery = true)
-	List<DeviceSpecification> findlatestDeviceTypeByMachineId(String machineId, LocalDateTime lastUpdated);
+	List<DeviceSpecification> findLatestDeviceTypeByMachineId(String machineId, LocalDateTime lastUpdated);
 }

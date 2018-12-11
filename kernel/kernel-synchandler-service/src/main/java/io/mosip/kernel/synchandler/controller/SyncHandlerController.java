@@ -1,6 +1,7 @@
 package io.mosip.kernel.synchandler.controller;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,8 @@ public class SyncHandlerController {
 
 	@GetMapping("/syncmasterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
-			@RequestParam(value = "lastUpdated", required = false) String lastUpdated) {
+			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
+			throws InterruptedException, ExecutionException {
 		LocalDateTime timestamp = null;
 		if (lastUpdated != null) {
 			try {
