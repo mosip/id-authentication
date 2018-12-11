@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.manual.adjudication.service;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
@@ -29,14 +30,14 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudicationService;
 import io.mosip.registration.processor.manual.adjudication.service.impl.ManualAdjudicationServiceImpl;
 import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificationStage;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -93,7 +94,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationEntity.setStatusCode(ManualVerificationStatus.PENDING.name());
 		manualVerificationEntity.setReasonCode("test");
 		manualVerificationEntity.setIsActive(true);
-		manualVerificationEntity.setPkId(PKId);
+		manualVerificationEntity.setId(PKId);
 		manualVerificationEntity.setLangCode("eng");
 		manualVerificationDTO.setRegId("RegID");
 		manualVerificationDTO.setMatchedRefId("RefID");

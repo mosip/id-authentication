@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.manual.adjudication.dao;
 
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -8,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
-import io.mosip.registration.processor.manual.adjudication.repository.ManualAdjudiacationRepository;
+
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+
 import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class ManualAdjudicationDaoTest {
 
 	/** The manualAdjudiacationRepository repository. */
 	@Mock
-	ManualAdjudiacationRepository<ManualVerificationEntity, ManualVerificationPKEntity> manualAdjudiacationRepository;
+	private BasePacketRepository<ManualVerificationEntity, String> manualAdjudiacationRepository;
 	
 	/** The manual verification entity. */
 	@Mock
@@ -53,10 +56,10 @@ public class ManualAdjudicationDaoTest {
 	public void setUp() {
 		manualAdjudicationEntityList =new ArrayList<ManualVerificationEntity>();
 		manualVerificationEntity = new ManualVerificationEntity();
-		manualVerificationEntity.setPkId(manualVerificationPKEntity);
-		manualVerificationEntity.getPkId().setRegId("12345");
-		manualVerificationEntity.getPkId().setMatchedRefType("12345");
-		manualVerificationEntity.getPkId().setMatchedRefId("12345");
+		manualVerificationEntity.setId(manualVerificationPKEntity);
+		manualVerificationEntity.getId().setRegId("12345");
+		manualVerificationEntity.getId().setMatchedRefType("12345");
+		manualVerificationEntity.getId().setMatchedRefId("12345");
 		manualVerificationEntity.setCrBy("USER");
 		manualVerificationEntity.setIsActive(false);
 		manualVerificationEntity.setMvUsrId("mvuser");
@@ -101,7 +104,7 @@ public class ManualAdjudicationDaoTest {
 	 */
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getSingleAssignedRecord(manualVerificationEntity.getPkId().getRegId(), manualVerificationEntity.getPkId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getSingleAssignedRecord(manualVerificationEntity.getId().getRegId(), manualVerificationEntity.getId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
 		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
 	

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.manual.adjudication.entity;
+package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;

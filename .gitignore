@@ -22,3 +22,4 @@ local.properties
 test.txt
 .idea/
 META-INF/
+/.recommenders/

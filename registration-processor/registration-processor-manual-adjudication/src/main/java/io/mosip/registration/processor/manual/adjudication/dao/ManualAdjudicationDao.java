@@ -1,12 +1,18 @@
 package io.mosip.registration.processor.manual.adjudication.dao;
 
 import java.util.List;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.manual.adjudication.entity.ManualVerificationPKEntity;
-import io.mosip.registration.processor.manual.adjudication.repository.ManualAdjudiacationRepository;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+
+
+
+
 
 /**
  * Dao Layer for Manual Verification
@@ -18,8 +24,7 @@ import io.mosip.registration.processor.manual.adjudication.repository.ManualAdju
 @Component
 public class ManualAdjudicationDao {
 	@Autowired
-	ManualAdjudiacationRepository<ManualVerificationEntity, ManualVerificationPKEntity> manualAdjudiacationRepository;
-
+	private BasePacketRepository<ManualVerificationEntity, String> manualAdjudiacationRepository;
 	/**
 	 * This method updates Manual Verification Status in DB
 	 * 
