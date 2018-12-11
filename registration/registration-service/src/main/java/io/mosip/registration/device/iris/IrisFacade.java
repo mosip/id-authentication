@@ -43,7 +43,7 @@ public class IrisFacade {
 
 			double qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
 
-			if (irisDetailsDTO.getQualityScore() < qualityScore) {
+			if (Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
 				// Set the values in IrisDetailsDTO object
 				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				irisDetailsDTO.setForceCaptured(false);
@@ -55,8 +55,6 @@ public class IrisFacade {
 
 			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration completed");
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			throw regBaseCheckedException;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCAN_EXP,
 					String.format("Exception while stubbing the iris details for user registration: %s caused by %s",
