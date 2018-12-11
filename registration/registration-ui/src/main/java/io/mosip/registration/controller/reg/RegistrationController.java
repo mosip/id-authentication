@@ -1193,7 +1193,7 @@ public class RegistrationController extends BaseController {
 					}
 					// to populate date of birth based on age
 					
-					if (ageField.getText().length() > 0) {
+					if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
 						DateTimeFormatter formatter = DateTimeFormatter
 								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
 						StringBuilder dob = new StringBuilder();
@@ -1202,8 +1202,13 @@ public class RegistrationController extends BaseController {
 						LocalDate date = LocalDate.parse(dob, formatter);
 						ageDatePicker.setValue(date);
 					}
+					if(ageField.getText().length()==0) {
+						ageDatePicker.setValue(null);
+					}
 					if (!newValue.matches("\\d*")) {
 						ageField.setText(newValue.replaceAll("[^\\d]", ""));
+						generateAlert(RegistrationConstants.ALERT_ERROR,RegistrationConstants.AGE_WARNING);
+
 					}
 				}
 			});
