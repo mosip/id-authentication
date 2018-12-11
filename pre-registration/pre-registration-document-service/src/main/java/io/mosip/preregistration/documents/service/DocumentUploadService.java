@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
@@ -30,6 +32,7 @@ import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
+import xyz.capybara.clamav.commands.scan.Scan;
 
 /**
  * Document service
@@ -49,7 +52,8 @@ public class DocumentUploadService {
 	@Value("${file.extension}")
 	private String fileExtension;
 
-	VirusScannerImpl virusScan = new VirusScannerImpl();
+    @Autowired
+    private VirusScanner<Boolean, String> virusScan;
 
 	public ResponseDto<DocResponseDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
 		ResponseDto<DocResponseDto> responseDto = new ResponseDto<DocResponseDto>();
@@ -59,6 +63,7 @@ public class DocumentUploadService {
 		List<DocResponseDto> docResponseDtos = new LinkedList<>();
 		try {
 			scanFile = virusScan.scanDocument(file.getBytes());
+			
 			if (scanFile) {
 				if (file.getSize() > getMaxFileSize()) {
 					throw new DocumentSizeExceedException(ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
