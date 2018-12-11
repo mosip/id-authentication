@@ -52,7 +52,7 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	 * {@link CryptomanagerUtil} instance
 	 */
 	@Autowired
-	CryptomanagerUtil cryptoUtil; 
+	CryptomanagerUtil cryptomanagerUtil; 
 	
 	/**
 	 * {@link Encryptor} instance
@@ -75,7 +75,7 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		SecretKey secretKey=keyGenerator.getSymmetricKey();
 		final byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
-		PublicKey publicKey=cryptoUtil.getPublicKey(cryptoRequestDto);
+		PublicKey publicKey=cryptomanagerUtil.getPublicKey(cryptoRequestDto);
 		final byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptomanagerResponseDto cryptoResponseDto= new CryptomanagerResponseDto();
 		cryptoResponseDto.setData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey,keySplitter)));
@@ -94,7 +94,7 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		byte[] encryptedData = copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
 				encryptedHybridData.length);
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
-		SecretKey decryptedSymmetricKey=cryptoUtil.getDecryptedSymmetricKey(cryptoRequestDto);
+		SecretKey decryptedSymmetricKey=cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		CryptomanagerResponseDto cryptoResponseDto= new CryptomanagerResponseDto();
 		cryptoResponseDto.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
 		return cryptoResponseDto;
