@@ -35,14 +35,14 @@ public class ManualAdjudicationController {
 	@Autowired
 	private ManualAdjudicationService manualAdjudicationService;
 
-	@PostMapping(path = "/start", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/assignment", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(code = 200, message = "status successfully updated")
 	public ResponseEntity<ManualVerificationDTO> startVerification(@RequestBody(required = true) UserDto userDto) {
 		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignStatus(userDto);
 		return ResponseEntity.status(HttpStatus.OK).body(manualVerificationDTO);
 	}
 	
-	@PostMapping(path = "/packetStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/verification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(code = 200, message = "status successfully updated")
 	public ResponseEntity<ManualVerificationDTO> updatePacketStatus(@RequestBody(required = true) ManualVerificationDTO manualVerificationDTO) {
 		ManualVerificationDTO updatedManualVerificationDTO = manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
