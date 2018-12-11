@@ -20,7 +20,6 @@ import io.mosip.registration.service.BaseService;
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
 	@Autowired
-	@Lazy
 	private BaseService baseService;
 	
 	/** The fp device. */

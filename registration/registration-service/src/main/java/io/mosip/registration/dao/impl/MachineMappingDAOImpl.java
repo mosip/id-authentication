@@ -334,10 +334,8 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		
 		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID, " isValidDevice DAO Method called");
 		
-		Long regDeviceMaster = deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(deviceType,
-				serialNumber,currentDate);	
-
-		return regDeviceMaster != 0 ? true : false;
+		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(deviceType,
+				serialNumber,currentDate) != 0 ? true : false;
 	}
 	
 	 	

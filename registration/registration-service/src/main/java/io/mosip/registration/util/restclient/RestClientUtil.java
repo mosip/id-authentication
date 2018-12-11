@@ -4,6 +4,14 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +59,16 @@ public class RestClientUtil {
 		ResponseEntity<?> responseEntity = null;
 		Object responseBody = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
+		try {
+			turnOffSslChecking();
+		} catch (KeyManagementException keyManagementException) {
+			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					keyManagementException.getMessage());
+		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					noSuchAlgorithmException.getMessage());
+		}
+
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
@@ -65,5 +83,32 @@ public class RestClientUtil {
 
 		return responseBody;
 	}
+
+	public static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {
+		// Install the all-trusting trust manager
+		final SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	}
+
+	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+				throws java.security.cert.CertificateException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+				throws java.security.cert.CertificateException {
+			// TODO Auto-generated method stub
+
+		}
+	} };
 
 }
