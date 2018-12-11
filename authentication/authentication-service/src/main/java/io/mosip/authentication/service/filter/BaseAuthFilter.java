@@ -139,7 +139,13 @@ public abstract class BaseAuthFilter implements Filter {
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-			validateSignature(requestBody, signature);
+			boolean isSigned = validateSignature(requestBody, signature);
+			if(!isSigned) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+						.getErrorCode(),
+				IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+						.getErrorMessage());
+			}
 			Map<String, Object> decodedRequest = decodedRequest(
 					requestBody);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
@@ -177,26 +183,6 @@ public abstract class BaseAuthFilter implements Filter {
 					"Response sent with Request size : "
 							+ ((responseSize > 0) ? responseSize : 1) + " kb");
 		}
-	}
-
-	private boolean validateSignature(Map<String, Object> requestBody, String signature) {
-		boolean isSigned = false;
-		Optional<String> map = Optional.ofNullable(requestBody.get("key"))
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> String.valueOf(((Map<String, Object>)obj).get("publicKeyCert")));
-		if(map.isPresent()) {
-			byte[] cert = Base64.getDecoder().decode(map.get());
-			try {
-				X509Certificate certNew = (X509Certificate) CertificateFactory.getInstance("X.509")
-						.generateCertificate(new ByteArrayInputStream(cert));
-				JsonWebSignature jws = new JsonWebSignature();
-				jws.setCompactSerialization(signature);
-				jws.setKey(certNew.getPublicKey());
-				isSigned = jws.verifySignature();
-			} catch (CertificateException | JoseException e) {
-			}
-		}
-		return isSigned;		
 	}
 
 	/**
@@ -412,5 +398,15 @@ public abstract class BaseAuthFilter implements Filter {
 	public void destroy() {
 
 	}
+	
+	/**
+	 * Validate signature.
+	 *
+	 * @param requestBody the request body
+	 * @param signature the signature
+	 * @return true, if successful
+	 * @throws IdAuthenticationAppException 
+	 */
+	protected abstract boolean validateSignature(Map<String, Object> requestBody, String signature) throws IdAuthenticationAppException;
 
 }

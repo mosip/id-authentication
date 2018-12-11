@@ -86,4 +86,12 @@ public class KycAuthFilter extends BaseAuthFilter {
 		return responseBody;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
+	 */
+	@Override
+	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
+		return true;
+	}
+
 }
