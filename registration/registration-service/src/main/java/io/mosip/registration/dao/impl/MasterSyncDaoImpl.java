@@ -158,92 +158,110 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public void insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException {
+	public String insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException {
 
-		List<BiometricTypeResponseDto> biometricTypeResponseDtos = masterSyncDto.getBiometrictypes();
-		List<BiometricAttributeResponseDto> biometricAttribute = masterSyncDto.getBiometricattributes();
-		List<LanguageResponseDto> languageType = masterSyncDto.getLanguages();
-		List<BlacklistedWordsDto> blacklistedWords = masterSyncDto.getBlacklistedwords();
-		List<GenderTypeResponseDto> genderType = masterSyncDto.getGenders();
-		List<IdTypeDto> idType = masterSyncDto.getIdtypes();
-		List<TitleResponseDto> titlesList = masterSyncDto.getTitles();
-		List<DocumentCategoryDto> documnetCatogry = masterSyncDto.getDocumentcategories();
-		List<DocumentTypeDto> documentsType = masterSyncDto.getDocumenttypes();
-		List<LocationDto> locationsList = masterSyncDto.getLocations();
-		ReasonCategoryDto reasonCatogryType = masterSyncDto.getReasonCategory();
+		String sucessResponse = "";
 
-		List<Language> languagesList = MAPPER_FACADE.mapAsList(languageType, Language.class);
+		try {
 
-		languageRepository.saveAll(languagesList);
+			List<BiometricTypeResponseDto> biometricTypeResponseDtos = masterSyncDto.getBiometrictypes();
+			List<BiometricAttributeResponseDto> biometricAttribute = masterSyncDto.getBiometricattributes();
+			List<LanguageResponseDto> languageType = masterSyncDto.getLanguages();
+			List<BlacklistedWordsDto> blacklistedWords = masterSyncDto.getBlacklistedwords();
+			List<GenderTypeResponseDto> genderType = masterSyncDto.getGenders();
+			List<IdTypeDto> idType = masterSyncDto.getIdtypes();
+			List<TitleResponseDto> titlesList = masterSyncDto.getTitles();
+			List<DocumentCategoryDto> documnetCatogry = masterSyncDto.getDocumentcategories();
+			List<DocumentTypeDto> documentsType = masterSyncDto.getDocumenttypes();
+			List<LocationDto> locationsList = masterSyncDto.getLocations();
+			ReasonCategoryDto reasonCatogryType = masterSyncDto.getReasonCategory();
 
-		List<BiometricType> biometricTypeList = MAPPER_FACADE.mapAsList(biometricTypeResponseDtos, BiometricType.class);
+			List<Language> languagesList = MAPPER_FACADE.mapAsList(languageType, Language.class);
 
-		biometricTypeRepository.saveAll(biometricTypeList);
+			languageRepository.saveAll(languagesList);
 
-		List<BiometricAttribute> biometricAttributeList = MAPPER_FACADE.mapAsList(biometricAttribute,
-				BiometricAttribute.class);
+			List<BiometricType> biometricTypeList = MAPPER_FACADE.mapAsList(biometricTypeResponseDtos,
+					BiometricType.class);
 
-		biometricAttributeReposiotry.saveAll(biometricAttributeList);
+			biometricTypeRepository.saveAll(biometricTypeList);
 
-		List<BlacklistedWords> blacklistedWordsList = MAPPER_FACADE.mapAsList(blacklistedWords, BlacklistedWords.class);
+			List<BiometricAttribute> biometricAttributeList = MAPPER_FACADE.mapAsList(biometricAttribute,
+					BiometricAttribute.class);
 
-		blackListedWordsRepository.saveAll(blacklistedWordsList);
+			biometricAttributeReposiotry.saveAll(biometricAttributeList);
 
-		List<GenderType> genderList = MAPPER_FACADE.mapAsList(genderType, GenderType.class);
+			List<BlacklistedWords> blacklistedWordsList = MAPPER_FACADE.mapAsList(blacklistedWords,
+					BlacklistedWords.class);
 
-		genderRepository.saveAll(genderList);
+			blackListedWordsRepository.saveAll(blacklistedWordsList);
 
-		List<IdType> idTypeList = MAPPER_FACADE.mapAsList(idType, IdType.class);
+			List<GenderType> genderList = MAPPER_FACADE.mapAsList(genderType, GenderType.class);
 
-		idTypeRepository.saveAll(idTypeList);
+			genderRepository.saveAll(genderList);
 
-		List<DocumentCategory> documnetCatogryList = MAPPER_FACADE.mapAsList(documnetCatogry, DocumentCategory.class);
+			List<IdType> idTypeList = MAPPER_FACADE.mapAsList(idType, IdType.class);
 
-		documentCategoryrepository.saveAll(documnetCatogryList);
+			idTypeRepository.saveAll(idTypeList);
 
-		List<DocumentType> documnetsList = MAPPER_FACADE.mapAsList(documentsType, DocumentType.class);
+			List<DocumentCategory> documnetCatogryList = MAPPER_FACADE.mapAsList(documnetCatogry,
+					DocumentCategory.class);
 
-		documnetTypesRepository.saveAll(documnetsList);
+			documentCategoryrepository.saveAll(documnetCatogryList);
 
-		List<Title> titleLists = MAPPER_FACADE.mapAsList(titlesList, Title.class);
+			List<DocumentType> documnetsList = MAPPER_FACADE.mapAsList(documentsType, DocumentType.class);
 
-		titleRepository.saveAll(titleLists);
+			documnetTypesRepository.saveAll(documnetsList);
 
-		List<Location> locationLists = MAPPER_FACADE.mapAsList(locationsList, Location.class);
-		locationRepository.saveAll(locationLists);
+			List<Title> titleLists = MAPPER_FACADE.mapAsList(titlesList, Title.class);
 
-		ReasonCategory reasonCatogryy = new ReasonCategory();
+			titleRepository.saveAll(titleLists);
 
-		reasonCatogryy.setCode(reasonCatogryType.getCode());
-		reasonCatogryy.setDescription(reasonCatogryType.getDescription());
-		reasonCatogryy.setLangCode(reasonCatogryType.getLangCode());
-		reasonCatogryy.setName(reasonCatogryType.getName());
-		reasonCatogryy.setIsActive(true);
-		reasonCatogryy.setCrBy(SessionContext.getInstance().getUserContext().getName());
-		reasonCatogryy.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			List<Location> locationLists = MAPPER_FACADE.mapAsList(locationsList, Location.class);
+			locationRepository.saveAll(locationLists);
 
-		Set<ReasonListDto> reasonListtoSet = reasonCatogryType.getReasonLists().stream().collect(Collectors.toSet());
+			ReasonCategory reasonCatogryy = new ReasonCategory();
 
-		Set<ReasonList> setReasonList = new HashSet<>();
+			reasonCatogryy.setCode(reasonCatogryType.getCode());
+			reasonCatogryy.setDescription(reasonCatogryType.getDescription());
+			reasonCatogryy.setLangCode(reasonCatogryType.getLangCode());
+			reasonCatogryy.setName(reasonCatogryType.getName());
+			reasonCatogryy.setIsActive(true);
+			reasonCatogryy.setCrBy(SessionContext.getInstance().getUserContext().getName());
+			reasonCatogryy.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		for (ReasonListDto result : reasonListtoSet) {
+			Set<ReasonListDto> reasonListtoSet = reasonCatogryType.getReasonLists().stream()
+					.collect(Collectors.toSet());
 
-			ReasonList reasonList = new ReasonList();
-			reasonList.setName(result.getName());
-			reasonList.setCode(result.getCode());
-			reasonList.setLangCode(result.getLangCode());
-			reasonList.setDescription(result.getDescription());
-			reasonList.setName(result.getName());
-			reasonList.setCrBy(SessionContext.getInstance().getUserContext().getName());
-			reasonList.setCrDtime(new Timestamp(System.currentTimeMillis()));
-			reasonList.setIsActive(true);
-			reasonList.setReasonCategoryCode(reasonCatogryy);
-			setReasonList.add(reasonList);
+			Set<ReasonList> setReasonList = new HashSet<>();
+
+			for (ReasonListDto result : reasonListtoSet) {
+
+				ReasonList reasonList = new ReasonList();
+				reasonList.setName(result.getName());
+				reasonList.setCode(result.getCode());
+				reasonList.setLangCode(result.getLangCode());
+				reasonList.setDescription(result.getDescription());
+				reasonList.setName(result.getName());
+				reasonList.setCrBy(SessionContext.getInstance().getUserContext().getName());
+				reasonList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				reasonList.setIsActive(true);
+				reasonList.setReasonCategoryCode(reasonCatogryy);
+				setReasonList.add(reasonList);
+			}
+
+			reasonCatogryy.setReasons(setReasonList);
+
+			reasonCatogryReposiotry.save(reasonCatogryy);
+
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+
+			sucessResponse = "Exception in inserting data";
+
+			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					regBaseUncheckedException.getMessage());
 		}
 
-		reasonCatogryy.setReasons(setReasonList);
-
-		reasonCatogryReposiotry.save(reasonCatogryy);
+		return sucessResponse;
 
 	}
 

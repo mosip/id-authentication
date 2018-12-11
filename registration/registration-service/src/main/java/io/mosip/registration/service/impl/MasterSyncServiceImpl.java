@@ -99,20 +99,19 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the last sync details from databse ended");
-
-		masterSyncDetails = masterSyncDao.getMasterSyncStatus(masterSyncDtls);
-
-		String registrationCenterId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-				.getRegistrationCenterId();
-
-		Timestamp lastSyncTime = masterSyncDetails.getLastSyncDtimes();
-
-		LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + registrationCenterId,
-				"lastSyncTime" + "===>" + lastSyncTime);
-
-		String masterJson = "{\"languages\":[{\"language\":[{\"languageCode\":\"1\",\"languageName\":\"eng\",\"languageFamily\":\"Engish\",\"nativeName\":\"Engilsh\"},{\"languageCode\":\"2\",\"languageName\":\"arb\",\"languageFamily\":\"Arab\",\"nativeName\":\"Arab\"}]}],\"biometricattributes\":[{\"biometricattribute\":[{\"code\":\"1\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"2\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"3\",\"name\":\"asfesr\",\"description\":\"testing2\",\"biometricTypeCode\":\"2\",\"langCode\":\"eng\"}]}],\"blacklistedwords\":[{\"word\":\"1\",\"description\":\"asdf1\",\"langCode\":\"eng\"},{\"word\":\"2\",\"description\":\"asdf2\",\"langCode\":\"eng\"},{\"word\":\"3\",\"description\":\"asdf3\",\"langCode\":\"eng\"}],\"biometrictypes\":[{\"biometrictype\":[{\"code\":\"1\",\"name\":\"fingerprints\",\"description\":\"fingerprint\",\"langCode\":\"eng\"}]},{\"biometrictype\":[{\"code\":\"2\",\"name\":\"iries\",\"description\":\"iriescapture\",\"langCode\":\"eng\"}]}],\"idtypes\":[{\"code\":\"1\",\"name\":\"PAN\",\"description\":\"pan card\",\"langCode\":\"eng\"},{\"code\":\"1\",\"name\":\"VID\",\"description\":\"voter id\",\"langCode\":\"eng\"}],\"documentcategories\":[{\"code\":\"1\",\"name\":\"POA\",\"description\":\"poaaa\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"POI\",\"description\":\"porrr\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"POR\",\"description\":\"pobbb\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"POB\",\"description\":\"poiii\",\"langCode\":\"eng\"}],\"documenttypes\":[{\"code\":\"1\",\"name\":\"passport\",\"description\":\"passportid\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"passport\",\"description\":\"passportid's\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"voterid\",\"description\":\"votercards\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"passport\",\"description\":\"passports\",\"langCode\":\"eng\"}],\"locations\":[{\"code\":\"1\",\"name\":\"chennai\",\"hierarchyLevel\":\"1\",\"hierarchyName\":\"Tamil Nadu\",\"parentLocCode\":\"1\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"hyderabad\",\"hierarchyLevel\":\"2\",\"hierarchyName\":\"Telengana\",\"parentLocCode\":\"2\",\"langCode\":\"eng\"}],\"titles\":[{\"title\":[{\"titleCode\":\"1\",\"titleName\":\"admin\",\"titleDescription\":\"ahsasa\",\"langCode\":\"eng\"}]},{\"title\":[{\"titleCode\":\"2\",\"titleDescription\":\"asas\",\"titleName\":\"superadmin\",\"langCode\":\"eng\"}]}],\"genders\":[{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"male\",\"langCode\":\"eng\"},{\"genderCode\":\"2\",\"genderName\":\"female\",\"langCode\":\"eng\"}]},{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"female\",\"langCode\":\"eng\"}]}],\"reasonCategory\":{\"code\":\"1\",\"name\":\"rejected\",\"description\":\"rejectedfile\",\"langCode\":\"eng\",\"reasonLists\":[{\"code\":\"1\",\"name\":\"document\",\"description\":\"inavliddoc\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"1\"},{\"code\":\"2\",\"name\":\"document\",\"description\":\"inavlidtype\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"2\"}]}}";
-
 		try {
+
+			masterSyncDetails = masterSyncDao.getMasterSyncStatus(masterSyncDtls);
+
+			String registrationCenterId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+					.getRegistrationCenterId();
+
+			Timestamp lastSyncTime = masterSyncDetails.getLastSyncDtimes();
+
+			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + registrationCenterId,
+					"lastSyncTime" + "===>" + lastSyncTime);
+
+			String masterJson = "{\"languages\":[{\"language\":[{\"languageCode\":\"1\",\"languageName\":\"eng\",\"languageFamily\":\"Engish\",\"nativeName\":\"Engilsh\"},{\"languageCode\":\"2\",\"languageName\":\"arb\",\"languageFamily\":\"Arab\",\"nativeName\":\"Arab\"}]}],\"biometricattributes\":[{\"biometricattribute\":[{\"code\":\"1\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"2\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"3\",\"name\":\"asfesr\",\"description\":\"testing2\",\"biometricTypeCode\":\"2\",\"langCode\":\"eng\"}]}],\"blacklistedwords\":[{\"word\":\"1\",\"description\":\"asdf1\",\"langCode\":\"eng\"},{\"word\":\"2\",\"description\":\"asdf2\",\"langCode\":\"eng\"},{\"word\":\"3\",\"description\":\"asdf3\",\"langCode\":\"eng\"}],\"biometrictypes\":[{\"biometrictype\":[{\"code\":\"1\",\"name\":\"fingerprints\",\"description\":\"fingerprint\",\"langCode\":\"eng\"}]},{\"biometrictype\":[{\"code\":\"2\",\"name\":\"iries\",\"description\":\"iriescapture\",\"langCode\":\"eng\"}]}],\"idtypes\":[{\"code\":\"1\",\"name\":\"PAN\",\"description\":\"pan card\",\"langCode\":\"eng\"},{\"code\":\"1\",\"name\":\"VID\",\"description\":\"voter id\",\"langCode\":\"eng\"}],\"documentcategories\":[{\"code\":\"1\",\"name\":\"POA\",\"description\":\"poaaa\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"POI\",\"description\":\"porrr\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"POR\",\"description\":\"pobbb\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"POB\",\"description\":\"poiii\",\"langCode\":\"eng\"}],\"documenttypes\":[{\"code\":\"1\",\"name\":\"passport\",\"description\":\"passportid\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"passport\",\"description\":\"passportid's\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"voterid\",\"description\":\"votercards\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"passport\",\"description\":\"passports\",\"langCode\":\"eng\"}],\"locations\":[{\"code\":\"1\",\"name\":\"chennai\",\"hierarchyLevel\":\"1\",\"hierarchyName\":\"Tamil Nadu\",\"parentLocCode\":\"1\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"hyderabad\",\"hierarchyLevel\":\"2\",\"hierarchyName\":\"Telengana\",\"parentLocCode\":\"2\",\"langCode\":\"eng\"}],\"titles\":[{\"title\":[{\"titleCode\":\"1\",\"titleName\":\"admin\",\"titleDescription\":\"ahsasa\",\"langCode\":\"eng\"}]},{\"title\":[{\"titleCode\":\"2\",\"titleDescription\":\"asas\",\"titleName\":\"superadmin\",\"langCode\":\"eng\"}]}],\"genders\":[{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"male\",\"langCode\":\"eng\"},{\"genderCode\":\"2\",\"genderName\":\"female\",\"langCode\":\"eng\"}]},{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"female\",\"langCode\":\"eng\"}]}],\"reasonCategory\":{\"code\":\"1\",\"name\":\"rejected\",\"description\":\"rejectedfile\",\"langCode\":\"eng\",\"reasonLists\":[{\"code\":\"1\",\"name\":\"document\",\"description\":\"inavliddoc\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"1\"},{\"code\":\"2\",\"name\":\"document\",\"description\":\"inavlidtype\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"2\"}]}}";
 
 			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-BEGINE");
 
@@ -156,52 +155,51 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * io.mosip.registration.service.PacketUploadService#pushPacket(java.io.File)
 	 */
 
-	/*private Object getMasterSyncJson(String centerId, Timestamp lastSyncTime)
-			throws URISyntaxException, RegBaseCheckedException {
-
-		LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "getting json object from server");
-
-		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add("centerId", centerId);
-		map.add("lastSyncTime", lastSyncTime);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
-		requestHTTPDTO.setHttpEntity(requestEntity);
-		requestHTTPDTO.setClazz(Object.class);
-		requestHTTPDTO.setUri(new URI(urlPath));
-		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
-		Object response = null;
-
-		try {
-
-			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
-
-		} catch (HttpClientErrorException e) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					e.getRawStatusCode() + "Http error while pulling json from server");
-			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
-		} catch (RuntimeException e) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					e.getMessage() + "Runtime error while pulling json from server");
-			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
-					RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
-		} catch (SocketTimeoutException e) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					e.getMessage() + "Error in pulling json from server");
-			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
-		}
-		return response;
-	}
-
-	private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) { // Timeout in milli second
-		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-		requestFactory.setReadTimeout(readTimeout);
-		requestFactory.setConnectTimeout(connectTimeout);
-		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
-		return requestHTTPDTO;
-	}*/
+	/*
+	 * private Object getMasterSyncJson(String centerId, Timestamp lastSyncTime)
+	 * throws URISyntaxException, RegBaseCheckedException {
+	 * 
+	 * LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+	 * "getting json object from server");
+	 * 
+	 * RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+	 * LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+	 * map.add("centerId", centerId); map.add("lastSyncTime", lastSyncTime);
+	 * HttpHeaders headers = new HttpHeaders();
+	 * headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+	 * HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new
+	 * HttpEntity<>(map, headers); requestHTTPDTO.setHttpEntity(requestEntity);
+	 * requestHTTPDTO.setClazz(Object.class); requestHTTPDTO.setUri(new
+	 * URI(urlPath)); requestHTTPDTO.setHttpMethod(HttpMethod.POST); Object response
+	 * = null;
+	 * 
+	 * try {
+	 * 
+	 * response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
+	 * 
+	 * } catch (HttpClientErrorException e) { LOGGER.error(LOG_REG_MASTER_SYNC,
+	 * APPLICATION_NAME, APPLICATION_ID, e.getRawStatusCode() +
+	 * "Http error while pulling json from server"); throw new
+	 * RegBaseCheckedException(Integer.toString(e.getRawStatusCode()),
+	 * e.getStatusText()); } catch (RuntimeException e) {
+	 * LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+	 * e.getMessage() + "Runtime error while pulling json from server"); throw new
+	 * RegBaseUncheckedException(RegistrationExceptionConstants.
+	 * REG_PACKET_UPLOAD_ERROR.getErrorCode(),
+	 * RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage()); }
+	 * catch (SocketTimeoutException e) { LOGGER.error(LOG_REG_MASTER_SYNC,
+	 * APPLICATION_NAME, APPLICATION_ID, e.getMessage() +
+	 * "Error in pulling json from server"); throw new
+	 * RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage()); } return
+	 * response; }
+	 * 
+	 * private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) { // Timeout
+	 * in milli second SimpleClientHttpRequestFactory requestFactory = new
+	 * SimpleClientHttpRequestFactory(); requestFactory.setReadTimeout(readTimeout);
+	 * requestFactory.setConnectTimeout(connectTimeout);
+	 * requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory); return
+	 * requestHTTPDTO; }
+	 */
 
 	private ResponseDTO buildErrorRespone(final String errorCode, final String message) {
 
