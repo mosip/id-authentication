@@ -2,7 +2,9 @@ package io.mosip.preregistration.booking.repository;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -16,6 +18,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	public static final String findByPreIdQry = "SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1";
 
+	
 	/**
 	 * @param preregistrationId
 	 * @param statusCode

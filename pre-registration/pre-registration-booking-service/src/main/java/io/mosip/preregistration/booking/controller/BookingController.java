@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,9 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.RequestDto;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.swagger.annotations.Api;
@@ -56,6 +60,10 @@ public class BookingController {
 
 	}
 
+	/**
+	 * @param regID
+	 * @return ResponseDto<AvailabilityDto>
+	 */
 	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/availability", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")
@@ -103,6 +111,24 @@ public class BookingController {
 		ResponseDto<BookingRegistrationDTO> responseDTO = bookingService.getAppointmentDetails(preRegID);
 		System.err.println("responseDTO: "+responseDTO.getResponse());
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+
+	}
+	
+	/**
+	 * @param bookingDTO
+	 * @return response entity
+	 * @throws ParseException
+	 * @throws java.text.ParseException
+	 */
+	@PutMapping(path = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Cancel an booked appointment")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully"),
+			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
+	public ResponseEntity<ResponseDto<CancelBookingResponseDTO>> cancelBook(
+			@RequestBody RequestDto<CancelBookingDTO> requestDTO) {
+		ResponseDto<CancelBookingResponseDTO> response = bookingService.cancelAppointment(requestDTO);
+		System.out.println("Response"+response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
 

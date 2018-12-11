@@ -20,10 +20,15 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_010, // Booking Table not accessible
 	PRG_BOOK_RCI_011, // status code updation failed
 	PRG_BOOK_RCI_012, // get status code failed
-	PRG_BOOK_RCI_014, //no slots available for that date
-	PRG_BOOK_RCI_015, //No time slots are assigned to that registration center
+	PRG_BOOK_RCI_014, // no slots available for that date
+	PRG_BOOK_RCI_015, // No time slots are assigned to that registration center
 	PRG_BOOK_RCI_013, // Booking data not found
-	PRG_BOOK_RCI_016,//availability table is not accessable
+	PRG_BOOK_RCI_016,//  availability table is not accessable
+	PRG_BOOK_RCI_017, // Appointment time slot is already canceled.
+	PRG_BOOK_RCI_018, // Appointment can not be canceled.
+	PRG_BOOK_RCI_019, // Cancel Appointmenct  failed
+	PRG_BOOK_RCI_020, // Master service not available
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
+	
 }
