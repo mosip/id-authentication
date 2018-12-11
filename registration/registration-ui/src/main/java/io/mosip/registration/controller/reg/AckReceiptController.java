@@ -74,8 +74,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	private WebView webView;
 
-	private WebEngine engine;
-
 	public RegistrationDTO getRegistrationData() {
 		return registrationData;
 	}
@@ -86,17 +84,16 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 		try {
-			
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			stringWriter = templateGenerator.generateTemplate(ackTemplateText, getRegistrationData(), templateManagerBuilder);
-			
+			stringWriter = templateGenerator.generateTemplate(ackTemplateText, getRegistrationData(),
+					templateManagerBuilder);
+
 			// network availability check
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {							
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				// get the mode of communication
-				String notificationServiceName = String.valueOf(applicationContext.getApplicationMap()
-						.get(RegistrationConstants.MODE_OF_COMMUNICATION));
+				String notificationServiceName = String.valueOf(
+						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
 
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					ResponseDTO responseDTO = null;
@@ -156,32 +153,28 @@ public class AckReceiptController extends BaseController implements Initializabl
 			LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage());
 		}
-		engine = webView.getEngine();
+		WebEngine engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
 	}
 
 	@FXML
 	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
 		WritableImage ackImage = webView.snapshot(null, null);
-
 		byte[] acknowledgement;
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
 		try {
 			ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegistrationConstants.IMAGE_FORMAT,
 					byteArrayOutputStream);
 			acknowledgement = byteArrayOutputStream.toByteArray();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
 		}
-
 		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
-
-		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
-				"RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
+		registrationData.getDemographicDTO().getApplicantDocumentDTO()
+				.setAcknowledgeReceiptName("RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
 		ResponseDTO response = packetHandlerService.handle(registrationData);
-
 		generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);
 		// Adding individual address to session context
 		if (response.getSuccessResponseDTO() != null
@@ -191,7 +184,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 			addr.put("PrevAddress", addressDTO);
 			SessionContext.getInstance().setMapObject(addr);
 		}
-
 		registrationController.goToHomePage();
 	}
 
@@ -204,7 +196,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void goToNewRegistrationPage() {
 		packetController.createPacket();
 	}
-	
+
 	@FXML
 	@Override
 	public void goToHomePage() {

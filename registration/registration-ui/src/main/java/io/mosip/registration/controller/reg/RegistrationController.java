@@ -1776,7 +1776,8 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 
-		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POA_DOCUMENT_EMPTY);	}
+		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POA_DOCUMENT_EMPTY);	
+	}
 
 	/**
 	 * This method scans and uploads Proof of Identity documents
@@ -1811,9 +1812,15 @@ public class RegistrationController extends BaseController {
 	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
 		
 		if (documents.getValue() == null) {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream().noneMatch(index -> index.getId().contains(documents.getValue()))){
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
+			
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1850,8 +1857,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 			if (byteArray.length > documentSize) {
-				generateAlert(RegistrationConstants.ALERT_ERROR,
-						"Document size should be less than 1 MB. Please re-scan the document.");
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_SIZE);
 			} else {
 				if (selectedDocument != null) {
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1917,7 +1923,7 @@ public class RegistrationController extends BaseController {
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setDocumentCategory(selectedDocument);
-		documentDetailsDTO.setDocumentType("jpg");
+		documentDetailsDTO.setDocumentType(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
 		documentDetailsDTO.setDocumentName(documentName);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -2034,7 +2040,6 @@ public class RegistrationController extends BaseController {
 					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 				}
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO();
 			}
 
 		});

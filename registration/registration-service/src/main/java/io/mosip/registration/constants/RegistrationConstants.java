@@ -163,6 +163,7 @@ public class RegistrationConstants {
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
+	public static final String SCAN_DOC_SIZE = bundle.getString("SCAN_DOC_SIZE");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 
 	// OPT TO REGISTER
@@ -639,11 +640,11 @@ public class RegistrationConstants {
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
-	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/LEFT HAND";
+	public static final String LEFTHAND_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/LEFT HAND";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/leftSlap.jpg";
-	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/RIGHT HAND";
+	public static final String RIGHTHAND_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/RIGHT HAND";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/FINGER PRINTS/rightSlap.jpg";
-	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "src/main/resources/FINGER PRINTS/THUMB";
+	public static final String THUMB_SEGMENTED_FINGERPRINT_PATH = "/FINGER PRINTS/THUMB";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/FINGER PRINTS/thumbs.jpg";
 	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 
@@ -791,4 +792,12 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
+	//POLICY SYNC
+			public static final String POLICY_SYNC_SUCCESS_CODE="REG-MDS‌-001 ";
+		    public static final String POLICY_SYNC_SUCCESS_MESSAGE="Sync Successful";
+		    public static final String POLICY_SYNC_ERROR_CODE="REG-MDS‌-003 ";
+		    public static final String POLICY_SYNC_ERROR_MESSAGE="Sync failure";
+		    public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE="REG-MDS‌-002";
+		    public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE="You must be connected to the internet to sync data";
+		    public static final String POLICY_SYNC_THRESHOLD_VALUE="name";
 }

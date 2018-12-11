@@ -149,27 +149,23 @@ public class BaseService {
 		return userId;
 	}
 
-	public boolean isValidDevice(String deviceType, String deviceProvider) {
+	public boolean isValidDevice(String deviceType, String deviceProvider, String serialNo) {
 
 		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
 
 		Boolean result = null;
 		if (deviceType.equals("Fingerprint") && deviceProvider.equals(fingerprintProviderName)) {
-			MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
-					.getFingerprintProviderFactory(deviceProvider);
-			
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try {
 				String currentdate = dateFormat.format(System.currentTimeMillis());
 				Date date = dateFormat.parse(currentdate);
-				result = machineMappingDAO.isValidDevice("Fingerprint", fingerPrintConnector.getSerialNumber(),
-						new Timestamp(date.getTime()));
+				result = machineMappingDAO.isValidDevice("Fingerprint", serialNo, new Timestamp(date.getTime()));
 			} catch (ParseException parseException) {
-				LOGGER.error("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " Exception in parsing date ");
+				LOGGER.error("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						" Exception in parsing date ");
 			}
-		} else if (deviceType.equals("GPS")) {
-			//TODO
 		}
+		
 		return result;
 	}
 
