@@ -146,14 +146,23 @@ public class OTPFacadeImpl implements OTPFacade {
 			status = "Y";
 			comment = "OTP_GENERATED";
 
-			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
-			otpResponseDTO.setResTime(responseTime);
-			otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
-			otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
+			
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
+			
+			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
+			otpResponseDTO.setResTime(responseTime);
+
+			if(email != null) {
+				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			}
+			
+			if(mobileNumber != null) {
+				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
+			}
+			
 			// -- send otp notification --
 			notificationService.sendOtpNotification(otpRequestDto, otp, idResDTO, email, mobileNumber);
 			saveAutnTxn(otpRequestDto, status, comment, refId);
