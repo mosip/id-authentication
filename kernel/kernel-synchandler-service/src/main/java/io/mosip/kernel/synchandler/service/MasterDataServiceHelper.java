@@ -92,6 +92,12 @@ import io.mosip.kernel.synchandler.repository.TitleRepository;
 import io.mosip.kernel.synchandler.repository.ValidDocumentRepository;
 import io.mosip.kernel.synchandler.utils.MapperUtils;
 
+/**
+ * Sync handler masterData service helper
+ * 
+ * @author Abhishek Kumar
+ * @since 07-12-2018
+ */
 @Component
 public class MasterDataServiceHelper {
 	@Autowired
@@ -149,15 +155,24 @@ public class MasterDataServiceHelper {
 	@Autowired
 	private ReasonListRepository reasonListRepository;
 
+	/**
+	 * Method to fetch machine details by machine id
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated time-stamp
+	 * @return list of {@link MachineDto}
+	 */
 	@Async
-	public CompletableFuture<List<MachineDto>> getMachines(String id, LocalDateTime lastUpdated) {
+	public CompletableFuture<List<MachineDto>> getMachines(String machineId, LocalDateTime lastUpdated) {
 		List<Machine> machineDetailList = new ArrayList<>();
 		List<MachineDto> machineDetailDtoList = null;
 		try {
 			if (lastUpdated != null)
-				machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(id, lastUpdated);
+				machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(machineId, lastUpdated);
 			else
-				machineDetailList = machineRepository.findMachineById(id);
+				machineDetailList = machineRepository.findMachineById(machineId);
 
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
@@ -170,6 +185,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(machineDetailDtoList);
 	}
 
+	/**
+	 * Method to fetch machine type
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastupdated timestamp
+	 * @return list of {@link MachineType}
+	 */
 	@Async
 	public CompletableFuture<List<MachineTypeDto>> getMachineType(String machineId, LocalDateTime lastUpdated) {
 		List<MachineTypeDto> machineTypeList = null;
@@ -192,6 +216,15 @@ public class MasterDataServiceHelper {
 
 	}
 
+	/**
+	 * Method to fetch machine specification
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastupdated timestamp
+	 * @return list of {@link MachineSpecificationDto}
+	 */
 	@Async
 	public CompletableFuture<List<MachineSpecificationDto>> getMachineSpecification(String machineId,
 			LocalDateTime lastUpdated) {
@@ -216,6 +249,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(machineSpecificationDto);
 	}
 
+	/**
+	 * Method to fetch registration center detail
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link RegistrationCenterDto}
+	 */
 	@Async
 	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
 			LocalDateTime lastUpdated) {
@@ -237,6 +279,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(registrationCenterList);
 	}
 
+	/**
+	 * Method to fetch registration center type
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link RegistrationCenterTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<RegistrationCenterTypeDto>> getRegistrationCenterType(String machineId,
 			LocalDateTime lastUpdated) {
@@ -260,6 +311,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(registrationCenterTypes);
 	}
 
+	/**
+	 * Method to fetch applications
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link ApplicationDto}
+	 */
 	@Async
 	public CompletableFuture<List<ApplicationDto>> getApplications(LocalDateTime lastUpdated) {
 		List<ApplicationDto> applications = null;
@@ -279,6 +337,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(applications);
 	}
 
+	/**
+	 * Method to fetch templates
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link TemplateDto}
+	 */
 	@Async
 	public CompletableFuture<List<TemplateDto>> getTemplates(LocalDateTime lastUpdated) {
 		List<TemplateDto> templates = null;
@@ -299,6 +364,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(templates);
 	}
 
+	/**
+	 * Method to fetch template format types
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link TemplateFileFormatDto}
+	 */
 	@Async
 	public CompletableFuture<List<TemplateFileFormatDto>> getTemplateFileFormats(LocalDateTime lastUpdated) {
 		List<TemplateFileFormatDto> templateFormats = null;
@@ -317,6 +389,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(templateFormats);
 	}
 
+	/**
+	 * Method to fetch reason-category
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link PostReasonCategoryDto}
+	 */
 	@Async
 	public CompletableFuture<List<PostReasonCategoryDto>> getReasonCategory(LocalDateTime lastUpdated) {
 		List<PostReasonCategoryDto> reasonCategories = null;
@@ -337,6 +416,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(reasonCategories);
 	}
 
+	/**
+	 * Method to fetch Reason List
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link ReasonListDto}
+	 */
 	@Async
 	public CompletableFuture<List<ReasonListDto>> getReasonList(LocalDateTime lastUpdated) {
 		List<ReasonListDto> reasonList = null;
@@ -357,6 +443,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(reasonList);
 	}
 
+	/**
+	 * Method to fetch Holidays
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @param machineId
+	 *            machine id
+	 * @return list of {@link HolidayDto}
+	 */
 	@Async
 	public CompletableFuture<List<HolidayDto>> getHolidays(LocalDateTime lastUpdated, String machineId) {
 		List<HolidayDto> holidayList = null;
@@ -378,6 +473,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(holidayList);
 	}
 
+	/**
+	 * Method to fetch blacklisted words
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link BlacklistedWordsDto}
+	 */
 	@Async
 	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated) {
 		List<BlacklistedWordsDto> blacklistedWords = null;
@@ -400,6 +502,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(blacklistedWords);
 	}
 
+	/**
+	 * Method to fetch biometric types
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link BiometricTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<BiometricTypeDto>> getBiometricTypes(LocalDateTime lastUpdated) {
 		List<BiometricTypeDto> biometricTypeDtoList = null;
@@ -419,6 +528,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(biometricTypeDtoList);
 	}
 
+	/**
+	 * Method to fetch biometric attributes
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link BiometricAttributeDto}
+	 */
 	@Async
 	public CompletableFuture<List<BiometricAttributeDto>> getBiometricAttributes(LocalDateTime lastUpdated) {
 		List<BiometricAttributeDto> biometricAttrList = null;
@@ -439,6 +555,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(biometricAttrList);
 	}
 
+	/**
+	 * Method to fetch titles
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link TitleDto}
+	 */
 	@Async
 	public CompletableFuture<List<TitleDto>> getTitles(LocalDateTime lastUpdated) {
 		List<TitleDto> titleList = null;
@@ -459,6 +582,13 @@ public class MasterDataServiceHelper {
 
 	}
 
+	/**
+	 * Method to fetch languages
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link LanguageDto}
+	 */
 	@Async
 	public CompletableFuture<List<LanguageDto>> getLanguages(LocalDateTime lastUpdated) {
 		List<LanguageDto> languageList = null;
@@ -478,6 +608,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(languageList);
 	}
 
+	/**
+	 * Method to fetch genders
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated
+	 * @return list of {@link GenderDto}
+	 */
 	@Async
 	public CompletableFuture<List<GenderDto>> getGenders(LocalDateTime lastUpdated) {
 		List<GenderDto> genderDto = null;
@@ -498,6 +635,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(genderDto);
 	}
 
+	/**
+	 * Method to fetch devices
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link DeviceDto}
+	 */
 	@Async
 	public CompletableFuture<List<DeviceDto>> getDevices(String machineId, LocalDateTime lastUpdated) {
 		List<Device> devices = null;
@@ -517,6 +663,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(deviceList);
 	}
 
+	/**
+	 * Method to fetch document category
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link DocumentCategoryDto}
+	 */
 	@Async
 	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated) {
 		List<DocumentCategoryDto> documentCategoryList = null;
@@ -537,6 +690,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(documentCategoryList);
 	}
 
+	/**
+	 * Method to fetch document type
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link DocumentTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<DocumentTypeDto>> getDocumentTypes(LocalDateTime lastUpdated) {
 		List<DocumentTypeDto> documentTypeList = null;
@@ -557,6 +717,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(documentTypeList);
 	}
 
+	/**
+	 * Method to fetch id types
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link IdTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<IdTypeDto>> getIdTypes(LocalDateTime lastUpdated) {
 		List<IdTypeDto> idTypeList = null;
@@ -575,6 +742,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(idTypeList);
 	}
 
+	/**
+	 * Method to fetch device specification
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link DeviceSpecificationDto}}
+	 */
 	@Async
 	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String machineId,
 			LocalDateTime lastUpdated) {
@@ -596,6 +772,13 @@ public class MasterDataServiceHelper {
 
 	}
 
+	/**
+	 * Method to fetch locations
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link LocationDto}
+	 */
 	@Async
 	public CompletableFuture<List<LocationDto>> getLocationHierarchy(LocalDateTime lastUpdated) {
 		List<LocationDto> responseList = null;
@@ -615,6 +798,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(responseList);
 	}
 
+	/**
+	 * Method to fetch template types
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link TemplateTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<TemplateTypeDto>> getTemplateTypes(LocalDateTime lastUpdated) {
 		List<TemplateTypeDto> templateTypeList = null;
@@ -635,6 +825,15 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(templateTypeList);
 	}
 
+	/**
+	 * Method to fetch device type
+	 * 
+	 * @param machineId
+	 *            machine id
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link DeviceTypeDto}
+	 */
 	@Async
 	public CompletableFuture<List<DeviceTypeDto>> getDeviceType(String machineId, LocalDateTime lastUpdated) {
 		List<DeviceTypeDto> deviceTypeList = null;
@@ -655,6 +854,13 @@ public class MasterDataServiceHelper {
 		return CompletableFuture.completedFuture(deviceTypeList);
 	}
 
+	/**
+	 * Method to fetch document mapping
+	 * 
+	 * @param lastUpdated
+	 *            lastUpdated timestamp
+	 * @return list of {@link ValidDocumentDto}
+	 */
 	@Async
 	public CompletableFuture<List<ValidDocumentDto>> getValidDocuments(LocalDateTime lastUpdated) {
 		List<ValidDocumentDto> validDocumentList = null;

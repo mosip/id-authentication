@@ -27,18 +27,16 @@ public class SyncHandlerBootApplication {
 		SpringApplication.run(SyncHandlerBootApplication.class, args);
 	}
 
-	/*
+	
 	@Bean
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(5);
-		executor.setMaxPoolSize(7);
-		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("MasterData-Fetcher-");
+		executor.setCorePoolSize(15);
+		executor.setMaxPoolSize(30);
+		executor.setThreadNamePrefix("SYNCHANDLER-Async-Thread-");
 		executor.initialize();
 		return executor;
 	}
-	*/
 	
 
 }

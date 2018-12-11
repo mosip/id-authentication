@@ -47,13 +47,27 @@ public class SyncHandlerController {
 	 * This API method would fetch all synced registration center config details
 	 * from server
 	 * 
-	 * @return JSONObject
+	 * @param regId
+	 *            registration center id
+	 * @return JSONObject configuration response
 	 */
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
 		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
 	}
 
+	/**
+	 * api to fetch masterdata
+	 * 
+	 * @param machineId
+	 *            machine id - mandatory param
+	 * @param lastUpdated
+	 *            last updated timestamp -optional if last updated timestamp is null
+	 *            then fetch all the masterdata
+	 * @return {@link MasterDataResponseDto}
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	@GetMapping("/syncmasterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)

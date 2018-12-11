@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.synchandler.constant.MasterDataErrorCode;
 import io.mosip.kernel.synchandler.dto.ApplicationDto;
 import io.mosip.kernel.synchandler.dto.BiometricAttributeDto;
 import io.mosip.kernel.synchandler.dto.BiometricTypeDto;
@@ -36,7 +35,6 @@ import io.mosip.kernel.synchandler.dto.TemplateTypeDto;
 import io.mosip.kernel.synchandler.dto.TitleDto;
 import io.mosip.kernel.synchandler.dto.ValidDocumentDto;
 import io.mosip.kernel.synchandler.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.synchandler.exception.MasterDataServiceException;
 import io.mosip.kernel.synchandler.service.MasterDataService;
 import io.mosip.kernel.synchandler.service.MasterDataServiceHelper;
 

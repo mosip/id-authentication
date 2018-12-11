@@ -8,7 +8,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
@@ -37,7 +36,7 @@ import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class MasterDataServiceTest {
+public class SyncDataServiceTest {
 	@MockBean
 	private MasterDataServiceHelper masterDataServiceHelper;
 
@@ -64,16 +63,7 @@ public class MasterDataServiceTest {
 		masterDataSyncSetup();
 		configDetialsSyncSetup();
 	}
-
-	private void mockForSuccess() {
-		when(masterDataServiceHelper.getApplications(Mockito.any())).thenReturn(CompletableFuture.completedFuture(applications));
-		when(masterDataServiceHelper.getHolidays(Mockito.any(), Mockito.anyString())).thenReturn(CompletableFuture.completedFuture(holidays));
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any())).thenReturn(CompletableFuture.completedFuture(machines));
-		when(masterDataServiceHelper.getMachineSpecification(Mockito.anyString(), Mockito.any()))
-				.thenReturn(CompletableFuture.completedFuture(machineSpecifications));
-		when(masterDataServiceHelper.getMachineType(Mockito.anyString(), Mockito.any())).thenReturn(CompletableFuture.completedFuture(machineTypes));
-	}
-
+	
 	public void masterDataSyncSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		applications = new ArrayList<>();
@@ -113,15 +103,6 @@ public class MasterDataServiceTest {
 
 	}
 
-	/*
-	@Test
-	public void syncDataSuccess() throws InterruptedException, ExecutionException {
-		mockForSuccess();
-		MasterDataResponseDto result = masterDataService.syncData("1001", null);
-		assertEquals("1001", result.getMachineDetails().get(0).getId());
-
-	}
-*/
 	@Test(expected = MasterDataServiceException.class)
 	public void syncDataFailure() throws InterruptedException, ExecutionException {
 		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any()))
