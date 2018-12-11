@@ -80,7 +80,7 @@ public class ManualAdjudicationControllerTest {
 	}
 	
 	@Test
-	public void startVerificationSuccessTest() {
+	public void assignmentSuccessTest() {
 		Mockito.when(manualAdjudicationService.assignStatus(userDto)).thenReturn(manualVerificationDTO);
 		String userDto = null;
 		try {
@@ -89,7 +89,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/start").content(userDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/assignment").content(userDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/packetStatus").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/assignment").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -220,7 +220,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/start").content(userDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/assignment").content(userDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
 		} catch (Exception e) {
@@ -241,7 +241,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/packetStatus").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/verification").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isForbidden());
 		} catch (Exception e) {

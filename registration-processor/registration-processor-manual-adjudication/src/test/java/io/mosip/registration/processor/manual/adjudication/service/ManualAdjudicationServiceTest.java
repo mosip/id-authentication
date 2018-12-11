@@ -184,7 +184,7 @@ public class ManualAdjudicationServiceTest {
 	public void updatePacketStatusNoRecordAssignedExceptionCheck() {
 		manualVerificationDTO.setStatusCode("REJECTED");
 
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(null);
+		Mockito.when(manualAdjudicationDao.getSingleAssignedRecord(any(), any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 		
 
@@ -198,7 +198,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudicationDao.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -213,7 +213,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudicationDao.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -226,7 +226,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode("ASSIGNED");
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(manualAdjudicationDao.getByRegId(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudicationDao.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualAdjudicationDao.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
