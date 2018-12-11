@@ -26,7 +26,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @param langCode
 	 *            languageCode provided by user
 	 * 
-	 * @return List<Device>
+	 * @return List
 	 * 			Device Details fetched from database
 	 */
 
@@ -42,7 +42,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 *            languageCode provided by user
 	 * @param deviceTypeCode
 	 *            device Type Code provided by user
-	 * @return List<Object[]>
+	 * @return List
 	 * 		sDevice Details fetched from database
 	 * 
 	 */
