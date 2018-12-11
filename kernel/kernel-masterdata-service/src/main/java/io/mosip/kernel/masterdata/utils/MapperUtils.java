@@ -68,6 +68,10 @@ public class MapperUtils {
 	 * name fields value will be set but not the embedded IDs and super class
 	 * values.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -97,6 +101,10 @@ public class MapperUtils {
 	 * Entity type field is their then only matched name fields value will be set
 	 * but not the embedded IDs and super class values.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destinationClass
@@ -128,6 +136,11 @@ public class MapperUtils {
 	 * <code>destinationClass</code> and map all the values from source to
 	 * destination if field name and type is same.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * 
+	 * @param <D>
+	 *            is a type parameter
 	 * @param sourceList
 	 *            which value is going to be mapped
 	 * @param destinationClass
@@ -152,6 +165,11 @@ public class MapperUtils {
 	 * and same type for the fields. It will not map any field which is static or
 	 * final.It will simply ignore those values.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * 
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            is any object which should not be null and have data which is
 	 *            going to be copied
@@ -173,7 +191,6 @@ public class MapperUtils {
 		mapFieldValues(source, destination, sourceFields, destinationFields);
 
 	}
-
 
 	/*
 	 * #############Private method used for mapping################################

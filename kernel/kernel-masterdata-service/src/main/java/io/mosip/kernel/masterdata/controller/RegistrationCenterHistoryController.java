@@ -32,7 +32,7 @@ public class RegistrationCenterHistoryController {
 	 * 
 	 * @param registrationCenterId
 	 *            The id of registration center
-	 * @param langcode
+	 * @param langCode
 	 *            The language code
 	 * @param effectiveDate
 	 *            The effective date

@@ -43,31 +43,16 @@ public class ApplicationController {
 		return applicationService.getAllApplication();
 	}
 	
-	/**
-	 * API to fetch all Application types details based on language code
-	 * 
-	 * @return All Application details of specific language
-	 */
 	@GetMapping("/{langcode}")
 	public ApplicationResponseDto getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
 		return applicationService.getAllApplicationByLanguageCode(langCode);
 	}
 	
-	/**
-	 * API to fetch a application details using id and language code
-	 * 
-	 * @return An Application
-	 */
 	@GetMapping("/{code}/{langcode}")
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
 		return applicationService.getApplicationByCodeAndLanguageCode(code, langCode);
 	}
 	
-	/**
-	 * API to add application details
-	 * 
-	 * @return PostResponseDto
-	 */
 	@PostMapping
 	public CodeAndLanguageCodeID createApplication(@Valid @RequestBody RequestDto<ApplicationData> application) {
 		return applicationService.createApplication(application);

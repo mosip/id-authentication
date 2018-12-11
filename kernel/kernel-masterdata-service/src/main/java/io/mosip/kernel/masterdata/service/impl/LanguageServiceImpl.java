@@ -24,7 +24,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  *
  * @author Bal Vikash Sharma
- * @Version 1.0.0
  */
 @Service
 public class LanguageServiceImpl implements LanguageService {
