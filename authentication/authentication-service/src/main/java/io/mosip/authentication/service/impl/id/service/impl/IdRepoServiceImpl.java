@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.idrepo.ErrorDTO;
-import io.mosip.authentication.core.dto.idrepo.IdResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -117,21 +114,4 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 	}
 
-	
-	public static void main(String[] args) {
-		ErrorDTO error = new ErrorDTO("errCode", "errMessage");
-		List<ErrorDTO> list = new ArrayList<ErrorDTO>();
-		list.add(error);
-		
-		IdResponseDTO res = new IdResponseDTO();
-		res.setId("id");
-		res.setErr(list);
-		res.setRegistrationId("registrationId");
-		res.setStatus("status");
-		res.setTimestamp("timestamp");
-		res.setVer("ver");
-		System.out.println(res);
-		System.out.println(res.toString());
-		System.out.println(String.valueOf(res));
-	}
 }
