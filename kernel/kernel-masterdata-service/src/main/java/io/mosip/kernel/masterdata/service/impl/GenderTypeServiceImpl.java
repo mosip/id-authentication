@@ -103,7 +103,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
+	public CodeAndLanguageCodeID saveGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
 		Gender entity = MetaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
 		Gender gender;
 		try {
