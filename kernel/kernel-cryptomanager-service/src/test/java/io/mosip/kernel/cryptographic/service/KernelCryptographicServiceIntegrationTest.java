@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.KernelCryptomanagerBootApplication;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
@@ -63,16 +62,13 @@ public class KernelCryptographicServiceIntegrationTest {
 	@MockBean 
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
-	private  CryptomanagerRequestDto cryptomanagerRequestDto; 
 	private  KeyPair keyPair;
-	private  SecretKey secretKey;
+	
 	private MockRestServiceServer server;
 	
 	@Before
 	public void setUp() {
-		cryptomanagerRequestDto= new CryptomanagerRequestDto("applicationId", "referenceId", LocalDateTime.now(),CryptoUtil.encodeBase64("urvil".getBytes()));
 	keyPair=generator.getAsymmetricKey();
-	secretKey=generator.getSymmetricKey();
 	server = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 
