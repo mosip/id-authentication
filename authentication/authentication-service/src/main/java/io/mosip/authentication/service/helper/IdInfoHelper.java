@@ -81,25 +81,35 @@ public class IdInfoHelper {
 				.flatMap(identityDTO -> getInfo(matchType.getIdentityInfoFunction().apply(identityDTO), language));
 	}
 
-	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
+	private Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String languageForMatchType) {
 		if (identityInfos != null && !identityInfos.isEmpty()) {
 			return identityInfos.parallelStream()
-					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
+					.filter((IdentityInfoDTO id) -> {
+						return checkLanguageType(languageForMatchType, id.getLanguage());
+					})
 					.<Object>map(IdentityInfoDTO::getValue).findAny();
 		}
 		return Optional.empty();
 	}
 
-	private static Optional<String> getIdentityValue(String name, String languageCode,
+	private Optional<String> getIdentityValue(String name, String languageForMatchType,
 			Map<String, List<IdentityInfoDTO>> demoInfo) {
 		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
-			return identityInfoList.stream().filter(
-					idinfo -> idinfo.getLanguage() != null && idinfo.getLanguage().equalsIgnoreCase(languageCode))
+			return identityInfoList.stream()
+					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
 					.map(idInfo -> idInfo.getValue()).findAny();
 		}
 
 		return Optional.empty();
+	}
+
+	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
+		if(languageFromReq == null || languageFromReq.isEmpty()) {
+			return getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
+		} else {
+			return languageForMatchType.equalsIgnoreCase(languageFromReq);
+		}
 	}
 
 	public List<String> getIdMappingValue(IdMapping idMapping) {
@@ -117,7 +127,7 @@ public class IdInfoHelper {
 		return fullMapping;
 	}
 
-	private List<String> getDemoValue(List<String> propertyNames, String languageCode,
+	private List<String> getIdentityValue(List<String> propertyNames, String languageCode,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
 		return propertyNames.stream().map(propName -> getIdentityValue(propName, languageCode, demoEntity))
 				.filter(val -> val.isPresent()).map(Optional::get).collect(Collectors.toList());
@@ -126,8 +136,8 @@ public class IdInfoHelper {
 	public String getEntityInfo(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
-		List<String> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);
-		String[] demoValuesStr = demoValues.stream().toArray(size -> new String[size]);
+		List<String> identityValues = getIdentityValue(propertyNames, languageCode, demoEntity);
+		String[] demoValuesStr = identityValues.stream().toArray(size -> new String[size]);
 		String demoValue = concatValues(demoValuesStr);
 		String entityInfo = matchType.getEntityInfoMapper().apply(demoValue);
 		return entityInfo;
@@ -200,17 +210,19 @@ public class IdInfoHelper {
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
 			MatchType[] matchTypes) {
 		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-				.map((IdentityDTO identity) -> Stream.of(matchTypes).map((MatchType matchType) -> {
-					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
-					Optional<Object> infoOpt = getIdentityInfo(matchType, identity);
-					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
-						AuthType demoAuthType = authTypeOpt.get();
-						if (demoAuthType.isAuthTypeEnabled(authRequestDTO)) {
-							return contstructMatchInput(authRequestDTO, matchType, demoAuthType);
+				.map((IdentityDTO identity) -> {
+					return Stream.of(matchTypes).map((MatchType matchType) -> {
+						Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
+						Optional<Object> infoOpt = getIdentityInfo(matchType, identity);
+						if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
+							AuthType demoAuthType = authTypeOpt.get();
+							if (demoAuthType.isAuthTypeEnabled(authRequestDTO)) {
+								return contstructMatchInput(authRequestDTO, matchType, demoAuthType);
+							}
 						}
-					}
-					return null;
-				}).filter(Objects::nonNull)).orElseGet(Stream::empty).collect(Collectors.toList());
+						return null;
+					}).filter(Objects::nonNull);
+				}).orElseGet(Stream::empty).collect(Collectors.toList());
 
 	}
 
