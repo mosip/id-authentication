@@ -63,7 +63,7 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   progress = 0;
   dataUploadComplete = true;
-
+  uppermostLocationHierarchy;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -85,6 +85,14 @@ export class DemographicComponent implements OnInit {
       this.initForm();
     });
     this.isDisabled[0] = true;
+
+    // this.uppermostLocationHierarchy = this.dataStorageService
+    //   .getLocationMetadataHirearchy('country')
+    //   .subscribe(response => {
+    //     const countryHirearchy = response['response'];
+    //     const uppermostLocationHierarchy = countryHirearchy.filter(element => element.name === 'INDIA');
+    //     this.uppermostLocationHierarchy = uppermostLocationHierarchy;
+    //   });
   }
 
   initForm() {
@@ -177,6 +185,9 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.uppermostLocationHierarchy[0].code);
+    // this.dataStorageService.getLocationList('BLR', 'ENG');
+
     let preId = '';
     const identity = this.createIdentityJSON();
     this.dataUploadComplete = false;
@@ -220,7 +231,7 @@ export class DemographicComponent implements OnInit {
           this.checked = true;
           this.dataUploadComplete = true;
           if (this.step === this.numberOfApplicants) {
-            this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+            // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
           }
           return resolve(true);
         }

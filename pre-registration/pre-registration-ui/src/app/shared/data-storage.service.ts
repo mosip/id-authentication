@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
-
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, filter } from 'rxjs/operators';
 import { Applicant } from '../registration/dashboard/dashboard.modal';
 import { BookingModelRequest } from '../registration/center-selection/booking-request.model';
+import { element } from '@angular/core/src/render3/instructions';
 
 @Injectable({
   providedIn: 'root'
@@ -71,12 +72,23 @@ export class DataStorageService {
   }
 
   getNearbyRegistrationCenters(coords: any) {
-    return this.httpClient.get(this.MASTER_DATA_URL + 'getcoordinatespecificregistrationcenters/' +
-    this.LANGUAGE_CODE + '/' + coords.longitude + '/' + coords.latitude + '/' + this.DISTANCE);
+    return this.httpClient.get(
+      this.MASTER_DATA_URL +
+        'getcoordinatespecificregistrationcenters/' +
+        this.LANGUAGE_CODE +
+        '/' +
+        coords.longitude +
+        '/' +
+        coords.latitude +
+        '/' +
+        this.DISTANCE
+    );
   }
 
   getRegistrationCentersByName(locType: string, text: string) {
-    return this.httpClient.get(this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text);
+    return this.httpClient.get(
+      this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text
+    );
   }
 
   getAvailabilityData(registrationCenterId) {
@@ -107,5 +119,25 @@ export class DataStorageService {
     // }
     console.log('request inside service', request);
     return this.httpClient.post(this.BOOKING_URL, request);
+  }
+
+  getLocationMetadataHirearchy(value: string) {
+    const URL = 'http://a2ml29862:8080/v0.1/pre-registration/locations/location';
+    return this.httpClient.get(URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('hierarchyName', value)
+    });
+  }
+
+  getLocationList(locationCode: string, langCode: string) {
+    const URL = 'https://integ.mosip.io/masterdata/v1.0/locations/';
+    return this.httpClient
+      .get(URL, {
+        observe: 'body',
+        responseType: 'json',
+        params: new HttpParams().append('locationCode', locationCode).append('langCode', langCode)
+      })
+      .subscribe(res => console.log(res));
   }
 }
