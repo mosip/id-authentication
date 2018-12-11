@@ -1,4 +1,4 @@
-package io.mosip.preregistration.batchjob;
+package io.mosip.preregistration.batchjobservices;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,10 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-public class PreRegistrationBatchJob 
-{
-    public static void main( String[] args )
-    {
-        SpringApplication.run(PreRegistrationBatchJob.class, args);
-    }
+public class PreRegistrationBatchService {
+	public static void main(String[] args) {
+		SpringApplication.run(PreRegistrationBatchService.class, args);
+	}
 }
