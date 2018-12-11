@@ -292,12 +292,12 @@ public class BookingServiceTest {
 		service.isMandatory(null);
 		
 	}
-	@Test(expected=BookingPreIdNotFoundException.class)
-	 public void mandatoryParameterCheckTest() {
-		bookingRequestDTO.setPre_registration_id(null);
-		service.mandatoryParameterCheck(bookingRequestDTO);
-		
-	 }
+//	@Test(expected=BookingPreIdNotFoundException.class)
+//	 public void mandatoryParameterCheckTest() {
+//		bookingRequestDTO.setPre_registration_id(null);
+//		service.mandatoryParameterCheck(bookingRequestDTO);
+//		
+//	 }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
