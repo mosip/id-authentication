@@ -36,12 +36,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
+import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
@@ -276,7 +279,7 @@ public class MasterdataIntegrationTest {
 	private Language language;
 
 	private Gender genderType;
-	
+
 	private GenderTypeDto genderDto;
 
 	private ValidDocument validDocument;
@@ -490,7 +493,7 @@ public class MasterdataIntegrationTest {
 	List<Object[]> objectList;
 
 	private void deviceSetup() {
-		
+
 		LocalDateTime specificDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
 		Timestamp validDateTime = Timestamp.valueOf(specificDate);
 		deviceDto = new DeviceDto();
@@ -502,8 +505,7 @@ public class MasterdataIntegrationTest {
 		deviceDto.setMacAddress("asd");
 		deviceDto.setName("asd");
 		deviceDto.setSerialNum("asd");
-		
-		
+
 		deviceList = new ArrayList<>();
 		device = new Device();
 		device.setId("1000");
@@ -692,13 +694,13 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void genderTypeSetup() {
-		
+
 		genderDto = new GenderTypeDto();
 		genderDto.setCode("1");
 		genderDto.setGenderName("abc");
 		genderDto.setIsActive(true);
 		genderDto.setLangCode("ENG");
-		
+
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
 		genderType = new Gender();
@@ -1090,8 +1092,6 @@ public class MasterdataIntegrationTest {
 				IdTypeResponseDto.class);
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
 	}
-
-	
 
 	// -----------------------------PacketRejectionTest----------------------------------
 	@Test
@@ -1544,8 +1544,6 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	
-
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -1951,8 +1949,9 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isCreated());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -1965,8 +1964,9 @@ public class MasterdataIntegrationTest {
 
 		Mockito.when(deviceRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------
@@ -2000,61 +2000,119 @@ public class MasterdataIntegrationTest {
 				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
 				.andExpect(status().isInternalServerError());
 	}
-	
-	// -----------------------------------registration-center-type----------------------------------------
-		@Test
-		public void addRegistrationCenterTypeListTest() throws Exception {
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-			when(registrationCenterTypeRepository.create(Mockito.any())).thenReturn(regCenterType);
-			mockMvc.perform(post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isCreated());
-		}
-		
-		@Test
-		public void addBlackListedWordTest() throws Exception {
-			BlacklistedWords blacklistedWords = new BlacklistedWords();
-			blacklistedWords.setLangCode("TST");
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
-			Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
-			mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isCreated());
-		}
 
-		@Test
-		public void addBlackListedWordExceptionTest() throws Exception {
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"description\":\"test description\",\"word\":\"testword\",\"langCode\":\"TST\",\"isActive\":\"true\"}}";
-			when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
-			mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isInternalServerError());
-		}
-		
-		@Test
-		public void createIdTypeExceptionTest() throws Exception {
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-			when(idTypeRepository.create(Mockito.any()))
-					.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-			mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isInternalServerError());
-		}
-		
-		@Test
-		public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-			when(registrationCenterTypeRepository.create(Mockito.any()))
-					.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-			mockMvc.perform(post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isInternalServerError());
-		}
-		
-		@Test
-		public void createIdTypeTest() throws Exception {
-			IdType idType = new IdType();
-			idType.setCode("IDT001");
-			String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"code\":\"testcode\",\"name\":\"testname\",\"descr\":\"testdescription\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-			when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
-			mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
-					.andExpect(status().isCreated());
-		}
+	@Test
+	public void addBlackListedWordTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		BlacklistedWords blacklistedWords = new BlacklistedWords();
+		blacklistedWords.setLangCode("TST");
+		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
+		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
 
+	@Test
+	public void addBlackListedWordExceptionTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void addRegistrationCenterTypeListTest() throws Exception {
+		RequestDto<RegistrationCenterTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterTypeDto registrationCenterTypeDto = new RegistrationCenterTypeDto();
+		registrationCenterTypeDto.setCode("testcode");
+		registrationCenterTypeDto.setDescr("testdescription");
+		registrationCenterTypeDto.setIsActive(true);
+		registrationCenterTypeDto.setLangCode("ENG");
+		registrationCenterTypeDto.setName("testname");
+		requestDto.setRequest(registrationCenterTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterTypeRepository.create(Mockito.any())).thenReturn(regCenterType);
+		mockMvc.perform(
+				post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
+		RequestDto<RegistrationCenterTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterTypeDto registrationCenterTypeDto = new RegistrationCenterTypeDto();
+		registrationCenterTypeDto.setCode("testcode");
+		registrationCenterTypeDto.setDescr("testdescription");
+		registrationCenterTypeDto.setIsActive(true);
+		registrationCenterTypeDto.setLangCode("ENG");
+		registrationCenterTypeDto.setName("testname");
+		requestDto.setRequest(registrationCenterTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(
+				post("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void createIdTypeTest() throws Exception {
+		RequestDto<IdTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		IdTypeDto idTypeDto = new IdTypeDto();
+		idTypeDto.setCode("testcode");
+		idTypeDto.setDescr("testdescription");
+		idTypeDto.setIsActive(true);
+		idTypeDto.setLangCode("ENG");
+		idTypeDto.setName("testname");
+		requestDto.setRequest(idTypeDto);
+		String content = mapper.writeValueAsString(requestDto);
+		IdType idType = new IdType();
+		idType.setCode("IDT001");
+		when(idTypeRepository.create(Mockito.any())).thenReturn(idType);
+		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createIdTypeExceptionTest() throws Exception {
+		RequestDto<IdTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		IdTypeDto idTypeDto = new IdTypeDto();
+		idTypeDto.setCode("testcode");
+		idTypeDto.setDescr("testdescription");
+		idTypeDto.setIsActive(true);
+		idTypeDto.setLangCode("ENG");
+		idTypeDto.setName("testname");
+		requestDto.setRequest(idTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(idTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
 
 }
