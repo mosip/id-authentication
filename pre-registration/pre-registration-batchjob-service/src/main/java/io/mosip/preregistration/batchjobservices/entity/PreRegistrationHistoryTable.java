@@ -17,6 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author M1043008
+ *
+ * The persistent class PreResgistration History database table.
+ */
 @Entity
 @Getter
 @Setter

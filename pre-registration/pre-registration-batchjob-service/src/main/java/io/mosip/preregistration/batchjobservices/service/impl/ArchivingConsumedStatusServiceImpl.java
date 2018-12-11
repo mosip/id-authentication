@@ -36,14 +36,21 @@ public class ArchivingConsumedStatusServiceImpl implements ArchivingConsumedStat
 	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String HISTORY_STATUS_TABLE_NOT_ACCESSIBLE = "The demographic history table is not accessible";
 
+	/**
+	 * The PreRegistration History Table Repository.
+	 */
 	@Autowired
 	private PreRegistrationHistoryTableRepository historyTableRepository;
 
+	/**
+	 * The PreRegistration Applicant Demographic Table Repository.
+	 */
 	@Autowired
 	private PreRegistrationDemographicRepository demographicRepository;
 	
+	
 	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.batchjobservices.service.impl.ArchivingConsumedStatusService#archivingConsumed()
+	 * @see io.mosip.preregistration.batchjobservices.service.ArchivingConsumedStatusService#archivingConsumed()
 	 */
 	@Override
 	public ResponseDto<String> archivingConsumed(){

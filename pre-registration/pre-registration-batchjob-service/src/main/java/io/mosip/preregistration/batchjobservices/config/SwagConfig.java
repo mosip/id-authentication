@@ -14,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwagConfig {
 	
 	/**
-	 * @return
+	 * Swagger Configuration
 	 */
 	@Bean
 	public Docket batchStatusBean() {

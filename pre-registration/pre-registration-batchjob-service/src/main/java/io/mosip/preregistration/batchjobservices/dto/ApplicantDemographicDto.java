@@ -8,12 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Applicant Demographic Dto class
+ * 
+ * @author M1043008
+ * 
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Applicant_Demographic_Model {
+public class ApplicantDemographicDto {
 	
 	private String preRegistrationId;
 

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 /**
  * @author M1043008
  *
+ * Services for PreRegistration batch Job.
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
