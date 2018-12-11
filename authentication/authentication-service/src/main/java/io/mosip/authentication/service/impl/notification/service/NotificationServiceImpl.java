@@ -167,8 +167,8 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 	
 	
-	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, Map<String, Object> idResDTO,
-			String email, String mobileNumber) {
+	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin,
+			String email, String mobileNumber,Map<String, List<IdentityInfoDTO>> idInfo) {
 		
 		
 		String[] dateAndTime = getDateAndTime(otpRequestDto.getReqTime());
@@ -178,7 +178,6 @@ public class NotificationServiceImpl implements NotificationService {
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
 		try {
-			String uin = String.valueOf(idResDTO.get("uin"));
 			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
@@ -186,7 +185,6 @@ public class NotificationServiceImpl implements NotificationService {
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
 
 			sendNotification(values, email, mobileNumber, SenderType.OTP,
@@ -358,4 +356,5 @@ public class NotificationServiceImpl implements NotificationService {
 		String mailContent = applyTemplate(values, contentTemplate);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
+
 }

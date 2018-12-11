@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		} else {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
+			otpResponseDTO.setErr(Collections.emptyList());
 			otpResponseDTO.setTxnId(txnID);
 			status = "Y";
 			comment = "OTP_GENERATED";
@@ -164,7 +166,8 @@ public class OTPFacadeImpl implements OTPFacade {
 			}
 			
 			// -- send otp notification --
-			notificationService.sendOtpNotification(otpRequestDto, otp, idResDTO, email, mobileNumber);
+			String uin = String.valueOf(idResDTO.get("uin"));
+			notificationService.sendOtpNotification(otpRequestDto, otp,uin, email, mobileNumber, idInfo);
 			saveAutnTxn(otpRequestDto, status, comment, refId);
 
 		}
