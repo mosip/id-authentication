@@ -190,7 +190,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
-		Machine crtMachine;
+		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
