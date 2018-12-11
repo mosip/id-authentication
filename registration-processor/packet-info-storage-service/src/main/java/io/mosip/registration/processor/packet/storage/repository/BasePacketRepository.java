@@ -35,7 +35,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
 	public List<E> findDemoById(@Param("regId") String regId);
 
-	@Query("SELECT  demo.langCode FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL and demo.phoneticName=:pheoniticName and demo.gender=:gender and demo.dob=:dob and demo.langCode=:langCode")
+	@Query("SELECT  demo.uinRefId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL and demo.phoneticName=:pheoniticName and demo.gender=:gender and demo.dob=:dob and demo.id.langCode=:langCode")
 	public List<String> getAllDemoWithUIN(@Param("pheoniticName") String pheoniticName, @Param("gender") String gender,
 			@Param("dob") Date dob, @Param("langCode") String langCode);
 
