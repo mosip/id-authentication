@@ -38,20 +38,29 @@ public class BatchJobServiceImpl implements BatchJobService {
 	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String APPLICANT_DEMOGRAPHIC_STATUS_TABLE_NOT_ACCESSIBLE = "The applicant demographic table is not accessible";
 
+	/** The Constant Status. */
 	private static final String STATUS = "Consumed";
 	
+	/** The Constant isNew. */
 	private static final boolean IS_NEW=true;
 
+	/**
+	 * The PreRegistration Processed PreId Repository.
+	 */
 	@Autowired
 	@Qualifier("preRegProcessedRepository")
 	private PreRegistrationProcessedPreIdRepository preRegListRepo;
 
+	/**
+	 * The PreRegistration applicant Demographic repository.
+	 */
 	@Autowired
 	@Qualifier("preRegistrationDemographicRepository")
 	private PreRegistrationDemographicRepository preRegistrationDemographicRepository;
 
+	
 	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.batchjobservices.service.impl.BatchJobService#dmeographicConsumedStatus()
+	 * @see io.mosip.preregistration.batchjobservices.service.BatchJobService#demographicConsumedStatus()
 	 */
 	@Override
 	public ResponseDto<String> demographicConsumedStatus() {

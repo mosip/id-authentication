@@ -15,6 +15,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author M1043008
+ * The persistent class applicant demographic database table. 
+ */
 @Component
 @Entity
 @Table(name = "applicant_demographic")

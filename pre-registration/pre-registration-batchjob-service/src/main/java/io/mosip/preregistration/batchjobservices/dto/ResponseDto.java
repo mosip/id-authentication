@@ -11,7 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Response DTO
+ * Response DTO class
  * 
  * @author M1043008
  *

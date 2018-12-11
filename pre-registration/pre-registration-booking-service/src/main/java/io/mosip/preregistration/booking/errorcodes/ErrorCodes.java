@@ -29,4 +29,5 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_019, //Cancel Appointmenct  failed
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
+	
 }

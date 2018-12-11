@@ -18,8 +18,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	public static final String findByPreIdQry = "SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1";
 
-	public static final String query2 = "DELETE FROM RegistrationBookingEntity r WHERE  r.bookingPK.preregistrationId = ?1";
-
+	
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
@@ -30,9 +29,5 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	@Query(findByPreIdQry)
 	public RegistrationBookingEntity findByPreId(String preregistrationId);
-
-	@Query(query2)
-	@Modifying
-	public int deleteByPreregistrationId(@Param("preregistrationId") String preregistrationId);
 
 }

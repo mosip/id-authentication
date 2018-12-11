@@ -8,12 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The Processed PreId List Dto class
+ * 
+ * @author M1043008
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Processed_preReg_list_model {
+public class ProcessedPreRegListDto {
 
 	private String prereg_id;
 	

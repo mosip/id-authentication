@@ -29,4 +29,8 @@ public class BookingPreIdNotFoundException extends BaseUncheckedException {
 	public BookingPreIdNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public BookingPreIdNotFoundException() {
+		super();
+	}
 }
