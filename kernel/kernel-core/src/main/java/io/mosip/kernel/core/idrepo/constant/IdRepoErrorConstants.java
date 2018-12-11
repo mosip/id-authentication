@@ -48,8 +48,12 @@ public enum IdRepoErrorConstants {
 
 	/** The no record found. */
 	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found"),
-	
-	UIN_GENERATION_FAILED("KER-IDR-015", "Generation of UIN failed");
+
+	/** The uin generation failed. */
+	UIN_GENERATION_FAILED("KER-IDR-015", "Generation of UIN failed"),
+
+	/** The response construction error. */
+	RESPONSE_CONSTRUCTION_ERROR("KER-IDR-016", "Generation of UIN failed");
 
 	/** The error code. */
 	private final String errorCode;
