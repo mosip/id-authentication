@@ -45,16 +45,19 @@ public class DataProvider {
 		return registrationDTO;
 	}
 
-	public static void setApplicantDocumentDTO(ApplicantDocumentDTO applicantDocumentDTO) throws RegBaseCheckedException {
+	public static void setApplicantDocumentDTO(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto) throws RegBaseCheckedException {
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
-		applicantDocumentDTO.setHasExceptionPhoto(false);
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
+		applicantDocumentDTO.setHasExceptionPhoto(isExceptionPhoto);
+		if (isExceptionPhoto) {
+			applicantDocumentDTO.setExceptionPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
+			applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto.jpg");
+		}
 	}
 
 	private static void getRegistrationMetaDataDTO(RegistrationMetaDataDTO registrationMetaDataDTO) {
-		registrationMetaDataDTO.setApplicationType("Child");
 		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
 		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
 	}

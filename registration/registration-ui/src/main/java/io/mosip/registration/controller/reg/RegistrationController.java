@@ -875,7 +875,9 @@ public class RegistrationController extends BaseController {
 
 		} else {
 			try {
-				DataProvider.setApplicantDocumentDTO(getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO());
+				DataProvider.setApplicantDocumentDTO(
+						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
+						toggleBiometricException);
 				setPreviewContent();
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
