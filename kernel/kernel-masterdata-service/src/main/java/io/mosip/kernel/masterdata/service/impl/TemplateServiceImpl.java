@@ -108,6 +108,9 @@ public class TemplateServiceImpl implements TemplateService {
 		return templateDtoList;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.kernel.masterdata.dto.TemplateDto)
+	 */
 	@Override
 	public IdResponseDto createTemplate(TemplateDto template) {
 		Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);

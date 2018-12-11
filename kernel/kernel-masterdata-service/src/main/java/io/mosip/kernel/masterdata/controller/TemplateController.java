@@ -65,7 +65,7 @@ public class TemplateController {
 	 * 
 	 * @param template
 	 *            the request dto.
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping("/v1.0/templates")
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = IdResponseDto.class)

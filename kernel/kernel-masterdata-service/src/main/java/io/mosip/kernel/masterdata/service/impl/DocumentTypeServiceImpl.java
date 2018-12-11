@@ -36,6 +36,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#getAllValidDocumentType(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
