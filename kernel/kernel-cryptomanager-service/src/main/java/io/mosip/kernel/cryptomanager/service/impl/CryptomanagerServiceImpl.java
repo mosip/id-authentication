@@ -73,12 +73,13 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	 */
 	@Override
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
-		SecretKey secretKey=keyGenerator.getSymmetricKey();
-		final byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
-		PublicKey publicKey=cryptomanagerUtil.getPublicKey(cryptoRequestDto);
-		final byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
-		CryptomanagerResponseDto cryptoResponseDto= new CryptomanagerResponseDto();
-		cryptoResponseDto.setData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey,keySplitter)));
+		SecretKey secretKey = keyGenerator.getSymmetricKey();
+		final byte[] encryptedData = encryptor.symmetricEncrypt(secretKey,
+				CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
+		PublicKey publicKey = cryptomanagerUtil.getPublicKey(cryptoRequestDto);
+		final byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
+		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
+		cryptoResponseDto.setData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter)));
 		return cryptoResponseDto;
 	}
 
@@ -89,13 +90,13 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	public CryptomanagerResponseDto decrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		int keyDemiliterIndex = 0;
 		byte[] encryptedHybridData = CryptoUtil.decodeBase64(cryptoRequestDto.getData());
-		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex,keySplitter);
-        byte[] encryptedKey = copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
+		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex, keySplitter);
+		byte[] encryptedKey = copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
 				encryptedHybridData.length);
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
-		SecretKey decryptedSymmetricKey=cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
-		CryptomanagerResponseDto cryptoResponseDto= new CryptomanagerResponseDto();
+		SecretKey decryptedSymmetricKey = cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
+		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
 		cryptoResponseDto.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
 		return cryptoResponseDto;
 	}

@@ -30,8 +30,7 @@ public interface CryptomanagerService {
 	 *            {@link CryptomanagerRequestDto} instance
 	 * @return encrypted data
 	 */
-	public CryptomanagerResponseDto encrypt(
-			@Valid CryptomanagerRequestDto cryptoRequestDto);
+	public CryptomanagerResponseDto encrypt(@Valid CryptomanagerRequestDto cryptoRequestDto);
 
 	/**
 	 * Decrypt data requested with metadata
@@ -40,7 +39,6 @@ public interface CryptomanagerService {
 	 *            {@link CryptomanagerRequestDto} instance
 	 * @return decrypted data
 	 */
-	public CryptomanagerResponseDto decrypt(
-			@Valid CryptomanagerRequestDto cryptoRequestDto);
+	public CryptomanagerResponseDto decrypt(@Valid CryptomanagerRequestDto cryptoRequestDto);
 
 }

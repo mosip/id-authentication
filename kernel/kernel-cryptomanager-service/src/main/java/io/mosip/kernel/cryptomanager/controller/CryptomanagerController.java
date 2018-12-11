@@ -22,7 +22,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-/** Rest Controller for Cryptographic Service
+/**
+ * Rest Controller for Cryptographic Service
  * 
  * @author Urvil Joshi
  *
@@ -31,7 +32,8 @@ import io.swagger.annotations.ApiParam;
 @CrossOrigin
 @RestController
 @RequestMapping("/v1.0")
-@Api(value="Operation related to Encryption and Decryption",tags = { "cryptomanager" })
+@Api(value = "Operation related to Encryption and Decryption", tags = {
+		"cryptomanager"})
 public class CryptomanagerController {
 
 	/**
@@ -47,13 +49,13 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
-	@ApiOperation(value = "Encrypt the data",response = CryptomanagerResponseDto.class)
-	@PostMapping(value = "/encrypt",produces= "application/json")
-	public CryptomanagerResponseDto encrypt(@ApiParam("Data to encrypt in BASE64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
+	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
+	@PostMapping(value = "/encrypt", produces = "application/json")
+	public CryptomanagerResponseDto encrypt(
+			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
 		return cryptomanagerService.encrypt(cryptomanagerRequestDto);
 	}
 
-	
 	/**
 	 * Controller for Decrypt the data
 	 * 
@@ -61,9 +63,10 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
-	@ApiOperation(value = "Decrypt the data",response = CryptomanagerResponseDto.class)
-	@PostMapping(value = "/decrypt",produces= "application/json")
-	public CryptomanagerResponseDto decrypt(@ApiParam("Data to decrypt in BASE64 encoding with meta-data")@RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
+	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)
+	@PostMapping(value = "/decrypt", produces = "application/json")
+	public CryptomanagerResponseDto decrypt(
+			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
 		return cryptomanagerService.decrypt(cryptomanagerRequestDto);
 	}
 }

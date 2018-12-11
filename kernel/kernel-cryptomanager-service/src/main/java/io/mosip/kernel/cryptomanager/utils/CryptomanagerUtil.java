@@ -121,12 +121,13 @@ public class CryptomanagerUtil {
 	 *            {@link CryptomanagerRequestDto} instance
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
-	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
-		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeymanagerSymmetricKeyRequestDto();
+    public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
+		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto = new KeymanagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,new KeymanagerSymmetricKeyConverter());
-		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeymanagerSymmetricKeyResponseDto.class);
-		byte[] symmetricKey=CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
-		return new SecretKeySpec(symmetricKey, 0,symmetricKey.length,symmetricAlgorithmName);
-	}
+		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(
+				decryptSymmetricKeyUrl, keyManagerSymmetricKeyRequestDto, KeymanagerSymmetricKeyResponseDto.class);
+		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
+		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
+    }
 
 }
