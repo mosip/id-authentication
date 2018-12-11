@@ -13,8 +13,7 @@ import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
  * @since 1.0.0
  */
 public class KeymanagerSymmetricKeyConverter
-		implements
-			DataConverter<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> {
+		implements DataConverter<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> {
 
 	/*
 	 * (non-Javadoc)
@@ -23,7 +22,7 @@ public class KeymanagerSymmetricKeyConverter
 	 * Object, java.lang.Object)
 	 */
 	@Override
-	public void convert(CryptomanagerRequestDto source,KeymanagerSymmetricKeyRequestDto destination) {
+	public void convert(CryptomanagerRequestDto source, KeymanagerSymmetricKeyRequestDto destination) {
 		destination.setApplicationId(source.getApplicationId());
 		destination.setReferenceId(source.getReferenceId());
 		destination.setTimeStamp(source.getTimeStamp());
