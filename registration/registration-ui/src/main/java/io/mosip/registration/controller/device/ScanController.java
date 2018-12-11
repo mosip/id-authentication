@@ -74,7 +74,7 @@ public class ScanController extends BaseController {
 			popupStage.initOwner(fXComponents.getStage());
 			popupStage.show();
 			
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
 			
 		} catch (IOException ioException) {
