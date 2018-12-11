@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, filter } from 'rxjs/operators';
 import { Applicant } from '../registration/dashboard/dashboard.modal';
 import { BookingModelRequest } from '../registration/center-selection/booking-request.model';
-import { element } from '@angular/core/src/render3/instructions';
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +11,14 @@ export class DataStorageService {
 
   SEND_FILE_URL =
     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/registration/documents';
-  BASE_URL2 = 'http://a2ml27511:9092/v0.1/pre-registration/applicationData';
-  BASE_URL =
-    'http://localhost:9092/v0.1/pre-registration/applications';
-  // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
-  // https://pre-reg-df354.firebaseio.com/applications.json
-  MASTER_DATA_URL = 'http://localhost:8086/masterdata/v1.0/';
+  BASE_URL2 = 'http://A2ML26836:9092/v0.1/pre-registration/applicationData';
+  BASE_URL = 'http://A2ML26836:9092/v0.1/pre-registration/applications';
+  MASTER_DATA_URL = 'http://A2ML26836:8086/masterdata/v1.0/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
-  AVAILABILITY_URL = 'http://localhost:9094/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = 'http://localhost:9094/v0.1/pre-registration/booking/book';
+  AVAILABILITY_URL = 'http://A2ML26836:9094/v0.1/pre-registration/booking/availability';
+  BOOKING_URL = 'http://A2ML26836:9094/v0.1/pre-registration/booking/book';
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
@@ -37,7 +32,7 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL2, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('preRegId', '92386049015826')
+      params: new HttpParams().append('preRegId', preRegId)
     });
   }
 
@@ -49,12 +44,7 @@ export class DataStorageService {
       request: identity
     };
     console.log('data being sent', obj);
-    // console.log(JSON.stringify(obj)); 0 - sent, 1 - upload , 3-download
 
-    // const req = new HttpRequest('POST', this.BASE_URL, obj, {
-    //   reportProgress: true
-    // });
-    // return this.httpClient.request(req);
     return this.httpClient.post(this.BASE_URL, obj);
   }
 
