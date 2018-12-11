@@ -28,6 +28,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().convert(isoImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().convert(isoImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
+			System.err.println("Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException e) {
 			throw e;
@@ -47,6 +48,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().deserialize(fingerImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().deserialize(fingerImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
+			System.err.println("Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException | JsonSyntaxException e) {
 			throw e;
