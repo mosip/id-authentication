@@ -19,6 +19,9 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -48,6 +51,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	@Autowired
+	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
@@ -60,6 +66,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	@Autowired
 	private DemoDedupe demoDedupe;
+
+	private static final String MATCHED_REFERENCE_TYPE = "uin";
 
 	/**
 	 * Deploy verticle.
@@ -102,6 +110,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
+					// Saving potential duplicates in reg_manual_verification table
+					saveManualAdjudicationData(duplicateUINList, registrationId);
 				}
 
 			} else {
@@ -137,6 +147,47 @@ public class DemodedupeStage extends MosipVerticleManager {
 		}
 
 		return object;
+	}
+
+	private void saveManualAdjudicationData(List<String> duplicateUINList, String registrationId) {
+		boolean isTransactionSuccessful = false;
+		String description = "";
+		try {
+			for (String duplicateUin : duplicateUINList) {
+				ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
+				ManualVerificationPKEntity manualVerificationPKEntity = new ManualVerificationPKEntity();
+				manualVerificationPKEntity.setMatchedRefId(duplicateUin);
+				manualVerificationPKEntity.setMatchedRefType(MATCHED_REFERENCE_TYPE);
+				manualVerificationPKEntity.setRegId(registrationId);
+
+				manualVerificationEntity.setId(manualVerificationPKEntity);
+				manualVerificationEntity.setLangCode(null);
+				manualVerificationEntity.setMatchedScore(null);
+				manualVerificationEntity.setMvUsrId(null);
+				manualVerificationEntity.setReasonCode("Potential Match");
+				manualVerificationEntity.setStatusCode("PENDING");
+				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
+				manualVerificationEntity.setIsActive(true);
+				manualVerificationEntity.setIsDeleted(false);
+
+				manualVerficationRepository.save(manualVerificationEntity);
+				isTransactionSuccessful = true;
+				description = "Packet Demo dedupe successful for registration id : " + registrationId;
+
+			}
+
+		} finally {
+
+			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
+		}
 	}
 
 }
