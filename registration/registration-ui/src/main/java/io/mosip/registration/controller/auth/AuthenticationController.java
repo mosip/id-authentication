@@ -27,6 +27,7 @@ import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -125,6 +126,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				RegistrationConstants.APPLICATION_ID, "Entering the Operator Authentication Page");
 
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
+		isSupervisor = false;
 		getAuthenticationModes();
 	}
 
@@ -456,6 +458,14 @@ public class AuthenticationController extends BaseController implements Initiali
 				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+				if(isSupervisor) {
+					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().getFingerprintDetailsDTO().add(fingerprintDetailsDTO);
+					SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+				} else {
+					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+				}
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
 				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
