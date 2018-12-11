@@ -1,10 +1,13 @@
 package io.mosip.authentication.service.filter;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -33,8 +36,9 @@ public class KycAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			Map<String, Object> authRequest = (Map<String, Object>) decode((String) requestBody.get(AUTH_REQUEST));
+			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
+			authRequest.replace(REQUEST, keyManager.requestData(authRequest, env, decryptor, mapper));
 			requestBody.replace(AUTH_REQUEST, authRequest);
 			return requestBody;
 		} catch (ClassCastException e) {
@@ -92,6 +96,26 @@ public class KycAuthFilter extends BaseAuthFilter {
 	@Override
 	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
 		return true;
+	}
+	
+	protected Object decodeToMap(String stringToDecode)
+			throws IdAuthenticationAppException {
+		try {
+			if (stringToDecode != null) {
+				return mapper.readValue(
+						Base64.getDecoder().decode(stringToDecode),
+						new TypeReference<Map<String, Object>>() {
+						});
+			} else {
+				return stringToDecode;
+			}
+		} catch (IllegalArgumentException | IOException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
+		}
 	}
 
 }
