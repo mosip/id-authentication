@@ -58,6 +58,18 @@ public class BookingExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(MasterDataNotAvailableException.class)
+	public ResponseEntity<ResponseDto<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_020.toString(),
+				ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
+		ResponseDto<?> errorRes = new ResponseDto<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(false);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+	}
 
 	@ExceptionHandler(RestCallException.class)
 	public ResponseEntity<ResponseDto<?>> databaseerror(final RestCallException e, WebRequest request) {

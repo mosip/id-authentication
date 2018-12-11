@@ -60,6 +60,10 @@ public class BookingController {
 
 	}
 
+	/**
+	 * @param regID
+	 * @return ResponseDto<AvailabilityDto>
+	 */
 	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/availability", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")

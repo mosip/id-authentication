@@ -73,6 +73,7 @@ import io.mosip.preregistration.booking.exception.CancelAppointmentFailedExcepti
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
@@ -129,7 +130,8 @@ public class BookingService {
 	}
 
 	/**
-	 * @return
+	 * It will sync the registration center details
+	 * @return ResponseDto<String>
 	 */
 
 	public ResponseDto<String> addAvailability() {
@@ -150,10 +152,7 @@ public class BookingService {
 			List<RegistrationCenterDto> regCenter = responseEntity.getBody().getRegistrationCenters();
 
 			if (regCenter.isEmpty()) {
-				response.setResTime(new Timestamp(System.currentTimeMillis()));
-				response.setStatus(false);
-				response.setResponse("No data is present in registration center master table");
-				return response;
+				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(), ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
 			} else {
 				for (RegistrationCenterDto regDto : regCenter) {
 					String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + regDto.getId() + "/"
@@ -249,14 +248,15 @@ public class BookingService {
 		}
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);
-		response.setResponse("Master Data is synched successfully");
+		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
 		return response;
 
 	}
 
 	/**
+	 * Gives the availability details
 	 * @param regID
-	 * @return
+	 * @return ResponseDto<AvailabilityDto>
 	 */
 	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
 		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
@@ -306,7 +306,7 @@ public class BookingService {
 						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
 
 			}
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException e) {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
@@ -410,7 +410,7 @@ public class BookingService {
 		BookingRegistrationDTO newBookingDetails = requestDTO.getNewBookingDetails();
 		System.out.println("oldBookingDetails: " + oldBookingDetails);
 		System.err.println("newBookingDetails: " + newBookingDetails);
-		try {
+		
 			if (!isMandatory(requestDTO.getPre_registration_id())) {
 				throw new BookingPreIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_006.toString(),
 						ErrorMessages.PREREGISTRATION_ID_NOT_ENTERED.toString());
@@ -436,9 +436,7 @@ public class BookingService {
 				flag = false;
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		return flag;
 
 	}
@@ -583,7 +581,7 @@ public class BookingService {
 			entity = registrationBookingRepository.findByPreId(preRegID);
 			if (entity != null) {
 				bookingRegistrationDTO.setReg_date(entity.getRegDate().toString());
-				bookingRegistrationDTO.setRegistration_center_id(entity.getBookingPK().getPreregistrationId());
+				bookingRegistrationDTO.setRegistration_center_id(entity.getRegistrationCenterId());
 				bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());
 				bookingRegistrationDTO.setSlotToTime(entity.getSlotToTime().toString());
 				responseDto.setResponse(bookingRegistrationDTO);
@@ -594,7 +592,7 @@ public class BookingService {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 		}
