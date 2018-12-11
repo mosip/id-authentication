@@ -1,13 +1,12 @@
 package io.mosip.demo.authentication.service.dto;
 
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
 public class EncryptionRequestDto {
-
-//	private String publicKey;
-//	private String sessionKey;
 	private String tspID;
-	private String identityRequest;
+	private Map<String, Object> identityRequest;
 
 }

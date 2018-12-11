@@ -14,6 +14,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.MessageFormat;
 import java.util.Base64;
+import java.util.Map;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
@@ -57,13 +61,14 @@ public class Encrypt {
 
 	@PostMapping(path = "/identity/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
-	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto) {
+	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto) throws JsonProcessingException {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 
 		SecretKey sessionKey = keyGenerator.getSymmetricKey();
-
+		ObjectMapper objMapper = new ObjectMapper();
 		// Encrypt data with session key
-		byte[] data = encryptionRequestDto.getIdentityRequest().getBytes();
+		Map<String, Object> identityRequest = encryptionRequestDto.getIdentityRequest();
+		byte[] data = objMapper.writeValueAsBytes(identityRequest);
 		byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, data);
 		encryptionResponseDto.setEncryptedIdentity(Base64.getEncoder().encodeToString(encryptedData));
 
