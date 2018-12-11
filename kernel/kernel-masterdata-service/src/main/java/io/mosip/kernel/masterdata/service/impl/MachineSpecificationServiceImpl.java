@@ -38,7 +38,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * @return IdResponseDto
 	 * 		   Machine Specification ID which is successfully inserted
 	 * 
-	 * @param RequestDto<MachineSpecificationDto>
+	 * @param RequestDto
 	 *             input from user Machine Specification DTO
 	 * 
 	 * @throws MasterDataServiceException

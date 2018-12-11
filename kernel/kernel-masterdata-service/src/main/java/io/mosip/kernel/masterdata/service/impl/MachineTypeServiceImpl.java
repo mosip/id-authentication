@@ -39,7 +39,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 * @return CodeAndLanguageCodeID
 	 * 		   Machine type code and language code which is successfully inserted
 	 * 
-	 * @param RequestDto<MachineTypeDto>
+	 * @param RequestDto
 	 *             input from user Machine type DTO
 	 * 
 	 * @throws MasterDataServiceException

@@ -30,6 +30,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * 			Device Details fetched from database
 	 */
 
+	@Query("FROM Device d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false)")
 	List<Device> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**

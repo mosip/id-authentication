@@ -40,10 +40,10 @@ public class MachineTypeController {
 	/**
 	 * Save list of Machine Type details to the Database table
 	 * 
-	 * @param RequestDto<MachineTypeDto>
+	 * @param RequestDto
 	 * 				input Machine Type DTO from user 
 	 *            
-	 * @return ResponseEntity<CodeAndLanguageCodeID>
+	 * @return ResponseEntity
 	 * 				Machine Type Code and Language Code which is successfully inserted
 	 * 
 	 */

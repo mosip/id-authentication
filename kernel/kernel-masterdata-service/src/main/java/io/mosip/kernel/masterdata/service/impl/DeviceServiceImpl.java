@@ -129,7 +129,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @return IdResponseDto
 	 * 		   Device  ID which is successfully inserted
 	 * 
-	 * @param RequestDto<DeviceDto>
+	 * @param RequestDto
 	 *             input from user Device DTO
 	 * 
 	 * @throws MasterDataServiceException
@@ -139,7 +139,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
-		Device device = new Device();
+		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
 		try {
