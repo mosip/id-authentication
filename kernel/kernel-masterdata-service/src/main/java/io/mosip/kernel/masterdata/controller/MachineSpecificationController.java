@@ -39,7 +39,7 @@ public class MachineSpecificationController {
 	/**
 	 * Save machine specification details to the database table
 	 * 
-	 * @param RequestDto
+	 * @param machineSpecification
 	 *            input Machine specification DTO from user 
 	 * @return ResponseEntity
 	 * 			  Machine Specification ID which is successfully inserted

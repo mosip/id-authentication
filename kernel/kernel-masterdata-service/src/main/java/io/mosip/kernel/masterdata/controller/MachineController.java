@@ -105,7 +105,7 @@ public class MachineController {
 	/**
 	 * Save machine  details to the database table
 	 * 
-	 * @param RequestDto
+	 * @param machine
 	 *            input from user Machine  DTO
 	 *            
 	 * @return ResponseEntity
