@@ -73,8 +73,9 @@ public class UMCValidator {
 						&& dto.getLongitude().matches(longitude)) {
 
 					activeRegCenter = dto.getIsActive();
-					if (!activeRegCenter)
+					if (!activeRegCenter) {
 						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+					}
 					break;
 				} else {
 					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
@@ -111,10 +112,11 @@ public class UMCValidator {
 
 		if (!dtos.isEmpty()) {
 			for (MachineHistoryDto dto : dtos) {
-				if (dto.getId() == machineId) {
+				if (dto.getId() != null &&dto.getId().matches(machineId)  ) {
 					isActiveMachine = dto.getIsActive();
-					if (!isActiveMachine)
+					if (!isActiveMachine) {
 						this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
+					}
 					break;
 				} else {
 					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
@@ -162,12 +164,12 @@ public class UMCValidator {
 						officerId)
 				.getRegistrationCenters();
 
-		if (!supervisordtos.isEmpty()) {
+		if (!supervisordtos.isEmpty() && supervisordtos.get(0).getIsActive() != null) {
 
 			supervisorActive = supervisordtos.get(0).getIsActive();
 
 		}
-		if (!officerdtos.isEmpty()) {
+		if (!officerdtos.isEmpty() && officerdtos.get(0).getIsActive() !=null) {
 
 			officerActive = officerdtos.get(0).getIsActive();
 
@@ -178,7 +180,7 @@ public class UMCValidator {
 
 		if (supervisorActive || officerActive) {
 			t = true;
-			this.registrationStatusDto.setStatusComment(null);
+			
 		}
 		return t;
 	}

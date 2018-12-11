@@ -40,8 +40,6 @@ public class UMCValidatorTest {
 	@Mock
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	
-	
 	@Mock
 	RegCenterMachineHistoryClientBuilder umcClient;
 	RegistrationCenterMachineDto rcmDto;
