@@ -6,20 +6,17 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -105,7 +102,7 @@ public class FingerprintFacade {
 		}
 	}
 
-	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String filePath) {
+	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath) {
 		try {
 			readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath);
 		} catch (RegBaseCheckedException e) {
@@ -141,9 +138,9 @@ public class FingerprintFacade {
 					"Scanning of fingerprints details for user registration");
 
 			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(path));
-			
+
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(bufferedImage, "jpeg" , byteArrayOutputStream);
+			ImageIO.write(bufferedImage, "jpeg", byteArrayOutputStream);
 
 			byte[] scannedFingerPrintBytes = byteArrayOutputStream.toByteArray();
 
@@ -179,49 +176,43 @@ public class FingerprintFacade {
 	 * 
 	 * @param path
 	 * @throws RegBaseCheckedException
+	 * @throws URISyntaxException
 	 */
-	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String path)
+	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
-		try (Stream<Path> paths = Files.list(Paths.get(path))) {
-			
-			List<Path> folders = paths.filter(Files::isDirectory).collect(Collectors.toList());
-			
-			for (Path folderPath : folders) {
-				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
-				try (Stream<Path> filesStream = Files.list(folderPath);) {
-					filesStream.filter(Files::isRegularFile).forEach(e -> {
-						try {
-							File file = e.getFileName().toFile();
-							if (file.getName().equals(RegistrationConstants.ISO_FILE)) {
-								byte[] isoTemplateBytes = Files.readAllBytes(e.toAbsolutePath());
-								segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
-							}
-							if (file.getName().equals(RegistrationConstants.ISO_IMAGE_FILE)) {
-								byte[] isoImageBytes = Files.readAllBytes(e.toAbsolutePath());
-								segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
-							}
-						} catch (IOException ioException) {
-							LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
-									ioException.getMessage());
-						}
-					});
-					segmentedDetailsDTO.setFingerType(folderPath.toFile().getName());
-					segmentedDetailsDTO.setFingerprintImageName(folderPath.toFile().getName());
-					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
-					segmentedDetailsDTO.setForceCaptured(false);
-					segmentedDetailsDTO.setQualityScore(90);
+		try {
 
-					if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
-						List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
-						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
-					}
-					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
+			List<String> filePaths = Arrays.asList(path);
+
+			for (String folderPath : filePaths) {
+
+				String[] imageFileName = folderPath.split("/");
+				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
+
+				byte[] isoTemplateBytes = IOUtils
+						.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_FILE));
+				segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+
+				byte[] isoImageBytes = IOUtils
+						.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
+				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+
+				segmentedDetailsDTO.setFingerType(imageFileName[3]);
+				segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
+				segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
+				segmentedDetailsDTO.setForceCaptured(false);
+				segmentedDetailsDTO.setQualityScore(90);
+
+				if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
+					List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
+					fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
 				}
+				fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
 			}
-			
+
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),

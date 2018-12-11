@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.RegistrationDTO;
-
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
@@ -33,13 +31,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
 import javafx.stage.Stage;
 
 /**
@@ -277,7 +273,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
 
-						RegistrationConstants.LEFTHAND_SEGMENTED_FINGERPRINT_PATH, leftHandPalmImageview,
+						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview,
 
 						leftSlapQualityScore, popupStage);
 
@@ -285,7 +281,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
-						RegistrationConstants.RIGHTHAND_SEGMENTED_FINGERPRINT_PATH, rightHandPalmImageview,
+						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
 
 						rightSlapQualityScore, popupStage);
 
@@ -293,19 +289,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
-						RegistrationConstants.THUMB_SEGMENTED_FINGERPRINT_PATH, thumbImageview, thumbsQualityScore,
+						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore,
 						popupStage);
 
 			}
 
-		} catch (IOException ioException) {
-
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					String.format(
-							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
-							ioException.getMessage(), ioException.getCause()));
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
@@ -319,8 +307,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
-			String fingerType, String segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage) throws IOException {
+			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
+			Stage popupStage) {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
@@ -420,10 +408,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			boolean isrightHandSlapCaptured = false;
 			boolean isthumbsCaptured = false;
 
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.REGISTRATION_DATA);
-
-			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = registrationDTO.getBiometricDTO()
+			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 					.getApplicantBiometricDTO().getFingerprintDetailsDTO();
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
