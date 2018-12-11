@@ -28,7 +28,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -92,16 +92,16 @@ public class DemoDedupeTest {
 	public void testDedupeDuplicateFound() {
 		String regId = "1234567890";
 		
-		DemographicDedupeDto dto1 = new DemographicDedupeDto();
-		DemographicDedupeDto dto2 = new DemographicDedupeDto();
-		List<DemographicDedupeDto> Dtos = new ArrayList<>();
+		DemographicInfoDto dto1 = new DemographicInfoDto();
+		DemographicInfoDto dto2 = new DemographicInfoDto();
+		List<DemographicInfoDto> Dtos = new ArrayList<>();
 		Dtos.add(dto1);
 		Dtos.add(dto2);
 		
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
 		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
 		
-		Set<DemographicDedupeDto> duplicates = demoDedupe.performDedupe(regId);
+		Set<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals(false, duplicates.isEmpty() );
 	}
 	
@@ -109,12 +109,12 @@ public class DemoDedupeTest {
 	public void testDemodedupeEmpty() {
 		String regId = "1234567890";
 		
-		List<DemographicDedupeDto> Dtos = new ArrayList<>();
+		List<DemographicInfoDto> Dtos = new ArrayList<>();
 		
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
 		Mockito.when(packetInfoDao.getAllDemoWithUIN(anyString(), anyString(), any())).thenReturn(Dtos);
 		
-		Set<DemographicDedupeDto> duplicates = demoDedupe.performDedupe(regId);
+		Set<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals(true, duplicates.isEmpty() );
 	}
 	

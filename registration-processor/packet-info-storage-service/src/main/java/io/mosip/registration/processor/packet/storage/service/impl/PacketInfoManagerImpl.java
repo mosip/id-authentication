@@ -39,7 +39,7 @@ import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -616,7 +616,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	@Override
-	public List<DemographicDedupeDto> findDemoById(String regId) {
+	public List<DemographicInfoDto> findDemoById(String regId) {
 		return packetInfoDao.findDemoById(regId);
 	}
 

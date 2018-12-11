@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
@@ -64,7 +64,7 @@ public class ApplicantInfoDao {
 				String regId = assignedPacket.getId().getRegId();
 				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
 			});
-			List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
@@ -120,8 +120,8 @@ public class ApplicantInfoDao {
 	 * bioData.setIrisData(irisData); return bioData; }
 	 */
 
-	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
-		DemographicDedupeDto demo = new DemographicDedupeDto();
+	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
+		DemographicInfoDto demo = new DemographicInfoDto();
 		demo.setRegId(object.getId().getRegId());
 		demo.setUin(object.getUinRefId());
 		demo.setLangCode(object.getId().getLangCode());

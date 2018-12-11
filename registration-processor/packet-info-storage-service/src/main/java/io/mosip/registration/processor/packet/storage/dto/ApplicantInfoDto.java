@@ -3,7 +3,7 @@ package io.mosip.registration.processor.packet.storage.dto;
 
 import java.util.List;
 
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +13,7 @@ public class ApplicantInfoDto {
 
 	
 	private PhotographDto applicantPhotograph;
-	private List<DemographicDedupeDto> demoDedupeList;
+	private List<DemographicInfoDto> demoDedupeList;
 
 
 

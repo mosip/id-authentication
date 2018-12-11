@@ -6,7 +6,7 @@ import java.util.List;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 
 /**
  * The Interface PacketInfoManager.
@@ -72,7 +72,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 *            the reg id
 	 * @return the list
 	 */
-	public List<DemographicDedupeDto> findDemoById(String regId);
+	public List<DemographicInfoDto> findDemoById(String regId);
 
 	/**
 	 * Gets the applicant finger print image name by id.

@@ -15,20 +15,17 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -42,47 +39,38 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 public class DemoDedupe {
 
 	/** The Constant FILE_SEPARATOR. */
-	public static final String FILE_SEPARATOR = "\\";
+	private static final String FILE_SEPARATOR = "\\";
 
 	/** The Constant BIOMETRIC_APPLICANT. */
-	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+	private static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
 	/** The adapter. */
 	@Autowired
-	FilesystemCephAdapterImpl adapter;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The rest client service. */
 	@Autowired
-	RegistrationProcessorRestClientService<Object> restClientService;
+	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The auth request DTO. */
-	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	private AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
 	/** The auth type DTO. */
-	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+	private AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 
 	/** The identity DTO. */
-	IdentityDTO identityDTO = new IdentityDTO();
+	private IdentityDTO identityDTO = new IdentityDTO();
 
 	/** The identity info DTO. */
-	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+	private IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 
 	/** The request. */
-	RequestDTO request = new RequestDTO();
-
-	/** The auth secure DTO. */
-	AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-
-	/** The match info. */
-	MatchInfo matchinfo = new MatchInfo();
-
-	/** The pin info info. */
-	PinInfo pininfo = new PinInfo();
+	private RequestDTO request = new RequestDTO();
 
 	/** The packet info manager. */
 	@Autowired
-	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -93,14 +81,14 @@ public class DemoDedupe {
 	 * @param refId
 	 * @return duplicate Ids
 	 */
-	public Set<DemographicDedupeDto> performDedupe(String refId) {
+	public Set<DemographicInfoDto> performDedupe(String refId) {
 
-		List<DemographicDedupeDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
+		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 
-		Set<DemographicDedupeDto> duplicateDtos = new HashSet<>();
-		List<DemographicDedupeDto> demoDtos;
+		Set<DemographicInfoDto> duplicateDtos = new HashSet<>();
+		List<DemographicInfoDto> demoDtos;
 		
-		for (DemographicDedupeDto demoDto : applicantDemoDto) {
+		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			demoDtos = packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
 					demoDto.getDob());
 			if (demoDtos != null && !demoDtos.isEmpty()) {
@@ -234,7 +222,8 @@ public class DemoDedupe {
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 
-		return "y".equalsIgnoreCase(authResponseDTO.getStatus()) ? true : false;
+		return authResponseDTO != null && authResponseDTO.getStatus() != null
+				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
 
 	/**

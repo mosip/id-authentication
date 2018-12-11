@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
@@ -46,7 +46,7 @@ public class PacketInfoDao {
 				String regId = assignedPacket.getId().getRegId();
 				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
 			});
-			List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
@@ -146,8 +146,8 @@ public class PacketInfoDao {
 		return photographDto;
 	}
 
-	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
-		DemographicDedupeDto demo = new DemographicDedupeDto();
+	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
+		DemographicInfoDto demo = new DemographicInfoDto();
 		demo.setRegId(object.getId().getRegId());
 		demo.setUin(object.getUinRefId());
 		demo.setLangCode(object.getId().getLangCode());
@@ -159,8 +159,8 @@ public class PacketInfoDao {
 		return demo;
 	}
 
-	public List<DemographicDedupeDto> getAllDemoWithUIN(String pheoniticName, String gender, Date dob) {
-		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+	public List<DemographicInfoDto> getAllDemoWithUIN(String pheoniticName, String gender, Date dob) {
+		List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
 		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
 				.getAllDemoWithUIN(pheoniticName, gender, dob);
 		if (individualDemographicDedupeEntityList != null) {
@@ -172,8 +172,8 @@ public class PacketInfoDao {
 		return demographicDedupeDtoList;
 	}
 
-	public List<DemographicDedupeDto> findDemoById(String regId) {
-		List<DemographicDedupeDto> demographicDedupeDtoList = new ArrayList<>();
+	public List<DemographicInfoDto> findDemoById(String regId) {
+		List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
 		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
 				.findDemoById(regId);
 		if (individualDemographicDedupeEntityList != null) {

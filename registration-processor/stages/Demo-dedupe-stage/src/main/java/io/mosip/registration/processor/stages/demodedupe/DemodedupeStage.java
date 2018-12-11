@@ -19,7 +19,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -39,9 +39,6 @@ import io.vertx.core.logging.LoggerFactory;
 @Service
 public class DemodedupeStage extends MosipVerticleManager {
 
-	/** The Constant FILE_SEPARATOR. */
-	public static final String FILE_SEPARATOR = "\\";
-
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(DemodedupeStage.class);
 
@@ -50,7 +47,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The registration status service. */
 	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -60,10 +57,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The core audit request builder. */
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Autowired
-	DemoDedupe demoDedupe;
+	private DemoDedupe demoDedupe;
 
 	/**
 	 * Deploy verticle.
@@ -90,17 +87,14 @@ public class DemodedupeStage extends MosipVerticleManager {
 					.getRegistrationStatus(registrationId);
 
 			// Potential Duplicate Ids after performing demo dedupe
-			Set<DemographicDedupeDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
+			Set<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
 
 			if (!duplicateDtos.isEmpty()) {
 
-				for (DemographicDedupeDto id : duplicateDtos) {
-					duplicateUINList.add(id.getUin());
-				}
+				duplicateDtos.forEach(id -> duplicateUINList.add(id.getUin()));
 
 				// authenticating duplicateIds with provided packet biometrics
-				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId,
-						duplicateUINList);
+				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
 
 				if (isDuplicateAfterAuth) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
@@ -111,6 +105,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
+
 				}
 
 			} else {
@@ -134,13 +129,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
 
-			String eventId = "";
-			String eventName = "";
-			String eventType = "";
-			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
