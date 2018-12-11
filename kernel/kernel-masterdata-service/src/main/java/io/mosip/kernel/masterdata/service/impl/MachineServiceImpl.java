@@ -38,7 +38,9 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Autowired
 	MachineRepository machineRepository;
-
+	/**
+	 * Field to hold Machine History  Repository object
+	 */
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
 
@@ -53,17 +55,16 @@ public class MachineServiceImpl implements MachineService {
 	 * @param langCode
 	 *            pass Language code as String
 	 * 
-	 * @return MachineDetailDto returning the Machine Detail for the given Machine
+	 * @return MachineResponseDto 
+	 * 			returning the Machine Detail for the given Machine
 	 *         ID and Language code
 	 * 
-	 * @throws MachineDetailFetchException
+	 * @throws MasterDataServiceException
 	 *             While Fetching Machine Detail If fails to fetch required Machine
 	 *             Detail
 	 * 
-	 * @throws MachineDetailMappingException
-	 *             If not able to map Machine detail entity with Machine Detail Dto
 	 * 
-	 * @throws MachineDetailNotFoundException
+	 * @throws DataNotFoundException
 	 *             If given required Machine ID and language not found
 	 * 
 	 */
@@ -94,16 +95,14 @@ public class MachineServiceImpl implements MachineService {
 	/**
 	 * Method used for fetch all Machine details
 	 * 
-	 * @return MachineDetailDto returning all Machine Detail
+	 * @return MachineResponseDto 
+	 * 			returning all Machine Detail
 	 * 
-	 * @throws MachineDetailFetchException
+	 * @throws MasterDataServiceException
 	 *             While Fetching Machine Detail If fails to fetch required Machine
 	 *             Detail
 	 * 
-	 * @throws MachineDetailMappingException
-	 *             If not able to map Machine detail entity with Machine Detail Dto
-	 * 
-	 * @throws MachineDetailNotFoundException
+	 * @throws DataNotFoundException
 	 *             If given required Machine ID and language not found
 	 * 
 	 */
@@ -139,17 +138,14 @@ public class MachineServiceImpl implements MachineService {
 	 * @param langCode
 	 *            pass Language code as String
 	 * 
-	 * @return MachineDetailDto returning the Machine Detail for the given Language
+	 * @return MachineResponseDto returning the Machine Detail for the given Language
 	 *         code
 	 * 
-	 * @throws MachineDetailFetchException
+	 * @throws MasterDataServiceException
 	 *             While Fetching Machine Detail If fails to fetch required Machine
 	 *             Detail
 	 * 
-	 * @throws MachineDetailMappingException
-	 *             If not able to map Machine detail entity with Machine Detail Dto
-	 * 
-	 * @throws MachineDetailNotFoundException
+	 * @throws DataNotFoundException
 	 *             If given required Machine ID and language not found
 	 * 
 	 */
@@ -177,6 +173,20 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
+	/**
+	 * Method used to save Machine details 
+	 * 
+	 * @return IdResponseDto
+	 * 		   Machine ID which is successfully inserted
+	 * 
+	 * @param RequestDto<MachineDto>
+	 *             input from user Machine DTO
+	 * 
+	 * @throws MasterDataServiceException
+	 *             While inserting Machine Detail If fails to insert  required Machine
+	 *             Detail
+	 * 
+	 */
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine;

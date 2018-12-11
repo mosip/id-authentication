@@ -17,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.idgenerator.tokenid.cache.impl.TokenIdCacheManagerImpl;
 import io.mosip.kernel.idgenerator.tokenid.impl.TokenIdGeneratorImpl;
 import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 
@@ -34,9 +33,6 @@ public class TokenIdGeneratorTest {
 
 	@InjectMocks
 	private TokenIdGeneratorImpl tokenIdGenerator;
-
-	@Mock
-	TokenIdCacheManagerImpl tokenCacheManager;
 
 	@Mock
 	TokenIdRepository tokenIdRepository;

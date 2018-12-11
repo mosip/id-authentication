@@ -20,7 +20,9 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the all Machine details code.
 	 * 
-	 * @return MachineDetail fetched from database
+	 * @return List<Machine>
+	 * 		 MachineDetail fetched from database
+	 * 
 	 */
 	List<Machine> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
@@ -29,11 +31,12 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * id and language code.
 	 * 
 	 * 
-	 * @param Id
-	 *            Machine Id provided by user
+	 * @param id
+	 *          Machine Id provided by user
 	 * @param langCode
-	 *            languageCode provided by user
-	 * @return MachineDetail fetched from database
+	 *          languageCode provided by user
+	 * @return List<Machine>
+	 * 		 MachineDetail fetched from database
 	 */
 
 	
@@ -44,10 +47,11 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * This method trigger query to fetch the Machine detail for the given language
 	 * code.
 	 * 
-	 * @param Id
-	 *            Machine Id provided by user
+	 * @param langCode
+	 *            langCode provided by user
 	 * 
-	 * @return MachineDetail fetched from database
+	 * @return List<Machine>
+	 * 			MachineDetail fetched from database
 	 */
 
 	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false)")

@@ -18,9 +18,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
 
+ * This controller class to save Machine type details.
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @RestController
-@Api(tags = { "MachineTypes" })
+@Api(tags = { "MachineType" })
 public class MachineTypeController {
 	
 
@@ -31,12 +38,14 @@ public class MachineTypeController {
 	private MachineTypeService machinetypeService;
 	
 	/**
-	 * Save list of Machine Type details to the Database
+	 * Save list of Machine Type details to the Database table
 	 * 
-	 * @param MachineTypeRequestDto
-	 * 				input from user Machine Type DTO
+	 * @param RequestDto<MachineTypeDto>
+	 * 				input Machine Type DTO from user 
 	 *            
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return ResponseEntity<CodeAndLanguageCodeID>
+	 * 				Machine Type Code and Language Code which is successfully inserted
+	 * 
 	 */
 
 	@PostMapping("/v1.0/machinetypes")

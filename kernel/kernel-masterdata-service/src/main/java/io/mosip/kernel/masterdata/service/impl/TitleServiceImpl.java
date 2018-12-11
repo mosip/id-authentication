@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +70,7 @@ public class TitleServiceImpl implements TitleService {
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;
 		List<TitleDto> titleDto = null;
-		List<Title> title = new ArrayList<>();
+		List<Title> title = null;
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);

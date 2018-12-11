@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 
@@ -97,7 +96,7 @@ public interface RegistrationCenterService {
 	 *            input from user
 	 * @return list of registration centers
 	 */
-	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
 			String hierarchyLevel, String text, String languageCode);
 
 	/**

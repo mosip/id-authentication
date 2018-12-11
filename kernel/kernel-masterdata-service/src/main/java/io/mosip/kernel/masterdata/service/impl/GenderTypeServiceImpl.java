@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	public GenderTypeResponseDto getGenderTypeByLangCode(String langCode) {
 		GenderTypeResponseDto genderResponseDto = null;
 		List<GenderTypeDto> genderListDto = null;
-		List<Gender> gender = new ArrayList<>();
+		List<Gender> gender = null;
 
 		try {
 			gender = genderTypeRepository.findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);

@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -31,6 +32,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
+@Api(tags = { "BlacklistedWords" })
 public class BlacklistedWordsController {
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
@@ -38,7 +40,7 @@ public class BlacklistedWordsController {
 	/**
 	 * Fetch the list of blacklisted words based on language code.
 	 * 
-	 * @param langCode
+	 * @param langCode language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
 	@GetMapping("/v1.0/blacklistedwords/{langcode}")
@@ -50,7 +52,7 @@ public class BlacklistedWordsController {
 	 * Takes the list of string as an argument and checks if the list contains any
 	 * blacklisted words.
 	 * 
-	 * @param blacklistedwords
+	 * @param blacklistedwords list of blacklisted words
 	 * @return Valid if word does not belongs to black listed word and Invalid if
 	 *         word belongs to black listed word
 	 */

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 
 @Data
+@ApiModel(value = "Device Type", description = "Device Type Detail resource")
 public class DeviceTypeDto {
 
 	@NotNull

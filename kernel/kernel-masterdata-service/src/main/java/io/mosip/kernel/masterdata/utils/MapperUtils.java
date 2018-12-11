@@ -52,12 +52,7 @@ public class MapperUtils {
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		try {
 			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
-		} catch (Exception e) {
-			return LocalDateTime.parse(dateTime);
-		}
-
 	}
 
 	/*

@@ -17,11 +17,36 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
+/**
+ * This class have methods to save  a Machine Type Details
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @Service
 public class MachineTypeServiceImpl implements MachineTypeService {
 
+	/**
+	 * Field to hold Machine Repository object
+	 */
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
+	
+	/**
+	 * Method used to save Machine Type details 
+	 * 
+	 * @return CodeAndLanguageCodeID
+	 * 		   Machine type code and language code which is successfully inserted
+	 * 
+	 * @param RequestDto<MachineTypeDto>
+	 *             input from user Machine type DTO
+	 * 
+	 * @throws MasterDataServiceException
+	 *             While inserting Machine type Detail If fails to insert  required Machine type
+	 *             Detail
+	 * 
+	 */
 
 	@Override
 	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType) {

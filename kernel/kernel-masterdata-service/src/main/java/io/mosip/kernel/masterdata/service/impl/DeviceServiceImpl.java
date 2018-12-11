@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -25,7 +24,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch a Device Details
+ * This class have methods to fetch and save Device Details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -40,13 +39,12 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	DeviceRepository deviceRepository;
 
-	@Autowired
-	DataMapper dataMapper;
-
+	
 	/**
 	 * Method used for fetch all Device details based on given language code
 	 * 
-	 * @return DeviceDto returning Device Details based on given language code
+	 * @return DeviceResponseDto 
+	 * 			returning Device Details based on given language code
 	 * 
 	 * @param langCode
 	 *            pass language as string
@@ -54,9 +52,6 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @throws MasterDataServiceException
 	 *             While Fetching Device Detail If fails to fetch required Device
 	 *             Detail
-	 * 
-	 * @throws DeviceMappingException
-	 *             If not able to map Device detail entity with Device Detail Dto
 	 * 
 	 * @throws DataNotFoundException
 	 *             If given required Device ID and language not found
@@ -89,7 +84,8 @@ public class DeviceServiceImpl implements DeviceService {
 	 * Method used for fetch all Device details based on given language code and
 	 * Device type
 	 * 
-	 * @return DeviceDto returning all Device Detail based on language code and
+	 * @return DeviceLangCodeResponseDto
+	 * 		   DeviceDto returning all Device Detail based on language code and
 	 *         Device type
 	 * 
 	 * @param langCode
@@ -100,8 +96,6 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @throws MasterDataServiceException
 	 *             While Fetching Device Detail If fails to fetch required Device
 	 *             Detail
-	 * @throws DeviceMappingException
-	 *             If not able to map Device detail entity with Device Detail Dto
 	 * @throws DataNotFoundException
 	 *             If given required Device ID and language not found
 	 * 
@@ -129,23 +123,30 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceLangCodeResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Method used to save Device details 
 	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.DeviceService#saveDevice(io.mosip.kernel.
-	 * masterdata.dto.RequestDto)
+	 * @return IdResponseDto
+	 * 		   Device  ID which is successfully inserted
+	 * 
+	 * @param RequestDto<DeviceDto>
+	 *             input from user Device DTO
+	 * 
+	 * @throws MasterDataServiceException
+	 *             While inserting Device Detail If fails to insert  required Device
+	 *             Detail
+	 * 
 	 */
 	@Override
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
-		Device device = null;
+		Device device = new Device();
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
 		try {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage()+ " " +ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(device, idResponseDto);

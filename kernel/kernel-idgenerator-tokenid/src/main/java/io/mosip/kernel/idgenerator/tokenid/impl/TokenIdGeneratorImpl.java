@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.idgenerator.exception.TokenIdGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.tokenid.cache.TokenIdCacheManager;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorConstant;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorErrorCode;
 import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
@@ -18,7 +17,7 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
 
 /**
- * Class generates TokenId 
+ * Class generates TokenId
  * 
  * 
  * @author Srinivasan
@@ -35,8 +34,6 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 
 	@Autowired
 	private TokenIdRepository tokenIdRepository;
-	@Autowired
-	private TokenIdCacheManager tokenIdCacheManager;
 
 	private int generatedIdLength;
 
@@ -60,13 +57,9 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 		String generatedTokenId = null;
 		while (!unique) {
 			generatedTokenId = this.generateTokenId();
-			if (tokenIdCacheManager.contains(generatedTokenId)) {
-				unique = false;
-			} else {
-				unique = true;
-			}
+			unique = saveGeneratedTokenId(generatedTokenId);
 		}
-		saveGeneratedTokenId(generatedTokenId);
+
 		return generatedTokenId;
 
 	}
@@ -74,16 +67,23 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Method will save tokenId to the database and it will add tokenId to the list.
 	 * 
-	 * @param generatedTokenId- token id generated from the method
+	 * @param generatedTokenId-
+	 *            token id generated from the method
 	 * @return string
 	 */
-	private void saveGeneratedTokenId(String generatedTokenId) {
+	private boolean saveGeneratedTokenId(String generatedTokenId) {
 		long currentTimestamp = System.currentTimeMillis();
 		try {
 			TokenId tokenId = new TokenId(generatedTokenId, currentTimestamp);
 			tokenIdRepository.save(tokenId);
-			tokenIdCacheManager.add(tokenId.getId());
-		} catch (Exception e) {
+			return true;
+		}
+		/*
+		 * catch (DataAccessLayerException e) { 
+		 * // Check for PK constraint else throw
+		 * error return false; }
+		 */
+		catch (Exception e) {
 			throw new TokenIdGenerationException(TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
 					TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
 		}
@@ -110,8 +110,8 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Generates a id and then generate checksum
 	 * 
-	 * @param generatedIdLength -
-	 *            The length of id to generate
+	 * @param generatedIdLength
+	 *            - The length of id to generate
 	 * 
 	 * @return the tokenId
 	 */
@@ -126,7 +126,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	/**
 	 * Method will append checksum to the generated tokenId.
 	 * 
-	 * @param generatedIdLength 
+	 * @param generatedIdLength
 	 * @param generatedVId
 	 * @param verhoeffDigit
 	 * @return generatedTokenId

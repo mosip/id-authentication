@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.IdTypeService;
+import io.swagger.annotations.Api;
 
 /**
  * This controller class provides id types master data operations.
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.service.IdTypeService;
  *
  */
 @RestController
+@Api(tags = { "IdType" })
 public class IdTypeController {
 	/**
 	 * Autowire reference to IdService.

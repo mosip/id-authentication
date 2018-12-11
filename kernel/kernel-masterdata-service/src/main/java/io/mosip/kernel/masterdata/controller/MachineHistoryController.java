@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller with api to get Machine History Details
@@ -18,6 +22,7 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
  */
 
 @RestController
+@Api(tags = { "MachineHistory" })
 @RequestMapping(value = "/v1.0/machineshistories")
 public class MachineHistoryController {
 
@@ -32,16 +37,22 @@ public class MachineHistoryController {
 	 * Language code and effective date time
 	 * 
 	 * @param id
-	 *            machine Id
+	 *            input machine Id from User
 	 * @param langCode
-	 *            Language Code
-	 * @param effdatetimes
-	 *            effective date and time
+	 *            input Language Code from user
+	 * @param dateAndTime
+	 *            input effective date and time from user
 	 * 
-	 * @return returning machine history detail based on given Machine ID, Language
+	 * @return MachineHistoryResponseDto
+	 * 			returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
+	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineHistoryResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time", response = MachineHistoryResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine History Details found for the given Languge Code, ID and Effective date time"),
+			@ApiResponse(code = 500, message = "While retrieving Machine History Details any error occured") })
 	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("id") String id,
 			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 

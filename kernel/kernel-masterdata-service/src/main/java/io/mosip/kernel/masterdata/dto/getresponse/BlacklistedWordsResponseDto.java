@@ -5,7 +5,6 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Blacklisted words response Dto

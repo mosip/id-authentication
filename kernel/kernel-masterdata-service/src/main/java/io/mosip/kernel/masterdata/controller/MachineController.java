@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
-@Api(tags = { "Machines" })
+@Api(tags = { "Machine" })
 public class MachineController {
 
 	/**
@@ -45,10 +45,18 @@ public class MachineController {
 	 * Function to fetch machine detail based on given Machine ID and Language code.
 	 * 
 	 * @param machineId
+	 * 			pass Machine ID as String
 	 * @param langcode
-	 * @return machine detail based on given Machine ID and Language code
+	 * 			pass language code as String
+	 * @return MachineResponseDto
+	 * 			machine detail based on given Machine ID and Language code
 	 */
 	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
+	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code and ID", response = MachineResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and ID"),
+			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
 	public MachineResponseDto getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode ) {
 		return machineService.getMachine(machineId, langCode);
@@ -59,11 +67,19 @@ public class MachineController {
 	 * 
 	 * Function to fetch machine detail based on given Language code
 	 * 
-	 * @param langcode
-	 * @return machine detail based on given Language code
+	 * @param langCode
+	 * 			pass language code as String
+	 * 
+	 * @return MachineResponseDto
+	 * 			machine detail based on given Language code
 	 */
 
 	@GetMapping(value = "/v1.0/machines/{langcode}")
+	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code", response = MachineResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code", response = MachineResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
+			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
 	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
 		return machineService.getMachine(langCode);
 
@@ -72,9 +88,15 @@ public class MachineController {
 	/**
 	 * Function to fetch a all machines details
 	 * 
-	 * @return all machines details
+	 * @return MachineResponseDto
+	 * 			all machines details
 	 */
 	@GetMapping(value = "/v1.0/machines")
+	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail", response = MachineResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When all Machine retrieved from database", response = MachineResponseDto.class),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While retrieving Machine any error occured") })
 	public MachineResponseDto getMachineAll() {
 		return machineService.getMachineAll();
 
@@ -83,9 +105,11 @@ public class MachineController {
 	/**
 	 * Save machine  details to the database table
 	 * 
-	 * @param machine
+	 * @param RequestDto<MachineDto>
 	 *            input from user Machine  DTO
-	 * @return {@link IdResponseDto}
+	 *            
+	 * @return ResponseEntity<IdResponseDto>
+	 * 			Machine Id which is inserted successfully 
 	 */
 	@PostMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine and return Machine id", response = IdResponseDto.class)

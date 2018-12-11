@@ -19,20 +19,23 @@ import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseD
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
+import io.swagger.annotations.Api;
 /**
  * This class handles the fecthing and creation of packetRejection reasons based on category and 
- * its respsective list 
+ * its respective list 
  * @author Srinivasan
+ * @since 1.0.0
  *
  */
 @RestController
+@Api(tags = { "RejectionReason" })
 @RequestMapping(value = "/v1.0/packetrejectionreasons")
 public class PacketRejectionReasonController {
 	/**
 	 * creates instance of service class {@link PacketRejectionReasonService}
 	 */
 	@Autowired
-	PacketRejectionReasonService reasonService;
+	private PacketRejectionReasonService reasonService;
 	/**
 	 * This API handles creation of reason categories 
 	 * @param requestDto- reasoncategoryObject

@@ -24,8 +24,8 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch list of valid document types and to create
- * document types based on list provided.
+ * This class have methods to fetch list of valid document category and to create
+ * document category based on list provided.
  * 
  * @author Neha
  * @author Ritesh Sinha
