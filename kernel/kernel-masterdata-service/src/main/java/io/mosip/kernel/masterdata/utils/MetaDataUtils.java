@@ -44,13 +44,13 @@ public class MetaDataUtils {
 	 * @return an entity class which extends {@link BaseEntity}
 	 * @throws DataAccessLayerException
 	 *             if any error occurs while mapping values
+	 * @see MapperUtils#map(Object, Class)
 	 */
 	public static <T, D extends BaseEntity> D setCreateMetaData(final T source,
 			Class<? extends BaseEntity> destinationClass) {
-		Objects.requireNonNull(source, "source should not be null");
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = "TestAdmin";
-		if(!EmptyCheckUtils.isNullEmpty(authN)) {
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
 			contextUser = authN.getName();
 		}
 

@@ -48,6 +48,8 @@ public class MapperUtils {
 	}
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
+	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
 		try {
@@ -73,10 +75,12 @@ public class MapperUtils {
 	 * @param destination
 	 *            where values is going to be mapped
 	 * @return the <code>destination</code> object
+	 * @throws NullPointerException
+	 *             if either <code>source</code> or <code>destination</code> is null
 	 */
 	public static <S, D> D map(final S source, D destination) {
-		Objects.requireNonNull(source, "source should not be null");
-		Objects.requireNonNull(destination, "destination should not be null");
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
 		mapValues(source, destination);
 		return destination;
 	}
@@ -95,9 +99,13 @@ public class MapperUtils {
 	 * @throws DataAccessLayerException
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
+	 * @throws NullPointerException
+	 *             if either <code>source</code> or <code>destinationClass</code> is
+	 *             null
 	 */
 	public static <S, D> D map(final S source, Class<D> destinationClass) {
-		Objects.requireNonNull(source, "source should not be null");
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destinationClass, "destination class should not be null");
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
@@ -121,6 +129,9 @@ public class MapperUtils {
 	 * @throws DataAccessLayerException
 	 *             if exception occur during creating of
 	 *             <code>destinationClass</code> object
+	 * @throws NullPointerException
+	 *             if either <code>sourceList</code> or
+	 *             <code>destinationClass</code> is null
 	 */
 	public static <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
 		Objects.requireNonNull(sourceList, "sourceList should not be null");
@@ -142,11 +153,13 @@ public class MapperUtils {
 	 * 
 	 * @throws DataAccessLayerException
 	 *             if error raised during mapping values
+	 * @throws NullPointerException
+	 *             if either <code>source</code> or <code>destination</code> is null
 	 */
 	public static <S, D> void mapFieldValues(S source, D destination) {
 
-		Objects.requireNonNull(source, "source should not be null");
-		Objects.requireNonNull(destination, "destination should not be null");
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		Field[] destinationFields = destination.getClass().getDeclaredFields();
 
@@ -155,8 +168,8 @@ public class MapperUtils {
 	}
 
 	public static <D, S> void mapLocalDateTimeField(S source, D destination) {
-		Objects.requireNonNull(source, "source should not be null");
-		Objects.requireNonNull(destination, "destination should not be null");
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		Field[] destinationFields = destination.getClass().getDeclaredFields();
 		try {
@@ -324,8 +337,6 @@ public class MapperUtils {
 		ef.setAccessible(false);
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
-
-	
 
 	public static List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);
