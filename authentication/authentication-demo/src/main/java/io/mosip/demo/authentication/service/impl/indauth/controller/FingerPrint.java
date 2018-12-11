@@ -1,6 +1,8 @@
 package io.mosip.demo.authentication.service.impl.indauth.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
@@ -88,6 +90,26 @@ public class FingerPrint {
 		
 		ResponseEntity<IdResponseDTO> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST, getHeaders(req), IdResponseDTO.class);
 		System.err.println("UIN >>>>>>>>>>>" + response.getBody().getResponse().getEntity());
+		String uin=response.getBody().getResponse().getEntity();
+		String[] data = uin.split("/");
+		File file = new File("D:\\ScannedFingerprintTemplate.txt");
+		
+		try {
+			file.createNewFile();
+			FileWriter fileWriter = new FileWriter(file);
+			fileWriter.write("Encoded String:");
+			fileWriter.write("\r\n");
+			fileWriter.write(encodedString);
+			fileWriter.write("\r\n");
+			fileWriter.write("UIN:");
+			fileWriter.write("\r\n");
+			fileWriter.write(data[data.length-1]);
+			fileWriter.flush();
+			fileWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return response.getBody().getResponse().getEntity();
 	}
 
