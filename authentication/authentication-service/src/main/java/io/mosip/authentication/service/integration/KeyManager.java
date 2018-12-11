@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
@@ -61,8 +63,9 @@ public class KeyManager {
 	 * @param decryptor the decryptor
 	 * @param mapper the mapper
 	 * @return the map
+	 * @throws IdAuthenticationAppException 
 	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, Environment env, DecryptorImpl decryptor, ObjectMapper mapper) {
+	public Map<String, Object> requestData(Map<String, Object> requestBody, Environment env, DecryptorImpl decryptor, ObjectMapper mapper) throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
 			String tspId = (String) requestBody.get(TSP_ID);
@@ -84,6 +87,11 @@ public class KeyManager {
 						});				
 			}
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());		
 		}
 		return request;
 	}
