@@ -81,24 +81,17 @@ public class DemoDedupe {
 	 * @param refId
 	 * @return duplicate Ids
 	 */
-	public Set<DemographicInfoDto> performDedupe(String refId) {
+	public Set<String> performDedupe(String refId) {
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
-
-		Set<DemographicInfoDto> duplicateDtos = new HashSet<>();
-		List<DemographicInfoDto> demoDtos;
-		
+		Set<String> duplicateUins = new HashSet<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			demoDtos = packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
-					demoDto.getDob());
-			if (demoDtos != null && !demoDtos.isEmpty()) {
-				duplicateDtos.addAll(demoDtos);
-				break;
 
-			}
+			duplicateUins.addAll(packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
+					demoDto.getDob(), demoDto.getLangCode()));
 		}
 
-		return duplicateDtos;
+		return duplicateUins;
 	}
 
 	/**

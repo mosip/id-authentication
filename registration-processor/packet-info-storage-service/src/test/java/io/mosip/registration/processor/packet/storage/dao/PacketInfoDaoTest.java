@@ -152,18 +152,17 @@ public class PacketInfoDaoTest {
 	@Test
 	public void getAllDemoWithUINTest() {
 
-		dedupeEntity.setUinRefId("12345");
-
-		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = new ArrayList<>();
-		individualDemographicDedupeEntityList.add(dedupeEntity);
+		List<String> duplicateUins = new ArrayList<>();
+		duplicateUins.add("1234567");
+		duplicateUins.add("12345678");
 
 		Mockito.when(demographicDedupeRepository.getAllDemoWithUIN(ArgumentMatchers.any(), ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(individualDemographicDedupeEntityList);
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(duplicateUins);
 		Date date = new Date(1995, 04, 16);
 
-		List<DemographicInfoDto> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date);
+		List<String> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date, "fr");
 
-		assertEquals("2018782130000224092018121229", demoDtoList.get(0).getRegId());
+		assertEquals("1234567", demoDtoList.get(0));
 	}
 
 	@Test
@@ -174,8 +173,7 @@ public class PacketInfoDaoTest {
 		Mockito.when(demographicDedupeRepository.findDemoById(ArgumentMatchers.anyString()))
 				.thenReturn(demographicDedupeEntityList);
 
-		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao
-				.findDemoById("2018782130000224092018121229");
+		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao.findDemoById("2018782130000224092018121229");
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
 	}
 }

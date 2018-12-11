@@ -19,7 +19,6 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -78,8 +77,6 @@ public class DemodedupeStage extends MosipVerticleManager {
 		String description = "";
 		boolean isTransactionSuccessful = false;
 
-		List<String> duplicateUINList = new ArrayList<>();
-
 		String registrationId = object.getRid();
 
 		try {
@@ -87,11 +84,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 					.getRegistrationStatus(registrationId);
 
 			// Potential Duplicate Ids after performing demo dedupe
-			Set<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
+			Set<String> duplicateDtos = demoDedupe.performDedupe(registrationId);
+			List<String> duplicateUINList = new ArrayList<>(duplicateDtos);
 
 			if (!duplicateDtos.isEmpty()) {
-
-				duplicateDtos.forEach(id -> duplicateUINList.add(id.getUin()));
 
 				// authenticating duplicateIds with provided packet biometrics
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);

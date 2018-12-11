@@ -13,7 +13,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import lombok.Data;
 /**
  * 
  * @author Girish Yarru
@@ -24,10 +23,10 @@ import lombok.Data;
 public class IndividualDemographicDedupeEntity extends BasePacketEntity<IndividualDemographicDedupePKEntity>
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Column(name = "uin_ref_id")
-	private String uinRefId ;
-	
+	private String uinRefId;
+
 	@Column(name = "name")
 	private String name;
 
@@ -36,11 +35,10 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 
 	@Column(name = "gender", nullable = false)
 	private String gender;
-	
+
 	@Column(name = "phonetic_name")
 	private String phoneticName;
 
-	
 	@Column(name = "is_active")
 	private Boolean isActive;
 
@@ -165,6 +163,4 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.uinRefId = uinRefId;
 	}
 
-	
-	
 }
