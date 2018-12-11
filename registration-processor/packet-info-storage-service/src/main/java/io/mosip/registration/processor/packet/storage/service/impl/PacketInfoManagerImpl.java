@@ -44,8 +44,8 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Demograph
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -152,7 +152,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	private PacketInfoDao packetInfoDao;
 
 	@Autowired
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	@Autowired
 	private Utilities utility;
