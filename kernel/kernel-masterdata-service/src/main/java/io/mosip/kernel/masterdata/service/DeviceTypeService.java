@@ -18,7 +18,7 @@ public interface DeviceTypeService {
 	 * 
 	 * @param deviceTypes
 	 * 
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return CodeAndLanguageCodeID
 	 */
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceTypes);
 

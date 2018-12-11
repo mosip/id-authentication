@@ -22,7 +22,8 @@ public interface MachineService {
 	 *            Machine Id given by user
 	 * @param langCode
 	 *            Language code given by user
-	 * @return Machine Detail for given machine id and language code
+	 * @return MachineResponseDto 
+	 * 			Machine Detail for given machine id and language code
 	 *
 	 */
 	MachineResponseDto getMachine(String id, String langCode);
@@ -30,7 +31,8 @@ public interface MachineService {
 	/**
 	 * This abstract method to fetch all machines details
 	 * 
-	 * @return Returning all Machines Details
+	 * @return MachineResponseDto
+	 * 			Returning all Machines Details
 	 *
 	 */
 	MachineResponseDto getMachineAll();
@@ -40,7 +42,8 @@ public interface MachineService {
 	 * 
 	 * @param langCode
 	 *            Language code given by user
-	 * @return Machine Detail for given machine id and language code
+	 * @return MachineResponseDto
+	 * 		 Machine Detail for given machine id and language code
 	 *
 	 */
 	MachineResponseDto getMachine(String langCode);
@@ -49,7 +52,7 @@ public interface MachineService {
 	 * 
 	 * @param machine
 	 * 
-	 * @return {@link MachineSpecIdAndId}
+	 * @return IdResponseDto
 	 */
 	
 	 public IdResponseDto createMachine(RequestDto<MachineDto> machine);

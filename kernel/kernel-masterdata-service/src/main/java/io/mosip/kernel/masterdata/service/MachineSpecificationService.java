@@ -19,7 +19,7 @@ public interface MachineSpecificationService {
 	 * 
 	 * @param machineSpecification
 	 * 
-	 * @return {@link DeviceTypeCodeAndLanguageCodeAndId}
+	 * @return IdResponseDto
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 

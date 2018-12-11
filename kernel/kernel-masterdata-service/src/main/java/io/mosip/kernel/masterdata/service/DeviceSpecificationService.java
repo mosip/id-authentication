@@ -22,7 +22,7 @@ public interface DeviceSpecificationService {
 	 *
 	 * @param languageCode
 	 *            Language code given by user
-	 * @return List<DeviceSpecificationDto> 
+	 * @return List
 	 * 			 Device Specification Details for given language code
 	 *
 	 */
@@ -36,7 +36,8 @@ public interface DeviceSpecificationService {
 	 *            Language Code given by user
 	 * @param deviceTypeCode
 	 *            DeviceTypeCode given by user
-	 * @return List<DeviceSpecificationDto> Device Specification Details for given
+	 * @return List 
+	 * 			Device Specification Details for given
 	 *         language code and deviceTypeCode
 	 *
 	 */
@@ -46,7 +47,7 @@ public interface DeviceSpecificationService {
 	/**
 	 * Function to save Device Specification Details to the Database
 	 * 
-	 * @param RequestDto<DeviceSpecificationDto>
+	 * @param deviceSpecification
 	 *        input from user DeviceSpecification DTO
 	 * 
 	 * @return IdResponseDto
