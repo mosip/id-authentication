@@ -68,6 +68,10 @@ public class MapperUtils {
 	 * name fields value will be set but not the embedded IDs and super class
 	 * values.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
