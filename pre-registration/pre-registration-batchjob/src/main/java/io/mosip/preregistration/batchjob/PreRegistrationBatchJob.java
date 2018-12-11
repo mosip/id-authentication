@@ -4,16 +4,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+
 /**
- * Hello world!
+ * @author M1043008
  *
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-public class PreRegistrationBatchJobService 
+public class PreRegistrationBatchJob 
 {
     public static void main( String[] args )
     {
-        SpringApplication.run(PreRegistrationBatchJobService.class, args);
+        SpringApplication.run(PreRegistrationBatchJob.class, args);
     }
 }

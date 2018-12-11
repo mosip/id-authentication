@@ -33,8 +33,7 @@ public class DocumentEntity implements Serializable {
 	private static final long serialVersionUID = 1692781286748263575L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
+	@SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
 	@Column(name = "id")
 	private int documentId;

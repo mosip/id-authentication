@@ -58,6 +58,18 @@ public class BookingExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(MasterDataNotAvailableException.class)
+	public ResponseEntity<ResponseDto<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_020.toString(),
+				ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
+		ResponseDto<?> errorRes = new ResponseDto<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(false);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+	}
 
 	@ExceptionHandler(RestCallException.class)
 	public ResponseEntity<ResponseDto<?>> databaseerror(final RestCallException e, WebRequest request) {
@@ -200,5 +212,50 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
+	
+
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(AppointmentAlreadyCanceledException.class)
+	public ResponseEntity<ResponseDto<?>> AppointmentAlreadyCanceledException(final AppointmentAlreadyCanceledException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_017.toString(),
+				ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_CANCELED.toString());
+
+		ResponseDto responseDto = new ResponseDto();
+
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(AppointmentCannotBeCanceledException.class)
+	public ResponseEntity<ResponseDto<?>> AppointmentCanNotCanceledException(final AppointmentCannotBeCanceledException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_018.toString(),
+				ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
+
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(CancelAppointmentFailedException.class)
+	public ResponseEntity<ResponseDto<?>> AppointmentCancelFailedException(final CancelAppointmentFailedException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_019.toString(),
+				ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
+
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+	
 
 }
