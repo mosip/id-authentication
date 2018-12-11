@@ -271,10 +271,10 @@ public class IdRequestValidator implements Validator {
 	private boolean checkForDuplicates(Map<String, Map<String, List<Map<String, String>>>> requestMap) {
 		TreeSet<Map<String, String>> identitySet = Sets.newTreeSet((Map<String, String> map1,
 				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
+		
 		return requestMap.get("identity").values().parallelStream()
+				.peek(map -> identitySet.clear())
 				.peek(identitySet::addAll)
-				.peek(listOfMap -> System.err.println("list-> " + listOfMap))
-				.peek(listOfMap -> System.err.println("identitySet-> " + identitySet))
 				.anyMatch(listOfMap -> listOfMap.size() != identitySet.size());
 	}
 
