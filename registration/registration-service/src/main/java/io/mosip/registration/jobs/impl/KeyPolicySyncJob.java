@@ -20,13 +20,11 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.PolicySyncService;
-import io.mosip.registration.service.packet.RegPacketStatusService;
-import io.mosip.registration.service.sync.PacketSynchService;
 
 /**
  * This is a job to sync the packet status
  * 
- * @author YASWANTH S
+ * @author Brahmananda Reddy
  * @since 1.0.0
  *
  */

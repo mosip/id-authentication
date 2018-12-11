@@ -83,6 +83,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 
 		try {
 			policyDTO = objectMapper.readValue(data, PolicyDTO.class);
+			keyStore = new KeyStore();
 			keyStore.setId("id");
 			keyStore.setPublicKey(policyDTO.getPublicKey().getBytes());
 			keyStore.setValidFromDtimes(policyDTO.getKeyGenerationTime());

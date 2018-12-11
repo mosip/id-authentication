@@ -77,24 +77,28 @@ public class RegPacketStatusController extends BaseController implements Initial
 	private void packetSyncStatus() {
 		
 		ResponseDTO response = jobConfigurationService.executeJob(Initialization.getApplicationContext(),
-				"RPS_J00006");
+				"POS_J00008");
 		
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
 					.getSuccessResponseDTO().getOtherAttributes()
 					.get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
-
-			ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
-			for (LinkedHashMap<String, String> registration : registrations) {
-				packetStatus.add(new RegPacketStatusDTO(
-						registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-						registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+			
+			if(registrations == null) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, response.getSuccessResponseDTO().getMessage());
+			} else {
+				ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
+				for (LinkedHashMap<String, String> registration : registrations) {
+					packetStatus.add(new RegPacketStatusDTO(
+							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
+							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+				}
+	
+				regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));
+				syncStatus.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("status"));
+	
+				table.setItems(packetStatus);
 			}
-
-			regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));
-			syncStatus.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("status"));
-
-			table.setItems(packetStatus);
 		} else if (response.getErrorResponseDTOs() != null) {
 			/** Generate Alert to show No Packets Available. */
 			ErrorResponseDTO errorResponseDTO = response.getErrorResponseDTOs().get(0);

@@ -135,13 +135,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			biometricInfoDTO = source.getBiometricDTO().getIntroducerBiometricDTO();
 			if (biometricInfoDTO != null) {
 				List<FingerprintDetailsDTO> fingerprints = biometricInfoDTO.getFingerprintDetailsDTO();
-				if (fingerprints != null) {
+				if (!fingerprints.isEmpty()) {
 					biometricType = "fingerprint";
 					introducer.setIntroducerFingerprint(getBiometric(fingerprints.get(0), language, biometricType));
 				}
 
 				List<IrisDetailsDTO> parentIris = biometricInfoDTO.getIrisDetailsDTO();
-				if (parentIris != null) {
+				if (!parentIris.isEmpty() ) {
 					biometricType = "iris";
 					introducer.setIntroducerIris(getBiometric(parentIris.get(0), language, biometricType));
 				}
