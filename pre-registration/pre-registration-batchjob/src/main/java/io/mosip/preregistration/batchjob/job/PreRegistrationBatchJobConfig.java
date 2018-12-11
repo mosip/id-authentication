@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.preregistration.batchjob.tasklets.ArchivingConsumedPreIdTasklet;
 import io.mosip.preregistration.batchjob.tasklets.BookingTasklet;
-import io.mosip.preregistration.batchjob.tasklets.UpdateDemographicStatusTasklet;
+import io.mosip.preregistration.batchjob.tasklets.UpdateConsumedStatusTasklet;
 
 /**
  * @author M1043008
@@ -34,11 +34,8 @@ public class PreRegistrationBatchJobConfig {
 	@Autowired
 	private DataSource dataSource;
 	
-	/*@Autowired
-	private ReadTableTasklet readTableTasklet;*/
-	
 	@Autowired
-	private UpdateDemographicStatusTasklet updateTableTasklet;
+	private UpdateConsumedStatusTasklet updateTableTasklet;
 	
 	@Autowired
 	private ArchivingConsumedPreIdTasklet archivingTasklet;
@@ -46,10 +43,6 @@ public class PreRegistrationBatchJobConfig {
 	@Autowired
 	private BookingTasklet bookingtasklet;
 	
-	/*@Bean
-	public Step readTableStep() {
-		return stepBuilderFactory.get("readTableStep").tasklet(readTableTasklet).build();
-	}*/
 	
 	@Bean
 	public Step updateTableStep() {
@@ -66,29 +59,22 @@ public class PreRegistrationBatchJobConfig {
 		return stepBuilderFactory.get("bookingStep").tasklet(bookingtasklet).build();
 	}
 	
-	/*@Bean
-	public Job readTableJob(){
-		return this.jobBuilderFactory.get("readTableJob")	
-					.incrementer(new RunIdIncrementer())
-					.start(readTableStep())
-					.build();
-	}*/
 	
-	@Bean
+	/*@Bean
 	public Job updateTableJob() {
 		return this.jobBuilderFactory.get("updateTableJob")
 				   .incrementer(new RunIdIncrementer())
 				   .start(updateTableStep())
 				   .build();
-	}
+	}*/
 
-	@Bean
+	/*@Bean
 	public Job archivingJob() {
 		return this.jobBuilderFactory.get("archivingJob")
 					.incrementer(new RunIdIncrementer())
 					.start(archivingStep())
 					.build();
-	}
+	}*/
 	
 	@Bean
 	public Job bookingJob(){
@@ -97,12 +83,12 @@ public class PreRegistrationBatchJobConfig {
 				   .start(bookingStep())
 				   .build();
 	}
-	/*@Bean
-	public Job preRegistrationJob() {
-		return this.jobBuilderFactory.get("preRegustrationJob")
+	@Bean
+	public Job consumedStatusJob() {
+		return this.jobBuilderFactory.get("consumedStatusJob")
 				   .incrementer(new RunIdIncrementer())
 				   .start(updateTableStep())
 				   .next(archivingStep())
 				   .build();
-	}*/
+	}
 }

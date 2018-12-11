@@ -18,22 +18,27 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.preregistration.batchjob.model.ResponseDto;
 
+/**
+ * @author M1043008
+ *
+ */
 @Component
-public class ArchivingConsumedPreIdTasklet implements Tasklet {
-
+public class UpdateConsumedStatusTasklet implements Tasklet {
+	
 	private RestTemplate restTemplate;
 
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
 
-	@Value("${archiveConsumedPreId.url}")
-	String archiveConsumedUrl;
+	@Value("${updateConsumedStatus.url}")
+	String updateConsumedUrl;
+	
 
 	@Override
-	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-
+	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+		
 		restTemplate = restTemplateBuilder.build();
-		UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(archiveConsumedUrl);
+		UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(updateConsumedUrl);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<ResponseDto<String>> entity = new HttpEntity<>(headers);
@@ -42,7 +47,6 @@ public class ArchivingConsumedPreIdTasklet implements Tasklet {
 
 		ResponseEntity<ResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 				HttpMethod.GET, entity, ResponseDto.class);
-
 		return RepeatStatus.FINISHED;
 	}
 
