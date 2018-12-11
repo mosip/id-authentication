@@ -3,4 +3,5 @@ export interface Applicant {
   name: string;
   appointmentDateTime: string;
   status: string;
+  regDto: any;
 }

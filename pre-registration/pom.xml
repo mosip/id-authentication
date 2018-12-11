@@ -74,6 +74,7 @@
         <module>pre-registration-auth-service</module>
     	<module>pre-registration-booking-service</module>
 		<module>pre-registration-batchjob</module>
+		<module>pre-registration-batchjob-service</module>
  		<module>pre-registration-datasync-service</module>
 		 
 		

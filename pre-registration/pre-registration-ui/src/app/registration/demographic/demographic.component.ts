@@ -63,7 +63,7 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   progress = 0;
   dataUploadComplete = true;
-
+  uppermostLocationHierarchy;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -85,6 +85,14 @@ export class DemographicComponent implements OnInit {
       this.initForm();
     });
     this.isDisabled[0] = true;
+
+    // this.uppermostLocationHierarchy = this.dataStorageService
+    //   .getLocationMetadataHirearchy('country')
+    //   .subscribe(response => {
+    //     const countryHirearchy = response['response'];
+    //     const uppermostLocationHierarchy = countryHirearchy.filter(element => element.name === 'INDIA');
+    //     this.uppermostLocationHierarchy = uppermostLocationHierarchy;
+    //   });
   }
 
   initForm() {
@@ -177,6 +185,9 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
+    // console.log(this.uppermostLocationHierarchy[0].code);
+    // this.dataStorageService.getLocationList('BLR', 'ENG');
+
     let preId = '';
     const identity = this.createIdentityJSON();
     this.dataUploadComplete = false;
@@ -190,21 +201,6 @@ export class DemographicComponent implements OnInit {
               preRegId: this.preRegId
             });
           } else {
-            // console.log('RESPONSE ', response);
-
-            // if (response.type === HttpEventType.UploadProgress) {
-            //   console.log('yeyey ', response.loaded);
-            //   const loaded = response.loaded;
-            //   const total = response.total;
-            //   this.progress = (loaded / total) * 100;
-            // }
-
-            // if (response.type === HttpEventType.Response) {
-            //   console.log('YES', response.body['response'][0]['prId']);
-            //   preId = response.body['response'][0]['prId'];
-            //   this.regService.addUser(new UserModel(preId, identity, []));
-            //   console.log(this.regService.getUsers());
-            // }
             preId = response['response'][0].prId;
             this.regService.addUser(new UserModel(preId, identity, []));
             this.sharedService.addNameList({
@@ -226,13 +222,6 @@ export class DemographicComponent implements OnInit {
         }
       );
     });
-
-    // if (this.userForm.hasError('oneOfRequired')) {
-    //   // this.userForm.controls.
-    //   this.checked = false;
-    // } else {
-    //   this.checked = true;
-    // }
   }
 
   onGenderChange(gender: MatButtonToggleChange) {
