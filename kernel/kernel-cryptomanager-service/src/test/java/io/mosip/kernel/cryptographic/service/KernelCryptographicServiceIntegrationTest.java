@@ -63,9 +63,9 @@ public class KernelCryptographicServiceIntegrationTest {
 	@MockBean 
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
-	private static CryptomanagerRequestDto cryptomanagerRequestDto; 
-	private static KeyPair keyPair;
-	private static SecretKey secretKey;
+	private  CryptomanagerRequestDto cryptomanagerRequestDto; 
+	private  KeyPair keyPair;
+	private  SecretKey secretKey;
 	private MockRestServiceServer server;
 	
 	@Before

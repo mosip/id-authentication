@@ -1,13 +1,10 @@
 package io.mosip.kernel.cryptographic.service;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
@@ -26,7 +23,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,9 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.KernelCryptomanagerBootApplication;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest(classes=KernelCryptomanagerBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -57,15 +51,11 @@ public class KernelCryptographicServiceIntegrationConfigExceptionTest {
 	@MockBean 
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
-	private static CryptomanagerRequestDto cryptomanagerRequestDto; 
-	private static KeyPair keyPair;
-	private static SecretKey secretKey;
+	
 	private MockRestServiceServer server;
 	
 	@Before
 	public void setUp() {
-		cryptomanagerRequestDto= new CryptomanagerRequestDto("applicationId", "referenceId", LocalDateTime.now(),CryptoUtil.encodeBase64("urvil".getBytes()));
-	
 	server = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 

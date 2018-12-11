@@ -1,8 +1,5 @@
 package io.mosip.kernel.cryptographic.service;
 
-import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
@@ -10,18 +7,15 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,11 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.KernelCryptomanagerBootApplication;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
-import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest(classes=KernelCryptomanagerBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -55,9 +44,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 	
 	@Autowired 
 	private ObjectMapper objectMapper;
-	
-	@Autowired
-	private KeyGenerator generator;
+
 	
 	
 	@Autowired 
@@ -66,16 +53,13 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 	@MockBean 
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
-	private static CryptomanagerRequestDto cryptomanagerRequestDto; 
-	private static KeyPair keyPair;
-	private static SecretKey secretKey;
+	
+	
 	private MockRestServiceServer server;
 	
 	@Before
 	public void setUp() {
-		cryptomanagerRequestDto= new CryptomanagerRequestDto("applicationId", "referenceId", LocalDateTime.now(),CryptoUtil.encodeBase64("urvil".getBytes()));
-	keyPair=generator.getAsymmetricKey();
-	secretKey=generator.getSymmetricKey();
+
 	server = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 
@@ -120,13 +104,6 @@ public void testIllegalArgumentException() throws Exception {
 	mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
 }
 
-@Test	
-public void testInvalidDataException() throws Exception {
-	KeymanagerSymmetricKeyResponseDto dto= new KeymanagerSymmetricKeyResponseDto(CryptoUtil.encodeBase64(secretKey.getEncoded()));
-	server.expect(requestTo("http://localhost:8088/keymanager/v1.0/symmetricKey")).andRespond(withSuccess(objectMapper.writeValueAsString(dto), MediaType.APPLICATION_JSON));
-	String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dGVzdCAjS0VZX1NQTElUVEVSI3Rlc3Q\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-	mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
-}
 	
 	
 }
