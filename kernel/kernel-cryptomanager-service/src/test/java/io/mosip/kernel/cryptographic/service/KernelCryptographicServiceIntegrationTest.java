@@ -40,60 +40,68 @@ import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
-@SpringBootTest(classes=KernelCryptomanagerBootApplication.class)
+@SpringBootTest(classes = KernelCryptomanagerBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class KernelCryptographicServiceIntegrationTest {
-   
+
 	@Autowired
 	private MockMvc mockMvc;
-	
-	
-	@Autowired 
+
+	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private KeyGenerator generator;
-	
-	
-	@Autowired 
+
+	@Autowired
 	private RestTemplate restTemplate;
-	
-	@MockBean 
+
+	@MockBean
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-	
-	private  KeyPair keyPair;
-	
+
+	private KeyPair keyPair;
+
 	private MockRestServiceServer server;
-	
+
 	@Before
 	public void setUp() {
-	keyPair=generator.getAsymmetricKey();
-	server = MockRestServiceServer.bindTo(restTemplate).build();
+		keyPair = generator.getAsymmetricKey();
+		server = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 
-	
-@Test	
-public void testEncrypt() throws Exception {
-	KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto= new KeymanagerPublicKeyResponseDto(CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(), LocalDateTime.now().plusDays(100));
-    server.expect(requestTo("http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123")).andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
-    String requestBody="{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-	MvcResult result = mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isOk()).andReturn();
-    CryptomanagerResponseDto cryptomanagerResponseDto=objectMapper.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
-    assertThat(cryptomanagerResponseDto.getData(),isA(String.class));
-}
+	@Test
+	public void testEncrypt() throws Exception {
+		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
+				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
+				LocalDateTime.now().plusDays(100));
+		server.expect(requestTo(
+				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
+				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
+						MediaType.APPLICATION_JSON));
+		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+		MvcResult result = mockMvc
+				.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isOk()).andReturn();
+		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
+				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
+		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
+	}
 
-@Test	
-public void testDecrypt() throws Exception {
-	KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto= new KeymanagerSymmetricKeyResponseDto(CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
-    server.expect(requestTo("http://localhost:8088/keymanager/v1.0/symmetricKey")).andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
-    when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
-    String requestBody="{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-	MvcResult result = mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isOk()).andReturn();
-    CryptomanagerResponseDto cryptomanagerResponseDto=objectMapper.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
-    assertThat(cryptomanagerResponseDto.getData(),isA(String.class));
-}
-	
-	
-	
+	@Test
+	public void testDecrypt() throws Exception {
+		KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto = new KeymanagerSymmetricKeyResponseDto(
+				CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
+		server.expect(requestTo("http://localhost:8088/keymanager/v1.0/symmetricKey")).andRespond(withSuccess(
+				objectMapper.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
+		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		String requestBody = "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+		MvcResult result = mockMvc
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isOk()).andReturn();
+		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
+				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
+		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
+	}
+
 }
