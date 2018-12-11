@@ -14,15 +14,15 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  */
 
 public interface BiometricAttributeService {
-	/*
+
+	/**
+	 * 
 	 * methods to fetch list of biometricAttribute for given biometric type code and
 	 * language code
 	 * 
 	 * @param biometricTypeCode
-	 * 
 	 * @param langCode
-	 * 
-	 * @return {@link List<BiometricAttributeDTO>}
+	 * @return {@link List<BiometricAttributeDTO>}}
 	 */
 	List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode);
 

@@ -64,28 +64,25 @@ public class TemplateController {
 	 * @return Template Details
 	 */
 	@GetMapping("/v1.0/templates/{langcode}/{templatetypecode}")
-	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(
-			@PathVariable("langcode") String langCode,
+	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
 		return templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode);
 	}
-	
+
 	/**
-	 * This method creates template  based on provided.
+	 * This method creates template based on provided.
 	 * 
-	 * @param category
+	 * @param template
 	 *            the request dto.
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping("/v1.0/templates")
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = IdResponseDto.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdResponseDto> createTemplate(
-			@Valid @RequestBody RequestDto<TemplateDto> template) {
-		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()),
-				HttpStatus.CREATED);
+	public ResponseEntity<IdResponseDto> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.CREATED);
 
 	}
 }
