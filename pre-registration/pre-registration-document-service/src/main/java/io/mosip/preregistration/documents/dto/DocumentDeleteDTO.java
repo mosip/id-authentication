@@ -10,19 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocResponseDto implements Serializable {
+public class DocumentDeleteDTO implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7070542323407937205L;
 	
-	
-	private String preRegsitrationId;
-	private String documnetId;
-	private String documentName;
-	private String documentCat;
-	private String documentType;
+	private String documnet_Id;
 	private String resMsg;
 
 }
