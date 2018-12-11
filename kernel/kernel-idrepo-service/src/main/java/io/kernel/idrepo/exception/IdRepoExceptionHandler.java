@@ -43,6 +43,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
+
+	private static final String ID_REPO = "IdRepo";
+
+	private static final String SESSION_ID = "sessionId";
+
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
 
 	/** The env. */
@@ -64,7 +70,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleAllExceptions - \n"
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleAllExceptions - \n"
 				+ ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,7 +82,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleExceptionInternal - \n"
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleExceptionInternal - \n"
 				+ ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
@@ -104,10 +110,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
 		
-		mosipLogger.error("sessionId", "IdRepo", "IdRepoExceptionHandler", "handleIdAppException - \n"
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleIdAppException - \n"
 				+ ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.BAD_REQUEST);
 	}
 
 	/**

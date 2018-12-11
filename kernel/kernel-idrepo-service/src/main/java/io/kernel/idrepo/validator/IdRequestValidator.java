@@ -1,19 +1,20 @@
 package io.kernel.idrepo.validator;
 
 import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import javax.annotation.Resource;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -295,12 +296,13 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 		} else {
 			try {
-				DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"));
-				if (!ZonedDateTime.parse(timestamp, timestampFormat).getZone().equals(ZoneId.of("Z"))) {
+				DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(env.getProperty("datetime.pattern"));
+				timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty("datetime.timezone")));
+				if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
 					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "TimeZone"));
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 				}
-			} catch (DateTimeParseException e) {
+			} catch (IllegalArgumentException e) {
 				errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 			}

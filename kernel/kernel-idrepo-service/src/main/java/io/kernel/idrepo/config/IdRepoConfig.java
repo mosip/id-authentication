@@ -122,7 +122,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	@PostConstruct
 	public void setup() {
 		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
-		mapper.setTimeZone(TimeZone.getTimeZone("GMT"));
+		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty("datetime.timezone")));
 	}
 
 	/**

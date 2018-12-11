@@ -70,7 +70,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
