@@ -12,18 +12,19 @@ import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "reason_category", schema = "master")
-@IdClass(ReasonCategoryId.class)
+@IdClass(CodeAndLanguageCodeID.class)
 public class ReasonCategory extends BaseEntity implements Serializable {
 
 	/**
@@ -50,10 +51,10 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "reasonCategory", cascade = CascadeType.ALL)
 	private List<ReasonList> reasonList = new ArrayList<>();
 
-	public void addReasonList(ReasonList list) {
-		list.setReasonCategory(this);
-		this.reasonList.add(list);
-	}
+//	public void addReasonList(ReasonList list) {
+//		list.setReasonCategory(this);
+//		this.reasonList.add(list);
+//	}
 
 	
 

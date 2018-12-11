@@ -53,7 +53,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	String description = "";
 	
-	private final String LANG_CODE= "eng";
+	private static final String LANG_CODE= "eng";
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {

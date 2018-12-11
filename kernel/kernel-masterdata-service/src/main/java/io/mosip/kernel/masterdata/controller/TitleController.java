@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.TitleResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.service.TitleService;
 
 /**
@@ -26,7 +26,7 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@GetMapping(value = "/title")
+	@GetMapping(value = "/v1.0/title")
 	public TitleResponseDto getAllTitles() {
 		return titleService.getAllTitles();
 	}
@@ -39,7 +39,7 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/title/{langcode}")
+	@GetMapping(value = "/v1.0/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 		return titleService.getByLanguageCode(langCode);
 	}

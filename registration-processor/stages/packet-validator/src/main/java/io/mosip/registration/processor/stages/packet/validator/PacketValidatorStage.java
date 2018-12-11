@@ -181,14 +181,19 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			description = isTransactionSuccessful ? "Packet uploaded to file system"
-					: "Packet uploading to file system is unsuccessful";
-			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
 
+			if(isTransactionSuccessful) {
+				description = "Packet uploaded to file system";
+				eventId=EventId.RPR_402.toString();
+				eventName = EventName.UPDATE.toString();
+				eventType = EventType.BUSINESS.toString();
+			}else {
+
+				description = "Packet uploading to file system is unsuccessful";
+				eventId=EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 

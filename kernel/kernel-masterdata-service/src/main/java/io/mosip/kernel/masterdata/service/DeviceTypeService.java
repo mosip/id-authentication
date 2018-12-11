@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * This interface has abstract methods to save a Device Type Details to the
@@ -19,6 +21,6 @@ public interface DeviceTypeService {
 	 * 
 	 * @return {@link PostResponseDto}
 	 */
-	public PostResponseDto saveDeviceTypes(DeviceTypeRequestDto deviceTypes);
+	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceTypes);
 
 }

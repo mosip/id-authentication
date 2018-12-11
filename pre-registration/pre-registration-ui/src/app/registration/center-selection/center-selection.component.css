@@ -26,6 +26,10 @@
     cursor: pointer;
 }
 
+.map-placer{
+    position: relative;
+}
+
 @media(max-width: 500px) {
     .expansionPanelPlacer{
         padding: 0;

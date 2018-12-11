@@ -39,7 +39,7 @@ public class RegistrationCenterUserMachineHistoryController {
 	 * @return {@link RegistrationCenterUserMachineMappingHistoryResponseDto} based on
 	 *         user inputs
 	 */
-	@GetMapping("/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
+	@GetMapping("/v1.0/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
 			@PathVariable("effdtimes") String effectiveTimestamp,
 			@PathVariable("registrationcenterid") String registrationCenterId,

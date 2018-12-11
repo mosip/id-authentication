@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +19,7 @@ import lombok.NoArgsConstructor;
  * @author Neha
  * @since 1.0.0
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +33,10 @@ public class Template extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id", nullable = false, unique = true, length = 36)
 	private String id;
+	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
@@ -56,8 +61,23 @@ public class Template extends BaseEntity implements Serializable {
 
 	@Column(name = "template_typ_code", length = 36)
 	private String templateTypeCode;
-
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String languageCode;
+	
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "module_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	private ModuleDetail moduleDetail;
+	
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private TemplateFileFormat templateFileFormat;
+	
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private TemplateType templateType;
 
 }

@@ -29,7 +29,7 @@ public class DocumentExceptionHandler {
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDto> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_007.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		err.add(errorDetails);
 		ResponseDto errorRes = new ResponseDto<>();
@@ -56,7 +56,7 @@ public class DocumentExceptionHandler {
 	@ExceptionHandler(MultipartException.class)
 	public ResponseEntity<ResponseDto> sizeExceedException(final MultipartException me, WebRequest webRequest) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
-		ExceptionJSONInfo jsonInfo = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_004.toString(),
+		ExceptionJSONInfo jsonInfo = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_004.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		err.add(jsonInfo);
 		ResponseDto errorRes = new ResponseDto<>();
@@ -68,7 +68,7 @@ public class DocumentExceptionHandler {
 	
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<ResponseDto> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_006.toString(),
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_005.toString(),
 				StatusCodes.DOCUMENT_IS_MISSING.toString());
 		ResponseDto errorRes = new ResponseDto();
 		List<ExceptionJSONInfo> err = new ArrayList<>();

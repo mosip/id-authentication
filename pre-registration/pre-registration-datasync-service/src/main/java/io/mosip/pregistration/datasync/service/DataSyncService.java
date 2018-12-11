@@ -6,30 +6,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.pregistration.datasync.code.StatusCodes;
 import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
+import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
-import io.mosip.pregistration.datasync.dto.ResponseDTO;
-import io.mosip.pregistration.datasync.dto.ResponseDataSyncDTO;
+import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
+import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.pregistration.datasync.entity.DocumentEntity;
-import io.mosip.pregistration.datasync.entity.Ipprlst_PK;
+import io.mosip.pregistration.datasync.entity.InterfaceDataSyncTablePK;
 import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
@@ -75,16 +84,18 @@ public class DataSyncService {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ResponseDTO getPreRegistration(String preId) throws Exception {
-		List responseList = new ArrayList<>();
+	public DataSyncResponseDTO<PreRegArchiveDTO> getPreRegistration(String preId) throws Exception {
+		// List responseList = new ArrayList<>();
+
+		DataSyncResponseDTO responseDto = new DataSyncResponseDTO<>();
+		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		PreRegistrationEntity demography = dataSyncRepository.findDemographyByPreId(preId);
-		ResponseDTO responseDto = new ResponseDTO<>();
 		if (demography != null) {
 			System.out.println("Pre id: " + demography.getPreRegistrationId());
 			List<DocumentEntity> documentlist = dataSyncRepository.findDocumentByPreId(preId);
 			byte[] bytes = DataSyncService.archivingFiles(demography, documentlist);
-			responseList.add(bytes);
-			responseList.add(demography.getPreRegistrationId().toString());
+			preRegArchiveDTO.setZipBytes(bytes);
+			preRegArchiveDTO.setFileName(demography.getPreRegistrationId().toString());
 		} else {
 			throw new DataSyncRecordNotFoundException(StatusCodes.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
 		}
@@ -92,7 +103,7 @@ public class DataSyncService {
 		responseDto.setStatus(status);
 		responseDto.setResTime(resTime);
 		responseDto.setErr(errlist);
-		responseDto.setResponse(responseList);
+		responseDto.setResponse(preRegArchiveDTO);
 		return responseDto;
 	}
 
@@ -113,14 +124,24 @@ public class DataSyncService {
 		Path pathDoc = null;
 		byte[] inputStream = null;
 		byte[] returnInputStream = null;
+		JSONParser jsonParser = new JSONParser();
+		JSONObject demographicJsonObject = null;
 		if (preRegistrationEntity != null) {
 			try {
 				JSONObject responseJson = new JSONObject();
 				responseJson.put("Pre-registration Id", preRegistrationEntity.getPreRegistrationId());
 				responseJson.put("Appointment Date", preRegistrationEntity.getCreateDateTime().toString());
-				responseJson.put("Identity", new String(preRegistrationEntity.getApplicantDetailJson(), "UTF-8"));
+
+				demographicJsonObject = (JSONObject) jsonParser
+						.parse(new String(preRegistrationEntity.getApplicantDetailJson(), StandardCharsets.UTF_8));
+				JSONObject reqObject = (JSONObject) demographicJsonObject.get("request");
+				JSONObject demoObj = (JSONObject) reqObject.get("demographicDetails");
+
 				pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-						+ preRegistrationEntity.getPreRegistrationId().toString() + ".json");
+						+ preRegistrationEntity.getPreRegistrationId().toString() + "_Demographic" + ".json");
+
+				responseJson.put("demographic-details", demoObj);
+
 				jsonFile = new File(pathDoc.toString());
 				if (jsonFile.exists()) {
 					jsonFile.delete();
@@ -225,9 +246,9 @@ public class DataSyncService {
 	 * @param reverseDto
 	 * @return responseDTO
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ResponseDTO<ReverseDataSyncDTO> storeConsumedPreRegistrations(ReverseDataSyncDTO reverseDto) {
-		ResponseDTO<ReverseDataSyncDTO> responseDto = new ResponseDTO<>();
+
+	public DataSyncResponseDTO<String> storeConsumedPreRegistrations(ReverseDataSyncDTO reverseDto) {
+		DataSyncResponseDTO<String> responseDto = new DataSyncResponseDTO<>();
 		List<ReverseDataSyncEntity> entityList = new ArrayList<>();
 		List<PreRegistrationProcessedEntity> processedEntityList = new ArrayList<>();
 		ReverseDataSyncEntity reverseEntity = new ReverseDataSyncEntity();
@@ -238,10 +259,10 @@ public class DataSyncService {
 		if (preIdList != null && preIdList.size() > 0 && !preIdList.equals(null)) {
 			for (int i = 0; i < preIdList.size(); i++) {
 				reverseEntity = new ReverseDataSyncEntity();
-				Ipprlst_PK ipprlst_PK = new Ipprlst_PK();
-				ipprlst_PK.setPrereg_id(preIdList.get(i));
-				ipprlst_PK.setReceived_dtimes(reverseDto.getReqTime());
-				reverseEntity.setIpprlst_PK(ipprlst_PK);
+				InterfaceDataSyncTablePK ipprlstPK = new InterfaceDataSyncTablePK();
+				ipprlstPK.setPreregId(preIdList.get(i));
+				ipprlstPK.setReceivedDtimes(new Timestamp(reverseDto.getReqTime().getTime()));
+				reverseEntity.setIpprlst_PK(ipprlstPK);
 				reverseEntity.setLangCode("AR");
 				reverseEntity.setCrBy("5766477466");
 				reverseEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
@@ -249,7 +270,7 @@ public class DataSyncService {
 
 				processedEntity = new PreRegistrationProcessedEntity();
 				processedEntity.setPreRegistrationId(preIdList.get(i));
-				processedEntity.setReceivedDTime(reverseDto.getReqTime());
+				processedEntity.setReceivedDTime(new Timestamp(reverseDto.getReqTime().getTime()));
 				processedEntity.setStatusCode("Processed");
 				processedEntity.setStatusComments("Processed by registration processor");
 				processedEntity.setLangCode("AR");
@@ -268,15 +289,10 @@ public class DataSyncService {
 			}
 
 			status = "true";
-			exceptionJSONInfo = new ExceptionJSONInfo("", "");
-			errlist.add(exceptionJSONInfo);
-			List responseList = new ArrayList<>();
-			responseList.add(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
-			responseDto.setResponse(responseList);
+			responseDto.setResponse(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 
 		} else {
-			throw new ReverseDataFailedToStoreException(
-					StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
+			throw new ReverseDataFailedToStoreException(StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 		}
 
 		responseDto.setStatus(status);
@@ -287,19 +303,38 @@ public class DataSyncService {
 
 	}
 
-	public ResponseDTO<ResponseDataSyncDTO> retrieveAllPreRegid(DataSyncRequestDTO dataSyncRequestDTO) {
+	public DataSyncResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegid(DataSyncRequestDTO dataSyncRequestDTO)
+			throws ParseException {
+		Date fromDate = dataSyncRequestDTO.getFromDate();
+		Date toDate = dataSyncRequestDTO.getToDate();
 
-		Timestamp fromDate = dataSyncRequestDTO.getFromDate();
-		Timestamp toDate = dataSyncRequestDTO.getToDate();
+		final String ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
+		final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
+		final TimeZone utc = TimeZone.getTimeZone("UTC");
+		sdf.setTimeZone(utc);
+		Date myDate = DateUtils.parseDefaultUTCToDate(sdf.format(fromDate).toString());
+		Date myDate1 = toDate;
 
-		ResponseDataSyncDTO responseDataSyncDTO = new ResponseDataSyncDTO();
-		ResponseDTO<ResponseDataSyncDTO> responseDto = new ResponseDTO<>();
+		if (toDate == null) {
+
+			myDate1 = myDate;
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(myDate1);
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			myDate1 = cal.getTime();
+		} else {
+			myDate1 = DateUtils.parseDefaultUTCToDate(sdf.format(toDate).toString());
+		}
+		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
+		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();
 		List<PreRegistrationEntity> preRegIdEntitylist;
 		List<ExceptionJSONInfo> err = new ArrayList<>();
-		List<ResponseDataSyncDTO> responseDataSyncList = new ArrayList<>();
 
 		try {
-			preRegIdEntitylist = dataSyncRepo.findBycreateDateTimeBetween(fromDate, toDate);
+			preRegIdEntitylist = dataSyncRepo.findBycreateDateTimeBetween(new Timestamp(myDate.getTime()),
+					new Timestamp(myDate1.getTime()));
 			if (preRegIdEntitylist == null || preRegIdEntitylist.size() == 0) {
 				throw new RecordNotFoundForDateRange(StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
 			} else {
@@ -308,13 +343,12 @@ public class DataSyncService {
 				for (PreRegistrationEntity preRegistrationEntity : preRegIdEntitylist) {
 					preregIds.add(preRegistrationEntity.getPreRegistrationId());
 				}
-				responseDataSyncDTO.setPreRegistrationIds(preregIds);
-				responseDataSyncDTO.setTransactionId("337324416082");
-				responseDataSyncList.add(responseDataSyncDTO);
+				preRegistrationIdsDTO.setPreRegistrationIds(preregIds);
+				preRegistrationIdsDTO.setTransactionId("337324416082");
 				responseDto.setStatus("True");
 				responseDto.setErr(err);
 				responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-				responseDto.setResponse(responseDataSyncList);
+				responseDto.setResponse(preRegistrationIdsDTO);
 			}
 		} catch (DataAccessLayerException e) {
 

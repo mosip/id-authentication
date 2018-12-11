@@ -31,7 +31,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -185,7 +185,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		Biometric biometric = identity.getBiometric();
 		List<Document> documentDtos = identity.getDocuments();
 		List<FieldValue> osiData = identity.getOsiData();
-		List<BiometricException> exceptionBiometrics = identity.getExceptionBiometrics();
+		List<BiometricExceptionDto> exceptionBiometrics = identity.getExceptionBiometrics();
 		Photograph applicantPhotographData = identity.getApplicantPhotograph();
 		Photograph exceptionPhotographData = identity.getExceptionPhotograph();
 		metaData = identity.getMetaData();
@@ -218,8 +218,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
-	private void saveExceptionBiometricDatas(List<BiometricException> exceptionBiometrics) {
-		for (BiometricException exp : exceptionBiometrics) {
+	private void saveExceptionBiometricDatas(List<BiometricExceptionDto> exceptionBiometrics) {
+		for (BiometricExceptionDto exp : exceptionBiometrics) {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exp, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
