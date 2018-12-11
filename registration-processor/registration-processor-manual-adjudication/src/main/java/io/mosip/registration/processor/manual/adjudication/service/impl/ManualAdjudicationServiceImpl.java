@@ -199,7 +199,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
-		manualVerificationEntity = manualAdjudicationDao.getByRegId(manualVerificationDTO.getRegId(),
+		manualVerificationEntity = manualAdjudicationDao.getSingleAssignedRecord(manualVerificationDTO.getRegId(),
 				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId());
 		if (manualVerificationEntity == null) {
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),

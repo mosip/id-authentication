@@ -66,7 +66,7 @@ public class ManualAdjudicationDaoTest {
 		manualAdjudicationEntityList.add(manualVerificationEntity);
 
 		Mockito.when(manualAdjudiacationRepository.save(ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
-		Mockito.when(manualAdjudiacationRepository.getByRegId(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		Mockito.when(manualAdjudiacationRepository.getSingleAssignedRecord(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
 		Mockito.when(manualAdjudiacationRepository.getFirstApplicantDetails(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntityList);
 		Mockito.when(manualAdjudiacationRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
 
@@ -101,7 +101,7 @@ public class ManualAdjudicationDaoTest {
 	 */
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getByRegId(manualVerificationEntity.getPkId().getRegId(), manualVerificationEntity.getPkId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=manualAdjudicationDao.getSingleAssignedRecord(manualVerificationEntity.getPkId().getRegId(), manualVerificationEntity.getPkId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
 		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
 	
