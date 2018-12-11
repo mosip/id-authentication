@@ -42,6 +42,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -53,6 +55,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
+import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
@@ -1607,42 +1610,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/title/{langcode}", "ENG")).andExpect(status().isOk());
 
 	}
-	// ----------------------------------------document-category----------------------------------------
-
-	@Test
-	public void addDocumentCategoryTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
-		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
-		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
-		when(documentCategoryRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
-	}
-
-	// -----------------------------------document-type----------------------------------------
-	@Test
-	public void addDocumentTypeListTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
-		when(documentTypeRepository.create(Mockito.any())).thenReturn(type);
-		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void addDocumentTypesDatabaseConnectionExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\",\"isActive\":\"true\"}}";
-		when(documentTypeRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
-	}
 
 	// -----------------------------------gender-type----------------------------------------
 
@@ -1671,24 +1638,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/gendertype").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
 
-	}
-	// ------------------------------------------valid-document-------------------------------------------
-
-	@Test
-	public void insertValidDocumentTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(validDocumentRepository.create(Mockito.any())).thenReturn(validDocument);
-		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void insertValidDocumentExceptionTest() throws Exception {
-		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"docTypeCode\":\"ttt\",\"docCategoryCode\":\"ddd\",\"langCode\":\"ENG\",\"isActive\":\"true\"}}";
-		when(validDocumentRepository.create(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
 	}
 
 	// ----------------------------------BiometricAttributeCreateApiTest--------------------------------------------------
@@ -2231,4 +2180,116 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void addDocumentTypeListTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+
+		when(documentTypeRepository.create(Mockito.any())).thenReturn(type);
+		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addDocumentTypesDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void insertValidDocumentExceptionTest() throws Exception {
+		RequestDto<ValidDocumentDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		ValidDocumentDto validDocumentDto = new ValidDocumentDto();
+		validDocumentDto.setIsActive(true);
+		validDocumentDto.setLangCode("ENG");
+		validDocumentDto.setDocTypeCode("TEST");
+		validDocumentDto.setDocCategoryCode("TSC");
+		requestDto.setRequest(validDocumentDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(validDocumentRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void addDocumentCategoryTest() throws Exception {
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(true);
+		documentCategoryDto.setLangCode("ENG");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+
+		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
+		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(true);
+		documentCategoryDto.setLangCode("ENG");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+
+		when(documentCategoryRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void insertValidDocumentTest() throws Exception {
+		RequestDto<ValidDocumentDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		ValidDocumentDto validDocumentDto = new ValidDocumentDto();
+		validDocumentDto.setIsActive(true);
+		validDocumentDto.setLangCode("ENG");
+		validDocumentDto.setDocCategoryCode("TSC");
+		validDocumentDto.setDocTypeCode("TEST");
+		requestDto.setRequest(validDocumentDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+
+		when(validDocumentRepository.create(Mockito.any())).thenReturn(validDocument);
+		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
 }
