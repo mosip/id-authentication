@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -328,9 +329,18 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private MachineHistoryRepository machineHistoryRepository;
 
+	public static LocalDateTime localDateTimeUTCFormat = LocalDateTime.now();
+
+	public static final DateTimeFormatter UTC_DATE_TIME_FORMAT = DateTimeFormatter
+			.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+	public static final String UTC_DATE_TIME_FORMAT_DATE_STRING = "2018-12-02T02:50:12.208Z";
+
+	@SuppressWarnings("static-access")
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
+		localDateTimeUTCFormat = localDateTimeUTCFormat.parse(UTC_DATE_TIME_FORMAT_DATE_STRING, UTC_DATE_TIME_FORMAT);
 		blacklistedSetup();
 
 		genderTypeSetup();
@@ -1292,11 +1302,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 
-		MvcResult result = mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
+				localDateTimeUTCFormat)).thenReturn(centers);
+
+		MvcResult result = mockMvc
+				.perform(get("/v1.0/registrationcentershistory/1/ENG/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
 
 		RegistrationCenterHistoryResponseDto returnResponse = mapper
 				.readValue(result.getResponse().getContentAsString(), RegistrationCenterHistoryResponseDto.class);
@@ -1307,24 +1320,24 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersHistoryNotFoundExceptionTest() throws Exception {
 		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
-		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
+				localDateTimeUTCFormat)).thenReturn(null);
+		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING))
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound()).andReturn();
 	}
 
 	@Test
 	public void getRegistrationCentersHistoryEmptyExceptionTest() throws Exception {
 		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(new ArrayList<RegistrationCenterHistory>());
-		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
+				localDateTimeUTCFormat)).thenReturn(new ArrayList<RegistrationCenterHistory>());
+		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING))
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound()).andReturn();
 	}
 
 	@Test
 	public void getRegistrationCentersHistoryFetchExceptionTest() throws Exception {
 		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
+				localDateTimeUTCFormat)).thenThrow(DataAccessLayerException.class);
+		mockMvc.perform(get("/v1.0/registrationcentershistory/1/ENG/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING))
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError()).andReturn();
 	}
 
@@ -1522,18 +1535,20 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersMachineUserMappingNotFoundExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
-				registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
+				registrationCenterUserMachineHistoryId, localDateTimeUTCFormat))
 						.thenReturn(registrationCenterUserMachineHistories);
-		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound()).andReturn();
+		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
+				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
+				.andReturn();
 	}
 
 	@Test
 	public void getRegistrationCentersMachineUserMappingFetchExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
-				registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
+				registrationCenterUserMachineHistoryId, localDateTimeUTCFormat))
 						.thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
+		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
+				.concat("/1/1/1"))
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError()).andReturn();
 	}
 
