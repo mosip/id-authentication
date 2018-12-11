@@ -92,7 +92,7 @@ public class DeviceController {
 	 * @param RequestDto
 	 * 			 input parameter deviceRequestDto
 	 * 
-	 * @return ResponseEntity<IdResponseDto>
+	 * @return ResponseEntity
 	 * 			Machine Id which is inserted successfully
 	 */
 	@PostMapping()

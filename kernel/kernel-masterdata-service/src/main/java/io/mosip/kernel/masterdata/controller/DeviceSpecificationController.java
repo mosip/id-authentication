@@ -74,7 +74,7 @@ public class DeviceSpecificationController {
 	 * 
 	 * @param langCode
 	 *            input from user
-	 * @param devicetypecode
+	 * @param deviceTypeCode
 	 *            input from user
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
@@ -98,7 +98,7 @@ public class DeviceSpecificationController {
 	/**
 	 * Save device specification details to the database table
 	 * 
-	 * @param RequestDto<DeviceSpecificationDto>
+	 * @param RequestDto
 	 *            input from user Device specification DTO
 	 *            
 	 * @return {@link IdResponseDto}

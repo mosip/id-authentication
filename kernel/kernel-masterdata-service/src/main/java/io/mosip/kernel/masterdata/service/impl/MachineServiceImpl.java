@@ -136,10 +136,11 @@ public class MachineServiceImpl implements MachineService {
 	 * Method used for retrieving Machine details based on given Language code
 	 * 
 	 * @param langCode
-	 *            pass Language code as String
+	 *           pass Language code as String
 	 * 
-	 * @return MachineResponseDto returning the Machine Detail for the given Language
-	 *         code
+	 * @return MachineResponseDto 
+	 * 			returning the Machine Detail for the given Language
+	 *          code
 	 * 
 	 * @throws MasterDataServiceException
 	 *             While Fetching Machine Detail If fails to fetch required Machine
@@ -179,7 +180,7 @@ public class MachineServiceImpl implements MachineService {
 	 * @return IdResponseDto
 	 * 		   Machine ID which is successfully inserted
 	 * 
-	 * @param RequestDto<MachineDto>
+	 * @param RequestDto
 	 *             input from user Machine DTO
 	 * 
 	 * @throws MasterDataServiceException
