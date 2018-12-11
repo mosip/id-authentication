@@ -15,10 +15,10 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> name;
 
 	/** List of identity info to hold dateOfBirth */
-	List<IdentityInfoDTO> dateOfBirth;
+	List<IdentityInfoDTO> dob;
 
 	/** List of identity info to hold dateOfBirthType */
-	List<IdentityInfoDTO> dateOfBirthType;
+	List<IdentityInfoDTO> dobType;
 
 	/** List of identity info to hold age */
 	List<IdentityInfoDTO> age;

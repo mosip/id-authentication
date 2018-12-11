@@ -313,8 +313,8 @@ public class AuthRequestValidatorTest{
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList);
-		idDTO.setDateOfBirthType(idInfoList);
+		idDTO.setDob(idInfoList);
+		idDTO.setDobType(idInfoList);
 		idDTO.setGender(idInfoList);
 		idDTO.setAge(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
@@ -379,8 +379,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 		RequestDTO reqDTO = new RequestDTO();
@@ -449,8 +449,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 		RequestDTO reqDTO = new RequestDTO();
@@ -519,8 +519,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 		RequestDTO reqDTO = new RequestDTO();
@@ -589,8 +589,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(null);
-		idDTO.setDateOfBirthType(null);
+		idDTO.setDob(null);
+		idDTO.setDobType(null);
 		idDTO.setGender(null);
 		idDTO.setAge(null);
 		RequestDTO reqDTO = new RequestDTO();
@@ -659,8 +659,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 		RequestDTO reqDTO = new RequestDTO();
@@ -729,8 +729,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 		RequestDTO reqDTO = new RequestDTO();
@@ -799,8 +799,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 
@@ -872,8 +872,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 
@@ -950,8 +950,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 
@@ -1026,8 +1026,8 @@ public class AuthRequestValidatorTest{
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setDateOfBirth(idInfoList1);
-		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setDob(idInfoList1);
+		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
 
