@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +51,7 @@ public class MapperUtils {
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 	/*
@@ -63,7 +62,11 @@ public class MapperUtils {
 	 * This method map the values from <code>source</code> to
 	 * <code>destination</code> if name and type of the fields inside the given
 	 * parameters are same.If any of the parameters are <code>null</code> this
-	 * method return <code>null</code>.
+	 * method return <code>null</code>.This method internally check whether the
+	 * source or destinationClass is DTO or an Entity type and map accordingly. If
+	 * any {@link Collection} type or Entity type field is their then only matched
+	 * name fields value will be set but not the embedded IDs and super class
+	 * values.
 	 * 
 	 * @param source
 	 *            which value is going to be mapped
@@ -76,7 +79,12 @@ public class MapperUtils {
 	public static <S, D> D map(final S source, D destination) {
 		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
 		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
-		mapValues(source, destination);
+		try {
+			mapValues(source, destination);
+		} catch (IllegalAccessException | InstantiationException e) {
+			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
+					+ source.getClass().getName() + " to destination : " + destination.getClass().getName(), e);
+		}
 		return destination;
 	}
 
@@ -84,7 +92,10 @@ public class MapperUtils {
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
 	 * all values from source and create an object of <code>destinationClass</code>
 	 * and map all the values from source to destination if field name and type is
-	 * same.
+	 * same.This method internally check whether the source or destinationClass is
+	 * DTO or an Entity type and map accordingly.If any {@link Collection} type or
+	 * Entity type field is their then only matched name fields value will be set
+	 * but not the embedded IDs and super class values.
 	 * 
 	 * @param source
 	 *            which value is going to be mapped
@@ -105,7 +116,8 @@ public class MapperUtils {
 		try {
 			destination = destinationClass.newInstance();
 		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-991", "Exception in creating destinationClass object", e);
+			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
+					+ source.getClass().getName() + " to destination : " + destinationClass.getClass().getName(), e);
 		}
 		return (D) map(source, destination);
 	}
@@ -162,44 +174,13 @@ public class MapperUtils {
 
 	}
 
-	public static <D, S> void mapLocalDateTimeField(S source, D destination) {
-		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
-		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
-		Field[] sourceFields = source.getClass().getDeclaredFields();
-		Field[] destinationFields = destination.getClass().getDeclaredFields();
-		try {
-			sourceLoop: for (Field sfield : sourceFields) {
-				sfield.setAccessible(true);
-				for (Field dfield : destinationFields) {
-					if (sfield.getName().equals(dfield.getName()) && sfield.getType().equals(dfield.getType())) {
-						dfield.setAccessible(true);
-
-						if (sfield.getType().isAssignableFrom(LocalDate.class)) {
-							setFieldValue(source, destination, sfield, dfield);
-							continue sourceLoop;
-						}
-						if (sfield.getType().isAssignableFrom(LocalTime.class)) {
-							setFieldValue(source, destination, sfield, dfield);
-							continue sourceLoop;
-						}
-						if (sfield.getType().isAssignableFrom(LocalDateTime.class)) {
-							setFieldValue(source, destination, sfield, dfield);
-							continue sourceLoop;
-						}
-
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new DataAccessLayerException("KER-MSD-994", "Error while mapping source object to destination", e);
-		}
-	}
 
 	/*
 	 * #############Private method used for mapping################################
 	 */
 
-	private static <S, D> void mapValues(S source, D destination) {
+	private static <S, D> void mapValues(S source, D destination)
+			throws IllegalAccessException, InstantiationException {
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
@@ -209,7 +190,8 @@ public class MapperUtils {
 		}
 	}
 
-	private static <S, D> void mapDtoToEntity(S source, D destination) {
+	private static <S, D> void mapDtoToEntity(S source, D destination)
+			throws InstantiationException, IllegalAccessException {
 		Field[] fields = destination.getClass().getDeclaredFields();
 		setBaseFieldValue(source, destination);// map super class values
 		for (Field field : fields) {
@@ -217,54 +199,42 @@ public class MapperUtils {
 			 * Map DTO matching field values to super class field values
 			 */
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
-				try {
-					Object id = field.getType().newInstance();
-					mapFieldValues(source, id);
-					field.setAccessible(true);
-					field.set(destination, id);
-					field.setAccessible(false);
-					break;
-				} catch (Exception e) {
-					throw new DataAccessLayerException("KER-MSD-000", "Error while mapping Embedded Id fields", e);
-				}
+				Object id = field.getType().newInstance();
+				mapFieldValues(source, id);
+				field.setAccessible(true);
+				field.set(destination, id);
+				field.setAccessible(false);
+				break;
 			}
 		}
 	}
 
-	private static <S, D> void mapEntityToDto(S source, D destination) {
+	private static <S, D> void mapEntityToDto(S source, D destination) throws IllegalAccessException {
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		/*
 		 * Here source is a Entity so we need to take values from Entity object and set
 		 * the matching fields in the destination object mostly an DTO.
 		 */
-		try {
-			boolean isIdMapped = false;// a flag to check if there any composite key is present and is mapped
-			boolean isSuperMapped = false;// a flag to check is class extends the BaseEntity and is mapped
-			for (Field sfield : sourceFields) {
-				sfield.setAccessible(true);// mark accessible true because fields my be private, for safety
-				if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
-					/**
-					 * Map the composite key values from source to destination if field name is same
-					 */
-					/**
-					 * Take the field and get the composite key object and map all values to
-					 * destination object
-					 */
-					mapFieldValues(sfield.get(source), destination);
-					sfield.setAccessible(false);
-					isIdMapped = true;// set flag so no need to check and map again
-				} else if (!isSuperMapped) {
-					setBaseFieldValue(source, destination);// this method check whether source is entity or destination
-															// and maps values accordingly
-					isSuperMapped = true;
-				}
+		boolean isIdMapped = false;// a flag to check if there any composite key is present and is mapped
+		boolean isSuperMapped = false;// a flag to check is class extends the BaseEntity and is mapped
+		for (Field sfield : sourceFields) {
+			sfield.setAccessible(true);// mark accessible true because fields my be private, for safety
+			if (!isIdMapped && sfield.isAnnotationPresent(EmbeddedId.class)) {
+				/**
+				 * Map the composite key values from source to destination if field name is same
+				 */
+				/**
+				 * Take the field and get the composite key object and map all values to
+				 * destination object
+				 */
+				mapFieldValues(sfield.get(source), destination);
+				sfield.setAccessible(false);
+				isIdMapped = true;// set flag so no need to check and map again
+			} else if (!isSuperMapped) {
+				setBaseFieldValue(source, destination);// this method check whether source is entity or destination
+														// and maps values accordingly
+				isSuperMapped = true;
 			}
-		} catch (Exception e) {
-
-			throw new DataAccessLayerException("KER-MSD-992",
-					"Exception in mapping source object : " + source.getClass().getName() + " to destination object : "
-							+ destination.getClass().getName() + e.getMessage(),
-					e);
 		}
 	}
 

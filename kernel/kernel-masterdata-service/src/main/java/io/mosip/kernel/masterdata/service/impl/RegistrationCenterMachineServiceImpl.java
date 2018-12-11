@@ -33,6 +33,9 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#createRegistrationCenterAndMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
