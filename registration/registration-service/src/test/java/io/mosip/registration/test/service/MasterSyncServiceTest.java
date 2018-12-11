@@ -1,8 +1,6 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -159,13 +157,6 @@ public class MasterSyncServiceTest {
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
 		assertEquals(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG,
 				responseDto.getErrorResponseDTOs().get(0).getMessage());
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void testMasterSyncExceptionThrown() throws RegBaseCheckedException {
-
-		Mockito.when(masterSyncServiceImpl.getMasterSync(Mockito.anyString())).thenThrow(new RuntimeException());
-
 	}
 
 }
