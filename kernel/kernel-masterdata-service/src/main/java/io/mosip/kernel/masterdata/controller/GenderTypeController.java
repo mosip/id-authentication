@@ -61,9 +61,9 @@ public class GenderTypeController {
 	 * @return primary key of entered row of gender
 	 */
 	@PostMapping("/v1.0/gendertype")
-	public ResponseEntity<CodeAndLanguageCodeID> createGenderType(
+	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.createGenderType(gender), HttpStatus.CREATED);
+		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.CREATED);
 
 	}
 

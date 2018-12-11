@@ -6,6 +6,8 @@ import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
+ * RegistrationCenterDeviceService interface provide methods used to create
+ * mapping between registration center id and device id.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0

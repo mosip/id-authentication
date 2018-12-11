@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * The RegistrationCenterMachineDeviceService interface provides method to
@@ -24,8 +25,11 @@ public interface RegistrationCenterMachineDeviceService {
 	 * 
 	 * @return ResponseRrgistrationCenterMachineDeviceDto contains registration
 	 *         center id, machine id and device id.
-	 *         
-	 *         
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while mapping registration center id, machine
+	 *             id and device id. Like if registration center id, machine id or
+	 *             device id is not valid or not present in database.
+	 * 
 	 */
 	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto);
