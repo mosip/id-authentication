@@ -62,7 +62,8 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION).build();
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION)
+				.build();
 	}
 
 	/**
@@ -82,7 +83,7 @@ public class SwaggerConfig {
 					hostWithPort = host;
 				} else {
 					hostWithPort = host + ":" + port;
-				} 
+				}
 				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
 				System.err.println("SwaggerUrlException: " + e);

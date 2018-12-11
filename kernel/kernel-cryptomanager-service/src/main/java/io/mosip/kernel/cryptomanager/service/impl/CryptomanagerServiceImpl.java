@@ -41,35 +41,37 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
-	
+
 	/**
 	 * {@link KeyGenerator} instance
 	 */
 	@Autowired
 	KeyGenerator keyGenerator;
-	
+
 	/**
 	 * {@link CryptomanagerUtil} instance
 	 */
 	@Autowired
-	CryptomanagerUtil cryptomanagerUtil; 
-	
+	CryptomanagerUtil cryptomanagerUtil;
+
 	/**
 	 * {@link Encryptor} instance
 	 */
 	@Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	
+
 	/**
 	 * {@link Decryptor} instance
 	 */
-	@Autowired 
+	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-	
-    
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.cryptography.service.CryptographyService#encrypt(io.mosip.kernel.cryptography.dto.CryptographyRequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.cryptography.service.CryptographyService#encrypt(io.mosip.
+	 * kernel.cryptography.dto.CryptographyRequestDto)
 	 */
 	@Override
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
@@ -79,12 +81,17 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		PublicKey publicKey = cryptomanagerUtil.getPublicKey(cryptoRequestDto);
 		final byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
-		cryptoResponseDto.setData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter)));
+		cryptoResponseDto.setData(CryptoUtil
+				.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter)));
 		return cryptoResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.cryptography.service.CryptographyService#decrypt(io.mosip.kernel.cryptography.dto.CryptographyRequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.cryptography.service.CryptographyService#decrypt(io.mosip.
+	 * kernel.cryptography.dto.CryptographyRequestDto)
 	 */
 	@Override
 	public CryptomanagerResponseDto decrypt(CryptomanagerRequestDto cryptoRequestDto) {
@@ -97,7 +104,8 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey = cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
-		cryptoResponseDto.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
+		cryptoResponseDto
+				.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
 		return cryptoResponseDto;
 	}
 

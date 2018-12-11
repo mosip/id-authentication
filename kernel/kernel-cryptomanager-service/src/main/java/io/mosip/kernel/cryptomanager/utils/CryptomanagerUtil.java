@@ -43,7 +43,7 @@ import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
 public class CryptomanagerUtil {
 
 	/**
-	 *  Asymmetric Algorithm Name
+	 * Asymmetric Algorithm Name
 	 */
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
@@ -65,7 +65,7 @@ public class CryptomanagerUtil {
 	 */
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String decryptSymmetricKeyUrl;
-	
+
 	/**
 	 * Key Splitter
 	 */
@@ -77,18 +77,17 @@ public class CryptomanagerUtil {
 	 */
 	@Autowired
 	private DataMapper dataMapper;
-	
+
 	/**
 	 * {@link RestTemplate} instance
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	/**
 	 * Calls Key-Manager-Service to get public key of an application
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return {@link PublicKey} returned by Key Manager Service
 	 */
 	public PublicKey getPublicKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -96,16 +95,15 @@ public class CryptomanagerUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-		        .queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp())
-		        .queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
+				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp())
+				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
 		try {
 			KeymanagerPublicKeyResponseDto keyManagerResponseDto = restTemplate
 					.getForObject(builder.buildAndExpand(uriParams).toUri(), KeymanagerPublicKeyResponseDto.class);
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(
 					new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		} catch (InvalidKeySpecException e) {
-			throw new InvalidKeyException(
-					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
+			throw new InvalidKeyException(CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
 					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
 		} catch (NoSuchAlgorithmException e) {
 			throw new io.mosip.kernel.core.exception.NoSuchAlgorithmException(
@@ -115,21 +113,20 @@ public class CryptomanagerUtil {
 		return key;
 	}
 
-	
 	/**
 	 * Calls Key-Manager-Service to decrypt symmetric key
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
-    public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
+	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
 		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto = new KeymanagerSymmetricKeyRequestDto();
-		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,new KeymanagerSymmetricKeyConverter());
+		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,
+				new KeymanagerSymmetricKeyConverter());
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = restTemplate.postForObject(
 				decryptSymmetricKeyUrl, keyManagerSymmetricKeyRequestDto, KeymanagerSymmetricKeyResponseDto.class);
 		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
-    }
+	}
 
 }
