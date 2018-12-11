@@ -7,7 +7,7 @@
 package io.mosip.kernel.cryptomanager.constant;
 
 /**
- * Error Constants for Cryptographic Service
+ * Error Constants for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
  * @since 1.0.0

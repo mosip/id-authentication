@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a CryptoManager Request")
+@ApiModel(description = "Model representing a Crypto-Manager-Service Request")
 public class CryptomanagerRequestDto {
 	/**
 	 * Application id of decrypting module
@@ -44,7 +44,7 @@ public class CryptomanagerRequestDto {
 	/**
 	 * Timestamp
 	 */
-	@ApiModelProperty(notes = "Timestamp", example = "2018-12-10T06:12:52.994Z", required = true)
+	@ApiModelProperty(notes = "Timestamp as metadata", example = "2018-12-10T06:12:52.994Z", required = true)
 	@NotNull
 	private LocalDateTime timeStamp;
 	/**

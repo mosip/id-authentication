@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Key manager get-public-key response
+ * Key-Manager-Service get-public-key response model
  * 
  * @author Urvil Joshi
  *

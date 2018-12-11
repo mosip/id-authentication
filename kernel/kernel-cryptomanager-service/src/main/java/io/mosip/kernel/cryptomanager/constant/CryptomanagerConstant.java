@@ -1,7 +1,7 @@
 package io.mosip.kernel.cryptomanager.constant;
 
 /**
- * Constant class for Cryptomanager Service
+ * Constant class for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
  *

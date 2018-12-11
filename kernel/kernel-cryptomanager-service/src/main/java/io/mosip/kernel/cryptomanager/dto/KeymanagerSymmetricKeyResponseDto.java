@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Key Manager decrypt-symmetric-key response
+ * Key-Manager-Service decrypt-symmetric-key response model
  * 
  * @author Urvil Joshi
  *

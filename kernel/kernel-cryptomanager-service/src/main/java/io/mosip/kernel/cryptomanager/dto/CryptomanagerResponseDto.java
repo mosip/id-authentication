@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a CryptoManager Response")
+@ApiModel(description = "Model representing a Crypto-Manager-Service Response")
 public class CryptomanagerResponseDto {
 	/**
 	 * Data Encrypted/Decrypted in BASE64 encoding

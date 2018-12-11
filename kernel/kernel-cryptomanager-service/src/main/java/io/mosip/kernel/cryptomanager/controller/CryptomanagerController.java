@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /**
- * Rest Controller for Cryptographic Service
+ * Rest Controller for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
  *

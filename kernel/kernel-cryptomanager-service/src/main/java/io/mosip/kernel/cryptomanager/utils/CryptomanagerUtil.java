@@ -85,7 +85,7 @@ public class CryptomanagerUtil {
 	private RestTemplate restTemplate;
 	
 	/**
-	 * Calls Key Manager service to get public key of an application
+	 * Calls Key-Manager-Service to get public key of an application
 	 * 
 	 * @param cryptomanagerRequestDto
 	 *            {@link CryptomanagerRequestDto} instance
@@ -117,7 +117,7 @@ public class CryptomanagerUtil {
 
 	
 	/**
-	 * Calls Key Manager service to decrypt symmetric key
+	 * Calls Key-Manager-Service to decrypt symmetric key
 	 * 
 	 * @param cryptomanagerRequestDto
 	 *            {@link CryptomanagerRequestDto} instance

@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Key Manager decrypt-symmetric-key request
+ * Key-Manager-Service decrypt-symmetric-key request model
  * 
  * @author Urvil Joshi
  *
