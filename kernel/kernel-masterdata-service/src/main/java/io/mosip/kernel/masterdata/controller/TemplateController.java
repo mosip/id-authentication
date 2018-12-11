@@ -28,6 +28,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author Neha
  * @author Uday kumar
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -48,32 +49,21 @@ public class TemplateController {
 		return templateService.getAllTemplate();
 	}
 
-	/**
-	 * API to fetch all Template details based on language code
-	 * 
-	 * @return All TemplateDto of specific language
-	 */
 	@GetMapping("/v1.0/templates/{langcode}")
 	public List<TemplateDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
 	}
 
-	/**
-	 * API to fetch a Template details using templateTypeCode and language code
-	 * 
-	 * @return Template Details
-	 */
 	@GetMapping("/v1.0/templates/{langcode}/{templatetypecode}")
-	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(
-			@PathVariable("langcode") String langCode,
+	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
 		return templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode);
 	}
-	
+
 	/**
-	 * This method creates template  based on provided.
+	 * This method creates template based on provided.
 	 * 
-	 * @param category
+	 * @param template
 	 *            the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
@@ -82,10 +72,8 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdResponseDto> createTemplate(
-			@Valid @RequestBody RequestDto<TemplateDto> template) {
-		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()),
-				HttpStatus.CREATED);
+	public ResponseEntity<IdResponseDto> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.CREATED);
 
 	}
 }
