@@ -8,6 +8,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstant;
@@ -40,6 +42,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.exception.CryptoException;
 import io.mosip.kernel.keymanagerservice.exception.InvalidApplicationIdException;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
+import io.mosip.kernel.keymanagerservice.logger.KeymanagerLogger;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
@@ -57,6 +60,8 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 @Service
 @Transactional
 public class KeymanagerServiceImpl implements KeymanagerService {
+
+	private static final Logger LOGGER = KeymanagerLogger.getLogger(KeymanagerServiceImpl.class);
 
 	/**
 	 * Keystore instance to handles and store cryptographic keys.
@@ -110,14 +115,23 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Override
 	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
 			Optional<String> referenceId) {
-
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.APPLICATIONID, applicationId,
+				KeyManagerConstant.GETPUBLICKEY);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.TIMESTAMP, timeStamp.toString(),
+				KeyManagerConstant.GETPUBLICKEY);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.REFERENCEID, referenceId.toString(),
+				KeyManagerConstant.GETPUBLICKEY);
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Reference Id is not present. Will get public key from SoftHSM");
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
 			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
 			publicKeyResponse.setIssuedAt(hsmPublicKey.getIssuedAt());
 			publicKeyResponse.setExpiryAt(hsmPublicKey.getExpiryAt());
 		} else {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Reference Id is present. Will get public key from DB store");
 			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, timeStamp,
 					referenceId.get());
 			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(dbPublicKey.getPublicKey()));
@@ -137,6 +151,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	private PublicKeyResponse<PublicKey> getPublicKeyFromHSM(String applicationId, LocalDateTime timeStamp) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.APPLICATIONID, applicationId,
+				KeyManagerConstant.GETPUBLICKEYHSM);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.TIMESTAMP, timeStamp.toString(),
+				KeyManagerConstant.GETPUBLICKEYHSM);
 
 		String alias = null;
 		LocalDateTime generationDateTime = null;
@@ -145,14 +163,22 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		List<KeyAlias> currentKeyAlias = keyAliasMap.get(KeyManagerConstant.CURRENTKEYALIAS);
 
 		if (currentKeyAlias.size() > 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias size more than one. Throwing exception");
 			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will fetch keypair using this alias");
 			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
 			alias = fetchedKeyAlias.getAlias();
 			generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
 			expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
 		} else if (currentKeyAlias.isEmpty()) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()),
+					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId and timestamp");
 			alias = UUID.randomUUID().toString();
 			generationDateTime = timeStamp;
 			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime,
@@ -176,6 +202,12 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	private PublicKeyResponse<byte[]> getPublicKeyFromDBStore(String applicationId, LocalDateTime timeStamp,
 			String referenceId) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.APPLICATIONID, applicationId,
+				KeyManagerConstant.GETPUBLICKEYDB);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.TIMESTAMP, timeStamp.toString(),
+				KeyManagerConstant.GETPUBLICKEYDB);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.REFERENCEID, referenceId,
+				KeyManagerConstant.GETPUBLICKEYDB);
 
 		String alias = null;
 		byte[] publicKey = null;
@@ -185,21 +217,33 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		List<KeyAlias> currentKeyAlias = keyAliasMap.get(KeyManagerConstant.CURRENTKEYALIAS);
 
 		if (currentKeyAlias.size() > 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias size more than one. Throwing exception");
 			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will fetch keypair using this alias");
 			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyFromDBStore = keyStoreRepository
 					.findByAlias(currentKeyAlias.get(0).getAlias());
 			if (!keyFromDBStore.isPresent()) {
+				LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.KEYFROMDB, keyFromDBStore.toString(),
+						"Key in DBStore does not exist for this alias. Throwing exception");
 				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 			} else {
+				LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.KEYFROMDB,
+						currentKeyAlias.get(0).getAlias(), "Key in DBStore exists for this alias. Fetching public key");
 				KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
 				publicKey = keyFromDBStore.get().getPublicKey();
 				generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
 				expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
 			}
 		} else if (currentKeyAlias.isEmpty()) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()),
+					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId, referenceId and timestamp");
 			byte[] encryptedPrivateKey;
 			alias = UUID.randomUUID().toString();
 			KeyPair keypair = keyGenerator.getAsymmetricKey();
@@ -238,13 +282,19 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	private Map<String, List<KeyAlias>> getKeyAliases(String applicationId, String referenceId,
 			LocalDateTime timeStamp) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+				KeyManagerConstant.GETALIAS);
 		Map<String, List<KeyAlias>> hashmap = new HashMap<>();
 		List<KeyAlias> keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId)
 				.stream()
 				.sorted((alias1, alias2) -> alias1.getKeyGenerationTime().compareTo(alias2.getKeyGenerationTime()))
 				.collect(Collectors.toList());
-		List<KeyAlias> currentKeyAliases = keyAliases.stream().filter(keyAlias -> isValidTimestamp(timeStamp, keyAlias))
-				.collect(Collectors.toList());
+		List<KeyAlias> currentKeyAliases = keyAliases.stream()
+				.filter(keyAlias -> keymanagerUtil.isValidTimestamp(timeStamp, keyAlias)).collect(Collectors.toList());
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.KEYALIAS, Arrays.toString(keyAliases.toArray()),
+				KeyManagerConstant.KEYALIAS);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+				Arrays.toString(currentKeyAliases.toArray()), KeyManagerConstant.CURRENTKEYALIAS);
 		hashmap.put(KeyManagerConstant.KEYALIAS, keyAliases);
 		hashmap.put(KeyManagerConstant.CURRENTKEYALIAS, currentKeyAliases);
 		return hashmap;
@@ -262,16 +312,24 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @return expiry datetime
 	 */
 	private LocalDateTime getExpiryPolicy(String applicationId, LocalDateTime timeStamp, List<KeyAlias> keyAlias) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.APPLICATIONID, applicationId,
+				KeyManagerConstant.GETEXPIRYPOLICY);
 		Optional<KeyPolicy> keyPolicy = keyPolicyRepository.findByApplicationId(applicationId);
 		if (!keyPolicy.isPresent()) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.KEYPOLICY, keyPolicy.toString(),
+					"Key Policy not found for this application Id. Throwing exception");
 			throw new InvalidApplicationIdException(KeymanagerErrorConstant.APPLICATIONID_NOT_VALID.getErrorCode(),
 					KeymanagerErrorConstant.APPLICATIONID_NOT_VALID.getErrorMessage());
 		}
 		LocalDateTime policyExpiryTime = timeStamp.plusDays(keyPolicy.get().getValidityInDays());
 		if (!keyAlias.isEmpty()) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.KEYALIAS, String.valueOf(keyAlias.size()),
+					"Getting expiry policy. KeyAlias exists");
 			for (KeyAlias alias : keyAlias) {
-				if (isOverlapping(timeStamp, policyExpiryTime, alias.getKeyGenerationTime(),
+				if (keymanagerUtil.isOverlapping(timeStamp, policyExpiryTime, alias.getKeyGenerationTime(),
 						alias.getKeyExpiryTime())) {
+					LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+							"Overlapping timestamp found. Changing policyExpiryTime");
 					policyExpiryTime = alias.getKeyGenerationTime().minusSeconds(1);
 					break;
 				}
@@ -289,6 +347,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	@Override
 	public SymmetricKeyResponseDto decryptSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.SYMMETRICKEYREQUEST,
+				symmetricKeyRequestDto.toString(), KeyManagerConstant.DECRYPTKEY);
 
 		List<KeyAlias> currentKeyAlias;
 		LocalDateTime timeStamp = symmetricKeyRequestDto.getTimeStamp();
@@ -296,17 +356,26 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		String applicationId = symmetricKeyRequestDto.getApplicationId();
 		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
 
-		if (!isValidReferenceId(referenceId)) {
+		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Not a valid reference Id. Getting key alias without referenceId");
 			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeyManagerConstant.CURRENTKEYALIAS);
 		} else {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Valid reference Id. Getting key alias with referenceId");
 			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
 					.get(KeyManagerConstant.CURRENTKEYALIAS);
 		}
 
 		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias is not unique. Throwing exception");
 			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will decrypt symmetric key for this alias");
 			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
 			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
 			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
@@ -326,21 +395,32 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @return Private key
 	 */
 	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.REFERENCEID, referenceId,
+				KeyManagerConstant.GETPRIVATEKEY);
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.FETCHEDKEYALIAS, fetchedKeyAlias.getAlias(),
+				KeyManagerConstant.GETPRIVATEKEY);
 
-		if (!isValidReferenceId(referenceId)) {
+		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Not valid reference Id. Getting private key from Keystore");
 			return keyStore.getPrivateKey(fetchedKeyAlias.getAlias());
 		} else {
-			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyDbStore = keyStoreRepository
+			LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+					"Valid reference Id. Getting private key from DB Store");
+			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> dbKeyStore = keyStoreRepository
 					.findByAlias(fetchedKeyAlias.getAlias());
-			if (!keyDbStore.isPresent()) {
+			if (!dbKeyStore.isPresent()) {
+				LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.DBKEYSTORE, dbKeyStore.toString(),
+						"Key in DB Store does not exists. Throwing exception");
 				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 			}
-			PrivateKey masterPrivateKey = keyStore.getPrivateKey(keyDbStore.get().getMasterAlias());
+			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());
 			try {
-				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(keyDbStore.get().getPrivateKey(),
+				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(dbKeyStore.get().getPrivateKey(),
 						masterPrivateKey);
-				return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decryptedPrivateKey));
+				return KeyFactory.getInstance(KeyManagerConstant.RSA)
+						.generatePrivate(new PKCS8EncodedKeySpec(decryptedPrivateKey));
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
 				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
@@ -365,6 +445,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	private void storeKeyInAlias(String applicationId, LocalDateTime timeStamp, String referenceId, String alias,
 			LocalDateTime expiryDateTime) {
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+				KeyManagerConstant.STOREKEYALIAS);
 		KeyAlias keyAlias = new KeyAlias();
 		keyAlias.setAlias(alias);
 		keyAlias.setApplicationId(applicationId);
@@ -387,56 +469,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 *            encryptedPrivateKey
 	 */
 	private void storeKeyInDBStore(String alias, String masterAlias, byte[] publicKey, byte[] encryptedPrivateKey) {
-		io.mosip.kernel.keymanagerservice.entity.KeyStore keyDbStore = new io.mosip.kernel.keymanagerservice.entity.KeyStore();
-		keyDbStore.setAlias(alias);
-		keyDbStore.setMasterAlias(masterAlias);
-		keyDbStore.setPublicKey(publicKey);
-		keyDbStore.setPrivateKey(encryptedPrivateKey);
-		keyStoreRepository.save(keymanagerUtil.setMetaData(keyDbStore));
+		io.mosip.kernel.keymanagerservice.entity.KeyStore dbKeyStore = new io.mosip.kernel.keymanagerservice.entity.KeyStore();
+		LOGGER.info(KeyManagerConstant.SESSIONID, KeyManagerConstant.EMPTY, KeyManagerConstant.EMPTY,
+				KeyManagerConstant.STOREDBKEY);
+		dbKeyStore.setAlias(alias);
+		dbKeyStore.setMasterAlias(masterAlias);
+		dbKeyStore.setPublicKey(publicKey);
+		dbKeyStore.setPrivateKey(encryptedPrivateKey);
+		keyStoreRepository.save(keymanagerUtil.setMetaData(dbKeyStore));
 	}
-
-	/**
-	 * Function to check valid timestamp
-	 * 
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param keyAlias
-	 *            keyAlias
-	 * @return true if timestamp is valid, else false
-	 */
-	private boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
-		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
-				|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
-						&& timeStamp.isBefore(keyAlias.getKeyExpiryTime()));
-	}
-
-	/**
-	 * Function to check if timestamp is overlapping
-	 * 
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param policyExpiryTime
-	 *            policyExpiryTime
-	 * @param keyGenerationTime
-	 *            keyGenerationTime
-	 * @param keyExpiryTime
-	 *            keyExpiryTime
-	 * @return true if timestamp is overlapping, else false
-	 */
-	private boolean isOverlapping(LocalDateTime timeStamp, LocalDateTime policyExpiryTime,
-			LocalDateTime keyGenerationTime, LocalDateTime keyExpiryTime) {
-		return !timeStamp.isAfter(keyExpiryTime) && !keyGenerationTime.isAfter(policyExpiryTime);
-	}
-
-	/**
-	 * Function to check is reference id is valid
-	 * 
-	 * @param referenceId
-	 *            referenceId
-	 * @return true if referenceId is valid, else false
-	 */
-	private boolean isValidReferenceId(String referenceId) {
-		return referenceId != null && !referenceId.trim().isEmpty();
-	}
-
 }
