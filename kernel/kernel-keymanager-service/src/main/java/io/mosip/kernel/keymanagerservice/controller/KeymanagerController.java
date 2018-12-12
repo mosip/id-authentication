@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +32,10 @@ import io.swagger.annotations.ApiParam;
  * @since 1.0.0
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/v1.0")
-@Api(tags = { "keymanager" },value="Operation related to Keymanagement")
+@Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
 	/**
@@ -72,7 +74,7 @@ public class KeymanagerController {
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
 	@ApiOperation(value = "Decrypt the encrypted Symmetric key",response = SymmetricKeyResponseDto.class)
-	@PostMapping(value = "/symmetricKey")
+	@PostMapping(value = "/symmetrickey")
 	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(@ApiParam("Symmetric key to encrypt in BASE64 encoding with meta-data")
 			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
 

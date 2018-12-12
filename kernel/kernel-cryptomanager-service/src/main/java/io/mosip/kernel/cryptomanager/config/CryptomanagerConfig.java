@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Configuration class for Cryptomanager service
+ * Configuration class for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
  *

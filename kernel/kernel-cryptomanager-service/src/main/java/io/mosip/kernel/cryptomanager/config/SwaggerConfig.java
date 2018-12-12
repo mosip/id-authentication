@@ -46,7 +46,7 @@ public class SwaggerConfig {
 	private Boolean localEnv;
 
 	@Value("${swagger.base-url:#{null}}")
-	private String swaggerUrl;
+	private String swaggerBaseUrl;
 
 	@Value("${server.port:8080}")
 	private int serverPort;
@@ -62,7 +62,8 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION).build();
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION)
+				.build();
 	}
 
 	/**
@@ -72,18 +73,18 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket api() {
-		boolean targetSwagger = false;
-		if (!localEnv && swaggerUrl != null && !swaggerUrl.isEmpty()) {
+		boolean swaggerBaseUrlSet = false;
+		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
-				proto = new URL(swaggerUrl).getProtocol();
-				host = new URL(swaggerUrl).getHost();
-				port = new URL(swaggerUrl).getPort();
+				proto = new URL(swaggerBaseUrl).getProtocol();
+				host = new URL(swaggerBaseUrl).getHost();
+				port = new URL(swaggerBaseUrl).getPort();
 				if (port == -1) {
 					hostWithPort = host;
 				} else {
 					hostWithPort = host + ":" + port;
-				} 
-				targetSwagger = true;
+				}
+				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
 				System.err.println("SwaggerUrlException: " + e);
 			}
@@ -94,11 +95,10 @@ public class SwaggerConfig {
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
 				.build();
 
-		if (targetSwagger) {
+		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
+			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
-		System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
-
 		return docket;
 	}
 

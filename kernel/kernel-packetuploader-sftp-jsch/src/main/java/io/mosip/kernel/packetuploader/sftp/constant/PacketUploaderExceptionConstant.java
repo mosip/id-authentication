@@ -11,72 +11,72 @@ public enum PacketUploaderExceptionConstant {
 	/**
 	 * {@link #MOSIP_ILLEGAL_CONFIGURATION_EXCEPTION} exception constant
 	 */
-	MOSIP_ILLEGAL_CONFIGURATION_EXCEPTION("merrorcode", "illegal configuration provided"),
+	MOSIP_ILLEGAL_CONFIGURATION_EXCEPTION("KER-FTM-FTP-009", "illegal configuration provided"),
 	/**
 	 * {@link #MOSIP_CONNECTION_EXCEPTION} exception constant
 	 */
-	MOSIP_CONNECTION_EXCEPTION("derrorcode", "cannot connect to server"),
+	MOSIP_CONNECTION_EXCEPTION("KER-FTM-FTP-010", "cannot connect to server"),
 	/**
 	 * {@link #MOSIP_ILLEGAL_IDENTITY_EXCEPTION} exception constant
 	 */
-	MOSIP_ILLEGAL_IDENTITY_EXCEPTION("cderrorxdcode", "key file not valid"),
+	MOSIP_ILLEGAL_IDENTITY_EXCEPTION("KER-FTM-FTP-011", "key file not valid"),
 	/**
 	 * {@link #MOSIP_SFTP_EXCEPTION} exception constant
 	 */
-	MOSIP_SFTP_EXCEPTION("berrorcode", "file transfer inturrupted"),
+	MOSIP_SFTP_EXCEPTION("KER-FTM-FTP-012", "file transfer inturrupted"),
 	/**
 	 * {@link #MOSIP_NO_SESSION_FOUND_EXCEPTION} exception constant
 	 */
-	MOSIP_NO_SESSION_FOUND_EXCEPTION("aerrorcode", "session not found"),
+	MOSIP_NO_SESSION_FOUND_EXCEPTION("KER-FTM-FTP-013", "session not found"),
 
 	/**
 	 * {@link #MOSIP_EMPTY_PATH_EXCEPTION} exception constant
 	 */
-	MOSIP_EMPTY_PATH_EXCEPTION("cerroxdcfrcode", "filepath is empty"),
+	MOSIP_EMPTY_PATH_EXCEPTION("KER-FTM-FTP-014", "filepath is empty"),
 	/**
 	 * {@link #MOSIP_NULL_PATH_EXCEPTION} exception constant
 	 */
-	MOSIP_NULL_PATH_EXCEPTION("aaasrrorcode", "filepath is null"),
+	MOSIP_NULL_PATH_EXCEPTION("KER-FTM-FTP-015", "filepath is null"),
 	/**
 	 * {@link #MOSIP_EMPTY_HOST_EXCEPTION} exception constant
 	 */
-	MOSIP_EMPTY_HOST_EXCEPTION("cerrdsffffforcode", "host is empty"),
+	MOSIP_EMPTY_HOST_EXCEPTION("KER-FTM-FTP-016", "host is empty"),
 	/**
 	 * {@link #MOSIP_NULL_HOST_EXCEPTION} exception constant
 	 */
-	MOSIP_NULL_HOST_EXCEPTION("aaaaaaerrorcode", "host is null"),
+	MOSIP_NULL_HOST_EXCEPTION("KER-FTM-FTP-017", "host is null"),
 	/**
 	 * {@link #MOSIP_EMPTY_USER_EXCEPTION} exception constant
 	 */
-	MOSIP_EMPTY_USER_EXCEPTION("cerrorcoddse", "user is empty"),
+	MOSIP_EMPTY_USER_EXCEPTION("KER-FTM-FTP-018", "user is empty"),
 	/**
 	 * {@link #MOSIP_NULL_USER_EXCEPTION} exception constant
 	 */
-	MOSIP_NULL_USER_EXCEPTION("aaaerrorcsaode", "user is null"),
+	MOSIP_NULL_USER_EXCEPTION("KER-FTM-FTP-019", "user is null"),
 	/**
 	 * {@link #MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION} exception constant
 	 */
-	MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION("cerrorcadsasdadasode", "remote directory is empty"),
+	MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION("KER-FTM-FTP-025", "remote directory is empty"),
 	/**
 	 * {@link #MOSIP_NULL_REMOTE_DIRECTORY_EXCEPTION} exception constant
 	 */
-	MOSIP_NULL_REMOTE_DIRECTORY_EXCEPTION("adasasdas", "remote directory is null"),
+	MOSIP_NULL_REMOTE_DIRECTORY_EXCEPTION("KER-FTM-FTP-026", "remote directory is null"),
 	/**
 	 * {@link #MOSIP_INVALID_KEY_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_KEY_EXCEPTION("cerradasdasdasorcode", "one of password and key should be provided"),
+	MOSIP_INVALID_KEY_EXCEPTION("KER-FTM-FTP-020", "one of password and key should be provided"),
 	/**
 	 * {@link #MOSIP_INVALID_PORT_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_PORT_EXCEPTION("adasdasdas", "invalid port range is 0 to 65535"),
+	MOSIP_INVALID_PORT_EXCEPTION("KER-FTM-FTP-022", "invalid port range is 0 to 65535"),
 	/**
 	 * {@link #MOSIP_NULL_CONFIGURATION_EXCEPTION} exception constant
 	 */
-	MOSIP_NULL_CONFIGURATION_EXCEPTION("adasdassssdas", "configuration is null"),
+	MOSIP_NULL_CONFIGURATION_EXCEPTION("KER-FTM-FTP-023", "configuration is null"),
 	/**
 	 * {@link #MOSIP_PACKET_SIZE_EXCEPTION} exception constant
 	 */
-	MOSIP_PACKET_SIZE_EXCEPTION("adadadasdasdas", "packet size should be less than 5 MB and greater than 0 Byte");
+	MOSIP_PACKET_SIZE_EXCEPTION("KER-FTM-FTP-024", "packet size should be less than 5 MB and greater than 0 Byte");
 
 	/**
 	 * ErrorCode
