@@ -62,10 +62,10 @@ public class DocumentUploadService {
 		ResponseDTO<DocResponseDto> responseDto = new ResponseDTO<>();
 		DocResponseDto docResponseDto = null;
 		DocumentEntity documentEntity = null;
-		Boolean scanFile;
+		Boolean scanFile = true;
 		List<DocResponseDto> docResponseDtos = new LinkedList<>();
 		try {
-			scanFile = virusScan.scanDocument(file.getBytes());
+			//scanFile = virusScan.scanDocument(file.getBytes());
 
 			if (scanFile) {
 				if (fileSizeCheck(file.getSize())) {
