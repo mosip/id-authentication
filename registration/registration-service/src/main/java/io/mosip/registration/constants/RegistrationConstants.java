@@ -217,6 +217,7 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
 	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
 	public static final String FINGERPRINT_DUPLICATION_ALERT = bundle.getString("FINGERPRINT_DUPLICATION_ALERT");
+	public static final String FINGERPRINT_MAX_RETRIES_ALERT = bundle.getString("FINGERPRINT_MAX_RETRIES_ALERT");
 	public static final String FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR = bundle
 			.getString("FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR");
 	public static final String FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle
@@ -642,10 +643,12 @@ public class RegistrationConstants {
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
-
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
-
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
+	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "LEFTSLAP_FINGERPRINT_THRESHOLD";
+	public static final String RIGHTSLAP_FINGERPRINT_THRESHOLD = "RIGHTSLAP_FINGERPRINT_THRESHOLD";
+	public static final String THUMBS_FINGERPRINT_THRESHOLD = "THUMBS_FINGERPRINT_THRESHOLD";
+	public static final String FINGERPRINT_RETRIES_COUNT ="NUM_OF_FINGERPRINT_RETRIES";
 	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 			"/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",

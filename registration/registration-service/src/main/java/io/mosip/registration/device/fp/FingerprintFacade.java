@@ -47,7 +47,7 @@ public class FingerprintFacade {
 	private List<MosipFingerprintProvider> fingerprintProviders;
 
 	private MosipFingerprintProvider fingerprintProvider;
-	
+
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
@@ -117,12 +117,10 @@ public class FingerprintFacade {
 		}
 	}
 
-	/*@Autowired
-	public FingerprintFacade(List<MosipFingerprintProvider> fingerprintProviders) {
-		this.fingerprintProviders = fingerprintProviders;
-	}*/
-	
-	
+	/*
+	 * @Autowired public FingerprintFacade(List<MosipFingerprintProvider>
+	 * fingerprintProviders) { this.fingerprintProviders = fingerprintProviders; }
+	 */
 
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		for (MosipFingerprintProvider mosipFingerprintProvider : fingerprintProviders) {
@@ -162,7 +160,13 @@ public class FingerprintFacade {
 			Map<String, Object> scannedFingerPrints = new HashMap<>();
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_FORMAT_KEY, "jpg");
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedFingerPrintBytes);
-			scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
+			if (path.contains(RegistrationConstants.THUMBS)) {
+				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 70.0);
+			} else if (path.contains(RegistrationConstants.LEFTPALM)) {
+				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 85.0);
+			} else if (path.contains(RegistrationConstants.RIGHTPALM)) {
+				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
+			}
 
 			LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration completed");
@@ -242,14 +246,13 @@ public class FingerprintFacade {
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
 	}
-	
-	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
-			List<UserBiometric> userFingerprintDetails) {
+
+	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails) {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
-		return userFingerprintDetails.stream().anyMatch(
-				bio -> fingerprintProvider.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
+		return userFingerprintDetails.stream()
+				.anyMatch(bio -> fingerprintProvider.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}
 
 }

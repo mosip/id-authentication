@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.ByteArrayInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -16,7 +15,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
@@ -33,21 +31,6 @@ import javafx.scene.text.Text;
  */
 @Controller
 public class BiometricPreviewController extends BaseController {
-
-	@Value("${capture_photo_using_device}")
-	public String capturePhotoUsingDevice;
-
-	/** The left hand slap threshold score. */
-	@Value("${leftHand_Slap_Threshold_Score}")
-	private double leftHandSlapThresholdScore;
-
-	/** The right hand slap threshold score. */
-	@Value("${rightHand_Slap_Threshold_Score}")
-	private double rightHandSlapThresholdScore;
-
-	/** The thumbs threshold score. */
-	@Value("${thumbs_Threshold_Score}")
-	private double thumbsThresholdScore;
 
 	@FXML
 	private Button nextBtn;
@@ -119,9 +102,12 @@ public class BiometricPreviewController extends BaseController {
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
 
-		leftPalmThresholdScoreLbl.setText(getQualityScore(leftHandSlapThresholdScore));
-		rightPalmThresholdScoreLbl.setText(getQualityScore(rightHandSlapThresholdScore));
-		thumbsThresholdScoreLbl.setText(getQualityScore(thumbsThresholdScore));
+		leftPalmThresholdScoreLbl.setText(getQualityScore(
+				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
+		rightPalmThresholdScoreLbl.setText(getQualityScore(
+				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
+		thumbsThresholdScoreLbl.setText(getQualityScore(
+				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
 
 		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
 
@@ -198,5 +184,9 @@ public class BiometricPreviewController extends BaseController {
 
 	private String getQualityScore(Double qulaityScore) {
 		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+
+	private String getValueFromSessionMap(String key) {
+		return (String) applicationContext.getApplicationMap().get(key);
 	}
 }

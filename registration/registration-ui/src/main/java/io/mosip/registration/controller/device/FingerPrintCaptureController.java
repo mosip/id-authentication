@@ -12,7 +12,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -47,21 +46,6 @@ import javafx.stage.Stage;
  */
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
-
-	/** The left hand slap threshold score. */
-	@Value("${leftHand_Slap_Threshold_Score}")
-	private double leftHandSlapThresholdScore;
-
-	/** The right hand slap threshold score. */
-	@Value("${rightHand_Slap_Threshold_Score}")
-	private double rightHandSlapThresholdScore;
-
-	/** The thumbs threshold score. */
-	@Value("${thumbs_Threshold_Score}")
-	private double thumbsThresholdScore;
-
-	@Value("${num_of_Fingerprint_retries}")
-	private double noOfRetriesThreshold;
 
 	/**
 	 * Instance of {@link Logger}
@@ -130,7 +114,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The thumbs threshold score label. */
 	@FXML
 	private Label thumbsThresholdScoreLbl;
-	
+
 	/** The duplicate check label. */
 	@FXML
 	private Label duplicateCheckLbl;
@@ -171,11 +155,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 					if (fpDetailsDTO == null
 							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)
-									&& fpDetailsDTO.getQualityScore() < leftHandSlapThresholdScore)
+									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
+											RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)))
 							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)
-									&& fpDetailsDTO.getQualityScore() < rightHandSlapThresholdScore)
+									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
+											RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)))
 							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)
-									&& fpDetailsDTO.getQualityScore() < thumbsThresholdScore)) {
+									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
+											RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)))) {
 						scanBtn.setDisable(false);
 					}
 				}
@@ -186,10 +173,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			rightHandPalmPane.setOnMouseClicked(mouseClick);
 			thumbPane.setOnMouseClicked(mouseClick);
 
-			leftSlapThresholdScoreLbl.setText(getQualityScore(leftHandSlapThresholdScore));
+			leftSlapThresholdScoreLbl.setText(getQualityScore(
+					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
 
-			rightSlapThresholdScoreLbl.setText(getQualityScore(rightHandSlapThresholdScore));
-			thumbsThresholdScoreLbl.setText(getQualityScore(thumbsThresholdScore));
+			rightSlapThresholdScoreLbl.setText(getQualityScore(
+					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
+			thumbsThresholdScoreLbl.setText(getQualityScore(
+					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
 
 			RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
@@ -238,11 +228,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Opening pop-up screen to capture fingerprint for user registration");
 			FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
-			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < noOfRetriesThreshold) {
+			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
+					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))) {
 
-				scanController.init(this, "Fingerprint");
+				scanController.init(this, RegistrationConstants.FINGERPRINT);
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, "You have reached the maximum number of retries.");
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
 
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -465,19 +456,28 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints started");
 			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
-				return fingerprintDetailsDTO.getQualityScore() >= leftHandSlapThresholdScore
-						|| (fingerprintDetailsDTO.getQualityScore() < leftHandSlapThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+				return fingerprintDetailsDTO.getQualityScore() >= Double
+						.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
+						|| (fingerprintDetailsDTO.getQualityScore() < Double.parseDouble(
+								getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
+								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
+										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
-				return fingerprintDetailsDTO.getQualityScore() >= rightHandSlapThresholdScore
-						|| (fingerprintDetailsDTO.getQualityScore() < rightHandSlapThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+				return fingerprintDetailsDTO.getQualityScore() >= Double
+						.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
+						|| (fingerprintDetailsDTO.getQualityScore() < Double.parseDouble(
+								getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
+								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
+										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
-				return fingerprintDetailsDTO.getQualityScore() >= thumbsThresholdScore
-						|| (fingerprintDetailsDTO.getQualityScore() < thumbsThresholdScore
-								&& fingerprintDetailsDTO.getNumRetry() == noOfRetriesThreshold)
+				return fingerprintDetailsDTO.getQualityScore() >= Double
+						.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
+						|| (fingerprintDetailsDTO.getQualityScore() < Double
+								.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
+								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
+										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -511,5 +511,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
+	}
+
+	private String getValueFromSessionMap(String key) {
+		return (String) applicationContext.getApplicationMap().get(key);
 	}
 }
