@@ -35,17 +35,17 @@ public class PreregistrationBatchJobScheduler {
 	@Autowired
 	private JobLauncher jobLauncher;
 
-	@Autowired
+	/*@Autowired
 	private Job updateTableJob;
 	
 	@Autowired
-	private Job archivingJob;
+	private Job archivingJob;*/
 	
 	@Autowired
 	private Job bookingJob;
 	
-	/*@Autowired
-	private Job preRegistrationJob;*/
+	@Autowired
+	private Job consumedStatusJob;
 
 	@Scheduled(cron = "${preregistration.job.schedule.cron.updatestatus}")
 	public void upadteStatusScheduler() {
@@ -53,7 +53,7 @@ public class PreregistrationBatchJobScheduler {
 		JobParameters jobParam = new JobParametersBuilder().addLong("updateStatusTime", System.currentTimeMillis())
 				.toJobParameters();
 		try {
-			JobExecution jobExecution = jobLauncher.run(updateTableJob, jobParam);
+			JobExecution jobExecution = jobLauncher.run(consumedStatusJob, jobParam);
 
 			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
 
@@ -63,7 +63,7 @@ public class PreregistrationBatchJobScheduler {
 			LOGGER.error(LOGDISPLAY, "UpdateTableJob failed to read Processed_pre_registration_list", e);
 		}
 	}
-	@Scheduled(cron = "${preregistration.job.schedule.cron.archivingconsumed}")
+	/*@Scheduled(cron = "${preregistration.job.schedule.cron.archivingconsumed}")
 	public void archivingConsumedScheduler() {
 
 		JobParameters jobParam = new JobParametersBuilder().addLong("archivingConsumedTime", System.currentTimeMillis())
@@ -78,7 +78,7 @@ public class PreregistrationBatchJobScheduler {
 
 			LOGGER.error(LOGDISPLAY, "ArchivingConsumedJob failed to read PreRegistration History Table", e);
 		}
-	}
+	}*/
 	
 	@Scheduled(cron="${preregistration.job.schedule.cron.bookingJob}")
 	public void bookingJobScheduler() {

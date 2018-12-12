@@ -26,7 +26,7 @@ public class BatchServiceController {
 	@Autowired
 	private ArchivingConsumedStatusService archivingConsumedStatusService;
 	
-	@GetMapping(path="/demographicConsumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/updateConsumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>> demographicStatusUpdate(){
 		
 		ResponseDto<String> response=batchJobService.demographicConsumedStatus();
@@ -34,7 +34,7 @@ public class BatchServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@GetMapping(path="/archivingConsumed",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/archivingConsumedPreId",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>>  archivingConsumedStatus(){
 		
 		ResponseDto<String> response=archivingConsumedStatusService.archivingConsumed();
