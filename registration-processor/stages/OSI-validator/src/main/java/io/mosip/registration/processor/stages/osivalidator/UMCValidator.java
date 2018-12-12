@@ -1,21 +1,26 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.builder.RegCenterMachineHistoryClientBuilder;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.MachineHistoryDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -32,8 +37,9 @@ public class UMCValidator {
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The umc client. */
+	
 	@Autowired
-	RegCenterMachineHistoryClientBuilder umcClient;
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
@@ -59,18 +65,28 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean validateRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
+	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
 			String latitude, String longitude) throws ApisResourceAccessException {
 		boolean activeRegCenter = false;
-		List<RegistrationCenterDto> dtos = umcClient
-				.getRegistrationCentersHistory(registrationCenterId, langCode, effectiveDate).getRegistrationCenters();
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(registrationCenterId);
+		pathsegments.add(langCode);
+		pathsegments.add(effectiveDate);
+		
+		RegistrationCenterResponseDto rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.
+				getApi(ApiName.CENTERHISTORY,pathsegments,"","",RegistrationCenterResponseDto.class);
 
-		if (!dtos.isEmpty()) {
-
+		List<RegistrationCenterDto> dtos=new ArrayList<>();
+		if(rcpdto !=null)dtos=rcpdto.getRegistrationCenters();
+		
+		if (dtos ==null  ||dtos.isEmpty()) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+		}
+		else {
 			for (RegistrationCenterDto dto : dtos) {
 
 				if (dto.getLatitude() != null && dto.getLongitude() != null && dto.getLatitude().matches(latitude)
-						&& dto.getLongitude().matches(longitude)) {
+						&& dto.getLongitude().matches(longitude) ) {
 
 					activeRegCenter = dto.getIsActive();
 					if (!activeRegCenter) {
@@ -82,9 +98,7 @@ public class UMCValidator {
 				}
 
 			}
-		} else {
-			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
-		}
+		} 
 
 		return activeRegCenter;
 
@@ -103,14 +117,23 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean validateMachine(String machineId, String langCode, String effdatetimes)
+	private boolean isValidMachine(String machineId, String langCode, String effdatetimes)
 			throws ApisResourceAccessException {
 
 		boolean isActiveMachine = false;
-		List<MachineHistoryDto> dtos = umcClient.getMachineHistoryIdLangEff(machineId, langCode, effdatetimes)
-				.getMachineHistoryDetails();
+		
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(machineId);
+		pathsegments.add(langCode);
+		pathsegments.add(effdatetimes);
+		MachineHistoryResponseDto mhrdto = (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
+				pathsegments,"","",MachineHistoryResponseDto.class);
 
-		if (!dtos.isEmpty()) {
+		List<MachineHistoryDto> dtos=new ArrayList<>();
+		if(mhrdto !=null)dtos=mhrdto.getMachineHistoryDetails();
+		if (dtos ==null || dtos.isEmpty()  ) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+		}else {
 			for (MachineHistoryDto dto : dtos) {
 				if (dto.getId() != null &&dto.getId().matches(machineId)  ) {
 					isActiveMachine = dto.getIsActive();
@@ -123,9 +146,7 @@ public class UMCValidator {
 				}
 			}
 
-		} else {
-			this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
-		}
+		} 
 
 		return isActiveMachine;
 
@@ -148,33 +169,42 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean validateUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
+	private boolean isValidUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
 			String superviserId, String officerId) throws ApisResourceAccessException {
 		boolean t = false;
 
 		boolean supervisorActive = false;
 		boolean officerActive = false;
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(effectiveTimestamp);
+		pathsegments.add(registrationCenterId);
+		pathsegments.add(machineId);
+		pathsegments.add(superviserId);
+		
+		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService.
+				getApi(ApiName.CENTERUSERMACHINEHISTORY,pathsegments,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+		List<String> officerpathsegments=new ArrayList<>();
+		officerpathsegments.add(effectiveTimestamp);
+		officerpathsegments.add(registrationCenterId);
+		officerpathsegments.add(machineId);
+		officerpathsegments.add(officerId);
+		RegistrationCenterUserMachineMappingHistoryResponseDto officerdto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService.
+				getApi(ApiName.CENTERUSERMACHINEHISTORY,officerpathsegments,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class);
 
-		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos = umcClient
-				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
-						superviserId)
-				.getRegistrationCenters();
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos = umcClient
-				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId,
-						officerId)
-				.getRegistrationCenters();
-
-		if (!supervisordtos.isEmpty() && supervisordtos.get(0).getIsActive() != null) {
+		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos= new ArrayList<>();
+		if(supervisordto !=null)supervisordtos=supervisordto.getRegistrationCenters();
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos= new ArrayList<>();
+		if(officerdto !=null)officerdtos=officerdto.getRegistrationCenters();
+		
+		if (supervisordtos != null  && !supervisordtos.isEmpty()  ) {
 
 			supervisorActive = supervisordtos.get(0).getIsActive();
-
+			
 		}
-		if (!officerdtos.isEmpty() && officerdtos.get(0).getIsActive() !=null) {
-
+		if(officerdtos !=null && !officerdtos.isEmpty()) {
 			officerActive = officerdtos.get(0).getIsActive();
-
 		}
-		if (supervisordtos.isEmpty() && officerdtos.isEmpty()) {
+		if((supervisordtos == null || supervisordtos.isEmpty()  ) && (officerdtos ==null ||officerdtos.isEmpty())) {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
 		}
 
@@ -204,11 +234,11 @@ public class UMCValidator {
 			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (validateRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,
+		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,
 				rcmDto.getPacketCreationDate().toString(), rcmDto.getLatitude(), rcmDto.getLongitude())
-				&& validateMachine(rcmDto.getMachineId(), primaryLanguagecode,
+				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode,
 						rcmDto.getPacketCreationDate().toString())
-				&& validateUMCmapping(rcmDto.getPacketCreationDate().toString(), rcmDto.getRegcntrId(),
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate().toString(), rcmDto.getRegcntrId(),
 						rcmDto.getMachineId(), regOsi.getSupervisorId(), regOsi.getOfficerId())) {
 			umc = true;
 		}

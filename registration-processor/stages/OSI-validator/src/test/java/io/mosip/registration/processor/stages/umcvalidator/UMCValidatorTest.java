@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.umcvalidator;
+/*package io.mosip.registration.processor.stages.umcvalidator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,15 +20,16 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.builder.RegCenterMachineHistoryClientBuilder;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.MachineHistoryDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.MachineHistoryResponseDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterResponseDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterUserMachineMappingHistoryDto;
-import io.mosip.registration.processor.rest.client.regcentermachine.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
+
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -41,7 +42,7 @@ public class UMCValidatorTest {
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Mock
-	RegCenterMachineHistoryClientBuilder umcClient;
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	RegistrationCenterMachineDto rcmDto;
 	RegOsiDto regOsi;
 	@Before
@@ -54,24 +55,15 @@ public class UMCValidatorTest {
 		rcmDto.setLatitude("13.0049");
 		rcmDto.setLongitude("80.24492");
 		rcmDto.setMachineId("yyeqy26356");
-		rcmDto.setPacketCreationDate(LocalDateTime.parse("2018-11-28T15:34:20"));
+		rcmDto.setPacketCreationDate(LocalDateTime.parse("2018-11-28T15:34:20.122"));
 		rcmDto.setRegcntrId("12245");
 		rcmDto.setRegId("2018782130000121112018103016");
 		 
 		regOsi.setOfficerId("O1234");
-		regOsi.setOfficerFingerpImageName("fingerprint");
-		regOsi.setOfficerfingerType("RIGHTLITTLE");
-		regOsi.setOfficerIrisImageName(null);
-		regOsi.setOfficerIrisType("LEFTEYE");
-		regOsi.setOfficerPhotoName(null);
-		regOsi.setOfficerHashedPin("officerHashedPin");
+	
 
 		regOsi.setSupervisorId("S1234");
-		regOsi.setSupervisorFingerpImageName("supervisorFingerpImageName");
-		regOsi.setSupervisorFingerType("LEFTINDEX");
-		regOsi.setSupervisorIrisImageName("supervisorIrisImageName");
-		regOsi.setSupervisorIrisType("LEFTEYE");
-		regOsi.setSupervisorPhotoName("supervisorPhotoName");
+		
 		
 		
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
@@ -628,3 +620,4 @@ public class UMCValidatorTest {
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 }
+*/

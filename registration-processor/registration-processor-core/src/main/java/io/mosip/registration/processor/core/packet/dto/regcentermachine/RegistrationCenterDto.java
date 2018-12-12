@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.rest.client.regcentermachine.dto;
+package io.mosip.registration.processor.core.packet.dto.regcentermachine;
 
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
