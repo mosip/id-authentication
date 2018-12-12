@@ -375,8 +375,8 @@ public class PreRegistrationService {
 					ResponseEntity<ResponseDTO> responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE,
 							httpEntity, ResponseDTO.class);
 					if (responseEntity.getStatusCode() == HttpStatus.OK) {
-						Boolean isDeleted = preRegistrationRepository.deleteByPreRegistrationId(preregId);
-						if (!isDeleted) {
+						int isDeleted = preRegistrationRepository.deleteByPreRegistrationId(preregId);
+						if (isDeleted <=0) {
 							throw new RecordFailedToDeleteException(ErrorCodes.PRG_PAM_APP_004.name(),
 									ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.name());
 						} else {
