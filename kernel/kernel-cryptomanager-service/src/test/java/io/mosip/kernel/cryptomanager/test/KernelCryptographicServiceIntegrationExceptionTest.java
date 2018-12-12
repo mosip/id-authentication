@@ -1,4 +1,4 @@
-package io.mosip.kernel.cryptographic.service;
+package io.mosip.kernel.cryptomanager.test;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
