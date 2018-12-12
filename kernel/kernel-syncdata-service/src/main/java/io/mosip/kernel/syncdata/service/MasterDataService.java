@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 
 /**
- * masterdata sync handler service
+ * Masterdata sync handler service
  * 
  * @author Abhishek Kumar
  * @since 1.0.0
@@ -14,7 +14,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
  */
 public interface MasterDataService {
 	/**
-	 * method to get updated masterData
+	 * Method to get updated masterData
 	 * 
 	 * @param machineId
 	 *            machine id
@@ -22,8 +22,10 @@ public interface MasterDataService {
 	 *            lastupdated timestamp if lastupdated timestamp is null fetch all
 	 *            the masterdata
 	 * @return {@link MasterDataResponseDto}
-	 * @throws ExecutionException - this method will throw execution exception
-	 * @throws InterruptedException - this method will throw interrupted exception
+	 * @throws ExecutionException
+	 *             - this method will throw execution exception
+	 * @throws InterruptedException
+	 *             - this method will throw interrupted exception
 	 */
 	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
 			throws InterruptedException, ExecutionException;

@@ -54,11 +54,14 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		return getConfigDetailsResponse(regCenterfileName);
 
 	}
-    /**
-     * This method will consume a REST API based on the filename passed.
-     * @param fileName - name of the file 
-     * @return JSONObject
-     */
+
+	/**
+	 * This method will consume a REST API based on the filename passed.
+	 * 
+	 * @param fileName
+	 *            - name of the file
+	 * @return JSONObject
+	 */
 	private JSONObject getConfigDetailsResponse(String fileName) {
 		String configServerUri = env.getProperty("spring.cloud.config.uri");
 		String configLabel = env.getProperty("spring.cloud.config.label");
