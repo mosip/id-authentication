@@ -19,7 +19,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Component
-public class OTPGenerator {
+public class OTPManager {
 	
 	@Autowired
 	ServiceDelegateUtil serviceDelegateUtil;
