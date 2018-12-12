@@ -53,5 +53,6 @@
       <Label fx:id="rightSlapThresholdScoreLbl" layoutX="405.0" layoutY="335.0" />
       <Label fx:id="thumbsQualityScore" layoutX="674.0" layoutY="309.0" />
       <Label fx:id="thumbsThresholdScoreLbl" layoutX="674.0" layoutY="335.0" />
+      <Label fx:id="duplicateCheckLbl" layoutX="14.0" layoutY="434.0" prefHeight="27.0" prefWidth="533.0" text="Label" />
    </children>
 </AnchorPane>

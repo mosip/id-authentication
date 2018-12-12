@@ -130,6 +130,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The thumbs threshold score label. */
 	@FXML
 	private Label thumbsThresholdScoreLbl;
+	
+	/** The duplicate check label. */
+	@FXML
+	private Label duplicateCheckLbl;
 
 	/** The selected pane. */
 	private AnchorPane selectedPane = null;
@@ -435,8 +439,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 					isValid = true;
 				} else {
-					generateAlert(RegistrationConstants.ALERT_INFORMATION,
-							RegistrationConstants.FINGERPRINT_DUPLICATION_ALERT);
+					duplicateCheckLbl.setText(RegistrationConstants.FINGERPRINT_DUPLICATION_ALERT);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FINGERPRINT_SCAN_ALERT);

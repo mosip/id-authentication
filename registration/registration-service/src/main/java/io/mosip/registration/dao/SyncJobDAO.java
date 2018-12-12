@@ -54,28 +54,11 @@ public interface SyncJobDAO {
 		}
 
 		/**
-		 * @param syncControlList
-		 *            the syncControlList to set
-		 */
-		public void setSyncControlList(List<SyncControl> syncControlList) {
-			this.syncControlList = syncControlList;
-		}
-
-		/**
 		 * @return the yetToExportCount
 		 */
 		public double getYetToExportCount() {
 			return yetToExportCount;
 		}
-
-		/**
-		 * @param yetToExportCount
-		 *            the yetToExportCount to set
-		 */
-		public void setYetToExportCount(double yetToExportCount) {
-			this.yetToExportCount = yetToExportCount;
-		}
-
 	}
 
 	/**
