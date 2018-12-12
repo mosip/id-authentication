@@ -1118,6 +1118,18 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
+			
+			postalCode.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+						final String newValue) {
+					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.POSTAL_CODE_REGEX_INITIAL)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POSTAL_CODE_WARNING);
+						postalCode.setText(postalCode.getText().replaceAll(".$", ""));
+						postalCode.requestFocus();
+					}
+				}
+			});
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
@@ -1628,7 +1640,7 @@ public class RegistrationController extends BaseController {
 		region.setText("Taramani");
 		city.setText("Chennai");
 		province.setText("Tamilnadu");
-		postalCode.setText("600112");
+		postalCode.setText("60011");
 		localAdminAuthority.setText("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");

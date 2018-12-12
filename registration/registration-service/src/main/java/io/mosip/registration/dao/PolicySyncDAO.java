@@ -9,7 +9,7 @@ import io.mosip.registration.entity.KeyStore;
  *
  */
 public interface PolicySyncDAO {
-	KeyStore fetchPolicy(String centerId);
+	
 
 	void updatePolicy(KeyStore keyStore);
 
