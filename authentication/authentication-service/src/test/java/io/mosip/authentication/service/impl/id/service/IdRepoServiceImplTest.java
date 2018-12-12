@@ -85,51 +85,27 @@ public class IdRepoServiceImplTest {
 	}
 
 	@Test
-	public void testGetIdInfo() throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, IOException {
-//		Map<String, Object> idResponseDTO = new HashMap<>();
-//		Map<String, Object> responseMap = new HashMap<>();
-//		//responseMap.put("identity", "identity");
-//		//idResponseDTO.put("response", responseMap);
-//		
-//		IdentityInfoDTO identityName = new IdentityInfoDTO();
-//		identityName.setLanguage("FR");
-//		identityName.setValue("Ibrahim");
-//		List<IdentityInfoDTO> name = new ArrayList<>();
-//		name.add(identityName);
-//		
-//		IdentityDTO  identity = new IdentityDTO();
-//		identity.setName(name);
-//		responseMap.put("identity", identity);
-//		idResponseDTO.put("response", responseMap);
+	public void testGetIdInfo()
+			throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, IOException {
 
-		String res = "{\r\n" + 
-				"              \"id\": \"mosip.id.read\",\r\n" + 
-				"              \"ver\": \"1.0\",\r\n" + 
-				"              \"timestamp\": \"\",\r\n" + 
-				"              \"err\": \"\",\r\n" + 
-				"              \"status\": \"SUCCCESSFUL\",\r\n" + 
-				"              \"errmsg\": \"\",\r\n" + 
-				"              \"responseCode\": \"OK\",\r\n" + 
-				"              \"uin\": \"7867780967875678\",\r\n" + 
-				"              \"response\": {\r\n" + 
-				"                             \"identity\": {\r\n" + 
-				"                                           \"firstName\": [{\r\n" + 
-				"                                                          \"language\": \"AR\",\r\n" + 
-				"                                                          \"label\": \"\\u0627\\u0644\\u0627\\u0633\\u0645 \\u0627\\u0644\\u0627\\u0648\\u0644\",\r\n" + 
-				"                                                          \"value\": \"\\u0627\\u0628\\u0631\\u0627\\u0647\\u064A\\u0645\"\r\n" + 
-				"                                           }, {\r\n" + 
-				"                                                          \"language\": \"FR\",\r\n" + 
-				"                                                          \"label\": \"Prénom\",\r\n" + 
-				"                                                          \"value\": \"Ibrahim\"\r\n" + 
-				"                                           }]\r\n" + 
-				"                             }\r\n" + 
-				"              }\r\n" + 
-				"}\r\n" + 
-				"";
-		
+		String res = "{\r\n" + "              \"id\": \"mosip.id.read\",\r\n" + "              \"ver\": \"1.0\",\r\n"
+				+ "              \"timestamp\": \"\",\r\n" + "              \"err\": \"\",\r\n"
+				+ "              \"status\": \"SUCCCESSFUL\",\r\n" + "              \"errmsg\": \"\",\r\n"
+				+ "              \"responseCode\": \"OK\",\r\n" + "              \"uin\": \"7867780967875678\",\r\n"
+				+ "              \"response\": {\r\n" + "                             \"identity\": {\r\n"
+				+ "                                           \"firstName\": [{\r\n"
+				+ "                                                          \"language\": \"AR\",\r\n"
+				+ "                                                          \"label\": \"\\u0627\\u0644\\u0627\\u0633\\u0645 \\u0627\\u0644\\u0627\\u0648\\u0644\",\r\n"
+				+ "                                                          \"value\": \"\\u0627\\u0628\\u0631\\u0627\\u0647\\u064A\\u0645\"\r\n"
+				+ "                                           }, {\r\n"
+				+ "                                                          \"language\": \"FR\",\r\n"
+				+ "                                                          \"label\": \"Prénom\",\r\n"
+				+ "                                                          \"value\": \"Ibrahim\"\r\n"
+				+ "                                           }]\r\n" + "                             }\r\n"
+				+ "              }\r\n" + "}\r\n" + "";
+
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> idResponseDTO = mapper.readValue(res.getBytes(), Map.class);
-		// Mockito.when(idReposerviceImplMock.getIdInfo(Mockito.anyMap())).thenReturn(Mockito.anyMap());
 		ReflectionTestUtils.invokeMethod(idReposerviceImpl, "getIdInfo", idResponseDTO);
 	}
 }
