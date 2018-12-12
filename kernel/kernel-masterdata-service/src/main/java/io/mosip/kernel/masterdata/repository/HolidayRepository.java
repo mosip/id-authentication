@@ -23,7 +23,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @param id
 	 * @return List<Holiday>
 	 */
-	List<Holiday> findAllByHolidayIdId(int id);
+	List<Holiday> findAllById(int id);
 
 	/**
 	 * get all the holidays for a specific location code
@@ -42,7 +42,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @param langCode
 	 * @return {@link Holiday}
 	 */
-	List<Holiday> findHolidayByHolidayIdIdAndHolidayIdLangCode(int holidayId,
+	List<Holiday> findHolidayByIdAndHolidayIdLangCode(int holidayId,
 			String langCode);
 
 }

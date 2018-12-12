@@ -24,18 +24,15 @@ public interface PreRegistrationRepository extends BaseRepository<PreRegistratio
 	public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
 	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where cr_appuser_id=:userId";
 
-
 	@Query("SELECT e FROM PreRegistrationEntity e  WHERE e.createdBy=:userId")
-	public List<PreRegistrationEntity> findByuserId(@Param("userId")String userId);
+	public List<PreRegistrationEntity> findByuserId(@Param("userId") String userId);
 
 	@Query(value = countRec, nativeQuery = true)
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
 	@Query("SELECT r FROM PreRegistrationEntity r  WHERE r.preRegistrationId=:preRegId")
-	public PreRegistrationEntity findBypreRegistrationId(@Param("preRegId")String preRegId);
+	public PreRegistrationEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
-
-	public void deleteByPreRegistrationId(String preId);
-	
+	public boolean deleteByPreRegistrationId(String preId);
 
 }

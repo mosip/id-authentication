@@ -1,21 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatDialog} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
-import { DialougComponent } from '../dialoug/dialoug.component';
+import { DialougComponent } from '../../shared/dialoug/dialoug.component';
+import { SharedService } from 'src/app/shared/shared.service';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { RegistrationCentre } from './registration-center-details.model';
+import { TimeSelectionComponent } from '../time-selection/time-selection.component';
+import { BookingModel } from './booking.model';
+import { BookingModelRequest } from './booking-request.model';
+import { Router, ActivatedRoute } from '@angular/router';
 
-export interface RegistrationCentre {
-  name: string;
-  address: string;
-  contact_person: string;
-  centre_type: string;
-  contact: number;
-}
-
-const REGISTRATION_CENTRES: RegistrationCentre[] = [
-  {name: 'Centre 1', address: 'Dummy Address 1', contact_person: 'Person 1', centre_type: 'Permanent', contact: 9999999999},
-  {name: 'Centre 2', address: 'Dummy Address 2', contact_person: 'Person 2', centre_type: 'Permanent', contact: 8888888888}
-  ];
-
+let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
 @Component({
   selector: 'app-center-selection',
@@ -25,7 +20,10 @@ const REGISTRATION_CENTRES: RegistrationCentre[] = [
 
 export class CenterSelectionComponent implements OnInit {
 
-  displayedColumns: string[] = ['select', 'name', 'address', 'contact_person', 'centre_type', 'contact'];
+  @ViewChild(TimeSelectionComponent)
+  timeSelectionComponent: TimeSelectionComponent;
+
+  displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
   dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
   selection = new SelectionModel<RegistrationCentre>(true, []);
 
@@ -42,11 +40,19 @@ export class CenterSelectionComponent implements OnInit {
   showTable = false;
   selectedCentre = null;
   showMap = false;
+  showMessage = false;
   enableNextButton = false;
+  bookingDataList: BookingModel[] = [];
   step = 0;
   showDescription = false;
+  mapProvider = 'OSM';
 
-  constructor(private dialog: MatDialog) { }
+  constructor(
+    private dialog: MatDialog,
+    private service: SharedService,
+    private dataService: DataStorageService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
   }
@@ -66,13 +72,27 @@ export class CenterSelectionComponent implements OnInit {
 
   showResults() {
     if (this.locationType !== null && this.text !== null) {
-      this.showTable = true;
-      this.selectedRow(REGISTRATION_CENTRES[0]);
+      this.showMap = false;
+      this.dataService.getRegistrationCentersByName(this.locationType, this.text).subscribe(response => {
+        console.log(response);
+        if (response['registrationCenters'].length !== 0) {
+          REGISTRATION_CENTRES = response['registrationCenters'];
+          this.dataSource.data = REGISTRATION_CENTRES;
+          this.showTable = true;
+          this.selectedRow(REGISTRATION_CENTRES[0]);
+          this.dispatchCenterCoordinatesList();
+        } else {
+          this.showMessage = true;
+        }
+      }, error => {
+        this.showMessage = true;
+      });
     }
   }
 
   plotOnMap() {
     this.showMap = true;
+    this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
   }
 
   selectedRow(row) {
@@ -85,10 +105,23 @@ export class CenterSelectionComponent implements OnInit {
   getLocation() {
 
     if (navigator.geolocation) {
+      this.showMap = false;
        navigator.geolocation.getCurrentPosition(position => {
          console.log(position);
-         this.showTable = true;
-         this.selectedRow(REGISTRATION_CENTRES[0]);
+        this.dataService.getNearbyRegistrationCenters(position.coords).subscribe(response => {
+          console.log(response);
+          if (response['registrationCenters'].length !== 0) {
+            REGISTRATION_CENTRES = response['registrationCenters'];
+            this.dataSource.data = REGISTRATION_CENTRES;
+            this.showTable = true;
+            this.selectedRow(REGISTRATION_CENTRES[0]);
+            this.dispatchCenterCoordinatesList();
+          } else {
+            this.showMessage = true;
+          }
+        }, error => {
+          this.showMessage = true;
+        });
        });
     } else {
       alert('Location not suppored in this browser');
@@ -96,15 +129,55 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
-    const data = {
-      case: 'MESSAGE',
-      title: 'Success',
-      message: 'Action was completed successfully'
-    };
-   const dialogRef = this.dialog.open(DialougComponent, {
-      width: '250px',
-      data: data
+    this.timeSelectionComponent.availabilityData.forEach(data => {
+      data.timeSlots.forEach(slot => {
+        if (slot.names.length !== 0) {
+          slot.names.forEach(name => {
+            const bookingData = new BookingModel(name.preRegId, this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
+            this.bookingDataList.push(bookingData);
+          });
+        }
+      });
     });
+    const request = new BookingModelRequest(this.bookingDataList);
+    console.log(request);
+    this.dataService.makeBooking(request).subscribe(response => {
+        const data = {
+            case: 'MESSAGE',
+            title: 'Success',
+            message: 'Action was completed successfully'
+          };
+        const dialogRef = this.dialog.open(DialougComponent, {
+            width: '250px',
+            data: data
+          }).afterClosed().subscribe(() => {
+            this.router.navigate(['../confirmation'], { relativeTo: this.route });
+          });
+        }, error => {
+          console.log(error);
+          const data = {
+              case: 'MESSAGE',
+              title: 'Failure',
+              message: 'Action could not be completed'
+            };
+          const dialogRef = this.dialog.open(DialougComponent, {
+              width: '250px',
+              data: data
+            });
+        });
+  }
+
+  dispatchCenterCoordinatesList() {
+    const coords = [];
+    REGISTRATION_CENTRES.forEach(centre => {
+      const data = {
+        id: centre.id,
+        latitude: Number(centre.latitude),
+        longitude: Number(centre.longitude)
+      };
+      coords.push(data);
+    });
+    this.service.listOfCenters(coords);
   }
 
 }

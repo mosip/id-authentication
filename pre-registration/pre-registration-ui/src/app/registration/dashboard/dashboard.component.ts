@@ -3,11 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { DialougComponent } from '../dialoug/dialoug.component';
+import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
 
-import { Applicant } from './dashboard.modal';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { RegistrationService } from '../registration.service';
+import { SharedService } from 'src/app/shared/shared.service';
+import { Applicant } from './dashboard.modal';
+import { UserModel } from '../demographic/user.model';
+import { AttributeModel } from '../demographic/attribute.model';
+import { IdentityModel } from '../demographic/identity.model';
 
 @Component({
   selector: 'app-registration',
@@ -15,6 +20,12 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
+  disableModifyDataButton = true;
+  disableModifyAppointmentButton = true;
+  numSelected: number;
+  numRows: number;
+  fetchedDetails = true;
+  modify = false;
   users: Applicant[] = [];
   // = [
   //   { applicationID: '1', name: 'Shashank', appointmentDateTime: '1.0079', status: 'Pending' },
@@ -34,7 +45,9 @@ export class DashBoardComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private dataStorageService: DataStorageService
+    private dataStorageService: DataStorageService,
+    private regService: RegistrationService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -45,19 +58,19 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
+    this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log(applicants);
         if (applicants['response'] !== null) {
           for (let index = 0; index < applicants['response'].length; index++) {
-            this.users.push(
-              new Applicant(
-                applicants['response'][index]['preId'],
-                applicants['response'][index]['firstname'],
-                applicants['response'][index]['appointmentDate'],
-                applicants['response'][index]['status_code']
-              )
-            );
+            const applicant: Applicant = {
+              applicationID: applicants['response'][index]['preId'],
+              name: applicants['response'][index]['firstname'],
+              appointmentDateTime: applicants['response'][index]['appointmentDate'],
+              status: applicants['response'][index]['status_code']
+            };
+            this.users.push(applicant);
           }
         }
         this.isFetched = true;
@@ -73,14 +86,17 @@ export class DashBoardComponent implements OnInit {
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    this.numSelected = this.selection.selected.length;
+    this.numRows = this.dataSource.data.length;
+    return this.numSelected === this.numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ? this.selection.clear() : this.dataSource.data.forEach(row => this.selection.select(row));
+    if (this.isAllSelected()) {
+      this.disableModifyDataButton = true;
+    }
   }
 
   onNewApplication() {
@@ -163,15 +179,80 @@ export class DashBoardComponent implements OnInit {
     });
   }
 
-  onModifyData() {
-    console.log('On modify data');
+  onModifyData(flag: boolean) {
+    if (flag && this.selection.selected.length === 1) {
+      this.fetchedDetails = false;
+      this.disableModifyDataButton = true;
+      const preId = this.selection.selected[0].applicationID;
+      this.dataStorageService.getUser(preId).subscribe(
+        response => {
+          this.disableModifyDataButton = true;
+          const identity = this.createIdentityJSON(response['response'][0].demographicDetails.identity);
+          this.regService.addUser(new UserModel(preId, identity, []));
+        },
+        error => {
+          this.disableModifyDataButton = false;
+          this.fetchedDetails = true;
+          console.log(error);
+        },
+        () => {
+          this.fetchedDetails = true;
+          this.router.navigate(['demographic', '1'], { relativeTo: this.route });
+        }
+      );
+    } else {
+      this.numSelected = this.selection.selected.length;
+      if (this.numSelected > 1 || this.numSelected === 0) {
+        this.disableModifyDataButton = true;
+      } else {
+        this.disableModifyDataButton = false;
+      }
+    }
+    this.modify = false;
   }
 
-  onModifyAppointment() {
-    console.log('on modify appointment');
+  onModifyAppointment(flag: boolean) {
+    if (flag) {
+      for (let index = 0; index < this.numSelected; index++) {
+        const preId = this.selection.selected[index].applicationID;
+        const fullName = this.selection.selected[index].name;
+        this.sharedService.addNameList({ fullName: fullName, preRegId: preId });
+      }
+      this.router.navigate(['pick-center'], { relativeTo: this.route });
+    }
+    this.numSelected = this.selection.selected.length;
+    if (this.numSelected === 0) {
+      this.disableModifyAppointmentButton = true;
+    } else {
+      this.disableModifyAppointmentButton = false;
+    }
   }
 
-  onHome() {
-    this.router.navigate(['']);
+  private createIdentityJSON(obj) {
+    const identity = new IdentityModel(
+      [new AttributeModel(obj.FullName[1].language, obj.FullName[1].label, obj.FullName[1].value)],
+      [new AttributeModel(obj.dateOfBirth[1].language, obj.dateOfBirth[1].label, obj.dateOfBirth[1].value)],
+      [new AttributeModel(obj.gender[1].language, obj.gender[1].label, obj.gender[1].value)],
+      [new AttributeModel(obj.addressLine1[1].language, obj.addressLine1[1].label, obj.addressLine1[1].value)],
+      [new AttributeModel(obj.addressLine2[1].language, obj.addressLine2[1].label, obj.addressLine2[1].value)],
+      [new AttributeModel(obj.addressLine3[1].language, obj.addressLine3[1].label, obj.addressLine3[1].value)],
+      [new AttributeModel(obj.region[1].language, obj.region[1].label, obj.region[1].value)],
+      [new AttributeModel(obj.province[1].language, obj.province[1].label, obj.province[1].value)],
+      [new AttributeModel(obj.city[1].language, obj.city[1].label, obj.city[1].value)],
+      [new AttributeModel(obj.postalcode[1].language, obj.postalcode[1].label, obj.postalcode[1].value)],
+      [
+        new AttributeModel(
+          obj.localAdministrativeAuthority[1].language,
+          obj.localAdministrativeAuthority[1].label,
+          obj.localAdministrativeAuthority[1].value
+        )
+      ],
+      [new AttributeModel(obj.emailId[1].language, obj.emailId[1].label, obj.emailId[1].value)],
+      [new AttributeModel(obj.mobileNumber[1].language, obj.mobileNumber[1].label, obj.mobileNumber[1].value)],
+      [new AttributeModel(obj.CNEOrPINNumber[1].language, obj.CNEOrPINNumber[1].label, obj.CNEOrPINNumber[1].value)],
+      [new AttributeModel(obj.age[1].language, obj.age[1].label, obj.age[1].value)]
+    );
+
+    return identity;
   }
 }

@@ -159,17 +159,8 @@ public class PacketInfoDao {
 		return demo;
 	}
 
-	public List<DemographicInfoDto> getAllDemoWithUIN(String pheoniticName, String gender, Date dob) {
-		List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
-				.getAllDemoWithUIN(pheoniticName, gender, dob);
-		if (individualDemographicDedupeEntityList != null) {
-			for (IndividualDemographicDedupeEntity entity : individualDemographicDedupeEntityList) {
-				demographicDedupeDtoList.add(convertEntityToDemographicDto(entity));
-			}
-
-		}
-		return demographicDedupeDtoList;
+	public List<String> getAllDemoWithUIN(String pheoniticName, String gender, Date dob, String langCode) {
+		return demographicDedupeRepository.getAllDemoWithUIN(pheoniticName, gender, dob, langCode);
 	}
 
 	public List<DemographicInfoDto> findDemoById(String regId) {
@@ -192,5 +183,4 @@ public class PacketInfoDao {
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
 		return demographicDedupeRepository.getApplicantFingerPrintImageNameById(regId);
 	}
-
 }

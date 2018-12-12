@@ -52,7 +52,7 @@ public class SyncRegistrationDaoTest {
 		syncRegistrationEntity = new SyncRegistrationEntity();
 		syncRegistrationEntity.setId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
 		syncRegistrationEntity.setRegistrationId("1001");
-		syncRegistrationEntity.setRegistrationType(SyncTypeDto.NEW.toString());
+		syncRegistrationEntity.setRegistrationType(SyncTypeDto.NEW.getValue());
 		syncRegistrationEntity.setParentRegistrationId("1234");
 		syncRegistrationEntity.setStatusCode(SyncStatusDto.PRE_SYNC.toString());
 		syncRegistrationEntity.setStatusComment("NEW");

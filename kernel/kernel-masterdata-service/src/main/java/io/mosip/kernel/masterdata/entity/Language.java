@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

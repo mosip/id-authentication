@@ -14,7 +14,7 @@ import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
  *            the generic type
  */
 @Service
-public interface SyncRegistrationService<T> {
+public interface SyncRegistrationService<T,U> {
 
 	/**
 	 * Sync.
@@ -23,7 +23,7 @@ public interface SyncRegistrationService<T> {
 	 *            the sync resgistrationdto
 	 * @return the list
 	 */
-	public List<T> sync(List<T> syncResgistrationdto);
+	public List<T> sync(List<U> syncResgistrationdto);
 
 	/**
 	 * Checks if is present.

@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +37,7 @@ public class DocumentTypeController {
 	DocumentTypeService documentTypeService;
 
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
-	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
+	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("documentcategorycode") String documentcategoryCode) {
@@ -45,8 +47,9 @@ public class DocumentTypeController {
 
 	}
 
-	@PostMapping("/documenttypes")
-	public ResponseEntity<PostResponseDto> addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
-		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
+	@PostMapping("/v1.0/documenttypes")
+	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
+			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.createDocumentTypes(types), HttpStatus.CREATED);
 	}
 }

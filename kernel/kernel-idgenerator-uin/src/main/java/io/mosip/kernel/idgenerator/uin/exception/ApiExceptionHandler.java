@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCode;
 
 /**
@@ -25,14 +27,12 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(UinNotFoundException.class)
-	public ResponseEntity<ErrorResponse<Error>> uinNotFoundHandler(UinNotFoundException e) {
-
-		Error error = new Error(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+	public ResponseEntity<ErrorResponse<ServiceError>> uinNotFoundHandler(UinNotFoundException e) {
+		ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 				UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-
-		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
-
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 }

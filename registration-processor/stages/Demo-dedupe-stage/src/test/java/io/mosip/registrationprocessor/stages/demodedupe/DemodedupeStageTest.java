@@ -29,7 +29,6 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -54,7 +53,7 @@ public class DemodedupeStageTest {
 	private DemoDedupe demoDedupe;
 
 	private MessageDTO dto = new MessageDTO();
-	private Set<DemographicInfoDto> duplicateDtos = new HashSet<>();
+	private Set<String> duplicateDtos = new HashSet<>();
 
 	@InjectMocks
 	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
@@ -84,10 +83,8 @@ public class DemodedupeStageTest {
 
 		MockitoAnnotations.initMocks(this);
 
-		DemographicInfoDto dto1 = new DemographicInfoDto();
-		DemographicInfoDto dto2 = new DemographicInfoDto();
-		duplicateDtos.add(dto1);
-		duplicateDtos.add(dto2);
+		duplicateDtos.add("dto1");
+		duplicateDtos.add("dto2");
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
@@ -103,7 +100,7 @@ public class DemodedupeStageTest {
 	@Test
 	public void testDemoDedupeSuccess() {
 
-		Set<DemographicInfoDto> emptyDuplicateDtoSet = new HashSet<>();
+		Set<String> emptyDuplicateDtoSet = new HashSet<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
 		MessageDTO messageDto = demodedupeStage.process(dto);

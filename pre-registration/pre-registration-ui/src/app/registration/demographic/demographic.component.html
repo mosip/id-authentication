@@ -49,18 +49,6 @@
 
                 <ng-template #dob>
                   <span>
-                    <!--
-                      <input
-                        (dateInput)="addDOB($event)"
-                        [matDatepicker]="picker"
-                        placeholder="{{demo.dateOfBirth}}"
-                        type="hidden"
-                        [max]="maxDate"
-                      />
-                      <div *ngIf="showDate; then: show; else: hidden"></div>
-                      <mat-datepicker-toggle style="width: 40px ;float: right;" [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    -->
                     <mat-form-field>
                       <input
                         (dateInput)="addDOB($event)"
@@ -83,14 +71,6 @@
                     </mat-form-field>
                   </span>
                 </ng-template>
-
-                <!--
-                  <ng-template #hidden>
-                    <div style="width : 100px">{{ demo.dateOfBirth }}</div>
-                  </ng-template>
-                  <ng-template #show> {{ dateSelected | date: 'dd/MM/yyyy' }} </ng-template>
-                -->
-
                 <div class="gender">
                   <mat-button-toggle-group
                     formControlName="gender"
@@ -208,13 +188,17 @@
 
           <mat-action-row>
             <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
-              Next
+            <button type="button" mat-button color="primary" [disabled]="!dataUploadComplete" (click)="nextStep()">
+              <div *ngIf="dataUploadComplete">Next</div>
+              <div *ngIf="!dataUploadComplete"><mat-progress-bar mode="indeterminate"></mat-progress-bar></div>
             </button>
           </mat-action-row>
         </mat-expansion-panel>
       </div>
     </mat-accordion>
   </div>
-  <div>Transliterated placeholder</div>
+  <div>
+    Transliterated placeholder
+    <!-- <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner> -->
+  </div>
 </div>
