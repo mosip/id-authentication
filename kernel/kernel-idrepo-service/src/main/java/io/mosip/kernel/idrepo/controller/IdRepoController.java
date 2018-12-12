@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +45,6 @@ public class IdRepoController {
 	@Resource
 	private Map<String, String> id;
 	
-	@Autowired
-	private Environment env;
-
 	/** The id repo service. */
 	@Autowired
 	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;

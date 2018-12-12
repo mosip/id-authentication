@@ -66,8 +66,10 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		
 		Instant responseTime = Instant.now();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
+		long duration = Duration.between(requestTime, responseTime).toMillis();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " 
-		+ Duration.between(requestTime, responseTime).toMillis());
+		+ duration
+		+ ". Time difference between request and response in Seconds: " + (((double) duration / 1000) % 60));
 	}
 	
 	@Override

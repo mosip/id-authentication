@@ -274,11 +274,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				uinObject = updateUinStatus(dbUinData, request.getStatus());
 			}
 
+			byte[] decryptedIdentity = decryptIdentity(dbUinData.getUinDetail().getUinData());
 			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()),
-					new String(decryptIdentity(dbUinData.getUinDetail().getUinData())))) {
+					new String(decryptedIdentity))) {
 				Map<String, Map<String, List<Map<String, String>>>> requestData = convertToMap(request.getRequest());
 				Map<String, Map<String, List<Map<String, String>>>> dbData = (Map<String, Map<String, List<Map<String, String>>>>) convertToObject(
-						decryptIdentity(dbUinData.getUinDetail().getUinData()), Map.class);
+						decryptedIdentity, Map.class);
 				MapDifference<String, List<Map<String, String>>> mapDifference = Maps
 						.difference(requestData.get(IDENTITY), dbData.get(IDENTITY));
 				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.get(IDENTITY).put(key, value));

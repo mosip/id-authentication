@@ -276,14 +276,13 @@ public class IdRequestValidator implements Validator {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 				}
-			} catch (UnidentifiedJsonException | IOException | JsonValidationProcessingException | JsonIOException
-					| JsonSchemaIOException e) {
+			} catch (UnidentifiedJsonException | IOException | JsonValidationProcessingException | JsonIOException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			} catch (FileIOException | NullJsonSchemaException | ConfigServerConnectionException | HttpRequestException
-					| NullJsonNodeException e) {
+					| NullJsonNodeException | JsonSchemaIOException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
