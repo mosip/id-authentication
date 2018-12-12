@@ -1,5 +1,8 @@
 package io.mosip.kernel.idrepo.config;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +12,12 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManagerFactory;
+import javax.security.cert.CertificateException;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +39,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class IdRepoConfig.
@@ -42,6 +52,8 @@ import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 @ConfigurationProperties("mosip.kernel.idrepo")
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
+
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoConfig.class);
 
 	/** The mapper. */
 	@Autowired
@@ -148,6 +160,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 */
 	@Bean
 	public RestTemplate restTemplate() {
+		turnOffSslChecking();
 		return new RestTemplate();
 	}
 
@@ -174,7 +187,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Entity manager factory.
 	 *
-	 * @param dataSource the data source
+	 * @param dataSource
+	 *            the data source
 	 * @return the local container entity manager factory bean
 	 */
 	@Bean
@@ -193,7 +207,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Transaction manager.
 	 *
-	 * @param emf the emf
+	 * @param emf
+	 *            the emf
 	 * @return the platform transaction manager
 	 */
 	@Bean
@@ -231,5 +246,34 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		driverManagerDataSource.setPassword(dataSourceValues.get("password"));
 		driverManagerDataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
 		return driverManagerDataSource;
+	}
+
+	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+				throws java.security.cert.CertificateException {
+
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+				throws java.security.cert.CertificateException {
+
+		}
+
+	} };
+
+	public void turnOffSslChecking() {
+		try {
+			final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+			sslContext.init(null, UNQUESTIONING_TRUST_MANAGER, null);
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+			mosipLogger.error("sessionId", "IdRepoConfig", "turnOffSslChecking", ExceptionUtils.getStackTrace(e));
+		}
 	}
 }
