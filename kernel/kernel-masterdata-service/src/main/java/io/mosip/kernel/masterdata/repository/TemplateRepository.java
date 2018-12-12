@@ -17,18 +17,20 @@ import io.mosip.kernel.masterdata.entity.Template;
 public interface TemplateRepository extends BaseRepository<Template, String> {
 
 	/**
-	 * Get all Biometric types
+	 * Get all Template types
 	 *
-	 * @return {@link List<Template>}
+	 * @param entityClass
+	 *            the entity class type
+	 * @return All the {@link Template}
 	 */
 	public List<Template> findAllByIsDeletedFalse(Class<Template> entityClass);
 
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param languageCode
+	 * @param langCode
 	 *            the language code
-	 * @return {@link List<Template>}
+	 * @return All the {@link Template}
 	 */
 	public List<Template> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
@@ -36,11 +38,11 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * To fetch all the {@link Template} based on language code and template type
 	 * code
 	 * 
-	 * @param languageCode
+	 * @param langCode
 	 *            the language code
 	 * @param templateTypeCode
 	 *            the template type code
-	 * @return {@link List<Template>}
+	 * @return All the {@link Template}
 	 */
 	public List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(String langCode,
 			String templateTypeCode);

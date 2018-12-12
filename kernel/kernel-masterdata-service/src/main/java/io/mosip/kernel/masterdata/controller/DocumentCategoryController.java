@@ -79,7 +79,7 @@ public class DocumentCategoryController {
 	 * @param category
 	 * 			is of type {@link DocumentCategoryDto}
 	 * 
-	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(

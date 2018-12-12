@@ -24,19 +24,22 @@ public interface ApplicationService {
 	/**
 	 * Get All Applications by language code
 	 * 
-	 * @param languageCode
+	 * @param langCode
+	 * 			the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
-	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode);
+	public ApplicationResponseDto getAllApplicationByLanguageCode(String langCode);
 
 	/**
 	 * Get An Application by code and language code
 	 * 
 	 * @param code
-	 * @param languageCode
+	 * 			the code
+	 * @param langCode
+	 * 			the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
-	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode);
+	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String langCode);
 
 	/**
 	 * To create an Application
