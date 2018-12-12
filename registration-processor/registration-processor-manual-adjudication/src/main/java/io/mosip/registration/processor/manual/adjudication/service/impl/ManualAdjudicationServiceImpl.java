@@ -225,13 +225,8 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 				description = "Manual verification rejected for registration id : " + registrationId;
 			}
-			basePacketRepository.update(manualVerificationEntity);
-			UserDto userDto = new UserDto();
-			userDto.setUserId(manualVerificationDTO.getMvUsrId());
-			userDto.setOffice(manualVerificationDTO.getOffice());
-			userDto.setStatus(ManualVerificationStatus.PENDING.name());
-			userDto.setName(manualVerificationDTO.getName());
-			manualVerificationDTO = assignApplicant(userDto);
+			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
+			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (TablenotAccessibleException e) {
