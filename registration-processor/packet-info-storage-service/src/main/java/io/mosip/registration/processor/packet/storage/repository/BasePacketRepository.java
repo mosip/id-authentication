@@ -40,8 +40,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            The statusCode
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query("SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode LIMIT 1")
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode limit 1", nativeQuery=true)
 	public E getFirstApplicantDetails(@Param("statusCode") String statusCode);
 
 	/**
