@@ -14,6 +14,13 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.swagger.annotations.Api;
 
+/**
+ * Controller class to fetch or create TemplateFileFormat.
+ * 
+ * @author Neha
+ * @since 1.0.0
+ *
+ */
 @RestController
 @RequestMapping("/v1.0/templatefileformats")
 @Api(tags = { "TemplateFileFormat" })

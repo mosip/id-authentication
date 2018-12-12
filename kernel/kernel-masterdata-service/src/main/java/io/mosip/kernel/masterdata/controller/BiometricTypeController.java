@@ -43,11 +43,25 @@ public class BiometricTypeController {
 		return biometricTypeService.getAllBiometricTypes();
 	}
 
+	/**
+	 * API to fetch all Biometric types details based on language code
+	 * 
+	 * @param langCode
+	 * 
+	 * @return All Biometric type details
+	 */
 	@GetMapping("/{langcode}")
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
+	/**
+	 * API to fetch Biometric type details based on code and language code
+	 * 
+	 * @param code
+	 * @param langCode
+	 * @return Biometric type
+	 */
 	@GetMapping("/{code}/{langcode}")
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
@@ -55,7 +69,7 @@ public class BiometricTypeController {
 	}
 
 	/**
-	 * API to create a Biometric type
+	 * API to insert Biometric type
 	 * 
 	 * @param biometricType
 	 *            is of type {@link BiometricType}

@@ -24,7 +24,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * Service API for Application
+ * Service API implementaion class for Application
  * 
  * @author Neha
  * @since 1.0.0
@@ -36,16 +36,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private ApplicationRepository applicationRepository;
 
-
 	@Autowired
 	private DataMapper dataMapper;
 
 	private List<Application> applicationList;
 
-	/**
-	 * Get All Applications
-	 * 
-	 * @return {@link ApplicationResponseDto}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getAllApplication()
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplication() {
@@ -54,7 +52,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			applicationList = applicationRepository.findAllByIsDeletedFalse(Application.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
@@ -71,12 +70,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	/**
-	 * Get All Applications by language code
-	 * 
-	 * @param languageCode
-	 * 
-	 * @return {@link ApplicationResponseDto}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getAllApplicationByLanguageCode(java.lang.String)
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
@@ -85,7 +81,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
@@ -102,13 +99,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	/**
-	 * Get All Applications by code and language code
-	 * 
-	 * @param code
-	 * @param languageCode
-	 * 
-	 * @return {@link ApplicationResponseDto}
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getApplicationByCodeAndLanguageCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
@@ -119,7 +111,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
 			dataMapper.map(application, applicationDto, true, null, null, true);
@@ -133,12 +126,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	/**
-	 * Get All Applications by language code
-	 * 
-	 * @param applicationRequestDto
-	 * 
-	 * @return {@link CodeAndLanguageCodeID}
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#createApplication(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {
@@ -149,7 +138,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			application = applicationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()+ " " + ExceptionUtils.parseException(e));
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
 		dataMapper.map(application, codeLangCodeId, true, null, null, true);

@@ -40,16 +40,12 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	private List<BiometricTypeDto> biometricTypeDtoList;
 	private List<BiometricType> biometricTypesList;
 
-	/**
-	 * Method to fetch all Biometric Type details
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see
+	 * io.mosip.kernel.masterdata.service.BiometricTypeService#getAllBiometricTypes(
+	 * )
 	 */
 	@Override
 	public BiometricTypeResponseDto getAllBiometricTypes() {
@@ -76,19 +72,11 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to fetch all Biometric Type details based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getAllBiometricTypesByLanguageCode(java.lang.String)
 	 */
 	@Override
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(String langCode) {
@@ -115,22 +103,11 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to fetch all Biometric Type details based on id and language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param code
-	 *            The id of Biometric Type
-	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getBiometricTypeByCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
@@ -157,16 +134,12 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to create a Biometric Type
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param biometricTypeRequestDto
-	 *            The Biometric Type data
-	 * 
-	 * @return {@link CodeAndLanguageCodeID}
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to insert the Biometric Type
+	 * @see
+	 * io.mosip.kernel.masterdata.service.BiometricTypeService#addBiometricType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {

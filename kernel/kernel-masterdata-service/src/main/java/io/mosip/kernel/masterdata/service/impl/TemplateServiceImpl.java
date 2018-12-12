@@ -36,10 +36,10 @@ public class TemplateServiceImpl implements TemplateService {
 
 	private List<TemplateDto> templateDtoList;
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return {@link List<TemplateDto>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
 	@Override
 	public List<TemplateDto> getAllTemplate() {
@@ -58,11 +58,11 @@ public class TemplateServiceImpl implements TemplateService {
 		return templateDtoList;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
 	@Override
 	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
@@ -81,13 +81,12 @@ public class TemplateServiceImpl implements TemplateService {
 		return templateDtoList;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code and template type
-	 * code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @param templateTypeCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCodeAndTemplateTypeCode(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
@@ -108,8 +107,12 @@ public class TemplateServiceImpl implements TemplateService {
 		return templateDtoList;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.kernel.masterdata.dto.TemplateDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.
+	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
 	public IdResponseDto createTemplate(TemplateDto template) {
