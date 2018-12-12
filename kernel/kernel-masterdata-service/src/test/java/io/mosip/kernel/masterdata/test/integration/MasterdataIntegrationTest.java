@@ -606,12 +606,6 @@ public class MasterdataIntegrationTest {
 		machineDto = new MachineDto();
 		MapperUtils.map(machine, machineDto);
 
-		/*RequestDto<MachineDto> requestDto;
-		requestDto = new RequestDto<>();
-		requestDto.setId("mosip.match.regcentr.machineid");
-		requestDto.setVer("1.0.0");
-		requestDto.setRequest(machineDto);*/
-
 	}
 
 	private void registrationCenterDeviceSetup() {
