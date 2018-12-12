@@ -169,7 +169,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authRequestDTO.getIdvId());
 
 		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = new AuthResponseBuilder(env.getProperty(DATETIME_PATTERN));
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = null;
 		try {

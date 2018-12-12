@@ -33,7 +33,17 @@ public class IDAMappingConfig implements MappingConfig {
 	private List<String> fullAddress;
 	private List<String> otp;
 	private List<String> pin;
+	private List<String> leftIndex;
+	private List<String> leftLittle;
+	private List<String> leftMiddle;
+	private List<String> leftRing;
+	private List<String> leftThumb;
+	private List<String> rightIndex;
+	private List<String> rightLittle;
+	private List<String> rightMiddle;
+	private List<String> rightRing;
+	private List<String> rightThumb;
 	private List<String> iris;
-	private List<String> fingerprint;
+	private List<String> face;
 
 }
