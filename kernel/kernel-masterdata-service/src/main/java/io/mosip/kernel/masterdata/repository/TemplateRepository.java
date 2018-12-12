@@ -19,7 +19,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * Get all Biometric types
 	 *
-	 * @return {@link List<BiometricType>}
+	 * @return {@link List<Template>}
 	 */
 	public List<Template> findAllByIsDeletedFalse(Class<Template> entityClass);
 
@@ -27,6 +27,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * To fetch all the {@link Template} based on language code
 	 * 
 	 * @param languageCode
+	 *            the language code
 	 * @return {@link List<Template>}
 	 */
 	public List<Template> findAllByLangCodeAndIsDeletedFalse(String langCode);
@@ -36,10 +37,11 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * code
 	 * 
 	 * @param languageCode
+	 *            the language code
 	 * @param templateTypeCode
+	 *            the template type code
 	 * @return {@link List<Template>}
 	 */
 	public List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(String langCode,
 			String templateTypeCode);
-
 }

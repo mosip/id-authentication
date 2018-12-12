@@ -47,6 +47,7 @@ public class BiometricTypeController {
 	 * API to fetch all Biometric types details based on language code
 	 * 
 	 * @param langCode
+	 * 			The language code
 	 * 
 	 * @return All Biometric type details
 	 */
@@ -59,7 +60,9 @@ public class BiometricTypeController {
 	 * API to fetch Biometric type details based on code and language code
 	 * 
 	 * @param code
+	 * 			the code
 	 * @param langCode
+	 * 			the language code
 	 * @return Biometric type
 	 */
 	@GetMapping("/{code}/{langcode}")

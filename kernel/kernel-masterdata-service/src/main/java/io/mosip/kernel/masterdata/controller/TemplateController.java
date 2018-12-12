@@ -65,7 +65,9 @@ public class TemplateController {
 	 * code
 	 * 
 	 * @param langCode
+	 *            the language code
 	 * @param templateTypeCode
+	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/{langcode}/{templatetypecode}")
@@ -78,7 +80,7 @@ public class TemplateController {
 	 * This method creates template based on provided details.
 	 * 
 	 * @param template
-	 *            the request dto.
+	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping

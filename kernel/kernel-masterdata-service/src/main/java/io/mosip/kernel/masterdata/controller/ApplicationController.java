@@ -77,6 +77,7 @@ public class ApplicationController {
 	 * API to insert Application detail
 	 * 
 	 * @param application
+	 * 			the application detail
 	 * 
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
