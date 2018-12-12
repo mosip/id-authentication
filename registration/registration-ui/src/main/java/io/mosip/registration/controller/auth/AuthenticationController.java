@@ -452,7 +452,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 				if(isSupervisor) {
 					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
-					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().getFingerprintDetailsDTO().add(fingerprintDetailsDTO);
+					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 				} else {
 					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
@@ -464,6 +464,14 @@ public class AuthenticationController extends BaseController implements Initiali
 						.getValidator(RegistrationConstants.VALIDATION_TYPE_FP);
 				authenticationValidatorImplementation.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
 				fpMatchStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
+				
+				if (fpMatchStatus) {
+					if (isSupervisor) {
+						fingerprintDetailsDTO.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()));
+					} else {
+						fingerprintDetailsDTO.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()));
+					}
+				}
 			}
 		}
 		return fpMatchStatus;

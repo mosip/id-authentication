@@ -252,6 +252,12 @@ public class FingerprintFacade {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
+		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
+			if (fingerprintProvider.scoreCalculator(minutiae,
+					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {
+				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
+			}
+		});
 		return userFingerprintDetails.stream()
 				.anyMatch(bio -> fingerprintProvider.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}
