@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 23-10-2016
+ * @since 1.0.0
  */
 @Data
 @AllArgsConstructor

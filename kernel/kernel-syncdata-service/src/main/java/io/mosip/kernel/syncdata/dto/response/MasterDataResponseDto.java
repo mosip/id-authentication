@@ -34,7 +34,7 @@ import lombok.Data;
  * masterdata sync handler response dto
  * 
  * @author Abhishek Kumar
- * @since 29-11-2018
+ * @since 1.0.0
  *
  */
 @Data

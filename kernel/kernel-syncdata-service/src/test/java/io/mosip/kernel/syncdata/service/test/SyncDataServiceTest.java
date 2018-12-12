@@ -1,4 +1,4 @@
-package io.mosip.kernel.synchandler.service.test;
+package io.mosip.kernel.syncdata.service.test;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -45,6 +45,8 @@ public class SyncDataServiceTest {
 
 	@Autowired
 	RestTemplate restemplate;
+	
+	private final String BASEURL="http://104.211.212.28:51000/kernel-syncdata-service/test/DEV_SPRINT6_SYNC_HANDLER";
 	
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
@@ -115,7 +117,7 @@ public class SyncDataServiceTest {
 	public void globalConfigsyncSuccess() {
         
 		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withSuccess());
+		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withSuccess());
 		syncConfigDetailsService.getGlobalConfigDetails();
 		
 	}
@@ -131,7 +133,7 @@ public class SyncDataServiceTest {
 	public void registrationConfigsyncFailure() {
 		
 		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/registration-center-config.json")).andRespond(withBadRequest());
+		server.expect(requestTo(BASEURL+"/registration-center-config.json")).andRespond(withBadRequest());
 		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 		}
 	
@@ -139,7 +141,7 @@ public class SyncDataServiceTest {
 	public void globalConfigsyncFailure() {
 		
 		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo("http://104.211.212.28:51000/kernel-synchandler-service/test/DEV_SPRINT6_SYNC_HANDLER/global-config.json")).andRespond(withBadRequest());
+		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
 		}
 }

@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
  * Sync handler masterData service helper
  * 
  * @author Abhishek Kumar
- * @since 07-12-2018
+ * @since 1.0.0
  */
 @Component
 public class MasterDataServiceHelper {
@@ -761,7 +762,7 @@ public class MasterDataServiceHelper {
 				deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByMachineId(machineId,
 						lastUpdated);
 			else
-				deviceSpecificationList = deviceSpecificationRepository.findAll();
+				deviceSpecificationList = deviceSpecificationRepository.findDeviceTypeByMachineId(machineId);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(), e.getMessage());

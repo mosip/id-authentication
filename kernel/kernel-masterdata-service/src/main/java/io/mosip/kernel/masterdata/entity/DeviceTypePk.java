@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.synchandler.entity;
+package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 

@@ -21,8 +21,7 @@ import lombok.NoArgsConstructor;
 /**
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 24-10-2018
+ * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

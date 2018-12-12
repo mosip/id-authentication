@@ -12,8 +12,7 @@ import io.mosip.kernel.syncdata.entity.Holiday;
 /**
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 23-10-2018
+ * @since 1.0.0
  */
 @Repository
 public interface HolidayRepository extends BaseRepository<Holiday, Integer> {

@@ -11,7 +11,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * synch handler controller advice
  * 
  * @author Abhishek Kumar
- * @since 29-11-2018
+ * @since 1.0.0
  *
  */
 @RestControllerAdvice

@@ -1,4 +1,4 @@
-package io.mosip.kernel.synchandler.dto;
+package io.mosip.kernel.masterdata.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * Main class of Sync handler Application.
  * 
  * @author Abhishek Kumar
- * @since 29-11-2018
+ * @since 1.0.0
  */
 @SpringBootApplication
 @EnableAsync
@@ -27,7 +27,6 @@ public class SyncDataBootApplication {
 		SpringApplication.run(SyncDataBootApplication.class, args);
 	}
 
-	
 	@Bean
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -37,6 +36,4 @@ public class SyncDataBootApplication {
 		executor.initialize();
 		return executor;
 	}
-	
-
 }
