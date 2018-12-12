@@ -24,8 +24,7 @@ public interface DeviceSpecificationService {
 	 *
 	 * @param languageCode
 	 *            Language code given by user
-	 * @return List
-	 * 			 Device Specification Details for given language code
+	 * @return List Device Specification Details for given language code
 	 * @throws MasterDataServiceException
 	 *             if any error occurs while retrieving device Specification
 	 * @throws DataNotFoundException
@@ -42,8 +41,8 @@ public interface DeviceSpecificationService {
 	 *            Language Code given by user
 	 * @param deviceTypeCode
 	 *            DeviceTypeCode given by user
-	 * @return List 
-	 * 			Device Specification Details for given language code and deviceTypeCode
+	 * @return List Device Specification Details for given language code and
+	 *         deviceTypeCode
 	 * 
 	 * @throws MasterDataServiceException
 	 *             if any error occurs while retrieving device Specification
@@ -58,10 +57,9 @@ public interface DeviceSpecificationService {
 	 * Function to save Device Specification Details to the Database
 	 * 
 	 * @param deviceSpecification
-	 *        input from user DeviceSpecification DTO
+	 *            input from user DeviceSpecification DTO
 	 * 
-	 * @return IdResponseDto
-	 *        Device Specification ID which is successfully inserted
+	 * @return IdResponseDto Device Specification ID which is successfully inserted
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving device Specification
 	 */

@@ -14,7 +14,5 @@ import io.mosip.kernel.masterdata.entity.DeviceType;
  */
 @Repository
 public interface DeviceTypeRepository extends BaseRepository<DeviceType, String> {
-	
-	
 
 }

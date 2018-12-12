@@ -83,14 +83,12 @@ public class Device extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
-	 
+
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
-	
+
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private DeviceSpecification deviceSpecification;
 
 }

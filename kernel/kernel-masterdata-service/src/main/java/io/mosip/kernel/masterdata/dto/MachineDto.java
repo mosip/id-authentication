@@ -55,7 +55,7 @@ public class MachineDto {
 	/**
 	 * Field for machine IP address
 	 */
-	
+
 	@Size(min = 1, max = 17)
 	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;
@@ -76,12 +76,12 @@ public class MachineDto {
 	/**
 	 * Field for is active
 	 */
-	@NotNull	
+	@NotNull
 	private Boolean isActive;
 	/**
 	 * Field for is validity of the Device
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
-	
+
 }
