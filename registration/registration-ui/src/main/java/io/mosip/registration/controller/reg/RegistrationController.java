@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -1971,8 +1970,8 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
-		if (vboxElement.getChildren().size() > scrollCheck) {
-			scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		if (vboxElement.getChildren().size() >= scrollCheck) {
+			//scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		} else {
 			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);

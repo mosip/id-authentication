@@ -178,7 +178,7 @@ public class TemplateGenerator {
 		List<IrisDetailsDTO> capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getIrisDetailsDTO();
 
-		int[] fingersAndIrises = { capturedFingers.size(), capturedIris.size() };
+		int[] fingersAndIrises = { capturedFingers.stream().mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(), capturedIris.size() };
 
 		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
 				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
