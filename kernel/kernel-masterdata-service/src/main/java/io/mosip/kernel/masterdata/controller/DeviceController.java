@@ -47,10 +47,10 @@ public class DeviceController {
 	 * Get api to fetch a all device details based on language code
 	 * 
 	 * @param langCode
-	 * 				pass language code as String
+	 *            pass language code as String
 	 * 
-	 * @return DeviceResponseDto
-	 * 				all device details based on given language code {@link DeviceResponseDto}
+	 * @return DeviceResponseDto all device details based on given language code
+	 *         {@link DeviceResponseDto}
 	 */
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
@@ -66,13 +66,13 @@ public class DeviceController {
 	 * Get api to fetch a all device details based on device type and language code
 	 * 
 	 * @param langCode
-	 * 			pass language code as String
+	 *            pass language code as String
 	 * 
 	 * @param deviceType
-	 * 			pass device Type id as String
+	 *            pass device Type id as String
 	 * 
-	 * @return DeviceLangCodeResponseDto
-	 * 				all device details based on given device type and language code {@link DeviceLangCodeResponseDto}
+	 * @return DeviceLangCodeResponseDto all device details based on given device
+	 *         type and language code {@link DeviceLangCodeResponseDto}
 	 */
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
@@ -90,10 +90,10 @@ public class DeviceController {
 	 * Post API to insert a new row of Device data
 	 * 
 	 * @param deviceRequestDto
-	 * 			 input parameter deviceRequestDto
+	 *            input parameter deviceRequestDto
 	 * 
-	 * @return ResponseEntity
-	 * 			Device Id which is inserted successfully {@link ResponseEntity}
+	 * @return ResponseEntity Device Id which is inserted successfully
+	 *         {@link ResponseEntity}
 	 */
 	@PostMapping()
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)

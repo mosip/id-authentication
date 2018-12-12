@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  */
 
 public interface MachineService {
-	
+
 	/**
 	 * This abstract method to fetch machine details for given Machine ID and
 	 * language code
@@ -25,8 +25,8 @@ public interface MachineService {
 	 *            Machine Id given by user
 	 * @param langCode
 	 *            Language code given by user
-	 * @return MachineResponseDto 
-	 * 			Machine Detail for given machine id and language code
+	 * @return MachineResponseDto Machine Detail for given machine id and language
+	 *         code
 	 * @throws MasterDataServiceException
 	 *             if any error occurs while retrieving Machine Details
 	 * @throws DataNotFoundException
@@ -34,22 +34,18 @@ public interface MachineService {
 	 *
 	 */
 	MachineResponseDto getMachine(String id, String langCode);
-	
-	
 
 	/**
 	 * This abstract method to fetch all machines details
 	 * 
-	 * @return MachineResponseDto
-	 * 			Returning all Machines Details
+	 * @return MachineResponseDto Returning all Machines Details
 	 * @throws MasterDataServiceException
 	 *             if any error occurs while retrieving Machine Details
 	 * @throws DataNotFoundException
 	 *             if no Machine found
 	 *
-	 */	
-	
-	
+	 */
+
 	MachineResponseDto getMachineAll();
 
 	/**
@@ -57,8 +53,8 @@ public interface MachineService {
 	 * 
 	 * @param langCode
 	 *            Language code given by user
-	 * @return MachineResponseDto
-	 * 		 Machine Detail for given machine id and language code
+	 * @return MachineResponseDto Machine Detail for given machine id and language
+	 *         code
 	 * @throws MasterDataServiceException
 	 *             if any error occurs while retrieving Machine Details
 	 * @throws DataNotFoundException
@@ -66,20 +62,19 @@ public interface MachineService {
 	 *
 	 */
 	MachineResponseDto getMachine(String langCode);
-	
-	
+
 	/**
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
-	 *        input from user
+	 *            input from user
 	 * 
-	 * @return IdResponseDto
-	 *      returning machine id which is inserted successfully {@link IdResponseDto}
-	 *      
+	 * @return IdResponseDto returning machine id which is inserted successfully
+	 *         {@link IdResponseDto}
+	 * 
 	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine   
+	 *             if any error occurred while saving Machine
 	 */
-	 public IdResponseDto createMachine(RequestDto<MachineDto> machine);
+	public IdResponseDto createMachine(RequestDto<MachineDto> machine);
 
 }

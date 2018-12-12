@@ -14,19 +14,19 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  *
  */
 public interface MachineTypeService {
-	
+
 	/**
 	 * Abstract method to save Machine Type Details to the Database
 	 * 
 	 * @param machineType
-	 * 			input from user
+	 *            input from user
 	 * 
-	 * @return CodeAndLanguageCodeID
-	 * 				returning code and language code {@link CodeAndLanguageCodeID}
+	 * @return CodeAndLanguageCodeID returning code and language code
+	 *         {@link CodeAndLanguageCodeID}
 	 * 
 	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine Type 
+	 *             if any error occurred while saving Machine Type
 	 */
-   public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType);
+	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType);
 
 }

@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.entity;
 
-
 import java.io.Serializable;
 
 import javax.persistence.AttributeOverride;
@@ -57,4 +56,3 @@ public class MachineType extends BaseEntity implements Serializable {
 	@Column(name = "descr", length = 128)
 	private String description;
 }
-

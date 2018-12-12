@@ -8,10 +8,9 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum MachineErrorCode {
-	MACHINE_FETCH_EXCEPTION("KER-MSD-029",
-			"Error occured while fetching Machines"), MACHINE_NOT_FOUND_EXCEPTION("KER-MSD-030",
-					"Machine not Found"),
-	MACHINE_INSERT_EXCEPTION("KER-APP-000", "Error occurred while inserting Machine details");
+	MACHINE_FETCH_EXCEPTION("KER-MSD-029", "Error occured while fetching Machines"), MACHINE_NOT_FOUND_EXCEPTION(
+			"KER-MSD-030", "Machine not Found"), MACHINE_INSERT_EXCEPTION("KER-APP-000",
+					"Error occurred while inserting Machine details");
 
 	private final String errorCode;
 	private final String errorMessage;
