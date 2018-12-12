@@ -10,10 +10,6 @@
 mvn javadoc:javadoc
 ```
 
-**Properties to be added in parent Spring Application environment**
-
-[kernel-keymanager-service-dev.properties](../../config/kernel-keymanager-service-dev.properties)
-
 **The inputs which have to be provided are:**
 1. Encrypted Key provided to decrypt should be encoded to BASE64.
 2. Decrypted Key received after decrypt should be decoded from BASE64 encoding.
