@@ -260,7 +260,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(decryptedPacket);
 				registrationDTO.setPreRegistrationId(preRegistrationId);
 				Map<String, Object> attributes = new HashMap<>();
-				attributes.put("registrationDTO", registrationDTO);
+				attributes.put("registrationDto", registrationDTO);
 				setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, attributes);
 			}
 		} catch (RegBaseCheckedException exception) {
