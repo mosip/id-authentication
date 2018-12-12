@@ -57,6 +57,7 @@ import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
@@ -2463,4 +2464,30 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/validdocuments").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isCreated());
 	}
+	
+	@Test
+	public void createRegistrationCenterExceptionTest() throws Exception {
+		RequestDto<RegistrationCenterDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
+		registrationCenterDto.setIsActive(true);
+		registrationCenterDto.setName("testname");
+		registrationCenterDto.setAddressLine1("test");
+		registrationCenterDto.setAddressLine2("test");
+		registrationCenterDto.setAddressLine3("test");
+		registrationCenterDto.setLanguageCode("ENG");
+		registrationCenterDto.setId("ID");
+		registrationCenterDto.setLocationCode("LOC01");
+		registrationCenterDto.setLatitude("12.9135636");
+		registrationCenterDto.setLongitude("77.5950804");
+		
+		requestDto.setRequest(registrationCenterDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
 }
