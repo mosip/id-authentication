@@ -128,4 +128,5 @@ public class IdAuthServiceImplTest {
 
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId);
 	}
+
 }
