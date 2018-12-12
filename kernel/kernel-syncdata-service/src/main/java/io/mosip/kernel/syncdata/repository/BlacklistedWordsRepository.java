@@ -12,8 +12,7 @@ import io.mosip.kernel.syncdata.entity.BlacklistedWords;
  * repository for blacklisted words
  * 
  * @author Abhishek Kumar
- * @version 1.0.0
- * @since 06-11-2018
+ * @since 1.0.0
  */
 public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWords, String> {
 

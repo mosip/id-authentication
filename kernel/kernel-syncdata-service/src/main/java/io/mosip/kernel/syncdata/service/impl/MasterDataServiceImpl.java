@@ -39,10 +39,10 @@ import io.mosip.kernel.syncdata.service.MasterDataService;
 import io.mosip.kernel.syncdata.service.MasterDataServiceHelper;
 
 /**
- * masterdata sync handler service impl
+ * Masterdata sync handler service impl
  * 
  * @author Abhishek Kumar
- * @since 29-11-2018
+ * @since 1.0.0
  */
 @Service
 public class MasterDataServiceImpl implements MasterDataService {
@@ -149,7 +149,6 @@ public class MasterDataServiceImpl implements MasterDataService {
 		response.setTemplatesTypes(templateTypes.get());
 		response.setDeviceTypes(deviceTypes.get());
 		response.setValidDocumentMapping(validDocumentsMapping.get());
-
 		return response;
 	}
 }

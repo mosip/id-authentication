@@ -9,7 +9,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
  * masterdata sync handler service
  * 
  * @author Abhishek Kumar
- * @since 29-11-2018
+ * @since 1.0.0
  *
  */
 public interface MasterDataService {
