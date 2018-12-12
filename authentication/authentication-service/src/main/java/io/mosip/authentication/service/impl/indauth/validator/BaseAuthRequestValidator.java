@@ -78,31 +78,31 @@ public class BaseAuthRequestValidator implements Validator {
 
 	/** The Constant verPattern. */
 	private static final Pattern verPattern = Pattern.compile("^\\d+(\\.\\d{1,1})?$");
-	
+
 	/** The Constant ID_AUTH_VALIDATOR. */
 	private static final String AUTH_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
-	
+
 	/** The Constant PRIMARY_LANG_CODE. */
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 
 	/** The Constant SECONDARY_LANG_CODE. */
 	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
-	
+
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
 	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
-	
+
 	/** The Constant VALIDATE_CHECK_OTP_AUTH. */
 	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
-	
+
 	/** The Constant PIN_INFO. */
 	private static final String PIN_INFO = "pinInfo";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-	
+
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
 
@@ -131,7 +131,7 @@ public class BaseAuthRequestValidator implements Validator {
 	/** The vid validator. */
 	@Autowired
 	private VidValidatorImpl vidValidator;
-	
+
 	/** email Validator */
 	@Autowired
 	EmailValidatorImpl emailValidatorImpl;
@@ -139,7 +139,7 @@ public class BaseAuthRequestValidator implements Validator {
 	/** phone Validator */
 	@Autowired
 	PhoneValidatorImpl phoneValidatorImpl;
-	
+
 	/** The env. */
 	@Autowired
 	protected Environment env;
@@ -374,8 +374,8 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If DemoAuthType is Bio, then check same bio request type should not be requested
-	 * again.
+	 * If DemoAuthType is Bio, then check same bio request type should not be
+	 * requested again.
 	 * 
 	 * @param authRequestDTO
 	 * @param bioType
@@ -394,8 +394,8 @@ public class BaseAuthRequestValidator implements Validator {
 	}
 
 	/**
-	 * If DemoAuthType is Bio, Then check duplicate request of finger and number finger
-	 * of request should not exceed to 10.
+	 * If DemoAuthType is Bio, Then check duplicate request of finger and number
+	 * finger of request should not exceed to 10.
 	 * 
 	 * @param authRequestDTO
 	 * @param errors
@@ -492,9 +492,9 @@ public class BaseAuthRequestValidator implements Validator {
 						new Object[] { "IdentityInfoDTO" },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
-	
+
 		}
-	
+
 	}
 
 	/**
@@ -538,7 +538,7 @@ public class BaseAuthRequestValidator implements Validator {
 							new Object[] { "gender" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
-	
+
 			}
 		}
 	}
@@ -563,7 +563,7 @@ public class BaseAuthRequestValidator implements Validator {
 				}
 			}
 		}
-	
+
 	}
 
 	/**
@@ -624,7 +624,7 @@ public class BaseAuthRequestValidator implements Validator {
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
 		String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
 		String secLangCode = env.getProperty(SECONDARY_LANG_CODE);
-	
+
 		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
 			String language = idInfo.getLanguage();
 			if (language == null) {
@@ -632,17 +632,17 @@ public class BaseAuthRequestValidator implements Validator {
 			}
 			return new SimpleEntry<>(language, idInfo);
 		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
-	
+
 		Long primaryLangCount = langCount.get(priLangCode);
 		Long secondaryLangCount = langCount.get(secLangCode);
-	
+
 		if (secondaryLangCount != null) {
 			checkSecondayLanguage(demoMatchType, secondaryLangCount, errors);
 		}
-	
+
 		boolean anyOtherLang = langCount.keySet().stream()
 				.anyMatch(lang -> lang != null && !lang.equals(priLangCode) && !lang.equals(secLangCode));
-	
+
 		if (primaryLangCount != null && primaryLangCount > 1 || anyOtherLang) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 					"Invalid or Multiple Primary language code");
@@ -680,7 +680,7 @@ public class BaseAuthRequestValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
-	
+
 	}
 
 	/**
@@ -724,13 +724,13 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequest authRequest
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
-	
+
 		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoFunction()
 				.apply(authRequest.getRequest().getIdentity());
 		if (emailId != null) {
 			for (IdentityInfoDTO email : emailId) {
 				boolean isValidEmail = emailValidatorImpl.validateEmail(email.getValue());
-	
+
 				if (!isValidEmail) {
 					errors.rejectValue("emailId", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { "emailId" },
@@ -738,7 +738,7 @@ public class BaseAuthRequestValidator implements Validator {
 				}
 			}
 		}
-	
+
 	}
 
 	/**
@@ -747,7 +747,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param authRequest authRequest
 	 */
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
-	
+
 		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoFunction()
 				.apply(authRequest.getRequest().getIdentity());
 		if (phoneNumber != null) {
@@ -761,7 +761,7 @@ public class BaseAuthRequestValidator implements Validator {
 				}
 			}
 		}
-	
+
 	}
 
 	/**
@@ -771,7 +771,7 @@ public class BaseAuthRequestValidator implements Validator {
 	 * @param idType the id type
 	 * @param errors the errors
 	 */
-	
+
 	/**
 	 * Validate individual's id - check whether id is null or not and if valid,
 	 * validates idType and UIN/VID.
@@ -861,14 +861,14 @@ public class BaseAuthRequestValidator implements Validator {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		}
-	
-		if (!A_Z0_9_10.matcher(txnID).matches()) {
+		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
 					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+
 		}
+
 	}
 
 	/**
