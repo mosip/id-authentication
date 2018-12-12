@@ -101,15 +101,16 @@ public class SwaggerConfig {
 				System.err.println("SwaggerUrlException: " + e);
 			}
 		}
-		ParameterBuilder aParameterBuilder = new ParameterBuilder();
+		/*ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization")
                          .modelRef(new ModelRef("string"))                         
                          .parameterType("header")
                          .build();
         List<Parameter> aParameters = new ArrayList<>();
-        aParameters.add(aParameterBuilder.build()); 
+        aParameters.add(aParameterBuilder.build()); */
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build().globalOperationParameters(aParameters);
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				//.globalOperationParameters(aParameters);
 
 		if (targetSwagger) {
 			docket.protocols(protocols()).host(hostWithPort);
