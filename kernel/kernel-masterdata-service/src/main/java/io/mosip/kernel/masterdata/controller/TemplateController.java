@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.swagger.annotations.Api;
@@ -45,7 +44,7 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping
-	public List<TemplateDto> getAllTemplate() {
+	public TemplateResponseDto getAllTemplate() {
 		return templateService.getAllTemplate();
 	}
 
@@ -57,7 +56,7 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/{langcode}")
-	public List<TemplateDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
+	public TemplateResponseDto getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
 	}
 
@@ -72,7 +71,7 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/{langcode}/{templatetypecode}")
-	public List<TemplateDto> getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
+	public TemplateResponseDto getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
 		return templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode);
 	}

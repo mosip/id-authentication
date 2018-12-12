@@ -45,6 +45,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
@@ -213,6 +214,8 @@ public class MasterDataServiceTest {
 	private List<Template> templateList = new ArrayList<>();
 
 	private List<TemplateDto> templateDtoList;
+	
+	private TemplateResponseDto templateResponseDto;
 
 	@MockBean
 	DocumentTypeRepository documentTypeRepository;
@@ -1166,31 +1169,31 @@ public class MasterDataServiceTest {
 	@Test
 	public void getAllTemplateTest() {
 		Mockito.when(templateRepository.findAllByIsDeletedFalse(Template.class)).thenReturn(templateList);
-		templateDtoList = templateService.getAllTemplate();
+		templateResponseDto = templateService.getAllTemplate();
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
-		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
+		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
+		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(templateList);
-		templateDtoList = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
+		templateResponseDto = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
-		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
+		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
+		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
 		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateList);
-		templateDtoList = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
+		templateResponseDto = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString());
 
-		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
-		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
+		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
+		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
 	}
 
 	// ------------------------------------TemplateFileFormatServiceTest---------------------------

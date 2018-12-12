@@ -1,8 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 
@@ -17,32 +16,35 @@ public interface TemplateService {
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @return {@link List<TemplateDto>}
+	 * @return {@link TemplateResponseDto}
 	 */
-	public List<TemplateDto> getAllTemplate();
+	public TemplateResponseDto getAllTemplate();
 
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param languageCode
-	 * @return {@link List<Template>}
+	 * @param langCode
+	 * 			the language code
+	 * @return {@link TemplateResponseDto}
 	 */
-	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode);
+	public TemplateResponseDto getAllTemplateByLanguageCode(String langCode);
 
 	/**
 	 * To fetch all the {@link Template} based on language code and template type code
 	 * 
-	 * @param languageCode
+	 * @param langCode
+	 * 			the language code
 	 * @param templateTypeCode
-	 * @return {@link List<Template>}
+	 * 			the template type code
+	 * @return {@link TemplateResponseDto}
 	 */
-	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
+	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String langCode,
 			String templateTypeCode);
 	/**
-	 * Method to create template  based on  provided
+	 * Method to create template  based on  provided details
 	 * 
-	 * @param tempalte
-	 *            dto with Template .
+	 * @param template
+	 *            the Template Dto .
 	 * @return {@linkplain IdResponseDto}
 	 */
 	public IdResponseDto createTemplate(TemplateDto tempalte);

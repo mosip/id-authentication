@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -35,6 +36,8 @@ public class TemplateServiceImpl implements TemplateService {
 	private List<Template> templateList;
 
 	private List<TemplateDto> templateDtoList;
+	
+	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 	/*
 	 * (non-Javadoc)
@@ -42,7 +45,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplate() {
+	public TemplateResponseDto getAllTemplate() {
 		try {
 			templateList = templateRepository.findAllByIsDeletedFalse(Template.class);
 		} catch (DataAccessException exception) {
@@ -55,7 +58,8 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
 	/*
@@ -65,7 +69,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
+	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException exception) {
@@ -78,7 +82,8 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
 	/*
@@ -89,7 +94,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
+	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(languageCode,
@@ -104,7 +109,9 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
+		
 	}
 
 	/*
@@ -132,5 +139,4 @@ public class TemplateServiceImpl implements TemplateService {
 
 		return idResponseDto;
 	}
-
 }
