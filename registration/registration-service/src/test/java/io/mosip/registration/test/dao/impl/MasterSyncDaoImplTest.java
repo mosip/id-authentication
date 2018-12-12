@@ -1,14 +1,10 @@
 package io.mosip.registration.test.dao.impl;
 
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

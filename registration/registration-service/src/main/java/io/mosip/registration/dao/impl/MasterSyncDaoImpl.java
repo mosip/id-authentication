@@ -45,7 +45,6 @@ import io.mosip.registration.entity.mastersync.Location;
 import io.mosip.registration.entity.mastersync.ReasonCategory;
 import io.mosip.registration.entity.mastersync.ReasonList;
 import io.mosip.registration.entity.mastersync.Title;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.SyncJobRepository;
 import io.mosip.registration.repositories.mastersync.BiometricAttributeReposiotry;
@@ -158,7 +157,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public String insertMasterSyncData(MasterSyncDto masterSyncDto) throws RegBaseCheckedException {
+	public String insertMasterSyncData(MasterSyncDto masterSyncDto) {
 
 		String sucessResponse = "";
 
@@ -221,12 +220,12 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			reasonCatogryReposiotry.save(getResponseCategory(reasonCatogryType));
 
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+		} catch (RuntimeException runtimeException) {
 
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 
-			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE + sucessResponse,
-					regBaseUncheckedException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
+					runtimeException.getMessage());
 		}
 
 		return sucessResponse;

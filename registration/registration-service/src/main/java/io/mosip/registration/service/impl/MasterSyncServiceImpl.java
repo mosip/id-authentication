@@ -5,23 +5,15 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.LinkedList;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -32,13 +24,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.MasterSyncDto;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.restclient.RequestHTTPDTO;
-import io.mosip.registration.util.restclient.RestClientUtil;
 
 /**
  * Service class to sync master data from server to client
@@ -53,10 +41,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	/** Object for masterSyncDao class. */
 	@Autowired
 	private MasterSyncDao masterSyncDao;
-
-	/** Object for restClientUtil class. */
-	@Autowired
-	private RestClientUtil restClientUtil;
 
 	/** Object for urlPath. */
 	@Value("${MASTER_SYNC_URL}")
@@ -79,7 +63,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync()
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls) throws RegBaseCheckedException {
+	public ResponseDTO getMasterSync(String masterSyncDtls) {
 
 		ResponseDTO responseDTO = null;
 
@@ -101,6 +85,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				"Fetching the last sync details from databse ended");
 		try {
 
+			// getting Last Sync date from Data from sync table
 			masterSyncDetails = masterSyncDao.getMasterSyncStatus(masterSyncDtls);
 
 			String registrationCenterId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
@@ -115,15 +100,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-BEGINE");
 
-			/*
-			 * Object masterSyncJson = getMasterSyncJson(registrationCenterId,
-			 * lastSyncTime);
-			 * 
-			 * LOGGER.debug(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME,
-			 * "MASTER-SYNC-RESTFUL_SERVICE-ENDS", "master sync json ======>" +
-			 * masterSyncJson.toString());
-			 */
-
+			// Mapping json object to respective dto's
 			MasterSyncDto masterSyncDto = mapper.readValue(masterJson, MasterSyncDto.class);
 
 			masterSyncDao.insertMasterSyncData(masterSyncDto);
@@ -136,70 +113,37 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			responseDTO = new ResponseDTO();
 			responseDTO.setSuccessResponseDTO(sucessResponse);
 
-		} catch (RuntimeException | IOException runtimeException) {
+		} catch (JsonParseException jsonParseException) {
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + "Runtime error while parsing the master sync json");
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, jsonParseException.getMessage());
 
-			throw new RegBaseCheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION,
-					runtimeException.getMessage());
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+
+		} catch (JsonMappingException jsonMappingException) {
+
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, jsonMappingException.getMessage());
+
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+
+		} catch (IOException ioException) {
+
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
+
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 		}
 
 		return responseDTO;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.PacketUploadService#pushPacket(java.io.File)
-	 */
-
-	/*
-	 * private Object getMasterSyncJson(String centerId, Timestamp lastSyncTime)
-	 * throws URISyntaxException, RegBaseCheckedException {
-	 * 
-	 * LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-	 * "getting json object from server");
-	 * 
-	 * RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-	 * LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-	 * map.add("centerId", centerId); map.add("lastSyncTime", lastSyncTime);
-	 * HttpHeaders headers = new HttpHeaders();
-	 * headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-	 * HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new
-	 * HttpEntity<>(map, headers); requestHTTPDTO.setHttpEntity(requestEntity);
-	 * requestHTTPDTO.setClazz(Object.class); requestHTTPDTO.setUri(new
-	 * URI(urlPath)); requestHTTPDTO.setHttpMethod(HttpMethod.POST); Object response
-	 * = null;
-	 * 
-	 * try {
-	 * 
-	 * response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
-	 * 
-	 * } catch (HttpClientErrorException e) { LOGGER.error(LOG_REG_MASTER_SYNC,
-	 * APPLICATION_NAME, APPLICATION_ID, e.getRawStatusCode() +
-	 * "Http error while pulling json from server"); throw new
-	 * RegBaseCheckedException(Integer.toString(e.getRawStatusCode()),
-	 * e.getStatusText()); } catch (RuntimeException e) {
-	 * LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-	 * e.getMessage() + "Runtime error while pulling json from server"); throw new
-	 * RegBaseUncheckedException(RegistrationExceptionConstants.
-	 * REG_PACKET_UPLOAD_ERROR.getErrorCode(),
-	 * RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage()); }
-	 * catch (SocketTimeoutException e) { LOGGER.error(LOG_REG_MASTER_SYNC,
-	 * APPLICATION_NAME, APPLICATION_ID, e.getMessage() +
-	 * "Error in pulling json from server"); throw new
-	 * RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage()); } return
-	 * response; }
-	 * 
-	 * private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) { // Timeout
-	 * in milli second SimpleClientHttpRequestFactory requestFactory = new
-	 * SimpleClientHttpRequestFactory(); requestFactory.setReadTimeout(readTimeout);
-	 * requestFactory.setConnectTimeout(connectTimeout);
-	 * requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory); return
-	 * requestHTTPDTO; }
-	 */
 
 	private ResponseDTO buildErrorRespone(final String errorCode, final String message) {
 

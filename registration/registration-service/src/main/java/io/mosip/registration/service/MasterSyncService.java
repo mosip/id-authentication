@@ -1,7 +1,6 @@
 package io.mosip.registration.service;
 
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * Interface to sync master data from server to client
@@ -12,6 +11,12 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  */
 public interface MasterSyncService {
 
-	ResponseDTO getMasterSync(String masterSyncDetails) throws RegBaseCheckedException;
+	/**
+	 * Gets the master sync.
+	 *
+	 * @param masterSyncDetails the master sync details
+	 * @return the master sync
+	 */
+	ResponseDTO getMasterSync(String masterSyncDetails);
 
 }

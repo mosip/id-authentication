@@ -15,7 +15,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
@@ -125,8 +124,11 @@ public class MasterSyncJob extends BaseJob {
 
 		ResponseDTO responseDTO = null;
 		try {
+
 			responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-		} catch (RegBaseCheckedException regBaseCheckedException) {
+
+		} catch (RegBaseUncheckedException regBaseCheckedException) {
+
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					regBaseCheckedException.getMessage());
 		}

@@ -8,7 +8,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.json.demo.Address;
 import io.mosip.registration.dto.json.demo.Demographic;
 import io.mosip.registration.dto.json.demo.DemographicInfo;

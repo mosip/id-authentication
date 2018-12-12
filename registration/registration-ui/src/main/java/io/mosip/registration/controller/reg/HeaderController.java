@@ -209,7 +209,7 @@ public class HeaderController extends BaseController {
 				}
 			}
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, errorMessage);
+			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
 		}
 	}
 
