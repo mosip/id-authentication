@@ -23,28 +23,30 @@ import io.mosip.registration.validator.FingerprintValidator;
 public class FingerPrintCaptureServiceTest {
 
 	@Rule
-	public MockitoRule mockitoRule=new MockitoJUnit().rule();
-	
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
 	@Mock
 	private AuthenticationService authenticationValidatorFactory;
-	
+
 	@Mock
 	private FingerprintValidator fingerprintValidator;
-	
+
 	@InjectMocks
 	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
-	
+
 	@Test
 	public void validateFingerprintTest() {
 		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId("abcd");
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-		AuthenticationValidatorImplementation authenticationValidatorImplementation=fingerprintValidator;
-		Mockito.when(authenticationValidatorFactory.getValidator("Fingerprint")).thenReturn(authenticationValidatorImplementation);
+		AuthenticationValidatorImplementation authenticationValidatorImplementation = fingerprintValidator;
+		Mockito.when(authenticationValidatorFactory.getValidator("Fingerprint"))
+				.thenReturn(authenticationValidatorImplementation);
 		authenticationValidatorImplementation.setFingerPrintType("multiple");
-		Mockito.when(authenticationValidatorImplementation.validate(Mockito.any(AuthenticationValidatorDTO.class))).thenReturn(true);
+		Mockito.when(authenticationValidatorImplementation.validate(Mockito.any(AuthenticationValidatorDTO.class)))
+				.thenReturn(true);
 		assertEquals(true, fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs));
 	}
-	
+
 }

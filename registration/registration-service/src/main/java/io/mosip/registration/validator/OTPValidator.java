@@ -45,10 +45,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 					&& otpValidatorResponseDto.getStatus().equalsIgnoreCase("success")) {
 
 				// Create Success Response
-				successResponse = new SuccessResponseDTO();
-				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-				successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
-				response.setSuccessResponseDTO(successResponse);
+		
 				status = true;
 
 			} else {

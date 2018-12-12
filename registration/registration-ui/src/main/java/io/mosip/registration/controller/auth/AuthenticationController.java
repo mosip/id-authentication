@@ -33,7 +33,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
-import io.mosip.registration.util.common.OTPGenerator;
+import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.fxml.FXML;
@@ -106,7 +106,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	private AuthenticationService validator;
 
 	@Autowired
-	private OTPGenerator otpGenerator;
+	private OTPManager otpGenerator;
 
 	@Autowired
 	private LoginService loginService;
@@ -227,7 +227,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (otpUserId.getText() != null) {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
-						if (isValidOTP()) {
+						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -244,7 +244,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			if (otp.getText() != null) {
-				if (isValidOTP()) {
+				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -254,14 +254,6 @@ public class AuthenticationController extends BaseController implements Initiali
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 			}
 		}
-	}
-
-	private boolean isValidOTP() {
-		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		authenticationValidatorDTO.setOtp(otp.getText());
-		authenticationValidatorDTO.setUserId(otpUserId.getText());
-		AuthenticationValidatorImplementation authenticationValidatorImplementation = validator.getValidator("otp");
-		return authenticationValidatorImplementation.validate(authenticationValidatorDTO);
 	}
 
 	/**

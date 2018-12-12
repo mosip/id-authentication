@@ -15,8 +15,8 @@ import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 public class FingerPrintCaptureServiceImpl {
 
 	@Autowired
-	AuthenticationService authenticationValidatorFactory;
-	
+	private AuthenticationService authenticationValidatorFactory;
+
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
