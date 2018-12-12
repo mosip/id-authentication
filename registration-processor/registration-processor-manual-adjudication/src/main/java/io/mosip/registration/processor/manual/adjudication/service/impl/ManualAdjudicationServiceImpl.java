@@ -3,8 +3,6 @@ package io.mosip.registration.processor.manual.adjudication.service.impl;
 import java.io.IOException;
 
 import java.io.InputStream;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
@@ -200,7 +198,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
 		manualVerificationEntity = basePacketRepository.getSingleAssignedRecord(manualVerificationDTO.getRegId(),
-				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId());
+				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId(), ManualVerificationStatus.ASSIGNED.name());
 		if (manualVerificationEntity == null) {
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());

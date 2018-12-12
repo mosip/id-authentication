@@ -9,11 +9,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
-import io.mosip.registration.processor.manual.adjudication.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.manual.adjudication.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.adjudication.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.adjudication.exception.NoRecordAssignedException;
+import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
 
 /**
  * The Exception Handler class for Manual Verification
