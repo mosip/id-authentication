@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,7 +34,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Rakesh Roshan
  */
 
-@PropertySource("classpath:sample-output.properties")
 @Service
 public class IdRepoServiceImpl implements IdRepoService {
 
@@ -53,9 +51,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-//	@Value("${sample.demo.entity}")
-//	private String value;
-
 	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
@@ -71,7 +66,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,7 +21,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
@@ -69,6 +74,17 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
+
+		/*
+		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "idRepoService",
+		 * idRepoService); ReflectionTestUtils.setField(idAuthServiceImplMock,
+		 * "auditFactory", auditFactory);
+		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "restFactory",
+		 * restFactory); ReflectionTestUtils.setField(idAuthServiceImplMock,
+		 * "uinRepository", uinRepository);
+		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "vidRepository",
+		 * vidRepository);
+		 */
 	}
 
 	@Test
@@ -129,4 +145,39 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId);
 	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
+		String idvIdType = "V";
+		String idvId = "875948796";
+
+		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.INVALID_VID);
+
+		Mockito.when(vidRepository.findRefIdByVid(Mockito.anyString())).thenReturn(Optional.of(idvId));
+		Mockito.when(uinRepository.findUinByRefId(Mockito.anyString())).thenReturn(Optional.of(idvId));
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenThrow(idBusinessException);
+
+		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString())).thenThrow(idBusinessException);
+		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId)).thenThrow(idBusinessException);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
+		String idvIdType = "D";
+		String idvId = "875948796";
+
+		IdValidationFailedException e = new IdValidationFailedException();
+		
+		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.INVALID_UIN);
+
+		Mockito.when(vidRepository.findRefIdByVid(Mockito.anyString())).thenReturn(Optional.of(idvId));
+		Mockito.when(uinRepository.findUinByRefId(Mockito.anyString())).thenReturn(Optional.of(idvId));
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenThrow(idBusinessException);
+
+		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString())).thenThrow(idBusinessException);
+		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId)).thenThrow(idBusinessException);
+
+	}
 }

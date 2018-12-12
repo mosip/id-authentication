@@ -244,6 +244,7 @@ public class IdAuthServiceTest {
 
 	}
 	
+	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testDoValidateUINInactive() throws Throwable {
 		UinEntity uinEntity = new UinEntity();

@@ -17,7 +17,7 @@
 				],
 			"age" :
 				[
-					"age"
+					"dateOfBirth"
 				],
 			"gender" : 
 				[
@@ -62,9 +62,9 @@
 					"addressLine1", 
 					"addressLine2", 
 					"addressLine3", 
-					"location1",
-					"location2",
-					"location3",
+					"city",
+					"region",
+					"province",
 					"pinCode"
 				],
 			"otp" : 
@@ -92,6 +92,54 @@
 					"rightMiddle",
 					"rightRing",
 					"rightThumb"
+				],
+			"leftIndex" :
+				[
+					"leftIndex"
+				],
+			"leftLittle" :
+				[
+					"leftLittle"
+				],
+			"leftMiddle" :
+				[
+					"leftMiddle"
+				],
+			"leftRing" :
+				[
+					"leftRing"
+				],
+			"leftThumb" :
+				[
+					"leftThumb"
+				],
+			"rightIndex" :
+				[
+					"rightIndex"
+				],
+			"rightLittle" :
+				[
+					"rightLittle"
+				],
+			"rightMiddle" :
+				[
+					"rightMiddle"
+				],
+			"rightRing" :
+				[
+					"rightRing"
+				],
+			"rightThumb" :
+				[
+					"rightThumb"
+				],
+			"leftEye" :
+				[
+					"leftEye"
+				],
+			"rightEye" :
+				[
+					"rightEye"
 				],
 			"face" : 
 				[

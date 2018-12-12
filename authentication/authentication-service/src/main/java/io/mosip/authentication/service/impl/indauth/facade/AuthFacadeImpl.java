@@ -11,13 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -28,7 +24,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -40,10 +35,8 @@ import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
-import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
@@ -53,13 +46,10 @@ import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
-import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -169,7 +159,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authRequestDTO.getIdvId());
 
 		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = new AuthResponseBuilder(env.getProperty(DATETIME_PATTERN));
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = null;
 		try {
@@ -258,20 +248,20 @@ public class AuthFacadeImpl implements AuthFacade {
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 				String desc;
-				if (authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.equals(BioType.FGRMIN.getType())
-						|| bioInfo.equals(BioType.FGRIMG.getType()))) {
+				if (authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
+						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
 					desc = "Fingerprint Authentication requested";
 					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 							desc);
 				}
 				if (authRequestDTO.getBioInfo().stream()
-						.anyMatch(bioInfo -> bioInfo.equals(BioType.IRISIMG.getType()))) {
+						.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
 					desc = "Iris Authentication requested";
 					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 							desc);
 				}
 				if (authRequestDTO.getBioInfo().stream()
-						.anyMatch(bioInfo -> bioInfo.equals(BioType.FACEIMG.getType()))) {
+						.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
 					desc = "Face Authentication requested";
 					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 							desc);
