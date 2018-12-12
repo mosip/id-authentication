@@ -156,6 +156,7 @@ public class DataSyncService {
 					for (int i = 0; i < documentEntityList.size(); i++) {
 						pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
 								+ documentEntityList.get(i).getPreregId().toString() + "_"
+								+ documentEntityList.get(i).getDoc_cat_code().toString() + "_"
 								+ documentEntityList.get(i).getDoc_name());
 
 						fileDoc = new File(pathDoc.toString());
@@ -305,8 +306,8 @@ public class DataSyncService {
 			throws ParseException {
 		String fromDate = dataSyncRequestDTO.getFromDate();
 		String toDate = dataSyncRequestDTO.getToDate();
-		
-		Date myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(fromDate);  
+		String dateFormat = "yyyy-MM-dd HH:mm:ss";
+		Date myDate = DateUtils.parse(fromDate, dateFormat);
 				
 		Date myDate1 = null;
 
@@ -319,7 +320,7 @@ public class DataSyncService {
 			cal.set(Calendar.SECOND, 59);
 			myDate1 = cal.getTime();
 		} else {
-			myDate1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(toDate); 
+			myDate1 = DateUtils.parse(toDate,dateFormat); 
 		}
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();
