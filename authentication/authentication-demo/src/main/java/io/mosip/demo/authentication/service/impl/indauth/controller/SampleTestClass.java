@@ -25,7 +25,7 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
-@RestController
+//@RestController
 public class SampleTestClass {
 
 	@Autowired
@@ -41,7 +41,7 @@ public class SampleTestClass {
 
 	private static final Provider provider = new BouncyCastleProvider();
 
-	@GetMapping(value = "/decrypt")
+//	@GetMapping(value = "/decrypt")
 	public void Test() {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		byte[] sessionKey = symmetricKey.getEncoded();
