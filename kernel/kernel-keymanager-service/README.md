@@ -10,16 +10,6 @@
 mvn javadoc:javadoc
 ```
 
-**Maven dependency**
-  
- ```
-    <dependency>
-		<groupId>io.mosip.kernel</groupId>
-		<artifactId>kernel-keymanager-service</artifactId>
-		<version>${project.version}</</version>
-	</dependency>
- ```
-
 **Properties to be added in parent Spring Application environment**
 
 [kernel-keymanager-service-dev.properties](../../config/kernel-keymanager-service-dev.properties)
