@@ -207,7 +207,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit,#submitBtn,#scanBtn{
+#submit, #rejectionSubmit,#submitBtn,#scanBtn,#nextBtn,#previousBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -340,4 +340,9 @@
 	-fx-border-color: transparent;
     -fx-padding: 4 0 4 0;
     -fx-text-fill: black;
+}
+
+#duplicateCheckLbl{
+	-fx-text-fill: red;
+	-fx-font-size: 12px;
 }

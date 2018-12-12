@@ -31,7 +31,7 @@
             <Font size="10.0" />
          </font>
       </Button>
-      <Button fx:id="biometricsNext" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="23.0" prefWidth="55.0" text="Next">
+      <Button fx:id="nextBtn" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="23.0" prefWidth="55.0" text="Next">
          <font>
             <Font size="10.0" />
          </font>
@@ -42,7 +42,7 @@
       <Label layoutX="288.0" layoutY="309.0" text="Quality %       :" />
       <Label layoutX="559.0" layoutY="336.0" text="Threshold %   :" />
       <Label layoutX="559.0" layoutY="309.0" text="Quality %       :" />
-      <Button fx:id="biometricsNext1" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="23.0" prefWidth="55.0" text="Previous">
+      <Button fx:id="previousBtn" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="23.0" prefWidth="55.0" text="Previous">
          <font>
             <Font size="10.0" />
          </font>
@@ -53,6 +53,6 @@
       <Label fx:id="rightSlapThresholdScoreLbl" layoutX="405.0" layoutY="335.0" />
       <Label fx:id="thumbsQualityScore" layoutX="674.0" layoutY="309.0" />
       <Label fx:id="thumbsThresholdScoreLbl" layoutX="674.0" layoutY="335.0" />
-      <Label fx:id="duplicateCheckLbl" layoutX="14.0" layoutY="434.0" prefHeight="27.0" prefWidth="533.0" text="Label" />
+      <Label fx:id="duplicateCheckLbl" layoutX="14.0" layoutY="434.0" prefHeight="27.0" prefWidth="533.0" />
    </children>
 </AnchorPane>
