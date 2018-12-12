@@ -792,6 +792,7 @@ public class RegistrationConstants {
 	public static final String AGE_REGEX = "\\d{1,2}";
 	public static final String UIN_REGEX = "\\d{1,30}";
 	public static final String POSTAL_CODE_REGEX = "\\d{5}";
+	public static final String POSTAL_CODE_REGEX_INITIAL = "\\d{1,5}";
 
 
 	// master sync
