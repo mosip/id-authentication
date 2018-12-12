@@ -18,12 +18,16 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -43,6 +47,9 @@ public class FingerprintFacade {
 	private List<MosipFingerprintProvider> fingerprintProviders;
 
 	private MosipFingerprintProvider fingerprintProvider;
+	
+	@Value("${FINGER_PRINT_SCORE}")
+	private long fingerPrintScore;
 
 	/**
 	 * provide the minutia of a finger.
@@ -110,10 +117,12 @@ public class FingerprintFacade {
 		}
 	}
 
-	@Autowired
+	/*@Autowired
 	public FingerprintFacade(List<MosipFingerprintProvider> fingerprintProviders) {
 		this.fingerprintProviders = fingerprintProviders;
-	}
+	}*/
+	
+	
 
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		for (MosipFingerprintProvider mosipFingerprintProvider : fingerprintProviders) {
@@ -122,6 +131,11 @@ public class FingerprintFacade {
 			}
 		}
 		return fingerprintProvider;
+	}
+
+	@Autowired
+	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
+		this.fingerprintProviders = fingerprintProviders;
 	}
 
 	/**
@@ -227,6 +241,15 @@ public class FingerprintFacade {
 					runtimeException.getMessage(), runtimeException.getCause()));
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
+	}
+	
+	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
+			List<UserBiometric> userFingerprintDetails) {
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+				.convert(fingerprintDetailsDTO.getFingerPrint());
+		String minutiae = fingerprintTemplate.serialize();
+		return userFingerprintDetails.stream().anyMatch(
+				bio -> fingerprintProvider.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}
 
 }

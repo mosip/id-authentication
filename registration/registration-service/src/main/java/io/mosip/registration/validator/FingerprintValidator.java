@@ -3,28 +3,22 @@ package io.mosip.registration.validator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.machinezoo.sourceafis.FingerprintTemplate;
-
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
+import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.service.LoginService;
 
 @Component
 public class FingerprintValidator extends AuthenticationValidatorImplementation {
 
 	@Autowired
-	private LoginService userDataService;
-
+	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	
 	@Autowired
-	private MosipFingerprintProvider fingerPrintConnector;
-
-	@Value("${FINGER_PRINT_SCORE}")
-	private long fingerPrintScore;
+	FingerprintFacade fingerprintFacade;
 
 	/*
 	 * (non-Javadoc)
@@ -51,8 +45,8 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	 * @return
 	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
-		List<UserBiometric> userFingerprintDetails = userDataService.getUserSpecificFingerprintDetails(userId);
-		return validateFP(fingerprintDetailsDTO, userFingerprintDetails);
+		List<UserBiometric> userFingerprintDetails = registrationUserDetailDAO.getUserSpecificFingerprintDetails(userId);
+		return fingerprintFacade.validateFP(fingerprintDetailsDTO, userFingerprintDetails);
 	}
 
 	/**
@@ -63,24 +57,8 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	 * @return
 	 */
 	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
-		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> validateFP(fingerprintDetailsDTO,
-				userDataService.getAllActiveUsers(fingerprintDetailsDTO.getFingerType())));
+		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> fingerprintFacade.validateFP(fingerprintDetailsDTO,
+				registrationUserDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType())));
 
-	}
-
-	/**
-	 * Comparing two fingerprint image and send the matching status
-	 * 
-	 * @param fingerprintDetailsDTO
-	 * @param registrationUserDetail
-	 * @return
-	 */
-	private boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO,
-			List<UserBiometric> userFingerprintDetails) {
-		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-				.convert(fingerprintDetailsDTO.getFingerPrint());
-		String minutiae = fingerprintTemplate.serialize();
-		return userFingerprintDetails.stream().anyMatch(
-				bio -> fingerPrintConnector.scoreCalculator(minutiae, bio.getBioMinutia()) > fingerPrintScore);
 	}
 }
