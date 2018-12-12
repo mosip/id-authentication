@@ -28,11 +28,5 @@ public class ExceptionJSONInfoDTO implements Serializable {
 
 	private String errorCode;
 	private String message;
-	private String causedBy;
 
-	public ExceptionJSONInfoDTO(String errorCode, String message) {
-		super();
-		this.errorCode = errorCode;
-		this.message = message;
-	}
 }

@@ -22,8 +22,8 @@ import io.mosip.preregistration.documents.dto.DocumentCopyDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.dto.DocumentGetAllDto;
-import io.mosip.preregistration.documents.dto.ExceptionJSONInfo;
-import io.mosip.preregistration.documents.dto.ResponseDto;
+import io.mosip.preregistration.documents.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
@@ -58,8 +58,8 @@ public class DocumentUploadService {
 	@Autowired
 	private VirusScanner<Boolean, String> virusScan;
 
-	public ResponseDto<DocResponseDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
-		ResponseDto<DocResponseDto> responseDto = new ResponseDto<>();
+	public ResponseDTO<DocResponseDto> uploadDoucment(MultipartFile file, DocumentDto documentDto) {
+		ResponseDTO<DocResponseDto> responseDto = new ResponseDTO<>();
 		DocResponseDto docResponseDto = null;
 		DocumentEntity documentEntity = null;
 		Boolean scanFile;
@@ -131,8 +131,8 @@ public class DocumentUploadService {
 	 * com.mosip.practice.fileUploader.serviceImpl.DocumentUploadService#uploadFile(
 	 * org.springframework.web.multipart.MultipartFile)
 	 */
-	public ResponseDto<DocumentCopyDTO> copyDoucment(String catCode, String sourcePreId, String destinationPreId) {
-		ResponseDto<DocumentCopyDTO> responseDto = new ResponseDto<>();
+	public ResponseDTO<DocumentCopyDTO> copyDoucment(String catCode, String sourcePreId, String destinationPreId) {
+		ResponseDTO<DocumentCopyDTO> responseDto = new ResponseDTO<>();
 		List<DocumentCopyDTO> copyDocumentList = new ArrayList<>();
 		try {
 			DocumentEntity documentEntity = documentRepository.findSingleDocument(sourcePreId, catCode);
@@ -180,8 +180,8 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
-	public ResponseDto<DocumentGetAllDto> getAllDocumentForPreId(String preId) {
-		ResponseDto<DocumentGetAllDto> responseDto = new ResponseDto<>();
+	public ResponseDTO<DocumentGetAllDto> getAllDocumentForPreId(String preId) {
+		ResponseDTO<DocumentGetAllDto> responseDto = new ResponseDTO<>();
 		List<DocumentGetAllDto> allDocRes = new ArrayList<>();
 		try {
 			List<DocumentEntity> documentEntities = documentRepository.findBypreregId(preId);
@@ -211,16 +211,16 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
-	public ResponseDto<DocumentDeleteDTO> deleteDocument(String documentId) {
+	public ResponseDTO<DocumentDeleteDTO> deleteDocument(String documentId) {
 		Integer docId = Integer.parseInt(documentId.trim());
 		List<DocumentDeleteDTO> deleteDocList = new ArrayList<>();
-		ResponseDto<DocumentDeleteDTO> delResponseDto = new ResponseDto<>();
-		ExceptionJSONInfo documentErr = null;
+		ResponseDTO<DocumentDeleteDTO> delResponseDto = new ResponseDTO<>();
+		ExceptionJSONInfoDTO documentErr = null;
 
 		try {
 			DocumentEntity documentEntity = documentRepository.findBydocumentId(docId);
 			if (documentEntity == null) {
-				documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
 						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
 				delResponseDto.setStatus("false");
 				delResponseDto.setErr(documentErr);
@@ -245,14 +245,15 @@ public class DocumentUploadService {
 		return delResponseDto;
 	}
 
-	public ResponseDto<DocumentDeleteDTO> deleteAllByPreId(String preregId) {
+	public ResponseDTO<DocumentDeleteDTO> deleteAllByPreId(String preregId) {
 		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-		ResponseDto<DocumentDeleteDTO> delResponseDto = new ResponseDto<>();
+		ResponseDTO<DocumentDeleteDTO> delResponseDto = new ResponseDTO<>();
 
 		try {
+			System.out.println("PreId Req for doc delete::"+preregId);
 			List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 			if (documentEntityList == null || documentEntityList.isEmpty()) {
-				ExceptionJSONInfo documentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				ExceptionJSONInfoDTO documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
 						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
 				delResponseDto.setStatus("false");
 				delResponseDto.setErr(documentErr);
