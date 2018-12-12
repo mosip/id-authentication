@@ -53,7 +53,7 @@ public class MasterDataResponseDto {
 	private List<ValidDocumentDto> validDocumentMapping;
 	private List<TemplateDto> templates;
 	private List<TemplateTypeDto> templatesTypes;
-	private List<TemplateFileFormatDto> templateFileType;
+	private List<TemplateFileFormatDto> templateFileFormat;
 	private List<PostReasonCategoryDto> reasonCategory;
 	private List<ReasonListDto> reasonList;
 	private List<BlacklistedWordsDto> blackListedWords;

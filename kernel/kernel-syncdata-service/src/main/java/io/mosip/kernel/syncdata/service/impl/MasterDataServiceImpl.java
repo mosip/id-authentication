@@ -128,7 +128,7 @@ public class MasterDataServiceImpl implements MasterDataService {
 		response.setRegistrationCenterTypes(registrationCenterTypes.get());
 		response.setRegistrationCenter(registrationCenters.get());
 		response.setTemplates(templates.get());
-		response.setTemplateFileType(templateFileFormats.get());
+		response.setTemplateFileFormat(templateFileFormats.get());
 		response.setReasonCategory(reasonCategory.get());
 		response.setReasonList(reasonList.get());
 		response.setHolidays(holidays.get());
