@@ -16,7 +16,7 @@ create schema if not exists prereg
 		availability_date 	date not null,
 		slot_from_time 	time not null,
 		slot_to_time 	time,
-		availble_kiosks smallint ,
+		available_kiosks smallint ,
 		
 		cr_by 		character varying (32) not null,      
 		cr_dtimes 	timestamp not null ,
