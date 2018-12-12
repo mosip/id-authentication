@@ -1,19 +1,14 @@
 package io.mosip.authentication.service.filter;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -43,6 +36,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**
@@ -58,10 +52,10 @@ public abstract class BaseAuthFilter implements Filter {
 	/** The env. */
 	@Autowired
 	protected Environment env;
-	
+
 	@Autowired
 	protected DecryptorImpl decryptor;
-	
+
 	@Autowired
 	protected KeyManager keyManager;
 
@@ -82,8 +76,7 @@ public abstract class BaseAuthFilter implements Filter {
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
 
 	/** The mosip logger. */
-	private static Logger mosipLogger =
-			IdaLogger.getLogger(BaseAuthFilter.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
 	/** The request time. */
 	private String requestTime;
@@ -98,15 +91,13 @@ public abstract class BaseAuthFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		WebApplicationContext context =
-				WebApplicationContextUtils.getRequiredWebApplicationContext(
-						filterConfig.getServletContext());
+		WebApplicationContext context = WebApplicationContextUtils
+				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
-		decryptor =  context.getBean(DecryptorImpl.class);
+		decryptor = context.getBean(DecryptorImpl.class);
 		keyManager = context.getBean(KeyManager.class);
-		timeFormatter = DateTimeFormatter
-				.ofPattern(env.getProperty("datetime.pattern"));
+		timeFormatter = DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"));
 	}
 
 	/*
@@ -116,73 +107,58 @@ public abstract class BaseAuthFilter implements Filter {
 	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		requestTime = mapper.convertValue(new Date(), String.class);
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		requestTime = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
+		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
+				(HttpServletRequest) request);
 
-		ResettableStreamHttpServletRequest requestWrapper =
-				new ResettableStreamHttpServletRequest(
-						(HttpServletRequest) request);
-		
 		String signature = requestWrapper.getHeader("Authorization");
 
-		CharResponseWrapper responseWrapper =
-				new CharResponseWrapper((HttpServletResponse) response);
+		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 
-		double requestSize = ((double) IOUtils.toString(requestWrapper.getInputStream(),
-				Charset.defaultCharset()).length()) / 1024;
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-				"Request received at : " + requestTime + " with Request size : "
-						+ ((requestSize > 0) ? requestSize : 1) + " kb");
+		String requestAsString = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
+		logSize(requestAsString);
 		requestWrapper.resetInputStream();
 
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-			boolean isSigned = validateSignature(requestBody, signature);
-			if(!isSigned) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-						.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-						.getErrorMessage());
+			if (!validateSignature(requestBody, signature)) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
 			}
-			Map<String, Object> decodedRequest = decodedRequest(
-					requestBody);
+			Map<String, Object> decodedRequest = decodedRequest(requestBody);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Input Request: \n"
-							+ objectWriter.writeValueAsString(decodedRequest));
+					"Input Request: \n" + objectWriter.writeValueAsString(decodedRequest));
 			requestWrapper.resetInputStream();
 
-			requestWrapper.replaceData(
-					objectWriter.writeValueAsString(decodedRequest).getBytes());
+			requestWrapper.replaceData(objectWriter.writeValueAsString(decodedRequest).getBytes());
 			requestWrapper.resetInputStream();
 
-			responseWrapper =
-					new CharResponseWrapper((HttpServletResponse) response);
+			responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 
 			chain.doFilter(requestWrapper, responseWrapper);
 
 			requestWrapper.resetInputStream();
 
-			response.getWriter()
-					.write(mapper.writeValueAsString(encodedResponse(setTxnId(
-							getRequestBody(requestWrapper.getInputStream()),
+			response.getWriter().write(
+					mapper.writeValueAsString(encodedResponse(setTxnId(getRequestBody(requestWrapper.getInputStream()),
 							getResponseBody(responseWrapper.toString())))));
 
-			logResponseTime((String) getResponseBody(responseWrapper.toString())
-					.get("resTime"));
+			logResponseTime((String) getResponseBody(responseWrapper.toString()).get("resTime"));
 		} catch (IdAuthenticationAppException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
-			responseWrapper =
-					sendErrorResponse(response, chain, requestWrapper);
+			responseWrapper = sendErrorResponse(response, chain, requestWrapper);
 		} finally {
-			double responseSize = ((double) responseWrapper.toString().length()) / 1024;
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Response sent with Request size : "
-							+ ((responseSize > 0) ? responseSize : 1) + " kb");
+			logSize(responseWrapper.toString());
 		}
+	}
+
+	private void logSize(String data) {
+		double size = ((double) data.length()) / 1024;
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Data size : " + ((size > 0) ? size : 1) + " kb");
 	}
 
 	/**
@@ -194,19 +170,14 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	private Map<String, Object> getRequestBody(InputStream inputStream)
-			throws IdAuthenticationAppException {
+	private Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(
-					IOUtils.toString(inputStream, Charset.defaultCharset()),
+			return mapper.readValue(IOUtils.toString(inputStream, Charset.defaultCharset()),
 					new TypeReference<Map<String, Object>>() {
 					});
 		} catch (IOException | ClassCastException e) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -220,16 +191,12 @@ public abstract class BaseAuthFilter implements Filter {
 	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> getResponseBody(String output)
-			throws IdAuthenticationAppException {
+	private Map<String, Object> getResponseBody(String output) throws IdAuthenticationAppException {
 		try {
 			return mapper.readValue(output, Map.class);
 		} catch (IOException | ClassCastException e) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -242,21 +209,16 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	protected String encode(String stringToEncode)
-			throws IdAuthenticationAppException {
+	protected String encode(String stringToEncode) throws IdAuthenticationAppException {
 		try {
 			if (stringToEncode != null) {
-				return Base64.getEncoder()
-						.encodeToString(stringToEncode.getBytes());
+				return Base64.getEncoder().encodeToString(stringToEncode.getBytes());
 			} else {
 				return stringToEncode;
 			}
 		} catch (IllegalArgumentException e) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -269,8 +231,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	protected Object decode(String stringToDecode)
-			throws IdAuthenticationAppException {
+	protected Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
 			if (stringToDecode != null) {
 				return Base64.getDecoder().decode(stringToDecode);
@@ -278,11 +239,8 @@ public abstract class BaseAuthFilter implements Filter {
 				return stringToDecode;
 			}
 		} catch (IllegalArgumentException e) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
-							.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -293,17 +251,12 @@ public abstract class BaseAuthFilter implements Filter {
 	 *            the response time
 	 */
 	private void logResponseTime(String responseTime) {
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
+		long duration = Duration.between(Instant.from(timeFormatter.parse(requestTime)),
+				Instant.from(timeFormatter.parse(responseTime))).toMillis();
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-				"Response sent at : " + responseTime);
-		long duration = Duration
-				.between(Instant.from(timeFormatter.parse(requestTime)),
-						Instant.from(timeFormatter.parse(responseTime)))
-				.toMillis();
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-				"Time difference between request and response in millis:"
-						+ duration
-						+ ".  Time difference between request and response in Seconds: "
-						+ ((duration / 1000) % 60));
+				"Time difference between request and response in millis:" + duration
+						+ ".  Time difference between request and response in Seconds: " + ((duration / 1000) % 60));
 	}
 
 	/**
@@ -321,32 +274,24 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws ServletException
 	 *             the servlet exception
 	 */
-	private CharResponseWrapper sendErrorResponse(ServletResponse response,
-			FilterChain chain,
-			ResettableStreamHttpServletRequest requestWrapper)
-			throws IOException, ServletException {
+	private CharResponseWrapper sendErrorResponse(ServletResponse response, FilterChain chain,
+			ResettableStreamHttpServletRequest requestWrapper) throws IOException, ServletException {
 		CharResponseWrapper responseWrapper;
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
-		responseWrapper =
-				new CharResponseWrapper((HttpServletResponse) response);
+		responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 		chain.doFilter(requestWrapper, responseWrapper);
 		try {
 			response.getWriter().write(responseWrapper.toString());
-			logResponseTime((String) getResponseBody(responseWrapper.toString())
-					.get("resTime"));
+			logResponseTime((String) getResponseBody(responseWrapper.toString()).get("resTime"));
 		} catch (IdAuthenticationAppException e1) {
 			String responseTime = mapper.convertValue(new Date(), String.class);
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Cannot log time \n" + ExceptionUtils.getStackTrace(e1));
-			long duration = Duration
-					.between(Instant.from(timeFormatter.parse(requestTime)),
-							Instant.from(timeFormatter.parse(responseTime)))
-					.toMillis();
+			long duration = Duration.between(Instant.from(timeFormatter.parse(requestTime)),
+					Instant.from(timeFormatter.parse(responseTime))).toMillis();
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Cannot log time. Response sent at : " + responseTime
-							+ ". Time taken in millis: " + duration
-							+ ". Time taken in seconds: "
-							+ ((duration / 1000) % 60));
+					"Cannot log time. Response sent at : " + responseTime + ". Time taken in millis: " + duration
+							+ ". Time taken in seconds: " + ((duration / 1000) % 60));
 		}
 		return responseWrapper;
 	}
@@ -360,8 +305,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	protected abstract Map<String, Object> decodedRequest(
-			Map<String, Object> requestBody)
+	protected abstract Map<String, Object> decodedRequest(Map<String, Object> requestBody)
 			throws IdAuthenticationAppException;
 
 	/**
@@ -373,8 +317,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	protected abstract Map<String, Object> encodedResponse(
-			Map<String, Object> responseBody)
+	protected abstract Map<String, Object> encodedResponse(Map<String, Object> responseBody)
 			throws IdAuthenticationAppException;
 
 	/**
@@ -386,8 +329,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 *            the response body
 	 * @return the map
 	 */
-	protected abstract Map<String, Object> setTxnId(
-			Map<String, Object> requestBody, Map<String, Object> responseBody);
+	protected abstract Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody);
 
 	/*
 	 * (non-Javadoc)
@@ -398,15 +340,18 @@ public abstract class BaseAuthFilter implements Filter {
 	public void destroy() {
 
 	}
-	
+
 	/**
 	 * Validate signature.
 	 *
-	 * @param requestBody the request body
-	 * @param signature the signature
+	 * @param requestBody
+	 *            the request body
+	 * @param signature
+	 *            the signature
 	 * @return true, if successful
-	 * @throws IdAuthenticationAppException 
+	 * @throws IdAuthenticationAppException
 	 */
-	protected abstract boolean validateSignature(Map<String, Object> requestBody, String signature) throws IdAuthenticationAppException;
+	protected abstract boolean validateSignature(Map<String, Object> requestBody, String signature)
+			throws IdAuthenticationAppException;
 
 }
