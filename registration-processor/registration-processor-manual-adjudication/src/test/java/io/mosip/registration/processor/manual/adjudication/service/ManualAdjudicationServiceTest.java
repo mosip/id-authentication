@@ -181,7 +181,7 @@ public class ManualAdjudicationServiceTest {
 	public void updatePacketStatusNoRecordAssignedExceptionCheck() {
 		manualVerificationDTO.setStatusCode("REJECTED");
 
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any())).thenReturn(null);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 		
 
@@ -195,7 +195,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -210,7 +210,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -223,7 +223,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode("ASSIGNED");
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);

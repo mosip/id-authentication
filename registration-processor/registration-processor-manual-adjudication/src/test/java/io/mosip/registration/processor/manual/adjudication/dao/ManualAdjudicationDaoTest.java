@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +15,6 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 
 import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 /**
  * The Class ManualAdjudicationDaoTest.
@@ -62,7 +59,7 @@ public class ManualAdjudicationDaoTest {
 		manualVerificationEntity.setStatusCode("APPROVED");
 		manualVerificationEntity.setMvUsrId("mv");
 		Mockito.when(basePacketRepository.save(ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ArgumentMatchers.any())).thenReturn(manualAdjudicationEntity);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
 
@@ -97,7 +94,7 @@ public class ManualAdjudicationDaoTest {
 	 */
 	@Test
 	public void getByRegIdTest() {
-		ManualVerificationEntity manualAdjudicationEntityResult=basePacketRepository.getSingleAssignedRecord(manualVerificationEntity.getId().getRegId(), manualVerificationEntity.getId().getMatchedRefId(), manualVerificationEntity.getMvUsrId());
+		ManualVerificationEntity manualAdjudicationEntityResult=basePacketRepository.getSingleAssignedRecord(manualVerificationEntity.getId().getRegId(), manualVerificationEntity.getId().getMatchedRefId(), manualVerificationEntity.getMvUsrId(), manualAdjudicationEntity.getStatusCode()	);
 		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
 	
