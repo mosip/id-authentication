@@ -11,18 +11,24 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+import io.mosip.registration.validator.AuthenticationService;
+import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 
 @Component
 public class OTPManager {
 	
 	@Autowired
 	ServiceDelegateUtil serviceDelegateUtil;
+	
+	@Autowired
+	private AuthenticationService validator;
 
 	public ResponseDTO getOTP(final String key) {
 		// Create Response to return to UI layer
@@ -78,5 +84,13 @@ public class OTPManager {
 		response.setErrorResponseDTOs(errorResponses);
 		return response;
 
+	}
+	
+	public boolean validateOTP(String userId, String otp) {
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setOtp(otp);
+		authenticationValidatorDTO.setUserId(userId);
+		AuthenticationValidatorImplementation authenticationValidatorImplementation = validator.getValidator("otp");
+		return authenticationValidatorImplementation.validate(authenticationValidatorDTO);
 	}
 }
