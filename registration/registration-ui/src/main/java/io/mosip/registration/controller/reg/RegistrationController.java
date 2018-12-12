@@ -332,11 +332,11 @@ public class RegistrationController extends BaseController {
 
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
-	
+
 	private boolean applicantImageCaptured;
-	
+
 	private boolean toggleBiometricException;
-	
+
 	private Image defaultImage;
 
 	private String selectedDocument;
@@ -355,9 +355,10 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
-	/*@Autowired
-	private IdValidator<String> pridValidatorImpl;*/
+
+	/*
+	 * @Autowired private IdValidator<String> pridValidatorImpl;
+	 */
 
 	@FXML
 	private void initialize() {
@@ -445,9 +446,9 @@ public class RegistrationController extends BaseController {
 			DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
 			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
 			LocationDTO locationDTO = addressDTO.getLocationDTO();
-			
+
 			fullName.setText(demographicInfoDTO.getFullName());
-			
+
 			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
@@ -457,29 +458,29 @@ public class RegistrationController extends BaseController {
 				ageField.setText(demographicInfoDTO.getAge());
 
 			}
-			
+
 			gender.setValue(demographicInfoDTO.getGender());
-			
+
 			addressLine1.setText(addressDTO.getAddressLine1());
 			addressLine2.setText(addressDTO.getAddressLine2());
 			addressLine3.setText(addressDTO.getAddressLine3());
-			
+
 			province.setText(locationDTO.getProvince());
 			city.setText(locationDTO.getCity());
 			region.setText(locationDTO.getRegion());
 			postalCode.setText(locationDTO.getPostalCode());
-			
+
 			mobileNo.setText(demographicInfoDTO.getMobile());
 			emailId.setText(demographicInfoDTO.getEmailId());
 			cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
 			localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
-			
+
 			if (demographicDTO.getIntroducerRID() != null) {
 				uinId.setText(demographicDTO.getIntroducerRID());
 			} else {
 				uinId.setText(demographicDTO.getIntroducerUIN());
 			}
-			
+
 			parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
@@ -503,7 +504,7 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
-			
+
 			// for Document scan
 			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
 					&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
@@ -526,7 +527,7 @@ public class RegistrationController extends BaseController {
 						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
 
 			}
-			
+
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
@@ -545,10 +546,11 @@ public class RegistrationController extends BaseController {
 		if (StringUtils.isEmpty(preRegId)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
 			return;
-		} /*else if(pridValidatorImpl.validateId(preRegId)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_NOT_VALID);
-			return;
-		}*/
+		} /*
+			 * else if(pridValidatorImpl.validateId(preRegId)) {
+			 * generateAlert(RegistrationConstants.ALERT_ERROR,
+			 * RegistrationConstants.PRE_REG_ID_NOT_VALID); return; }
+			 */
 
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
@@ -891,7 +893,7 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage()); 
+						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 			}
 		}
 
@@ -1200,7 +1202,7 @@ public class RegistrationController extends BaseController {
 						ageField.setText(age);
 					}
 					// to populate date of birth based on age
-					
+
 					if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
 						DateTimeFormatter formatter = DateTimeFormatter
 								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
@@ -1210,12 +1212,12 @@ public class RegistrationController extends BaseController {
 						LocalDate date = LocalDate.parse(dob, formatter);
 						ageDatePicker.setValue(date);
 					}
-					if(ageField.getText().length()==0) {
+					if (ageField.getText().length() == 0) {
 						ageDatePicker.setValue(null);
 					}
 					if (!newValue.matches("\\d*")) {
 						ageField.setText(newValue.replaceAll("[^\\d]", ""));
-						generateAlert(RegistrationConstants.ALERT_ERROR,RegistrationConstants.AGE_WARNING);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
 
 					}
 				}
@@ -1393,38 +1395,30 @@ public class RegistrationController extends BaseController {
 								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
-						if (validateRegex(region, "^.{6,50}$")) {
+						if (validateRegex(region, "[^$]+")) {
 
-							generateAlert(RegistrationConstants.ALERT_ERROR,
-									RegistrationConstants.REGION_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS
-											+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.REGION_EMPTY);
 							region.requestFocus();
 						} else {
-							if (validateRegex(city, "^.{6,10}$")) {
+							if (validateRegex(city, "^[^$]+")) {
 
-								generateAlert(RegistrationConstants.ALERT_ERROR,
-										RegistrationConstants.CITY_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS
-												+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CITY_EMPTY);
 								city.requestFocus();
 							} else {
-								if (validateRegex(province, "^.{6,10}$")) {
+								if (validateRegex(province, "[^$]+")) {
 
 									generateAlert(RegistrationConstants.ALERT_ERROR,
-											RegistrationConstants.PROVINCE_EMPTY + " "
-													+ RegistrationConstants.ONLY_ALPHABETS + " "
-													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+											RegistrationConstants.PROVINCE_EMPTY);
 									province.requestFocus();
 								} else {
-									if (validateRegex(postalCode, "\\d{6}")) {
+									if (validateRegex(postalCode, RegistrationConstants.POSTAL_CODE_REGEX)) {
 										generateAlert(RegistrationConstants.ALERT_ERROR,
-												RegistrationConstants.POSTAL_CODE_EMPTY + " "
-														+ RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
+												RegistrationConstants.POSTAL_CODE_EMPTY);
 										postalCode.requestFocus();
 									} else {
-										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
+										if (validateRegex(localAdminAuthority, "[^$]+")) {
 											generateAlert(RegistrationConstants.ALERT_ERROR,
-													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY + " "
-															+ RegistrationConstants.ONLY_ALPHABETS);
+													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY);
 											localAdminAuthority.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
@@ -1566,7 +1560,7 @@ public class RegistrationController extends BaseController {
 			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
 			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
 			dobDocuments.getItems().addAll(RegistrationConstants.getDobDocumentList());
-			
+
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
 
@@ -1678,10 +1672,10 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-			
-			SessionContext.getInstance().getUserContext().getUserMap().
-			put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-			
+
+			SessionContext.getInstance().getUserContext().getUserMap()
+					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
 				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 			});
@@ -1789,7 +1783,8 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanPoaDocument() {
 
-		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POA_DOCUMENT_EMPTY);	
+		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT,
+				RegistrationConstants.POA_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -1797,8 +1792,9 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void scanPoiDocument() {
-		
-		scanDocument(poiDocuments, poiBox, RegistrationConstants.POI_DOCUMENT, RegistrationConstants.POI_DOCUMENT_EMPTY);
+
+		scanDocument(poiDocuments, poiBox, RegistrationConstants.POI_DOCUMENT,
+				RegistrationConstants.POI_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -1806,8 +1802,9 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void scanPorDocument() {
-		
-		scanDocument(porDocuments, porBox, RegistrationConstants.POR_DOCUMENT, RegistrationConstants.POR_DOCUMENT_EMPTY);
+
+		scanDocument(porDocuments, porBox, RegistrationConstants.POR_DOCUMENT,
+				RegistrationConstants.POR_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -1816,24 +1813,26 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void scanDobDocument() {
 
-		scanDocument(dobDocuments, dobBox, RegistrationConstants.DOB_DOCUMENT, RegistrationConstants.DOB_DOCUMENT_EMPTY);
+		scanDocument(dobDocuments, dobBox, RegistrationConstants.DOB_DOCUMENT,
+				RegistrationConstants.DOB_DOCUMENT_EMPTY);
 	}
-	
+
 	/**
 	 * This method scans and uploads documents
 	 */
 	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
-		
+
 		if (documents.getValue() == null) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
 			documents.requestFocus();
-		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream().noneMatch(index -> index.getId().contains(documents.getValue()))){
+		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
+				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
-			
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1875,7 +1874,7 @@ public class RegistrationController extends BaseController {
 				if (selectedDocument != null) {
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
-					
+
 					switch (selectedDocument) {
 					case RegistrationConstants.POA_DOCUMENT:
 						attachDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
@@ -1891,7 +1890,7 @@ public class RegistrationController extends BaseController {
 						break;
 					default:
 					}
-					
+
 					popupStage.close();
 
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1915,7 +1914,7 @@ public class RegistrationController extends BaseController {
 		}
 
 	}
-	
+
 	/**
 	 * This method will add Hyperlink and Image for scanned documents
 	 */
@@ -1925,13 +1924,13 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		scanController.getScanImage().setImage(convertBytesToImage(byteArray));
-		
+
 		String documentName = document;
-		
+
 		ObservableList<Node> nodes = vboxElement.getChildren();
 		if (!nodes.isEmpty() && nodes.stream().anyMatch(index -> index.getId().contains(document))) {
 			documentName = document.concat("_").concat(String.valueOf(nodes.size()));
-		} 
+		}
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
@@ -1971,7 +1970,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
 		if (vboxElement.getChildren().size() >= scrollCheck) {
-			//scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+			// scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		} else {
 			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -2015,7 +2014,7 @@ public class RegistrationController extends BaseController {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
-						.ifPresent(doc -> displayDocument(doc.getDocument(),doc.getDocumentName()));
+						.ifPresent(doc -> displayDocument(doc.getDocument(), doc.getDocumentName()));
 
 			}
 		});

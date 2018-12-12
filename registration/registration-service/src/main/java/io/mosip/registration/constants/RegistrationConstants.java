@@ -140,6 +140,7 @@ public class RegistrationConstants {
 	public static final String PROVINCE_EMPTY = bundle.getString("PROVINCE_EMPTY");
 	public static final String REGION_EMPTY = bundle.getString("REGION_EMPTY");
 	public static final String POSTAL_CODE_EMPTY = bundle.getString("POSTAL_CODE_EMPTY");
+	public static final String POSTAL_CODE_WARNING = bundle.getString("POSTAL_CODE_WARNING");
 	public static final String MOBILE_NUMBER_EMPTY = bundle.getString("MOBILE_NUMBER_EMPTY");
 	public static final String MOBILE_NUMBER_EXAMPLE = bundle.getString("MOBILE_NUMBER_EXAMPLE");
 	public static final String EMAIL_ID_EMPTY = bundle.getString("EMAIL_ID_EMPTY");
@@ -156,7 +157,6 @@ public class RegistrationConstants {
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("POR_DOCUMENT_EMPTY");
 	public static final String DOB_DOCUMENT_EMPTY = bundle.getString("DOB_DOCUMENT_EMPTY");
 	public static final String TEN_LETTER_INPUT_LIMT = bundle.getString("TEN_LETTER_INPUT_LIMT");
-	public static final String SIX_DIGIT_INPUT_LIMT = bundle.getString("SIX_DIGIT_INPUT_LIMT");
 	public static final String THIRTY_DIGIT_INPUT_LIMT = bundle.getString("THIRTY_DIGIT_INPUT_LIMT");
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
@@ -166,6 +166,7 @@ public class RegistrationConstants {
 	public static final String SCAN_DOC_SIZE = bundle.getString("SCAN_DOC_SIZE");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
+
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -790,6 +791,8 @@ public class RegistrationConstants {
 	public static final String CNI_OR_PIN_NUMBER_REGEX = "\\d{0,30}";
 	public static final String AGE_REGEX = "\\d{1,2}";
 	public static final String UIN_REGEX = "\\d{1,30}";
+	public static final String POSTAL_CODE_REGEX = "\\d{5}";
+
 
 	// master sync
 	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
