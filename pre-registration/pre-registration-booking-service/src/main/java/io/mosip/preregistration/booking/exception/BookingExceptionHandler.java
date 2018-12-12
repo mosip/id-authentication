@@ -257,5 +257,18 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 	
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(AppointmentReBookingFailedException.class)
+	public ResponseEntity<ResponseDto<?>> AppointmentReBookingFailedException(final AppointmentReBookingFailedException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_BOOK_RCI_021.toString(),
+				ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
+
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
 
 }

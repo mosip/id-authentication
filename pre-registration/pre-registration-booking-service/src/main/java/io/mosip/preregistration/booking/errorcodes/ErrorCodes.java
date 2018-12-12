@@ -28,6 +28,7 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_018, // Appointment can not be canceled.
 	PRG_BOOK_RCI_019, // Cancel Appointmenct  failed
 	PRG_BOOK_RCI_020, // Master service not available
+	PRG_BOOK_RCI_021, //Rebooking failed
 	PRG_PAM_APP_002, PRG_BOOK_002, PRG_BOOK_001
 
 	
