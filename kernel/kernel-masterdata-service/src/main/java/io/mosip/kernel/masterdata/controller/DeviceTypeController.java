@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Controller with api to save and get Device Type Details
+ * Controller with api to save Device Type Details
  * 
  * @author Megha Tanga
  * @since 1.0.0

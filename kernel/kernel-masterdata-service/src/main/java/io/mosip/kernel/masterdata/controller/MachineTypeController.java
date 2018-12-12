@@ -32,13 +32,13 @@ public class MachineTypeController {
 	
 
 	/**
-	 * Reference to MachineTypeService.
+	 * Reference to MachineType Service.
 	 */
 	@Autowired
 	private MachineTypeService machinetypeService;
 	
 	/**
-	 * Save list of Machine Type details to the Database table
+	 * Post API to insert a new row of Machine Type data
 	 * 
 	 * @param machineType
 	 * 				input Machine Type DTO from user 
@@ -49,7 +49,7 @@ public class MachineTypeController {
 	 */
 
 	@PostMapping("/v1.0/machinetypes")
-	@ApiOperation(value = "Service to save Machine type", notes = "Saves MachineType and return Machine code and Languge Code", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),

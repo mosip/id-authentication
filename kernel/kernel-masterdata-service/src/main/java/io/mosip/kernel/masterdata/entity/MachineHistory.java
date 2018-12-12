@@ -18,6 +18,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity for Machine History  
+ *
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

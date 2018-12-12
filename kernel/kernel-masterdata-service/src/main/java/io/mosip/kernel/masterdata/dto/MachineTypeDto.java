@@ -7,6 +7,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+
+
+/**
+ * Response dto for Machine History Detail
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @Data
 @ApiModel(value = "Machine Type", description = "Machine Type resource")
 public class MachineTypeDto {

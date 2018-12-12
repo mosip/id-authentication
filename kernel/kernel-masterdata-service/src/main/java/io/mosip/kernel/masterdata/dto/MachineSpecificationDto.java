@@ -6,9 +6,15 @@ import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+
+/**
+ * Response dto for Machine History Detail
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @Data
-
-
 public class MachineSpecificationDto {
 	
 	

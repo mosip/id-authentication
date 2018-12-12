@@ -20,7 +20,7 @@ import io.mosip.kernel.masterdata.entity.MachineHistory;
 public interface MachineHistoryRepository extends BaseRepository<MachineHistory, String> {
 
 	/**
-	 * This method trigger query to fetch Machine History Details based on Machine
+	 * This method trigger query to fetch Machine History Details based on Machine History
 	 * Id, language code and effective date time
 	 * 
 	 * @param id
@@ -29,8 +29,8 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            language code provided by user
 	 * @param effectDtimes
 	 *            effective Date and time provided by user in the format
-	 *            "yyyy-mm-ddThh:mm:ss"
-	 * @return List fetched from database
+	 *            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+	 * @return List Machine History Details fetched from database
 	 */
 
 	@Query(value = "Select 	m.eff_dtimes, m.id,m.cr_by, m.cr_dtimes, m.del_dtimes, m.is_active, m.is_deleted, m.upd_by, m.upd_dtimes, m.ip_address, m.lang_code, m.mac_address, m.mspec_id, m.name,  m.serial_num, m.validity_end_dtimes from master.machine_master_h m where m.id = ?1 and m.lang_code = ?2 and m.eff_dtimes <= ?3 and ( m.is_deleted = false or m.is_deleted is null) order by m.eff_dtimes desc limit 1", nativeQuery = true)

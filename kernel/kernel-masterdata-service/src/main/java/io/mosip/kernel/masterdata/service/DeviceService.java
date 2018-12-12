@@ -5,9 +5,11 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
- * This interface has abstract methods to fetch a Device Details
+ * This interface has abstract methods to fetch and save a Device Details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -23,6 +25,10 @@ public interface DeviceService {
 	 * 			language code from user
 	 * @return DeviceResponseDto
 	 * 			Returning all Devices Details
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while retrieving device
+	 * @throws DataNotFoundException
+	 *             if no Device found
 	 *
 	 */
 	public DeviceResponseDto getDeviceLangCode(String langCode);
@@ -35,7 +41,12 @@ public interface DeviceService {
 	 * @param devideTypeCode
 	 * 			devideTypeCode from user
 	 * @return DeviceLangCodeResponseDto
-	 * 			Returning all Devices Details for given Language code and DeviceType Code
+	 * 			Returning all Devices Details for given Language code and DeviceType Code {@link DeviceLangCodeResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while retrieving device
+	 * 
+	 * @throws DataNotFoundException
+	 *             if no Device found
 	 *
 	 */
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
@@ -45,8 +56,10 @@ public interface DeviceService {
 	 * 
 	 * @param deviceRequestDto
 	 *          Device DTO to insert data 
-	 * @return IdResponseDto
-	 * 			Device ID which is successfully inserted
+	 * @return IdResponseDto 
+	 * 			Device ID which is successfully inserted {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving Device
 	 */
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceRequestDto);
 

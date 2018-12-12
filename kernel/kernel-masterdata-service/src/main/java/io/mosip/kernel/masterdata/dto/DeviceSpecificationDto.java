@@ -1,5 +1,13 @@
 package io.mosip.kernel.masterdata.dto;
 
+/**
+ * Response dto for Device Detail
+ * 
+ * @author Megha Tanga
+ * @author Uday
+ * @since 1.0.0
+ *
+ */
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

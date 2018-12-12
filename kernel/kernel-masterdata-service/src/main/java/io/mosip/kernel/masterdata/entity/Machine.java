@@ -20,7 +20,11 @@ import lombok.NoArgsConstructor;
  * 
  * Entity for Machine Details
  * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
  */
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

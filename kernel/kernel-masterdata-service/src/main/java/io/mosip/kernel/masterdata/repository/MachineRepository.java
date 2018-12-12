@@ -8,7 +8,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
- * Repository function to fetching machine details
+ * Repository function to save and fetch machine details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 @Repository
 public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
-	 * This method trigger query to fetch the all Machine details code.
+	 * This method trigger query to fetch the all Machine details.
 	 * 
 	 * @return List
 	 * 		 MachineDetail fetched from database
@@ -34,7 +34,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @param id
 	 *          Machine Id provided by user
 	 * @param langCode
-	 *          languageCode provided by user
+	 *          language code provided by user
 	 * @return List
 	 * 		 MachineDetail fetched from database
 	 */

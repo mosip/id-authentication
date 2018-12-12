@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
+ * Entity for Device Specification Details
+ * 
  * @author Uday
  * @author Megha Tanga
  * 

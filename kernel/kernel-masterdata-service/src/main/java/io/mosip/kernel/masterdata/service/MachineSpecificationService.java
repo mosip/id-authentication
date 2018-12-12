@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * This interface has abstract methods to fetch and save Machine Specification
@@ -21,7 +22,9 @@ public interface MachineSpecificationService {
 	 * 			input from user
 	 * 
 	 * @return IdResponseDto
-	 *           returning id
+	 *           Machine Specification ID which is successfully inserted {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving Device
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
