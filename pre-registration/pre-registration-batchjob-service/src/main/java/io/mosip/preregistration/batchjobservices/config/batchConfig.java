@@ -1,4 +1,4 @@
-package io.mosip.preregistration.booking.config;
+package io.mosip.preregistration.batchjobservices.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,36 +15,28 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-/**
- * Config for Data sync
- * 
- * @author M1037717
- *
- */
 @Configuration
 @EnableSwagger2
-public class BookingConfig {
-
+public class batchConfig {
+	
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerBaseUrl;
 
-	@Value("${server.port:9095}")
+	@Value("${server.port:9096}")
 	private int serverPort;
 
 	String proto = "http";
 	String host = "localhost";
 	int port = -1;
-	String hostWithPort = "localhost:9095";
+	String hostWithPort = "localhost:9096";
 	/**
-	 * @return docket
+	 * Swagger Configuration
 	 */
-	
-	
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket batchStatusBean() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
@@ -62,10 +54,9 @@ public class BookingConfig {
 			}
 		}
 
-		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Booking").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.booking.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/booking/*")).build();
-
+		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-batchjob-Service").select()
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.batchjobservices.controller"))
+				.paths(PathSelectors.ant("/v0.1/pre-registration/batch/*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
@@ -78,5 +69,6 @@ public class BookingConfig {
 		protocols.add(proto);
 		return protocols;
 	}
+
 
 }
