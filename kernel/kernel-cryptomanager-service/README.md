@@ -14,9 +14,6 @@ mvn javadoc:javadoc
 1. Data provided to encryption should be encoded to BASE64 encoding before requesting to encrypt and decrypt.
 2. Data received after encrypting should be decoded from BASE64 encoding.
 
-**Properties to be added in parent Spring Application environment**
-
-[kernel-cryptomanager-service-dev.properties](../../config/kernel-cryptomanager-service-dev.properties)
 
 **Usage Sample**
 
