@@ -1,15 +1,10 @@
 package io.mosip.authentication.service.impl.otpgen.facade;
 
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -17,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -38,7 +31,6 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -124,7 +116,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 			try {
 				otp = otpService.generateOtp(otpKey);
-				String[] dateAndTime = getDateAndTime(otpRequestDto.getReqTime());
+				String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
 				date = dateAndTime[0];
 				time = dateAndTime[1];
 			} catch (IdAuthenticationBusinessException e) {
@@ -262,22 +254,4 @@ public class OTPFacadeImpl implements OTPFacade {
 		return demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
 	}
 
-	private String[] getDateAndTime(String reqquestTime) {
-
-		String[] dateAndTime = new String[2];
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqquestTime, isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
-		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
-		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		dateAndTime[0] = date;
-		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-		dateAndTime[1] = time;
-
-		return dateAndTime;
-
-	}
 }

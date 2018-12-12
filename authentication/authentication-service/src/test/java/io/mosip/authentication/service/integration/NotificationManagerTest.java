@@ -201,8 +201,8 @@ public class NotificationManagerTest {
 				.thenThrow(idDataValidationException);
 		notificationManager.sendEmailNotification("test@gmail.com", "test", "test");
 	}
-	@Ignore
-	@Test(expected = IdAuthenticationBusinessException.class)
+
+	@Test
 	public void TestInvalidTemplate() throws IdAuthenticationBusinessException, IOException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
@@ -215,8 +215,9 @@ public class NotificationManagerTest {
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		//notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
+		notificationManager.sendSmsNotification("1234567890", "test");
 	}
-	@Ignore
+	
 	@Test
 	public void TestInvalidNotificationConfig() throws IdAuthenticationBusinessException {
 		MailRequestDto mailRequestDto = new MailRequestDto();
@@ -231,5 +232,6 @@ public class NotificationManagerTest {
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		//notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
+		notificationManager.sendEmailNotification("abc@test.com", "test", "test");
 	}
 }

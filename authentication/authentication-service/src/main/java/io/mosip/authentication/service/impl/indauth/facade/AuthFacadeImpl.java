@@ -47,10 +47,7 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -75,18 +72,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	private static final String STATUS_SUCCESS = "y";
 	/** The Constant IDA. */
 	private static final String IDA = "IDA";
-	/** The Constant STATUS. */
-	private static final String STATUS = "status";
-	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
-	/** The Constant NAME. */
-	private static final String NAME = "name";
-	/** The Constant UIN2. */
-	private static final String UIN2 = "uin";
-	/** The Constant TIME. */
-	private static final String TIME = "time";
-	/** The Constant DATE. */
-	private static final String DATE = "date";
 
 	/** The Constant AUTH_FACADE. */
 	private static final String AUTH_FACADE = "AuthFacade";
@@ -101,10 +86,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private OTPAuthService otpService;
 
-	/** The demo auth service. */
-	@Autowired
-	private IdInfoHelper demoHelper;
-
 	/** The id auth service. */
 	@Autowired
 	private IdAuthService idAuthService;
@@ -115,9 +96,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Environment */
 	@Autowired
 	private Environment env;
-	/** The Notification Manager */
-	@Autowired
-	private NotificationManager notificationManager;
 	/** The Id Info Service */
 	@Autowired
 	private IdRepoService idInfoService;
@@ -130,9 +108,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	private BioAuthService bioAuthService;
-
-	@Autowired
-	private IdRepoServiceImpl idRepoServiceImpl;
 
 	@Autowired
 	UinRepository uinRepository;
@@ -161,20 +136,20 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = null;
+		String refId =  String.valueOf(idResDTO.get("registrationId"));
 		try {
 			idInfo = getIdEntity(idResDTO);
-			uin = String.valueOf(idResDTO.get("uin"));
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth);
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId, isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
+			String uin = String.valueOf(idResDTO.get("uin"));
 			if (idInfo != null && uin != null) {
 				notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
 			}
@@ -276,14 +251,6 @@ public class AuthFacadeImpl implements AuthFacade {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
 	}
 
-	/**
-	 * Audit data.
-	 */
-	private void auditData() {
-		// TODO Update audit details
-
-	}
-
 	@Override
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
 
@@ -372,38 +339,5 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 		return idInfoService.getIdInfo(idResponseDTO);
 	}
-
-//	private Map<String, Object> processIdRepoRequest(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
-//		Map<String, Object> idRepo = null;
-//
-//		String reqType = authRequestDTO.getIdvIdType();
-//
-//		if (reqType.equals(IdType.UIN.getType())) {
-//			idRepo = idRepoServiceImpl.getIdRepo(authRequestDTO.getIdvId());
-//
-//		} else {
-//			// Optional<String> findRefIdByVid =
-//			// vidRepository.findRefIdByVid(authRequestDTO.getIdvId());
-//			// if (findRefIdByVid.isPresent()) {
-//
-//			// String refId = findRefIdByVid.get();
-//			// Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
-//
-//			// if (findUinByRefId.isPresent()) {
-//			// String uin = findUinByRefId.get();
-//			// idRepo = idRepoServiceImpl.getIdRepo(uin);
-//			// }
-//			// }
-//
-//			Optional<String> uinNumber = uinRepository
-//					.findUinFromUinTableByJoinTableUinAndVid(authRequestDTO.getIdvId());
-//			if (uinNumber.isPresent()) {
-//				String uin = uinNumber.get();
-//				idRepo = idRepoServiceImpl.getIdRepo(uin);
-//			}
-//		}
-//
-//		return idRepo;
-//	}
 
 }

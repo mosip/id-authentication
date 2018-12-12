@@ -341,8 +341,7 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testGetDateAndTime() {
 		String reqquestTime = otpRequestDto.getReqTime();
-
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getDateAndTime", reqquestTime);
+		DateHelper.getDateAndTime(reqquestTime, env.getProperty("datetime.pattern"));
 	}
 
 	// =========================================================

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,6 +30,7 @@ import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
+import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -171,7 +171,7 @@ public class NotificationServiceImpl implements NotificationService {
 			String email, String mobileNumber,Map<String, List<IdentityInfoDTO>> idInfo) {
 		
 		
-		String[] dateAndTime = getDateAndTime(otpRequestDto.getReqTime());
+		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
 		String date = dateAndTime[0];
 		String time = dateAndTime[1];
 
@@ -194,24 +194,6 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 	}
 	
-	private String[] getDateAndTime(String reqquestTime) {
-
-		String[] dateAndTime = new String[2];
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqquestTime, isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
-		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
-		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		dateAndTime[0] = date;
-		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-		dateAndTime[1] = time;
-
-		return dateAndTime;
-
-	}
 	
 	/**
 	 * Method to Send Notification to the Individual via SMS / E-Mail

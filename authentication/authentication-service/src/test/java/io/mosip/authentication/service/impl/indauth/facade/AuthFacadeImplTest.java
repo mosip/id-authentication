@@ -2,9 +2,9 @@ package io.mosip.authentication.service.impl.indauth.facade;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -41,6 +41,8 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -50,6 +52,7 @@ import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -59,12 +62,12 @@ import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
@@ -72,6 +75,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.notification.service.NotificationServiceImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -94,19 +98,18 @@ public class AuthFacadeImplTest {
 	/** The auth facade impl. */
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
+	@Mock
+	private AuthFacadeImpl authFacadeMock;
 	/** The env. */
 	@Autowired
 	private Environment env;
 
-	/** The id auth service impl. */
-	@Mock
-	private IdAuthServiceImpl idAuthServiceImpl;
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
 
 	/** The otp auth service impl. */
 	@Mock
-	private OTPAuthServiceImpl otpAuthServiceImpl;
+	private OTPAuthService otpAuthServiceImpl;
 	/** The IdAuthService */
 	@Mock
 	private IdAuthService idAuthService;
@@ -144,28 +147,34 @@ public class AuthFacadeImplTest {
 	@Mock
 	private MessageSource messageSource;
 
-	@Mock
+	@InjectMocks
 	private OTPManager otpManager;
 
 	@Mock
 	private BioAuthService bioAuthService;
 	@Mock
 	private AuditHelper auditHelper;
+	@Mock
+	private IdRepoService idRepoService;
+	@Mock
+	private AutnTxnRepository autntxnrepository;
+	// @Spy
+	// Map<String, Object> idRepo=new HashMap<>();
 
 	/**
 	 * Before.
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthServiceImpl);
+		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
+//		ReflectionTestUtils.setField(otpAuthServiceImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
-		ReflectionTestUtils.setField(authFacadeImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idAuthService", idAuthService);
@@ -182,8 +191,8 @@ public class AuthFacadeImplTest {
 	 * This class tests the authenticateApplicant method where it checks the IdType
 	 * and DemoAuthType.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 * @throws IdAuthenticationDaoException
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
@@ -191,26 +200,50 @@ public class AuthFacadeImplTest {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-
-	@Ignore
+	
 	@Test
 	public void authenticateApplicantTest()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String refId = "8765";
+		String refId = "1234567890";
 
 		boolean authStatus = true;
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setMuaCode("64378643");
+		PinInfo pinInfo=new PinInfo();
+		pinInfo.setType(PinType.OTP.getType());
+		pinInfo.setValue("736643");
+		PinInfo pinInfo1=new PinInfo();
+		pinInfo1.setType(PinType.PIN.getType());
+		pinInfo1.setValue("736643");
+		List<PinInfo> list1=new ArrayList<>();
+		list1.add(pinInfo);
+		list1.add(pinInfo1);
+		authRequestDTO.setPinInfo(list1);
 		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
-		Mockito.when(idAuthServiceImpl.getIdRepoByUinNumber(Mockito.any())).thenReturn(repoDetails());
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", "74834738743");
+		idRepo.put("registrationId",refId);
+		String uin = "274390482564";
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenReturn(idRepo);
+		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId()))
+				.thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString())).thenReturn(repoDetails());
+		AuthStatusInfo authStatusInfo=new AuthStatusInfo();
+		authStatusInfo.setStatus(true);
+		authStatusInfo.setErr(Collections.emptyList());
+		authStatusInfo.setMatchInfos(Collections.emptyList());
+		authStatusInfo.setUsageDataBits(Collections.emptyList());
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId))
-				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(authStatus).build());
+				.thenReturn(authStatusInfo);
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
@@ -220,6 +253,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
+
 		Optional<String> uinOpt = Optional.of("426789089018");
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -227,12 +261,9 @@ public class AuthFacadeImplTest {
 
 		authResponseDTO.setResTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		ReflectionTestUtils.setField(notificationService, "environment", env);
+		ReflectionTestUtils.setField(notificationService, "env", env);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
-		ReflectionTestUtils.setField(notificationService, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
-		ReflectionTestUtils.setField(notificationService, "restHelper", restHelper);
-		ReflectionTestUtils.setField(authFacadeImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(demoHelper, "environment", env);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
@@ -241,28 +272,30 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Method demoImplMethod = AuthFacadeImpl.class.getDeclaredMethod("sendAuthNotification", AuthRequestDTO.class,
-				String.class, AuthResponseDTO.class, Map.class, boolean.class);
-		demoImplMethod.setAccessible(true);
-		demoImplMethod.invoke(authFacadeImpl, authRequestDTO, refId, authResponseDTO, idInfo, true);
+
+		
+		authFacadeImpl.authenticateApplicant(authRequestDTO, true);
 
 	}
+
 
 	/**
 	 * This class tests the processAuthType (OTP) method where otp validation
 	 * failed.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
-
-	@Ignore
+	
 	@Test
 	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authRequestDTO.setAuthType(authType);
-		authRequestDTO.getAuthType().setOtp(false);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setOtp(false);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -279,11 +312,11 @@ public class AuthFacadeImplTest {
 	 * This class tests the processAuthType (OTP) method where otp validation gets
 	 * successful.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 
-	@Ignore
+	 
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -305,6 +338,36 @@ public class AuthFacadeImplTest {
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
+		List<BioInfo> info=new ArrayList<>();
+		BioInfo bioInfo=new BioInfo();
+		bioInfo.setBioType("fgrMin");
+		DeviceInfo deviceInfo=new DeviceInfo();
+		deviceInfo.setDeviceId("42352");
+		deviceInfo.setMake("test");
+		deviceInfo.setModel("12165");
+		bioInfo.setDeviceInfo(deviceInfo);
+		BioInfo bioInfo1=new BioInfo();
+		bioInfo1.setBioType("irisImg");
+		DeviceInfo deviceInfo1=new DeviceInfo();
+		deviceInfo1.setDeviceId("42352");
+		deviceInfo1.setMake("test");
+		deviceInfo1.setModel("12165");
+		bioInfo1.setDeviceInfo(deviceInfo1);
+		BioInfo bioInfo2=new BioInfo();
+		bioInfo2.setBioType("faceImg");
+		DeviceInfo deviceInfo2=new DeviceInfo();
+		deviceInfo2.setDeviceId("42352");
+		deviceInfo2.setMake("test");
+		deviceInfo2.setModel("12165");
+		bioInfo2.setDeviceInfo(deviceInfo2);
+		
+		info.add(bioInfo);
+		info.add(bioInfo1);
+		info.add(bioInfo2);
+		authRequestDTO.setBioInfo(info);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, "1242")).thenReturn(AuthStatusInfoBuilder
 				.newInstance().setStatus(true).addAuthUsageDataBits(AuthUsageDataBit.USED_OTP).build());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -321,11 +384,11 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where UIN is passed and gets successful.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 
-	@Ignore
+	
 	@Test
 	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -340,11 +403,11 @@ public class AuthFacadeImplTest {
 	/**
 	 * This class tests the processIdtype where VID is passed and gets successful.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 
-	@Ignore
+	
 	@Test
 	public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -356,42 +419,9 @@ public class AuthFacadeImplTest {
 		// assertEquals(referenceId, refId);
 	}
 
-	/**
-	 * This class tests the processIdtype where UIN is passed and gets failed.
-	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
 
-	@Ignore
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		IdValidationFailedException idException = new IdValidationFailedException(
-				IdAuthenticationErrorConstants.INVALID_UIN);
-		// Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenThrow(idException);
-		// authFacadeImpl.processIdType(authRequestDTO);
-	}
 
-	/**
-	 * This class tests the processIdtype where VID is passed and gets failed.
-	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-
-	@Ignore
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.VID.getType());
-		IdValidationFailedException idException = new IdValidationFailedException(
-				IdAuthenticationErrorConstants.INVALID_VID);
-		// Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenThrow(idException);
-		// authFacadeImpl.processIdType(authRequestDTO);
-
-	}
+	
 
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
@@ -526,7 +556,7 @@ public class AuthFacadeImplTest {
 
 	private Map<String, Object> repoDetails() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("registrationId", "863537");
+		map.put("uin", "863537");
 		return map;
 	}
 }
