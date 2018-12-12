@@ -1,12 +1,10 @@
 package io.mosip.registration.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 
-@Component
 public abstract class AuthenticationValidatorImplementation {
 	protected String fingerPrintType;
 
