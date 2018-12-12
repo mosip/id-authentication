@@ -191,6 +191,7 @@ public class AuthFacadeImplTest {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
+
 	@Ignore
 	@Test
 	public void authenticateApplicantTest()
