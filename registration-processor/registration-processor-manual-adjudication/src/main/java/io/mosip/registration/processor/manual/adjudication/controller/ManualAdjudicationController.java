@@ -50,7 +50,7 @@ public class ManualAdjudicationController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedManualVerificationDTO);
 	}
 
-	@PostMapping(value = "/applicantFiles")
+	@PostMapping(value = "/applicantDemographic")
 	@ApiResponses({ @ApiResponse(code = 200, message = "file fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
@@ -59,7 +59,7 @@ public class ManualAdjudicationController {
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
-	@PostMapping(value = "/applicantData", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/applicantBiometric", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
