@@ -11,6 +11,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  */
 public class InternalAuthFilter extends BaseAuthFilter {
 
+	/** The Constant STATUS. */
+	private static final String STATUS = "status";
+
+	/** The Constant Y. */
+	private static final String Y = "Y";
+
 	/** The Constant TXN_ID. */
 	private static final String TXN_ID = "txnID";
 	
@@ -50,12 +56,14 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
-		Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
-		if ((authType.get(PERSONAL_IDENTITY) instanceof Boolean) && (authType.get(FULL_ADDRESS) instanceof Boolean) 
-				&& !(boolean) authType.get(PERSONAL_IDENTITY) && !(boolean) authType.get(FULL_ADDRESS)) {
-			Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
-			info.remove(MATCH_INFOS);
-			responseBody.replace(INFO, info);				
+		if(Y.equals(responseBody.get(STATUS))) {
+			Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
+			if ((authType.get(PERSONAL_IDENTITY) instanceof Boolean) && (authType.get(FULL_ADDRESS) instanceof Boolean) 
+					&& !(boolean) authType.get(PERSONAL_IDENTITY) && !(boolean) authType.get(FULL_ADDRESS)) {
+				Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
+				info.remove(MATCH_INFOS);
+				responseBody.replace(INFO, info);				
+			}			
 		}
 		responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
 		return responseBody;
