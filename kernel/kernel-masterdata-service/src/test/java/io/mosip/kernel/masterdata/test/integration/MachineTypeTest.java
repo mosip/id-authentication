@@ -42,7 +42,7 @@ public class MachineTypeTest {
 	private ObjectMapper mapper;
 	private MachineType machineType;
 	private MachineTypeDto machineTypeDto;
-	private RequestDto<MachineTypeDto> requestDto;
+	
 	
 	@Before
 	public void machinetypeSetUp() {
@@ -55,21 +55,18 @@ public class MachineTypeTest {
 		machineType.setName("HP");
 		machineType.setIsActive(true);
 		machineType.setDescription("HP Description" );
-
-
-		
+	
 		machineTypeDto = new MachineTypeDto();
 		MapperUtils.map(machineType, machineTypeDto);
-
-		requestDto = new RequestDto<>();
-		requestDto.setId("mosip.match.regcentr.machinetypecode");
-		requestDto.setVer("1.0.0");
-		requestDto.setRequest(machineTypeDto);
 
 	}
 	
 	@Test
 	public void createMachineTypeTest() throws Exception {
+		 RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineTypeDto);
 
 		String machineTypeJson = mapper.writeValueAsString(requestDto);
 
@@ -80,6 +77,10 @@ public class MachineTypeTest {
 	
 	@Test
 	public void createMachineTypeExceptionTest() throws Exception {
+		 RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineTypeDto);
 		
 		String machineTypeJson = mapper.writeValueAsString(requestDto);
 

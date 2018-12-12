@@ -43,12 +43,11 @@ public class DeviceTypeTest {
 	private ObjectMapper mapper;
 	private DeviceType deviceType;
 	private DeviceTypeDto deviceTypeDto;
-	private RequestDto<DeviceTypeDto> requestDto;
+	
 	
 	@Before
 	public void DevicetypeSetUp() {
 		mapper = new ObjectMapper();
-
 		
 		deviceType = new DeviceType();
 		deviceType.setCode("1000");
@@ -56,22 +55,20 @@ public class DeviceTypeTest {
 		deviceType.setName("Laptop");
 		deviceType.setIsActive(true);
 		deviceType.setDescription("Laptop Description" );
-
-
 		
 		deviceTypeDto = new DeviceTypeDto();
 		MapperUtils.map(deviceType, deviceTypeDto);
-
-		requestDto = new RequestDto<>();
-		requestDto.setId("mosip.match.regcentr.Devicetypecode");
-		requestDto.setVer("1.0.0");
-		requestDto.setRequest(deviceTypeDto);
 
 	}
 	
 	@Test
 	public void createDeviceTypeTest() throws Exception {
-
+		
+		RequestDto<DeviceTypeDto>  requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.Devicetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceTypeDto);
+		
 		String DeviceTypeJson = mapper.writeValueAsString(requestDto);
 
 		when(deviceTypeRepository.create(Mockito.any())).thenReturn(deviceType);
@@ -82,8 +79,13 @@ public class DeviceTypeTest {
 	@Test
 	public void createDeviceTypeExceptionTest() throws Exception {
 		
+		RequestDto<DeviceTypeDto>  requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.Devicetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceTypeDto);
+		
 		String DeviceTypeJson = mapper.writeValueAsString(requestDto);
-
+	
 		Mockito.when(deviceTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(

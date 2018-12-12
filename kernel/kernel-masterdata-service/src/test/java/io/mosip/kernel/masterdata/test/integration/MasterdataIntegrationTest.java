@@ -44,12 +44,16 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
+import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
@@ -347,8 +351,12 @@ public class MasterdataIntegrationTest {
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
+		
 		localDateTimeUTCFormat = localDateTimeUTCFormat.parse(UTC_DATE_TIME_FORMAT_DATE_STRING, UTC_DATE_TIME_FORMAT);
 		blacklistedSetup();
+		
+		mapper.registerModule(new JavaTimeModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
 		genderTypeSetup();
 
@@ -383,13 +391,78 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachineDeviceSetup();
 
 		machineSetUp();
+		machinetypeSetUp();
+		machineSpecificationSetUp();
 
 		DeviceSpecsetUp();
+		DevicetypeSetUp();
 
 		machineHistorySetUp();
 		biometricAttributeTestSetup();
 		templateTestSetup();
 		templateTypeTestSetup();
+	}
+	
+	
+	private DeviceType deviceType;
+	private DeviceTypeDto deviceTypeDto;
+	
+	private void DevicetypeSetUp() {
+		
+		
+		deviceType = new DeviceType();
+		deviceType.setCode("1000");
+		deviceType.setLangCode("ENG");
+		deviceType.setName("Laptop");
+		deviceType.setIsActive(true);
+		deviceType.setDescription("Laptop Description" );
+		
+		deviceTypeDto = new DeviceTypeDto();
+		MapperUtils.map(deviceType, deviceTypeDto);
+
+	}
+	
+	private MachineSpecification machineSpecification;
+	private MachineSpecificationDto machineSpecificationDto;
+	
+	private void machineSpecificationSetUp() {
+		
+		machineSpecification = new MachineSpecification();
+		machineSpecification.setId("1000");
+		machineSpecification.setLangCode("ENG");
+		machineSpecification.setName("laptop");
+		machineSpecification.setIsActive(true);
+		machineSpecification.setDescription("HP Description" );
+		machineSpecification.setBrand("HP");
+		machineSpecification.setMachineTypeCode("1231");
+		machineSpecification.setLangCode("ENG");
+		machineSpecification.setMinDriverversion("version 0.1");
+		machineSpecification.setModel("3168ngw");
+	
+		
+		machineSpecificationDto = new MachineSpecificationDto();
+		MapperUtils.map(machineSpecification, machineSpecificationDto);		
+
+	}
+
+	private MachineType machineType;
+	private MachineTypeDto machineTypeDto;
+
+	private void machinetypeSetUp() {
+		mapper = new ObjectMapper();
+
+		machineType = new MachineType();
+		machineType.setCode("1000");
+		machineType.setLangCode("ENG");
+		machineType.setName("HP");
+		machineType.setIsActive(true);
+		machineType.setDescription("HP Description");
+
+		machineTypeDto = new MachineTypeDto();
+		MapperUtils.map(machineType, machineTypeDto);
+
+		
+
 	}
 
 	private void biometricAttributeTestSetup() {
@@ -468,33 +541,50 @@ public class MasterdataIntegrationTest {
 
 	List<DeviceSpecification> deviceSpecList;
 	DeviceSpecification deviceSpecification;
+	DeviceSpecificationDto deviceSpecificationDto;
 
 	@Before
 	public void DeviceSpecsetUp() {
 
 		deviceSpecList = new ArrayList<>();
-		deviceSpecification = new DeviceSpecification();
+		/*deviceSpecification = new DeviceSpecification();
 		deviceSpecification.setId("1000");
 		deviceSpecification.setName("Laptop");
 		deviceSpecification.setBrand("HP");
 		deviceSpecification.setModel("G-Series");
 		deviceSpecification.setMinDriverversion("version 7");
 		deviceSpecification.setDescription("HP Laptop");
+		deviceSpecification.setIsActive(true);*/
+		
+		
+		deviceSpecification = new DeviceSpecification();
+		deviceSpecification.setId("1000");
+		deviceSpecification.setLangCode("ENG");
+		deviceSpecification.setName("laptop");
 		deviceSpecification.setIsActive(true);
+		deviceSpecification.setDescription("HP Description" );
+		deviceSpecification.setBrand("HP");
+		deviceSpecification.setDeviceTypeCode("1231");
+		deviceSpecification.setLangCode("ENG");
+		deviceSpecification.setMinDriverversion("version 0.1");
+		deviceSpecification.setModel("3168ngw");
 		deviceSpecList.add(deviceSpecification);
+	
+		
+		deviceSpecificationDto = new DeviceSpecificationDto();
+		MapperUtils.map(deviceSpecification, deviceSpecificationDto);
 	}
 
 	private List<Machine> machineList;
 	private Machine machine;
 	private MachineHistory machineHistory;
 	private MachineDto machineDto;
-	private RequestDto<MachineDto> requestDto;
+	
 
 	LocalDateTime specificDate;
 	String machineJson;
 
 	private void machineSetUp() {
-		mapper = new ObjectMapper();
 
 		specificDate = LocalDateTime.now(ZoneId.of("UTC"));
 		machineList = new ArrayList<>();
@@ -507,7 +597,7 @@ public class MasterdataIntegrationTest {
 		machine.setMachineSpecId("1010");
 		machine.setSerialNum("123");
 		machine.setIsActive(true);
-		machine.setValidityDateTime(specificDate);
+		//machine.setValidityDateTime(specificDate);
 		machineList.add(machine);
 
 		machineHistory = new MachineHistory();
@@ -516,13 +606,12 @@ public class MasterdataIntegrationTest {
 		machineDto = new MachineDto();
 		MapperUtils.map(machine, machineDto);
 
+		/*RequestDto<MachineDto> requestDto;
 		requestDto = new RequestDto<>();
 		requestDto.setId("mosip.match.regcentr.machineid");
 		requestDto.setVer("1.0.0");
-		requestDto.setRequest(machineDto);
+		requestDto.setRequest(machineDto);*/
 
-		mapper.registerModule(new JavaTimeModule());
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 
 	private void registrationCenterDeviceSetup() {
@@ -620,7 +709,6 @@ public class MasterdataIntegrationTest {
 		deviceDto.setMacAddress("asd");
 		deviceDto.setName("asd");
 		deviceDto.setSerialNum("asd");
-		deviceDto.setValidityDateTime(specificDate);
 
 		deviceList = new ArrayList<>();
 		device = new Device();
@@ -640,8 +728,7 @@ public class MasterdataIntegrationTest {
 				"LaptopCode" };
 		objectList.add(objects);
 
-		mapper.registerModule(new JavaTimeModule());
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
 	}
 
 	private void addValidDocumentSetUp() {
@@ -753,8 +840,8 @@ public class MasterdataIntegrationTest {
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonListObj = new ReasonList();
-		reasonListDto= new ReasonListDto();
-		postReasonCategoryDto= new PostReasonCategoryDto();
+		reasonListDto = new ReasonListDto();
+		postReasonCategoryDto = new PostReasonCategoryDto();
 		postReasonCategoryDto.setCode("RC1");
 		postReasonCategoryDto.setDescription("Reason category");
 		postReasonCategoryDto.setIsActive(true);
@@ -793,10 +880,10 @@ public class MasterdataIntegrationTest {
 		requestDto1.setVer("1.0.0");
 		requestDto1.setRequest(postReasonCategoryDto);
 		try {
-			reasonListRequest=mapper.writeValueAsString(requestDto);
-			reasonCategoryRequest=mapper.writeValueAsString(requestDto1);
+			reasonListRequest = mapper.writeValueAsString(requestDto);
+			reasonCategoryRequest = mapper.writeValueAsString(requestDto1);
 		} catch (JsonProcessingException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
@@ -1791,7 +1878,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}", "ENG"))
 				.andExpect(status().isInternalServerError());
 	}
-
+  //--------------------------------------------
 	@Test
 	public void findDeviceSpecByLangCodeAndDevTypeCodeSuccessTest() throws Exception {
 		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
@@ -1815,78 +1902,109 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/devicespecifications/{langcode}/{devicetypecode}", "ENG", "laptop"))
 				.andExpect(status().isInternalServerError());
 	}
-
+  //----------------------------------------------------------------
+	
 	@Test
 	public void createDeviceSpecificationTest() throws Exception {
-		DeviceSpecification deviceSpecification = new DeviceSpecification();
-		deviceSpecification.setId("1000");
-		deviceSpecification.setLangCode("ENG");
+		RequestDto<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceSpecificationDto);
+		
+		String deviceSpecificationJson = mapper.writeValueAsString(requestDto);
 
-		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T07:01:16.196Z\", \"request\": { \"brand\": \"HP\", \"description\": \"dercs\", \"deviceTypeCode\": \"6655\", \"id\": \"666555\", \"isActive\": true, \"langCode\": \"ENG\", \"minDriverversion\": \"min driver\", \"model\": \"Model\", \"name\": \"HP\" } }";
-
-		Mockito.when(deviceSpecificationRepository.create(Mockito.any())).thenReturn(deviceSpecification);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isCreated());
+		when(deviceSpecificationRepository.create(Mockito.any())).thenReturn(deviceSpecification);
+		mockMvc.perform(post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(deviceSpecificationJson))
+		.andExpect(status().isCreated());	
 	}
-
+	
 	@Test
 	public void createDeviceSpecificationExceptionTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T07:01:16.196Z\", \"request\": { \"brand\": \"HP\", \"description\": \"dercs\", \"deviceTypeCode\": \"6655\", \"id\": \"666555\", \"isActive\": true, \"langCode\": \"ENG\", \"minDriverversion\": \"min driver\", \"model\": \"Model\", \"name\": \"HP\" } }";
+		RequestDto<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceSpecificationDto);
+		
+		String DeviceSpecificationJson = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceSpecificationRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(DeviceSpecificationJson))
+				.andExpect(status().isInternalServerError());	
 	}
 
 	// ---------------------------------DeviceTypeTest------------------------------------------------
 
 	@Test
 	public void createDeviceTypeTest() throws Exception {
-		DeviceType deviceType = new DeviceType();
-		deviceType.setCode("1000");
-		deviceType.setLangCode("ENG");
-		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
+		
+		RequestDto<DeviceTypeDto>  requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.Devicetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceTypeDto);
+		
+		String DeviceTypeJson = mapper.writeValueAsString(requestDto);
 
-		Mockito.when(deviceTypeRepository.create(Mockito.any())).thenReturn(deviceType);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceTypeJson)).andExpect(status().isCreated());
+		when(deviceTypeRepository.create(Mockito.any())).thenReturn(deviceType);
+		mockMvc.perform(post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON).content(DeviceTypeJson))
+				.andExpect(status().isCreated());
 	}
-
+	
 	@Test
 	public void createDeviceTypeExceptionTest() throws Exception {
-		String deviceTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T06:58:37.498Z\", \"request\": { \"code\": \"6655\", \"description\": \"descr\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
+		
+		RequestDto<DeviceTypeDto>  requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.Devicetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceTypeDto);
+		
+		String DeviceTypeJson = mapper.writeValueAsString(requestDto);
+	
 		Mockito.when(deviceTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(deviceTypeJson)).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devicetypes").contentType(MediaType.APPLICATION_JSON).content(DeviceTypeJson))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -------------------------------MachineSpecificationTest-------------------------------
 	@Test
 	public void createMachineSpecificationTest() throws Exception {
+		
+		RequestDto<MachineSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineSpecificationDto);
 
-		MachineSpecification machineSpeicification = new MachineSpecification();
-		machineSpeicification.setId("1000");
-		machineSpeicification.setLangCode("ENG");
+		String machineSpecificationJson = mapper.writeValueAsString(requestDto);
 
-		String machineSpecJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:08:41.265Z\", \"request\": { \"brand\": \"intel\", \"description\": \"intel Description\", \"id\": \"1000\", \"isActive\": true, \"langCode\": \"ENG\", \"machineTypeCode\": \"1010\", \"minDriverversion\": \"10\", \"model\": \"2014\", \"name\": \"Laptop\" } }";
-
-		Mockito.when(machineSpecificationRepository.create(Mockito.any())).thenReturn(machineSpeicification);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(machineSpecJson)).andExpect(status().isCreated());
+		when(machineSpecificationRepository.create(Mockito.any())).thenReturn(machineSpecification);
+		mockMvc.perform(post("/v1.0/machinespecifications").contentType(MediaType.APPLICATION_JSON).content(machineSpecificationJson))
+		.andExpect(status().isCreated());
+		
 	}
-
+	
 	@Test
 	public void createMachineSpecificationExceptionTest() throws Exception {
-
-		String machineSpecJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:08:41.265Z\", \"request\": { \"brand\": \"intel\", \"description\": \"intel Description\", \"id\": \"1000\", \"isActive\": true, \"langCode\": \"ENG\", \"machineTypeCode\": \"1010\", \"minDriverversion\": \"10\", \"model\": \"2014\", \"name\": \"Laptop\" } }";
+		
+		RequestDto<MachineSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineSpecificationDto);
+		
+		String machineSpecificationJson = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(machineSpecificationRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(machineSpecJson))
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/machinespecifications").contentType(MediaType.APPLICATION_JSON).content(machineSpecificationJson))
 				.andExpect(status().isInternalServerError());
+		
 	}
 
 	// -------------------------MachineTest-----------------------------------------
@@ -1959,6 +2077,11 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void createMachineTest() throws Exception {
+		RequestDto<MachineDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineid");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineDto);
 
 		machineJson = mapper.writeValueAsString(requestDto);
 
@@ -1987,22 +2110,26 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void createMachineTypeTest() throws Exception {
+		RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineTypeDto);
 
-		MachineType machineType = new MachineType();
-		machineType.setCode("1000");
-		machineType.setLangCode("ENG");
+		String machineTypeJson = mapper.writeValueAsString(requestDto);
 
-		String machineTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:18:51.265Z\", \"request\": { \"code\": \"1000\", \"description\": \"Printer Description\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
-
-		Mockito.when(machineTypeRepository.create(Mockito.any())).thenReturn(machineType);
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(machineTypeJson)).andExpect(status().isCreated());
+		when(machineTypeRepository.create(Mockito.any())).thenReturn(machineType);
+		mockMvc.perform(post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
+				.andExpect(status().isCreated());
 	}
 
 	@Test
 	public void createMachineTypeExceptionTest() throws Exception {
+		RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineTypeDto);
 
-		String machineTypeJson = "{ \"id\": \"string\", \"ver\": \"string\", \"timestamp\": \"2018-12-06T11:18:51.265Z\", \"request\": { \"code\": \"1000\", \"description\": \"Printer Description\", \"isActive\": true, \"langCode\": \"ENG\", \"name\": \"Printer\" } }";
+		String machineTypeJson = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(machineTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));

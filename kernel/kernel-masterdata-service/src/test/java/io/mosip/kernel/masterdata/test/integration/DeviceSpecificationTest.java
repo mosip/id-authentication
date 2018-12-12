@@ -44,7 +44,7 @@ public class DeviceSpecificationTest {
 	private ObjectMapper mapper;
 	private DeviceSpecification deviceSpecification;
 	private DeviceSpecificationDto deviceSpecificationDto;
-	private RequestDto<DeviceSpecificationDto> requestDto;
+	
 	
 	@Before
 	public void DeviceSpecificationRepositorySetUp() {
@@ -67,26 +67,30 @@ public class DeviceSpecificationTest {
 		deviceSpecificationDto = new DeviceSpecificationDto();
 		MapperUtils.map(deviceSpecification, deviceSpecificationDto);
 
-		requestDto = new RequestDto<>();
-		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
-		requestDto.setVer("1.0.0");
-		requestDto.setRequest(deviceSpecificationDto);
-
 	}
 	
 	@Test
 	public void createDeviceSpecificationTest() throws Exception {
-
+		RequestDto<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceSpecificationDto);
+		
 		String deviceSpecificationJson = mapper.writeValueAsString(requestDto);
 
 		when(deviceSpecificationRepository.create(Mockito.any())).thenReturn(deviceSpecification);
 		mockMvc.perform(post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(deviceSpecificationJson))
-		.andExpect(status().isCreated());
-		
+		.andExpect(status().isCreated());	
 	}
 	
 	@Test
 	public void createDeviceSpecificationExceptionTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceSpecificationDto);
 		
 		String DeviceSpecificationJson = mapper.writeValueAsString(requestDto);
 
@@ -94,8 +98,7 @@ public class DeviceSpecificationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(DeviceSpecificationJson))
-				.andExpect(status().isInternalServerError());
-		
+				.andExpect(status().isInternalServerError());	
 	}
 
 }

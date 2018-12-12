@@ -44,7 +44,7 @@ public class MachineSpecificationTest {
 	private ObjectMapper mapper;
 	private MachineSpecification machineSpecification;
 	private MachineSpecificationDto machineSpecificationDto;
-	private RequestDto<MachineSpecificationDto> requestDto;
+	
 	
 	@Before
 	public void machineSpecificationRepositorySetUp() {
@@ -67,15 +67,18 @@ public class MachineSpecificationTest {
 		machineSpecificationDto = new MachineSpecificationDto();
 		MapperUtils.map(machineSpecification, machineSpecificationDto);
 
-		requestDto = new RequestDto<>();
-		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
-		requestDto.setVer("1.0.0");
-		requestDto.setRequest(machineSpecificationDto);
+		
 
 	}
 	
 	@Test
 	public void createMachineSpecificationTest() throws Exception {
+		
+		RequestDto<MachineSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineSpecificationDto);
 
 		String machineSpecificationJson = mapper.writeValueAsString(requestDto);
 
@@ -87,6 +90,12 @@ public class MachineSpecificationTest {
 	
 	@Test
 	public void createMachineSpecificationExceptionTest() throws Exception {
+		
+		RequestDto<MachineSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(machineSpecificationDto);
 		
 		String machineSpecificationJson = mapper.writeValueAsString(requestDto);
 
