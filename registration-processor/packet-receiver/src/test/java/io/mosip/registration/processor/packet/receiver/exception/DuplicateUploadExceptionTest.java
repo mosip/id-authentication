@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,7 +42,7 @@ public class DuplicateUploadExceptionTest {
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-    private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+    private SyncRegistrationService syncRegistrationService;
 
 	SyncRegistrationEntity regEntity;
 	@InjectMocks
