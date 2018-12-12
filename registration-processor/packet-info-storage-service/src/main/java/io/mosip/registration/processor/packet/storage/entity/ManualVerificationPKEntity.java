@@ -1,9 +1,7 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 
 /**
  * The primary key class for the reg_manual_verification database table.

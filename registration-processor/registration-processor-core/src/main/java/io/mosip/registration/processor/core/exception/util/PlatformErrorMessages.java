@@ -88,60 +88,52 @@ public enum PlatformErrorMessages {
 	
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
-	
-	// Packet scanner job Exception error code and message
-	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
-			"The Packet store set by the System is not accessible"),
 
-	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003",
-			"The Retry folder set by the System is not accessible"),
+	//Packet scanner job Exception error code and message
+	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002","The Packet store set by the System is not accessible"),
 
-	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004",
-			"The Virus scanner set by the System is not accessible"),
+	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003","The Retry folder set by the System is not accessible"),
 
-	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005",
-			"There is no space available in retry folder to upload the packet"),
+	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004","The Virus scanner set by the System is not accessible"),
 
-	RPR_PSJ_VIRUS_SCAN_FAILED(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "006", "Virus scan is failed"),
+	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005","There is no space available in retry folder to upload the packet"),
 
-	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007",
-			"The FTP folder set by the System is not accessible"),
+	RPR_PSJ_VIRUS_SCAN_FAILED(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "006","Virus scan is failed"),
 
-	// packet decryption job Exception error code and message
-	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001",
-			"Packet not available"),
+	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007","The FTP folder set by the System is not accessible"),
 
-	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002",
-			"The File path set by the System is not accessible"),
+	//packet decryption job Exception error code and message
+	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),
 
-	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003",
-			"The Decryption for the Packet has failed"),
+	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002", "The File path set by the System is not accessible"),
 
-	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001",
-			"Unknown resource provided"),
+	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003","The Decryption for the Packet has failed"),
 
-	/***** System Exception *****/
+	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001","Unknown resource provided"),
 
-	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001",
-			"Unexpected exception"), RPR_SYS_BAD_GATEWAY(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "002",
-					"Bad Gateway"), RPR_SYS_SERVICE_UNAVAILABLE(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "003",
-							"Service Unavailable"), RPR_SYS_SERVER_ERROR(
-									PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "004",
-									"Internal Server Error"), RPR_SYS_TIMEOUT_EXCEPTION(
-											PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "005", "Timeout Error"),
+	RPR_MVS_INVALID_FILE_REQUEST(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "001", "Invalid file requested"),
 
-	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "006",
-			"Error while mapping Identity Json"), RPR_SYS_INSTANTIATION_EXCEPTION(
-					PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007",
-					"Error while creating object of JsonValue class"), RPR_SYS_NO_SUCH_FIELD_EXCEPTION(
-							PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008",
-							"Could not find the field"), RPR_SYS_JSON_PARSING_EXCEPTION(
-									PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009",
-									"Error while parsing Json"), RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(
-											PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010",
-											"Error while converting inputstream to bytes"), RPR_SYS_PARSING_DATE_EXCEPTION(
-													PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011",
-													"Error while parsing date ");
+	RPR_MVS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "002", "Requested file is not present"),
+
+	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003", "Invalid status update"),
+
+	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004", "No Assigned Record Found"),
+
+
+	/*****System Exception*****/
+
+	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),
+	RPR_SYS_BAD_GATEWAY(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "002", "Bad Gateway"),
+	RPR_SYS_SERVICE_UNAVAILABLE(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "003", "Service Unavailable"),
+	RPR_SYS_SERVER_ERROR(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "004", "Internal Server Error"),
+	RPR_SYS_TIMEOUT_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "005", "Timeout Error"),
+
+	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "006","Error while mapping Identity Json"),
+	RPR_SYS_INSTANTIATION_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007","Error while creating object of JsonValue class"),
+	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008","Could not find the field"),
+	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009","Error while parsing Json"),
+	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010","Error while converting inputstream to bytes"),
+	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011","Error while parsing date ");
 
 	/** The error message. */
 	private final String errorMessage;

@@ -1,13 +1,11 @@
 *.class
 .mtj.tmp/
+*.jar
 *.war
 *.ear
 hs_err_pid*
 target/
-META-INF/
-.springBeans
 .metadata
-.factorypath
 .classpath
 .project
 .settings/
@@ -20,7 +18,3 @@ tmp/
 local.properties
 .loadpath
 .DS_Store
-test.txt
-.idea/
-META-INF/
-/.recommenders/

@@ -113,6 +113,7 @@
 		<module>registration-status-service</module>
 		<module>filesystem-adapter-ceph</module>
 		<module>registration-processor-rest-client</module>
+		<module>registration-processor-manual-adjudication</module>
 		<module>packet-manager</module>
 		<module>registration-processor-camel-bridge</module>
 		<module>stages</module>
