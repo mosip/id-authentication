@@ -625,7 +625,7 @@ public class RegistrationConstants {
 	public static final String HH_MM_SS = "HH:mm:ss";
 
 	// Iris & Fingerprint Capture for Individual Registration
-	public static final String IRIS_THRESHOLD = "iris_threshold";
+	public static final String IRIS_THRESHOLD = "IRIS_THRESHOLD";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
@@ -649,7 +649,7 @@ public class RegistrationConstants {
 	public static final String RIGHTSLAP_FINGERPRINT_THRESHOLD = "RIGHTSLAP_FINGERPRINT_THRESHOLD";
 	public static final String THUMBS_FINGERPRINT_THRESHOLD = "THUMBS_FINGERPRINT_THRESHOLD";
 	public static final String FINGERPRINT_RETRIES_COUNT ="NUM_OF_FINGERPRINT_RETRIES";
-	public static final String IRIS_RETRY_COUNT = "num_of_iris_retries";
+	public static final String IRIS_RETRY_COUNT = "NUM_OF_IRIS_RETRIES";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 			"/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",
 			"/fingerprints/lefthand/leftRing/" };

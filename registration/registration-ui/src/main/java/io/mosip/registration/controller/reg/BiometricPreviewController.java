@@ -83,6 +83,10 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private Text thumbsThresholdScoreLbl;
+	@FXML
+	private Text leftIrisThreshold;
+	@FXML
+	private Text rightIrisThreshold;
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -101,6 +105,11 @@ public class BiometricPreviewController extends BaseController {
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
+		
+		String irisThreshold = ((String) applicationContext.getApplicationMap()
+				.get(RegistrationConstants.IRIS_THRESHOLD)).concat(RegistrationConstants.PERCENTAGE);
+		leftIrisThreshold.setText(irisThreshold);
+		rightIrisThreshold.setText(irisThreshold);
 
 		leftPalmThresholdScoreLbl.setText(getQualityScore(
 				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));

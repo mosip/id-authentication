@@ -44,7 +44,7 @@
       <Label layoutX="495.0" layoutY="340.0" text=":" />
       <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="340.0" />
       <Button fx:id="scanIris" layoutX="29.0" layoutY="379.0" mnemonicParsing="false" onAction="#scan" styleClass="buttonStyle" text="Scan" />
-      <Button layoutX="750.0" layoutY="379.0" mnemonicParsing="false" onAction="#nextSection" styleClass="buttonStyle" text="Next" />
-      <Button layoutX="631.0" layoutY="379.0" mnemonicParsing="false" onAction="#previousSection" styleClass="buttonStyle" text="Previous" />
+      <Button layoutX="750.0" layoutY="379.0" mnemonicParsing="false" onAction="#nextSection" text="Next" />
+      <Button layoutX="631.0" layoutY="379.0" mnemonicParsing="false" onAction="#previousSection" text="Previous" />
    </children>
 </AnchorPane>

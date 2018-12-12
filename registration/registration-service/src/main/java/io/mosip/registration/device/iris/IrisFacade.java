@@ -73,12 +73,19 @@ public class IrisFacade {
 			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 
 			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
+			
+			double qualityScore;
+			if (irisType.equalsIgnoreCase("LeftEye")) {
+				qualityScore = 90.5;
+			} else {
+				qualityScore = 50.0;
+			}
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new HashMap<>();
 			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
-			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.5);
+			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
 
 			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");

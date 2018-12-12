@@ -102,7 +102,7 @@
 												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
 												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
 												<Text fx:id="leftEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
-												<Text layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Text fx:id="leftIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
 												<ImageView fx:id="leftEye" fitHeight="109.0" fitWidth="198.0" layoutX="34.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
 													<image>
@@ -117,7 +117,7 @@
 												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
 												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
 												<Text fx:id="rightEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
-												<Text layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
 												<Label layoutX="88.0" layoutY="189.0" text="Right Eye" />
 												<ImageView fx:id="rightEye" fitHeight="109.0" fitWidth="198.0" layoutX="34.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">

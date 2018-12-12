@@ -1,6 +1,7 @@
 package io.mosip.registration.controller.device;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -66,7 +68,7 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private ScanController scanController;
 	@Autowired
-	private io.mosip.registration.device.iris.IrisFacade irisFacade;
+	private IrisFacade irisFacade;
 
 	private Pane selectedIris;
 
@@ -82,7 +84,7 @@ public class IrisCaptureController extends BaseController {
 					"Initializing Iris Capture page for user registration");
 
 			// Set Threshold
-			String irisThreshold = AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD);
+			String irisThreshold = getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD);
 			leftIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
 			rightIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
 
@@ -126,6 +128,8 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
 		try {
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Enabling scan button for user registration");
 
 			Pane sourcePane = (Pane) mouseEvent.getSource();
 			sourcePane.requestFocus();
@@ -147,14 +151,21 @@ public class IrisCaptureController extends BaseController {
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
 			if (irisDetailsDTO == null || isExceptionIris
-					|| irisDetailsDTO.getQualityScore() < Double
-							.parseDouble(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD))
+					|| (Double.compare(irisDetailsDTO.getQualityScore(),
+							Double.parseDouble(getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD))) < 0)
 					|| irisDetailsDTO.isForceCaptured()) {
 				scanIris.setDisable(false);
 			}
 
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Enabling scan button for user registration completed");
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s -> Exception while enabling scan button for user registration  %s %s",
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage(),
+							runtimeException.getStackTrace()));
 
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
 
@@ -170,8 +181,8 @@ public class IrisCaptureController extends BaseController {
 
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
 
-			if (irisDetailsDTO == null || (irisDetailsDTO != null && irisDetailsDTO.getNumOfIrisRetry() < Integer
-					.parseInt(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_RETRY_COUNT)))) {
+			if (irisDetailsDTO == null || (irisDetailsDTO.getNumOfIrisRetry() < Integer
+					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)))) {
 				scanController.init(this, "Iris");
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCAN_RETRIES_EXCEEDED);
@@ -198,12 +209,14 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
-			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
+			Optional<IrisDetailsDTO> captiredIrisDetailsDTO = getIrisBySelectedPane().findFirst();
 
-			if (irisDetailsDTO == null) {
+			IrisDetailsDTO irisDetailsDTO = null;
+			if (!captiredIrisDetailsDTO.isPresent()) {
 				irisDetailsDTO = new IrisDetailsDTO();
 				getIrises().add(irisDetailsDTO);
 			} else {
+				irisDetailsDTO = captiredIrisDetailsDTO.get();
 				irisDetailsDTO.setNumOfIrisRetry(irisDetailsDTO.getNumOfIrisRetry() + 1);
 			}
 
@@ -313,7 +326,7 @@ public class IrisCaptureController extends BaseController {
 			boolean isRightEyeCaptured = false;
 
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
-				if (validateQualityScore(irisDetailsDTO)) {
+				if (validateIrisCapture(irisDetailsDTO)) {
 					if (irisDetailsDTO.getIrisType()
 							.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
 						isLeftEyeCaptured = true;
@@ -351,21 +364,20 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	private boolean validateQualityScore(IrisDetailsDTO irisDetailsDTO) {
+	private boolean validateIrisCapture(IrisDetailsDTO irisDetailsDTO) {
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris");
 
 			// Get Configured Threshold and Number of Retries from properties file
-			double irisThreshold = Double
-					.parseDouble(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_THRESHOLD));
-			int numOfRetries = Integer
-					.parseInt(AppConfig.getApplicationProperty(RegistrationConstants.IRIS_RETRY_COUNT));
+			double irisThreshold = Double.parseDouble(getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD));
+			int numOfRetries = Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT));
+
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris completed");
 
 			return irisDetailsDTO.getQualityScore() >= irisThreshold
-					|| (irisDetailsDTO.getQualityScore() < irisThreshold
+					|| (Double.compare(irisDetailsDTO.getQualityScore(), irisThreshold) < 0
 							&& irisDetailsDTO.getNumOfIrisRetry() == numOfRetries)
 					|| irisDetailsDTO.isForceCaptured();
 		} catch (RuntimeException runtimeException) {
@@ -399,6 +411,10 @@ public class IrisCaptureController extends BaseController {
 
 	private String getQualityScoreAsString(double qualityScore) {
 		return String.valueOf(Math.round(qualityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+
+	private String getValueFromApplicationMap(String key) {
+		return (String) applicationContext.getApplicationMap().get(key);
 	}
 
 }
