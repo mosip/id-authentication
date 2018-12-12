@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.id.service;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,7 +106,10 @@ public class IdRepoServiceImplTest {
 				+ "              }\r\n" + "}\r\n" + "";
 
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> idResponseDTO = mapper.readValue(res.getBytes(), Map.class);
+		byte resByte[] = res.getBytes();
+		String value = new String(resByte, "UTF-8");
+		
+		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idReposerviceImpl, "getIdInfo", idResponseDTO);
 	}
 }
