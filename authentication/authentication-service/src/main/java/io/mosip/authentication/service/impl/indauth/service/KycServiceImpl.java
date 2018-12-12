@@ -29,8 +29,6 @@ import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -68,12 +66,6 @@ public class KycServiceImpl implements KycService {
 
     @Autowired
     private MessageSource messageSource;
-
-    @Autowired
-    private IdRepoService idInfoService;
-
-    @Autowired
-    private IdAuthService idAuthService;
 
     @Autowired
     private IdTemplateManager idTemplateManager;
