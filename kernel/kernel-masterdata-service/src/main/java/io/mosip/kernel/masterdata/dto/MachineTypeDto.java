@@ -22,7 +22,7 @@ public class MachineTypeDto {
 	
 	@NotNull
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
 	@NotNull
