@@ -110,7 +110,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.
 	 * String)
 	 */
-
+    @Override
 	public Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid);
 
@@ -126,7 +126,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @return the string
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdValidationFailedException {
+	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
 		String refId = null;
 
@@ -141,7 +141,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 				try {
 					idRepo = idRepoService.getIdRepo(uin);
 				} catch (IdAuthenticationBusinessException e) {
-
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
 				}
 			}
 
@@ -156,11 +156,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @param uinEntityOpt the uin entity opt
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
+	/*private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
 		if (!uinEntity.isActive()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
-	}
+	}*/
 
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
@@ -172,19 +172,20 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@Override
 	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
 				idResDTO = getIdRepoByUinNumber(idvId);
-			} catch (IdValidationFailedException e) {
+			} catch (IdAuthenticationBusinessException e) {
 				logger.error(null, null, e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 			try {
 				idResDTO = getIdRepoByVidNumber(idvId);
-			} catch (IdValidationFailedException e) {
+			} catch (IdAuthenticationBusinessException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
