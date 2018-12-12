@@ -30,8 +30,6 @@ public class AuthResponseBuilder {
 	@Autowired
 	private Environment env;
 
-	private static final String DATETIME_PATTERN = "datetime.pattern";
-	
 	private SimpleDateFormat dateFormat;
 
 	/** The built. */
@@ -50,7 +48,7 @@ public class AuthResponseBuilder {
 	 * Instantiates a new auth response builder.
 	 * @param dateTimePattern 
 	 */
-	public AuthResponseBuilder(String dateTimePattern) {
+	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
 		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
 		responseDTO.setInfo(authResponseInfo);
@@ -179,6 +177,10 @@ public class AuthResponseBuilder {
 		if (built) {
 			throw new IllegalStateException();
 		}
+	}
+
+	public static AuthResponseBuilder newInstance(String dateTimePattern) {
+		return new AuthResponseBuilder(dateTimePattern);
 	}
 
 }

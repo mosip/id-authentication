@@ -30,8 +30,21 @@ public enum IdaIdMapping implements IdMapping{
 	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
 	OTP("otp", MappingConfig::getOtp),
 	PIN("pin", MappingConfig::getPin),
+	LEFTINDEX("leftIndex", MappingConfig::getLeftIndex), 
+	LEFTLITTLE("leftLittle", MappingConfig::getLeftLittle),
+	LEFTMIDDLE("leftMiddle", MappingConfig::getLeftMiddle), 
+	LEFTRING("leftRing", MappingConfig::getLeftRing),
+	LEFTTHUMB("leftThumb", MappingConfig::getLeftThumb),
+	RIGHTINDEX("rightIndex", MappingConfig::getRightIndex),
+	RIGHTLITTLE("rightLittle", MappingConfig::getRightLittle), 
+	RIGHTMIDDLE("rightMiddle", MappingConfig::getRightMiddle),
+	RIGHTRING("rightRing", MappingConfig::getRightRing), 
+	RIGHTTHUMB("rightThumb", MappingConfig::getRightThumb),
 	IRIS("iris", MappingConfig::getIris),
-	FINGERPRINT("fingerprint", MappingConfig::getFingerprint)
+
+	FACE("iris", MappingConfig::getIris),
+	 
+	 
 	;
 
 	private String idname;
