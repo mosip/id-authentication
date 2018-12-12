@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartException;
 
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
-import io.mosip.preregistration.documents.dto.ExceptionJSONInfo;
-import io.mosip.preregistration.documents.dto.ResponseDto;
+import io.mosip.preregistration.documents.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 
 /**
@@ -25,10 +25,10 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 public class DocumentExceptionHandler {
 
 	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<ResponseDto<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_007.toString(),
+	public ResponseEntity<ResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_007.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-		ResponseDto<?> errorRes = new ResponseDto<>();
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -36,10 +36,10 @@ public class DocumentExceptionHandler {
 	}
 
 	@ExceptionHandler(DocumentNotValidException.class)
-	public ResponseEntity<ResponseDto<?>> notValidExceptionhadler(final DocumentNotValidException nv,
+	public ResponseEntity<ResponseDTO<?>> notValidExceptionhadler(final DocumentNotValidException nv,
 			WebRequest webRequest) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(nv.getErrorCode(), nv.getErrorText());
-		ResponseDto<?> errorRes = new ResponseDto<>();
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(nv.getErrorCode(), nv.getErrorText());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -48,10 +48,10 @@ public class DocumentExceptionHandler {
 	}
 
 	@ExceptionHandler(MultipartException.class)
-	public ResponseEntity<ResponseDto<?>> sizeExceedException(final MultipartException me, WebRequest webRequest) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_004.toString(),
+	public ResponseEntity<ResponseDTO<?>> sizeExceedException(final MultipartException me, WebRequest webRequest) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_004.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-		ResponseDto<?> errorRes = new ResponseDto<>();
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -59,10 +59,10 @@ public class DocumentExceptionHandler {
 	}
 	
 	@ExceptionHandler(DocumentNotFoundException.class)
-	public ResponseEntity<ResponseDto<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_DOC_005.toString(),
+	public ResponseEntity<ResponseDTO<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
 				StatusCodes.DOCUMENT_IS_MISSING.toString());
-		ResponseDto<?> errorRes = new ResponseDto<>();
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setStatus("false");
 		errorRes.setErr(errorDetails);
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));

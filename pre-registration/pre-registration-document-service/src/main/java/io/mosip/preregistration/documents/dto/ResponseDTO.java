@@ -2,6 +2,7 @@ package io.mosip.preregistration.documents.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,18 +19,17 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
-public class ResponseDto<T> implements Serializable {
+public class ResponseDTO<T> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
 	
 	/** The error details. */
-	private ExceptionJSONInfo err;
+	private ExceptionJSONInfoDTO err;
 	
 	private String status;
 	
-	private Timestamp resTime;
+	private Date resTime;
 	
 	private List<T> response;
 

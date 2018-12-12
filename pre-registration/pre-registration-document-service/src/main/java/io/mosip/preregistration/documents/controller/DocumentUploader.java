@@ -26,7 +26,7 @@ import io.mosip.preregistration.documents.dto.DocumentCopyDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.dto.DocumentGetAllDto;
-import io.mosip.preregistration.documents.dto.ResponseDto;
+import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,14 +62,14 @@ public class DocumentUploader {
 	@ApiOperation(value = "Document Upload")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
 			@ApiResponse(code = 400, message = "Document uploaded failed") })
-	public ResponseEntity<ResponseDto<DocResponseDto>> fileUpload(
+	public ResponseEntity<ResponseDTO<DocResponseDto>> fileUpload(
 			@RequestPart(value = "JsonString", required = true) String documentJsonString,
 			@RequestPart(value = "file", required = true) MultipartFile file)
 			throws JsonParseException, JsonMappingException, IOException, JSONException {
 		JSONObject documentData= new JSONObject(documentJsonString);
         JSONObject docDTOData=(JSONObject)documentData.get("request");
 		DocumentDto documentDto = (DocumentDto) JsonUtils.jsonStringToJavaObject(DocumentDto.class, docDTOData.toString());
-		ResponseDto<DocResponseDto> responseDto = documentUploadService.uploadDoucment(file, documentDto);
+		ResponseDTO<DocResponseDto> responseDto = documentUploadService.uploadDoucment(file, documentDto);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
@@ -83,9 +83,9 @@ public class DocumentUploader {
 	@ApiOperation(value = "Copy uploaded document")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
 			@ApiResponse(code = 400, message = "Document copying failed") })
-	public ResponseEntity<ResponseDto<DocumentCopyDTO>> copyDocument(@RequestParam String catCode,
+	public ResponseEntity<ResponseDTO<DocumentCopyDTO>> copyDocument(@RequestParam String catCode,
 			@RequestParam String sourcePrId, @RequestParam String destinationPreId) {
-		ResponseDto<DocumentCopyDTO> responseDto = documentUploadService.copyDoucment(catCode, sourcePrId, destinationPreId);
+		ResponseDTO<DocumentCopyDTO> responseDto = documentUploadService.copyDoucment(catCode, sourcePrId, destinationPreId);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 	
@@ -97,8 +97,8 @@ public class DocumentUploader {
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
 			@ApiResponse(code = 400, message = "Documents failed to reterive") })
-	public ResponseEntity<ResponseDto<DocumentGetAllDto>> getAllDocumentforPreid(@RequestParam String preId) {
-		ResponseDto<DocumentGetAllDto> response = documentUploadService.getAllDocumentForPreId(preId);
+	public ResponseEntity<ResponseDTO<DocumentGetAllDto>> getAllDocumentforPreid(@RequestParam String preId) {
+		ResponseDTO<DocumentGetAllDto> response = documentUploadService.getAllDocumentForPreId(preId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -110,8 +110,8 @@ public class DocumentUploader {
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
-	public ResponseEntity<ResponseDto<DocumentDeleteDTO>> deleteDocument(@RequestParam String documentId) {
-		ResponseDto<DocumentDeleteDTO> responseDto = documentUploadService.deleteDocument(documentId);
+	public ResponseEntity<ResponseDTO<DocumentDeleteDTO>> deleteDocument(@RequestParam String documentId) {
+		ResponseDTO<DocumentDeleteDTO> responseDto = documentUploadService.deleteDocument(documentId);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 
 	}
@@ -124,8 +124,8 @@ public class DocumentUploader {
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })
-	public ResponseEntity<ResponseDto<DocumentDeleteDTO>> deleteAllByPreId(@RequestParam String preId) {
-		ResponseDto<DocumentDeleteDTO> responseDto = documentUploadService.deleteAllByPreId(preId);
+	public ResponseEntity<ResponseDTO<DocumentDeleteDTO>> deleteAllByPreId(@RequestParam String preId) {
+		ResponseDTO<DocumentDeleteDTO> responseDto = documentUploadService.deleteAllByPreId(preId);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 }

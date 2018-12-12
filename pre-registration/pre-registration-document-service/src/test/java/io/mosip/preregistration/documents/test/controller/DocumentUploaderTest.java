@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.controller.DocumentUploader;
 import io.mosip.preregistration.documents.dto.DocumentDto;
-import io.mosip.preregistration.documents.dto.ResponseDto;
+import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
@@ -61,8 +61,8 @@ public class DocumentUploaderTest {
 	boolean flag;
 
 	Map<String, String> map = new HashMap<>();
-	ResponseDto responseCopy = new ResponseDto<>();
-	ResponseDto responseDelete = new ResponseDto<>();
+	ResponseDTO responseCopy = new ResponseDTO<>();
+	ResponseDTO responseDelete = new ResponseDTO<>();
 	DocumentDto documentDto = null;
 
 	@Before

@@ -30,6 +30,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
@@ -45,6 +46,7 @@ import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
@@ -371,7 +373,7 @@ public class PreRegistrationService {
 				String preRegStatusCode = preRegistrationEntity.getStatusCode();
 				if (preRegStatusCode.equals(StatusCodes.Pending_Appointment.name())
 						|| preRegStatusCode.equals(StatusCodes.Booked.name())) {
-					@SuppressWarnings("rawtypes")
+					System.out.println("strUriBuilder"+strUriBuilder);
 					ResponseEntity<ResponseDTO> responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE,
 							httpEntity, ResponseDTO.class);
 					if (responseEntity.getStatusCode() == HttpStatus.OK) {
@@ -397,9 +399,11 @@ public class PreRegistrationService {
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 			}
 		} catch (DataAccessLayerException e) {
+			e.printStackTrace();
 			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 					ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 		} catch (RestClientException e) {
+			e.printStackTrace();
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 		}

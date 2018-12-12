@@ -20,7 +20,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
-public class ExceptionJSONInfo implements Serializable {
+public class ExceptionJSONInfoDTO implements Serializable {
 
 	/**
 	 * 
