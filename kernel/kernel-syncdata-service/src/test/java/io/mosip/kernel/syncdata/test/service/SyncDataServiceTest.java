@@ -144,4 +144,12 @@ public class SyncDataServiceTest {
 		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
 		}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void globalConfigsyncFileNameNullFailure() {
+		
+		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withBadRequest());
+		syncConfigDetailsService.getGlobalConfigDetails();
+		}
 }

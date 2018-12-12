@@ -98,37 +98,37 @@ public class SyncHandlerControllerTest {
 	@Test
 	public void syncMasterDataSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull())).thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/syncmasterdata/{machineId}", "1001")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}", "1001")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.any())).thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-01-01T01:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-01-01T01:01:01", "1001"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
 	}
 	
 	@Test
 	public void syncRegistrationConfigDetailsSuccess() throws Exception {
 		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString())).thenReturn(globalConfigMap);
-		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
 	
 	@Test
 	public void syncGlobalConfigDetailsFailure() throws Exception  {
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenThrow(new MasterDataServiceException("KER-SYNC-127","Error occured in service"));
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 }
