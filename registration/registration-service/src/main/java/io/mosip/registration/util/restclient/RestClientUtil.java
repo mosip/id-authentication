@@ -60,6 +60,7 @@ public class RestClientUtil {
 		Object responseBody = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
 		try {
+			if(requestHTTPDTO.getUri().toString().contains("https"))
 			turnOffSslChecking();
 		} catch (KeyManagementException keyManagementException) {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
