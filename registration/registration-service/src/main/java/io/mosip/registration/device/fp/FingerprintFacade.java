@@ -45,7 +45,8 @@ public class FingerprintFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(FingerprintFacade.class);
 	private List<MosipFingerprintProvider> fingerprintProviders;
-
+	
+	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
 
 	@Value("${FINGER_PRINT_SCORE}")
