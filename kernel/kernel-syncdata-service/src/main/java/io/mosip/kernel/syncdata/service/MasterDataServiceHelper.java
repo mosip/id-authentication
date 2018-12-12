@@ -3,7 +3,6 @@ package io.mosip.kernel.syncdata.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,7 +261,7 @@ public class MasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
 			LocalDateTime lastUpdated) {
-		List<RegistrationCenterDto> registrationCenterList = new ArrayList<>();
+		List<RegistrationCenterDto> registrationCenterList = null;
 		List<RegistrationCenter> list = null;
 		try {
 			if (lastUpdated != null)
@@ -292,7 +291,7 @@ public class MasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<RegistrationCenterTypeDto>> getRegistrationCenterType(String machineId,
 			LocalDateTime lastUpdated) {
-		List<RegistrationCenterTypeDto> registrationCenterTypes = new ArrayList<>();
+		List<RegistrationCenterTypeDto> registrationCenterTypes = null;
 		List<RegistrationCenterType> registrationCenterType = null;
 		try {
 			if (lastUpdated != null)

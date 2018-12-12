@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.controller.test;
+package io.mosip.kernel.syncdata.test.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

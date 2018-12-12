@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.service.test;
+package io.mosip.kernel.syncdata.test.service;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
