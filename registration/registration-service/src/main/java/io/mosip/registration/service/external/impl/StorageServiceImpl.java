@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXTENSION;
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
-import static java.io.File.separator;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -49,9 +48,10 @@ public class StorageServiceImpl implements StorageService {
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
-			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + separator
+			String seperator="/";
+			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
 					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
-							.concat(separator).concat(registrationId);
+							.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 
