@@ -16,7 +16,7 @@ import io.mosip.registration.entity.RegistrationCommonFields;
 
 @Entity
 @Table(name = "template", schema = "reg")
-public class Template extends RegistrationCommonFields implements Serializable {
+public class Templates extends RegistrationCommonFields implements Serializable {
 
 	/**
 	 * Generated serialization id

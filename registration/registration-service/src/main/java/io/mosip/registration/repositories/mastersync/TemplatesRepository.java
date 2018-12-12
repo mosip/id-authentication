@@ -3,7 +3,7 @@ package io.mosip.registration.repositories.mastersync;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.entity.mastersync.Template;
+import io.mosip.registration.entity.mastersync.Templates;
 
 /**
  * 
@@ -12,6 +12,6 @@ import io.mosip.registration.entity.mastersync.Template;
  * 
  */
 @Repository
-public interface TemplatesRepository extends BaseRepository<Template, String> {
+public interface TemplatesRepository extends BaseRepository<Templates, String> {
 
 }
