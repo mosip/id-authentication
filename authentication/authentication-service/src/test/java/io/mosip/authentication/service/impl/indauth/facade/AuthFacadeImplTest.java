@@ -158,17 +158,13 @@ public class AuthFacadeImplTest {
 	private IdRepoService idRepoService;
 	@Mock
 	private AutnTxnRepository autntxnrepository;
-	// @Spy
-	// Map<String, Object> idRepo=new HashMap<>();
 
 	/**
 	 * Before.
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
-//		ReflectionTestUtils.setField(otpAuthServiceImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
@@ -177,10 +173,8 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
-		ReflectionTestUtils.setField(kycServiceImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", messageSource);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
-		// ReflectionTestUtils.setField(notificationService, "environment", env);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManager",
 				templateManagerBuilder.enableCache(false).build());
@@ -231,7 +225,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "74834738743");
-		idRepo.put("registrationId",refId);
+		idRepo.put("registrationId", "1234567890");
 		String uin = "274390482564";
 		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId()))
@@ -338,7 +332,7 @@ public class AuthFacadeImplTest {
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setIdvId("457984792857");
 		List<BioInfo> info=new ArrayList<>();
@@ -380,48 +374,6 @@ public class AuthFacadeImplTest {
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
-
-	/**
-	 * This class tests the processIdtype where UIN is passed and gets successful.
-	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-
-	
-	@Test
-	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		String refId = "1234";
-		// Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(repoDetails());
-		// Map<String, Object> referenceId =
-		// authFacadeImpl.processIdType(authRequestDTO);
-		// assertEquals(referenceId, refId);
-	}
-
-	/**
-	 * This class tests the processIdtype where VID is passed and gets successful.
-	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-
-	
-	@Test
-	public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.VID.getType());
-		String refId = "1234";
-		// Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenReturn(refId);
-		// Map<String, Object> referenceId =
-		// authFacadeImpl.processIdType(authRequestDTO);
-		// assertEquals(referenceId, refId);
-	}
-
-
-
-	
 
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
