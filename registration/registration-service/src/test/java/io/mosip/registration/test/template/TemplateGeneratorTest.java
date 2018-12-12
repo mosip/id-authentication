@@ -7,8 +7,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
@@ -40,6 +44,11 @@ public class TemplateGeneratorTest {
 	@Test
 	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
+		segmentedFingerprints.add(new FingerprintDetailsDTO());
+		registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().forEach(fingerPrintDTO -> {
+			fingerPrintDTO.setSegmentedFingerprints(segmentedFingerprints);
+		}); 
 		PowerMockito.mockStatic(ImageIO.class);
 		BufferedImage image = null;
 		when(ImageIO.read(templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH))).thenReturn(image);
