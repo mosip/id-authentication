@@ -50,6 +50,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -68,7 +69,7 @@ public class PacketReceiverServiceTest {
 	private InternalRegistrationStatusDto mockDto;
 
 	@Mock
-    private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+    private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -90,14 +91,14 @@ public class PacketReceiverServiceTest {
 	};
 
 	SyncRegistrationEntity regEntity;
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private MockMultipartFile mockMultipartFile, invalidPacket, largerFile;
 
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		
+
 		regEntity=new SyncRegistrationEntity();
 		regEntity.setCreateDateTime(LocalDateTime.now());
 		regEntity.setCreatedBy("Mosip");
@@ -108,7 +109,7 @@ public class PacketReceiverServiceTest {
 		regEntity.setRegistrationType("new");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
-		
+
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -208,7 +209,7 @@ public class PacketReceiverServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = FileSizeExceedException.class)
 	public void testFileSizeExceeded() {
-		
+
 		regEntity.setRegistrationId("2222");
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
