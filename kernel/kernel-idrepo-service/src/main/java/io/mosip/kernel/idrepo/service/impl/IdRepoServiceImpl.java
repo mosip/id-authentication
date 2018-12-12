@@ -31,6 +31,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -392,7 +393,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private String generateUIN() throws IdRepoAppException {
 		try {
 			ObjectNode body = restTemplate
-					.exchange(env.getProperty(MOSIP_KERNEL_UINGEN_URL), HttpMethod.GET, null, ObjectNode.class).getBody();
+					.exchange(env.getProperty(MOSIP_KERNEL_UINGEN_URL), HttpMethod.GET, null, ObjectNode.class)
+					.getBody();
 			if (body.has(UIN)) {
 				return body.get(UIN).textValue();
 			} else {
@@ -573,16 +575,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	public byte[] getKey(String keyType) throws IdRepoAppException {
 		try {
-			String localpath = env.getProperty("sample.privatekey.filepath");
-			Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
-			String finalpath = MessageFormat.format(localpath, homedirectory);
-			File fileInfo = new File(finalpath + File.separator + keyType);
-			File parentFile = fileInfo.getParentFile();
-			byte[] output = null;
-			if (parentFile.exists()) {
-				output = Files.toByteArray(fileInfo);
-			}
-			return output;
+			String path = "classpath:" + keyType;
+			File file = ResourceUtils.getFile(path);
+			return Files.toByteArray(file);
 		} catch (IOException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 		}
