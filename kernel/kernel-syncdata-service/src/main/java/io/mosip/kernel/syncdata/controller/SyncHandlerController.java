@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,7 @@ import net.minidev.json.JSONObject;
  * @since 29-11-2018
  */
 @RestController
+@RequestMapping(value="/v1.0")
 public class SyncHandlerController {
 	@Autowired
 	private MasterDataService masterDataService;
@@ -65,8 +67,8 @@ public class SyncHandlerController {
 	 *            last updated timestamp -optional if last updated timestamp is null
 	 *            then fetch all the masterdata
 	 * @return {@link MasterDataResponseDto}
-	 * @throws InterruptedException
-	 * @throws ExecutionException
+	 * @throws InterruptedException - this API will throw interrupted exception 
+	 * @throws ExecutionException - this API will throw Executin exception
 	 */
 	@GetMapping("/syncmasterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,

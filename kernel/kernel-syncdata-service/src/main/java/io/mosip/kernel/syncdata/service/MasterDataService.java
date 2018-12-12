@@ -22,8 +22,8 @@ public interface MasterDataService {
 	 *            lastupdated timestamp if lastupdated timestamp is null fetch all
 	 *            the masterdata
 	 * @return {@link MasterDataResponseDto}
-	 * @throws ExecutionException
-	 * @throws InterruptedException
+	 * @throws ExecutionException - this method will throw execution exception
+	 * @throws InterruptedException - this method will throw interrupted exception
 	 */
 	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
 			throws InterruptedException, ExecutionException;
