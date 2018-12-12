@@ -52,8 +52,7 @@ public class MosipBridgeMapping {
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.DEMODEDUPE_BUS_OUT.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.RETRY_BUS.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)));
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS)))
+						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.MANUAL_VERIFICATION_BUS.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.UIN_GENERATION_BUS_IN)));
 

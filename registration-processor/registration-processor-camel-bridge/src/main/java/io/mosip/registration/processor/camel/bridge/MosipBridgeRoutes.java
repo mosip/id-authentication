@@ -59,10 +59,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
 		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
-				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
-
+			
 		//Manual Verification to UIN Generation
 		from(BridgeUtil.getEndpoint(MessageBusAddress.MANUAL_VERIFICATION_BUS)).process(validateStructure).choice()
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
