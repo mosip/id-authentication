@@ -1,7 +1,6 @@
 package io.mosip.registration.device.fp.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import MFS100.FingerData;

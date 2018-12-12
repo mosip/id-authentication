@@ -3,8 +3,9 @@ package io.mosip.registration.util.acktemplate;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -18,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
@@ -34,6 +37,7 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+
 /**
  * Generates Velocity Template for the creation of acknowledgement
  * 
@@ -41,7 +45,7 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
  *
  */
 public class TemplateGenerator {
-	
+
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -49,15 +53,18 @@ public class TemplateGenerator {
 
 	/**
 	 * @param templateText
-	 *            - string which contains the data of template that is used to generate acknowledgement
+	 *            - string which contains the data of template that is used to
+	 *            generate acknowledgement
 	 * @param registration
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
-	public Writer generateTemplate(String templateText, RegistrationDTO registration, TemplateManagerBuilder templateManagerBuilder) {
-		
-		LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+	public Writer generateTemplate(String templateText, RegistrationDTO registration,
+			TemplateManagerBuilder templateManagerBuilder) {
+
+		LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
 				"generateTemplate had been called for preparing Acknowledgement Template.");
 
 		InputStream is = new ByteArrayInputStream(templateText.getBytes());
@@ -106,7 +113,8 @@ public class TemplateGenerator {
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
 				.getDocumentDetailsDTO();
-		List<String> documentNames = documents.stream().map(document -> document.getDocumentName()).collect(Collectors.toList());
+		List<String> documentNames = documents.stream().map(document -> document.getDocumentName())
+				.collect(Collectors.toList());
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
@@ -141,9 +149,18 @@ public class TemplateGenerator {
 		 * velocityContext.put(entry.getKey(),
 		 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
 		 */
-		File imageFile = new File(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH);
-		templateValues.put("handsImageSource", "file:/" + imageFile.getAbsolutePath().replace("\\", "/"));
-
+		try {
+			BufferedImage bufferedImage = ImageIO
+					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "jpeg", byteArrayOutputStream);
+			byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
+			String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
+			templateValues.put("handsImageSource",
+					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
+		} catch (IOException ioException) {
+			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
 		templateValues.put("rightIndexFinger", "1");
 		templateValues.put("rightMiddleFinger", "4");
 		templateValues.put("rightRingFinger", "2");
@@ -183,17 +200,19 @@ public class TemplateGenerator {
 
 		return writer;
 	}
-	
+
 	/**
 	 * @param templateText
-	 *            - string which contains the data of template that is used to generate notification
+	 *            - string which contains the data of template that is used to
+	 *            generate notification
 	 * @param registration
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
-	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration, TemplateManagerBuilder templateManagerBuilder) {
-		
+	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration,
+			TemplateManagerBuilder templateManagerBuilder) {
+
 		InputStream is = new ByteArrayInputStream(templateText.getBytes());
 		Map<String, Object> values = new LinkedHashMap<>();
 
@@ -263,8 +282,8 @@ public class TemplateGenerator {
 		HashMap<String, Double> fingersQuality = new HashMap<>();
 
 		// list of missing fingers
-		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO()
-				.getApplicantBiometricDTO().getFingerPrintBiometricExceptionDTO();
+		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerPrintBiometricExceptionDTO();
 		//
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
@@ -289,22 +308,20 @@ public class TemplateGenerator {
 						.compareTo(((Map.Entry<String, Double>) fingetPrintQuality1).getValue());
 			}
 		});
-		
-		
+
 		LinkedHashMap<String, Double> fingersQualitySorted = new LinkedHashMap<>();
 		for (Object fingerPrintQualityKey : fingerQualitykeys) {
 			String finger = ((Map.Entry<String, Double>) fingerPrintQualityKey).getKey();
 			double quality = ((Map.Entry<String, Double>) fingerPrintQualityKey).getValue();
 			fingersQualitySorted.put(finger, quality);
 		}
-		
-		
+
 		HashMap<String, Integer> fingersQualityRanking = new HashMap<>();
 		int rank = 1;
 		double prev = 1.0;
 		for (Map.Entry<String, Double> entry : fingersQualitySorted.entrySet()) {
 			if (entry.getValue() != 0) {
-				if (Double.compare(entry.getValue(), prev) ==  0 || Double.compare(prev, 1.0) == 0) {
+				if (Double.compare(entry.getValue(), prev) == 0 || Double.compare(prev, 1.0) == 0) {
 					fingersQualityRanking.put(entry.getKey(), rank);
 				} else {
 					fingersQualityRanking.put(entry.getKey(), ++rank);

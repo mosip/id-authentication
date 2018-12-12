@@ -398,7 +398,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
-	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
+	public static final String TEMPLATE_HANDS_IMAGE_PATH = "/images/hands.jpg";
 	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
 	public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
 	public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
