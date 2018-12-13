@@ -50,20 +50,20 @@ public class ManualAdjudicationController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedManualVerificationDTO);
 	}
 
-	@PostMapping(value = "/applicantDemographic")
+	@PostMapping(value = "/applicantBiometric")
 	@ApiResponses({ @ApiResponse(code = 200, message = "file fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public ResponseEntity<byte[]> getApplicantDemographic(@RequestBody(required=true)FileRequestDto dto) {
+	public ResponseEntity<byte[]> getApplicantBiometric(@RequestBody(required=true)FileRequestDto dto) {
 		byte[] packetInfo = manualAdjudicationService.getApplicantFile(dto.getRegId(),dto.getFileName());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
-	@PostMapping(value = "/applicantBiometric", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/applicantDemographic", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public ResponseEntity<byte[]> getApplicantBiometric(@RequestBody(required=true)FileRequestDto dto) {
+	public ResponseEntity<byte[]> getApplicantDemographic(@RequestBody(required=true)FileRequestDto dto) {
 		byte[] packetInfo = manualAdjudicationService.getApplicantData(dto.getRegId(),dto.getFileName());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}

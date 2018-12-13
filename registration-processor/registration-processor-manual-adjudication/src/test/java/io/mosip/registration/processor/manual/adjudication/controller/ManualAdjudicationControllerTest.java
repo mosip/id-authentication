@@ -106,7 +106,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/assignment").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -191,7 +191,7 @@ public class ManualAdjudicationControllerTest {
 		FileRequestDto fileRequestDto = new FileRequestDto();
 		fileRequestDto.setRegId("12345");
 		fileRequestDto.setFileName("APPLICANTPHOTO");
-		Mockito.when(manualAdjudicationService.getApplicantFile(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new PacketNotFoundException());
+		Mockito.when(manualAdjudicationService.getApplicantData(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new PacketNotFoundException());
 		try {
 			jsonfileRequestDto = this.jsonRequestDto.write(fileRequestDto).getJson();
 		} catch (IOException e1) {
