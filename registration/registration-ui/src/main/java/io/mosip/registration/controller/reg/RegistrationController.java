@@ -1230,9 +1230,18 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (ageField.getText().length() > 2) {
-						String age = ageField.getText().substring(0, 2);
+					if (ageField.getText().length() > 3) {
+						String age = ageField.getText().substring(0, 3);
 						ageField.setText(age);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING+" "+AppConfig.getApplicationProperty("max_age"));
+					}
+					
+					if (newValue.matches("\\d{1,3}")) {
+						if (Integer.parseInt(ageField.getText()) > Integer.parseInt(AppConfig.getApplicationProperty("max_age"))) {
+							String age = ageField.getText().substring(0, 2);
+							ageField.setText(age);
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING+" "+AppConfig.getApplicationProperty("max_age"));
+						}
 					}
 					// to populate date of birth based on age
 

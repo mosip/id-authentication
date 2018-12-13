@@ -131,6 +131,7 @@ public class RegistrationConstants {
 	public static final String LAST_NAME_EMPTY = bundle.getString("LAST_NAME_EMPTY");
 	public static final String AGE_EMPTY = bundle.getString("AGE_EMPTY");
 	public static final String AGE_WARNING = bundle.getString("AGE_WARNING");
+	public static final String MAX_AGE_WARNING = bundle.getString("MAX_AGE_WARNING");
 	public static final String DATE_OF_BIRTH_EMPTY = bundle.getString("DATE_OF_BIRTH_EMPTY");
 	public static final String GENDER_EMPTY = bundle.getString("GENDER_EMPTY");
 	public static final String ADDRESS_LINE_1_EMPTY = bundle.getString("ADDRESS_LINE_1_EMPTY");
