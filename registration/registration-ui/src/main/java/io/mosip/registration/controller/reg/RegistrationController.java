@@ -378,6 +378,7 @@ public class RegistrationController extends BaseController {
 			}
 
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
+				defaultImage = applicantImage.getImage();
 				applicantImageCaptured = false;
 				exceptionImageCaptured = false;
 				exceptionBufferedImage = null;
@@ -755,7 +756,9 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void goToPreviousPane() {
 		try {
-			demoGraphicTitlePane.setExpanded(true);
+			toggleIrisCaptureVisibility(true);
+			togglePhotoCaptureVisibility(false);
+			// demoGraphicTitlePane.setExpanded(true);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -926,9 +929,10 @@ public class RegistrationController extends BaseController {
 
 		boolean imageCaptured = false;
 		if (applicantImageCaptured) {
-			if(toggleBiometricException) {
-				if(exceptionImageCaptured) {
-					if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
+			if (toggleBiometricException) {
+				if (exceptionImageCaptured) {
+					if (getRegistrationDtoContent() != null
+							&& getRegistrationDtoContent().getDemographicDTO() != null) {
 						imageCaptured = true;
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -944,7 +948,7 @@ public class RegistrationController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
 							RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 				}
-			}			
+			}
 		} else {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
 		}
@@ -1135,7 +1139,7 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-			
+
 			postalCode.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
@@ -1789,7 +1793,6 @@ public class RegistrationController extends BaseController {
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
 			if (capturePhotoUsingDevice.equals("Y")) {
-				defaultImage = applicantImage.getImage();
 				biometrics.setVisible(false);
 				biometricsNext.setVisible(false);
 				getBiometricsPane().setVisible(true);
