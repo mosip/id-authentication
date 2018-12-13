@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.device.fp.FingerprintProvider;
 import io.mosip.registration.service.BaseService;
 
@@ -17,7 +18,7 @@ import io.mosip.registration.service.BaseService;
  */
 @Component
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
-
+		
 	@Autowired
 	private BaseService baseService;
 	
@@ -34,7 +35,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	public int captureFingerprint(int qualityScore, int captureTimeOut, String outputType) {
 		fingerPrintType = outputType;
 		if (fpDevice.Init() == 0) {
-			if (baseService.isValidDevice("Fingerprint", "Mantra", fpDevice.GetDeviceInfo().SerialNo())) {
+			if (baseService.isValidDevice(DeviceTypes.FINGERPRINT, fpDevice.GetDeviceInfo().SerialNo())) {
 				minutia = "";
 				errorMessage = "";
 				fingerDataInByte = null;
@@ -80,15 +81,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	public void OnPreview(FingerData arg0) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/*
-	 * To get the serial numbe rof the device
-	 */
-	@Override
-	public String getSerialNumber() {
-		return "SF0001";
-		// return fpDevice.GetDeviceInfo().SerialNo();
 	}
 
 }

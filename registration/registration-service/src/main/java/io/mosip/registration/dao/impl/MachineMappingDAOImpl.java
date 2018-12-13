@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -90,7 +91,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Autowired
 	private RegistrationUserDetailRepository userDetailRepository;
-	
+
 	/**
 	 * deviceMasterRepository instance creation using autowired annotation
 	 */
@@ -325,18 +326,21 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		registrationCenterMachineDeviceRepository.saveAll(regCentreMachineDevices);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.MachineMappingDAO#isValidDevice(java.lang.String, java.lang.String, java.sql.Timestamp)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#isValidDevice(java.lang.String,
+	 * java.lang.String, java.sql.Timestamp)
 	 */
 	@Override
-	public boolean isValidDevice(String serialNumber, String deviceType,Timestamp currentDate) {
-		
-		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID, " isValidDevice DAO Method called");
-		
-		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(deviceType,
-				serialNumber,currentDate) != 0 ? true : false;
+	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
+
+		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
+				" isValidDevice DAO Method called");
+
+		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
+				deviceType.getDeviceType(), new Timestamp(System.currentTimeMillis())) > 0 ? true : false;
 	}
-	
-	 	
+
 }

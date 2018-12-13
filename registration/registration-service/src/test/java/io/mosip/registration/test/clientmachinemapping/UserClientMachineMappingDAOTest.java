@@ -25,6 +25,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
@@ -75,6 +76,7 @@ public class UserClientMachineMappingDAOTest {
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 	@Mock
 	private DeviceMasterRepository deviceMasterRepository;
+
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
@@ -126,7 +128,7 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
-	} 
+	}
 
 	@Test
 	public void getStationID() throws RegBaseCheckedException {
@@ -304,7 +306,8 @@ public class UserClientMachineMappingDAOTest {
 						Mockito.anyString()))
 				.thenReturn(centreMachineDevices);
 
-		List<RegCentreMachineDevice> actualRegCentreMachineDevice = machineMappingDAOImpl.getAllMappedDevices("M001", "M001");
+		List<RegCentreMachineDevice> actualRegCentreMachineDevice = machineMappingDAOImpl.getAllMappedDevices("M001",
+				"M001");
 
 		Assert.assertThat(actualRegCentreMachineDevice, is(centreMachineDevices));
 
@@ -324,19 +327,19 @@ public class UserClientMachineMappingDAOTest {
 
 		machineMappingDAOImpl.addedMappedDevice(new ArrayList<>());
 	}
-	
-	
+
 	@Test
-	public void getCenterIDNullTest()  {
+	public void getCenterIDNullTest() {
 		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
-		machineMappingDAOImpl.getCenterID("StationID1947");
+			machineMappingDAOImpl.getCenterID("StationID1947");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
 	}
+
 	@Test
-	public void getStationIDNullTest()  {
+	public void getStationIDNullTest() {
 		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
 			machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
@@ -344,8 +347,9 @@ public class UserClientMachineMappingDAOTest {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
 	}
+
 	@Test
-	public void getUsersNullTest()  {
+	public void getUsersNullTest() {
 		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
 			machineMappingDAOImpl.getUsers("8C-16-45-88-E7-0C");
@@ -353,12 +357,13 @@ public class UserClientMachineMappingDAOTest {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
 	}
+
 	@Test
-	public void isValidDeviceTest()  {
-		Mockito.when(deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(Mockito.anyString(),
-				Mockito.anyString(),Mockito.anyObject())).thenReturn(1L);
-		boolean a=machineMappingDAOImpl.isValidDevice("SF0001", "Fingerprint",new Timestamp(new Date().getTime()));
-		Assert.assertSame(true, a);		
+	public void isValidDeviceTest() {
+		Mockito.when(deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyObject())).thenReturn(1L);
+		boolean a = machineMappingDAOImpl.isValidDevice(DeviceTypes.FINGERPRINT, "SF001");
+		Assert.assertSame(true, a);
 	}
 
 }

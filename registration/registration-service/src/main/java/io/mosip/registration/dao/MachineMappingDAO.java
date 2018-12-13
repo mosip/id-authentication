@@ -1,8 +1,8 @@
 package io.mosip.registration.dao;
 
-import java.sql.Timestamp;
 import java.util.List;
 
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
@@ -133,6 +133,6 @@ public interface MachineMappingDAO {
 	 * @return
 	 * 		It returns true when record found for the device else false
 	 */
-	boolean isValidDevice(String deviceType,String deviceProvider,Timestamp currentDate);
+	boolean isValidDevice(DeviceTypes deviceType,String serialNo);
 
 }

@@ -1,8 +1,5 @@
 package io.mosip.registration.test.service;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.service.BaseService;
 
@@ -27,12 +24,9 @@ public class BaseServiceTest {
 
 	@Test
 	public void isValidDeviceTest() {
-
-		Boolean test = null;
-		ReflectionTestUtils.setField(baseService, "fingerprintProviderName", "Mantra");
-		Mockito.when(machineMappingDAO.isValidDevice("Fingerprint", "mantra", new Timestamp(new Date().getTime())))
-				.thenReturn(false);
-		test = baseService.isValidDevice("Fingerprint", "Mantra", "SF001");
+		Mockito.when(machineMappingDAO.isValidDevice(DeviceTypes.FINGERPRINT, "SF0001")).thenReturn(false);
+		Boolean test = baseService.isValidDevice(DeviceTypes.FINGERPRINT, "SF001");
 		Assert.assertSame(false, test);
 	}
+
 }

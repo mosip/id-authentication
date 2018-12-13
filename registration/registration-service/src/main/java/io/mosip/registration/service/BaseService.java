@@ -3,21 +3,18 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
@@ -44,9 +41,6 @@ public class BaseService {
 
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-
-	@Value("${PROVIDER_NAME}")
-	private String fingerprintProviderName;
 
 	/**
 	 * create error response
@@ -151,25 +145,13 @@ public class BaseService {
 	 * @param deviceProvider
 	 * @param serialNo
 	 * @return
+	 * @throws ParseException
 	 */
-	public boolean isValidDevice(String deviceType, String deviceProvider, String serialNo) {
+	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
 
 		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
-
-		boolean result = false;
-		if (deviceType.equals("Fingerprint") && deviceProvider.equals(fingerprintProviderName)) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			try {
-				String currentdate = dateFormat.format(System.currentTimeMillis());
-				Date date = dateFormat.parse(currentdate);
-				result = machineMappingDAO.isValidDevice("Fingerprint", serialNo, new Timestamp(date.getTime()));
-			} catch (ParseException parseException) {
-				LOGGER.error("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID,
-						" Exception in parsing date ");
-			}
-		}
 		
-		return result;
+		return machineMappingDAO.isValidDevice(deviceType, serialNo);
 	}
 
 }

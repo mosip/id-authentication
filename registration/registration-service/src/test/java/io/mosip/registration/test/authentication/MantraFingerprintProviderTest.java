@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoRule;
 import MFS100.DeviceInfo;
 import MFS100.FingerData;
 import MFS100.MFS100;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.device.fp.impl.MantraFingerprintProvider;
 import io.mosip.registration.service.BaseService;
 
@@ -42,7 +43,7 @@ public class MantraFingerprintProviderTest {
 		when(fpDevice.Init()).thenReturn(0);		
 		when(fpDevice.GetDeviceInfo()).thenReturn(deviceInfo);
 		when(deviceInfo.SerialNo()).thenReturn("1");
-		when(baseService.isValidDevice("Fingerprint", "Mantra", "1")).thenReturn(true);
+		when(baseService.isValidDevice(DeviceTypes.FINGERPRINT, "1")).thenReturn(true);
 		when(fpDevice.StartCapture(90, 5, false)).thenReturn(1);
 		assertThat(fingerprintProvider.captureFingerprint(90, 5, "minutia"), is(0));
 	}
@@ -58,7 +59,7 @@ public class MantraFingerprintProviderTest {
 		when(fpDevice.Init()).thenReturn(0);		
 		when(fpDevice.GetDeviceInfo()).thenReturn(deviceInfo);
 		when(deviceInfo.SerialNo()).thenReturn("1");
-		when(baseService.isValidDevice("Fingerprint", "Mantra", "1")).thenReturn(false);
+		when(baseService.isValidDevice(DeviceTypes.FINGERPRINT, "1")).thenReturn(false);
 		assertThat(fingerprintProvider.captureFingerprint(90, 5, "minutia"), is(-2));
 	}
 	
@@ -69,8 +70,4 @@ public class MantraFingerprintProviderTest {
 		fingerprintProvider.uninitFingerPrintDevice();
 	}
 	
-	@Test
-	public void getSerialNumberTest() {
-		assertThat(fingerprintProvider.getSerialNumber(), is("SF0001"));
-	}
 }

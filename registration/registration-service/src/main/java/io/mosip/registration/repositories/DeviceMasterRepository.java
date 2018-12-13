@@ -12,16 +12,16 @@ import io.mosip.registration.entity.RegDeviceMaster;
  * @since 1.0.0
  *
  */
-public interface DeviceMasterRepository extends BaseRepository<RegDeviceMaster, String>{
-	
+public interface DeviceMasterRepository extends BaseRepository<RegDeviceMaster, String> {
+
 	/**
 	 * Find the device based on serial number
-	 *  
+	 * 
 	 * @param deviceType
 	 * @param serialNo
 	 * @param currentDate
-	 * @return
-	 * 		returns the record 
+	 * @return returns the record
 	 */
-	Long countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(String deviceType,String  serialNo,Timestamp currentDate);
-}
+	Long countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(String serialNo, String deviceType,
+			Timestamp currentDate);
+}	
