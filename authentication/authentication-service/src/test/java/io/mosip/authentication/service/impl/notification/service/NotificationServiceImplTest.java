@@ -1,6 +1,9 @@
 package io.mosip.authentication.service.impl.notification.service;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -25,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -44,7 +45,6 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -55,7 +55,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.DateHelper;
@@ -65,8 +64,6 @@ import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
-import io.mosip.authentication.service.integration.OTPManagerTest;
-import io.mosip.authentication.service.integration.dto.SmsRequestDto;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -76,8 +73,6 @@ import reactor.ipc.netty.http.server.HttpServer;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class })
 public class NotificationServiceImplTest {
-	// @Mock
-	// private RestRequestFactory restRequestFactory;
 
 	@InjectMocks
 	AuditRequestFactory auditFactory;
@@ -111,9 +106,12 @@ public class NotificationServiceImplTest {
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
-		ReflectionTestUtils.setField(notificationService, "env", environment);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
+		ReflectionTestUtils.setField(notificationService, "env", environment);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
+		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
+
+		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
 	}
 
 	@BeforeClass
@@ -133,7 +131,8 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
-	public void TestValidAuthSmsNotification() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
+	public void TestValidAuthSmsNotification()
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
@@ -143,7 +142,7 @@ public class NotificationServiceImplTest {
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		String refId = "4667732";
+		String refId = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -152,9 +151,7 @@ public class NotificationServiceImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
-		// Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
-		;
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
@@ -164,9 +161,10 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("internal.auth.notification.type", "email,sms");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
+		mockenv.setProperty("uin.masking.required", "true");
+		mockenv.setProperty("uin.masking.charcount", "8");
 		mockenv.setProperty("notification.date.format", "dd-MM-yyyy");
 		mockenv.setProperty("notification.time.format", "HH:mm:ss");
-		// mockenv.setProperty("internal.auth.notification.type", "none");
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
 		mockenv.setProperty("mosip.auth.mail.subject.template", "test");
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
@@ -179,7 +177,6 @@ public class NotificationServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
-		SmsRequestDto smsRequestDto = new SmsRequestDto();
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authRequestDTO.setReqTime(ZonedDateTime.now()
@@ -197,7 +194,6 @@ public class NotificationServiceImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("");
-		// Mockito.when(idAuthServiceImpl.getUIN(refId)).thenReturn(uinOpt);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
@@ -217,7 +213,6 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.auth.sms.template", "test");
 		mockenv.setProperty("notification.date.format", "dd-MM-yyyy");
 		mockenv.setProperty("notification.time.format", "HH:mm:ss");
-		// mockenv.setProperty("internal.auth.notification.type", "none");
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
 		mockenv.setProperty("mosip.auth.mail.subject.template", "test");
 		mockenv.setProperty("mosip.auth.mail.content.template", "test");
@@ -234,7 +229,8 @@ public class NotificationServiceImplTest {
 	}
 
 	@Test
-	public void testSendOtpNotification() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
+	public void testSendOtpNotification()
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setIdvId("8765");
 		String otp = "987654";
@@ -261,18 +257,11 @@ public class NotificationServiceImplTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-		String[] dateAndTime = DateHelper.getDateAndTime(
-				otpRequestDto.getReqTime(), environment.getProperty("datetime.pattern"));
+		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
+				environment.getProperty("datetime.pattern"));
 		date = dateAndTime[0];
 		time = dateAndTime[1];
 
-		ReflectionTestUtils.setField(notificationService, "env", environment);
-		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
-		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
-		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
-		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
-
-		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("otp.notification.type", "email,sms");
@@ -288,4 +277,60 @@ public class NotificationServiceImplTest {
 				mobileNumber, idInfo);
 	}
 
+	@Test
+	public void testInvokeSmsTemplate() {
+		Map<String, Object> values = new HashMap<>();
+		String contentTemplate = "";
+		String notificationMobileNo = "1234567890";
+		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.OTP,
+				contentTemplate, notificationMobileNo);
+	}
+
+	@Test
+	public void testInvokeSmsTemplateInvalid() {
+		Map<String, Object> values = new HashMap<>();
+		String contentTemplate = "";
+		String notificationMobileNo = "1234567890";
+		SenderType senderType = null;
+		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, senderType,
+				contentTemplate, notificationMobileNo);
+	}
+
+	@Test
+	public void testInvokeEmailTemplateInvalid() {
+		Map<String, Object> values = new HashMap<>();
+		String contentTemplate = "";
+		String notificationMobileNo = "1234567890";
+		SenderType senderType = null;
+		ReflectionTestUtils.invokeMethod(notificationService, "invokeEmailNotification", values, "abc@test.com",
+				senderType, contentTemplate, notificationMobileNo);
+	}
+
+	@Test
+	public void testprocessNotification() {
+		Set<NotificationType> notificationtype = new HashSet<>();
+		ReflectionTestUtils.invokeMethod(notificationService, "processNotification", null, "12345657890",
+				notificationtype, "email");
+	}
+
+	@Test
+	public void testsendNotification() {
+		Map<String, Object> values = new HashMap<>();
+		values.put("uin", "123456677890");
+		ReflectionTestUtils.invokeMethod(notificationService, "sendNotification", values, "abc@test.com", "1234567890",
+				SenderType.OTP, "email");
+	}
+
+	@Test
+	public void testInvalidTemplate() throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> values = new HashMap<>();
+		values.put("uin", "123456677890");
+		String contentTemplate = "test";
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenThrow(IOException.class);
+		try {
+			ReflectionTestUtils.invokeMethod(notificationService, "applyTemplate", values, contentTemplate);
+		} catch (UndeclaredThrowableException ex) {
+			assertTrue(ex.getUndeclaredThrowable().getClass().equals(IdAuthenticationBusinessException.class));
+		}
+	}
 }
