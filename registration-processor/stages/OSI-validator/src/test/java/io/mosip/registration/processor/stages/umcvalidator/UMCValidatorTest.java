@@ -1,7 +1,8 @@
-/*package io.mosip.registration.processor.stages.umcvalidator;
+package io.mosip.registration.processor.stages.umcvalidator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,6 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -108,12 +108,10 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
+		
 		
 		
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
@@ -147,12 +145,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -189,12 +184,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -234,13 +226,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
-		
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -279,13 +267,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
-		
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -327,13 +311,9 @@ public class UMCValidatorTest {
 		
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
@@ -372,13 +352,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
-		
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -418,12 +394,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
@@ -473,12 +446,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
@@ -515,13 +485,9 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
-		
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
@@ -561,13 +527,9 @@ public class UMCValidatorTest {
 		
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
@@ -609,15 +571,11 @@ public class UMCValidatorTest {
 		
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
 		
-		Mockito.when(umcClient.getRegistrationCentersHistory(anyString(),anyString(),anyString())).
-				thenReturn(regrepdto);
-		Mockito.when(umcClient.getMachineHistoryIdLangEff(anyString(),anyString(),anyString())).
-		thenReturn(mhrepdto);
-		Mockito.when(umcClient.getRegistrationCentersMachineUserMapping(anyString(),anyString(),anyString(),anyString())).
-		thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.
+				getApi(any(),any(),any(),any(),any())).
+				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
 		
 		
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 }
-*/
