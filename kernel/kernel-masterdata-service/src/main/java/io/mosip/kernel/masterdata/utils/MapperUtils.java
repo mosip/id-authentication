@@ -134,38 +134,7 @@ public class MapperUtils {
 		return destination;
 	}
 
-	/**
-	 * This method takes <code>source</code> and <code>destinationClass</code>, take
-	 * all values from source and create an object of <code>destinationClass</code>
-	 * and map all the values from source to destination if field name and type is
-	 * same.This method internally check whether the source or destinationClass is
-	 * DTO or an Entity type and map accordingly.If any {@link Collection} type or
-	 * Entity type field is their then only matched name fields value will be set
-	 * but not the embedded IDs and super class values.
-	 * 
-	 * @param <S>
-	 *            is a type parameter
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destinationClass
-	 *            where values is going to be mapped
-	 * @param mapNullValues
-	 *            by default marked as true so, it will map null values but if
-	 *            marked as false then null values will be ignored
-	 * @return the object of <code>destinationClass</code>
-	 * @throws DataAccessLayerException
-	 *             if exception occur during creating of
-	 *             <code>destinationClass</code> object
-	 * @throws NullPointerException
-	 *             if either <code>source</code> or <code>destinationClass</code> is
-	 *             null
-	 */
-	public static <S, D> D map(final S source, Class<D> destinationClass, Boolean mapNullValues) {
-		MapperUtils.mapNullValues = mapNullValues;
-		return (D) map(source, destinationClass);
-	}
+	
 
 	/**
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
@@ -205,39 +174,7 @@ public class MapperUtils {
 		return (D) map(source, destination);
 	}
 
-	/**
-	 * This method takes <code>sourceList</code> and <code>destinationClass</code>,
-	 * take all values from source and create an object of
-	 * <code>destinationClass</code> and map all the values from source to
-	 * destination if field name and type is same.
-	 * 
-	 * @param <S>
-	 *            is a type parameter
-	 * 
-	 * @param <D>
-	 *            is a type parameter
-	 * @param sourceList
-	 *            which value is going to be mapped
-	 * @param destinationClass
-	 *            where values is going to be mapped
-	 * @param mapNullvalues
-	 *            by default marked as true so, it will map null values but if
-	 *            marked as false then null values will be ignored
-	 * @return list of destinationClass objects
-	 * @throws DataAccessLayerException
-	 *             if exception occur during creating of
-	 *             <code>destinationClass</code> object
-	 * @throws NullPointerException
-	 *             if either <code>sourceList</code> or
-	 *             <code>destinationClass</code> is null
-	 */
-	public static <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass,
-			Boolean mapNullvalues) {
-		MapperUtils.mapNullValues = mapNullvalues;
-		Objects.requireNonNull(sourceList, "sourceList should not be null");
-		Objects.requireNonNull(destinationClass, "destinationClass should not be null");
-		return sourceList.stream().map(entity -> map(entity, destinationClass)).collect(Collectors.toList());
-	}
+	
 
 	/**
 	 * This method takes <code>sourceList</code> and <code>destinationClass</code>,
@@ -494,6 +431,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void setFieldValue(S source, D destination, Field sf, Field dtf)
 			throws IllegalAccessException {
+		//check whether user wants to map null values into destination object or not
 		if (!mapNullValues && EmptyCheckUtils.isNullEmpty(sf.get(source))) {
 			return;
 		}
