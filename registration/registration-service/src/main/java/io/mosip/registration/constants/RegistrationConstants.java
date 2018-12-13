@@ -644,6 +644,7 @@ public class RegistrationConstants {
 	public static final String ISO_FILE_NAME = "ISOTemplate";
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
+	public static final String DUPLICATE_FINGER = "DuplicateFinger";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
