@@ -237,7 +237,7 @@ public class AuthenticationController extends BaseController implements Initiali
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
@@ -269,7 +269,7 @@ public class AuthenticationController extends BaseController implements Initiali
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
