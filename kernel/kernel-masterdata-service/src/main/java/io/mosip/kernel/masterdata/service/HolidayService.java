@@ -12,8 +12,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * 
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
- * @version 1.0.0
- * @since 25-10-2018
+ * @since 1.0.0
  */
 public interface HolidayService {
 
