@@ -9,8 +9,6 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-
-
 public class TemplateDto {
 
 	private String id;
