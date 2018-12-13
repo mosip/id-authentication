@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Applicant } from '../registration/dashboard/dashboard.modal';
-import { BookingModelRequest } from '../registration/center-selection/booking-request.model';
+import { BookingModelRequest } from './booking-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,16 +9,18 @@ import { BookingModelRequest } from '../registration/center-selection/booking-re
 export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
-  SEND_FILE_URL =
-    'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/registration/documents';
-  BASE_URL2 = 'http://A2ML26836:9092/v0.1/pre-registration/applicationData';
-  BASE_URL = 'http://A2ML26836:9092/v0.1/pre-registration/applications';
-  MASTER_DATA_URL = 'http://A2ML26836:8086/masterdata/v1.0/';
+  SEND_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/documents';
+  GET_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
+  BASE_URL2 = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applicationData';
+  BASE_URL = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
+  // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
+  // https://pre-reg-df354.firebaseio.com/applications.json
+  MASTER_DATA_URL = 'http://integ.mosip.io/masterdata/v1.0/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
-  AVAILABILITY_URL = 'http://A2ML26836:9094/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = 'http://A2ML26836:9094/v0.1/pre-registration/booking/book';
+  AVAILABILITY_URL = 'http://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
+  BOOKING_URL = 'http://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
@@ -33,6 +35,14 @@ export class DataStorageService {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append('preRegId', preRegId)
+    });
+  }
+
+  getUserDocuments(preRegId) {
+    return this.httpClient.get(this.GET_FILE_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('preId', preRegId)
     });
   }
 
@@ -59,6 +69,11 @@ export class DataStorageService {
       responseType: 'json',
       params: new HttpParams().append('preId', preId)
     });
+  }
+
+  cancelAppointment(data: BookingModelRequest) {
+    console.log('cancel appointment data', data);
+    return this.httpClient.put(this.BOOKING_URL, data);
   }
 
   getNearbyRegistrationCenters(coords: any) {
