@@ -12,8 +12,7 @@ import lombok.Data;
  * 
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
- * @version 1.0.0
- * @since 23-10-2016
+ * @since 1.0.0
  */
 @Data
 public class HolidayDto {
