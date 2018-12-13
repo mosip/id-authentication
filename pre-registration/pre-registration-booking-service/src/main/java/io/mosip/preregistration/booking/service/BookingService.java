@@ -189,23 +189,23 @@ public class BookingService {
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									/ regDto.getPerKioskProcessTime().getMinute();
+									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int loop2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									/ regDto.getPerKioskProcessTime().getMinute();
+									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									% regDto.getPerKioskProcessTime().getMinute();
+									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									% regDto.getPerKioskProcessTime().getMinute();
+									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							LocalTime currentTime1 = regDto.getCenterStartTime();
 							for (int i = 0; i < loop1; i++) {
@@ -327,7 +327,12 @@ public class BookingService {
 		avaEntity.setToTime(toTime);
 		avaEntity.setCrBy("Admin");
 		avaEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
-		avaEntity.setCrBy(regDto.getContactPerson());
+		if(!isMandatory(regDto.getContactPerson())) {
+			avaEntity.setCrBy("Admin");
+		}
+		else {
+			avaEntity.setCrBy(regDto.getContactPerson());
+		}
 		if (currentTime.equals(toTime)) {
 			avaEntity.setAvailableKiosks(0);
 		} else {
