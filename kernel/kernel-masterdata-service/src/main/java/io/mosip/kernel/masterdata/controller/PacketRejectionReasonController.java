@@ -39,7 +39,7 @@ public class PacketRejectionReasonController {
 	/**
 	 * This API handles creation of reason categories 
 	 * @param requestDto- reasoncategoryObject
-	 * @return CodeAndLanguageCodeId-
+	 * @return CodeAndLanguageCodeId
 	 */
 	@PostMapping("/reasoncategory")
 	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestDto<PostReasonCategoryDto> requestDto) {
