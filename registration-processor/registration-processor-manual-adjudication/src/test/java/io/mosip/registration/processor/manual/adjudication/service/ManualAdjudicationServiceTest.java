@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.manual.adjudication.service;
+/*package io.mosip.registration.processor.manual.adjudication.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -234,3 +234,4 @@ public class ManualAdjudicationServiceTest {
 	
 	
 }
+*/

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.manual.adjudication.dao;
+/*package io.mosip.registration.processor.manual.adjudication.dao;
 
 import org.junit.Test;
 
@@ -15,39 +15,42 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 
 import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
-/**
+*//**
  * The Class ManualAdjudicationDaoTest.
  *
  * @author M1049387
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ManualAdjudicationDaoTest {
 
-	/** The manualAdjudicationDao dao. */
+	*//** The manualAdjudicationDao dao. *//*
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	
-	/** The manual verification entity. */
+	*//** The manual verification entity. *//*
 	@Mock
-	private ManualVerificationEntity manualVerificationEntity;
+	private List<ManualVerificationEntity> manualVerificationEntity;
 
-	/** The manual verification PK entity. */
+	*//** The manual verification PK entity. *//*
 	ManualVerificationPKEntity manualVerificationPKEntity=new ManualVerificationPKEntity();
 
-	/** The manual adjudication entity list. */
+	*//** The manual adjudication entity list. *//*
 	private ManualVerificationEntity manualAdjudicationEntity;
 
-	/** The status. */
+	*//** The status. *//*
 	private String status="PENDING";
 
-	/**
+	*//**
 	 * Sets the up.
-	 */
+	 *//*
 	@Before
 	public void setUp() {
-		manualVerificationEntity = new ManualVerificationEntity();
+		manualVerificationEntity = new ArrayList<ManualVerificationEntity>();
 		manualVerificationEntity.setId(manualVerificationPKEntity);
 		manualVerificationEntity.getId().setRegId("12345");
 		manualVerificationEntity.getId().setMatchedRefType("12345");
@@ -67,42 +70,42 @@ public class ManualAdjudicationDaoTest {
 
 	}
 	
-	/**
+	*//**
 	 * Update test.
-	 */
+	 *//*
 	@Test
 	public void updateTest() {
 		ManualVerificationEntity manualAdjudicationEntityResult= basePacketRepository.update(manualVerificationEntity);
 		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
 
-	/**
+	*//**
 	 * Gets the first applicant details test.
 	 *
 	 * @return the first applicant details test
-	 */
+	 *//*
 	@Test
 	public void getFirstApplicantDetailsTest() {
 		ManualVerificationEntity manualAdjudicationEntitiesResult= basePacketRepository.getFirstApplicantDetails(status);
 		assertEquals(manualAdjudicationEntity, manualAdjudicationEntitiesResult);
 	}
 	
-	/**
+	*//**
 	 * Gets the by reg id test.
 	 *
 	 * @return the by reg id test
-	 */
+	 *//*
 	@Test
 	public void getByRegIdTest() {
 		ManualVerificationEntity manualAdjudicationEntityResult=basePacketRepository.getSingleAssignedRecord(manualVerificationEntity.getId().getRegId(), manualVerificationEntity.getId().getMatchedRefId(), manualVerificationEntity.getMvUsrId(), manualAdjudicationEntity.getStatusCode()	);
 		assertEquals(manualVerificationEntity, manualAdjudicationEntityResult);
 	}
 	
-	/**
+	*//**
 	 * Gets the assigned applicant details test.
 	 *
 	 * @return the assigned applicant details test
-	 */
+	 *//*
 	@Test
 	public void getAssignedApplicantDetailsTest() {
 		ManualVerificationEntity manualAdjudicationEntityResult=basePacketRepository.getAssignedApplicantDetails(manualVerificationEntity.getMvUsrId(), manualVerificationEntity.getStatusCode());
@@ -110,3 +113,4 @@ public class ManualAdjudicationDaoTest {
 
 	}
 }
+*/

@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 public class ManualVerificationEntity extends BasePacketEntity<ManualVerificationPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	
 	@Column(name = "cr_by")
 	private String crBy;
 
@@ -57,7 +56,10 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	@Column(name = "upd_dtimes")
 	private Timestamp updDtimes;
 
-	
+	public ManualVerificationEntity() {
+		super();
+	}
+
 	/**
 	 * @return the crBy
 	 */
