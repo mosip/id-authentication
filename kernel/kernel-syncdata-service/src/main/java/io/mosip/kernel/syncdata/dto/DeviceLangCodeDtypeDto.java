@@ -1,10 +1,10 @@
 package io.mosip.kernel.syncdata.dto;
 
-
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -16,9 +16,10 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceLangCodeDtypeDto {
+public class DeviceLangCodeDtypeDto extends BaseDto {
 
 	/**
 	 * Field for device id
@@ -52,7 +53,7 @@ public class DeviceLangCodeDtypeDto {
 	 * Field for is active
 	 */
 	private boolean isActive;
-	
+
 	/**
 	 * Field for device type
 	 */
@@ -60,6 +61,6 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field to hold date and time for Validity of the Device
 	 */
-	private LocalDateTime validityEndDateTime; 
+	private LocalDateTime validityEndDateTime;
 
 }

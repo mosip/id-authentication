@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,9 +12,10 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class MachineTypeCodeAndLanguageCodeAndId {
+public class MachineTypeCodeAndLanguageCodeAndId extends BaseDto{
 	
 	private String id;
 	private String machineTypeCode;

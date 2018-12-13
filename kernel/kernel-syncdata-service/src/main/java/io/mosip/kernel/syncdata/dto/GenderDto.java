@@ -5,12 +5,14 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenderDto {
+public class GenderDto extends BaseDto{
 	
 	@NotNull
 	@Size(min = 1, max = 16)

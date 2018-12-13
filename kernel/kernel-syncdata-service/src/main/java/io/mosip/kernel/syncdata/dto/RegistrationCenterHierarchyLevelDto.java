@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
@@ -13,9 +14,10 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationCenterHierarchyLevelDto {
+public class RegistrationCenterHierarchyLevelDto extends BaseDto{
 	private String id;
 	
 	private String name;

@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -15,9 +16,10 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BiometricTypeDto {
+public class BiometricTypeDto extends BaseDto {
 
 	@NotNull
 	@Size(min = 1, max = 3)
@@ -28,7 +30,7 @@ public class BiometricTypeDto {
 	private String description;
 
 	private String langCode;
-	
+
 	private Boolean isActive;
 
 }
