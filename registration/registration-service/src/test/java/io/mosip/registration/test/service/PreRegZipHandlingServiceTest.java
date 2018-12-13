@@ -6,7 +6,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,11 +25,25 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
+import io.mosip.registration.util.kernal.RIDGenerator;
 
 public class PreRegZipHandlingServiceTest {
 
@@ -48,19 +64,23 @@ public class PreRegZipHandlingServiceTest {
 
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
+		createRegistrationDTOObject();
+		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970.zip");
 		File packetZipFile = new File(url.getFile());
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(packetZipFile));
-		String byteArrayContent = bufferedReader.readLine();
-
-		String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length() - 1).split(",");
-		preRegPacket = new byte[byteValues.length];
-
-		for (int i = 0, len = preRegPacket.length; i < len; i++) {
-			preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
-		}
-
-		bufferedReader.close();
+		preRegPacket=FileUtils.readFileToByteArray(packetZipFile);
+//		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
+//		File packetZipFile = new File(url.getFile());
+//		BufferedReader bufferedReader = new BufferedReader(new FileReader(packetZipFile));
+//		String byteArrayContent = bufferedReader.readLine();
+//
+//		String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length() - 1).split(",");
+//		preRegPacket = new byte[byteValues.length];
+//
+//		for (int i = 0, len = preRegPacket.length; i < len; i++) {
+//			preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
+//		}
+//		bufferedReader.close();
+		
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
 
 	}
@@ -86,9 +106,7 @@ public class PreRegZipHandlingServiceTest {
 		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
 		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegLocationDateFormat", "dd-MMM-yyyy");
 
-		byte[] decodedKey = Base64.getDecoder().decode("0E8BAAEB3CED73CBC9BF4964F321824A");
-		SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
-		Mockito.when(keyGenerator.getSymmetricKey()).thenReturn(originalKey);
+		mockSecretKey();
 
 		PreRegistrationDTO preRegistrationDTO = preRegZipHandlingServiceImpl
 				.encryptAndSavePreRegPacket("89149679063970", preRegPacket);
@@ -101,5 +119,79 @@ public class PreRegZipHandlingServiceTest {
 		final byte[] decrypted = preRegZipHandlingServiceImpl.decryptPreRegPacket("0E8BAAEB3CED73CBC9BF4964F321824A",
 				encryptPacket().getEncryptedPacket());
 		assertNotNull(decrypted);
+	}
+//
+//	@Test(expected = RegBaseCheckedException.class)
+//	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException {
+//		byte[] packetValue = "sampleTestForNegativeCase".getBytes();
+//		preRegZipHandlingServiceImpl.extractPreRegZipFile(packetValue);
+//
+//	}
+
+	@Test(expected = RegBaseUncheckedException.class)
+	public void encryptAndSavePreRegPacketTestNegative() throws RegBaseCheckedException {
+		mockSecretKey();
+		preRegZipHandlingServiceImpl.encryptAndSavePreRegPacket("89149679063970", preRegPacket);
+	}
+
+	private void mockSecretKey() {
+		byte[] decodedKey = Base64.getDecoder().decode("0E8BAAEB3CED73CBC9BF4964F321824A");
+		SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+		Mockito.when(keyGenerator.getSymmetricKey()).thenReturn(originalKey);
+	}
+
+	private static void createRegistrationDTOObject() {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+
+		// Set the RID
+		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+
+		// Create objects for Biometric DTOS
+		BiometricDTO biometricDTO = new BiometricDTO();
+		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+		biometricDTO.setSupervisorBiometricDTO(createBiometricInfoDTO());
+		registrationDTO.setBiometricDTO(biometricDTO);
+
+		// Create object for Demographic DTOS
+		DemographicDTO demographicDTO = new DemographicDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
+		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
+		DemographicInfoDTO demographicInfoDTOUser = new DemographicInfoDTO();
+		AddressDTO addressDTO = new AddressDTO();
+		addressDTO.setLocationDTO(new LocationDTO());
+		demographicInfoDTOUser.setAddressDTO(addressDTO);
+
+		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
+		AddressDTO addressDTOLocal = new AddressDTO();
+		addressDTO.setLocationDTO(new LocationDTO());
+		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
+
+		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
+		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
+		registrationDTO.setDemographicDTO(demographicDTO);
+
+		// Create object for OSIData DTO
+		registrationDTO.setOsiDataDTO(new OSIDataDTO());
+
+		// Create object for RegistrationMetaData DTO
+		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
+		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
+
+		// Put the RegistrationDTO object to SessionContext Map
+		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+	}
+
+	private static BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		return biometricInfoDTO;
 	}
 }

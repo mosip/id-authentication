@@ -41,6 +41,7 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -83,10 +84,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 */
 	@Override
 	public RegistrationDTO extractPreRegZipFile(byte[] preRegZipFile) throws RegBaseCheckedException {
-		RegistrationDTO registrationDTO = new RegistrationDTO();
-		DemographicDTO demographicDTO = new DemographicDTO();
-		registrationDTO.setDemographicDTO(demographicDTO);
-		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
+		DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = demographicDTO.getApplicantDocumentDTO();
 		List<DocumentDetailsDTO> documentDetailsDTOs = new ArrayList<>();
 		DocumentDetailsDTO documentDetailsDTO;
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(preRegZipFile))) {
@@ -96,7 +97,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				if (zipEntry.getName().endsWith(".json")) {
 					registrationDTO = parseDemographicJson(zipInputStream, zipEntry, registrationDTO);
 				} else {
-					documentDetailsDTO = new DocumentDetailsDTO();					
+					documentDetailsDTO = new DocumentDetailsDTO();
 					documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 					if (zipEntry.getName().contains("_")) {
 						documentDetailsDTO
@@ -118,9 +119,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				}
 			}
 		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL",
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -143,15 +143,13 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 */
 	private static RegistrationDTO parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry,
 			RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		LocationDTO locationDTO = new LocationDTO();
-		AddressDTO addressDTO = new AddressDTO();
+		DemographicInfoDTO demographicInfoDTO = registrationDTO.getDemographicDTO().getDemoInUserLang();
+		AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
+		LocationDTO locationDTO = addressDTO.getLocationDTO();
 		OSIDataDTO osiDataDTO = new OSIDataDTO();
-
 		addressDTO.setLocationDTO(locationDTO);
-		demographicInfoDTO.setAddressDTO(addressDTO);
-		registrationDTO.getDemographicDTO().setDemoInUserLang(demographicInfoDTO);
 		registrationDTO.setOsiDataDTO(osiDataDTO);
+		
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
 		try {
 			String value;

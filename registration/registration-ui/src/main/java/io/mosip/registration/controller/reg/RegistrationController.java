@@ -2162,8 +2162,18 @@ public class RegistrationController extends BaseController {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
 		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
-		demographicDTO.setDemoInLocalLang(new DemographicInfoDTO());
-		demographicDTO.setDemoInUserLang(new DemographicInfoDTO());
+		DemographicInfoDTO demographicInfoDTOUser = new DemographicInfoDTO();
+		AddressDTO addressDTO = new AddressDTO();
+		addressDTO.setLocationDTO(new LocationDTO());
+		demographicInfoDTOUser.setAddressDTO(addressDTO);
+		
+		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
+		AddressDTO addressDTOLocal = new AddressDTO();
+		addressDTO.setLocationDTO(new LocationDTO());
+		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
+		
+		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
+		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
 		registrationDTO.setDemographicDTO(demographicDTO);
 
 		// Create object for OSIData DTO
