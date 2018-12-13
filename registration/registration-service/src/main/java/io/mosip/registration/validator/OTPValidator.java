@@ -24,7 +24,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 	ServiceDelegateUtil serviceDelegateUtil;
 
 	@Override
-	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException {
+	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		boolean status = false;
 		// Create Response to Return to UI layer
 		OtpValidatorResponseDTO otpValidatorResponseDto = null;
@@ -52,8 +52,6 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException
 				| ResourceAccessException exception) {
 			status = false;
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_OTP_VALIDATION.getErrorCode(),
-					RegistrationExceptionConstants.REG_OTP_VALIDATION.getErrorMessage());
 		}
 
 		return status;

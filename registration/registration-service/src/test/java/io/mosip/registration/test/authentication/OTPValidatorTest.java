@@ -62,12 +62,11 @@ public class OTPValidatorTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected = RegBaseCheckedException.class)
 	public void testCheckedException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap()))
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
-		otpValidator.validate(authenticationValidatorDTO);
+		assertEquals(false, otpValidator.validate(authenticationValidatorDTO));
 	}
 }

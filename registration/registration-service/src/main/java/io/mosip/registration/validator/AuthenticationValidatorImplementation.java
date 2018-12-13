@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.exception.RegBaseCheckedException;
 
 public abstract class AuthenticationValidatorImplementation {
 	protected String fingerPrintType;
@@ -14,7 +13,7 @@ public abstract class AuthenticationValidatorImplementation {
 	@Autowired
 	protected FingerprintValidator fingerprintValidator;
 
-	public abstract boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException;
+	public abstract boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO);
 
 	public String getFingerPrintType() {
 		return fingerPrintType;
