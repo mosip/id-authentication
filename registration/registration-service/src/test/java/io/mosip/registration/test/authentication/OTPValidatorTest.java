@@ -62,6 +62,7 @@ public class OTPValidatorTest {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Test
 	public void testCheckedException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
