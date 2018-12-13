@@ -197,9 +197,13 @@ public enum DemoAuthType implements AuthType {
 	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
 		String language = languageInfoFetcher.apply(langType);
-		return matchInfos.parallelStream().filter(id -> id.getLanguage() != null
-				&& language.equalsIgnoreCase(id.getLanguage()) && getType().equals(id.getAuthType()))
-				.<T>map(infoFunction).filter(Objects::nonNull).findAny();
+		if(matchInfos != null) {
+			return matchInfos.parallelStream().filter(id -> id.getLanguage() != null
+					&& language.equalsIgnoreCase(id.getLanguage()) && getType().equals(id.getAuthType()))
+					.<T>map(infoFunction).filter(Objects::nonNull).findAny();
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	/*
