@@ -3,19 +3,15 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Instant;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -37,10 +33,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.service.helper.DateHelper;
-import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -77,29 +70,24 @@ public class InternalAuthRequestValidatorTest {
 
 	@InjectMocks
 	DateHelper dateHelper;
-	@Mock
-	private IdAuthService idAuthService;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
-		ReflectionTestUtils.setField(internalAuthRequestValidator, "idAuthService", idAuthService);
 	}
 
-	@Ignore
 	@Test
 	public void testSupportTrue() {
 		assertTrue(internalAuthRequestValidator.supports(AuthRequestDTO.class));
 	}
-	@Ignore
+	
 	@Test
 	public void testSupportFalse() {
 		assertFalse(internalAuthRequestValidator.supports(OtpRequestDTO.class));
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -149,7 +137,6 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -180,7 +167,6 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -216,7 +202,6 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testInvalidDate() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -254,67 +239,6 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	/*@Test
-	public void testInvalidVid() {
-		try {
-			Mockito.when(idAuthService.validateUIN(Mockito.anyString()))
-					.thenThrow(new IdAuthenticationBusinessException("id", "code"));
-		} catch (IdAuthenticationBusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			Mockito.when(idAuthService.validateVID(Mockito.anyString()))
-					.thenThrow(new IdAuthenticationBusinessException("id", "code"));
-		} catch (IdAuthenticationBusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestDTO.setIdvIdType(IdType.VID.getType());
-		authRequestDTO.setIdvId("5371843613598206");
-		internalAuthRequestValidator.validateUinVin(authRequestDTO, "1234567890", errors);
-		// assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void testInvalidUIN() {
-		try {
-			Mockito.when(idAuthService.validateUIN(Mockito.anyString()))
-					.thenThrow(new IdAuthenticationBusinessException("id", "code"));
-		} catch (IdAuthenticationBusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			Mockito.when(idAuthService.validateVID(Mockito.anyString()))
-					.thenThrow(new IdAuthenticationBusinessException("id", "code"));
-		} catch (IdAuthenticationBusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("123456789012");
-		internalAuthRequestValidator.validateUinVin(authRequestDTO, "1234567890", errors);
-		// assertTrue(errors.hasErrors());
-	}*/
-
-	@Ignore
 	@Test
 	public void TestInvalidTimeFormat() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
