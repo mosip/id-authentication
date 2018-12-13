@@ -18,13 +18,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum EkycAuthType {
 		
 	/** For Fingerprints  */
-	FINGERPRINT("F", AuthTypeDTO::isFingerPrint),
+	FINGERPRINT("F", AuthTypeDTO::isBio),
 	
 	/** For Iris */
-	IRIS("I", AuthTypeDTO::isIris),
+	IRIS("I", AuthTypeDTO::isBio),
 	
 	/** For Face */
-	FACE("A", AuthTypeDTO::isFace),
+	FACE("A", AuthTypeDTO::isBio),
 	
 	/** For Pin */
 	PIN("P", AuthTypeDTO::isPin),

@@ -91,6 +91,11 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+		<version>0.6.4</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

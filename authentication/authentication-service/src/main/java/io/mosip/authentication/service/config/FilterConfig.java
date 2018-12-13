@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.service.filter.IdAuthFilter;
+import io.mosip.authentication.service.filter.InternalAuthFilter;
 import io.mosip.authentication.service.filter.KycAuthFilter;
 import io.mosip.authentication.service.filter.OTPFilter;
 
@@ -54,6 +55,21 @@ public class FilterConfig {
 	FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new KycAuthFilter());
 	registrationBean.addUrlPatterns("/ekyc");
+
+	return registrationBean;
+    }
+    
+    
+    /**
+     * Gets the internal auth filter.
+     *
+     * @return the internal auth filter
+     */
+    @Bean
+    public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
+	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
+	registrationBean.setFilter(new InternalAuthFilter());
+	registrationBean.addUrlPatterns("/auth/internal");
 
 	return registrationBean;
     }

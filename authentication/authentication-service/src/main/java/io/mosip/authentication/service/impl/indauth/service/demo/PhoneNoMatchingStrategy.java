@@ -1,9 +1,11 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.util.function.ToIntBiFunction;
+import java.util.Map;
 
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * @author Sanjay Murali
@@ -11,15 +13,15 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String) {
-			return MatcherUtil.doExactMatch((String) reqInfo, entityInfo.getValue());
+			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}
 	});
 
-	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
+	private final MatchFunction matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -29,8 +31,7 @@ public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType,
-			ToIntBiFunction<Object, IdentityValue> matchFunction) {
+	PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -41,7 +42,7 @@ public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
+	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 

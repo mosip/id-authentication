@@ -71,7 +71,12 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_ADDRESS_REQUEST("IDA-DEA-014", "Required Address(ad) attribute is missing"),
 	DOB_TYPE_MISMATCH("IDA-DEA-033", "Demographic data – DOB Type (pi) did not match", "A0142"),
 	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
-	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present");
+	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
+	
+	// Bio validation
+	DUPLICATE_FINGER("IDA-BIA-003","Duplicate fingers in request."),
+	FINGER_EXCEEDING("IDA-BIA-006","Number of fgerMin / fgerImg should not exceed 10.")
+	;
 
 	private final String errorCode;
 	private final String errorMessage;

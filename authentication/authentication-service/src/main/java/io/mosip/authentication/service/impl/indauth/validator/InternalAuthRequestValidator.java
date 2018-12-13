@@ -1,22 +1,18 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.Date;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.dto.indauth.InternalAuthType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.service.helper.DateHelper;
 
 /**
@@ -26,70 +22,122 @@ import io.mosip.authentication.service.helper.DateHelper;
  *
  */
 @Component
-public class InternalAuthRequestValidator implements Validator {
+public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 
-	private static final String IDV_ID = "idvId";
+	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
+	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "reqTime";
 
+	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
+	
+	/** The Constant AUTH_TYPE. */
+	private static final String AUTH_TYPE = "authType";
 
-	@Autowired
-	private IdAuthService idAuthService;
-
+	/** The datehelper. */
 	@Autowired
 	private DateHelper datehelper;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
+	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return clazz.equals(AuthRequestDTO.class);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
 	@Override
 	public void validate(Object authRequestDTO, Errors errors) {
 		if (authRequestDTO instanceof AuthRequestDTO) {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
-			validateIdvId(requestDTO, errors);
-			validateRequest(requestDTO, errors);
+			validateId(requestDTO.getId(), errors);
+			validateIdvId(requestDTO.getIdvId(), requestDTO.getIdvIdType(), errors);
+			validateVer(requestDTO.getVer(), errors);
+			validateTxnId(requestDTO.getTxnID(), errors);
 			validateDate(requestDTO, errors);
+			validateRequest(requestDTO, errors);
 		}
 	}
 
-	/** validation for UIN and VIN */
-	public void validateIdvId(AuthRequestDTO authRequestDTO, Errors errors) {
-		String refId = authRequestDTO.getIdvIdType();
-
-		if (refId != null) {
-			validateUinVin(authRequestDTO, refId, errors);
-		}
-
-	}
-
-	/** Validation for Request AuthType */
-	public void validateRequest(AuthRequestDTO authRequestDTO, Errors errors) {
-		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
+	/**
+	 * Method to validate auth type
+	 * 
+	 * @param requestDTO
+	 * @param errors
+	 */
+	private void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
+		AuthTypeDTO authTypeDTO = requestDTO.getAuthType();
 		if (authTypeDTO != null) {
-
-			if (authRequestDTO.getAuthType().isFingerPrint() && !validateFinger(authRequestDTO)) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-			}
-
-			if (authRequestDTO.getAuthType().isIris() && !validateIris(authRequestDTO)) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-			}
-
-			if (authRequestDTO.getAuthType().isFace() && !validateFace(authRequestDTO)) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-			}
-
-		} else {
+			Set<String> allowedAuthType = extractAuthInfo();			
+			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
+		}else {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 		}
+		
+		
+	}
 
+	/**
+	 * Validate auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param authTypeDTO the auth type DTO
+	 * @param allowedAuthType the allowed auth type
+	 */
+	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
+			Set<String> allowedAuthType) {
+		if((authTypeDTO.isPersonalIdentity() || authTypeDTO.isFullAddress() || authTypeDTO.isAddress())) {
+			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
+				checkDemoAuth(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+		} 
+		
+		if(authTypeDTO.isOtp()) {
+			if(allowedAuthType.contains(InternalAuthType.OTP.getType())) {
+				checkOTPAuth(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+		}
+		
+		if(authTypeDTO.isBio()) {
+			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
+				validateBioDetails(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+			
+		}
+	}
+
+	/**
+	 * Extract auth info.
+	 *
+	 * @return the sets the
+	 */
+	private Set<String> extractAuthInfo() {
+		Set<String> allowedAuthType = new HashSet<>();
+		String intAllowedAuthType = env.getProperty(INTERNAL_ALLOWED_AUTH_TYPE);
+		if (intAllowedAuthType.contains(",")) {
+			String value[] = intAllowedAuthType.split(",");
+			for (int i = 0; i < value.length; i++) {
+				allowedAuthType.add(value[i]);				
+			}
+		}else {
+			allowedAuthType.add(intAllowedAuthType);
+		}
+		return allowedAuthType;
 	}
 
 	/** Validation for DateTime */
@@ -99,73 +147,14 @@ public class InternalAuthRequestValidator implements Validator {
 				Date reqDate = datehelper.convertStringToDate(authRequestDTO.getReqTime());
 				if (reqDate.after(new Date())) {
 					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									REQ_TIME));
+							new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 				}
 
 			} catch (IDDataValidationException e) {
 				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQ_TIME));
+						new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 			}
 
-		}
-	}
-
-	public boolean validateFinger(AuthRequestDTO authRequestDTO) {
-
-		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-				.map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent()
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent();
-
-	}
-
-	public boolean validateIris(AuthRequestDTO authRequestDTO) {
-		return (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
-				&& authRequestDTO.getRequest().getIdentity().getLeftEye() != null
-				&& !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
-				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
-						&& authRequestDTO.getRequest().getIdentity().getRightEye() != null
-						&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
-	}
-
-	public boolean validateFace(AuthRequestDTO authRequestDTO) {
-		return authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
-				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
-	}
-
-	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors) {
-		String idvIdType = authRequestDTO.getIdvIdType();
-		if (idvIdType.equals(IdType.UIN.getType())) {
-			try {
-				idAuthService.validateUIN(authRequestDTO.getIdvId());
-			} catch (IdAuthenticationBusinessException e) {
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), IDV_ID));
-			}
-		} else if (idvIdType.equals(IdType.VID.getType())) {
-			try {
-				idAuthService.validateVID(authRequestDTO.getIdvId());
-			} catch (IdAuthenticationBusinessException e) {
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), IDV_ID));
-			}
 		}
 	}
 

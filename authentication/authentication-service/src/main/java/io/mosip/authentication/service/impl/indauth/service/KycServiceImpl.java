@@ -28,13 +28,10 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -71,16 +68,10 @@ public class KycServiceImpl implements KycService {
     private MessageSource messageSource;
 
     @Autowired
-    private IdInfoService idInfoService;
-
-    @Autowired
-    private IdAuthService idAuthService;
-
-    @Autowired
     private IdTemplateManager idTemplateManager;
 
     @Autowired
-    private DemoHelper demoHelper;
+    private IdInfoHelper demoHelper;
 
     @Autowired
     private PDFGenerator pdfGenerator;
@@ -92,50 +83,28 @@ public class KycServiceImpl implements KycService {
 	 * @param refId the refId
 	 * @param isSecLangInfoRequired the isseclanginforequired used to check secondary language info also needed
 	 * @param ePrintReq the ePrintReq used to check is PDF required or not
+     * @param identityInfo 
 	 * @return the map 
 	 */
     @Override
-    public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired)
-	    throws IdAuthenticationBusinessException {
-	KycInfo kycInfo = new KycInfo();
-	Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
-	Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
-		isSecLangInfoRequired);
-	kycInfo.setIdentity(filteredIdentityInfo);
-	Optional<String> uinOpt = idAuthService.getUIN(refId);
-	
-	if (uinOpt.isPresent() && ePrintReq) {
-		String uin = uinOpt.get();
-		Object maskedUin = uin;
-	    if (env.getProperty("uin.masking.required", Boolean.class)) {
-		maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
-	    }
-	    Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-	    String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
-	    kycInfo.setEPrint(ePrintInfo);
-	    kycInfo.setIdvId(maskedUin.toString());
-	}
-	return kycInfo;
-    }
+    public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired, Map<String, List<IdentityInfoDTO>> identityInfo)
+			throws IdAuthenticationBusinessException {
+		KycInfo kycInfo = new KycInfo();
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
+				isSecLangInfoRequired);
+		kycInfo.setIdentity(filteredIdentityInfo);
 
-    /**
-	 * method to retrieve details by passing refid
-	 * 
-	 * @param refId
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-    private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String refId)
-	    throws IdAuthenticationBusinessException {
-	Map<String, List<IdentityInfoDTO>> identity = null;
-	try {
-	    identity = idInfoService.getIdInfo(refId);
-	} catch (IdAuthenticationDaoException e) {
-	    mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-	    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+		Object maskedUin = uin;
+		if (env.getProperty("uin.masking.required", Boolean.class)) {
+			maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
+		}
+		Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+		String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
+		kycInfo.setEPrint(ePrintInfo);
+		kycInfo.setIdvId(maskedUin.toString());
+		return kycInfo;
 	}
-	return identity;
-    }
+
 
     /**
 	 * Construct identity info - Method to filter the details to be printed.
@@ -203,8 +172,8 @@ public class KycServiceImpl implements KycService {
 	pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
 	pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
 	pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
-	pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
-	pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
+	pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo));
+	pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo));
 	faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
 	return pdfDetails;
     }

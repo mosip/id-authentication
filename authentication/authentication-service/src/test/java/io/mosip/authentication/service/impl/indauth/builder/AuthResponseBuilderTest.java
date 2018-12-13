@@ -11,15 +11,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
-import io.mosip.authentication.service.impl.indauth.builder.AuthType;
-import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 
 /**
  * {@code AuthResponseBuilderTest} - Test class for {@link AuthResponseBuilder}
@@ -28,6 +27,11 @@ import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
  */
 public class AuthResponseBuilderTest {
 
+	private static final String PRIMARY_LANG_CODE = "FR";
+	private static final String STATUS_SUCCESS = "Y";
+	@Autowired
+	Environment env;
+	private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 	
 	@Test
 	public void testAuthUsageBitsUnique() {
@@ -232,8 +236,8 @@ public class AuthResponseBuilderTest {
 //		
 //		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 //		AuthStatusInfo authStatusInfo = authStatusInfoBuilder
-//				.addMessageInfo(AuthType.PI_PRI.getType(), "P", 60)
-//				.addMessageInfo(AuthType.FAD_PRI.getType(), "E", 100)
+//				.addMessageInfo(DemoAuthType.PI_PRI.getType(), "P", 60)
+//				.addMessageInfo(DemoAuthType.FAD_PRI.getType(), "E", 100)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 //				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
 //				.addErrors(new AuthError("101", "Error1"))
@@ -271,75 +275,79 @@ public class AuthResponseBuilderTest {
 
 	@Test
 	public void testAuthResponseInfoBuilder() {
-//		assertTrue(AuthResponseBuilder
-//					.newInstance()
-//					.addAuthStatusInfo(AuthStatusInfoBuilder
-//							.newInstance()
-//							.setStatus(true)
-//							.build())
-//					.build()
-//					.isStatus());
-//		assertFalse(AuthResponseBuilder
-//				.newInstance()
-//				.addAuthStatusInfo(AuthStatusInfoBuilder
-//						.newInstance()
-//						.setStatus(false)
-//						.build())
-//				.build()
-//				.isStatus());
-//		
-//		assertEquals(AuthResponseBuilder
-//				.newInstance()
-//				.setTxnID("1234567890")
-//				.build()
-//				.getTxnID(), "1234567890");
-//		
-//		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance()
-//					.addErrors(new AuthError("101", "Error1"))
-//					.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
-//					.build();
-//		
-//		assertTrue(authResponseDTO.getErr().size() == 3 && authResponseDTO.getErr()
-//				.stream()
-//				.map(AuthError::getErrorCode)
-//				.collect(Collectors.toList())
-//				.containsAll(Arrays.asList("101", "102", "103")));
-//		
-//		
-//		
-////		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-////				.addMessageInfo(AuthType.PI_PRI.getType(), "P", 60)
-////				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
-////				.addErrors(new AuthError("101", "Error1"))
-////				.build();
-//		
-//		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder.newInstance()
-//				.addMessageInfo(AuthType.FAD_PRI.getType(), "E", 100)
-//				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
-//				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
-//				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
-//				.build();
-//		
-//		
-//		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder.newInstance()
-//				.addAuthStatusInfo(authStatusInfo1)
-//				.addAuthStatusInfo(authStatusInfo2)
-//				.build();
-//		
-//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), AuthType.PI_PRI.getType());
-//		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), AuthType.FAD_PRI.getType());
-//		assertEquals(authResponseDTO2.getInfo().getUsageData(), "0x3400000034000000");
-//		
-//		assertEquals(3, authResponseDTO2.getErr().size());
-//
-//		assertTrue(authResponseDTO2.getErr().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
-//				.containsAll(Arrays.asList("101", "102", "103")));
+		assertTrue(AuthResponseBuilder
+					.newInstance(dateTimePattern )
+					.addAuthStatusInfo(AuthStatusInfoBuilder
+							.newInstance()
+							.setStatus(true)
+							.build())
+					.build()
+					.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+		assertFalse(AuthResponseBuilder
+				.newInstance(dateTimePattern )
+				.addAuthStatusInfo(AuthStatusInfoBuilder
+						.newInstance()
+						.setStatus(false)
+						.build())
+				.build()
+				.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+		
+		assertEquals(AuthResponseBuilder
+				.newInstance(dateTimePattern )
+				.setTxnID("1234567890")
+				.build()
+				.getTxnID(), "1234567890");
+		
+		AuthResponseDTO authResponseDTO = AuthResponseBuilder
+				.newInstance(dateTimePattern)
+					.addErrors(new AuthError("101", "Error1"))
+					.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
+					.build();
+		
+		assertTrue(authResponseDTO.getErr().size() == 3 && authResponseDTO.getErr()
+				.stream()
+				.map(AuthError::getErrorCode)
+				.collect(Collectors.toList())
+				.containsAll(Arrays.asList("101", "102", "103")));
+		
+		
+		
+		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
+				.addMessageInfo(DemoAuthType.PI_PRI.getType(), "P", 60, PRIMARY_LANG_CODE)
+				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
+				.addErrors(new AuthError("101", "Error1"))
+				.build();
+		
+		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder
+				.newInstance()
+				.addMessageInfo(DemoAuthType.FAD_PRI.getType(), "E", 100, PRIMARY_LANG_CODE)
+				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
+				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
+				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
+				.build();
+		
+		
+		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder
+				.newInstance(dateTimePattern)
+				.addAuthStatusInfo(authStatusInfo1)
+				.addAuthStatusInfo(authStatusInfo2)
+				.build();
+		
+		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PI_PRI.getType());
+		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FAD_PRI.getType());
+		assertEquals("0xc1000000c1000000", authResponseDTO2.getInfo().getUsageData());
+		
+		assertEquals(3, authResponseDTO2.getErr().size());
+
+		assertTrue(authResponseDTO2.getErr().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
+				.containsAll(Arrays.asList("101", "102", "103")));
 
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testAuthResponseBuilderMultipleTimes() {
-		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance();
+		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder
+				.newInstance(dateTimePattern);
 		statusInfoBuilder.setTxnID("1234567890");
 		statusInfoBuilder.build();
 

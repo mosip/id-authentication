@@ -1,6 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
-import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,15 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.UinEntity;
-import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -31,6 +32,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * The class validates the UIN and VID.
  *
  * @author Arun Bose
+ * @author Rakesh Roshan
  */
 @Service
 public class IdAuthServiceImpl implements IdAuthService {
@@ -53,9 +55,16 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
+	/** The uin repository. */
+	@Autowired
+	UinRepository uinRepository;
+
 	/** The vid repository. */
 	@Autowired
 	private VIDRepository vidRepository;
+
+	@Autowired
+	private IdRepoService idRepoService;
 
 	/*
 	 * (non-Javadoc)
@@ -64,34 +73,19 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.
 	 * String)
 	 */
-	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
-		String refId = null;
-		//FIXME Use IdRepo service
-//		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
-//		if (uinEntityOpt.isPresent()) {
-//			UinEntity uinEntity = uinEntityOpt.get();
-//			if (uinEntity.isActive()) {
-//				refId = uinEntity.getUinRefId();
-//			} else {
-//				// TODO log error
-//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-//			}
-//		} else {
-//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-//		}
+	@Override
+	public Map<String, Object> getIdRepoByUinNumber(String uin) throws IdAuthenticationBusinessException {
 
-		// TODO Update audit details
+		Map<String, Object> idRepo = idRepoService.getIdRepo(uin); // REST CALL IdRepo service
 		auditData();
-
-		//return refId;
-		return "12345";
+		return idRepo;
 	}
 
 	/**
 	 * Audit data.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
 		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
@@ -116,76 +110,88 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.
 	 * String)
 	 */
-	public String validateVID(String vid) throws IdAuthenticationBusinessException {
-		String refId = doValidateVIDEntity(vid);
+    @Override
+	public Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException {
+		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid);
 
 		auditData();
 
-		return refId;
+		return idRepo;
 	}
 
 	/**
 	 * Do validate VID entity and checks for the expiry date.
 	 *
-	 * @param vid
-	 *            the vid
+	 * @param vid the vid
 	 * @return the string
-	 * @throws IdValidationFailedException
-	 *             the id validation failed exception
+	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
-		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
-		if (!vidEntityOpt.isPresent()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
-		} 
-		VIDEntity vidEntity = vidEntityOpt.get();
-		if (!vidEntity.isActive()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
+	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
+		Map<String, Object> idRepo = null;
+		String refId = null;
+
+		Optional<String> findRefIdByVid = vidRepository.findRefIdByVid(vid);
+		if (findRefIdByVid.isPresent()) {
+
+			refId = findRefIdByVid.get();
+			Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
+
+			if (findUinByRefId.isPresent()) {
+				String uin = findUinByRefId.get();
+				try {
+					idRepo = idRepoService.getIdRepo(uin);
+				} catch (IdAuthenticationBusinessException e) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
+				}
+			}
+
 		}
-		
-		Date currentDate = new Date();
-		if (!currentDate.before(vidEntity.getExpiryDate())) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
-		}
-		
-		String refId = vidEntity.getRefId();
-		
-		//FIXME Use IdRepo service
-//		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-//		if (!uinEntityOpt.isPresent()) {
-//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-//		}
-//		
-//		
-//		doValidateUIN(uinEntityOpt.get());
-	
-		return refId;
+
+		return idRepo;
 	}
 
 	/**
 	 * Do validate UIN and checks whether it is active.
 	 *
-	 * @param uinEntityOpt
-	 *            the uin entity opt
-	 * @throws IdValidationFailedException
-	 *             the id validation failed exception
+	 * @param uinEntityOpt the uin entity opt
+	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
+	/*private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
 		if (!uinEntity.isActive()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
-	}
-	
-		public Optional<String> getUIN(String uinRefId) {
-			//FIXME Use IdRepo service
-				//return uinRepository.findByUinRefId(uinRefId);
-//			UinEntity uinEntity = new UinEntity();
-//			uinEntity.setId("mosip.id.read");
-//			uinEntity.setActive(true);
-//			uinEntity.setUinRefId("426789089018");
-//			return Optional.of(uinEntity);
-			return Optional.of("426789089018");
-		} 
+	}*/
 
+	/**
+	 * Process the IdType and validates the Idtype and upon validation reference Id
+	 * is returned in AuthRequestDTO.
+	 *
+	 * @param idvIdType idType
+	 * @param idvId     id-number
+	 * @return map map
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@Override
+	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException {
+		Map<String, Object> idResDTO = null;
+		if (idvIdType.equals(IdType.UIN.getType())) {
+			try {
+				idResDTO = getIdRepoByUinNumber(idvId);
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(null, null, e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+			}
+		} else {
+			try {
+				idResDTO = getIdRepoByVidNumber(idvId);
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(null, null, null, e.getErrorText());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
+			}
+		}
+
+		return idResDTO;
+	}
 
 }

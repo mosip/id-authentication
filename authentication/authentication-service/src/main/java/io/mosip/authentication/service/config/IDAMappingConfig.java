@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import lombok.Data;
 @PropertySource(value = "classpath:ida-mapping.json", factory = IDAMappingFactory.class)
 @ConfigurationProperties
 @Data
-public class IDAMappingConfig {
+public class IDAMappingConfig implements MappingConfig {
 
 	private List<String> name;
 	private List<String> dob;
@@ -32,7 +33,17 @@ public class IDAMappingConfig {
 	private List<String> fullAddress;
 	private List<String> otp;
 	private List<String> pin;
+	private List<String> leftIndex;
+	private List<String> leftLittle;
+	private List<String> leftMiddle;
+	private List<String> leftRing;
+	private List<String> leftThumb;
+	private List<String> rightIndex;
+	private List<String> rightLittle;
+	private List<String> rightMiddle;
+	private List<String> rightRing;
+	private List<String> rightThumb;
 	private List<String> iris;
-	private List<String> fingerprint;
+	private List<String> face;
 
 }
