@@ -84,6 +84,7 @@ public class MapperUtils {
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holidayId.getLocationCode());
 			dto.setIsDeleted(holiday.getIsDeleted());
+			holidayDtos.add(dto);
 		});
 		return holidayDtos;
 	}

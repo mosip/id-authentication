@@ -6,8 +6,8 @@ mvn javadoc:javadoc
 ```
 ** 1. Global config ***
 
-*  
-*
+* This API takes care of the overall configuration of the application.   
+* **Admin** can only make these configuration changes.
 
 ```
 endpoint: /v1.0/globalconfigs 
@@ -56,8 +56,8 @@ Status: 200 OK
 
 ** 2. Registration Center Config ***
 
-*  
-*
+*  This API takes care of the configuration that is specific to Registration center.
+*  **Admin** can only make these configuration changes.
 
 ```
 endpoint: /v1.0/registrationcenterconfig/{reg_center_id}
