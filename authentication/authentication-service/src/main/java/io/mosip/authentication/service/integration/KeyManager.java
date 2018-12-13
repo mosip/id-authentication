@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**

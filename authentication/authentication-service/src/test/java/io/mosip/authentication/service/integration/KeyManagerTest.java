@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -38,15 +36,55 @@ public class KeyManagerTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@InjectMocks
-	private KeyManager keyManager;
-	
-	@Ignore
 	@Test
 	public void requestDataTest() throws IdAuthenticationAppException {
-		assertNotEquals(keyManager.requestData(createRequest(), env, decryptor, mapper), createResponse());
-		
-		
+		KeyManager keyManager = new KeyManager() {
+			@Override
+			public byte[] fileReader(String filename, Environment env) throws IOException {
+				return Base64.getDecoder().decode("MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDSHQVNjaQU3mFBs+pCTsPcijcnJ1zjXh8plDMuKd/e6tNfDl19vQmI7gKU/Gc96BcLUYd7MQ4sZFDPu0nrAa/NdQM2rQDigHLZnVoDhAiMP27NHNX3UHJcLvA3g3rtfAHAJKHw7Ja0Ur4j7QHlJs38n6CdDg9qqrD5ccKb548ozaDg8AurtEYpuTANZk0SGapFfH93+c4CD54zw487EZA8jOdj3KiihmGNMvGTu563rAcViRrjVHQiHIipEVkIZibohSJBaKcr9rJSOzdDg7bvCyVHikcISA5VkSHwc2jfg+ZsSRnDtnCSSsOGuUWNNULjHLDF4c/AXHbhcmnJbImHAgMBAAECggEAH65xi2vqjEerHtw72+CthsED0kW3VgSYqqJ72cpFmoK0+Wscl2YxcbIAYKpIVPInG1/2j5GU2LENla0LVxdLhK16nRFsBeXRVip0P/3Lc349vPQhTSfA/qZd4Tj+3Z/qUahpuf6qi1PDSNPRX9XrObFwvI26BF7qzXSk9UYZSiZP/o4z6VzBUc4L3QRK0RFo00WOWtzCk94de0jU9M0sZ9AUK5fET2m4vOSBLpmXLxlxXGnn3llfkIvqzFu5DDjFzAPTilGiWUlQPQOSWpvGaTcBaUz77PDN2UvbC3vjamkcIFpXdozq+TeIYrHy4JpU7dm3kzziPb266mDvGspb5QKBgQDuWnLZLqwxqqHqRQSDQ38G8KrZAYe1L2obIjqAcFVROC+4ESoSj9PPLcCOQVPt+KnKJuE0FJuyGQDqPvx5+8qRuRlK/Jz66bcGtPqA/CFdfbc65NcQJS0sjg1LaTakEdKGS1IAgUtM928nZ8NpB7bSCSsec9dHfUA0dEpYIWiCCwKBgQDhq1XdK1G/gE/dTlfEVxSOFExqhJ0FSUvATNtKYHt5uZluE4BRYfKnwWDvF2NdiPlSsVrln0bqbOCNc6G3eG8GE6Eh9xyPd1fq+N/tBKRwkYgBVJeyPJ0Ep7A3CXyI891pH5w82lo1dH66u1RpnioA2Ico5qcWfOPyzi//JjJf9QKBgQCwIuroD5N0CHIqmuIg1koSqNq4Dmdovycb8gllTJ3frTOmRBjhKqQNX/QBq8kH/FAMcPrO78O2sr94Wx9cTXN+iFhmj5K54Og97pOHqcpGOlajEOTUq4RcfoTYi2GzkPAQCa0JboJk2Byt9AH1pZu2TswsbtJRo/9ERAOEaPu/zQKBgG8SxttqU/0+6ZBS3C4eclaQNSCEj0inz+ohqhnMrVm3eYZNgO4NmMLrEov75gOGxLjn5IZ6xAvkdQ4KaQGF/JdwF/JAz8Tph9N2lbjyfQGPD/MfsN6gqOQ+qSQdvjcmWMdCMMNe8eG3qhy80Yp+t8vcx4HhLUKLTCMZS1R5d3f1AoGAZOT0NArWuWlUQ9W08wqiwsjIqWKxO2Dbm8txQDJEWv4NmubWOUUsgyBT6C67QqN/gH4wFXUYNnt29iPTSF/0DDsqAhRPGsCz1qElsc68QVmZ0BO7lMK4rXoz8f3AsG2EdfFNMKbVkxQNKmmwvOKzPCDQFbsXnaRI5i2wChhZEXg=");
+			}
+		};
+		assertNotEquals(keyManager.requestData(createRequest(), env, decryptor, mapper), createResponse());		
+	}
+	
+	@Test
+	public void requestInvalidDataTest() {
+		KeyManager keyManager = new KeyManager();
+		try {
+			keyManager.requestData(createRequest(), env, decryptor, mapper);
+		} catch (IdAuthenticationAppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+	
+	@Test
+	public void requestInvalidDataTest2() throws IdAuthenticationAppException, IOException {
+		KeyManager keyManager = new KeyManager() {
+			@Override
+			public byte[] fileReader(String filename, Environment env) throws IOException {
+				return Base64.getDecoder().decode("MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDSHQVNjaQU3mFBs+pCTsPcijcnJ1zjXh8plDMuKd/e6tNfDl19vQmI7gKU/Gc96BcLUYd7MQ4sZFDPu0nrAa/NdQM2rQDigHLZnVoDhAiMP27NHNX3UHJcLvA3g3rtfAHAJKHw7Ja0Ur4j7QHlJs38n6CdDg9qqrD5ccKb548ozaDg8AurtEYpuTANZk0SGapFfH93+c4CD54zw487EZA8jOdj3KiihmGNMvGTu563rAcViRrjVHQiHIipEVkIZibohSJBaKcr9rJSOzdDg7bvCyVHikcISA5VkSHwc2jfg+ZsSRnDtnCSSsOGuUWNNULjHLDF4c/AXHbhcmnJbImHAgMBAAECggEAH65xi2vqjEerHtw72+CthsED0kW3VgSYqqJ72cpFmoK0+Wscl2YxcbIAYKpIVPInG1/2j5GU2LENla0LVxdLhK16nRFsBeXRVip0P/3Lc349vPQhTSfA/qZd4Tj+3Z/qUahpuf6qi1PDSNPRX9XrObFwvI26BF7qzXSk9UYZSiZP/o4z6VzBUc4L3QRK0RFo00WOWtzCk94de0jU9M0sZ9AUK5fET2m4vOSBLpmXLxlxXGnn3llfkIvqzFu5DDjFzAPTilGiWUlQPQOSWpvGaTcBaUz77PDN2UvbC3vjamkcIFpXdozq+TeIYrHy4JpU7dm3kzziPb266mDvGspb5QKBgQDuWnLZLqwxqqHqRQSDQ38G8KrZAYe1L2obIjqAcFVROC+4ESoSj9PPLcCOQVPt+KnKJuE0FJuyGQDqPvx5+8qRuRlK/Jz66bcGtPqA/CFdfbc65NcQJS0sjg1LaTakEdKGS1IAgUtM928nZ8NpB7bSCSsec9dHfUA0dEpYIWiCCwKBgQDhq1XdK1G/gE/dTlfEVxSOFExqhJ0FSUvATNtKYHt5uZluE4BRYfKnwWDvF2NdiPlSsVrln0bqbOCNc6G3eG8GE6Eh9xyPd1fq+N/tBKRwkYgBVJeyPJ0Ep7A3CXyI891pH5w82lo1dH66u1RpnioA2Ico5qcWfOPyzi//JjJf9QKBgQCwIuroD5N0CHIqmuIg1koSqNq4Dmdovycb8gllTJ3frTOmRBjhKqQNX/QBq8kH/FAMcPrO78O2sr94Wx9cTXN+iFhmj5K54Og97pOHqcpGOlajEOTUq4RcfoTYi2GzkPAQCa0JboJk2Byt9AH1pZu2TswsbtJRo/9ERAOEaPu/zQKBgG8SxttqU/0+6ZBS3C4eclaQNSCEj0inz+ohqhnMrVm3eYZNgO4NmMLrEov75gOGxLjn5IZ6xAvkdQ4KaQGF/JdwF/JAz8Tph9N2lbjyfQGPD/MfsN6gqOQ+qSQdvjcmWMdCMMNe8eG3qhy80Yp+t8vcx4HhLUKLTCMZS1R5d3f1AoGAZOT0NArWuWlUQ9W08wqiwsjIqWKxO2Dbm8txQDJEWv4NmubWOUUsgyBT6C67QqN/gH4wFXUYNnt29iPTSF/0DDsqAhRPGsCz1qElsc68QVmZ0BO7lMK4rXoz8f3AsG2EdfFNMKbVkxQNKmmwvOKzPCDQFbsXnaRI5i2wChhZEXg=");
+			}
+		};
+		Map<String,Object> map = createRequest();
+		map.remove("key");
+		keyManager.requestData(map, env, decryptor, mapper);
+	}
+	
+	@Test
+	public void requestInvalidDataTest3() {
+		KeyManager keyManager = new KeyManager() {
+			@Override
+			public byte[] fileReader(String filename, Environment env) throws IOException {
+				return Base64.getDecoder().decode("MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCzrKrV9AtFLTxCY3xnV7CzTPgq5l");
+			}
+		};
+		try {
+			keyManager.requestData(createRequest(), env, decryptor, mapper);
+		} catch (IdAuthenticationAppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	
 	private  Map<String, Object> createRequest(){
@@ -72,11 +110,11 @@ public class KeyManagerTest {
 				"	\"idvIdType\": \"D\",\r\n" + 
 				"	\"reqTime\": \"2018-12-12T15:44:57.086+05:30\",\r\n" + 
 				"	\"muaCode\": \"1234567890\",\r\n" + 
-				"	\"tspID\":\"test\",\r\n" + 
+				"	\"tspID\":\"tsp1001\",\r\n" + 
 				"	\"key\": {\r\n" + 
-				"    \"sessionKey\": \"D4vr4nyAiAkSWRJ8Gu2v7NnOxyh3EGIef2RiDQ3I8qKCyNQB0+CJYOrNhKRsHjmapECTb/ZZw8gbMtIka3nvly/2TwczfTY1gYzKEeg5BwiwYe/OljRz7MWYwZp6ow5bvdc3iJlXdybZ6xXQrZLyM6C3f6f53Spyu7dKBn6vmCZbZ16RrE1TrZmAcZdoXdOe5OID9H7VDh7oCVvqI7DOvDVSOc4n4iDOSAkt4aSZDS2Sv+xCIInKBMBb7vcKW0EjHt8rhTOFq7aEOnYcWlhT6Nku8XcRWMDQ32blHnVI3652j5JueBTWZDrSncG4wKfXq3SMuxExKjffu6a6Q4ErSA==\"\r\n" + 
+				"    \"sessionKey\": \"c1OYTyGCXn9FVkJ6o/IVGc+JADaXEXvURRljML4JeeQOjF5Pc2UPfGp7J/eSu9r7ZNFspjNp4aRxejYBQZDfOXHZLEz3DckbKOEyycGNvu3tR3s6u4Ev+SoukkqDIya6sabIJiTVaZoLSezlvmuh7JAUNioB0ygTpsDG1iyshAKHbmKfP9Qw2aHJ+vZvvKqePbukEukhGFlRxSrW00bthKDgVsSVVd20Jh+nZP1391cVE7WVeHiYdfb5kU7v7ArKoKt55T0ggCo1a4fPbIwyfoxgdAmX+4JlhlbXx3gA+Ydw45LJmjk+ROt1wLs7x9Zo1H5A/MuXfK1xdEuJ6cx97A==\"\r\n" + 
 				"	},\r\n" + 
-				"	\"request\": \"NMRqSbaHnuHPMd6woJjKpPkgJ5FQrpN2YfLPpScmja+Ext9bXc7XGfi4xonyCAyPGNfcFkSoBQl2PSOzEDGlNwy5EyJZvqYy73itTa2mu8+0IZrGFtIaiBEp/TSSeBT7NXJNyIJBDTfkjtevFLlU43ZoHtG2tewC2MOVsSzTyMjvCciS9TOGN7pHwft0L0zCBIq8DeqtPw4i4slDTZfDnl+p7qq0DcbowaGn7TFXMgYXYGr8UuWSx37EADYhyg5JyDX/xkZLIJDj/DN+WhQfaoZIQ7HticADiiJr0v2NS4iXT9r6HEOo+8DigPUnbPUPK55vkhUqw/wvzZQHcYbAZUREYC3K0DR05FQ3sZRLcoDi+y3+lCEUecbA6DC01aqBJ+ExqFiWtaakXdTc7WhHWzmWgbp+xYreqkloWsRoj7b1oUbuxou206E3IRmQLyCtOIaftWJPrygVQNE5lkKWfcObWzz0f1qbInVwWposvVFwbE9nZtxicud4L8fKl+1XPuCXV66AwT4ar3LWVF4EPrhM2E3QgAkSCzI2UsByT3k=\",\r\n" + 
+				"	\"request\": \"LjOdYJ2u728SauWBvruKf56yYF5gvWypVmWHCzRlRn8qf/c+wKzr1eRKBlC2QNhBJqbxOLv1lTXmECP2pWTPy8o8kgsnZ0O9wd8Ew/Y1wWeoIriccS1DKt7+61aGnIA+kNfRHjZdYEu+O2WgeslbhWG+nwO6K/TXGMsGiYIGG3DHPl0dLB2oenmk60yV8JACvBP8AGXblHi8RE3Nf59AT71NUhkvyHupsldP8kSCWhrQ50JuLmJKyuEQAKxsHvobBhrVftmIJdnkrBVqt2EN3kY8XQZyCCeHa9hEboQeG9jl+M/+wnTPmV5Of01tBoqtiuENrfg5G0UauClZ8ipGKs42aRwmVsJKluZSfrjMI7ZcUYwjv9sKWaQCv8/dsqM9w7sErJbC1H3lRCthytKx7WgAqtyXIPQIxItrCXUgtlAlF3+EpKeNOFxJAsNQOvpwK8mmqjuHifjlky9aWLKLO5pMuZwbQwXPkw0XW3sDpqa8wE786a6udh8HsSY2RcUGU98MbnL1Q8PiOKm6wTjsqp7A3oSzjUsMLgHFMpGFJpk=\",\r\n" + 
 				"	\"txnID\": \"1234567890\",\r\n" + 
 				"	\"reqHmac\": \"string\",\r\n" + 
 				"	\"ver\": \"1.0\"\r\n" + 
