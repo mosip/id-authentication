@@ -24,29 +24,31 @@ public interface TemplateService {
 	 * To fetch all the {@link Template} based on language code
 	 * 
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return {@link TemplateResponseDto}
 	 */
 	public TemplateResponseDto getAllTemplateByLanguageCode(String langCode);
 
 	/**
-	 * To fetch all the {@link Template} based on language code and template type code
+	 * To fetch all the {@link Template} based on language code and template type
+	 * code
 	 * 
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @param templateTypeCode
-	 * 			the template type code
+	 *            the template type code
 	 * @return {@link TemplateResponseDto}
 	 */
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String langCode,
 			String templateTypeCode);
+
 	/**
-	 * Method to create template  based on  provided details
+	 * Method to create template based on provided details
 	 * 
 	 * @param template
 	 *            the Template Dto .
 	 * @return {@linkplain IdResponseDto}
 	 */
-	public IdResponseDto createTemplate(TemplateDto tempalte);
+	public IdResponseDto createTemplate(TemplateDto template);
 
 }

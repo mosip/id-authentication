@@ -20,16 +20,6 @@ public interface DocumentCategoryService {
 	 * Method to fetch all Document category details
 	 * 
 	 * @return DocumentCategoryDTO list
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategory();
 
@@ -40,16 +30,6 @@ public interface DocumentCategoryService {
 	 *            The language code
 	 * 
 	 * @return DocumentCategoryDTO list
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode);
 
@@ -58,21 +38,9 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param code
 	 *            The Id of Document Category
-	 * 
 	 * @param langCode
 	 *            The language code
-	 * 
 	 * @return DocumentCategoryDTO
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
 
