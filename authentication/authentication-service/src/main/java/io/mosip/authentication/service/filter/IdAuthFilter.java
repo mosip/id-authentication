@@ -64,7 +64,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			requestBody.replace(REQUEST,
 					decode((String) requestBody.get(REQUEST)));
-			if(null != (String) requestBody.get(REQUEST)) {
+			if(null != requestBody.get(REQUEST)) {
 				Map<String, Object> request = keyManager.requestData(requestBody, env, decryptor, mapper);
 				requestBody.replace(REQUEST, request);				
 			}
