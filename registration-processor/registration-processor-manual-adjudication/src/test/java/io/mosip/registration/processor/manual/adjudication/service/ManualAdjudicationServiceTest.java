@@ -80,9 +80,6 @@ public class ManualAdjudicationServiceTest {
 		PKId.setMatchedRefId("RefID");
 		PKId.setMatchedRefType("Type");
 		PKId.setRegId("RegID");
-		dto.setName("User");
-		dto.setOffice("Office");
-		dto.setStatus(ManualVerificationStatus.PENDING.name());
 		dto.setUserId("mvusr22");
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
