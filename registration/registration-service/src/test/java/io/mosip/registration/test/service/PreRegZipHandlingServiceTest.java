@@ -2,7 +2,9 @@ package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.net.URL;
 import java.util.Base64;
 
@@ -21,7 +23,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -46,10 +47,20 @@ public class PreRegZipHandlingServiceTest {
 	static MosipSecurityMethod mosipSecurityMethod;
 
 	@BeforeClass
-	public static void initialize() throws IOException {
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/41861504659248.zip");
+	public static void initialize() throws IOException, java.io.IOException {
+		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
 		File packetZipFile = new File(url.getFile());
-		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(packetZipFile));
+		String byteArrayContent = bufferedReader.readLine();
+
+		String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length() - 1).split(",");
+		preRegPacket = new byte[byteValues.length];
+
+		for (int i = 0, len = preRegPacket.length; i < len; i++) {
+			preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
+		}
+
+		bufferedReader.close();
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
 
 	}

@@ -96,8 +96,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				if (zipEntry.getName().endsWith(".json")) {
 					registrationDTO = parseDemographicJson(zipInputStream, zipEntry, registrationDTO);
 				} else {
-					documentDetailsDTO = new DocumentDetailsDTO();
-					documentDetailsDTO.setDocumentName(zipEntry.getName());
+					documentDetailsDTO = new DocumentDetailsDTO();					
 					documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 					if (zipEntry.getName().contains("_")) {
 						documentDetailsDTO
@@ -107,6 +106,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 						documentDetailsDTO
 								.setDocumentType(zipEntry.getName().substring(zipEntry.getName().lastIndexOf(".") + 1));
 					}
+					documentDetailsDTO.setDocumentName("");
 					documentDetailsDTOs.add(documentDetailsDTO);
 				}
 			}
