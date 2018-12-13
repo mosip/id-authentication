@@ -1,6 +1,8 @@
 package io.mosip.registration.test.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -13,6 +15,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -46,6 +49,20 @@ public class ZipCreationServiceTest {
 
 	@Test
 	public void testPacketZipCreator() throws RegBaseCheckedException {
+		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
+		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
+		irisDetailsDTO.setIris("capturedImage".getBytes());
+		irisDetailsDTO.setIrisImageName("officerIris.jpg");
+		irisDetailsDTOs.add(irisDetailsDTO);
+		registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
+
+		irisDetailsDTOs = new ArrayList<>();
+		irisDetailsDTO = new IrisDetailsDTO();
+		irisDetailsDTO.setIris("capturedImage".getBytes());
+		irisDetailsDTO.setIrisImageName("supervisorIris.jpg");
+		irisDetailsDTOs.add(irisDetailsDTO);
+		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
+		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFingerprintDetailsDTO(null);
 		byte[] packetZipInBytes = zipCreationService.createPacket(registrationDTO, jsonMap);
 		Assert.assertNotNull(packetZipInBytes);
 	}

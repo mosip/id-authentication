@@ -158,11 +158,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			while ((value = bufferedReader.readLine()) != null) {
 
 				JSONObject jsonObject = new JSONObject(value);
-				System.out.println(jsonObject);
-				JSONObject demographicRootJson = new JSONObject(jsonObject.get("Identity").toString());
-				System.out.println(demographicRootJson);
-				JSONObject demographicContentJson = demographicRootJson.getJSONObject("identity");
-				System.out.println(demographicContentJson);
+
+				JSONObject demographicContentJson = jsonObject.getJSONObject("demographic-details")
+						.getJSONObject("identity");
 				Iterator<String> demographicFields = demographicContentJson.keys();
 				JSONObject fieldContentObject;
 				String fieldValue = null;
