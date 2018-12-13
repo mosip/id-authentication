@@ -317,20 +317,20 @@ public class SyncHandlerMasterdataIntegrationTest {
 	@Test
 	public void syncMasterDataSuccess() throws Exception {
 		mockSuccess();
-		mockMvc.perform(get("/syncmasterdata/{machineId}", "1001")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}", "1001")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataSuccessWithlastUpadtedTimestamp() throws Exception {
 		mockSuccess();
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:01:01", "1001"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:101:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:101:01", "1001"))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -339,7 +339,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -348,7 +348,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -357,7 +357,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -366,7 +366,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -375,7 +375,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -384,7 +384,7 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -393,187 +393,187 @@ public class SyncHandlerMasterdataIntegrationTest {
 		mockSuccess();
 		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataTemplateFetchException() throws Exception {
 		mockSuccess();
 		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataTemplateFileFormatFetchException() throws Exception {
 		mockSuccess();
 		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataTemplateTypeFetchException() throws Exception {
 		mockSuccess();
 		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
-	
+
 	@Test
 	public void syncMasterDataHolidayFetchException() throws Exception {
 		mockSuccess();
-		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(),Mockito.any()))
+		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataBiometricAttrFetchException() throws Exception {
 		mockSuccess();
 		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataBiometricTypeFetchException() throws Exception {
 		mockSuccess();
 		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataDocCategoryFetchException() throws Exception {
 		mockSuccess();
 		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataDocTypeFetchException() throws Exception {
 		mockSuccess();
 		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataLanguageFetchException() throws Exception {
 		mockSuccess();
 		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataGenderFetchException() throws Exception {
 		mockSuccess();
 		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataLocationFetchException() throws Exception {
 		mockSuccess();
 		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataIdTypesFetchException() throws Exception {
 		mockSuccess();
-		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(	Mockito.any()))
+		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataRegistrationCenterFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataRegistrationCenterTypeFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataValidFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataBlackListedWordFetchException() throws Exception {
 		mockSuccess();
 		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
+
 	@Test
 	public void syncMasterDataReasonCatFetchException() throws Exception {
 		mockSuccess();
 		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataReasonListFetchException() throws Exception {
 		mockSuccess();
 		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDataTitleFetchException() throws Exception {
 		mockSuccess();
 		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterDatavalidDocumentFetchException() throws Exception {
 		mockSuccess();
 		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
+		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
 }
