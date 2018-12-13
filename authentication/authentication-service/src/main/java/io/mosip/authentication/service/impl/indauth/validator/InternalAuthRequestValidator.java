@@ -142,7 +142,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** Validation for DateTime */
 	public void validateDate(AuthRequestDTO authRequestDTO, Errors errors) {
-		if (!authRequestDTO.getReqTime().isEmpty()) {
+		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
 			try {
 				Date reqDate = datehelper.convertStringToDate(authRequestDTO.getReqTime());
 				if (reqDate.after(new Date())) {
@@ -155,6 +155,11 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 						new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 			}
 
+		}else {
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] {REQ_TIME},IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		
+			
 		}
 	}
 
