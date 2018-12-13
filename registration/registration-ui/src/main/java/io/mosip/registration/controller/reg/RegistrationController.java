@@ -1233,14 +1233,17 @@ public class RegistrationController extends BaseController {
 					if (ageField.getText().length() > 3) {
 						String age = ageField.getText().substring(0, 3);
 						ageField.setText(age);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING+" "+AppConfig.getApplicationProperty("max_age"));
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
+								+ AppConfig.getApplicationProperty("max_age"));
 					}
-					
+
 					if (newValue.matches("\\d{1,3}")) {
-						if (Integer.parseInt(ageField.getText()) > Integer.parseInt(AppConfig.getApplicationProperty("max_age"))) {
+						if (Integer.parseInt(ageField.getText()) > Integer
+								.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 							String age = ageField.getText().substring(0, 2);
 							ageField.setText(age);
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING+" "+AppConfig.getApplicationProperty("max_age"));
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
+									+ AppConfig.getApplicationProperty("max_age"));
 						}
 					}
 					// to populate date of birth based on age
@@ -1696,8 +1699,25 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 
-			bioExceptionToggleLabel1.setId("toggleLabel1");
-			bioExceptionToggleLabel2.setId("toggleLabel2");
+			if (SessionContext.getInstance().getUserContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
+				toggleBiometricException = false;
+				SessionContext.getInstance().getUserContext().getUserMap()
+						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+
+			}else {
+				toggleBiometricException=(boolean) SessionContext.getInstance().getUserContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			}
+			
+			if(toggleBiometricException) {
+				bioExceptionToggleLabel1.setId("toggleLabel2");
+				bioExceptionToggleLabel2.setId("toggleLabel1");
+			}else {
+				bioExceptionToggleLabel1.setId("toggleLabel1");
+				bioExceptionToggleLabel2.setId("toggleLabel2");
+			}
+
 			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
@@ -1712,12 +1732,10 @@ public class RegistrationController extends BaseController {
 						toggleBiometricException = false;
 						captureExceptionImage.setDisable(true);
 					}
+					SessionContext.getInstance().getUserContext().getUserMap()
+					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 				}
 			});
-
-			SessionContext.getInstance().getUserContext().getUserMap()
-					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
 				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 			});
