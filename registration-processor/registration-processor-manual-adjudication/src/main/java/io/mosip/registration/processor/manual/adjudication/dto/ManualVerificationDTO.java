@@ -25,10 +25,6 @@ public class ManualVerificationDTO implements Serializable {
 	private String matchedRefId;
 	
 	private String matchedRefType;
-	
-	private String office;
-	
-	private String name;
 
 	/**
 	 * @return the regId
@@ -107,34 +103,6 @@ public class ManualVerificationDTO implements Serializable {
 		return serialVersionUID;
 	}
 
-	/**
-	 * @return the office
-	 */
-	public String getOffice() {
-		return office;
-	}
-
-	/**
-	 * @param office the office to set
-	 */
-	public void setOffice(String office) {
-		this.office = office;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -145,8 +113,6 @@ public class ManualVerificationDTO implements Serializable {
 		result = prime * result + ((matchedRefId == null) ? 0 : matchedRefId.hashCode());
 		result = prime * result + ((matchedRefType == null) ? 0 : matchedRefType.hashCode());
 		result = prime * result + ((mvUsrId == null) ? 0 : mvUsrId.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((office == null) ? 0 : office.hashCode());
 		result = prime * result + ((regId == null) ? 0 : regId.hashCode());
 		result = prime * result + ((statusCode == null) ? 0 : statusCode.hashCode());
 		return result;
@@ -180,18 +146,6 @@ public class ManualVerificationDTO implements Serializable {
 			if (other.mvUsrId != null)
 				return false;
 		} else if (!mvUsrId.equals(other.mvUsrId)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (office == null) {
-			if (other.office != null)
-				return false;
-		} else if (!office.equals(other.office)) {
 			return false;
 		}
 		if (regId == null) {

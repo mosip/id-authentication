@@ -38,7 +38,7 @@ public class ManualAdjudicationExceptionHandler {
 	public ResponseEntity<ExceptionJSONInfo> invalidFileNameExceptionHandler(final InvalidFileNameException e,
 			WebRequest request) {
 		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
-		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
 
 	/**

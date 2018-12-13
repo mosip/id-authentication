@@ -129,7 +129,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantFiles").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantBiometric").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -152,7 +152,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantData").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantDemographic").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -167,16 +167,17 @@ public class ManualAdjudicationControllerTest {
 		FileRequestDto fileRequestDto = new FileRequestDto();
 		fileRequestDto.setRegId("12345");
 		fileRequestDto.setFileName("APPLICANTPHOTO");
-		Mockito.when(manualAdjudicationService.getApplicantFile(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new InvalidFileNameException("",""));
+		Mockito.when(manualAdjudicationService.getApplicantFile(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
+				PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage()));
 		try {
 			jsonfileRequestDto = this.jsonRequestDto.write(fileRequestDto).getJson();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantFiles").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantBiometric").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
-			this.mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+			this.mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -197,7 +198,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantFiles").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantDemographic").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
 		} catch (Exception e) {
@@ -238,7 +239,7 @@ public class ManualAdjudicationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/verification").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isForbidden());
 		} catch (Exception e) {

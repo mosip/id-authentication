@@ -1,14 +1,13 @@
 package io.mosip.registration.processor.manual.adjudication.service;
 
 import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -47,6 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class ManualAdjudicationServiceTest {
 
 	private List<ManualVerificationEntity> entities;
+	private List<ManualVerificationEntity> entitiesTemp;
 	@InjectMocks
 	private ManualAdjudicationService manualAdjudicationService = new ManualAdjudicationServiceImpl();
 	@Mock
@@ -76,8 +76,11 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationEntity = new ManualVerificationEntity();
 		manualVerificationDTO = new ManualVerificationDTO();
 		registrationStatusDto = new InternalRegistrationStatusDto();
+		dto=new UserDto();
+		entities=new ArrayList<ManualVerificationEntity>();
+		entitiesTemp=new ArrayList<ManualVerificationEntity>();
 		PKId = new ManualVerificationPKEntity();
-		PKId.setMatchedRefId("RefID");
+		PKId.setMatchedRefId("RefID");	
 		PKId.setMatchedRefType("Type");
 		PKId.setRegId("RegID");
 		dto.setUserId("mvusr22");
@@ -99,21 +102,32 @@ public class ManualAdjudicationServiceTest {
 		registrationStatusDto.setStatusComment("test");
 		manualVerificationDTO.setMatchedRefType("Type");
 		manualVerificationDTO.setStatusCode("PENDING");
+		entities.add(manualVerificationEntity);
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
 				.thenReturn(entities);
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(entities);
 	}
 
 	@Test
 	public void assignStatusMethodCheck() {
-
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(entities);
 		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto);
 		assertEquals(manualVerificationDTO, manualVerificationDTO1);
+		
+
 	}
 
 	@Test
 	public void assignStatusMethodNullEntityCheck() {
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
+		manualAdjudicationService.assignApplicant(dto);
+	}
+	@Test(expected=NoRecordAssignedException.class)
+	public void noRecordAssignedExceptionAssignStatus() {
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(entitiesTemp);
+		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+		.thenReturn(entitiesTemp);
 		manualAdjudicationService.assignApplicant(dto);
 	}
 
@@ -178,8 +192,7 @@ public class ManualAdjudicationServiceTest {
 	@Test(expected = NoRecordAssignedException.class)
 	public void updatePacketStatusNoRecordAssignedExceptionCheck() {
 		manualVerificationDTO.setStatusCode("REJECTED");
-
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(null);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entitiesTemp);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 		
 
@@ -188,32 +201,28 @@ public class ManualAdjudicationServiceTest {
 	
 	@Test
 	public void updatePacketStatusApprovalMethodCheck(){
-		ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
-		manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
-		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
-		manualVerificationDTO.setMvUsrId("abcde");
-		manualVerificationDTO.setRegId("abcde");
 		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
+		Mockito.when(basePacketRepository.update(any())).thenReturn(manualVerificationEntity);
+		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
+
 		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
-		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
 	
 	@Test
 	public void updatePacketStatusRejectionMethodCheck(){
-		ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
-		manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
-		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
-		manualVerificationDTO.setMvUsrId("abcde");
-		manualVerificationDTO.setRegId("abcde");
+		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());;
 		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
+		Mockito.when(basePacketRepository.update(any())).thenReturn(manualVerificationEntity);
+
 		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
-		assertNotNull(manualAdjudicationService.updatePacketStatus(manualVerificationDTO));
+		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
 	
 	@Test(expected=InvalidUpdateException.class)
@@ -227,8 +236,5 @@ public class ManualAdjudicationServiceTest {
 				.thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
-	
-	
-	
 	
 }
