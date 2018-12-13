@@ -65,6 +65,7 @@ public class RegistrationConstants {
 	public static final String PWORD_FIELD_EMPTY = bundle.getString("PWORD_FIELD_EMPTY");
 	public static final String USRNAME_PWORD_LENGTH = bundle.getString("USRNAME_PWORD_LENGTH");
 	public static final String USER_NOT_ONBOARDED = bundle.getString("USER_NOT_ONBOARDED");
+	public static final String USER_NOT_AUTHORIZED = bundle.getString("USER_NOT_AUTHORIZED");
 	public static final String INCORRECT_PWORD = bundle.getString("INCORRECT_PWORD");
 	public static final String BLOCKED_USER_ERROR = bundle.getString("BLOCKED_USER_ERROR");
 	public static final String USERNAME_FIELD_ERROR = bundle.getString("USERNAME_FIELD_ERROR");
@@ -655,9 +656,12 @@ public class RegistrationConstants {
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 			"/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",
 			"/fingerprints/lefthand/leftRing/" };
-	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/righthand/rightIndex/",
+	public static final String[] RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS = new String[] { "/fingerprints/righthand/rightIndex/",
 			"/fingerprints/righthand/rightLittle/", "/fingerprints/righthand/rightMiddle/",
 			"/fingerprints/righthand/rightRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/Srighthand/rightIndex/",
+			"/fingerprints/Srighthand/rightLittle/", "/fingerprints/Srighthand/rightMiddle/",
+			"/fingerprints/Srighthand/rightRing/" };	   
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
 

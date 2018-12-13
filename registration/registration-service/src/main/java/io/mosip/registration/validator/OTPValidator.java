@@ -13,9 +13,8 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
-import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Component("otpValidator")
@@ -28,8 +27,6 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		boolean status = false;
 		// Create Response to Return to UI layer
-		ResponseDTO response = new ResponseDTO();
-		SuccessResponseDTO successResponse;
 		OtpValidatorResponseDTO otpValidatorResponseDto = null;
 
 		// prepare request params to pass through URI
@@ -45,7 +42,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 					&& otpValidatorResponseDto.getStatus().equalsIgnoreCase("success")) {
 
 				// Create Success Response
-		
+
 				status = true;
 
 			} else {
@@ -54,8 +51,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException
 				| ResourceAccessException exception) {
-			status=false;
-
+			status = false;
 		}
 
 		return status;

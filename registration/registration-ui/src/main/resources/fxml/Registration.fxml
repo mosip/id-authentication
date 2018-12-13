@@ -210,12 +210,12 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="284.0" layoutY="390.0" text="85%">
+                                    <Label layoutX="284.0" layoutY="390.0" text="				85%">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="656.0" layoutY="390.0" text="85%">
+                                    <Label layoutX="656.0" layoutY="390.0" text="				85%">
                                        <font>
                                           <Font size="16.0" />
                                        </font>

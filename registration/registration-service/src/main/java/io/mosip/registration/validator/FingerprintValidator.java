@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -16,7 +17,7 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 
 	@Autowired
 	private RegistrationUserDetailDAO registrationUserDetailDAO;
-	
+
 	@Autowired
 	FingerprintFacade fingerprintFacade;
 
@@ -45,7 +46,8 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	 * @return
 	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
-		List<UserBiometric> userFingerprintDetails = registrationUserDetailDAO.getUserSpecificFingerprintDetails(userId);
+		List<UserBiometric> userFingerprintDetails = registrationUserDetailDAO
+				.getUserSpecificFingerprintDetails(userId);
 		return fingerprintFacade.validateFP(fingerprintDetailsDTO, userFingerprintDetails);
 	}
 
@@ -57,8 +59,16 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	 * @return
 	 */
 	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
-		return fingerprintDetailsDTOs.stream().anyMatch(fingerprintDetailsDTO -> fingerprintFacade.validateFP(fingerprintDetailsDTO,
-				registrationUserDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType())));
+		Boolean isMatchFound=false;
+		for(FingerprintDetailsDTO fingerprintDetailsDTO:fingerprintDetailsDTOs) {
+			isMatchFound=fingerprintFacade.validateFP(fingerprintDetailsDTO,
+					registrationUserDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
+			if (isMatchFound) {
+				SessionContext.getInstance().getMapObject().put("DuplicateFinger", fingerprintDetailsDTO);
+				break;
+			}
+		}
+		return isMatchFound;
 
 	}
 }

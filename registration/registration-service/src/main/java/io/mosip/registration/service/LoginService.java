@@ -1,13 +1,11 @@
 package io.mosip.registration.service;
 
-import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.entity.UserBiometric;
 
 /**
  * Service Class for Login
@@ -80,10 +78,7 @@ public interface LoginService {
 	 *            user details
 	 */
 	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
-	
-	List<UserBiometric> getAllActiveUsers(String attrCode);
-	
-	List<UserBiometric> getUserSpecificFingerprintDetails(String userId);
+
 }
 
 
