@@ -30,7 +30,6 @@ public class TitleServiceImpl implements TitleService {
 	@Autowired
 	private TitleRepository titleRepository;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,7 +42,7 @@ public class TitleServiceImpl implements TitleService {
 		List<Title> titles = null;
 		try {
 			titles = titleRepository.findAll(Title.class);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -74,7 +73,7 @@ public class TitleServiceImpl implements TitleService {
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
