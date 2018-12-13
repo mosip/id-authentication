@@ -69,10 +69,7 @@ public class ManualAdjudicationControllerTest {
 		mockMvc = webAppContextSetup(this.wac).build();
 		JacksonTester.initFields(this, objectMapper);
 		this.userDto = new UserDto();
-		this.userDto.setName("USER1");
 		this.userDto.setUserId("USER1");
-		this.userDto.setStatus("");
-		this.userDto.setOffice("office");
 		manualVerificationDTO = new ManualVerificationDTO();
 		manualVerificationDTO.setRegId("123456789");
 		manualVerificationDTO.setMvUsrId("USER1");
