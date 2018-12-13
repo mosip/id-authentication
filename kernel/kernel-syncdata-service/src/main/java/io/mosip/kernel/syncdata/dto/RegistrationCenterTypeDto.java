@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Class that holds the variables of each registration center type list data to
@@ -11,7 +12,8 @@ import lombok.Data;
  *
  */
 @Data
-public class RegistrationCenterTypeDto {
+@EqualsAndHashCode(callSuper = true)
+public class RegistrationCenterTypeDto extends BaseDto{
 	/**
 	 * the code.
 	 */

@@ -82,7 +82,8 @@ public class MapperUtils {
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
-			holidayDtos.add(dto);
+			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setIsDeleted(holiday.getIsDeleted());
 		});
 		return holidayDtos;
 	}
@@ -160,6 +161,7 @@ public class MapperUtils {
 			deviceTypeDto.setDescription(deviceType.getDescription());
 			deviceTypeDto.setCode(deviceType.getCode());
 			deviceTypeDto.setLangCode(deviceType.getLangCode());
+			deviceTypeDto.setIsDeleted(deviceType.getIsDeleted());
 		}
 		deviceTypeDtoList.add(deviceTypeDto);
 		return deviceTypeDtoList;
@@ -179,7 +181,9 @@ public class MapperUtils {
 			deviceSpecificationDto.setModel(deviceSpecification.getModel());
 			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
 			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
+			deviceSpecificationDto.setIsDeleted(deviceSpecification.getIsDeleted());
 			deviceSpecificationDtoList.add(deviceSpecificationDto);
+
 		}
 		return deviceSpecificationDtoList;
 	}
@@ -204,6 +208,7 @@ public class MapperUtils {
 		machineDto.setValidityDateTime(machine.getValidityDateTime());
 		machineDto.setIpAddress(machine.getIpAddress());
 		machineDto.setLangCode(machine.getLangCode());
+		machineDto.setIsDeleted(machine.getIsDeleted());
 		return machineDto;
 	}
 
@@ -220,6 +225,7 @@ public class MapperUtils {
 			dto.setMinDriverversion(ms.getMinDriverversion());
 			dto.setModel(ms.getModel());
 			dto.setName(ms.getName());
+			dto.setIsDeleted(ms.getIsDeleted());
 			machineSpecificationList.add(dto);
 		}
 		return machineSpecificationList;
@@ -234,6 +240,7 @@ public class MapperUtils {
 			dto.setIsActive(mt.getIsActive());
 			dto.setLangCode(mt.getLangCode());
 			dto.setName(mt.getName());
+			dto.setIsDeleted(mt.getIsDeleted());
 			machines.add(dto);
 		}
 		return machines;
@@ -247,6 +254,7 @@ public class MapperUtils {
 			dto.setTitleName(entity.getTitleName());
 			dto.setTitleDescription(entity.getTitleDescription());
 			dto.setIsActive(entity.getIsActive());
+			dto.setIsDeleted(entity.getIsDeleted());
 			list.add(dto);
 		}
 		return list;

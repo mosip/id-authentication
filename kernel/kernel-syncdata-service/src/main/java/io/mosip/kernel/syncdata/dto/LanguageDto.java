@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -16,10 +17,11 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "Language", description = "Language resource representation")
-public class LanguageDto {
+public class LanguageDto extends BaseDto{
 
 	/**
 	 * Field for language code
