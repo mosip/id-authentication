@@ -29,7 +29,6 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterHistoryService {
 
-
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 
@@ -56,8 +55,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		}
 		try {
 			registrationCenters = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId,
-							langCode, localDateTime);
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							registrationCenterId, langCode, localDateTime);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
