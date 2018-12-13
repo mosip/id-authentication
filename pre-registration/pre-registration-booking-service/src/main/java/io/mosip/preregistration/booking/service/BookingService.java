@@ -145,7 +145,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
-
+			System.out.println("uriBuilder::::"+uriBuilder);
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
 
@@ -241,6 +241,7 @@ public class BookingService {
 				}
 			}
 		} catch (HttpClientErrorException e) {
+			e.printStackTrace();
 			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(), "HTTP_CLIENT_EXCEPTION");
 
 		} catch (DataAccessException e) {
