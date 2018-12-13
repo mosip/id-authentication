@@ -30,7 +30,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -52,7 +51,6 @@ import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
@@ -83,7 +81,6 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -136,8 +133,7 @@ public class MasterDataServiceTest {
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
 	
-	@Autowired
-	private MachineHistoryService machineHistoryService;
+	
 	
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
@@ -557,13 +553,7 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(request);
 	}
 
-	private List<DeviceTypeDto> deviceTypeDtoList;
-	private DeviceTypeDto deviceTypeDto;
-
-	private List<DeviceType> deviceTypeList;
-	private DeviceType deviceType;
-	private List<CodeAndLanguageCodeID> codeLangCodeIds;
-	private CodeAndLanguageCodeID codeAndLanguageCodeId;
+	
 
 	// ----------------------- ApplicationServiceTest ----------------
 	@Test

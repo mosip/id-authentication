@@ -21,10 +21,12 @@ import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -52,6 +54,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
+
+	@Autowired
+	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 
 	/**
 	 * Reference to HolidayRepository.
@@ -288,9 +293,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		RegistrationCenter entity = new RegistrationCenter();
 		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
+				.setCreateMetaData(registrationCenterDto.getRequest(), RegistrationCenterHistory.class);
+		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
+		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
 		RegistrationCenter registrationCenter;
 		try {
 			registrationCenter = registrationCenterRepository.create(entity);
+			registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "

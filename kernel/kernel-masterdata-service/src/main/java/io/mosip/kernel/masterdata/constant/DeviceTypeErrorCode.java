@@ -8,9 +8,10 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum DeviceTypeErrorCode {
-	DEVICE_TYPE_INSERT_EXCEPTION("KER-MSD-001","Error occurred while inserting Device Type details"),
-	DEVICE_TYPE_MAPPING_EXCEPTION("KER-MSD-002","Error occured while mapping Device Type details"), 
-	DEVICE_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-003","Required Device Type detail Not Found");
+	DEVICE_TYPE_INSERT_EXCEPTION("KER-MSD-001",
+			"Error occurred while inserting Device Type details"), DEVICE_TYPE_MAPPING_EXCEPTION("KER-MSD-002",
+					"Error occured while mapping Device Type details"), DEVICE_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-003",
+							"Required Device Type detail Not Found");
 
 	private final String errorCode;
 	private final String errorMessage;

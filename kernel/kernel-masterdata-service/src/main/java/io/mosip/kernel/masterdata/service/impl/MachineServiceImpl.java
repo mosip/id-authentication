@@ -39,14 +39,16 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 	/**
-	 * Field to hold Machine History  Repository object
+	 * Field to hold Machine History Repository object
 	 */
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.
+	 * String, java.lang.String)
 	 */
 	@Override
 	public MachineResponseDto getMachine(String id, String langCode) {
@@ -72,9 +74,9 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseIdDto;
 	}
 
-	
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachineAll()
 	 */
 	@Override
@@ -102,9 +104,11 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.
+	 * String)
 	 */
 	@Override
 	public MachineResponseDto getMachine(String langCode) {
@@ -129,9 +133,12 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineService#createMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#createMachine(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {

@@ -14,19 +14,18 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  *
  */
 public interface MachineSpecificationService {
-	
+
 	/**
 	 * Function to save Machine Specification Details to the Database
 	 * 
 	 * @param machineSpecification
-	 * 			input from user
+	 *            input from user
 	 * 
-	 * @return IdResponseDto
-	 *           Machine Specification ID which is successfully inserted {@link IdResponseDto}
+	 * @return IdResponseDto Machine Specification ID which is successfully inserted
+	 *         {@link IdResponseDto}
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Device
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
-
 
 }

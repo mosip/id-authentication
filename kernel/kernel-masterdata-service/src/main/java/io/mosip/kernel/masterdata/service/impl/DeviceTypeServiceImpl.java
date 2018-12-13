@@ -32,10 +32,13 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceTypeService#createDeviceTypes(io.mosip.kernel.masterdata.dto.RequestDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceTypeService#createDeviceTypes(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceType) {

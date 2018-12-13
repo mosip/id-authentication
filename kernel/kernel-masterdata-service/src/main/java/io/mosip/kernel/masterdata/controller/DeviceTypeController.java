@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,13 +35,13 @@ public class DeviceTypeController {
 	 */
 	@Autowired
 	private DeviceTypeService deviceTypeService;
-	
+
 	/**
 	 * Save list of device Type details to the Database
 	 * 
 	 * @param deviceTypes
-	 * 				input from user Device Type DTO
-	 *            
+	 *            input from user Device Type DTO
+	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
@@ -52,8 +51,9 @@ public class DeviceTypeController {
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> createDeviceTypes(@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
-		return new ResponseEntity<>( deviceTypeService.createDeviceTypes(deviceTypes), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> createDeviceTypes(
+			@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
+		return new ResponseEntity<>(deviceTypeService.createDeviceTypes(deviceTypes), HttpStatus.CREATED);
 	}
 
 }
