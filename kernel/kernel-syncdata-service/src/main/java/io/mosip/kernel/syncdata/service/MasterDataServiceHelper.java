@@ -306,7 +306,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (registrationCenterType != null && !registrationCenterType.isEmpty())
-			registrationCenterTypes = mapper.mapAll(registrationCenterType, RegistrationCenterTypeDto.class);
+			registrationCenterTypes = MapperUtils.mapAll(registrationCenterType, RegistrationCenterTypeDto.class);
 
 		return CompletableFuture.completedFuture(registrationCenterTypes);
 	}
@@ -332,7 +332,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!(applicationList.isEmpty())) {
-			applications = mapper.mapAll(applicationList, ApplicationDto.class);
+			applications = MapperUtils.mapAll(applicationList, ApplicationDto.class);
 		}
 		return CompletableFuture.completedFuture(applications);
 	}
@@ -359,7 +359,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templates = mapper.mapAll(templateList, TemplateDto.class);
+			templates = MapperUtils.mapAll(templateList, TemplateDto.class);
 		}
 		return CompletableFuture.completedFuture(templates);
 	}
@@ -385,7 +385,7 @@ public class MasterDataServiceHelper {
 			throw new MasterDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		templateFormats = mapper.mapAll(templateTypes, TemplateFileFormatDto.class);
+		templateFormats = MapperUtils.mapAll(templateTypes, TemplateFileFormatDto.class);
 		return CompletableFuture.completedFuture(templateFormats);
 	}
 
@@ -411,7 +411,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (reasons != null && !reasons.isEmpty()) {
-			reasonCategories = mapper.mapAll(reasons, PostReasonCategoryDto.class);
+			reasonCategories = MapperUtils.mapAll(reasons, PostReasonCategoryDto.class);
 		}
 		return CompletableFuture.completedFuture(reasonCategories);
 	}
@@ -438,7 +438,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (reasons != null && !reasons.isEmpty())
-			reasonList = mapper.mapAll(reasons, ReasonListDto.class);
+			reasonList = MapperUtils.mapAll(reasons, ReasonListDto.class);
 
 		return CompletableFuture.completedFuture(reasonList);
 	}
@@ -496,7 +496,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (words != null && !words.isEmpty()) {
-			blacklistedWords = mapper.mapAll(words, BlacklistedWordsDto.class);
+			blacklistedWords = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
 		}
 
 		return CompletableFuture.completedFuture(blacklistedWords);
@@ -523,7 +523,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!(biometricTypesList.isEmpty())) {
-			biometricTypeDtoList = mapper.mapAll(biometricTypesList, BiometricTypeDto.class);
+			biometricTypeDtoList = MapperUtils.mapAll(biometricTypesList, BiometricTypeDto.class);
 		}
 		return CompletableFuture.completedFuture(biometricTypeDtoList);
 	}
@@ -550,7 +550,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (biometricAttrs != null && !biometricAttrs.isEmpty()) {
-			biometricAttrList = mapper.mapAll(biometricAttrs, BiometricAttributeDto.class);
+			biometricAttrList = MapperUtils.mapAll(biometricAttrs, BiometricAttributeDto.class);
 		}
 		return CompletableFuture.completedFuture(biometricAttrList);
 	}
@@ -603,7 +603,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (languages != null && !languages.isEmpty()) {
-			languageList = mapper.mapAll(languages, LanguageDto.class);
+			languageList = MapperUtils.mapAll(languages, LanguageDto.class);
 		}
 		return CompletableFuture.completedFuture(languageList);
 	}
@@ -630,7 +630,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!(genderType.isEmpty())) {
-			genderDto = mapper.mapAll(genderType, GenderDto.class);
+			genderDto = MapperUtils.mapAll(genderType, GenderDto.class);
 		}
 		return CompletableFuture.completedFuture(genderDto);
 	}
@@ -659,7 +659,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (devices != null && !devices.isEmpty())
-			deviceList = mapper.mapAll(devices, DeviceDto.class);
+			deviceList = MapperUtils.mapAll(devices, DeviceDto.class);
 		return CompletableFuture.completedFuture(deviceList);
 	}
 
@@ -685,7 +685,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (documentCategories != null && !documentCategories.isEmpty())
-			documentCategoryList = mapper.mapAll(documentCategories, DocumentCategoryDto.class);
+			documentCategoryList = MapperUtils.mapAll(documentCategories, DocumentCategoryDto.class);
 
 		return CompletableFuture.completedFuture(documentCategoryList);
 	}
@@ -712,7 +712,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (documentTypes != null && !documentTypes.isEmpty())
-			documentTypeList = mapper.mapAll(documentTypes, DocumentTypeDto.class);
+			documentTypeList = MapperUtils.mapAll(documentTypes, DocumentTypeDto.class);
 
 		return CompletableFuture.completedFuture(documentTypeList);
 	}
@@ -738,7 +738,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (idTypes != null && !idTypes.isEmpty())
-			idTypeList = mapper.mapAll(idTypes, IdTypeDto.class);
+			idTypeList = MapperUtils.mapAll(idTypes, IdTypeDto.class);
 		return CompletableFuture.completedFuture(idTypeList);
 	}
 
@@ -793,7 +793,7 @@ public class MasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!locations.isEmpty()) {
-			responseList = mapper.mapAll(locations, LocationDto.class);
+			responseList = MapperUtils.mapAll(locations, LocationDto.class);
 		}
 		return CompletableFuture.completedFuture(responseList);
 	}
@@ -820,7 +820,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (templateTypes != null && !templateTypes.isEmpty())
-			templateTypeList = mapper.mapAll(templateTypes, TemplateTypeDto.class);
+			templateTypeList = MapperUtils.mapAll(templateTypes, TemplateTypeDto.class);
 
 		return CompletableFuture.completedFuture(templateTypeList);
 	}
@@ -849,7 +849,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (deviceTypes != null && !deviceTypes.isEmpty()) {
-			deviceTypeList = mapper.mapAll(deviceTypes, DeviceTypeDto.class);
+			deviceTypeList = MapperUtils.mapAll(deviceTypes, DeviceTypeDto.class);
 		}
 		return CompletableFuture.completedFuture(deviceTypeList);
 	}
@@ -876,7 +876,7 @@ public class MasterDataServiceHelper {
 		}
 
 		if (validDocuments != null && !validDocuments.isEmpty()) {
-			validDocumentList = mapper.mapAll(validDocuments, ValidDocumentDto.class);
+			validDocumentList = MapperUtils.mapAll(validDocuments, ValidDocumentDto.class);
 		}
 		return CompletableFuture.completedFuture(validDocumentList);
 	}
