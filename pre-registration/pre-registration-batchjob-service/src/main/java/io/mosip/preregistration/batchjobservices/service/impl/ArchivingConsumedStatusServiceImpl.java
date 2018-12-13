@@ -13,7 +13,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.batchjobservices.code.ErrorCode;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessage;
 import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
-import io.mosip.preregistration.batchjobservices.entity.Applicant_demographic;
+import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
 import io.mosip.preregistration.batchjobservices.entity.PreRegistrationHistoryTable;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationDemographicRepository;
@@ -61,7 +61,7 @@ public class ArchivingConsumedStatusServiceImpl implements ArchivingConsumedStat
 		
 		ResponseDto<String> response = new ResponseDto<>();
 		
-		List<Applicant_demographic> demographicList = new ArrayList<Applicant_demographic>();
+		List<ApplicantDemographic> demographicList = new ArrayList<ApplicantDemographic>();
 
 		demographicList = demographicRepository.findAll();
 
@@ -93,14 +93,14 @@ public class ArchivingConsumedStatusServiceImpl implements ArchivingConsumedStat
 				});
 
 			} catch (DataAccessLayerException e) {
-				throw new TablenotAccessibleException(ErrorCode.PRG_PAM_BAT_002.toString(),
+				throw new TablenotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
 						ErrorMessage.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 			}
 
 		} else {
 
 			LOGGER.info("There are currently no Pre-Registration-Ids to be moved");
-			throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_001.name(),ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE.name());
+			throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_002.name(),ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_MOVE.name());
 		}
 		
 		response.setResTime(new Timestamp(System.currentTimeMillis()));

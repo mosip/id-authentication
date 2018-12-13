@@ -6,5 +6,8 @@ package io.mosip.preregistration.batchjobservices.code;
  */
 public enum ErrorCode {
 
-	PRG_PAM_BAT_001,PRG_PAM_BAT_002;
+	PRG_PAM_BAT_001,
+	PRG_PAM_BAT_002,
+	PRG_PAM_BAT_003,
+	PRG_PAM_BAT_004;
 }

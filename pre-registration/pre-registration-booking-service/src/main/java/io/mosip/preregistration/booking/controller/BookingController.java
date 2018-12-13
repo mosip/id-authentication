@@ -49,32 +49,25 @@ public class BookingController {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/masterSync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<ResponseDto<String>> saveAvailability() {
-		ResponseDto<String> response = bookingService.addAvailability();
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.addAvailability());
 	}
 
 	/**
 	 * @param regID
 	 * @return ResponseDto<AvailabilityDto>
 	 */
-	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/availability", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Availablity details fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<ResponseDto<AvailabilityDto>> getAvailability(
 			@RequestParam(value = "RegCenterId") String regID) {
-
-		ResponseDto<AvailabilityDto> response = bookingService.getAvailability(regID);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getAvailability(regID));
 	}
 
 	/**
@@ -88,10 +81,8 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<ResponseDto<List<BookingStatusDTO>>> bookAppoinment(
-			@RequestBody(required = true) BookingDTO bookingDTO) throws ParseException, java.text.ParseException {
-		ResponseDto<List<BookingStatusDTO>> responseDTO = bookingService.bookAppointment(bookingDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
-
+			@RequestBody(required = true) BookingDTO bookingDTO){
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO));
 	}
 	
 	
@@ -107,10 +98,8 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<ResponseDto<BookingRegistrationDTO>> appointmentDetails(
-			@RequestParam(value = "preRegID") String preRegID) throws ParseException, java.text.ParseException {
-		ResponseDto<BookingRegistrationDTO> responseDTO = bookingService.getAppointmentDetails(preRegID);
-		System.err.println("responseDTO: "+responseDTO.getResponse());
-		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+			@RequestParam(value = "preRegID") String preRegID) {
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getAppointmentDetails(preRegID));
 
 	}
 	
@@ -126,10 +115,7 @@ public class BookingController {
 			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
 	public ResponseEntity<ResponseDto<CancelBookingResponseDTO>> cancelBook(
 			@RequestBody RequestDto<CancelBookingDTO> requestDTO) {
-		ResponseDto<CancelBookingResponseDTO> response = bookingService.cancelAppointment(requestDTO);
-		System.out.println("Response"+response);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelAppointment(requestDTO));
 	}
 
 }

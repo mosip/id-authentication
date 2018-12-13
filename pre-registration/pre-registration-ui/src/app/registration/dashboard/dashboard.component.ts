@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -13,6 +13,8 @@ import { Applicant } from './dashboard.modal';
 import { UserModel } from '../demographic/user.model';
 import { AttributeModel } from '../demographic/attribute.model';
 import { IdentityModel } from '../demographic/identity.model';
+import { FileModel } from '../demographic/file.model';
+import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
 @Component({
   selector: 'app-registration',
@@ -20,6 +22,8 @@ import { IdentityModel } from '../demographic/identity.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
+  userFiles: FileModel[];
+  tempFiles;
   disableModifyDataButton = true;
   disableModifyAppointmentButton = true;
   numSelected: number;
@@ -47,7 +51,8 @@ export class DashBoardComponent implements OnInit {
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -131,17 +136,28 @@ export class DashBoardComponent implements OnInit {
   }
 
   onDelete(element) {
-    const data = {
-      case: 'DISCARD',
-      disabled: {
-        radioButton1: false,
-        radioButton2: true
-      }
-    };
+    let data = {};
+    if (element.status.toLowerCase() === 'booked') {
+      data = {
+        case: 'DISCARD',
+        disabled: {
+          radioButton1: false,
+          radioButton2: false
+        }
+      };
+    } else {
+      data = {
+        case: 'DISCARD',
+        disabled: {
+          radioButton1: false,
+          radioButton2: true
+        }
+      };
+    }
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      if (selectedOption) {
-        console.log(selectedOption, element);
+      console.log(selectedOption, element);
+      if (selectedOption && Number(selectedOption) === 1) {
         const body = {
           case: 'CONFIRMATION',
           title: 'Confirm',
@@ -185,6 +201,51 @@ export class DashBoardComponent implements OnInit {
             dialogRef = this.openDialog(message, '250px');
           }
         });
+      } else if (selectedOption && Number(selectedOption) === 2) {
+        const body = {
+          case: 'CONFIRMATION',
+          title: 'Confirm',
+          message: 'The selected application will be deleted. Please confirm.',
+          yesButtonText: 'Confirm',
+          noButtonText: 'Cancel'
+        };
+        dialogRef = this.openDialog(body, '250px');
+        dialogRef.afterClosed().subscribe(confirm => {
+          if (confirm) {
+            console.log(confirm);
+            element.regDto.pre_registration_id = element.applicationID;
+            this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
+              response => {
+                console.log(response);
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Success',
+                  message: 'Action was completed successfully'
+                };
+                dialogRef = this.openDialog(message, '250px');
+                const index = this.users.indexOf(element);
+                this.dataSource.data[index].status = 'Pending_Appointment';
+                this.dataSource._updateChangeSubscription();
+              },
+              error => {
+                console.log(error);
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Error',
+                  message: 'Action could not be completed'
+                };
+                dialogRef = this.openDialog(message, '250px');
+              }
+            );
+          } else {
+            const message = {
+              case: 'MESSAGE',
+              title: 'Error',
+              message: 'Action could not be completed'
+            };
+            dialogRef = this.openDialog(message, '250px');
+          }
+        });
       }
     });
   }
@@ -195,12 +256,17 @@ export class DashBoardComponent implements OnInit {
       this.disableModifyDataButton = true;
       const preId = this.selection.selected[0].applicationID;
       console.log('preid', preId);
+      this.dataStorageService.getUserDocuments(preId).subscribe(response => {
+        this.tempFiles = response;
+        this.setUserFiles(this.tempFiles);
+      });
+      console.log('user files 2', this.userFiles);
 
       this.dataStorageService.getUser(preId).subscribe(
         response => {
           this.disableModifyDataButton = true;
           const identity = this.createIdentityJSON(response['response'][0].demographicDetails.identity);
-          this.regService.addUser(new UserModel(preId, identity, []));
+          this.regService.addUser(new UserModel(preId, identity, this.userFiles));
         },
         error => {
           this.disableModifyDataButton = false;
@@ -273,5 +339,10 @@ export class DashBoardComponent implements OnInit {
     );
 
     return identity;
+  }
+
+  setUserFiles(response) {
+    this.userFiles = response.response;
+    console.log('user Files', this.userFiles);
   }
 }

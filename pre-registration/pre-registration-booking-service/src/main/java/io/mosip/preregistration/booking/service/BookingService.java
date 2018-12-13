@@ -145,7 +145,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
-
+			System.out.println("uriBuilder::::"+uriBuilder);
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
 
@@ -163,8 +163,10 @@ public class BookingService {
 					HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
 
 					String uriBuilder2 = builder2.build().encode().toUriString();
+					System.out.println("uriBuilder2::::"+uriBuilder2);
 					ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
 							HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
+					System.out.println("responseEntity2::::"+responseEntity2);
 					List<String> holidaylist = new ArrayList<>();
 					if (!responseEntity2.getBody().getHolidays().isEmpty()) {
 						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
@@ -187,23 +189,23 @@ public class BookingService {
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									/ regDto.getPerKioskProcessTime().getMinute();
+									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int loop2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									/ regDto.getPerKioskProcessTime().getMinute();
+									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									% regDto.getPerKioskProcessTime().getMinute();
+									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									% regDto.getPerKioskProcessTime().getMinute();
+									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
 
 							LocalTime currentTime1 = regDto.getCenterStartTime();
 							for (int i = 0; i < loop1; i++) {
@@ -241,6 +243,7 @@ public class BookingService {
 				}
 			}
 		} catch (HttpClientErrorException e) {
+			e.printStackTrace();
 			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(), "HTTP_CLIENT_EXCEPTION");
 
 		} catch (DataAccessException e) {
@@ -272,7 +275,7 @@ public class BookingService {
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
-					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDate(regID,
+					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID,
 							dateList.get(i).toLocalDate());
 					if (!entity.isEmpty()) {
 						List<SlotDto> slotList = new ArrayList<>();
@@ -324,7 +327,12 @@ public class BookingService {
 		avaEntity.setToTime(toTime);
 		avaEntity.setCrBy("Admin");
 		avaEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
-		avaEntity.setCrBy(regDto.getContactPerson());
+		if(!isMandatory(regDto.getContactPerson())) {
+			avaEntity.setCrBy("Admin");
+		}
+		else {
+			avaEntity.setCrBy(regDto.getContactPerson());
+		}
 		if (currentTime.equals(toTime)) {
 			avaEntity.setAvailableKiosks(0);
 		} else {

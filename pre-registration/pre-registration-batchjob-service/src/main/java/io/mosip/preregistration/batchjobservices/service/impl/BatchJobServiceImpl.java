@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.preregistration.batchjobservices.code.ErrorCode;
+import io.mosip.preregistration.batchjobservices.code.ErrorMessage;
 import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
-import io.mosip.preregistration.batchjobservices.entity.Applicant_demographic;
-import io.mosip.preregistration.batchjobservices.entity.Processed_Prereg_List;
+import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.ProcessedPreregList;
+import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationDemographicRepository;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.service.BatchJobService;
@@ -67,7 +71,7 @@ public class BatchJobServiceImpl implements BatchJobService {
 		
 		ResponseDto<String> response = new ResponseDto<>();
 
-		List<Processed_Prereg_List> preRegList = new ArrayList<>();
+		List<ProcessedPreregList> preRegList = new ArrayList<>();
 
 		preRegList = preRegListRepo.findByisNew(IS_NEW);
 
@@ -77,7 +81,7 @@ public class BatchJobServiceImpl implements BatchJobService {
 				String preRegId = iterate.getPrereg_id();
 
 				try {
-					Applicant_demographic applicant_demographic = preRegistrationDemographicRepository
+					ApplicantDemographic applicant_demographic = preRegistrationDemographicRepository
 							.findBypreRegistrationId(preRegId);
 
 					applicant_demographic.setStatusCode(status);
@@ -88,14 +92,16 @@ public class BatchJobServiceImpl implements BatchJobService {
 
 					LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
 
-				} catch (TablenotAccessibleException e) {
-
-					LOGGER.error(LOGDISPLAY, APPLICANT_DEMOGRAPHIC_STATUS_TABLE_NOT_ACCESSIBLE, e);
+				} catch (DataAccessLayerException e) {
+					throw new TablenotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
+							ErrorMessage.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 				}
 			});
 
 		} else {
-			LOGGER.info("There are currently no Pre-Registration-Ids to be moved");
+
+			LOGGER.info("There are currently no Pre-Registration-Ids to update status to consumed");
+			throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_001.name(),ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.name());
 		}
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(true);

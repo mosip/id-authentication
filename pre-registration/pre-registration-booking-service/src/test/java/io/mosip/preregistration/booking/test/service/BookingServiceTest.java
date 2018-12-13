@@ -21,7 +21,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
@@ -73,7 +70,6 @@ import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNot
 import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
-import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.service.BookingService;
@@ -288,7 +284,7 @@ public class BookingServiceTest {
 		entityList.add(entity);
 		logger.info("Availability entity " + entity);
 		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(), Mockito.any())).thenReturn(date);
-		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDate(Mockito.anyString(), Mockito.any()))
+		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(Mockito.anyString(), Mockito.any()))
 				.thenReturn(entityList);
 		ResponseDto<AvailabilityDto> responseDto = service.getAvailability("1");
 		logger.info("Response " + responseDto);
@@ -432,7 +428,7 @@ public class BookingServiceTest {
 		List<AvailibityEntity> entityList= new ArrayList<>();
 		entityList.add(entity);
 		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(),Mockito.any())).thenReturn(date);
-		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDate(Mockito.anyString(),Mockito.any())).thenReturn(entityList);
+		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(Mockito.anyString(),Mockito.any())).thenReturn(entityList);
 		service.getAvailability("1");
 	}
 	
