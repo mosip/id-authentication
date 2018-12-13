@@ -27,8 +27,8 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String)entityInfo);
+			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress((String)entityInfo);
 			String language = (String)props.get("language");
 			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {

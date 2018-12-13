@@ -41,7 +41,7 @@ public class PreRegistrationExceptionHandler {
 	@ExceptionHandler(JsonValidationException.class)
 	public ResponseEntity<ResponseDTO<?>> jsonValidationException(final JsonValidationException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_APP_007.toString(),
-				e.getErrorText(), e.getMessage());
+				e.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(falseStatus);
@@ -106,7 +106,7 @@ public class PreRegistrationExceptionHandler {
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<ResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText(),e.getLocalizedMessage());
+				e.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(falseStatus);

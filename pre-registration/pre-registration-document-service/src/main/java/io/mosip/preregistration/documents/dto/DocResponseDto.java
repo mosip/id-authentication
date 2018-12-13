@@ -18,11 +18,11 @@ public class DocResponseDto implements Serializable {
 	private static final long serialVersionUID = 7070542323407937205L;
 	
 	
-	private String pre_regsitration_id;
-	private String documnet_Id;
-	private String document_Name;
-	private String document_Cat;
-	private String document_Type;
+	private String preRegsitrationId;
+	private String documnetId;
+	private String documentName;
+	private String documentCat;
+	private String documentType;
 	private String resMsg;
 
 }

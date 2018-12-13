@@ -2,12 +2,23 @@ package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Exception json Info
  * 
  * @author M1037717
  *
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@AllArgsConstructor
 public class ExceptionJSONInfoDTO implements Serializable {
 
 	/**
@@ -17,30 +28,5 @@ public class ExceptionJSONInfoDTO implements Serializable {
 
 	private String errorCode;
 	private String message;
-	private String causedBy;
 
-	public ExceptionJSONInfoDTO(String errorCode, String message) {
-		super();
-		this.errorCode = errorCode;
-		this.message = message;
-	}
-
-	public ExceptionJSONInfoDTO(String errorCode, String message, String causedBy) {
-		super();
-		this.errorCode = errorCode;
-		this.message = message;
-		this.causedBy = causedBy;
-	}
-
-	public String getErrorcode() {
-		return errorCode;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public String getCausedBy() {
-		return causedBy;
-	}
 }
