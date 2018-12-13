@@ -47,10 +47,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
 
-	private static final String TIME = "time";
-
-	private static final String DATE = "date";
-
 	/** The otp service. */
 	@Autowired
 	private OTPService otpService;
@@ -101,8 +97,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		String email = null;
 		String comment = null;
 		String status = null;
-		String date = null;
-		String time = null;
 
 		Map<String, Object> idResDTO = idAuthService.processIdType(otpRequestDto.getIdvIdType(),
 				otpRequestDto.getIdvId());
@@ -116,9 +110,6 @@ public class OTPFacadeImpl implements OTPFacade {
 			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 			try {
 				otp = otpService.generateOtp(otpKey);
-				String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
-				date = dateAndTime[0];
-				time = dateAndTime[1];
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error("", otpRequestDto.getIdvIdType(), e.getErrorCode(), "Error: " + e);
 			}
