@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,9 +49,11 @@ public class NotificationServiceTest {
 	public void sendEmailTest()
 			throws HttpClientErrorException, RegBaseCheckedException, ResourceAccessException, SocketTimeoutException {
 
-		NotificationDTO emailDTO = new NotificationDTO();
-		emailDTO.setStatus("Email Request submitted");
-
+		//NotificationDTO emailDTO = new NotificationDTO();
+		//emailDTO.setStatus("Email Request submitted");
+		HashMap<String, String> emailDTO=new HashMap<>();
+		emailDTO.put("status", "Email Request submitted");
+		
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(emailDTO);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "qwerty@gmail.com", "regid");
 
@@ -64,8 +67,10 @@ public class NotificationServiceTest {
 		smsdto.setMessage("Test");
 		smsdto.setNumber("9994019598");
 		smsdto.setStatus("success");
+		HashMap<String, String> smsResponse=new HashMap<>();
+		smsResponse.put("status", "success");
 
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(smsdto);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(smsResponse);
 		ResponseDTO responseDTO = notificationServiceImpl.sendSMS("Hi", "9999999999", "regid");
 
 		Assert.assertEquals("Success", responseDTO.getSuccessResponseDTO().getMessage());

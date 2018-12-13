@@ -10,7 +10,10 @@ import static io.mosip.registration.constants.RegistrationConstants.SMS_SERVICE;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.dto.EmailDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -90,9 +94,10 @@ public class NotificationServiceImpl implements NotificationService {
 			String expectedStatus) {
 		StringBuilder sb;
 		try {
-			NotificationDTO response = (NotificationDTO) serviceDelegateUtil.post(service, object);
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> response = (HashMap<String, String>) serviceDelegateUtil.post(service, object);
 
-			if (response.getStatus() != null && response.getStatus().equals(expectedStatus)) {
+			if (!response.isEmpty() && response.get("status").equals(expectedStatus)) {
 				sb = new StringBuilder();
 				sb.append(service.toUpperCase()).append(" request submitted successfully");
 
