@@ -149,6 +149,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
+					duplicateCheckLbl.setText("");
 
 					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
@@ -181,29 +182,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			thumbsThresholdScoreLbl.setText(getQualityScore(
 					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
 
-			RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.REGISTRATION_DATA);
-			if (null != registrationDTOContent) {
-				registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
-						.forEach(item -> {
-							if (item.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
-								leftHandPalmImageview
-										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-								leftSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
-							} else if (item.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
-								rightHandPalmImageview
-										.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-								rightSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
-							} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
-								thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-								thumbsQualityScore.setText(getQualityScore(item.getQualityScore()));
-							}
-						});
-			} else {
-				leftHandPalmImageview.setImage(null);
-				rightHandPalmImageview.setImage(null);
-				thumbImageview.setImage(null);
-			}
+			loadingImageFromSessionContext();
+
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading of FingerprintCapture screen ended");
 		} catch (RuntimeException runtimeException) {
@@ -215,6 +195,30 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
 							runtimeException.getMessage()));
+		}
+	}
+
+	private void loadingImageFromSessionContext() {
+		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
+		if (null != registrationDTOContent) {
+			registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+					.forEach(item -> {
+						if (item.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
+							leftHandPalmImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							leftSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
+						} else if (item.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
+							rightHandPalmImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							rightSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
+						} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
+							thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+							thumbsQualityScore.setText(getQualityScore(item.getQualityScore()));
+						}
+					});
+		} else {
+			leftHandPalmImageview.setImage(null);
+			rightHandPalmImageview.setImage(null);
+			thumbImageview.setImage(null);
 		}
 	}
 
@@ -274,11 +278,22 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+				if (SessionContext.getInstance().getMapObject().containsKey("DuplicateFinger")){
 
-						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
+					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
-						rightSlapQualityScore, popupStage);
+							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
+
+							rightSlapQualityScore, popupStage);
+					
+				} else {
+					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+
+							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
+
+							rightSlapQualityScore, popupStage);
+				}
+				
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
 
@@ -312,17 +327,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
 					detailsDTO = fingerprintDetailsDTO;
-					
-					for(String segmentedFingerPath : segmentedFingersPath) {
+
+					for (String segmentedFingerPath : segmentedFingersPath) {
 						String[] path = segmentedFingerPath.split("/");
-						for(FingerprintDetailsDTO segmentedfpDetailsDTO : fingerprintDetailsDTO.getSegmentedFingerprints()) {
-							if(segmentedfpDetailsDTO.getFingerType().equals(path[3])) {
+						for (FingerprintDetailsDTO segmentedfpDetailsDTO : fingerprintDetailsDTO
+								.getSegmentedFingerprints()) {
+							if (segmentedfpDetailsDTO.getFingerType().equals(path[3])) {
 								fingerprintDetailsDTO.getSegmentedFingerprints().remove(segmentedfpDetailsDTO);
-								break;   
+								break;
 							}
 						}
 					}
-					
+
 					detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
 					break;
 				}
@@ -441,7 +457,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 					isValid = true;
 				} else {
-					duplicateCheckLbl.setText(RegistrationConstants.FINGERPRINT_DUPLICATION_ALERT);
+					FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.getInstance()
+							.getMapObject().get("DuplicateFinger");
+					for (FingerprintDetailsDTO duplicateSlap : fingerprintDetailsDTOs) {
+						for (FingerprintDetailsDTO duplicate : duplicateSlap.getSegmentedFingerprints()) {
+							if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
+								getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+										.getFingerprintDetailsDTO().remove(duplicateSlap);
+								loadingImageFromSessionContext();
+							}
+						}
+					}
+					duplicateCheckLbl.setText(
+							duplicateFinger.getFingerType().toUpperCase()+" " + RegistrationConstants.FINGERPRINT_DUPLICATION_ALERT);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FINGERPRINT_SCAN_ALERT);
