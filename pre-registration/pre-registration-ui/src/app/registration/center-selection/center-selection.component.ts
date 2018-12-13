@@ -7,7 +7,7 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { BookingModel } from './booking.model';
-import { BookingModelRequest } from './booking-request.model';
+import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
@@ -137,7 +137,7 @@ export class CenterSelectionComponent implements OnInit {
             const bookingData = new BookingModel(this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
             const requestObject = {
               newBookingDetails: bookingData,
-              oldBookingDetails: null,
+              oldBookingDetails: name.regDto,
               pre_registration_id: name.preRegId
             };
             this.bookingDataList.push(requestObject);
