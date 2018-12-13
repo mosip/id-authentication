@@ -163,8 +163,10 @@ public class BookingService {
 					HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
 
 					String uriBuilder2 = builder2.build().encode().toUriString();
+					System.out.println("uriBuilder2::::"+uriBuilder2);
 					ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
 							HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
+					System.out.println("responseEntity2::::"+responseEntity2);
 					List<String> holidaylist = new ArrayList<>();
 					if (!responseEntity2.getBody().getHolidays().isEmpty()) {
 						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
