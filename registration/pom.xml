@@ -286,7 +286,7 @@
 			<properties>
 				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
 				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-				<sonar.projectName>Registration-LOCAL</sonar.projectName>
+				<sonar.projectName>Registration</sonar.projectName>
 				<sonar.projectVersion>master</sonar.projectVersion>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->

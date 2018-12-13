@@ -285,7 +285,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
 		preRegistrationDataSyncDTO.setReqTime(reqTime);
-		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER.get(0));
+		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER);
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(reqTime);
