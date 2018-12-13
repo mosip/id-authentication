@@ -24,7 +24,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is class of type DocumentCategory
 	 * @return list of {@link DocumentCategory}
 	 */
-	public List<DocumentCategory> findAllByIsDeletedFalse(Class<DocumentCategory> entityClass);
+	public List<DocumentCategory> findAllByIsDeletedFalseOrIsDeletedNull(Class<DocumentCategory> entityClass);
 
 	/**
 	 * Get all Document category of a specific language using language code
@@ -33,7 +33,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is the language code present in database
 	 * @return list of {@link DocumentCategory}
 	 */
-	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalse(String langCode);
+	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(String langCode);
 
 	/**
 	 * Get Document Category by specific id and language code
@@ -44,6 +44,6 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is the language code present in database
 	 * @return object of {@link DocumentCategory}
 	 */
-	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
+	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(String code, String langCode);
 
 }

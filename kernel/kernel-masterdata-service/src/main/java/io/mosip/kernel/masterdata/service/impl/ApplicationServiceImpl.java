@@ -49,7 +49,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public ApplicationResponseDto getAllApplication() {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByIsDeletedFalse(Application.class);
+			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -78,7 +78,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
+			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -108,7 +108,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
