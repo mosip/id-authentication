@@ -77,9 +77,9 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode
-	 * @param langcode
-	 * @return LocationHierarchyResponseDto-List<LocationHierachy>
+	 * @param locCode - location code 
+	 * @param langCode - language code
+	 * @return LocationHierarchyResponseDto-
 	 */
 	@Override
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode) {
@@ -124,8 +124,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code	
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -137,8 +137,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -151,9 +151,9 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierachy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode
-	 * @param langCode
-	 * @return
+	 * @param locCode - location code
+	 * @param langCode - language code
+	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
 
@@ -171,8 +171,8 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierachy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
