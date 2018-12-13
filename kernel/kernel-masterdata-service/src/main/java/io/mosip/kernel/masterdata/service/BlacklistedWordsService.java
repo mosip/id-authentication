@@ -19,7 +19,7 @@ public interface BlacklistedWordsService {
 	/**
 	 * method to fetch all blacklisted words by language code
 	 * 
-	 * @param langCode
+	 * @param langCode language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
 	BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode);
