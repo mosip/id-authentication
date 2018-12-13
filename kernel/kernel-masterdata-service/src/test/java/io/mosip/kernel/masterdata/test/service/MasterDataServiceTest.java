@@ -59,6 +59,7 @@ import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
@@ -80,6 +81,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -229,6 +231,10 @@ public class MasterDataServiceTest {
 
 	private List<DeviceSpecification> deviceSpecificationList;
 	private DeviceSpecification deviceSpecification;
+	
+	
+	@Autowired
+	MachineHistoryService machineHistoryService;
 
 	@Before
 	public void setUp() {
@@ -1284,5 +1290,11 @@ public class MasterDataServiceTest {
 		blacklistedWordsService.validateWord(wordsList);
 	}
 	
+	
+	//-------------------------------------Machine Histroy Test ----------------------------
+	@Test(expected = RequestException.class)
+	public void getMachineHistroyIdLangEffDTimeParseDateException() {
+		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+	}
 	
 }
