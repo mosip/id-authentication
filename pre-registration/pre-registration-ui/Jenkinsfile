@@ -1,8 +1,8 @@
 node {
  def branch = 'DEV'
  projectToBuild = 'pre-registration/pre-registration-ui'
- def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
- def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def registryUrl = 'http://docker-registry.mosip.io:5000'
+ def registryName = 'docker-registry.mosip.io:5000'
 
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
