@@ -35,6 +35,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -216,35 +217,39 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo bioValidationStatus;
 			try {
 
-				// TODO log authStatus - authType, response
 				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo, refId);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				String desc;
-				if (authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
-						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
-					desc = "Fingerprint Authentication requested";
-					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-							desc);
-				}
-				if (authRequestDTO.getBioInfo().stream()
-						.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
-					desc = "Iris Authentication requested";
-					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-							desc);
-				}
-				if (authRequestDTO.getBioInfo().stream()
-						.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
-					desc = "Face Authentication requested";
-					auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-							desc);
-				}
+				processBioAuthType(authRequestDTO, isAuth, idType);
 			}
 		}
 
 		return authStatusList;
+	}
+	
+	private void processBioAuthType(AuthRequestDTO authRequestDTO, boolean isAuth, IdType idType)
+			throws IDDataValidationException {
+		String desc;
+		if (authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
+				|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
+			desc = "Fingerprint Authentication requested";
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
+					desc);
+		}
+		if (authRequestDTO.getBioInfo().stream()
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
+			desc = "Iris Authentication requested";
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
+					desc);
+		}
+		if (authRequestDTO.getBioInfo().stream()
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
+			desc = "Face Authentication requested";
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
+					desc);
+		}
 	}
 
 	private AuditEvents getAuditEvent(boolean isAuth) {
@@ -281,16 +286,36 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
 		Map<String, Object> idResDTO = null;
+		String key=null;
+		String resTime=null;
+		IdType idType=null;
 		if (authRequest != null) {
 			idResDTO = idAuthService.processIdType(authRequest.getIdvIdType(), authRequest.getIdvId());
+			 key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
+			 
+
+				if (kycAuthRequestDTO.getAuthRequest().getIdvIdType() == IdType.UIN.getType()) {
+					idType = IdType.UIN;
+				} else {
+					idType = IdType.VID;
+				}
+				String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+
+				DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
+
+				ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getAuthRequest().getReqTime(), isoPattern);
+				ZoneId zone = zonedDateTime2.getZone();
+				resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
+				auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						kycAuthRequestDTO.getAuthRequest().getIdvId(), idType, "eKYC Authentication requested");
 		}
-		String key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
 		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(idResDTO);
 		KycInfo info = null;
 		if (idResDTO != null) {
 			info = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					KycType.getEkycAuthType(env.getProperty(key)), kycAuthRequestDTO.isEPrintReq(),
 					kycAuthRequestDTO.isSecLangReq(), idInfo);
+			
 		}
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -302,25 +327,10 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 
 		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-		// String resTime = new
-		// SimpleDateFormat(env.getProperty(DATETIME_PATTERN)).format(new Date());
-		String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getAuthRequest().getReqTime(), isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-		String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
+		
 		kycAuthResponseDTO.setResTime(resTime);
-		IdType idType;
-
-		if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
-			idType = IdType.UIN;
-		} else {
-			idType = IdType.VID;
-		}
-		auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-				kycAuthRequestDTO.getAuthRequest().getIdvId(), idType, "");
+		
+		
 		return kycAuthResponseDTO;
 	}
 
