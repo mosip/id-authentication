@@ -108,10 +108,11 @@ public class KeyManager {
 		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
 		String finalpath = MessageFormat.format(localpath, homedirectory);
 		File fileInfo = new File(finalpath + File.separator + filename);
-		File parentFile = fileInfo.getParentFile();
 		byte[] output = null;
-		if (parentFile.exists()) {
+		if (fileInfo.exists()) {
 			output = Files.readAllBytes(fileInfo.toPath());
+		}else {
+			throw new IOException();
 		}
 		return output;
 	}

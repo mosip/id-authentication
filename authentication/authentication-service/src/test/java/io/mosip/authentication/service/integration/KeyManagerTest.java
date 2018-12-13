@@ -48,7 +48,6 @@ public class KeyManagerTest {
 		assertNotEquals(keyManager.requestData(createRequest(), env, decryptor, mapper), createResponse());		
 	}
 	
-	@Ignore
 	@Test
 	public void requestInvalidDataTest() {
 		KeyManager keyManager = new KeyManager();
@@ -112,7 +111,7 @@ public class KeyManagerTest {
 				"	\"idvIdType\": \"D\",\r\n" + 
 				"	\"reqTime\": \"2018-12-12T15:44:57.086+05:30\",\r\n" + 
 				"	\"muaCode\": \"1234567890\",\r\n" + 
-				"	\"tspID\":\"tsp1001\",\r\n" + 
+				"	\"tspID\":\"tsp\",\r\n" + 
 				"	\"key\": {\r\n" + 
 				"    \"sessionKey\": \"c1OYTyGCXn9FVkJ6o/IVGc+JADaXEXvURRljML4JeeQOjF5Pc2UPfGp7J/eSu9r7ZNFspjNp4aRxejYBQZDfOXHZLEz3DckbKOEyycGNvu3tR3s6u4Ev+SoukkqDIya6sabIJiTVaZoLSezlvmuh7JAUNioB0ygTpsDG1iyshAKHbmKfP9Qw2aHJ+vZvvKqePbukEukhGFlRxSrW00bthKDgVsSVVd20Jh+nZP1391cVE7WVeHiYdfb5kU7v7ArKoKt55T0ggCo1a4fPbIwyfoxgdAmX+4JlhlbXx3gA+Ydw45LJmjk+ROt1wLs7x9Zo1H5A/MuXfK1xdEuJ6cx97A==\"\r\n" + 
 				"	},\r\n" + 
