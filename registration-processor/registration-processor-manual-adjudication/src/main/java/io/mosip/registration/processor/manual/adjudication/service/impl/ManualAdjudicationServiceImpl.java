@@ -1,13 +1,12 @@
 package io.mosip.registration.processor.manual.adjudication.service.impl;
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +16,8 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.manual.adjudication.dao.ManualAdjudicationDao;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
@@ -30,6 +28,7 @@ import io.mosip.registration.processor.manual.adjudication.service.ManualAdjudic
 import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.adjudication.util.StatusMessage;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -47,19 +46,19 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	/** The audit log request builder. */
 
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	@Autowired
-	ManualAdjudicationDao manualAdjudicationDao;
+	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 
 	@Autowired
-	ManualVerificationStage manualVerificationStage;
+	private ManualVerificationStage manualVerificationStage;
 
 	/*
 	 * (non-Javadoc)
@@ -69,44 +68,43 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 	 * .adjudication.dto.UserDto)
 	 */
 	@Override
-	public ManualVerificationDTO assignStatus(UserDto dto) {
+	public ManualVerificationDTO assignApplicant(UserDto dto) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
-
-		ManualVerificationEntity entity = manualAdjudicationDao.getAssignedApplicantDetails(dto.getUserId(),
+		List<ManualVerificationEntity> entities;
+		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
-		if (entity != null) {
-			manualVerificationDTO.setRegId(entity.getId().getRegId());
-			manualVerificationDTO.setMatchedRefId(entity.getId().getMatchedRefId());
-			manualVerificationDTO.setMatchedRefType(entity.getId().getMatchedRefType());
-			manualVerificationDTO.setMvUsrId(entity.getMvUsrId());
-			manualVerificationDTO.setStatusCode(entity.getStatusCode());
+		ManualVerificationEntity manualVerificationEntity;
+		if (!entities.isEmpty()) {
+			manualVerificationEntity = entities.get(0);
+			manualVerificationDTO.setRegId(manualVerificationEntity.getId().getRegId());
+			manualVerificationDTO.setMatchedRefId(manualVerificationEntity.getId().getMatchedRefId());
+			manualVerificationDTO.setMatchedRefType(manualVerificationEntity.getId().getMatchedRefType());
+			manualVerificationDTO.setMvUsrId(manualVerificationEntity.getMvUsrId());
+			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 		} else {
-			List<ManualVerificationEntity> manualVerificationEntities = manualAdjudicationDao
-					.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
-			if (!manualVerificationEntities.isEmpty()) {
-				ManualVerificationEntity manualVerificationEntity = manualVerificationEntities.get(0);
-				if (manualVerificationEntity.getStatusCode().equals(ManualVerificationStatus.PENDING.name())) {
-					manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
-					manualVerificationEntity.setMvUsrId(dto.getUserId());
-					ManualVerificationEntity updatedManualVerificationEntity = manualAdjudicationDao
-							.update(manualVerificationEntity);
-					if (updatedManualVerificationEntity != null) {
-						manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
-						manualVerificationDTO
-								.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
-						manualVerificationDTO
-								.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
-						manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
-						manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
-					}
-				}
-
-			} else {
+			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
+			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
+			} else {
+				manualVerificationEntity = entities.get(0);
+				manualVerificationEntity.setStatusCode(ManualVerificationStatus.ASSIGNED.name());
+				manualVerificationEntity.setMvUsrId(dto.getUserId());
+				ManualVerificationEntity updatedManualVerificationEntity = basePacketRepository
+						.update(manualVerificationEntity);
+				if (updatedManualVerificationEntity != null) {
+					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
+					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
+					manualVerificationDTO
+							.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
+					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
+				}
 			}
+
 		}
 		return manualVerificationDTO;
+
 	}
 
 	/*
@@ -145,7 +143,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO
+			logger.error(e.getLocalizedMessage());
 		}
 		return file;
 	}
@@ -172,7 +170,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			// TODO
+			logger.error(e.getLocalizedMessage());
 		}
 		return file;
 	}
@@ -200,20 +198,20 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
-		manualVerificationEntity = manualAdjudicationDao.getSingleAssignedRecord(manualVerificationDTO.getRegId(),
-				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId());
-		if (manualVerificationEntity == null) {
+		List<ManualVerificationEntity> entities = basePacketRepository.getSingleAssignedRecord(manualVerificationDTO.getRegId(),
+				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId(),
+				ManualVerificationStatus.ASSIGNED.name());
+		if (entities.isEmpty()) {
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
 		}
-		else if(!manualVerificationEntity.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.ASSIGNED.name())) {
-			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
-					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
+		else {
+			manualVerificationEntity = entities.get(0);
+			manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
 		}
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
-			manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
 			if (manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
@@ -226,13 +224,8 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 				description = "Manual verification rejected for registration id : " + registrationId;
 			}
-			manualAdjudicationDao.update(manualVerificationEntity);
-			UserDto userDto = new UserDto();
-			userDto.setUserId(manualVerificationDTO.getMvUsrId());
-			userDto.setOffice(manualVerificationDTO.getOffice());
-			userDto.setStatus(ManualVerificationStatus.PENDING.name());
-			userDto.setName(manualVerificationDTO.getName());
-			manualVerificationDTO = assignStatus(userDto);
+			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
+			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (TablenotAccessibleException e) {

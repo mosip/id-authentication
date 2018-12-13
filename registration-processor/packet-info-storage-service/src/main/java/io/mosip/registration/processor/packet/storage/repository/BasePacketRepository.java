@@ -55,7 +55,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            The statusCode
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query("SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
 			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
 	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode);
 
@@ -69,9 +69,9 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            The manual verifier user Id
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.id.regId=:regId and mve.mvUsrId=:mvUserId and mve.id.matchedRefId=:refId")
-	public E getSingleAssignedRecord(@Param("regId") String regId,@Param("refId") String refId,@Param("mvUserId") String mvUserId);
-
+	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.id.regId=:regId and mve.mvUsrId=:mvUserId and mve.id.matchedRefId=:refId and mve.statusCode=:statusCode")
+	public List<E> getSingleAssignedRecord(@Param("regId") String regId,@Param("refId") String refId,@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);
+	
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
-	public E getAssignedApplicantDetails(@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);
+	public List<E> getAssignedApplicantDetails(@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);
 }
