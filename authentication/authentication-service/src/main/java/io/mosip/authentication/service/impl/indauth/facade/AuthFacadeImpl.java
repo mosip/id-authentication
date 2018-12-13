@@ -314,7 +314,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setResTime(resTime);
 		IdType idType;
 
-		if (kycAuthRequestDTO.getAuthRequest().getIdvIdType() == IdType.UIN.getType()) {
+		if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
 			idType = IdType.UIN;
 		} else {
 			idType = IdType.VID;
