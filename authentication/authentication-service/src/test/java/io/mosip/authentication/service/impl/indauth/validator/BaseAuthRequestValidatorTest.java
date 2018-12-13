@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -25,9 +27,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
@@ -46,6 +50,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  *
  * @author Rakesh Roshan
  */
+
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -71,6 +76,8 @@ public class BaseAuthRequestValidatorTest {
 	PhoneValidatorImpl phoneValidatorImpl;
 
 	Errors error;
+	
+	private static final String FACE = "face";
 
 	@Before
 	public void before() {
@@ -128,7 +135,7 @@ public class BaseAuthRequestValidatorTest {
 	}
 	
 	@Test
-	public void testValidateBioDetails_hasError() {
+	public void testValidateBioDetails_IfBioInfoIsNull_hasError() {
 
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -139,6 +146,22 @@ public class BaseAuthRequestValidatorTest {
 
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(null);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+
+	}
+	
+	@Test
+	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty_hasError() {
+
+		authRequestDTO = getAuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setAuthType(authType);
+		
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		authRequestDTO.setBioInfo(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
@@ -494,7 +517,29 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountNotExceeding10() {
+	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountNotExceeding2() {
+		authRequestDTO = getAuthRequestDTO();
+
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("fingerImage");
+		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
+		finger.add(identityInfoDTO);
+
+		IdentityDTO identity = new IdentityDTO();
+		identity.setLeftThumb(finger);
+		identity.setLeftIndex(finger);
+
+		RequestDTO request = new RequestDTO();
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
+		assertFalse(error.hasErrors());
+	}
+
+
+	@Test
+	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
 		authRequestDTO = getAuthRequestDTO();
 
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -519,9 +564,9 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(request);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
-		assertFalse(error.hasErrors());
+		assertTrue(error.hasErrors());
 	}
-
+	
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
