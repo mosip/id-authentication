@@ -85,8 +85,6 @@ public class DataSyncService {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataSyncResponseDTO<PreRegArchiveDTO> getPreRegistration(String preId) throws Exception {
-		// List responseList = new ArrayList<>();
-
 		DataSyncResponseDTO responseDto = new DataSyncResponseDTO<>();
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		PreRegistrationEntity demography = dataSyncRepository.findDemographyByPreId(preId);
@@ -95,7 +93,7 @@ public class DataSyncService {
 			List<DocumentEntity> documentlist = dataSyncRepository.findDocumentByPreId(preId);
 			byte[] bytes = DataSyncService.archivingFiles(demography, documentlist);
 			preRegArchiveDTO.setZipBytes(bytes);
-			preRegArchiveDTO.setFileName(demography.getPreRegistrationId().toString());
+			preRegArchiveDTO.setFileName(demography.getPreRegistrationId().toString()+"_"+demography.getCreateDateTime().toString());
 		} else {
 			throw new DataSyncRecordNotFoundException(StatusCodes.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
 		}
@@ -158,6 +156,7 @@ public class DataSyncService {
 					for (int i = 0; i < documentEntityList.size(); i++) {
 						pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
 								+ documentEntityList.get(i).getPreregId().toString() + "_"
+								+ documentEntityList.get(i).getDoc_cat_code().toString() + "_"
 								+ documentEntityList.get(i).getDoc_name());
 
 						fileDoc = new File(pathDoc.toString());
@@ -305,18 +304,14 @@ public class DataSyncService {
 
 	public DataSyncResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegid(DataSyncRequestDTO dataSyncRequestDTO)
 			throws ParseException {
-		Date fromDate = dataSyncRequestDTO.getFromDate();
-		Date toDate = dataSyncRequestDTO.getToDate();
-
-		final String ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
-		final SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
-		final TimeZone utc = TimeZone.getTimeZone("UTC");
-		sdf.setTimeZone(utc);
-		Date myDate = DateUtils.parseDefaultUTCToDate(sdf.format(fromDate).toString());
-		Date myDate1 = toDate;
+		String fromDate = dataSyncRequestDTO.getFromDate();
+		String toDate = dataSyncRequestDTO.getToDate();
+		String dateFormat = "yyyy-MM-dd HH:mm:ss";
+		Date myDate = DateUtils.parse(fromDate, dateFormat);
+				
+		Date myDate1 = null;
 
 		if (toDate == null) {
-
 			myDate1 = myDate;
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(myDate1);
@@ -325,7 +320,7 @@ public class DataSyncService {
 			cal.set(Calendar.SECOND, 59);
 			myDate1 = cal.getTime();
 		} else {
-			myDate1 = DateUtils.parseDefaultUTCToDate(sdf.format(toDate).toString());
+			myDate1 = DateUtils.parse(toDate,dateFormat); 
 		}
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();

@@ -33,6 +33,6 @@ public interface PreRegistrationRepository extends BaseRepository<PreRegistratio
 	@Query("SELECT r FROM PreRegistrationEntity r  WHERE r.preRegistrationId=:preRegId")
 	public PreRegistrationEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
-	public boolean deleteByPreRegistrationId(String preId);
+	public int deleteByPreRegistrationId(String preId);
 
 }
