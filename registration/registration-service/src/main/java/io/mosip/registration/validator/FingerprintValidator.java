@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -64,7 +65,7 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 			isMatchFound=fingerprintFacade.validateFP(fingerprintDetailsDTO,
 					registrationUserDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
 			if (isMatchFound) {
-				SessionContext.getInstance().getMapObject().put("DuplicateFinger", fingerprintDetailsDTO);
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
 				break;
 			}
 		}

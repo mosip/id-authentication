@@ -1406,6 +1406,7 @@ public class RegistrationController extends BaseController {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
 			SessionContext.getInstance().getUserContext().getUserMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
