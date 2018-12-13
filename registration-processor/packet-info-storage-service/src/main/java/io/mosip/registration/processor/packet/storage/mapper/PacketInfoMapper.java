@@ -404,9 +404,11 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
-		for (int i = 0; i < demoDto.getName().size(); i++) {
-			getLanguages(demoDto.getName().get(i));
+		if (demoDto.getName() != null) {
+			for (int i = 0; i < demoDto.getName().size(); i++) {
+				getLanguages(demoDto.getName().get(i));
 
+			}
 		}
 		getLanguages(demoDto.getDateOfBirth());
 		String[] languageArray = getLanguages(demoDto.getGender());
@@ -420,7 +422,10 @@ public class PacketInfoMapper {
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
-			entity.setName(getName(demoDto.getName(), languageArray[i]));
+			String applicantName = null;
+			if (demoDto.getName() != null)
+				applicantName = getName(demoDto.getName(), languageArray[i]);
+			entity.setName(applicantName);
 
 			Locale loc = new Locale(languageArray[i]);
 			String languageName = loc.getDisplayLanguage();
@@ -429,7 +434,7 @@ public class PacketInfoMapper {
 			Set<String> languageSet = new HashSet<>();
 			languageSet.add(languageName.toLowerCase());
 
-			String encodedInputString = phoneticEngine.encode(getName(demoDto.getName(), languageArray[i]),
+			String encodedInputString = phoneticEngine.encode(applicantName == null ? "" : applicantName,
 					Languages.LanguageSet.from(languageSet));
 			Soundex soundex = new Soundex();
 			entity.setPhoneticName(

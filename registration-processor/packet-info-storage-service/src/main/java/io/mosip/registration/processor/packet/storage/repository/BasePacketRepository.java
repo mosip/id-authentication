@@ -1,8 +1,6 @@
 package io.mosip.registration.processor.packet.storage.repository;
 
-import java.util.Date;
 import java.util.List;
-
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,16 +34,11 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
 	public List<E> findDemoById(@Param("regId") String regId);
 
-	@Query("SELECT  demo.uinRefId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId is NOT NULL and demo.phoneticName=:pheoniticName and demo.gender=:gender and demo.dob=:dob and demo.id.langCode=:langCode")
-	public List<String> getAllDemoWithUIN(@Param("pheoniticName") String pheoniticName, @Param("gender") String gender,
-			@Param("dob") Date dob, @Param("langCode") String langCode);
-
 	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
 	public List<String> getApplicantIrisImageNameById(@Param("regId") String regId);
 
 	@Query("SELECT applicant.imageName FROM ApplicantFingerprintEntity applicant WHERE applicant.id.regId=:regId")
 	public List<String> getApplicantFingerPrintImageNameById(@Param("regId") String regId);
-
 
 	/**
 	 * This method gets the first created registration record
@@ -70,7 +63,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.id.regId=:regId and mve.mvUsrId=:mvUserId and mve.id.matchedRefId=:refId")
-	public E getSingleAssignedRecord(@Param("regId") String regId,@Param("refId") String refId,@Param("mvUserId") String mvUserId);
+	public E getSingleAssignedRecord(@Param("regId") String regId, @Param("refId") String refId,
+			@Param("mvUserId") String mvUserId);
 
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
 	public E getAssignedApplicantDetails(@Param("mvUserId") String mvUserId, @Param("statusCode") String statusCode);

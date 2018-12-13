@@ -2,7 +2,9 @@ package io.mosip.registration.processor.packet.storage.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,13 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
+
+	private static final String SELECT = " SELECT ";
+	private static final String FROM = " FROM  ";
+	private static final String EMPTY_STRING = " ";
+	private static final String WHERE = " WHERE ";
+	private static final String AND = " AND ";
+	private static final String IS_NOT_NULL = " IS NOT NULL ";
 
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
@@ -159,10 +168,6 @@ public class PacketInfoDao {
 		return demo;
 	}
 
-	public List<String> getAllDemoWithUIN(String pheoniticName, String gender, Date dob, String langCode) {
-		return demographicDedupeRepository.getAllDemoWithUIN(pheoniticName, gender, dob, langCode);
-	}
-
 	public List<DemographicInfoDto> findDemoById(String regId) {
 		List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
 		List<IndividualDemographicDedupeEntity> individualDemographicDedupeEntityList = demographicDedupeRepository
@@ -182,5 +187,37 @@ public class PacketInfoDao {
 
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
 		return demographicDedupeRepository.getApplicantFingerPrintImageNameById(regId);
+	}
+
+	public List<String> getAllDemoWithUIN(String phoneticName, String gender, Date dob, String langCode) {
+		List<String> duplicateUin = new ArrayList<>();
+		Map<String, Object> params = new HashMap<>();
+		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
+		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
+		StringBuilder query = new StringBuilder();
+		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uinRefId "
+				+ IS_NOT_NULL + AND);
+		if (phoneticName != null) {
+			query.append(alias + ".phoneticName=:phoneticName ").append(AND);
+			params.put("phoneticName", phoneticName);
+
+		}
+		if (gender != null) {
+			query.append(alias + ".gender=:gender ").append(AND);
+			params.put("gender", gender);
+		}
+		if (dob != null) {
+			query.append(alias + ".dob=:dob ").append(AND);
+			params.put("dob", dob);
+		}
+		query.append(alias + ".id.langCode=:langCode");
+		params.put("langCode", langCode);
+
+		List<IndividualDemographicDedupeEntity> uins = demographicDedupeRepository.createQuerySelect(query.toString(),
+				params);
+		for (IndividualDemographicDedupeEntity entity : uins) {
+			duplicateUin.add(entity.getUinRefId());
+		}
+		return duplicateUin;
 	}
 }
