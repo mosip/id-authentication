@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.manual.adjudication.service;
+package io.mosip.registration.processor.manual.adjudication.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,6 +9,7 @@ import static org.mockito.Matchers.anyString;
 import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @SpringBootTest
 public class ManualAdjudicationServiceTest {
 
-	private ManualVerificationEntity entities;
+	private List<ManualVerificationEntity> entities;
 	@InjectMocks
 	private ManualAdjudicationService manualAdjudicationService = new ManualAdjudicationServiceImpl();
 	@Mock
@@ -108,7 +109,7 @@ public class ManualAdjudicationServiceTest {
 	@Test
 	public void assignStatusMethodCheck() {
 
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(entities);
 		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto);
 		assertEquals(manualVerificationDTO, manualVerificationDTO1);
 	}
@@ -195,7 +196,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -210,7 +211,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -223,7 +224,7 @@ public class ManualAdjudicationServiceTest {
 		manualVerificationDTO.setStatusCode("ASSIGNED");
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any()))
 				.thenReturn(null);
@@ -234,4 +235,3 @@ public class ManualAdjudicationServiceTest {
 	
 	
 }
-*/
