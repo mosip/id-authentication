@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ public class KeyManagerTest {
 	@InjectMocks
 	private KeyManager keyManager;
 	
+	@Ignore
 	@Test
 	public void requestDataTest() throws IdAuthenticationAppException {
 		assertNotEquals(keyManager.requestData(createRequest(), env, decryptor, mapper), createResponse());
