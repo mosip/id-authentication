@@ -13,7 +13,7 @@ create schema if not exists master
 
 create table master.gender (
 
-	code 		character (16) not null,     
+	code 		character varying(16) not null,     
 
 	name 		character varying(64) not null,
 	
