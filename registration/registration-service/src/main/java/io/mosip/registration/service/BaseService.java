@@ -22,7 +22,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -157,7 +156,7 @@ public class BaseService {
 
 		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
 
-		Boolean result = null;
+		boolean result = false;
 		if (deviceType.equals("Fingerprint") && deviceProvider.equals(fingerprintProviderName)) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try {
