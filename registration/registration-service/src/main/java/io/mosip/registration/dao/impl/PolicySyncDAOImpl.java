@@ -21,11 +21,7 @@ public class PolicySyncDAOImpl implements PolicySyncDAO {
 	PolicySyncRepository policySyncRepository;
 	private static final Logger LOGGER = AppConfig.getLogger(PolicySyncDAOImpl.class);
 
-	@Override
-	public KeyStore fetchPolicy(String centerId) {
-
-		return policySyncRepository.getOne(centerId);
-	}
+	
 
 	@Override
 	public void updatePolicy(KeyStore keyStore) {
