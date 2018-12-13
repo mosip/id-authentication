@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.preregistration.batchjob.tasklets.ArchivingConsumedPreIdTasklet;
 import io.mosip.preregistration.batchjob.tasklets.BookingTasklet;
+import io.mosip.preregistration.batchjob.tasklets.ExpiredStatusTasklet;
 import io.mosip.preregistration.batchjob.tasklets.UpdateConsumedStatusTasklet;
 
 /**
@@ -43,6 +44,9 @@ public class PreRegistrationBatchJobConfig {
 	@Autowired
 	private BookingTasklet bookingtasklet;
 	
+	@Autowired
+	private ExpiredStatusTasklet expiredStatusTasklet;
+	
 	
 	@Bean
 	public Step updateTableStep() {
@@ -59,22 +63,10 @@ public class PreRegistrationBatchJobConfig {
 		return stepBuilderFactory.get("bookingStep").tasklet(bookingtasklet).build();
 	}
 	
-	
-	/*@Bean
-	public Job updateTableJob() {
-		return this.jobBuilderFactory.get("updateTableJob")
-				   .incrementer(new RunIdIncrementer())
-				   .start(updateTableStep())
-				   .build();
-	}*/
-
-	/*@Bean
-	public Job archivingJob() {
-		return this.jobBuilderFactory.get("archivingJob")
-					.incrementer(new RunIdIncrementer())
-					.start(archivingStep())
-					.build();
-	}*/
+	@Bean
+	public Step expiredStatusStep() {
+		return stepBuilderFactory.get("expiredStatusStep").tasklet(expiredStatusTasklet).build();
+	}
 	
 	@Bean
 	public Job bookingJob(){
@@ -89,6 +81,14 @@ public class PreRegistrationBatchJobConfig {
 				   .incrementer(new RunIdIncrementer())
 				   .start(updateTableStep())
 				   .next(archivingStep())
+				   .build();
+	}
+	
+	@Bean
+	public Job expiredStatusJob() {
+		return this.jobBuilderFactory.get("expiredStatusJob")
+				   .incrementer(new RunIdIncrementer())
+				   .start(expiredStatusStep())
 				   .build();
 	}
 }
