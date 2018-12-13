@@ -312,6 +312,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
 					detailsDTO = fingerprintDetailsDTO;
+					
+					for(String segmentedFingerPath : segmentedFingersPath) {
+						String[] path = segmentedFingerPath.split("/");
+						for(FingerprintDetailsDTO segmentedfpDetailsDTO : fingerprintDetailsDTO.getSegmentedFingerprints()) {
+							if(segmentedfpDetailsDTO.getFingerType().equals(path[3])) {
+								fingerprintDetailsDTO.getSegmentedFingerprints().remove(segmentedfpDetailsDTO);
+								break;   
+							}
+						}
+					}
+					
 					detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
 					break;
 				}
