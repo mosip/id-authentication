@@ -50,6 +50,14 @@ public class MapperUtils {
 	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
+	/**
+	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
+	 * {@link LocalDateTime}
+	 * 
+	 * @param dateTime
+	 *            of type {@link String} of pattern UTC_DATETIME_PATTERN
+	 * @return a {@link LocalDateTime} of given pattern
+	 */
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
@@ -196,6 +204,19 @@ public class MapperUtils {
 	 * #############Private method used for mapping################################
 	 */
 
+	/**
+	 * Map values from source object to destination object.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws InstantiationException
+	 *             if not able to create instance of field having annotation
+	 *             {@link EmbeddedId}
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
@@ -207,6 +228,19 @@ public class MapperUtils {
 		}
 	}
 
+	/**
+	 * This method map source DTO to a class object which extends {@link BaseEntity}
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws InstantiationException
+	 *             if not able to create instance of field having annotation
+	 *             {@link EmbeddedId}
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapDtoToEntity(S source, D destination)
 			throws InstantiationException, IllegalAccessException {
 		Field[] fields = destination.getClass().getDeclaredFields();
@@ -226,6 +260,16 @@ public class MapperUtils {
 		}
 	}
 
+	/**
+	 * Map source which extends {@link BaseEntity} to a DTO object.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapEntityToDto(S source, D destination) throws IllegalAccessException {
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		/*
@@ -255,6 +299,15 @@ public class MapperUtils {
 		}
 	}
 
+	/**
+	 * Map values from {@link BaseEntity} class source object to destination or vice
+	 * versa.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 */
 	private static <S, D> void setBaseFieldValue(S source, D destination) {
 
 		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
@@ -278,6 +331,18 @@ public class MapperUtils {
 
 	}
 
+	/**
+	 * Map values from source field to destination.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param sf
+	 *            source fields
+	 * @param dtf
+	 *            destination fields
+	 */
 	private static <D, S> void mapFieldValues(S source, D destination, Field[] sourceFields,
 			Field[] destinationFields) {
 		try {
@@ -312,11 +377,25 @@ public class MapperUtils {
 		}
 	}
 
-	private static <S, D> void setFieldValue(S source, D destination, Field ef, Field dtf)
+	/**
+	 * Take value from source field and insert value into destination field.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param sf
+	 *            source fields
+	 * @param dtf
+	 *            destination fields
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
+	private static <S, D> void setFieldValue(S source, D destination, Field sf, Field dtf)
 			throws IllegalAccessException {
-		dtf.set(destination, ef.get(source));
+		dtf.set(destination, sf.get(source));
 		dtf.setAccessible(false);
-		ef.setAccessible(false);
+		sf.setAccessible(false);
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
