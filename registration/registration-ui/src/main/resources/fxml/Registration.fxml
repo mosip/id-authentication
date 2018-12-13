@@ -72,9 +72,9 @@
                	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
                         <AnchorPane id="biometricException" layoutX="50.0" layoutY="370.0">
                            <children>
-                         <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="15.0" />
+                         <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="9.1" />
                          <Label text="Biometric Exception" />
-                         <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="10.0" />
+                         <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="9.0" />
                            </children>
                         </AnchorPane>
                         <Line endX="560.0" layoutX="221.0" layoutY="10.0" startX="-200.0" />
@@ -99,8 +99,8 @@
                                     <TextField fx:id="ageField" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
                                     <Label layoutX="130.0" layoutY="9.0" text="%dob" />
                                     <DatePicker fx:id="ageDatePicker" editable="false" layoutX="130.0" layoutY="25.0" onAction="#ageValidationInDatePicker" prefHeight="10.0" prefWidth="200.0" />
-                                    <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="15.0" text="" />
-                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="10.0" text="" />
+                                    <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
+                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                  </children>
                               </AnchorPane>
                               <Label layoutX="47.0" layoutY="175.0" text="%gender" />
