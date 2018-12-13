@@ -17,21 +17,23 @@ public interface LocationService {
 	/**
 	 * this method will fetch LocationHierarchyDetails
 	 * 
-	 * @param locationHierarchyDTO
-	 * @return
+	 * @param langCode - language code
+	 * @return LocationHierarchyResponseDto -location response
 	 */
 	public LocationHierarchyResponseDto getLocationDetails(String langCode);
 	
 	/**
 	 * 
-	 * @param locationHierarchyDto
-	 * @return
+	 * @param locCode - location code 
+	 * @param langCode - language code
+	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode,String langCode);
 	
 	/**
 	 * 
-	 * @return 
+	 * @param locationRequestDto - lcoation request object
+	 * @return PostLocationCodeResponseDto
 	 */
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 }

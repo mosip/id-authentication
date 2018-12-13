@@ -34,12 +34,15 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class MachineHistoryServiceImpl implements MachineHistoryService {
 
-	
 	@Autowired
 	MachineHistoryRepository macRepo;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#getMachineHistroyIdLangEffDTime(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#
+	 * getMachineHistroyIdLangEffDTime(java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
@@ -49,7 +52,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		} catch (Exception e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage()+ "  "
+					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));
 		}
 

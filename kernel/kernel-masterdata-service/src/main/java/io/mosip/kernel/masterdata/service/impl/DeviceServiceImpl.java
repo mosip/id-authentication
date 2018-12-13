@@ -39,11 +39,12 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	DeviceRepository deviceRepository;
 
-	
-	
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#getDeviceLangCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#getDeviceLangCode(java.lang.
+	 * String)
 	 */
 	@Override
 	public DeviceResponseDto getDeviceLangCode(String langCode) {
@@ -67,10 +68,11 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceResponseDto;
 	}
 
-	
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#getDeviceLangCodeAndDeviceType(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceService#
+	 * getDeviceLangCodeAndDeviceType(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String dtypeCode) {
@@ -94,12 +96,15 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceLangCodeResponseDto;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#saveDevice(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#saveDevice(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
@@ -107,7 +112,7 @@ public class DeviceServiceImpl implements DeviceService {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage()+ " " +ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(device, idResponseDto);

@@ -20,8 +20,8 @@ import io.mosip.kernel.masterdata.entity.MachineHistory;
 public interface MachineHistoryRepository extends BaseRepository<MachineHistory, String> {
 
 	/**
-	 * This method trigger query to fetch Machine History Details based on Machine History
-	 * Id, language code and effective date time
+	 * This method trigger query to fetch Machine History Details based on Machine
+	 * History Id, language code and effective date time
 	 * 
 	 * @param id
 	 *            Machine History id provided by user

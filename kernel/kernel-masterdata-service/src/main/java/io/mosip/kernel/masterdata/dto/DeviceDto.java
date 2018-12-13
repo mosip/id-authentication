@@ -62,7 +62,7 @@ public class DeviceDto {
 	/**
 	 * Field for device ip address
 	 */
-	
+
 	@Size(min = 1, max = 17)
 	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;

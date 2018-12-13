@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -35,16 +36,18 @@ public class TemplateServiceImpl implements TemplateService {
 	private List<Template> templateList;
 
 	private List<TemplateDto> templateDtoList;
+	
+	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return {@link List<TemplateDto>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplate() {
+	public TemplateResponseDto getAllTemplate() {
 		try {
-			templateList = templateRepository.findAllByIsDeletedFalse(Template.class);
+			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedNull(Template.class);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -55,19 +58,20 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
+	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
-			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
+			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(languageCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -78,22 +82,22 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code and template type
-	 * code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @param templateTypeCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCodeAndTemplateTypeCode(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
+	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(languageCode,
+			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedNull(languageCode,
 					templateTypeCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
@@ -105,11 +109,17 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.kernel.masterdata.dto.TemplateDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.
+	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
 	public IdResponseDto createTemplate(TemplateDto template) {
@@ -129,5 +139,4 @@ public class TemplateServiceImpl implements TemplateService {
 
 		return idResponseDto;
 	}
-
 }

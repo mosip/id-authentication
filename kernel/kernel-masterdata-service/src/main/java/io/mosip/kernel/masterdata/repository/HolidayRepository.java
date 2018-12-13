@@ -13,8 +13,7 @@ import io.mosip.kernel.masterdata.entity.Holiday;
  * 
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
- * @version 1.0.0
- * @since 23-10-2018
+ * @since 1.0.0
  */
 @Repository
 public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
@@ -40,7 +39,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @return list of holidays
 	 */
 
-	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3 and is_deleted = false", nativeQuery = true)
+	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3 and (is_deleted = false  or is_deleted is null)", nativeQuery = true)
 	List<Holiday> findAllByLocationCodeYearAndLangCode(String locationCode, String langCode, int year);
 
 	/**

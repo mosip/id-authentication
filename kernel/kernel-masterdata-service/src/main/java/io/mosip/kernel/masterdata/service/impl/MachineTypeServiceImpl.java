@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to save  a Machine Type Details
+ * This class have methods to save a Machine Type Details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -32,11 +32,13 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
-	
-	
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineTypeService#createMachineType(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineTypeService#createMachineType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType) {

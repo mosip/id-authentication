@@ -414,6 +414,7 @@ public class MapperUtils {
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
+			dto.setLocationCode(holidayId.getLocationCode());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
