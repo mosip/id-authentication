@@ -207,7 +207,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit,#submitBtn,#scanBtn,#nextBtn,#previousBtn{
+#submit, #rejectionSubmit,#submitBtn,#scanBtn,#nextBtn,#previousBtn, #irisPrevious, #irisNext, #scan {
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
