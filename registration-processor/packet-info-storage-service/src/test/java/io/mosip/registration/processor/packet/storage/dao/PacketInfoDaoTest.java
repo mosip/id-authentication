@@ -151,18 +151,14 @@ public class PacketInfoDaoTest {
 
 	@Test
 	public void getAllDemoWithUINTest() {
+		dedupeEntity.setUinRefId("1234");
+		List<IndividualDemographicDedupeEntity> dedupeList = new ArrayList<>();
+		dedupeList.add(dedupeEntity);
+		Mockito.when(demographicDedupeRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(dedupeList);
+		List<String> duplicateUin = packetInfodao.getAllDemoWithUIN("A125", "male", null, "ar");
+		assertEquals("1234", duplicateUin.get(0));
 
-		List<String> duplicateUins = new ArrayList<>();
-		duplicateUins.add("1234567");
-		duplicateUins.add("12345678");
-
-		Mockito.when(demographicDedupeRepository.getAllDemoWithUIN(ArgumentMatchers.any(), ArgumentMatchers.any(),
-				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(duplicateUins);
-		Date date = new Date(1995, 04, 16);
-
-		List<String> demoDtoList = packetInfodao.getAllDemoWithUIN("D254", "mâle", date, "fr");
-
-		assertEquals("1234567", demoDtoList.get(0));
 	}
 
 	@Test
@@ -175,5 +171,29 @@ public class PacketInfoDaoTest {
 
 		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao.findDemoById("2018782130000224092018121229");
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
+	}
+
+	@Test
+	public void getApplicantIrisImageNameByIdTest() {
+		List<String> irisImageList = new ArrayList<>();
+		irisImageList.add("leftEye");
+		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(irisImageList);
+
+		List<String> result = demographicDedupeRepository.getApplicantIrisImageNameById("2018782130000224092018121229");
+		assertEquals("leftEye", result.get(0));
+
+	}
+
+	@Test
+	public void getApplicantFingerPrintImageNameByIdTest() {
+		List<String> applicantFingerPrint = new ArrayList<>();
+		applicantFingerPrint.add("leftThumb");
+		Mockito.when(demographicDedupeRepository.getApplicantFingerPrintImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(applicantFingerPrint);
+
+		List<String> result = demographicDedupeRepository.getApplicantIrisImageNameById("2018782130000224092018121229");
+		assertEquals("leftThumb", result.get(0));
+
 	}
 }
