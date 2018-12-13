@@ -22,3 +22,5 @@ local.properties
 .DS_Store
 test.txt
 .idea/
+META-INF/
+/.recommenders/

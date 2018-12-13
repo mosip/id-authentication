@@ -50,7 +50,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
-		
+
 		//DemoDedupe to quality check
 		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)).process(validateStructure).choice()
 		.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
@@ -59,6 +59,11 @@ public class MosipBridgeRoutes extends RouteBuilder {
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
 		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+			
+		//Manual Verification to UIN Generation
+		from(BridgeUtil.getEndpoint(MessageBusAddress.MANUAL_VERIFICATION_BUS)).process(validateStructure).choice()
+				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.UIN_GENERATION_BUS_IN));
 
 		// Demographic validation to Biometric validation routing
 		/*

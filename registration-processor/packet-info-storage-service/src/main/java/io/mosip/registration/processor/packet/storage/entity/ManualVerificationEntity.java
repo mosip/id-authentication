@@ -1,19 +1,13 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 /**
  * The persistent class for the reg_manual_verification database table.
- * 
+ *
  * @author Shuchita
  * @since 0.0.1
  *
@@ -21,248 +15,248 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "reg_manual_verification", schema = "regprc")
 public class ManualVerificationEntity extends BasePacketEntity<ManualVerificationPKEntity> implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name = "cr_by")
-	private String crBy = "SYSTEM";
 
-	@Column(name = "cr_dtimes")
-	@CreationTimestamp
-	private Timestamp crDtimes;
+    @Column(name = "cr_by")
+    private String crBy;
 
-	@Column(name = "del_dtimes")
-	private Timestamp delDtimes;
+    @Column(name = "cr_dtimes")
+    private Timestamp crDtimes;
 
-	@Column(name = "is_active")
-	private Boolean isActive;
+    @Column(name = "del_dtimes")
+    private Timestamp delDtimes;
 
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
-	@Column(name = "lang_code")
-	private String langCode;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
-	@Column(name = "matched_score")
-	private BigDecimal matchedScore;
+    @Column(name = "lang_code")
+    private String langCode;
 
-	@Column(name = "mv_usr_id")
-	private String mvUsrId;
+    @Column(name = "matched_score")
+    private BigDecimal matchedScore;
 
-	@Column(name = "reason_code")
-	private String reasonCode;
+    @Column(name = "mv_usr_id")
+    private String mvUsrId;
 
-	@Column(name = "status_code")
-	private String statusCode;
+    @Column(name = "reason_code")
+    private String reasonCode;
 
-	@Column(name = "status_comment")
-	private String statusComment;
+    @Column(name = "status_code")
+    private String statusCode;
 
-	@Column(name = "upd_by")
-	private String updBy;
+    @Column(name = "status_comment")
+    private String statusComment;
 
-	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
-	private Timestamp updDtimes;
+    @Column(name = "upd_by")
+    private String updBy;
 
-	/**
-	 * @return the crBy
-	 */
-	public String getCrBy() {
-		return crBy;
-	}
+    @Column(name = "upd_dtimes")
+    private Timestamp updDtimes;
 
-	/**
-	 * @param crBy
-	 *            the crBy to set
-	 */
-	public void setCrBy(String crBy) {
-		this.crBy = crBy;
-	}
 
-	/**
-	 * @return the crDtimes
-	 */
-	public Timestamp getCrDtimes() {
-		return crDtimes;
-	}
+    /**
+     * @return the crBy
+     */
+    public String getCrBy() {
+        return crBy;
+    }
 
-	/**
-	 * @param crDtimes
-	 *            the crDtimes to set
-	 */
-	public void setCrDtimes(Timestamp crDtimes) {
-		this.crDtimes = crDtimes;
-	}
+    /**
+     * @param crBy
+     *            the crBy to set
+     */
+    public void setCrBy(String crBy) {
+        this.crBy = crBy;
+    }
 
-	/**
-	 * @return the delDtimes
-	 */
-	public Timestamp getDelDtimes() {
-		return delDtimes;
-	}
+    /**
+     * @return the crDtimes
+     */
+    public Timestamp getCrDtimes() {
+        return crDtimes;
+    }
 
-	/**
-	 * @param delDtimes
-	 *            the delDtimes to set
-	 */
-	public void setDelDtimes(Timestamp delDtimes) {
-		this.delDtimes = delDtimes;
-	}
+    /**
+     * @param crDtimes
+     *            the crDtimes to set
+     */
+    public void setCrDtimes(Timestamp crDtimes) {
+        this.crDtimes = crDtimes;
+    }
 
-	/**
-	 * @return the isActive
-	 */
-	public Boolean getIsActive() {
-		return isActive;
-	}
+    /**
+     * @return the delDtimes
+     */
+    public Timestamp getDelDtimes() {
+        return delDtimes;
+    }
 
-	/**
-	 * @param isActive
-	 *            the isActive to set
-	 */
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
+    /**
+     * @param delDtimes
+     *            the delDtimes to set
+     */
+    public void setDelDtimes(Timestamp delDtimes) {
+        this.delDtimes = delDtimes;
+    }
 
-	/**
-	 * @return the isDeleted
-	 */
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
+    /**
+     * @return the isActive
+     */
+    public Boolean getIsActive() {
+        return isActive;
+    }
 
-	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
-	 */
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    /**
+     * @param isActive
+     *            the isActive to set
+     */
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
 
-	/**
-	 * @return the langCode
-	 */
-	public String getLangCode() {
-		return langCode;
-	}
+    /**
+     * @return the isDeleted
+     */
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
 
-	/**
-	 * @param langCode
-	 *            the langCode to set
-	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
+    /**
+     * @param isDeleted
+     *            the isDeleted to set
+     */
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-	/**
-	 * @return the matchedScore
-	 */
-	public BigDecimal getMatchedScore() {
-		return matchedScore;
-	}
+    /**
+     * @return the langCode
+     */
+    public String getLangCode() {
+        return langCode;
+    }
 
-	/**
-	 * @param matchedScore
-	 *            the matchedScore to set
-	 */
-	public void setMatchedScore(BigDecimal matchedScore) {
-		this.matchedScore = matchedScore;
-	}
+    /**
+     * @param langCode
+     *            the langCode to set
+     */
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
+    }
 
-	/**
-	 * @return the mvUsrId
-	 */
-	public String getMvUsrId() {
-		return mvUsrId;
-	}
+    /**
+     * @return the matchedScore
+     */
+    public BigDecimal getMatchedScore() {
+        return matchedScore;
+    }
 
-	/**
-	 * @param mvUsrId
-	 *            the mvUsrId to set
-	 */
-	public void setMvUsrId(String mvUsrId) {
-		this.mvUsrId = mvUsrId;
-	}
+    /**
+     * @param matchedScore
+     *            the matchedScore to set
+     */
+    public void setMatchedScore(BigDecimal matchedScore) {
+        this.matchedScore = matchedScore;
+    }
 
-	/**
-	 * @return the reasonCode
-	 */
-	public String getReasonCode() {
-		return reasonCode;
-	}
+    /**
+     * @return the mvUsrId
+     */
+    public String getMvUsrId() {
+        return mvUsrId;
+    }
 
-	/**
-	 * @param reasonCode
-	 *            the reasonCode to set
-	 */
-	public void setReasonCode(String reasonCode) {
-		this.reasonCode = reasonCode;
-	}
+    /**
+     * @param mvUsrId
+     *            the mvUsrId to set
+     */
+    public void setMvUsrId(String mvUsrId) {
+        this.mvUsrId = mvUsrId;
+    }
 
-	/**
-	 * @return the statusCode
-	 */
-	public String getStatusCode() {
-		return statusCode;
-	}
+    /**
+     * @return the reasonCode
+     */
+    public String getReasonCode() {
+        return reasonCode;
+    }
 
-	/**
-	 * @param statusCode
-	 *            the statusCode to set
-	 */
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
-	}
+    /**
+     * @param reasonCode
+     *            the reasonCode to set
+     */
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
+    }
 
-	/**
-	 * @return the statusComment
-	 */
-	public String getStatusComment() {
-		return statusComment;
-	}
+    /**
+     * @return the statusCode
+     */
+    public String getStatusCode() {
+        return statusCode;
+    }
 
-	/**
-	 * @param statusComment
-	 *            the statusComment to set
-	 */
-	public void setStatusComment(String statusComment) {
-		this.statusComment = statusComment;
-	}
+    /**
+     * @param statusCode
+     *            the statusCode to set
+     */
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
 
-	/**
-	 * @return the updBy
-	 */
-	public String getUpdBy() {
-		return updBy;
-	}
+    /**
+     * @return the statusComment
+     */
+    public String getStatusComment() {
+        return statusComment;
+    }
 
-	/**
-	 * @param updBy
-	 *            the updBy to set
-	 */
-	public void setUpdBy(String updBy) {
-		this.updBy = updBy;
-	}
+    /**
+     * @param statusComment
+     *            the statusComment to set
+     */
+    public void setStatusComment(String statusComment) {
+        this.statusComment = statusComment;
+    }
 
-	/**
-	 * @return the updDtimes
-	 */
-	public Timestamp getUpdDtimes() {
-		return updDtimes;
-	}
+    /**
+     * @return the updBy
+     */
+    public String getUpdBy() {
+        return updBy;
+    }
 
-	/**
-	 * @param updDtimes
-	 *            the updDtimes to set
-	 */
-	public void setUpdDtimes(Timestamp updDtimes) {
-		this.updDtimes = updDtimes;
-	}
+    /**
+     * @param updBy
+     *            the updBy to set
+     */
+    public void setUpdBy(String updBy) {
+        this.updBy = updBy;
+    }
 
-	/**
-	 * @return the serialversionuid
-	 */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    /**
+     * @return the updDtimes
+     */
+    public Timestamp getUpdDtimes() {
+        return updDtimes;
+    }
+
+    /**
+     * @param updDtimes
+     *            the updDtimes to set
+     */
+    public void setUpdDtimes(Timestamp updDtimes) {
+        this.updDtimes = updDtimes;
+    }
+
+    /**
+     * @return the serialversionuid
+     */
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 }
