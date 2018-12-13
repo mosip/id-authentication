@@ -13,6 +13,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.VirtualKeyboardKeys;
 import io.mosip.registration.controller.reg.RegistrationController;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -21,8 +22,11 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableStringValue;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
@@ -31,6 +35,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -50,6 +55,8 @@ public class VirtualKeyboard {
 
 	private VBox root;
 
+	private boolean capsLock;
+
 	private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards.keyboard",
 			new Locale(AppConfig.getApplicationProperty("local_language")));
 
@@ -67,7 +74,17 @@ public class VirtualKeyboard {
 	 *            focus owner in the Scene containing this keyboard.
 	 */
 
-	public VirtualKeyboard(ReadOnlyObjectProperty<Node> target) {
+	private static VirtualKeyboard instance = null;
+
+	public static VirtualKeyboard getInstance() {
+		if (instance == null) {
+			instance = new VirtualKeyboard();
+		}
+
+		return instance;
+	}
+
+	private VirtualKeyboard(ReadOnlyObjectProperty<Node> target) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening virtual keyboard");
 
@@ -188,7 +205,7 @@ public class VirtualKeyboard {
 				hbox.getChildren().addAll(extraRightButtons[buttonRow]);
 			}
 		} catch (NullPointerException exception) {
-			root=null;
+			root = null;
 			LOGGER.error("Virtual Keyboard ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
 		}
@@ -208,7 +225,7 @@ public class VirtualKeyboard {
 	 * Creates a VirtualKeyboard which uses the focusProperty of the scene to
 	 * which it is attached as its target
 	 */
-	public VirtualKeyboard() {
+	private VirtualKeyboard() {
 		this(null);
 	}
 
@@ -374,6 +391,62 @@ public class VirtualKeyboard {
 			alt.setSelected(false);
 			meta.setSelected(false);
 		}
+	}
+
+	public void changeControlOfKeyboard(TextField textField) {
+		textField.setOnKeyPressed(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event) {
+				KeyEvent e = ((KeyEvent) event);
+				if (e.getCode().getName().equals("Caps Lock")) {
+					if (capsLock) {
+						capsLock = false;
+					} else {
+						capsLock = true;
+					}
+				}
+				String key;
+				if (capsLock) {
+					try {
+						key = keyboard.getString("shift_" + e.getCode().getName().replaceAll("\\s", ""));
+					} catch (MissingResourceException exception) {
+						LOGGER.error("Virtual Keyboard", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								exception.getMessage());
+						key = null;
+					}
+					if (key != null) {
+						textField.fireEvent(new KeyEvent(KeyEvent.KEY_TYPED, key, e.getCode().getName(), e.getCode(),
+								false, false, false, false));
+						textField.setEditable(false);
+					}
+				} else {
+					try {
+						key = keyboard.getString("unshift_" + e.getCode().getName().replaceAll("\\s", ""));
+					} catch (MissingResourceException exception) {
+						LOGGER.error("Virtual Keyboard", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								exception.getMessage());
+						key = null;
+					}
+					if (key != null) {
+						textField.fireEvent(new KeyEvent(KeyEvent.KEY_TYPED, key, e.getCode().getName(), e.getCode(),
+								false, false, false, false));
+						textField.setEditable(false);
+					}
+				}
+			}
+		});
+
+		textField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
+					final String newValue) {
+				Platform.runLater(() -> {
+					textField.setEditable(true);
+				});
+
+			}
+		});
+
 	}
 
 }

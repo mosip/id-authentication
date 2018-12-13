@@ -123,6 +123,8 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private DatePicker ageDatePicker;
 
+	private DatePicker autoAgeDatePicker;
+
 	@FXML
 	private TextField ageField;
 
@@ -435,15 +437,19 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-
 	/**
 	 * Loading the virtual keyboard
 	 */
 	private void loadKeyboard() {
 		try {
-			keyboardNode = new VirtualKeyboard().view();
+			VirtualKeyboard vk = VirtualKeyboard.getInstance();
+			keyboardNode = vk.view();
 			demoGraphicPane1.getChildren().add(keyboardNode);
 			keyboardNode.setVisible(false);
+			vk.changeControlOfKeyboard(fullNameLocalLanguage);
+			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
+			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
+			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -493,11 +499,13 @@ public class RegistrationController extends BaseController {
 
 			if (demographicDTO.getIntroducerRID() != null) {
 				uinId.setText(demographicDTO.getIntroducerRID());
-			} else {
+			} 
+			if (demographicDTO.getIntroducerUIN() != null) {
 				uinId.setText(demographicDTO.getIntroducerUIN());
+			} 
+			if (demographicInfoDTO.getParentOrGuardianName() != null) {
+				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 			}
-
-			parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
 			// for applicant biometrics
@@ -698,6 +706,9 @@ public class RegistrationController extends BaseController {
 				if (ageDatePicker.getValue() != null) {
 					demographicInfoDTO.setDateOfBirth(Date
 							.from(ageDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+				} else {
+					demographicInfoDTO.setDateOfBirth(Date.from(
+							autoAgeDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 				}
 				demographicInfoDTO.setAge(ageField.getText());
 				demographicInfoDTO.setGender(gender.getValue());
@@ -1238,7 +1249,7 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-
+			autoAgeDatePicker = new DatePicker();
 			ageField.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
@@ -1268,7 +1279,7 @@ public class RegistrationController extends BaseController {
 						dob.append(RegistrationConstants.DEMOGRAPHIC_DOB);
 						dob.append(Calendar.getInstance().getWeekYear() - Integer.parseInt(ageField.getText()));
 						LocalDate date = LocalDate.parse(dob, formatter);
-						ageDatePicker.setValue(date);
+						autoAgeDatePicker.setValue(date);
 					}
 					if (ageField.getText().length() == 0) {
 						ageDatePicker.setValue(null);
