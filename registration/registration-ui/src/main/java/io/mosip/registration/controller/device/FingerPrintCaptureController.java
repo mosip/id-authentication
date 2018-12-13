@@ -282,7 +282,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
-							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
+							RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
 
 							rightSlapQualityScore, popupStage);
 					
@@ -373,6 +373,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Navigating to Iris capture page for user registration started");
 
 			if (validateFingerPrints()) {
+				SessionContext.getInstance().getMapObject().remove("DuplicateFinger");
 				registrationController.toggleFingerprintCaptureVisibility(false);
 				registrationController.toggleIrisCaptureVisibility(true);
 			}
@@ -398,6 +399,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
 			if (validateFingerPrints()) {
+				SessionContext.getInstance().getMapObject().remove("DuplicateFinger");
 				registrationController.getDemoGraphicTitlePane().setExpanded(true);
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
