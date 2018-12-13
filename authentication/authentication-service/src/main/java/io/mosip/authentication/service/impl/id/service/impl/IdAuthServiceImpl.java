@@ -132,11 +132,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 		Optional<String> findRefIdByVid = vidRepository.findRefIdByVid(vid);
 		if (findRefIdByVid.isPresent()) {
 
-			refId = findRefIdByVid.get();
+			refId = findRefIdByVid.get().trim();
 			Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
 
 			if (findUinByRefId.isPresent()) {
-				String uin = findUinByRefId.get();
+				String uin = findUinByRefId.get().trim();
 				try {
 					idRepo = idRepoService.getIdRepo(uin);
 				} catch (IdAuthenticationBusinessException e) {
