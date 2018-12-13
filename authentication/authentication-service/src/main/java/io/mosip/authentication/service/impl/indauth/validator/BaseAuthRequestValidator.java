@@ -48,6 +48,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  *
  * @author Manoj SP
  * @author Prem Kumar
+ * @author Rakesh Roshan
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
@@ -87,6 +88,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
+
+	private static final String FINGER = "finger";
+
+	private static final String IRIS = "iris";
+
+	private static final String FACE = "face";
 
 	/** email Validator */
 	@Autowired
@@ -149,9 +156,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 				validateFace(authRequestDTO, bioInfo, errors);
 
-			} else {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			} else if (bioInfo == null || bioInfo.isEmpty()) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+						"missing biometric request");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage(), REQUEST));
 			}
 		}
 
@@ -220,8 +229,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				IdentityDTO::getLeftLittle, IdentityDTO::getRightThumb, IdentityDTO::getRightIndex,
 				IdentityDTO::getRightMiddle, IdentityDTO::getRightRing, IdentityDTO::getRightLittle);
 		if (!isAtleastOneFingerRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"finger request is not available");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { FINGER }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}
@@ -237,8 +248,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean isIrisRequestAvailable = checkAnyIdInfoAvailable(authRequestDTO, IdentityDTO::getLeftEye,
 				IdentityDTO::getRightEye);
 		if (!isIrisRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"iris request is not available");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IRIS }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -253,8 +266,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				&& authRequestDTO.getRequest().getIdentity() != null
 				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
 		if (!isFaceRequestAvailable) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"face request is not available");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { FACE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -340,7 +355,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		Long fingerCountExceeding = listOfIndInfoSupplier.stream().map(s -> getIdInfoCount(s.get())).mapToLong(l -> l)
 				.sum();
-		if (fingerCountExceeding > 10) {
+		if (fingerCountExceeding > 2) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"finger count is exceeding to 2");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), REQUEST));
 		}
@@ -370,7 +387,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				.map(stream -> stream.filter(lt -> !lt.getValue().isEmpty()).count()).orElse((long) 0);
 
 		if (leftEyeCount > 1 || rightEyeCount > 1) {
-			// add errors
+
 		}
 
 	}
