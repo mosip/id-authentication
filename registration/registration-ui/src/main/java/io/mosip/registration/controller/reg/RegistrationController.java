@@ -334,6 +334,7 @@ public class RegistrationController extends BaseController {
 	private BufferedImage exceptionBufferedImage;
 
 	private boolean applicantImageCaptured;
+	private boolean exceptionImageCaptured;
 
 	private boolean toggleBiometricException;
 
@@ -378,6 +379,7 @@ public class RegistrationController extends BaseController {
 
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
 				applicantImageCaptured = false;
+				exceptionImageCaptured = false;
 				exceptionBufferedImage = null;
 			}
 
@@ -822,6 +824,7 @@ public class RegistrationController extends BaseController {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
 			exceptionBufferedImage = capturedImage;
+			exceptionImageCaptured = true;
 		}
 	}
 
@@ -837,6 +840,7 @@ public class RegistrationController extends BaseController {
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
 			exceptionImage.setImage(defaultImage);
 			exceptionBufferedImage = null;
+			exceptionImageCaptured = false;
 		}
 	}
 
@@ -922,12 +926,25 @@ public class RegistrationController extends BaseController {
 
 		boolean imageCaptured = false;
 		if (applicantImageCaptured) {
-			if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
-				imageCaptured = true;
+			if(toggleBiometricException) {
+				if(exceptionImageCaptured) {
+					if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
+						imageCaptured = true;
+					} else {
+						generateAlert(RegistrationConstants.ALERT_ERROR,
+								RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
+				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR,
-						RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
-			}
+				if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
+					imageCaptured = true;
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR,
+							RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+				}
+			}			
 		} else {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
 		}
