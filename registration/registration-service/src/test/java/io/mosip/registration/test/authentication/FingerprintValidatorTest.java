@@ -65,6 +65,7 @@ public class FingerprintValidatorTest {
 	public void validateSingleTest() {
 		fingerprintValidator.setFingerPrintType("single");
 
+		assertThat(fingerprintValidator.getFingerPrintType(), is("single")); 
 		UserBiometric userBiometric = new UserBiometric();
 		userBiometric.setQualityScore(91);
 		userBiometric.setBioMinutia("bioMinutia");
