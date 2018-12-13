@@ -101,13 +101,13 @@ public class DemodedupeStage extends MosipVerticleManager {
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
 
 				if (isDuplicateAfterAuth) {
-					
+
 					int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
 					description = registrationStatusDto.getStatusComment() + registrationId;
 					registrationStatusDto.setRetryCount(retryCount);
-					
+
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
 					description = "Packet Demo dedupe failed for registration id : " + registrationId;
@@ -117,7 +117,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
-					
+
 					// Saving potential duplicates in reg_manual_verification table
 					saveManualAdjudicationData(duplicateUINList, registrationId);
 				}
@@ -169,7 +169,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 				manualVerificationPKEntity.setRegId(registrationId);
 
 				manualVerificationEntity.setId(manualVerificationPKEntity);
-				manualVerificationEntity.setLangCode(null);
+				manualVerificationEntity.setLangCode("eng");
 				manualVerificationEntity.setMatchedScore(null);
 				manualVerificationEntity.setMvUsrId(null);
 				manualVerificationEntity.setReasonCode("Potential Match");
@@ -177,6 +177,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
+				manualVerificationEntity.setCrBy("SYSTEM");
 
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
