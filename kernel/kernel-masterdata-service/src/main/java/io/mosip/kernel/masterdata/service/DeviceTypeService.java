@@ -23,6 +23,6 @@ public interface DeviceTypeService {
 	 *             if any error occurred while saving Device Type
 	 * 
 	 */
-	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceTypes);
+	public CodeAndLanguageCodeID createDeviceType(RequestDto<DeviceTypeDto> deviceTypes);
 
 }

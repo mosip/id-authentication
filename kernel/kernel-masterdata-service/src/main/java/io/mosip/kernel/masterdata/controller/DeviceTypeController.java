@@ -51,9 +51,9 @@ public class DeviceTypeController {
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> createDeviceTypes(
+	public ResponseEntity<CodeAndLanguageCodeID> createDeviceType(
 			@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
-		return new ResponseEntity<>(deviceTypeService.createDeviceTypes(deviceTypes), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes), HttpStatus.CREATED);
 	}
 
 }

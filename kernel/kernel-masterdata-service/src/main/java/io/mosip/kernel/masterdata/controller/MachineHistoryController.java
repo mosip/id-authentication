@@ -27,6 +27,7 @@ import io.swagger.annotations.ApiResponses;
 public class MachineHistoryController {
 
 	/**
+	 * 
 	 * Reference to MachineHistroyService.
 	 */
 	@Autowired
