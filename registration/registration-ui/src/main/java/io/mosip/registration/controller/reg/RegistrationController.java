@@ -409,7 +409,6 @@ public class RegistrationController extends BaseController {
 			isChild = true;
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
-			keyboardNode = new VirtualKeyboard().view();
 			accord.setExpandedPane(demoGraphicTitlePane);
 			disableFutureDays();
 			toggleFunction();
@@ -419,11 +418,10 @@ public class RegistrationController extends BaseController {
 			dateFormatter();
 			populateTheLocalLangFields();
 			loadLanguageSpecificKeyboard();
-			demoGraphicPane1.getChildren().add(keyboardNode);
-			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
 			setScrollFalse();
+			loadKeyboard();
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
 				prevAddressButton.setVisible(false);
 			}
@@ -434,6 +432,21 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
+		}
+	}
+
+
+	/**
+	 * Loading the virtual keyboard
+	 */
+	private void loadKeyboard() {
+		try {
+			keyboardNode = new VirtualKeyboard().view();
+			demoGraphicPane1.getChildren().add(keyboardNode);
+			keyboardNode.setVisible(false);
+		} catch (NullPointerException exception) {
+			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage());
 		}
 	}
 
@@ -1405,7 +1418,8 @@ public class RegistrationController extends BaseController {
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-			SessionContext.getInstance().getUserContext().getUserMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			SessionContext.getInstance().getUserContext().getUserMap()
+					.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
@@ -1707,15 +1721,15 @@ public class RegistrationController extends BaseController {
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 
-			}else {
-				toggleBiometricException=(boolean) SessionContext.getInstance().getUserContext().getUserMap()
+			} else {
+				toggleBiometricException = (boolean) SessionContext.getInstance().getUserContext().getUserMap()
 						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 			}
-			
-			if(toggleBiometricException) {
+
+			if (toggleBiometricException) {
 				bioExceptionToggleLabel1.setId("toggleLabel2");
 				bioExceptionToggleLabel2.setId("toggleLabel1");
-			}else {
+			} else {
 				bioExceptionToggleLabel1.setId("toggleLabel1");
 				bioExceptionToggleLabel2.setId("toggleLabel2");
 			}
@@ -1735,7 +1749,7 @@ public class RegistrationController extends BaseController {
 						captureExceptionImage.setDisable(true);
 					}
 					SessionContext.getInstance().getUserContext().getUserMap()
-					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+							.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 				}
 			});
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
@@ -2167,12 +2181,12 @@ public class RegistrationController extends BaseController {
 		AddressDTO addressDTO = new AddressDTO();
 		addressDTO.setLocationDTO(new LocationDTO());
 		demographicInfoDTOUser.setAddressDTO(addressDTO);
-		
+
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
 		AddressDTO addressDTOLocal = new AddressDTO();
 		addressDTO.setLocationDTO(new LocationDTO());
 		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
-		
+
 		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
 		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
 		registrationDTO.setDemographicDTO(demographicDTO);

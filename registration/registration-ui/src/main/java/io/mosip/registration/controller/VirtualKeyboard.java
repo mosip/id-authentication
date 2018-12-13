@@ -48,7 +48,7 @@ public class VirtualKeyboard {
 
 	private static final Set<Integer> KEY_LENGTHS = new HashSet<>();
 
-	private final VBox root;
+	private VBox root;
 
 	private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards.keyboard",
 			new Locale(AppConfig.getApplicationProperty("local_language")));
@@ -78,7 +78,6 @@ public class VirtualKeyboard {
 		KEY_LENGTHS.add(1);
 		KEY_LENGTHS.add(2);
 
-		// Data for regular buttons; split into rows
 		String[][] unshifted = null;
 		try {
 			unshifted = new String[][] {
@@ -157,14 +156,12 @@ public class VirtualKeyboard {
 				{ KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.COMMA,
 						KeyCode.PERIOD, KeyCode.SLASH } };
 
-		// non-regular buttons (don't respond to Shift)
 		final Button escape = createNonshiftableButton("Esc", KeyCode.ESCAPE, modifiers, target);
 		final Button backspace = createNonshiftableButton("Backspace", KeyCode.BACK_SPACE, modifiers, target);
 		final Button delete = createNonshiftableButton("Del", KeyCode.DELETE, modifiers, target);
 		final Button enter = createNonshiftableButton("Enter", KeyCode.ENTER, modifiers, target);
 		final Button tab = createNonshiftableButton("Tab", KeyCode.TAB, modifiers, target);
 
-		// Cursor keys, with graphic instead of text
 		final Button cursorLeft = createCursorKey(KeyCode.LEFT, modifiers, target, 15.0, 5.0, 15.0, 15.0, 5.0, 10.0);
 		final Button cursorRight = createCursorKey(KeyCode.RIGHT, modifiers, target, 5.0, 5.0, 5.0, 15.0, 15.0, 10.0);
 		final Button cursorUp = createCursorKey(KeyCode.UP, modifiers, target, 10.0, 0.0, 15.0, 10.0, 5.0, 10.0);
@@ -172,7 +169,6 @@ public class VirtualKeyboard {
 		final VBox cursorUpDown = new VBox(2);
 		cursorUpDown.getChildren().addAll(cursorUp, cursorDown);
 
-		// "Extras" to go at the left or right end of each row of buttons.
 		final Node[][] extraLeftButtons = new Node[][] { { escape }, { tab }, { modifiers.capsLockKey() },
 				{ modifiers.shiftKey() } };
 		final Node[][] extraRightButtons = new Node[][] { { backspace }, { delete }, { enter },
@@ -192,6 +188,7 @@ public class VirtualKeyboard {
 				hbox.getChildren().addAll(extraRightButtons[buttonRow]);
 			}
 		} catch (NullPointerException exception) {
+			root=null;
 			LOGGER.error("Virtual Keyboard ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
 		}
@@ -226,7 +223,6 @@ public class VirtualKeyboard {
 		return root;
 	}
 
-	// Creates a "regular" button that has an unshifted and shifted value
 	private Button createShiftableButton(final String unshifted, final String shifted, final KeyCode code,
 			Modifiers modifiers, final ReadOnlyObjectProperty<Node> target) {
 		final ReadOnlyBooleanProperty letter = new SimpleBooleanProperty(
@@ -237,7 +233,6 @@ public class VirtualKeyboard {
 		return button;
 	}
 
-	// Creates a button with fixed text not responding to Shift
 	private Button createNonshiftableButton(final String text, final KeyCode code, final Modifiers modifiers,
 			final ReadOnlyObjectProperty<Node> target) {
 		StringProperty textProperty = new SimpleStringProperty(text);
@@ -245,7 +240,6 @@ public class VirtualKeyboard {
 		return button;
 	}
 
-	// Creates a button with mutable text, and registers listener with it
 	private Button createButton(final ObservableStringValue text, final KeyCode code, final Modifiers modifiers,
 			final ReadOnlyObjectProperty<Node> target) {
 		final Button button = new Button();
@@ -289,14 +283,12 @@ public class VirtualKeyboard {
 		return button;
 	}
 
-	// Utility method to create a KeyEvent from the Modifiers
 	private KeyEvent createKeyEvent(Object source, EventTarget target, EventType<KeyEvent> eventType, String character,
 			KeyCode code, Modifiers modifiers) {
 		return new KeyEvent(source, target, eventType, character, code.toString(), code, modifiers.shiftDown().get(),
 				modifiers.ctrlDown().get(), modifiers.altDown().get(), modifiers.metaDown().get());
 	}
 
-	// Utility method for creating cursor keys:
 	private Button createCursorKey(KeyCode code, Modifiers modifiers, ReadOnlyObjectProperty<Node> target,
 			Double... points) {
 		Button button = createNonshiftableButton("", code, modifiers, target);
@@ -307,8 +299,6 @@ public class VirtualKeyboard {
 		return button;
 	}
 
-	// Convenience class to bundle together the modifier keys and their selected
-	// state
 	private static class Modifiers {
 		private final ToggleButton shift;
 		private final ToggleButton shift2;
