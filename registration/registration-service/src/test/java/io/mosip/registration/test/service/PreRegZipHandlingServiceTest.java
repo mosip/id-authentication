@@ -65,7 +65,7 @@ public class PreRegZipHandlingServiceTest {
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
 		createRegistrationDTOObject();
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970.zip");
+		URL url = PreRegZipHandlingServiceTest.class.getResource("/70694681371453.zip");
 		File packetZipFile = new File(url.getFile());
 		preRegPacket=FileUtils.readFileToByteArray(packetZipFile);
 //		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
