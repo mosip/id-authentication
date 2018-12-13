@@ -188,7 +188,6 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
-
 	}
 
 }
