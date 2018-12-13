@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,10 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
@@ -89,7 +85,6 @@ public class IdAuthServiceImplTest {
 
 	@Test
 	public void testGetIdRepoByUinNumber() throws IdAuthenticationBusinessException {
-		String uin = "765743965";
 
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByUinNumber", Mockito.anyString());
 
@@ -167,8 +162,6 @@ public class IdAuthServiceImplTest {
 		String idvIdType = "D";
 		String idvId = "875948796";
 
-		IdValidationFailedException e = new IdValidationFailedException();
-		
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 

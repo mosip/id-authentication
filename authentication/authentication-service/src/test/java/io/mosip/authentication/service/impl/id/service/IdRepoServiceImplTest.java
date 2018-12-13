@@ -3,7 +3,6 @@ package io.mosip.authentication.service.impl.id.service;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +75,6 @@ public class IdRepoServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdRepo_ThrowException() throws IdAuthenticationBusinessException, RestServiceException {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		Map<String, Object> response = new HashMap<>();
 
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -109,6 +107,7 @@ public class IdRepoServiceImplTest {
 		byte resByte[] = res.getBytes();
 		String value = new String(resByte, "UTF-8");
 		
+		@SuppressWarnings("unchecked")
 		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idReposerviceImpl, "getIdInfo", idResponseDTO);
 	}

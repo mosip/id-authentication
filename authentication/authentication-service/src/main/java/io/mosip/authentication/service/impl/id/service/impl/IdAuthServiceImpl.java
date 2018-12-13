@@ -20,7 +20,6 @@ import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
