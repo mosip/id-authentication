@@ -52,6 +52,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -715,20 +716,26 @@ public class MasterdataControllerTest {
 	// -------------------------------TemplateControllerTest--------------------------
 	@Test
 	public void getAllTemplateByTest() throws Exception {
-		Mockito.when(templateService.getAllTemplate()).thenReturn(templateDtoList);
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		templateResponseDto.setTemplates(templateDtoList);
+		Mockito.when(templateService.getAllTemplate()).thenReturn(templateResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() throws Exception {
-		Mockito.when(templateService.getAllTemplateByLanguageCode(Mockito.anyString())).thenReturn(templateDtoList);
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		templateResponseDto.setTemplates(templateDtoList);
+		Mockito.when(templateService.getAllTemplateByLanguageCode(Mockito.anyString())).thenReturn(templateResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/HIN")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		templateResponseDto.setTemplates(templateDtoList);
 		Mockito.when(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(templateDtoList);
+				Mockito.anyString())).thenReturn(templateResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/HIN/EMAIL")).andExpect(status().isOk());
 	}
 

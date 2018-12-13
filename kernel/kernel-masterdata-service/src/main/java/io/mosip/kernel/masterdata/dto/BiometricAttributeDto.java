@@ -8,14 +8,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @author Uday Kumar
  * @since 1.0.0
- *
  */
 @Data
-
-
 @ApiModel(value = "BiometricAttribute", description = "BiometricAttribute resource representation")
 public class BiometricAttributeDto {
 	/**

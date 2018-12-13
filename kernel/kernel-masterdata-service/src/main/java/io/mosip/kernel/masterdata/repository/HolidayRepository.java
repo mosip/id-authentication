@@ -13,8 +13,7 @@ import io.mosip.kernel.masterdata.entity.Holiday;
  * 
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
- * @version 1.0.0
- * @since 23-10-2018
+ * @since 1.0.0
  */
 @Repository
 public interface HolidayRepository extends BaseRepository<Holiday, Integer> {

@@ -6,7 +6,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.MachineType;
 
 /**
- * Repository function to fetching Machine Type details
+ * Repository to perform CRUD operations on MachineType.
  * 
  * @author Megha Tanga
  * @since 1.0.0

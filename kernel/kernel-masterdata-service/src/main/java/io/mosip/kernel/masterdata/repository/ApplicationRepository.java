@@ -10,7 +10,6 @@ import io.mosip.kernel.masterdata.entity.Application;
 /**
  * 
  * @author Neha
- * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -24,7 +23,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link Application}
 	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByIsDeletedFalse(Class<Application> entityClass);
+	public List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
 
 	/**
 	 * 
@@ -34,7 +33,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link String}
 	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByLangCodeAndIsDeletedFalse(String languageCode);
+	public List<Application> findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(String languageCode);
 
 	/**
 	 * Get Application type by specific id and language code
@@ -45,6 +44,6 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            - language code
 	 * @return {@link Application}
 	 */
-	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
+	public Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(String code, String languageCode);
 
 }

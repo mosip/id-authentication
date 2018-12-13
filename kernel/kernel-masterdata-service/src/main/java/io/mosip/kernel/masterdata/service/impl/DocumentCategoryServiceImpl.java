@@ -42,26 +42,15 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
 
-	/**
-	 * Method to fetch all Document category details
-	 * 
-	 * @return DocumentCategoryDTO list
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#getAllDocumentCategory()
 	 */
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
-			documentCategoryList = documentCategoryRepository.findAllByIsDeletedFalse(DocumentCategory.class);
+			documentCategoryList = documentCategoryRepository.findAllByIsDeletedFalseOrIsDeletedNull(DocumentCategory.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -82,29 +71,15 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return documentCategoryResponseDto;
 	}
 
-	/**
-	 * Method to fetch all Document category details based on language code
-	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return DocumentCategoryDTO list
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
-			documentCategoryList = documentCategoryRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
+			documentCategoryList = documentCategoryRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -125,26 +100,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return documentCategoryResponseDto;
 	}
 
-	/**
-	 * Method to fetch A Document category details based on id and language code
-	 * 
-	 * @param code
-	 *            The Id of Document Category
-	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return DocumentCategoryDTO
-	 * 
-	 * @throws DocumentCategoryFetchException
-	 *             If fails to fetch required Document category
-	 * 
-	 * @throws DocumentCategoryMappingException
-	 *             If not able to map Document category entity with Document
-	 *             category Dto
-	 * 
-	 * @throws DocumentCategoryNotFoundException
-	 *             If given required Document category not found
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#getDocumentCategoryByCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode) {
@@ -152,7 +110,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		DocumentCategory documentCategory;
 		DocumentCategoryDto documentCategoryDto;
 		try {
-			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
+			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
