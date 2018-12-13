@@ -20,8 +20,6 @@ import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
-import io.mosip.kernel.syncdata.dto.ReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.entity.DeviceSpecification;
@@ -30,11 +28,15 @@ import io.mosip.kernel.syncdata.entity.Holiday;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
 import io.mosip.kernel.syncdata.entity.MachineType;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 
+/**
+ * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ */
 @Component
 public class MapperUtils {
 
@@ -106,19 +108,6 @@ public class MapperUtils {
 			holidayDtos.add(dto);
 		}
 		return holidayDtos;
-	}
-
-	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
-		Objects.requireNonNull(reasonCategories, "list cannot be null");
-		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		reasonCategoryDtos = reasonCategories.parallelStream()
-				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
-						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
-						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
-				.collect(Collectors.toList());
-
-		return reasonCategoryDtos;
-
 	}
 
 	public List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {

@@ -30,11 +30,11 @@ public class SwaggerConfig {
 	/**
 	 * Application Title
 	 */
-	private static final String TITLE = "Sync handler Service";
+	private static final String TITLE = "Sync Data Service";
 	/**
 	 * Master Data Service
 	 */
-	private static final String DESCRIPTION = "Sync handler Service";
+	private static final String DESCRIPTION = "Sync Data Service";
 
 	/**
 	 * Produces {@link ApiInfo}

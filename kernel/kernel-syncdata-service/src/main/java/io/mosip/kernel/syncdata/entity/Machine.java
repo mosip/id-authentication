@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
  * 
  * Entity for Machine Details
  * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

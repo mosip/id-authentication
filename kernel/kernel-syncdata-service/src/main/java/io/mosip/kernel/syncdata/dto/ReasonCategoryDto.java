@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReasonCategoryDto extends BaseDto{
+public class ReasonCategoryDto extends BaseDto {
 	private String code;
 
 	private String name;
@@ -20,10 +20,6 @@ public class ReasonCategoryDto extends BaseDto{
 	private String description;
 
 	private String langCode;
-	
-	private Boolean isActive;
-	
-	private Boolean isDeleted;
 
-	private List<ReasonListDto> reasonList = new ArrayList<>();
+	private Boolean isActive;
 }

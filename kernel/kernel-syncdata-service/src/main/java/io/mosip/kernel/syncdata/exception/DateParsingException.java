@@ -2,6 +2,10 @@ package io.mosip.kernel.syncdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
+/**
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ */
 public class DateParsingException extends BaseUncheckedException {
 	/**
 	 * Generated serial version id
