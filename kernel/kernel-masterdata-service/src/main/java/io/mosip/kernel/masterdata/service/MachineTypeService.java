@@ -6,8 +6,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
- * This interface has abstract methods to save a Machine Type Details to the
- * database table
+ * This interface provides methods to do CRUD operations on MachineType.
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -19,7 +18,7 @@ public interface MachineTypeService {
 	 * Abstract method to save Machine Type Details to the Database
 	 * 
 	 * @param machineType
-	 *            input from user
+	 *            machineType DTO
 	 * 
 	 * @return CodeAndLanguageCodeID returning code and language code
 	 *         {@link CodeAndLanguageCodeID}

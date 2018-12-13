@@ -61,6 +61,6 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Device
 	 */
-	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceRequestDto);
+	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceRequestDto);
 
 }

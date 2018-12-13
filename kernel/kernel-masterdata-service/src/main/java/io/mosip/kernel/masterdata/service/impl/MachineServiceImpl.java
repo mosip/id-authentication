@@ -152,7 +152,7 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);

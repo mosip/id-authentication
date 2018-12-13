@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * This class provide services to MOSIP system to do CRUD operations on
+ * This class provide services to system to do CRUD operations on
  * Languages.
  * 
  * @author Bal Vikash Sharma
