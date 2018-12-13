@@ -73,7 +73,7 @@ public class PacketRejectionReasonController {
 	 * 
 	 * @param reasonCategoryCode - reason category code
 	 * @param langCode - language code
-	 * @return ReasonCategory- Reason cateogry with reason list
+	 * @return ReasonCategory- Reason category with reason list
 	 */
 	@GetMapping(value = "/{reasoncategorycode}/{langcode}")
 	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable("reasoncategorycode") String reasonCategoryCode,
