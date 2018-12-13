@@ -23,7 +23,7 @@ public interface ManualAdjudicationService {
 	 * 
 	 * @return {@link ManualVerificationDTO}
 	 */
-	public ManualVerificationDTO assignStatus(UserDto dto);
+	public ManualVerificationDTO assignApplicant(UserDto dto);
 
 	/**
 	 * This method returns a file related to a regId

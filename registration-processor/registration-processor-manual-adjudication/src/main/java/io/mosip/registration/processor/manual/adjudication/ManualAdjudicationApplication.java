@@ -14,9 +14,12 @@ import io.mosip.registration.processor.manual.adjudication.stage.ManualVerificat
  * @author Pranav Kumar
  * @since 0.0.1
  */
-@SpringBootApplication(scanBasePackages = {"io.mosip.registration.processor.packet.receiver","io.mosip.registration.processor.status","io.mosip.registration.processor.rest.client", "io.mosip.registration.processor.manual.adjudication", "io.mosip.registration.processor.filesystem.ceph.adapter.impl"})
+@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver",
+		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client",
+		"io.mosip.registration.processor.manual.adjudication",
+		"io.mosip.registration.processor.filesystem.ceph.adapter.impl" })
 public class ManualAdjudicationApplication {
-	
+
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
@@ -29,7 +32,7 @@ public class ManualAdjudicationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ManualAdjudicationApplication.class, args);
 	}
-	
+
 	@PostConstruct
 	public void deployManualVerificationStage() {
 		manualVerificationStage.deployStage();

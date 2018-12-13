@@ -81,7 +81,7 @@ public class ManualAdjudicationControllerTest {
 	
 	@Test
 	public void assignmentSuccessTest() {
-		Mockito.when(manualAdjudicationService.assignStatus(userDto)).thenReturn(manualVerificationDTO);
+		Mockito.when(manualAdjudicationService.assignApplicant(userDto)).thenReturn(manualVerificationDTO);
 		String userDto = null;
 		try {
 			userDto = jsonUserDto.write(this.userDto).getJson();
@@ -212,7 +212,7 @@ public class ManualAdjudicationControllerTest {
 	
 	@Test
 	public void noRecordAssignedExceptionHandlerTest() {
-		Mockito.when(manualAdjudicationService.assignStatus(any())).thenThrow(new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(), PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage()));
+		Mockito.when(manualAdjudicationService.assignApplicant(any())).thenThrow(new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(), PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage()));
 		String userDto = null;
 		try {
 			userDto = jsonUserDto.write(this.userDto).getJson();
