@@ -275,7 +275,7 @@ public class BookingService {
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
-					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDate(regID,
+					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID,
 							dateList.get(i).toLocalDate());
 					if (!entity.isEmpty()) {
 						List<SlotDto> slotList = new ArrayList<>();
