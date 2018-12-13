@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class KeyManagerTest {
 		assertNotEquals(keyManager.requestData(createRequest(), env, decryptor, mapper), createResponse());		
 	}
 	
+	@Ignore
 	@Test
 	public void requestInvalidDataTest() {
 		KeyManager keyManager = new KeyManager();
