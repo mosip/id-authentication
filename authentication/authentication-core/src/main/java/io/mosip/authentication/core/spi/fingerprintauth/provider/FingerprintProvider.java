@@ -70,7 +70,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 		return this.scoreCalculator(decodedrefInfo, decodeEntityInfo);
 	}
 
-	private static byte[] decodeValue(String value) {
+	static byte[] decodeValue(String value) {
 		return Base64.getDecoder().decode(value);
 	}
 
