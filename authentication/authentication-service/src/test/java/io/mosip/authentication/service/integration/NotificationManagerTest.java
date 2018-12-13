@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.integration;
 
-import static org.mockito.Mockito.doThrow;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -90,13 +87,13 @@ public class NotificationManagerTest {
 				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccessmail);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		HttpServer.create(8097).start(adapter);
+		HttpServer.create(8001).start(adapter);
 
 		RouterFunction<?> functionSuccessmsg = RouterFunctions.route(RequestPredicates.POST("/notifier/sms"),
 				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));
 		HttpHandler msgHttpHandler = RouterFunctions.toHttpHandler(functionSuccessmsg);
 		ReactorHttpHandlerAdapter msgAadapter = new ReactorHttpHandlerAdapter(msgHttpHandler);
-		HttpServer.create(8098).start(msgAadapter);
+		HttpServer.create(8000).start(msgAadapter);
 		System.err.println("started server");
 	}
 

@@ -12,6 +12,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
+/**
+ * The Class KycAuthFilter.
+ * 
+ * @author Sanjay Murali
+ */
 @Component
 public class KycAuthFilter extends BaseAuthFilter {
 	
@@ -38,7 +43,9 @@ public class KycAuthFilter extends BaseAuthFilter {
 		try {
 			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
-			authRequest.replace(REQUEST, keyManager.requestData(authRequest, env, decryptor, mapper));
+			if(null != authRequest.get(REQUEST)) {
+				authRequest.replace(REQUEST, keyManager.requestData(authRequest, env, decryptor, mapper));				
+			}
 			requestBody.replace(AUTH_REQUEST, authRequest);
 			return requestBody;
 		} catch (ClassCastException e) {

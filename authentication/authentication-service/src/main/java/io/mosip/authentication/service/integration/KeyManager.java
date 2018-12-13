@@ -116,10 +116,5 @@ public class KeyManager {
 		}
 		return output;
 	}
-	
-	public byte[] createHash(String data) {
-		byte[] hashedData = HMACUtils.generateHash(data.getBytes());
-		return hashedData;
-	}
 
 }
