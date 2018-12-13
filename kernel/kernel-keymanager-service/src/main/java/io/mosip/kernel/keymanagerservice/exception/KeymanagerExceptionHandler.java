@@ -23,7 +23,7 @@ import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.keymanagerservice.constant.KeyManagerConstant;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
 
 /**
@@ -59,7 +59,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidFormatException(final InvalidFormatException e) {
 		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
-				e.getMessage() + KeyManagerConstant.WHITESPACE
+				e.getMessage() + KeymanagerConstant.WHITESPACE
 						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
 				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
 	}
@@ -99,7 +99,7 @@ public class KeymanagerExceptionHandler {
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
 			ServiceError error = new ServiceError(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(),
-					x.getField() + KeyManagerConstant.WHITESPACE + x.getDefaultMessage());
+					x.getField() + KeymanagerConstant.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		});

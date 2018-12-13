@@ -32,19 +32,13 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
-	
-	/**
-	 * Method used to save Device details 
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return CodeAndLanguageCodeID
-	 * 		   Device  Type code and Language code which is successfully inserted
-	 * 
-	 * @param RequestDto<DeviceTypeDto>
-	 *             input from user Device Type DTO
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While inserting Device Type Detail If fails to insert  Device type Detail
-	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceTypeService#createDeviceTypes(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceType) {

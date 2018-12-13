@@ -39,34 +39,16 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 	/**
-	 * Field to hold Machine History  Repository object
+	 * Field to hold Machine History Repository object
 	 */
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
 
-
-	/**
-	 * Method used for retrieving Machine details based on given Machine ID and
-	 * Language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param id
-	 *            pass Machine ID as String
-	 * 
-	 * @param langCode
-	 *            pass Language code as String
-	 * 
-	 * @return MachineResponseDto 
-	 * 			returning the Machine Detail for the given Machine
-	 *         ID and Language code
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While Fetching Machine Detail If fails to fetch required Machine
-	 *             Detail
-	 * 
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Machine ID and language not found
-	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.
+	 * String, java.lang.String)
 	 */
 	@Override
 	public MachineResponseDto getMachine(String id, String langCode) {
@@ -92,21 +74,11 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseIdDto;
 	}
 
-	/**
-	 * Method used for fetch all Machine details
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return MachineResponseDto 
-	 * 			returning all Machine Detail
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While Fetching Machine Detail If fails to fetch required Machine
-	 *             Detail
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Machine ID and language not found
-	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachineAll()
 	 */
-
 	@Override
 	public MachineResponseDto getMachineAll() {
 		List<Machine> machineList = null;
@@ -132,25 +104,12 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	/**
-	 * Method used for retrieving Machine details based on given Language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param langCode
-	 *           pass Language code as String
-	 * 
-	 * @return MachineResponseDto 
-	 * 			returning the Machine Detail for the given Language
-	 *          code
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While Fetching Machine Detail If fails to fetch required Machine
-	 *             Detail
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Machine ID and language not found
-	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#getMachine(java.lang.
+	 * String)
 	 */
-
 	@Override
 	public MachineResponseDto getMachine(String langCode) {
 		MachineResponseDto machineResponseDto = new MachineResponseDto();
@@ -174,19 +133,12 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	/**
-	 * Method used to save Machine details 
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return IdResponseDto
-	 * 		   Machine ID which is successfully inserted
-	 * 
-	 * @param RequestDto
-	 *             input from user Machine DTO
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While inserting Machine Detail If fails to insert  required Machine
-	 *             Detail
-	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#createMachine(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {

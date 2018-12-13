@@ -30,6 +30,9 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#createTemplateType(io.mosip.kernel.masterdata.dto.TemplateTypeDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType) {
 		TemplateType entity = MetaDataUtils.setCreateMetaData(tempalteType, TemplateType.class);

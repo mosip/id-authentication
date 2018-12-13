@@ -4,17 +4,22 @@ import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 
-
-/**Custom converter for KeyManagerSymmetricKeyRequestDto and CryptoRequestDto
+/**
+ * Custom converter for {@link KeymanagerSymmetricKeyRequestDto} and
+ * {@link CryptomanagerRequestDto}
  * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
  */
-public class KeymanagerSymmetricKeyConverter implements DataConverter<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> {
+public class KeymanagerSymmetricKeyConverter
+		implements DataConverter<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> {
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.datamapper.spi.DataConverter#convert(java.lang.Object, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.datamapper.spi.DataConverter#convert(java.lang.
+	 * Object, java.lang.Object)
 	 */
 	@Override
 	public void convert(CryptomanagerRequestDto source, KeymanagerSymmetricKeyRequestDto destination) {
@@ -23,7 +28,4 @@ public class KeymanagerSymmetricKeyConverter implements DataConverter<Cryptomana
 		destination.setTimeStamp(source.getTimeStamp());
 		destination.setEncryptedSymmetricKey(source.getData());
 	}
-
-	
-
 }

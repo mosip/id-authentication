@@ -11,24 +11,24 @@ public enum PacketUploaderExceptionConstant {
 	/**
 	 * {@link #MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION} exception constant
 	 */
-	MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION("KER-FTU-004", "file name is a non empty directory"),
+	MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION("KER-FTM-FTP-004", "file name is a non empty directory"),
 	/**
 	 * {@link #MOSIP_SECURITY_FILE_LOCATION_EXCEPTION} exception constant
 	 */
-	MOSIP_SECURITY_FILE_LOCATION_EXCEPTION("KER-FTU-005",
+	MOSIP_SECURITY_FILE_LOCATION_EXCEPTION("KER-FTM-FTP-005",
 			"file location does not exist and cannot be created permission denied"),
 	/**
 	 * {@link #MOSIP_IO_FILE_EXCEPTION} exception constant
 	 */
-	MOSIP_IO_FILE_EXCEPTION("KER-FTU-006", "exception occure while reading and writing file"),
+	MOSIP_IO_FILE_EXCEPTION("KER-FTM-FTP-006", "exception occure while reading and writing file"),
 	/**
 	 * {@link #MOSIP_INVALID_FILE_NAME_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_FILE_NAME_EXCEPTION("KER-FTU-007", "invalid filename contains .."),
+	MOSIP_INVALID_FILE_NAME_EXCEPTION("KER-FTM-FTP-007", "invalid filename contains .."),
 	/**
 	 * {@link #MOSIP_PACKET_SIZE_EXCEPTION} exception constant
 	 */
-	MOSIP_PACKET_SIZE_EXCEPTION("KER-FTU-008", "packet size should be less than 5 MB and greater than 0");
+	MOSIP_PACKET_SIZE_EXCEPTION("KER-FTM-FTP-008", "packet size should be less than 5 MB and greater than 0");
 
 	/**
 	 * Error Message for Exception

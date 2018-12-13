@@ -20,7 +20,11 @@ import lombok.NoArgsConstructor;
  * 
  * Entity for Machine Details
  * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
  */
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -75,15 +79,15 @@ public class Machine extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
+
 	/**
 	 * Field for validity end Date and Time for machine
 	 */
-	@Column(name="validity_end_dtimes")
+	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
-	
+
 	@ManyToOne
-	@JoinColumns({@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
 
 }

@@ -141,7 +141,7 @@ public class PacketUploaderUtils {
 					PacketUploaderExceptionConstant.MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION.getErrorCode(),
 					PacketUploaderExceptionConstant.MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION.getErrorMessage());
 		}
-		checkKey(sftpServer);
+		
 	}
 
 	/**
@@ -163,7 +163,13 @@ public class PacketUploaderUtils {
 			throw new IllegalConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
-		} else if (sftpServer.getPassword() != null && sftpServer.getPrivateKeyFileName() != null
+		} else {
+			keyIsEmpty(sftpServer);
+		}
+	}
+
+	private static void keyIsEmpty(SFTPServer sftpServer) {
+		if (sftpServer.getPassword() != null && sftpServer.getPrivateKeyFileName() != null
 				&& sftpServer.getPassword().isEmpty() && sftpServer.getPrivateKeyFileName().trim().isEmpty()) {
 			throw new IllegalConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),

@@ -33,7 +33,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            proximityDistance provided by user as a radius
 	 * @param langCode
 	 *            langCode provided by user
-	 * @return List<RegistrationCenter> fetched from database
+	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 	@Query
 	List<RegistrationCenter> findRegistrationCentersByLat(@Param("latitude") double latitude,
@@ -63,7 +63,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            locationCode provided by user
 	 * @param languageCode
 	 *            languageCode provided by user
-	 * @return List<RegistrationCenter> fetched from database
+	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
@@ -78,7 +78,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            provided by user
 	 * @param text
 	 *            provided by user
-	 * @return List<RegistrationCenter> fetched from database
+	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND UPPER(loc.name) = UPPER(?3) AND r.is_deleted=false or r.is_deleted IS NULL ", nativeQuery = true)
 	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel,
@@ -88,7 +88,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch all registration centers based on deletion
 	 * condition.
 	 * 
-	 * @return the list of registration centers.
+	 * @return the list of list of {@link RegistrationCenter}.
 	 */
 	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
 }

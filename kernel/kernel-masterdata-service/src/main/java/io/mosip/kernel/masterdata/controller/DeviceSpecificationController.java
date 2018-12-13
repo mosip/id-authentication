@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * 
- * Device specification controller with api to save and get list of documents
+ * Device specification controller with api to save and get list of Device
  * specification.
  * 
  * @author Uday Kumar
@@ -37,22 +37,21 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DeviceSpecification" })
 public class DeviceSpecificationController {
-	
+
 	/**
 	 * Reference to DeviceSpecificationService.
 	 */
 	@Autowired
 	DeviceSpecificationService deviceSpecificationService;
 
-	
 	/**
 	 * Function to fetch list of device specification details based on language code
 	 * 
 	 * @param langCode
-	 *            input from user
-	 *            
-	 * @return DeviceSpecificationResponseDto
-	 * 				all device Specification details based on given language code
+	 *            pass language code as String
+	 * 
+	 * @return DeviceSpecificationResponseDto all device Specification details based
+	 *         on given language code
 	 * 
 	 */
 	@GetMapping("/v1.0/devicespecifications/{langcode}")
@@ -73,9 +72,9 @@ public class DeviceSpecificationController {
 	 * and device Type Code
 	 * 
 	 * @param langCode
-	 *            input from user
+	 *            pass language code as String
 	 * @param deviceTypeCode
-	 *            input from user
+	 *            pass deviceTypeCode as String
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
@@ -91,16 +90,15 @@ public class DeviceSpecificationController {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecByLangCodeAndDevTypeCode(langCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
-		
+
 	}
 
-
 	/**
-	 * Save device specification details to the database table
+	 * Post API to insert a new row of DeviceSpecification data
 	 * 
 	 * @param deviceSpecification
-	 *            input from user Device specification DTO
-	 *            
+	 *            input parameter deviceRequestDto
+	 * 
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping("/v1.0/devicespecifications")
@@ -110,9 +108,10 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
 	public ResponseEntity<IdResponseDto> createDeviceSpecification(
-		@Valid	@RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
+			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
 
-		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
+				HttpStatus.CREATED);
 	}
 
 }

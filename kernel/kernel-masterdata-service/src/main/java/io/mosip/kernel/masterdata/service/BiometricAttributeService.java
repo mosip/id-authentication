@@ -8,28 +8,31 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * 
- * @author Uday kumar
+ * @author Uday
  * @since 1.0.0
  *
  */
 
 public interface BiometricAttributeService {
-	/*
+
+	/**
+	 * 
 	 * methods to fetch list of biometricAttribute for given biometric type code and
 	 * language code
 	 * 
 	 * @param biometricTypeCode
-	 * 
+	 *            input as  biometricTypeCode 
 	 * @param langCode
-	 * 
-	 * @return {@link List<BiometricAttributeDTO>}
+	 *            input as langCode
+	 * @return List of BiometricAttributeDto
 	 */
 	List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode);
 
 	/**
-	 * Function to save Device Specification Details to the Database
+	 * Function to save biometricAttribute Details to the Database
 	 * 
-	 * @param deviceTypes
+	 * @param biometricAttribute
+	 *             biometric attribute dto
 	 * 
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */

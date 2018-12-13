@@ -19,6 +19,7 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.BaseEntity;
+import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 
 /**
  * Utility class for Keymanager
@@ -59,6 +60,50 @@ public class KeymanagerUtil {
 	 */
 	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
+	
+	/**
+	 * Function to check valid timestamp
+	 * 
+	 * @param timeStamp
+	 *            timeStamp
+	 * @param keyAlias
+	 *            keyAlias
+	 * @return true if timestamp is valid, else false
+	 */
+	public boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
+		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
+				|| (timeStamp.isAfter(keyAlias.getKeyGenerationTime())
+						&& timeStamp.isBefore(keyAlias.getKeyExpiryTime()));
+	}
+
+	/**
+	 * Function to check if timestamp is overlapping
+	 * 
+	 * @param timeStamp
+	 *            timeStamp
+	 * @param policyExpiryTime
+	 *            policyExpiryTime
+	 * @param keyGenerationTime
+	 *            keyGenerationTime
+	 * @param keyExpiryTime
+	 *            keyExpiryTime
+	 * @return true if timestamp is overlapping, else false
+	 */
+	public boolean isOverlapping(LocalDateTime timeStamp, LocalDateTime policyExpiryTime,
+			LocalDateTime keyGenerationTime, LocalDateTime keyExpiryTime) {
+		return !timeStamp.isAfter(keyExpiryTime) && !keyGenerationTime.isAfter(policyExpiryTime);
+	}
+
+	/**
+	 * Function to check is reference id is valid
+	 * 
+	 * @param referenceId
+	 *            referenceId
+	 * @return true if referenceId is valid, else false
+	 */
+	public boolean isValidReferenceId(String referenceId) {
+		return referenceId != null && !referenceId.trim().isEmpty();
+	}
 
 	/**
 	 * Function to set metadata

@@ -18,6 +18,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity for Machine History
+ *
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -30,8 +37,7 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 * 
 	 */
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
 			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)) })
 	private String id;
 	private LocalDateTime effectDateTime;
@@ -55,7 +61,7 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	/**
 	 * Field for machine serial number
 	 */
-	@Column(name = "serial_num", nullable = false,  length = 64)
+	@Column(name = "serial_num", nullable = false, length = 64)
 	private String serialNum;
 
 	/**

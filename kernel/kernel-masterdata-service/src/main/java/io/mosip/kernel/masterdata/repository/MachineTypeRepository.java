@@ -14,7 +14,5 @@ import io.mosip.kernel.masterdata.entity.MachineType;
  */
 @Repository
 public interface MachineTypeRepository extends BaseRepository<MachineType, String> {
-	
-	
 
 }

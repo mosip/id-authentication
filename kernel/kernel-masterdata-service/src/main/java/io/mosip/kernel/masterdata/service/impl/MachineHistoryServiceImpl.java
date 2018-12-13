@@ -34,42 +34,15 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class MachineHistoryServiceImpl implements MachineHistoryService {
 
-	/**
-	 * Field to hold Machine History Repository object
-	 */
 	@Autowired
 	MachineHistoryRepository macRepo;
 
-
-	/**
-	 * Field to hold ModelMapper object
-	 */
-
-	/**
-	 * Method used for retrieving Machine history details based on given Machine ID
-	 * Language code and effective date and time in LocalDateTime formate
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param id
-	 *            pass Machine ID as String
-	 * 
-	 * @param langCode
-	 *            pass Language code as String
-	 * 
-	 * @param effDtime
-	 *            pass effDtime as String
-	 * 
-	 * @return MachineHistoryDto returning the Machine History Detail for the given
-	 *         Machine ID and Language code
-	 * 
-	 * @throws MachineDetailFetchException
-	 *             While Fetching Machine History Detail If fails to fetch required
-	 *             Machine Detail
-	 * 
-	 * 
-	 * @throws MachineHistroyNotFoundException
-	 *             If given required Machine ID, language code or effective date
-	 *             time not found
-	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#
+	 * getMachineHistroyIdLangEffDTime(java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
@@ -79,7 +52,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		} catch (Exception e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage()+ "  "
+					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));
 		}
 

@@ -47,16 +47,16 @@ public class DeviceController {
 	 * Get api to fetch a all device details based on language code
 	 * 
 	 * @param langCode
-	 * 				pass language code as String
+	 *            pass language code as String
 	 * 
-	 * @return DeviceResponseDto
-	 * 				all device details based on given language code
+	 * @return DeviceResponseDto all device details based on given language code
+	 *         {@link DeviceResponseDto}
 	 */
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceResponseDto.class),
-			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
+			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public DeviceResponseDto getDeviceLang(@PathVariable("languagecode") String langCode) {
 		return deviceService.getDeviceLangCode(langCode);
@@ -66,19 +66,19 @@ public class DeviceController {
 	 * Get api to fetch a all device details based on device type and language code
 	 * 
 	 * @param langCode
-	 * 			pass language code as String
+	 *            pass language code as String
 	 * 
 	 * @param deviceType
-	 * 			pass device Type id as String
+	 *            pass device Type id as String
 	 * 
-	 * @return DeviceLangCodeResponseDto
-	 * 				all device details based on given device type and language code
+	 * @return DeviceLangCodeResponseDto all device details based on given device
+	 *         type and language code {@link DeviceLangCodeResponseDto}
 	 */
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceLangCodeResponseDto.class),
-			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and Device Type"),
+			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code and Device Type"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(@PathVariable("languagecode") String langCode,
 			@PathVariable("deviceType") String deviceType) {
@@ -90,10 +90,10 @@ public class DeviceController {
 	 * Post API to insert a new row of Device data
 	 * 
 	 * @param deviceRequestDto
-	 * 			 input parameter deviceRequestDto
+	 *            input parameter deviceRequestDto
 	 * 
-	 * @return ResponseEntity
-	 * 			Machine Id which is inserted successfully
+	 * @return ResponseEntity Device Id which is inserted successfully
+	 *         {@link ResponseEntity}
 	 */
 	@PostMapping()
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)

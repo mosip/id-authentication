@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Crypto-Manager-Response model
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
@@ -20,11 +22,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a CryptoManager Response")
+@ApiModel(description = "Model representing a Crypto-Manager-Service Response")
 public class CryptomanagerResponseDto {
-/**
- * 
- */
-@ApiModelProperty(notes = "Data encrypted/decrypted in BASE64 encoding")	
-private String data;
+	/**
+	 * Data Encrypted/Decrypted in BASE64 encoding
+	 */
+	@ApiModelProperty(notes = "Data encrypted/decrypted in BASE64 encoding")
+	private String data;
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * This interface has abstract methods to fetch and save Device Specification
@@ -22,8 +24,11 @@ public interface DeviceSpecificationService {
 	 *
 	 * @param languageCode
 	 *            Language code given by user
-	 * @return List<DeviceSpecificationDto> 
-	 * 			 Device Specification Details for given language code
+	 * @return List Device Specification Details for given language code
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while retrieving device Specification
+	 * @throws DataNotFoundException
+	 *             if no Device Specification found
 	 *
 	 */
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode);
@@ -36,8 +41,13 @@ public interface DeviceSpecificationService {
 	 *            Language Code given by user
 	 * @param deviceTypeCode
 	 *            DeviceTypeCode given by user
-	 * @return List<DeviceSpecificationDto> Device Specification Details for given
-	 *         language code and deviceTypeCode
+	 * @return List Device Specification Details for given language code and
+	 *         deviceTypeCode
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurs while retrieving device Specification
+	 * @throws DataNotFoundException
+	 *             if no Device Specification found
 	 *
 	 */
 	public List<DeviceSpecificationDto> findDeviceSpecByLangCodeAndDevTypeCode(String languageCode,
@@ -46,11 +56,12 @@ public interface DeviceSpecificationService {
 	/**
 	 * Function to save Device Specification Details to the Database
 	 * 
-	 * @param RequestDto<DeviceSpecificationDto>
-	 *        input from user DeviceSpecification DTO
+	 * @param deviceSpecification
+	 *            input from user DeviceSpecification DTO
 	 * 
-	 * @return IdResponseDto
-	 *        Device Specification ID which is successfully inserted
+	 * @return IdResponseDto Device Specification ID which is successfully inserted
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving device Specification
 	 */
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 

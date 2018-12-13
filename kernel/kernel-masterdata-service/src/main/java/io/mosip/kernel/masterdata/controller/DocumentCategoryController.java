@@ -43,35 +43,17 @@ public class DocumentCategoryController {
 		return documentCategoryService.getAllDocumentCategory();
 	}
 
-	/**
-	 * API to fetch all Document categories details based on language code
-	 * 
-	 * @return All Document categories of a specific language
-	 */
 	@GetMapping("/v1.0/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
 
-	/**
-	 * API to fetch A Document category details using id and language code
-	 * 
-	 * @return A Document category
-	 */
 	@GetMapping("/v1.0/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
 	}
 
-	/**
-	 * API to create document category
-	 * 
-	 * @param category
-	 *            The request DocumentCategory Dto.
-	 * 
-	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
-	 */
 	@PostMapping("/v1.0/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {

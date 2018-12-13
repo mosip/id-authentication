@@ -9,6 +9,7 @@ import io.mosip.kernel.masterdata.entity.BiometricType;
 
 /**
  * @author Neha
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -18,8 +19,10 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 
 	/**
 	 * Get all Biometric types
-	 *
-	 * @return {@link List<BiometricType>}
+	 * 
+	 * @param entityClass
+	 *            class of type {@link BiometricType}
+	 * @return list of {@link BiometricType}
 	 */
 	public List<BiometricType> findAllByIsDeletedFalse(Class<BiometricType> entityClass);
 
@@ -27,7 +30,8 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * Get all Biometric types of a specific language using language code
 	 * 
 	 * @param langCode
-	 * @return {@link List<BiometricType>}
+	 *            is of type {@link String}
+	 * @return list of {@link BiometricType}
 	 */
 	List<BiometricType> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
@@ -35,8 +39,10 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * Get Biometric type by specific id and language code
 	 * 
 	 * @param code
+	 *            biometric type code
 	 * @param langCode
-	 * @return {@linkplain BiometricType}
+	 *            is of type {@link String}
+	 * @return object of {@link BiometricType}
 	 */
 	BiometricType findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 

@@ -35,7 +35,7 @@ public class TemplateTypeController {
 	/**
 	 * This method creates template type based on provided.
 	 * 
-	 * @param category
+	 * @param templateType
 	 *            the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */

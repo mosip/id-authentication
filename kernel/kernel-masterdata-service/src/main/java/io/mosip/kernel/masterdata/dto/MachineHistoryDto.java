@@ -20,8 +20,6 @@ import lombok.Data;
  */
 
 @Data
-
-
 public class MachineHistoryDto {
 
 	/**
@@ -62,8 +60,7 @@ public class MachineHistoryDto {
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime effectDateTime;
-	
-	
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
 

@@ -8,7 +8,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
- * Repository function to fetching machine details
+ * Repository function to save and fetch machine details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -18,10 +18,9 @@ import io.mosip.kernel.masterdata.entity.Machine;
 @Repository
 public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
-	 * This method trigger query to fetch the all Machine details code.
+	 * This method trigger query to fetch the all Machine details.
 	 * 
-	 * @return List
-	 * 		 MachineDetail fetched from database
+	 * @return List MachineDetail fetched from database
 	 * 
 	 */
 	List<Machine> findAllByIsDeletedFalseOrIsDeletedIsNull();
@@ -32,14 +31,12 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * 
 	 * 
 	 * @param id
-	 *          Machine Id provided by user
+	 *            Machine Id provided by user
 	 * @param langCode
-	 *          languageCode provided by user
-	 * @return List
-	 * 		 MachineDetail fetched from database
+	 *            language code provided by user
+	 * @return List MachineDetail fetched from database
 	 */
 
-	
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
 	List<Machine> findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 
@@ -50,8 +47,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @param langCode
 	 *            langCode provided by user
 	 * 
-	 * @return List
-	 * 			MachineDetail fetched from database
+	 * @return List MachineDetail fetched from database
 	 */
 
 	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false)")

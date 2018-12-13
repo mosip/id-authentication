@@ -32,6 +32,9 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.BiometricAttributeService#getBiometricAttribute(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode) {
 		List<BiometricAttributeDto> attributesDto = null;
@@ -55,6 +58,9 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		return attributesDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.BiometricAttributeService#createBiometricAttribute(io.mosip.kernel.masterdata.dto.BiometricAttributeDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID createBiometricAttribute(BiometricAttributeDto biometricAttribute) {
 		BiometricAttribute entity = MetaDataUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);

@@ -18,9 +18,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 /**
-
+ * 
  * This controller class to save Machine Specification details.
  * 
  * @author Megha Tanga
@@ -30,30 +29,32 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "MachineSpecification" })
 public class MachineSpecificationController {
-	
+
 	/**
 	 * Reference to MachineSpecificationService.
 	 */
 	@Autowired
 	MachineSpecificationService machineSpecificationService;
+
 	/**
-	 * Save machine specification details to the database table
+	 * Post API to insert a new row of Machine Specification data
 	 * 
 	 * @param machineSpecification
-	 *            input Machine specification DTO from user 
-	 * @return ResponseEntity
-	 * 			  Machine Specification ID which is successfully inserted
+	 *            input Machine specification DTO from user
+	 * @return ResponseEntity Machine Specification ID which is successfully
+	 *         inserted
 	 */
 	@PostMapping("/v1.0/machinespecifications")
-	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine code and Languge Code", response = IdResponseDto.class)
+	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = IdResponseDto.class),
+			@ApiResponse(code = 201, message = "When Machine Specification successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
 	public ResponseEntity<IdResponseDto> createMachineSpecification(
-			@Valid  @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
+				HttpStatus.CREATED);
 	}
 
 }

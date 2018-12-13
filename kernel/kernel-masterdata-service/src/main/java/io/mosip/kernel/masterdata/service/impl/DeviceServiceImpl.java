@@ -39,25 +39,13 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	DeviceRepository deviceRepository;
 
-	
-	/**
-	 * Method used for fetch all Device details based on given language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return DeviceResponseDto 
-	 * 			returning Device Details based on given language code
-	 * 
-	 * @param langCode
-	 *            pass language as string
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While Fetching Device Detail If fails to fetch required Device
-	 *             Detail
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Device ID and language not found
-	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#getDeviceLangCode(java.lang.
+	 * String)
 	 */
-
 	@Override
 	public DeviceResponseDto getDeviceLangCode(String langCode) {
 		List<Device> deviceList = null;
@@ -80,27 +68,12 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceResponseDto;
 	}
 
-	/**
-	 * Method used for fetch all Device details based on given language code and
-	 * Device type
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return DeviceLangCodeResponseDto
-	 * 		   DeviceDto returning all Device Detail based on language code and
-	 *         Device type
-	 * 
-	 * @param langCode
-	 *            pass language code as String
-	 * @param dtypeCode
-	 *            pass Device type as String
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While Fetching Device Detail If fails to fetch required Device
-	 *             Detail
-	 * @throws DataNotFoundException
-	 *             If given required Device ID and language not found
-	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceService#
+	 * getDeviceLangCodeAndDeviceType(java.lang.String, java.lang.String)
 	 */
-
 	@Override
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String dtypeCode) {
 
@@ -123,19 +96,12 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceLangCodeResponseDto;
 	}
 
-	/**
-	 * Method used to save Device details 
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return IdResponseDto
-	 * 		   Device  ID which is successfully inserted
-	 * 
-	 * @param RequestDto
-	 *             input from user Device DTO
-	 * 
-	 * @throws MasterDataServiceException
-	 *             While inserting Device Detail If fails to insert  required Device
-	 *             Detail
-	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#saveDevice(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
@@ -146,7 +112,7 @@ public class DeviceServiceImpl implements DeviceService {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage()+ " " +ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(device, idResponseDto);

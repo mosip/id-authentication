@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * @author Neha
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -19,7 +20,9 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	/**
 	 * Get all DocumentCategory types
 	 *
-	 * @return {@link List<DocumentCategory>}
+	 * @param entityClass
+	 *            is class of type DocumentCategory
+	 * @return list of {@link DocumentCategory}
 	 */
 	public List<DocumentCategory> findAllByIsDeletedFalse(Class<DocumentCategory> entityClass);
 
@@ -27,7 +30,8 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 * Get all Document category of a specific language using language code
 	 * 
 	 * @param langCode
-	 * @return {@link List<DocumentCategory>}
+	 *            is the language code present in database
+	 * @return list of {@link DocumentCategory}
 	 */
 	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalse(String langCode);
 
@@ -35,8 +39,10 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 * Get Document Category by specific id and language code
 	 * 
 	 * @param code
+	 *            for document category
 	 * @param langCode
-	 * @return {@linkplain DocumentCategory}
+	 *            is the language code present in database
+	 * @return object of {@link DocumentCategory}
 	 */
 	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 

@@ -22,8 +22,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
-
- * This controller class provides Machine details based on user provided data.
+ * 
+ * Controller with api to save and get Machine Details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -45,11 +45,11 @@ public class MachineController {
 	 * Function to fetch machine detail based on given Machine ID and Language code.
 	 * 
 	 * @param machineId
-	 * 			pass Machine ID as String
+	 *            pass Machine ID as String
 	 * @param langCode
-	 * 			pass language code as String
-	 * @return MachineResponseDto
-	 * 			machine detail based on given Machine ID and Language code
+	 *            pass language code as String
+	 * @return MachineResponseDto machine detail based on given Machine ID and
+	 *         Language code {@link MachineResponseDto}
 	 */
 	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineResponseDto.class)
@@ -58,7 +58,7 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
 	public MachineResponseDto getMachineIdLangcode(@PathVariable("id") String machineId,
-			@PathVariable("langcode") String langCode ) {
+			@PathVariable("langcode") String langCode) {
 		return machineService.getMachine(machineId, langCode);
 
 	}
@@ -68,10 +68,10 @@ public class MachineController {
 	 * Function to fetch machine detail based on given Language code
 	 * 
 	 * @param langCode
-	 * 			pass language code as String
+	 *            pass language code as String
 	 * 
-	 * @return MachineResponseDto
-	 * 			machine detail based on given Language code
+	 * @return MachineResponseDto machine detail based on given Language code
+	 *         {@link MachineResponseDto}
 	 */
 
 	@GetMapping(value = "/v1.0/machines/{langcode}")
@@ -88,8 +88,7 @@ public class MachineController {
 	/**
 	 * Function to fetch a all machines details
 	 * 
-	 * @return MachineResponseDto
-	 * 			all machines details
+	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
 	@GetMapping(value = "/v1.0/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail", response = MachineResponseDto.class)
@@ -101,24 +100,23 @@ public class MachineController {
 		return machineService.getMachineAll();
 
 	}
-	
+
 	/**
-	 * Save machine  details to the database table
+	 * Post API to insert a new row of Machine data
 	 * 
 	 * @param machine
-	 *            input from user Machine  DTO
-	 *            
-	 * @return ResponseEntity
-	 * 			Machine Id which is inserted successfully 
+	 *            input from user Machine DTO
+	 * 
+	 * @return ResponseEntity Machine Id which is inserted successfully
+	 *         {@link ResponseEntity}
 	 */
 	@PostMapping("/v1.0/machines")
-	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine and return Machine id", response = IdResponseDto.class)
+	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdResponseDto> saveMachine(
-		@Valid  @RequestBody RequestDto<MachineDto> machine) {
+	public ResponseEntity<IdResponseDto> saveMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
 
