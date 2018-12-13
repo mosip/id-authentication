@@ -123,7 +123,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private DatePicker ageDatePicker;
 
-	private DatePicker autoAgeDatePicker;
+	private DatePicker autoAgeDatePicker = new DatePicker();
 
 	@FXML
 	private TextField ageField;
@@ -359,6 +359,8 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
 
+	private boolean dobSelectionFromCalendar = true;
+
 	/*
 	 * @Autowired private IdValidator<String> pridValidatorImpl;
 	 */
@@ -367,7 +369,6 @@ public class RegistrationController extends BaseController {
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
-
 		try {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
@@ -471,14 +472,15 @@ public class RegistrationController extends BaseController {
 
 			fullName.setText(demographicInfoDTO.getFullName());
 
-			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null) {
+			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null
+					&& dobSelectionFromCalendar) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
 				switchedOn.set(true);
 				ageDatePicker.setDisable(true);
 				ageField.setDisable(false);
 				ageField.setText(demographicInfoDTO.getAge());
-
+				autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
 
 			gender.setValue(demographicInfoDTO.getGender());
@@ -499,10 +501,10 @@ public class RegistrationController extends BaseController {
 
 			if (demographicDTO.getIntroducerRID() != null) {
 				uinId.setText(demographicDTO.getIntroducerRID());
-			} 
+			}
 			if (demographicDTO.getIntroducerUIN() != null) {
 				uinId.setText(demographicDTO.getIntroducerUIN());
-			} 
+			}
 			if (demographicInfoDTO.getParentOrGuardianName() != null) {
 				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 			}
@@ -688,7 +690,6 @@ public class RegistrationController extends BaseController {
 	private void saveDetail() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
-
 		try {
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
@@ -704,9 +705,11 @@ public class RegistrationController extends BaseController {
 			if (validateDemographicPaneTwo()) {
 				demographicInfoDTO.setFullName(fullName.getText());
 				if (ageDatePicker.getValue() != null) {
+					dobSelectionFromCalendar = true;
 					demographicInfoDTO.setDateOfBirth(Date
 							.from(ageDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 				} else {
+					dobSelectionFromCalendar = false;
 					demographicInfoDTO.setDateOfBirth(Date.from(
 							autoAgeDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 				}
@@ -763,6 +766,8 @@ public class RegistrationController extends BaseController {
 
 				if (ageDatePicker.getValue() != null) {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
+				} else {
+					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", autoAgeDatePicker);
 				}
 
 				biometricTitlePane.setExpanded(true);
@@ -1249,7 +1254,6 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			autoAgeDatePicker = new DatePicker();
 			ageField.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
