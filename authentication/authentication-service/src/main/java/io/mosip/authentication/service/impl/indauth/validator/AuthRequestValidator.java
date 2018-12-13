@@ -166,7 +166,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class)));
 				errors.rejectValue(REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
-						new Object[] { "24" },
+						new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
 						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | IDDataValidationException e) {
