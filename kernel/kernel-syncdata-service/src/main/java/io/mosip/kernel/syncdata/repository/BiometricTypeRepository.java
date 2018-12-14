@@ -19,28 +19,13 @@ import io.mosip.kernel.syncdata.entity.BiometricType;
 public interface BiometricTypeRepository extends BaseRepository<BiometricType, String> {
 
 	/**
-	 * Get all Biometric types
-	 *
-	 * @return {@link List<BiometricType>}
-	 */
-	public List<BiometricType> findAllByIsDeletedFalse(Class<BiometricType> entityClass);
-
-	/**
-	 * Get all Biometric types of a specific language using language code
+	 * Method to find list of BiometricType created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @param langCode
-	 * @return {@link List<BiometricType>}
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link BiometricType}
 	 */
-	List<BiometricType> findAllByLangCodeAndIsDeletedFalse(String langCode);
-
-	/**
-	 * Get Biometric type by specific id and language code
-	 * 
-	 * @param code
-	 * @param langCode
-	 * @return {@linkplain BiometricType}
-	 */
-	BiometricType findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 	@Query("FROM BiometricType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<BiometricType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

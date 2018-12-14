@@ -21,6 +21,10 @@ import org.springframework.web.filter.GenericFilterBean;
 import io.mosip.kernel.syncdata.entity.AuthUser;
 import io.mosip.kernel.syncdata.entity.AuthenticationToken;
 
+/**
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ */
 public class SecurityFilter extends GenericFilterBean {
 
 	private static final Logger SFLOGGER = LoggerFactory.getLogger(SecurityFilter.class);

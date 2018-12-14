@@ -31,7 +31,7 @@ import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import lombok.Data;
 
 /**
- * masterdata sync handler response dto
+ * Masterdata sync handler response dto
  * 
  * @author Abhishek Kumar
  * @since 1.0.0

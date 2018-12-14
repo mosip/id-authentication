@@ -11,15 +11,20 @@ import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 
 /**
  * 
- * @author Uday Kumar
+ * @author Abhishek Kumar
  * @since 1.0.0
  *
  */
 @Repository
 public interface BiometricAttributeRepository extends BaseRepository<BiometricAttribute, String> {
-	List<BiometricAttribute> findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(String biometricTypeCode,
-			String langCode);
-
+	/**
+	 * Method to find list of BiometricAttribute created , updated or deleted time
+	 * is greater than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link BiometricAttribute}
+	 */
 	@Query("FROM BiometricAttribute WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<BiometricAttribute> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

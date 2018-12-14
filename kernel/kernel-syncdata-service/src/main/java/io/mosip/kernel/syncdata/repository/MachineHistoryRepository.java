@@ -19,16 +19,17 @@ import io.mosip.kernel.syncdata.entity.MachineHistory;
 public interface MachineHistoryRepository extends BaseRepository<MachineHistory, String> {
 
 	/**
-	 * This method trigger query to fetch Machine History Details based on
-	 * Machine Id, language code and effective date time
+	 * This method trigger query to fetch Machine History Details based on Machine
+	 * Id, language code and effective date time
 	 * 
 	 * @param id
 	 *            Machine History id provided by user
 	 * @param langCode
 	 *            language code provided by user
 	 * @param effectDtimes
-	 *            effective Date and time provided by user in the format "yyyy-mm-ddThh:mm:ss"
-	 * @return List<MachineHistory> fetched from database
+	 *            effective Date and time provided by user in the format
+	 *            "yyyy-mm-ddThh:mm:ss"
+	 * @return list of {@link MachineHistory}
 	 */
 	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(String id, String langCode,
 			LocalDateTime effectDtimes);

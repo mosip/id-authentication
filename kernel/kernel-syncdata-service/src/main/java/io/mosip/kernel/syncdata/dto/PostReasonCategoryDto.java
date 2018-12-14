@@ -17,7 +17,7 @@ public class PostReasonCategoryDto extends BaseDto implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -845601642085487726L;
-	
+
 	private String code;
 
 	private String name;
@@ -25,9 +25,7 @@ public class PostReasonCategoryDto extends BaseDto implements Serializable {
 	private String description;
 
 	private String langCode;
-	
+
 	private Boolean isActive;
-	
-	private Boolean isDeleted;
 
 }

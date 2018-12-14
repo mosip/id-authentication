@@ -37,6 +37,11 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 
+/**
+ * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ */
 @Component
 public class MapperUtils {
 
@@ -75,8 +80,6 @@ public class MapperUtils {
 		});
 		return holidayDtos;
 	}
-
-	
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
@@ -170,8 +173,6 @@ public class MapperUtils {
 		}
 		return list;
 	}
-
-	
 
 	private MapperUtils() {
 		super();
@@ -335,11 +336,9 @@ public class MapperUtils {
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
 		} else {
-			//mapDtoToEntity(source, destination);
+			// mapDtoToEntity(source, destination);
 		}
 	}
-
-	
 
 	private static <S, D> void mapEntityToDto(S source, D destination) throws IllegalAccessException {
 		Field[] sourceFields = source.getClass().getDeclaredFields();
@@ -435,5 +434,4 @@ public class MapperUtils {
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	
 }

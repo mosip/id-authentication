@@ -11,7 +11,14 @@ import io.mosip.kernel.syncdata.entity.TemplateType;
 
 @Repository
 public interface TemplateTypeRepository extends BaseRepository<TemplateType, String> {
-
+	/**
+	 * Method to find list of TemplateType created , updated or deleted time is greater
+	 * than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link TemplateType}
+	 */
 	@Query("FROM TemplateType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<TemplateType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

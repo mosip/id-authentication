@@ -27,6 +27,11 @@ public class SyncDataBootApplication {
 		SpringApplication.run(SyncDataBootApplication.class, args);
 	}
 
+	/**
+	 * Creating bean of TaskExecutor to run async tasks
+	 * 
+	 * @return {@link Executor}
+	 */
 	@Bean
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

@@ -25,7 +25,7 @@ import net.minidev.json.JSONObject;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(value="/v1.0")
+@RequestMapping(value = "/v1.0")
 public class SyncHandlerController {
 	@Autowired
 	private MasterDataService masterDataService;
@@ -50,7 +50,8 @@ public class SyncHandlerController {
 	 * * This API method would fetch all synced registration center config details
 	 * from server
 	 * 
-	 * @param regId - registration Id
+	 * @param regId
+	 *            registration Id
 	 * @return JSONObject
 	 */
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
@@ -67,8 +68,10 @@ public class SyncHandlerController {
 	 *            last updated timestamp -optional if last updated timestamp is null
 	 *            then fetch all the masterdata
 	 * @return {@link MasterDataResponseDto}
-	 * @throws InterruptedException - this API will throw interrupted exception 
-	 * @throws ExecutionException - this API will throw Executin exception
+	 * @throws InterruptedException
+	 *             this API will throw interrupted exception
+	 * @throws ExecutionException
+	 *             this API will throw Execution exception
 	 */
 	@GetMapping("/syncmasterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
