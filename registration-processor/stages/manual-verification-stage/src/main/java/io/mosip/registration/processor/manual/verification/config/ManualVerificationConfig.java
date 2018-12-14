@@ -25,8 +25,8 @@ public class ManualVerificationConfig {
 	@Bean
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Manual Adjudication").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.manual.adjudication"))
-				.paths(PathSelectors.ant("/v0.1/registration-processor/manual-adjudication/*")).build();
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.manual.verification"))
+				.paths(PathSelectors.ant("/v0.1/registration-processor/manual-verification/*")).build();
 	}
 
 }

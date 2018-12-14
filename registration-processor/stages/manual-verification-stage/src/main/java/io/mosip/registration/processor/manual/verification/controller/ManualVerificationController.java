@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/registration-processor/manual-adjudication")
+@RequestMapping("/v0.1/registration-processor/manual-verification")
 @Api(tags = "Manual Adjudication")
 @CrossOrigin
 public class ManualVerificationController {
