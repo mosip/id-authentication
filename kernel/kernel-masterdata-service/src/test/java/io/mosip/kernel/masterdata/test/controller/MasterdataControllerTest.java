@@ -782,7 +782,7 @@ public class MasterdataControllerTest {
 						+ "    \"templateFileFormat\": {\n" + "      \"code\": \"xml\",\n"
 						+ "      \"description\": \"string\",\n" + "      \"langCode\": \"FRE\",\n"
 						+ "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 	}
 
 	@Test
