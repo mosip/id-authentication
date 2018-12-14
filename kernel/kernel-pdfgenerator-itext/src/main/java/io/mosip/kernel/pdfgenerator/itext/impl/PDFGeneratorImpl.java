@@ -144,15 +144,16 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		OutputStream os = new ByteArrayOutputStream();
 		PdfWriter pdfWriter = new PdfWriter(os);
 		PdfDocument pdfDoc = new PdfDocument(pdfWriter);
+		ConverterProperties converterProperties = new ConverterProperties();
+		FontProvider fp = new FontProvider();
+		
 		pdfDoc.setTagged();
 		PageSize pageSize = PageSize.A4.rotate();
 		pdfDoc.setDefaultPageSize(pageSize);
-		ConverterProperties converterProperties = new ConverterProperties();
 		float screenWidth = CssUtils.parseAbsoluteLength("" + pageSize.getWidth());
 		MediaDeviceDescription mediaDescription = new MediaDeviceDescription(MediaType.SCREEN);
 		mediaDescription.setWidth(screenWidth);
 		converterProperties.setMediaDeviceDescription(mediaDescription);
-		FontProvider fp = new FontProvider();
 		fp.addStandardPdfFonts();
 		fp.addDirectory(resourceLoc);
 		converterProperties.setFontProvider(fp);
