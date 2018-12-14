@@ -478,6 +478,7 @@ public class RegistrationController extends BaseController {
 				ageDatePicker.setDisable(true);
 				ageField.setDisable(false);
 				ageField.setText(demographicInfoDTO.getAge());
+				if(isEditPage())
 				autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
 
