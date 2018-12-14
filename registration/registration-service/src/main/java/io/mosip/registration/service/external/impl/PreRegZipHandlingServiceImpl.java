@@ -169,58 +169,61 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					if (demographicValues.length() > 0) {
 						fieldContentObject = demographicValues.getJSONObject(0);
 						fieldValue = (String) fieldContentObject.get("value");
-						switch (fieldNameKey) {
-						case "gender":
-							demographicInfoDTO.setGender(fieldValue);
-							break;
-						case "city":
-							locationDTO.setCity(fieldValue);
-							break;
-						case "mobileNumber":
-							demographicInfoDTO.setMobile(fieldValue);
-							break;
-						case "localAdministrativeAuthority":
-							demographicInfoDTO.setLocalAdministrativeAuthority(fieldValue);
-							break;
-						case "dateOfBirth":
-							try {
-								demographicInfoDTO.setDateOfBirth(new SimpleDateFormat("dd/MM/yyyy").parse(fieldValue));
-							} catch (ParseException e) {
-							}
-							break;
-						case "emailId":
-							demographicInfoDTO.setEmailId(fieldValue);
-							break;
-						case "province":
-							locationDTO.setProvince(fieldValue);
-							break;
-						case "postalcode":
-							locationDTO.setPostalCode(fieldValue);
-							break;
-						case "FullName":
-							demographicInfoDTO.setFullName(fieldValue);
-							break;
-						case "addressLine1":
-							addressDTO.setAddressLine1(fieldValue);
-							break;
-						case "addressLine2":
-							addressDTO.setAddressLine2(fieldValue);
-							break;
-						case "addressLine3":
-							addressDTO.setLine3(fieldValue);
-							break;
-						case "region":
-							locationDTO.setRegion(fieldValue);
-							break;
-						case "CNEOrPINNumber":
-							demographicInfoDTO.setCneOrPINNumber(fieldValue);
-							break;
-						case "age":
-							demographicInfoDTO.setAge(fieldValue);
-							break;
+						if (fieldValue != null) {
+							switch (fieldNameKey) {
+							case "gender":
+								demographicInfoDTO.setGender(fieldValue);
+								break;
+							case "city":
+								locationDTO.setCity(fieldValue);
+								break;
+							case "mobileNumber":
+								demographicInfoDTO.setMobile(fieldValue);
+								break;
+							case "localAdministrativeAuthority":
+								demographicInfoDTO.setLocalAdministrativeAuthority(fieldValue);
+								break;
+							case "dateOfBirth":
+								try {
+									demographicInfoDTO
+											.setDateOfBirth(new SimpleDateFormat("dd/MM/yyyy").parse(fieldValue));
+								} catch (ParseException e) {
+								}
+								break;
+							case "emailId":
+								demographicInfoDTO.setEmailId(fieldValue);
+								break;
+							case "province":
+								locationDTO.setProvince(fieldValue);
+								break;
+							case "postalcode":
+								locationDTO.setPostalCode(fieldValue.length() >= 5 ? fieldValue.substring(0, 5) : "12345");
+								break;
+							case "FullName":
+								demographicInfoDTO.setFullName(fieldValue);
+								break;
+							case "addressLine1":
+								addressDTO.setAddressLine1(fieldValue);
+								break;
+							case "addressLine2":
+								addressDTO.setAddressLine2(fieldValue);
+								break;
+							case "addressLine3":
+								addressDTO.setLine3(fieldValue);
+								break;
+							case "region":
+								locationDTO.setRegion(fieldValue);
+								break;
+							case "CNEOrPINNumber":
+								demographicInfoDTO.setCneOrPINNumber(fieldValue);
+								break;
+							case "age":
+								demographicInfoDTO.setAge(fieldValue);
+								break;
 
-						default:
-							break;
+							default:
+								break;
+							}
 						}
 					}
 				}
