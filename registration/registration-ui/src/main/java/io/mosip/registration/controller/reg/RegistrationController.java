@@ -12,7 +12,6 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -1278,13 +1277,10 @@ public class RegistrationController extends BaseController {
 					// to populate date of birth based on age
 
 					if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
-						DateTimeFormatter formatter = DateTimeFormatter
-								.ofPattern(RegistrationConstants.DEMOGRAPHIC_DOB_FORMAT);
-						StringBuilder dob = new StringBuilder();
-						dob.append(RegistrationConstants.DEMOGRAPHIC_DOB);
-						dob.append(Calendar.getInstance().getWeekYear() - Integer.parseInt(ageField.getText()));
-						LocalDate date = LocalDate.parse(dob, formatter);
-						autoAgeDatePicker.setValue(date);
+						int age = Integer.parseInt(ageField.getText());												
+						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+						LocalDate dob = currentYear.minusYears(age);
+						autoAgeDatePicker.setValue(dob);
 					}
 					if (ageField.getText().length() == 0) {
 						ageDatePicker.setValue(null);

@@ -24,7 +24,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
-import io.mosip.registration.device.gps.IGPSIntegrator;
+import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
@@ -74,7 +74,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private SyncJobDAO syncJObDao;
 
 	@Autowired
-	private IGPSIntegrator gpsIntegrator;
+	private GPSFacade gpsFacade;
 
 	/** Object for Logger. */
 
@@ -226,7 +226,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		Map<String, Object> gpsMapDetails = gpsIntegrator.getLatLongDtls(centerLatitude, centerLongitude,gpsDeviceModel);
+		Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,gpsDeviceModel);
 
 		if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {

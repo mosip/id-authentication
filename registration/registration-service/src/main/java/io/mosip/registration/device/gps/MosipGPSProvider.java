@@ -1,6 +1,6 @@
 package io.mosip.registration.device.gps;
 
-import io.mosip.registration.device.gps.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.impl.GPSBU343Connector.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -11,7 +11,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * @since 1.0.0
  * 
  */
-public interface IGPSConnector {
+public interface MosipGPSProvider {
 
 	/**
 	 * This method connect to the GPS device in the mentioned port and wait for
@@ -33,5 +33,14 @@ public interface IGPSConnector {
 	 * @return
 	 */
 	boolean parse(String[] tokens, GPSPosition position);
+	
+	/**
+	 * Parses the.
+	 *
+	 * @param line the line
+	 * @return the GPS position
+	 * @throws RegBaseCheckedException
+	 */
+	GPSPosition signlaParser(String line) throws RegBaseCheckedException;
 
 }

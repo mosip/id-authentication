@@ -624,9 +624,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
 	public static final String PRE_REG_SUCCESS_MESSAGE = "Got Pre registartion ";
 
-	// UI Date Format
-	public static final String DEMOGRAPHIC_DOB_FORMAT = "dd-MM-yyyy";
-	public static final String DEMOGRAPHIC_DOB = "01-01-";
+	// UI Date Format	
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
 

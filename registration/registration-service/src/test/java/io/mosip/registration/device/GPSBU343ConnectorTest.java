@@ -87,7 +87,7 @@ public class GPSBU343ConnectorTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.gps.impl.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * {@link io.mosip.registration.device.gps.GPSFacade#getLatLongDtls(double, double)}.
 	 * 
 	 * @throws Exception
 	 */
