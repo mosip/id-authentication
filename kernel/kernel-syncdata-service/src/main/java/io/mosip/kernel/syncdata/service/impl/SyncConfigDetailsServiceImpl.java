@@ -22,13 +22,13 @@ import net.minidev.json.JSONObject;
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	/**
 	 * Environment instance
 	 */
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	/**
 	 * file name referred from the properties file
