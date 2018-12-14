@@ -325,6 +325,16 @@ public class IrisCaptureController extends BaseController {
 			boolean isLeftEyeCaptured = false;
 			boolean isRightEyeCaptured = false;
 
+			for (BiometricExceptionDTO exceptionIris : getIrisExceptions()) {
+				if (exceptionIris.getMissingBiometric()
+						.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
+					isLeftEyeCaptured = true;
+				} else if (exceptionIris.getMissingBiometric()
+						.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
+					isRightEyeCaptured = true;
+				}
+			}
+
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
 				if (validateIrisCapture(irisDetailsDTO)) {
 					if (irisDetailsDTO.getIrisType()
@@ -334,16 +344,9 @@ public class IrisCaptureController extends BaseController {
 							.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
 						isRightEyeCaptured = true;
 					}
-				}
-			}
-
-			for (BiometricExceptionDTO exceptionIris : getIrisExceptions()) {
-				if (exceptionIris.getMissingBiometric()
-						.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
-					isLeftEyeCaptured = true;
-				} else if (exceptionIris.getMissingBiometric()
-						.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
-					isRightEyeCaptured = true;
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_QUALITY_SCORE_ERROR);
+					return isValid;
 				}
 			}
 

@@ -462,6 +462,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					} else if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)) {
 						isthumbsCaptured = true;
 					}
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_QUALITY_SCORE_ERROR);
+					return isValid;
 				}
 			}
 

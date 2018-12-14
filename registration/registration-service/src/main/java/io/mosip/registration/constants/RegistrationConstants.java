@@ -231,6 +231,7 @@ public class RegistrationConstants {
 	public static final String UNABLE_LOAD_FINGERPRINT_SCAN_POPUP = bundle
 			.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
 	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
+	public static final String IRIS_QUALITY_SCORE_ERROR = bundle.getString("IRIS_QUALITY_SCORE_ERROR");
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";

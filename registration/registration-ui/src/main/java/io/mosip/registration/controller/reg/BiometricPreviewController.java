@@ -135,6 +135,8 @@ public class BiometricPreviewController extends BaseController {
 					ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
 					exceptionPhoto.setImage(new Image(inputStream));
 				}
+			} else {
+				exceptionPhoto.setImage(null);
 			}
 
 			for (FingerprintDetailsDTO fpDetailsDTO : registrationDTOContent.getBiometricDTO()
