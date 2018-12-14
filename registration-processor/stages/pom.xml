@@ -17,7 +17,7 @@
 	</properties>
 
 	<modules>
-		<module>packet-validator</module>
+		<module>packet-validator-stage</module>
 		<module>retry-stage</module>
 		<module>failover-stage</module>
 		<module>quality-matchness-checker-stage</module>
@@ -27,6 +27,7 @@
 		<module>packet-decrypter-stage</module>
 		<module>ftp-scanner-stage</module>
 		<module>Demo-dedupe-stage</module>
+		<module>manual-verification-stage</module>
 	</modules>
 
 </project>
