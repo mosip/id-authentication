@@ -48,6 +48,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -80,6 +81,7 @@ import io.mosip.kernel.masterdata.service.TemplateService;
 /**
  * 
  * @author Bal Vikash Sharma
+ * @author Neha Sinha
  * @since 1.0.0
  *
  */
@@ -121,6 +123,7 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private DocumentCategoryService documentCategoryService;
+	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
 
 	@MockBean
 	private DocumentTypeService documentTypeService;
@@ -182,38 +185,23 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateFileFormatService templateFileFormatService;
-	
+
 	private ObjectMapper mapper;
 
 	@Before
 	public void setUp() {
-		mapper=new ObjectMapper();
+		mapper = new ObjectMapper();
 		biometricTypeSetup();
-
 		applicationSetup();
-
 		biometricAttributeSetup();
-
-		// TODO DeviceControllerTest
-		// TODO DeviceSpecificationControllerTest
-
 		documentCategorySetup();
-
 		documentTypeSetup();
-
 		idTypeSetup();
-		
 		locationSetup();
-
-		// TODO MachineDetailControllerTest
-		// TODO MachineHistoryControllerTest
-
 		registrationCenterController();
 		blackListedWordSetUp();
 		templateSetup();
-
 		templateFileFormatSetup();
-
 	}
 
 	private void templateSetup() {
@@ -309,11 +297,10 @@ public class MasterdataControllerTest {
 		requestDto.setId("mosip.create.location");
 		requestDto.setVer("1.0.0");
 		requestDto.setRequest(locationDto);
-		
+
 		try {
-			LOCATION_JSON_EXPECTED_POST=mapper.writeValueAsString(requestDto);
+			LOCATION_JSON_EXPECTED_POST = mapper.writeValueAsString(requestDto);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -334,14 +321,13 @@ public class MasterdataControllerTest {
 		documentType.setName("adhar card");
 		documentType.setDescription("Uid");
 		documentType.setLangCode("eng");
-		// documentType.setIsActive(true);
+
 		documentTypeDtos.add(documentType);
 		DocumentTypeDto documentType1 = new DocumentTypeDto();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_prof");
 		documentType1.setDescription("document for residential prof");
 		documentType1.setLangCode("eng");
-		// documentType1.setIsActive(true);
 		documentTypeDtos.add(documentType1);
 		validDocumentTypeResponseDto = new ValidDocumentTypeResponseDto(documentTypeDtos);
 	}
@@ -422,7 +408,8 @@ public class MasterdataControllerTest {
 		blackListedWordsResponse.setWord("testword");
 
 	}
-	// -------------------------------BiometricTypeControllerTest--------------------------
+
+	// -------------------------------BiometricTypeControllerTest--------------------------//
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
@@ -450,7 +437,21 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	// -------------------------------ApplicationControllerTest--------------------------
+	@Test
+	public void addBiometricType() throws Exception {
+		Mockito.when(biometricTypeService.createBiometricType(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"2018-12-14T06:35:40.171Z\",\n" + "  \"request\": {\n"
+						+ "    \"biometricType\": {\n" + "      \"code\": \"string\",\n"
+						+ "      \"description\": \"string\",\n" + "      \"isActive\": true,\n"
+						+ "      \"langCode\": \"string\",\n" + "      \"name\": \"string\"\n" + "    }\n" + "  }\n"
+						+ "}"))
+				.andExpect(status().isCreated());
+	}
+
+	// -------------------------------ApplicationControllerTest--------------------------//
 	@Test
 	public void fetchAllApplicationTest() throws Exception {
 		applicationResponseDto.setApplicationtypes(applicationDtoList);
@@ -491,7 +492,7 @@ public class MasterdataControllerTest {
 						+ "      \"name\": \"pre-registeration\",\n"
 						+ "      \"description\": \"Pre-registration Application Form\",\n"
 						+ "      \"langCode\": \"ENG\",\n" + "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
@@ -524,6 +525,37 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
+	// -------------------------------DocumentCategoryControllerTest--------------------------
+	@Test
+	public void fetchAllDocumentCategoryTest() throws Exception {
+		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
+		Mockito.when(documentCategoryService.getAllDocumentCategory()).thenReturn(documentCategoryResponseDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documentcategories"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void fetchAllDocumentCategoryUsingLangCodeTest() throws Exception {
+		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
+		Mockito.when(documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString()))
+				.thenReturn(documentCategoryResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documentcategories/ENG"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void fetchDocumentCategoryUsingCodeAndLangCode() throws Exception {
+		List<DocumentCategoryDto> documentCategoryDtos = new ArrayList<>();
+		documentCategoryDtos.add(documentCategoryDto1);
+		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtos);
+		Mockito.when(
+				documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(documentCategoryResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documentcategories/101/ENG"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
 	public void testGetDoucmentTypesForDocumentCategoryAndLangCode() throws Exception {
@@ -537,7 +569,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testDocumentCategoryNotFoundException() throws Exception {
+	public void testDocumentTypeNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
@@ -546,7 +578,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testDocumentCategoryFetchException() throws Exception {
+	public void testDocumentTypeFetchException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documenttypes/poc/eng"))
