@@ -293,11 +293,6 @@ public class RegistrationController extends BaseController {
 
 	@Value("${SCROLL_CHECK}")
 	public int scrollCheck;
-
-	@FXML
-	protected Button biometricsNext;
-	@FXML
-	private Label biometrics;
 	@FXML
 	private AnchorPane biometricsPane;
 	@FXML
@@ -772,9 +767,6 @@ public class RegistrationController extends BaseController {
 
 				biometricTitlePane.setExpanded(true);
 
-				if (capturePhotoUsingDevice.equals("N")) {
-					biometricsNext.setDisable(false);
-				}
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
@@ -1851,18 +1843,12 @@ public class RegistrationController extends BaseController {
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
 			if (capturePhotoUsingDevice.equals("Y")) {
-				biometrics.setVisible(false);
-				biometricsNext.setVisible(false);
 				getBiometricsPane().setVisible(true);
 			} else if (capturePhotoUsingDevice.equals("N")) {
-				biometrics.setVisible(true);
-				biometricsNext.setVisible(true);
+				saveBiometricDetails();
 				getBiometricsPane().setVisible(false);
-				biometricsNext.setDisable(false);
 			}
 		} else {
-			biometrics.setVisible(visibility);
-			biometricsNext.setVisible(visibility);
 			getBiometricsPane().setVisible(visibility);
 		}
 	}
