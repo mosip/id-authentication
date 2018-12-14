@@ -34,20 +34,17 @@ public class PreregistrationBatchJobScheduler {
 
 	@Autowired
 	private JobLauncher jobLauncher;
-
-	/*@Autowired
-	private Job updateTableJob;
-	
-	@Autowired
-	private Job archivingJob;*/
 	
 	@Autowired
 	private Job bookingJob;
 	
 	@Autowired
 	private Job consumedStatusJob;
+	
+	@Autowired
+	private Job expiredStatusJob;
 
-	@Scheduled(cron = "${preregistration.job.schedule.cron.updatestatus}")
+	@Scheduled(cron = "${preregistration.job.schedule.cron.consumedStatusJob}")
 	public void upadteStatusScheduler() {
 
 		JobParameters jobParam = new JobParametersBuilder().addLong("updateStatusTime", System.currentTimeMillis())
@@ -95,6 +92,25 @@ public class PreregistrationBatchJobScheduler {
 				| JobParametersInvalidException e) {
 
 			LOGGER.error(LOGDISPLAY, "Booking Job failed to read data from master data service", e);
+		}
+		
+	}
+	
+	@Scheduled(cron="${preregistration.job.schedule.cron.expiredStatusJob}")
+	public void expiredStatusScheduler() {
+		
+		JobParameters jobParam= new JobParametersBuilder().addLong("expiredStatusJobTime", System.currentTimeMillis())
+								.toJobParameters();
+		try {
+			
+			JobExecution jobExecution=jobLauncher.run(expiredStatusJob, jobParam);
+			
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
+			
+		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+				| JobParametersInvalidException e) {
+
+			LOGGER.error(LOGDISPLAY, "Expired Status Job failed to read data from service", e);
 		}
 		
 	}

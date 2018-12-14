@@ -55,6 +55,8 @@ public class DemoMatchTypeTest {
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
 	}
+	
+	
 
 	@Ignore
 	@Test

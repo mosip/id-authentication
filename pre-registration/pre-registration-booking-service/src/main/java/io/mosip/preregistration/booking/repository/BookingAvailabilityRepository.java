@@ -26,7 +26,7 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	public static final String findall = "SELECT e  FROM prereg.reg_available_slot e where e.regcntr_id=:regcntrId and e.availability_date=:regDate";
 	 
 //	@Query(value = findall, nativeQuery = true)
-	public List<AvailibityEntity> findByRegcntrIdAndRegDate(String regcntrId, LocalDate regDate);
+	public List<AvailibityEntity> findByRegcntrIdAndRegDateOrderByFromTimeAsc(String regcntrId, LocalDate regDate);
 
 	@Query(value = distDate, nativeQuery = true)
 	public List<java.sql.Date> findDate(@Param("regcntrId") String regcntrId, @Param("toDate") LocalDate toDate);

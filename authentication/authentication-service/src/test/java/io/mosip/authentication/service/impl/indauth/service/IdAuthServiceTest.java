@@ -117,7 +117,7 @@ public class IdAuthServiceTest {
 		String uin = "1234567890";
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		uinEntity.setId("12345");
+		uinEntity.setUin("12345");
 //		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
 		String refId = null;
 		refId = "1234567890";

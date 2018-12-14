@@ -47,6 +47,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * @author Rakesh Roshan
  */
 
+
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -71,6 +72,8 @@ public class BaseAuthRequestValidatorTest {
 	PhoneValidatorImpl phoneValidatorImpl;
 
 	Errors error;
+	
+	private static final String FACE = "face";
 
 	@Before
 	public void before() {
@@ -128,7 +131,7 @@ public class BaseAuthRequestValidatorTest {
 	}
 	
 	@Test
-	public void testValidateBioDetails_hasError() {
+	public void testValidateBioDetails_IfBioInfoIsNull_hasError() {
 
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -139,6 +142,22 @@ public class BaseAuthRequestValidatorTest {
 
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(null);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+
+	}
+	
+	@Test
+	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty_hasError() {
+
+		authRequestDTO = getAuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setAuthType(authType);
+		
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		authRequestDTO.setBioInfo(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
@@ -494,7 +513,29 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountNotExceeding10() {
+	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountNotExceeding2() {
+		authRequestDTO = getAuthRequestDTO();
+
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("fingerImage");
+		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
+		finger.add(identityInfoDTO);
+
+		IdentityDTO identity = new IdentityDTO();
+		identity.setLeftThumb(finger);
+		identity.setLeftIndex(finger);
+
+		RequestDTO request = new RequestDTO();
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
+		assertFalse(error.hasErrors());
+	}
+
+
+	@Test
+	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
 		authRequestDTO = getAuthRequestDTO();
 
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -519,9 +560,9 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(request);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
-		assertFalse(error.hasErrors());
+		assertTrue(error.hasErrors());
 	}
-
+	
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
@@ -590,7 +631,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
+		identityInfoDTO.setValue("iris");
 		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
 		leftEye.add(identityInfoDTO);
 
@@ -601,7 +642,30 @@ public class BaseAuthRequestValidatorTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO,error);
+		assertFalse(error.hasErrors());
+
+	}
+	
+	@Test
+	public void testValidateIrisRequestCount_hasLeftEyeRequestMoreThanOne() {
+		authRequestDTO = getAuthRequestDTO();
+
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("iris");
+		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
+		leftEye.add(identityInfoDTO);
+		leftEye.add(identityInfoDTO);
+
+		IdentityDTO identity = new IdentityDTO();
+		identity.setLeftEye(leftEye);
+
+		RequestDTO request = new RequestDTO();
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO,error);
+		assertTrue(error.hasErrors());
 
 	}
 

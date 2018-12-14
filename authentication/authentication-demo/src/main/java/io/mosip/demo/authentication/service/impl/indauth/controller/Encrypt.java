@@ -1,12 +1,9 @@
 package io.mosip.demo.authentication.service.impl.indauth.controller;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.PublicKey;
@@ -17,22 +14,18 @@ import java.util.Base64;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Files;
 
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -48,6 +41,9 @@ public class Encrypt {
 	private static final String FILEPATH = "sample.privatekey.filepath";
 	private static final String FORMAT = "UTF-8";
 
+	/** The Constant RSA. */
+	private static final String RSA = "RSA";
+
 	@Autowired
 	private Environment environment;
 
@@ -61,7 +57,8 @@ public class Encrypt {
 
 	@PostMapping(path = "/identity/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
-	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto) throws JsonProcessingException {
+	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 
 		SecretKey sessionKey = keyGenerator.getSymmetricKey();
@@ -72,10 +69,11 @@ public class Encrypt {
 		byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, data);
 		encryptionResponseDto.setEncryptedIdentity(Base64.getEncoder().encodeToString(encryptedData));
 
-		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
-		PublicKey publicKey = asymmetricKey.getPublic();
-		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
-		storePrivateKey(privateKey, encryptionRequestDto.getTspID());
+//		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
+//		PublicKey publicKey = asymmetricKey.getPublic();
+//		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
+//		storePrivateKey(privateKey, encryptionRequestDto.getTspID());
+		PublicKey publicKey = loadPublicKey();
 
 		// Encrypt session Key with public Key
 		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey.getEncoded());
@@ -84,21 +82,41 @@ public class Encrypt {
 		return encryptionResponseDto;
 	}
 
-	private void storePrivateKey(byte[] encodedvalue, String tspId) {
-		String localpath = environment.getProperty(FILEPATH);
+	private PublicKey loadPublicKey() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		byte[] publicKeyBytes = getPublicKey("public_key", environment);
+		PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+		return publicKey;
+	}
+
+//	private void storePrivateKey(byte[] encodedvalue, String tspId) {
+//		String localpath = environment.getProperty(FILEPATH);
+//		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
+//		String finalpath = MessageFormat.format(localpath, homedirectory);
+//		BufferedWriter output = null;
+//		try {
+//			File fileInfo = new File(finalpath + File.separator + tspId);
+//			File parentFile = fileInfo.getParentFile();
+//			if (!parentFile.exists()) {
+//				parentFile.mkdirs();
+//			}
+//			Files.write(fileInfo.toPath(), encodedvalue);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
+	public byte[] getPublicKey(String filename, Environment env) throws IOException {
+		String localpath = env.getProperty(FILEPATH);
 		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
 		String finalpath = MessageFormat.format(localpath, homedirectory);
-		BufferedWriter output = null;
-		try {
-			File fileInfo = new File(finalpath + File.separator + tspId);
-			File parentFile = fileInfo.getParentFile();
-			if (!parentFile.exists()) {
-				parentFile.mkdirs();
-			}
-			Files.write(encodedvalue, fileInfo);
-		} catch (IOException e) {
-			e.printStackTrace();
+		File fileInfo = new File(finalpath + File.separator + filename);
+		byte[] output = null;
+		if (fileInfo.exists()) {
+			output = Files.readAllBytes(fileInfo.toPath());
+		} else {
+			throw new IOException();
 		}
+		return output;
 	}
 
 }

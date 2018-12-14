@@ -38,12 +38,10 @@ import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.MailRequestDto;
-import io.mosip.authentication.service.integration.dto.SmsRequestDto;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.server.HttpServer;
 
@@ -74,10 +72,6 @@ public class NotificationManagerTest {
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
-		//ReflectionTestUtils.setField(notificationManager, "environment", environment);
-
-//		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
-		//ReflectionTestUtils.setField(notificationManager, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 	}
 
@@ -96,73 +90,6 @@ public class NotificationManagerTest {
 		HttpServer.create(8000).start(msgAadapter);
 		System.err.println("started server");
 	}
-
-	@Test
-	public void TestValidAuthSmsNotification() throws IdAuthenticationBusinessException {
-		SmsRequestDto smsRequestDto = new SmsRequestDto();
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE, smsRequestDto,
-				String.class)).thenReturn(restRequestDTO);
-		Map<String, Object> values = new HashMap<>();
-		Supplier<Object> Supplier = () -> new String("Success");
-		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-	//	notificationManager.sendNotification(values, null, "1234567890", SenderType.AUTH, "otp.notification.type");
-	}
-
-	@Test
-	public void TestValidOTPSmsNotification() throws IdAuthenticationBusinessException {
-		SmsRequestDto smsRequestDto = new SmsRequestDto();
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE, smsRequestDto,
-				String.class)).thenReturn(restRequestDTO);
-		Map<String, Object> values = new HashMap<>();
-		Supplier<Object> Supplier = () -> new String("Success");
-		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		//notificationManager.sendNotification(values, null, "1234567890", SenderType.OTP, "otp.notification.type");
-	}
-
-	@Test
-	public void TestValidAuthEmailNotification() throws IdAuthenticationBusinessException {
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		MailRequestDto mailRequestDto = new MailRequestDto();
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE, mailRequestDto,
-				String.class)).thenReturn(restRequestDTO);
-		Map<String, Object> values = new HashMap<>();
-		Supplier<Object> Supplier = () -> new String("Success");
-		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-	//	notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
-	}
-
-	@Test
-	public void TestValidOTPEmailNotification() throws IdAuthenticationBusinessException {
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		MailRequestDto mailRequestDto = new MailRequestDto();
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE, mailRequestDto,
-				String.class)).thenReturn(restRequestDTO);
-		Map<String, Object> values = new HashMap<>();
-		Supplier<Object> Supplier = () -> new String("Success");
-		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-	//	notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
-	}
-
-	@Test
-	public void TestprocessNotification() throws IdAuthenticationBusinessException {
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
-		MailRequestDto mailRequestDto = new MailRequestDto();
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE, mailRequestDto,
-				String.class)).thenReturn(restRequestDTO);
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("mosip.notification.type", "email");
-		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
-		mockenv.setProperty("mosip.otp.mail.content.template", "test");
-		//ReflectionTestUtils.setField(notificationManager, "environment", mockenv);
-		Map<String, Object> values = new HashMap<>();
-		Supplier<Object> Supplier = () -> new String("Success");
-		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-	//	notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
-
-	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void testInValidSendNotificationSMS() throws IdAuthenticationBusinessException, RestServiceException {
@@ -170,8 +97,6 @@ public class NotificationManagerTest {
 		notificationtype.add(NotificationType.SMS);
 		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-//		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-//				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		
 		IDDataValidationException idDataValidationException  = new IDDataValidationException(
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
@@ -179,7 +104,6 @@ public class NotificationManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		
-		// doThrow(new IdAuthenticationBusinessException()).when(restRequestFactory).buildRequest(Mockito.any(), Mockito.any(), Mockito.any());
 		
 		notificationManager.sendSmsNotification( "9750185759", "test");
 	}
@@ -190,8 +114,6 @@ public class NotificationManagerTest {
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-//		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-//				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		IDDataValidationException idDataValidationException  = new IDDataValidationException(
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
@@ -205,13 +127,10 @@ public class NotificationManagerTest {
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-//		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-//				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		IDDataValidationException idDataValidationException  = new IDDataValidationException(
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idDataValidationException);
-		//notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.AUTH, "otp.notification.type");
 		notificationManager.sendSmsNotification("1234567890", "test");
 	}
 	
@@ -224,11 +143,9 @@ public class NotificationManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.notification.type", "");
-	//	ReflectionTestUtils.setField(notificationManager, "environment", mockenv);
 		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		//notificationManager.sendNotification(values, "test@gmail.com", null, SenderType.OTP, "otp.notification.type");
 		notificationManager.sendEmailNotification("abc@test.com", "test", "test");
 	}
 }

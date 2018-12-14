@@ -294,7 +294,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			 key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
 			 
 
-				if (kycAuthRequestDTO.getAuthRequest().getIdvIdType() == IdType.UIN.getType()) {
+				if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
 					idType = IdType.UIN;
 				} else {
 					idType = IdType.VID;
