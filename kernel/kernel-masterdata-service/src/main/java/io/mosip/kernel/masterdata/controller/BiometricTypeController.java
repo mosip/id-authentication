@@ -82,7 +82,7 @@ public class BiometricTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
-	public ResponseEntity<CodeAndLanguageCodeID> addBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
-		return new ResponseEntity<>(biometricTypeService.addBiometricType(biometricType), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> createBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return new ResponseEntity<>(biometricTypeService.createBiometricType(biometricType), HttpStatus.CREATED);
 	}
 }

@@ -142,7 +142,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
+	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
 		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
 				BiometricType.class);
 		BiometricType biometricType;
