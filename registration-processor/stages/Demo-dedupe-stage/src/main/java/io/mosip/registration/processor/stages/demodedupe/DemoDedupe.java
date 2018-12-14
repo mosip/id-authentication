@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,17 +79,17 @@ public class DemoDedupe {
 	 * @param refId
 	 * @return duplicate Ids
 	 */
-	public Set<String> performDedupe(String refId) {
+	public List<DemographicInfoDto> performDedupe(String refId) {
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
-		Set<String> duplicateUins = new HashSet<>();
+		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 
-			duplicateUins.addAll(packetInfoDao.getAllDemoWithUIN(demoDto.getPhoneticName(), demoDto.getGenderCode(),
-					demoDto.getDob(), demoDto.getLangCode()));
+			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getPhoneticName(),
+					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
 		}
 
-		return duplicateUins;
+		return demographicInfoDtos;
 	}
 
 	/**
@@ -115,8 +113,8 @@ public class DemoDedupe {
 		boolean isDuplicate = false;
 
 		for (String duplicateUin : duplicateUins) {
-			if ((authenticateBiometric(applicantfingerprintImageNames, PacketFiles.FINGER.name(), duplicateUin, regId)
-					|| authenticateBiometric(applicantIrisImageNames, PacketFiles.IRIS.name(), duplicateUin, regId))) {
+			if (authenticateBiometric(applicantfingerprintImageNames, PacketFiles.FINGER.name(), duplicateUin, regId)
+					|| authenticateBiometric(applicantIrisImageNames, PacketFiles.IRIS.name(), duplicateUin, regId)) {
 				isDuplicate = true;
 				break;
 			}
@@ -216,7 +214,7 @@ public class DemoDedupe {
 				authRequestDTO, AuthResponseDTO.class);
 
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
-				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
+				&& ("y").equalsIgnoreCase(authResponseDTO.getStatus());
 	}
 
 	/**
