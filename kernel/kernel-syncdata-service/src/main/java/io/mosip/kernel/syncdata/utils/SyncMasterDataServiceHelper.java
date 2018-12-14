@@ -98,7 +98,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  * @since 1.0.0
  */
 @Component
-public class MasterDataServiceHelper {
+public class SyncMasterDataServiceHelper {
 	@Autowired
 	private MapperUtils mapper;
 	@Autowired
@@ -762,8 +762,8 @@ public class MasterDataServiceHelper {
 			else
 				deviceSpecificationList = deviceSpecificationRepository.findDeviceTypeByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new SyncDataServiceException(
-					MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage());
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty())
 			deviceSpecificationDtoList = mapper.mapDeviceSpecification(deviceSpecificationList);

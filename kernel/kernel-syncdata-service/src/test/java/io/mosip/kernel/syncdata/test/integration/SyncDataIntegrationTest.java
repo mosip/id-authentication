@@ -80,7 +80,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class SyncDataMasterdataIntegrationTest {
+public class SyncDataIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;

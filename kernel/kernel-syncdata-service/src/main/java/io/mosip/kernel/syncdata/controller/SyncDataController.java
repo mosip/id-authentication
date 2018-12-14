@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
-import io.mosip.kernel.syncdata.service.MasterDataService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
 
@@ -28,10 +28,10 @@ import net.minidev.json.JSONObject;
 @RequestMapping(value = "/v1.0")
 public class SyncDataController {
 	/**
-	 * Service instance {@link MasterDataService}
+	 * Service instance {@link SyncMasterDataService}
 	 */
 	@Autowired
-	private MasterDataService masterDataService;
+	private SyncMasterDataService masterDataService;
 
 	/**
 	 * Service instance {@link SyncConfigDetailsService}

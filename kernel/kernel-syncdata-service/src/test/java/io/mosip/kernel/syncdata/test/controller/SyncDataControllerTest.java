@@ -26,7 +26,7 @@ import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.service.MasterDataService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
 
@@ -39,7 +39,7 @@ public class SyncDataControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private MasterDataService masterDataService;
+	private SyncMasterDataService masterDataService;
 
 	@MockBean
 	private SyncConfigDetailsService syncConfigDetailsService;

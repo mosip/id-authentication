@@ -12,7 +12,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
  * @since 1.0.0
  *
  */
-public interface MasterDataService {
+public interface SyncMasterDataService {
 	/**
 	 * Method to get updated masterData
 	 * 
