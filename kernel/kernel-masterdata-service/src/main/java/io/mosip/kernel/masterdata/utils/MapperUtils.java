@@ -50,6 +50,11 @@ public class MapperUtils {
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
 	/**
+	 * This flag is used to restrict copy null values.
+	 */
+	private static Boolean mapNullValues = Boolean.TRUE;
+
+	/**
 	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
 	 * {@link LocalDateTime}
 	 * 
@@ -64,6 +69,36 @@ public class MapperUtils {
 	/*
 	 * #############Public method used for mapping################################
 	 */
+
+	/**
+	 * This method map the values from <code>source</code> to
+	 * <code>destination</code> if name and type of the fields inside the given
+	 * parameters are same.If any of the parameters are <code>null</code> this
+	 * method return <code>null</code>.This method internally check whether the
+	 * source or destinationClass is DTO or an Entity type and map accordingly. If
+	 * any {@link Collection} type or Entity type field is their then only matched
+	 * name fields value will be set but not the embedded IDs and super class
+	 * values.
+	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param mapNullValues
+	 *            by default marked as true so, it will map null values but if
+	 *            marked as false then null values will be ignored
+	 * @return the <code>destination</code> object
+	 * @throws NullPointerException
+	 *             if either <code>source</code> or <code>destination</code> is null
+	 */
+	public static <S, D> D map(final S source, D destination, Boolean mapNullValues) {
+		MapperUtils.mapNullValues = mapNullValues;
+		return map(source, destination);
+	}
 
 	/**
 	 * This method map the values from <code>source</code> to
@@ -98,6 +133,8 @@ public class MapperUtils {
 		}
 		return destination;
 	}
+
+	
 
 	/**
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
@@ -136,6 +173,8 @@ public class MapperUtils {
 		}
 		return (D) map(source, destination);
 	}
+
+	
 
 	/**
 	 * This method takes <code>sourceList</code> and <code>destinationClass</code>,
@@ -392,6 +431,10 @@ public class MapperUtils {
 	 */
 	private static <S, D> void setFieldValue(S source, D destination, Field sf, Field dtf)
 			throws IllegalAccessException {
+		//check whether user wants to map null values into destination object or not
+		if (!mapNullValues && EmptyCheckUtils.isNullEmpty(sf.get(source))) {
+			return;
+		}
 		dtf.set(destination, sf.get(source));
 		dtf.setAccessible(false);
 		sf.setAccessible(false);

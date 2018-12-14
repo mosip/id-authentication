@@ -2,8 +2,6 @@ package io.mosip.kernel.cryptomanager.test;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -19,27 +17,31 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.KernelCryptomanagerBootApplication;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
+import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
 
 @SpringBootTest(classes = KernelCryptomanagerBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@TestPropertySource("classpath:/application-exception.properties")
-public class KernelCryptographicServiceIntegrationConfigExceptionTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class KernelCryptographicUtilExceptionTest {
 
 	@Autowired
-	private MockMvc mockMvc;
+	CryptomanagerUtil cryptomanagerUtil;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -55,9 +57,10 @@ public class KernelCryptographicServiceIntegrationConfigExceptionTest {
 	@Before
 	public void setUp() {
 		server = MockRestServiceServer.bindTo(restTemplate).build();
+		ReflectionTestUtils.setField(cryptomanagerUtil, "asymmetricAlgorithmName", "test");
 	}
 
-	@Test
+	@Test(expected=NoSuchAlgorithmException.class)
 	public void testNoSuchAlgorithmEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64("badprivatekey".getBytes()), LocalDateTime.now(),
@@ -66,8 +69,7 @@ public class KernelCryptographicServiceIntegrationConfigExceptionTest {
 				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
 						MediaType.APPLICATION_JSON));
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
+		CryptomanagerRequestDto cryptomanagerRequestDto= new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"test");
+	cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
 	}
 }
