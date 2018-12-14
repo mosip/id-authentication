@@ -68,6 +68,7 @@
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
+		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
