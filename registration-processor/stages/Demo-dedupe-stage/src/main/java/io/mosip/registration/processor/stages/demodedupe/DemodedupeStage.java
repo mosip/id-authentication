@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.demodedupe;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -92,8 +94,15 @@ public class DemodedupeStage extends MosipVerticleManager {
 					.getRegistrationStatus(registrationId);
 
 			// Potential Duplicate Ids after performing demo dedupe
-			Set<String> duplicateDtos = demoDedupe.performDedupe(registrationId);
-			List<String> duplicateUINList = new ArrayList<>(duplicateDtos);
+			List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
+			Set<String> uniqueUins = new HashSet<>();
+			Set<String> uniqueMatchedRefIds = new HashSet<>();
+			for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
+				uniqueUins.add(demographicInfoDto.getUin());
+				uniqueMatchedRefIds.add(demographicInfoDto.getRegId());
+			}
+
+			List<String> duplicateUINList = new ArrayList<>(uniqueUins);
 
 			if (!duplicateDtos.isEmpty()) {
 
@@ -119,7 +128,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
 					// Saving potential duplicates in reg_manual_verification table
-					saveManualAdjudicationData(duplicateUINList, registrationId);
+					saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
 				}
 
 			} else {
@@ -157,14 +166,14 @@ public class DemodedupeStage extends MosipVerticleManager {
 		return object;
 	}
 
-	private void saveManualAdjudicationData(List<String> duplicateUINList, String registrationId) {
+	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		try {
-			for (String duplicateUin : duplicateUINList) {
+			for (String matchedRefId : uniqueMatchedRefIds) {
 				ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
 				ManualVerificationPKEntity manualVerificationPKEntity = new ManualVerificationPKEntity();
-				manualVerificationPKEntity.setMatchedRefId(duplicateUin);
+				manualVerificationPKEntity.setMatchedRefId(matchedRefId);
 				manualVerificationPKEntity.setMatchedRefType(MATCHED_REFERENCE_TYPE);
 				manualVerificationPKEntity.setRegId(registrationId);
 

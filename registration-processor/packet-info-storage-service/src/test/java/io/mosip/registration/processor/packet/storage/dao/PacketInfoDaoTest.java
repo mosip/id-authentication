@@ -156,8 +156,8 @@ public class PacketInfoDaoTest {
 		dedupeList.add(dedupeEntity);
 		Mockito.when(demographicDedupeRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(dedupeList);
-		List<String> duplicateUin = packetInfodao.getAllDemoWithUIN("A125", "male", null, "ar");
-		assertEquals("1234", duplicateUin.get(0));
+		List<DemographicInfoDto> duplicateUin = packetInfodao.getAllDemographicInfoDtos("A125", "male", null, "ar");
+		assertEquals("1234", duplicateUin.get(0).getUin());
 
 	}
 

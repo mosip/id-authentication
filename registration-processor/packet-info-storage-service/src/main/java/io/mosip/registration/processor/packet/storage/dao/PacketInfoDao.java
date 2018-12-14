@@ -189,8 +189,8 @@ public class PacketInfoDao {
 		return demographicDedupeRepository.getApplicantFingerPrintImageNameById(regId);
 	}
 
-	public List<String> getAllDemoWithUIN(String phoneticName, String gender, Date dob, String langCode) {
-		List<String> duplicateUin = new ArrayList<>();
+	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
+			Date dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
@@ -213,11 +213,18 @@ public class PacketInfoDao {
 		query.append(alias + ".id.langCode=:langCode");
 		params.put("langCode", langCode);
 
-		List<IndividualDemographicDedupeEntity> uins = demographicDedupeRepository.createQuerySelect(query.toString(),
-				params);
-		for (IndividualDemographicDedupeEntity entity : uins) {
-			duplicateUin.add(entity.getUinRefId());
+		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
+	}
+
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String phoneticName, String gender, Date dob,
+			String langCode) {
+
+		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
+		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(phoneticName,
+				gender, dob, langCode);
+		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
+			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
 		}
-		return duplicateUin;
+		return demographicInfoDtos;
 	}
 }

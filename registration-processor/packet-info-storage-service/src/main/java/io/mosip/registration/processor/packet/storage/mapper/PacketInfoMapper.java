@@ -443,7 +443,7 @@ public class PacketInfoMapper {
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
 				try {
-					Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
+					Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
 					entity.setDob(date);
 				} catch (ParseException e) {
 					LOGGER.error("ErrorWhile Parsing Date");

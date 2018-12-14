@@ -7,8 +7,8 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -53,7 +54,7 @@ public class DemodedupeStageTest {
 	private DemoDedupe demoDedupe;
 
 	private MessageDTO dto = new MessageDTO();
-	private Set<String> duplicateDtos = new HashSet<>();
+	private List<DemographicInfoDto> duplicateDtos = new ArrayList<>();
 
 	@InjectMocks
 	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
@@ -83,8 +84,11 @@ public class DemodedupeStageTest {
 
 		MockitoAnnotations.initMocks(this);
 
-		duplicateDtos.add("dto1");
-		duplicateDtos.add("dto2");
+		DemographicInfoDto dto1 = new DemographicInfoDto();
+		DemographicInfoDto dto2 = new DemographicInfoDto();
+
+		duplicateDtos.add(dto1);
+		duplicateDtos.add(dto2);
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
@@ -100,7 +104,7 @@ public class DemodedupeStageTest {
 	@Test
 	public void testDemoDedupeSuccess() {
 
-		Set<String> emptyDuplicateDtoSet = new HashSet<>();
+		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
 		MessageDTO messageDto = demodedupeStage.process(dto);
@@ -138,11 +142,11 @@ public class DemodedupeStageTest {
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
-		
+
 		MessageDTO messageDto = demodedupeStage.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testException() throws ApisResourceAccessException, IOException {
@@ -150,7 +154,7 @@ public class DemodedupeStageTest {
 
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
-		
+
 		MessageDTO messageDto = demodedupeStage.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
