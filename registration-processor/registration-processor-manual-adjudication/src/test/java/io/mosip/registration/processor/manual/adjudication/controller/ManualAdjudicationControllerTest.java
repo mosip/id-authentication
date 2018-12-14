@@ -145,7 +145,7 @@ public class ManualAdjudicationControllerTest {
 		fileRequestDto.setRegId("12345");
 		fileRequestDto.setFileName("APPLICANTPHOTO");
 		byte[] sampleFile = "test".getBytes();
-		Mockito.when(manualAdjudicationService.getApplicantData(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenReturn(sampleFile);
+		Mockito.when(manualAdjudicationService.getApplicantFile(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenReturn(sampleFile);
 		try {
 			jsonfileRequestDto = this.jsonRequestDto.write(fileRequestDto).getJson();
 		} catch (IOException e1) {
@@ -191,7 +191,7 @@ public class ManualAdjudicationControllerTest {
 		FileRequestDto fileRequestDto = new FileRequestDto();
 		fileRequestDto.setRegId("12345");
 		fileRequestDto.setFileName("APPLICANTPHOTO");
-		Mockito.when(manualAdjudicationService.getApplicantData(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new PacketNotFoundException());
+		Mockito.when(manualAdjudicationService.getApplicantFile(fileRequestDto.getRegId(), fileRequestDto.getFileName())).thenThrow(new PacketNotFoundException());
 		try {
 			jsonfileRequestDto = this.jsonRequestDto.write(fileRequestDto).getJson();
 		} catch (IOException e1) {

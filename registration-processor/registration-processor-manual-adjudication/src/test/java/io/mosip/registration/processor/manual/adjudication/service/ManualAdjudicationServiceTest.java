@@ -166,9 +166,9 @@ public class ManualAdjudicationServiceTest {
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(fileInStream);
-		file = manualAdjudicationService.getApplicantData(regId, fileName);
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 		fileName = PacketFiles.PACKETMETAINFO.name();
-		file = manualAdjudicationService.getApplicantData(regId, fileName);
+		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 
 	}
 	@Test(expected = InvalidFileNameException.class)
@@ -181,7 +181,7 @@ public class ManualAdjudicationServiceTest {
 	public void testExceptionIngetApplicantData() throws Exception {
 		String regId = "Id";
 		String fileName = "";
-		manualAdjudicationService.getApplicantData(regId, fileName);
+		manualAdjudicationService.getApplicantFile(regId, fileName);
 	}
 	@Test(expected = InvalidUpdateException.class)
 	public void updatePacketStatusExceptionCheck() {

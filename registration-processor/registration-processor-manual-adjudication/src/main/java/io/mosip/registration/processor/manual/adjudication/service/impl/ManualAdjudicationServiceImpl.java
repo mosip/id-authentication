@@ -136,30 +136,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.LEFTEYE);
 		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
-		} else {
-			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
-					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
-		}
-		try {
-			file = IOUtils.toByteArray(fileInStream);
-		} catch (IOException e) {
-			logger.error(e.getLocalizedMessage());
-		}
-		return file;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.processor.manual.adjudication.service.
-	 * ManualAdjudicationService#getApplicantData(java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public byte[] getApplicantData(String regId, String fileName) {
-		byte[] file = null;
-		InputStream fileInStream = null;
-		if (fileName.equals(PacketFiles.DEMOGRAPHICINFO.name())) {
+		} else if (fileName.equals(PacketFiles.DEMOGRAPHICINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.DEMOGRAPHICINFO);
 		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
@@ -198,14 +175,13 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
-		List<ManualVerificationEntity> entities = basePacketRepository.getSingleAssignedRecord(manualVerificationDTO.getRegId(),
-				manualVerificationDTO.getMatchedRefId(), manualVerificationDTO.getMvUsrId(),
-				ManualVerificationStatus.ASSIGNED.name());
+		List<ManualVerificationEntity> entities = basePacketRepository.getSingleAssignedRecord(
+				manualVerificationDTO.getRegId(), manualVerificationDTO.getMatchedRefId(),
+				manualVerificationDTO.getMvUsrId(), ManualVerificationStatus.ASSIGNED.name());
 		if (entities.isEmpty()) {
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
-		}
-		else {
+		} else {
 			manualVerificationEntity = entities.get(0);
 			manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
 		}
