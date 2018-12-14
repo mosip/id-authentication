@@ -346,3 +346,7 @@
 	-fx-text-fill: red;
 	-fx-font-size: 12px;
 }
+
+#bioPreviewGridId{
+	-fx-background-color: white;
+}
