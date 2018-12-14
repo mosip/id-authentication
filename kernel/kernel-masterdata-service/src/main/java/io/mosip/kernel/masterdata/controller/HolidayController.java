@@ -62,9 +62,9 @@ public class HolidayController {
 	 * and holiday id
 	 * 
 	 * @param holidayId
-	 * 			input parameter holiday id
+	 *            input parameter holiday id
 	 * @param langCode
-	 * 			input parameter language code
+	 *            input parameter language code
 	 * @return {@link HolidayResponseDto}
 	 */
 	@GetMapping("/{holidayid}/{langcode}")

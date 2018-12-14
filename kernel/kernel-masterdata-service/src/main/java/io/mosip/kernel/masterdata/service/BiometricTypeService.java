@@ -27,7 +27,7 @@ public interface BiometricTypeService {
 	 *             If given required Biometric Type not found
 	 */
 	public BiometricTypeResponseDto getAllBiometricTypes();
-	
+
 	/**
 	 * Method to fetch all Biometric Type details based on language code
 	 * 
@@ -62,7 +62,7 @@ public interface BiometricTypeService {
 	 *             If given required Biometric Type not found
 	 */
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
-	
+
 	/**
 	 * Method to create a Biometric Type
 	 * 

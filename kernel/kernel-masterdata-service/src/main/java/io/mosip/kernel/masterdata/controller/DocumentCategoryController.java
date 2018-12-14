@@ -50,7 +50,7 @@ public class DocumentCategoryController {
 	 * API to fetch all Document categories details based on language code
 	 * 
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * 
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
@@ -63,9 +63,9 @@ public class DocumentCategoryController {
 	 * API to fetch all Document categories details based on code and language code
 	 * 
 	 * @param code
-	 * 			the code
+	 *            the code
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
 	@GetMapping("/{code}/{langcode}")
@@ -78,7 +78,7 @@ public class DocumentCategoryController {
 	 * API to create Document category
 	 * 
 	 * @param category
-	 * 			is of type {@link DocumentCategoryDto}
+	 *            is of type {@link DocumentCategoryDto}
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */

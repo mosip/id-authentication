@@ -36,7 +36,7 @@ public class TemplateServiceImpl implements TemplateService {
 	private List<Template> templateList;
 
 	private List<TemplateDto> templateDtoList;
-	
+
 	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 	/*
@@ -97,8 +97,8 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode,
-					templateTypeCode);
+			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -111,7 +111,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		templateResponseDto.setTemplates(templateDtoList);
 		return templateResponseDto;
-		
+
 	}
 
 	/*

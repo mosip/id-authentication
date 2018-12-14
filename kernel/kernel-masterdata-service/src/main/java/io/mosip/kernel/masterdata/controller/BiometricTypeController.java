@@ -49,7 +49,7 @@ public class BiometricTypeController {
 	 * API to fetch all Biometric types details based on language code
 	 * 
 	 * @param langCode
-	 * 			The language code
+	 *            The language code
 	 * 
 	 * @return All Biometric type details
 	 */
@@ -62,9 +62,9 @@ public class BiometricTypeController {
 	 * API to fetch Biometric type details based on code and language code
 	 * 
 	 * @param code
-	 * 			the code
+	 *            the code
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return Biometric type
 	 */
 	@GetMapping("/{code}/{langcode}")
@@ -82,7 +82,8 @@ public class BiometricTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
-	public ResponseEntity<CodeAndLanguageCodeID> createBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
+	public ResponseEntity<CodeAndLanguageCodeID> createBiometricType(
+			@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
 		return new ResponseEntity<>(biometricTypeService.createBiometricType(biometricType), HttpStatus.CREATED);
 	}
 }

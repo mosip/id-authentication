@@ -114,7 +114,8 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		BiometricType biometricType;
 		BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code, langCode);
+			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
+					langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
