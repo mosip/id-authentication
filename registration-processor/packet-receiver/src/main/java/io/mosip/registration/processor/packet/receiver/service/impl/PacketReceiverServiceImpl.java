@@ -83,7 +83,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	public Boolean storePacket(MultipartFile file) {
 		boolean storageFlag = false;
 
-		if (file != null) {
+		if (!file.isEmpty()) {
 
 			String registrationId = file.getOriginalFilename().split("\\.")[0];
 			boolean isTransactionSuccessful = false;
