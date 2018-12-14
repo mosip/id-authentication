@@ -491,7 +491,7 @@ public class MasterdataControllerTest {
 						+ "      \"name\": \"pre-registeration\",\n"
 						+ "      \"description\": \"Pre-registration Application Form\",\n"
 						+ "      \"langCode\": \"ENG\",\n" + "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------

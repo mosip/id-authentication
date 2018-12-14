@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -23,7 +24,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *            class of type {@link BiometricType}
 	 * @return list of {@link BiometricType}
 	 */
-	public List<BiometricType> findAllByIsDeletedFalseOrIsDeletedNull(Class<BiometricType> entityClass);
+	List<BiometricType> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<BiometricType> entityClass);
 
 	/**
 	 * Get all Biometric types of a specific language using language code
@@ -32,7 +33,8 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *            is of type {@link String}
 	 * @return list of {@link BiometricType}
 	 */
-	List<BiometricType> findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(String langCode);
+	@Query("FROM BiometricType WHERE langCode =?1 AND (isDeletd is null OR isDeleted = false)")
+	List<BiometricType> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
 	 * Get Biometric type by specific id and language code
@@ -43,6 +45,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *            is of type {@link String}
 	 * @return object of {@link BiometricType}
 	 */
-	BiometricType findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(String code, String langCode);
+	@Query("FROM BiometricType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	BiometricType findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
 
 }

@@ -46,6 +46,7 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
@@ -2410,7 +2411,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryTest() throws Exception {
-		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
+		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2419,7 +2421,8 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		requestDto.setRequest(documentCategoryDto);
+		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
+		requestDto.setRequest(documentCategoryData);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
@@ -2429,7 +2432,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
+		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2438,7 +2442,8 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		requestDto.setRequest(documentCategoryDto);
+		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
+		requestDto.setRequest(documentCategoryData);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any()))

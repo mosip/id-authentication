@@ -78,7 +78,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(languageCode);
+			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -108,7 +108,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(code, languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code, languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "

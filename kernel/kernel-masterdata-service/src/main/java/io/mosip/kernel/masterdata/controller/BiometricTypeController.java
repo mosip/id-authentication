@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,7 +82,7 @@ public class BiometricTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
-	public CodeAndLanguageCodeID addBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
-		return biometricTypeService.addBiometricType(biometricType);
+	public ResponseEntity<CodeAndLanguageCodeID> addBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return new ResponseEntity<>(biometricTypeService.addBiometricType(biometricType), HttpStatus.CREATED);
 	}
 }

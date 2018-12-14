@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
@@ -83,7 +84,7 @@ public class DocumentCategoryController {
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
-			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+			@Valid @RequestBody RequestDto<DocumentCategoryData> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
 	}
 }

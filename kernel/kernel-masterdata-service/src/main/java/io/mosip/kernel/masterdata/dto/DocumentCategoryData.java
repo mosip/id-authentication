@@ -17,32 +17,34 @@ import lombok.Data;
 
 
 public class DocumentCategoryData {
-
-	/**
+	
+	private DocumentCategoryDto documentcategorytype;
+/*
+	*//**
 	 * Document category code.
-	 */
+	 *//*
 	@NotNull
 	@Size(min = 1, max = 3)
 	private String code;
 
-	/**
+	*//**
 	 * Document category name.
-	 */
+	 *//*
 	private String name;
 
-	/**
+	*//**
 	 * Document category description
-	 */
+	 *//*
 	private String description;
 
-	/**
+	*//**
 	 * The Language Code.
-	 */
+	 *//*
 	private String langCode;
 
-	/**
+	*//**
 	 * Is active or not.
-	 */
+	 *//*
 	private Boolean isActive;
-
+*/
 }
