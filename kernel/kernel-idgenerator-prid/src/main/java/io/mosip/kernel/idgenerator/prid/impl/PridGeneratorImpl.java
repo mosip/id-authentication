@@ -6,8 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.exception.PridGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
@@ -72,7 +74,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 		 * // Check for PK constraint else throw
 		 * error return false; }
 		 */
-		catch (Exception e) {
+		catch (DataAccessException | DataAccessLayerException e) {
 			throw new PridGenerationException(PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
 					PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
 		}

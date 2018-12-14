@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(effectiveDate);
-			;
-		} catch (Exception e) {
+		} catch (DateTimeParseException e) {
 			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
 		}
