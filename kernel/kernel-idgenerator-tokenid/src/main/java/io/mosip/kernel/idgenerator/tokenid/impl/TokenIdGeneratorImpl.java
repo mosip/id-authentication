@@ -5,8 +5,10 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.exception.TokenIdGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
@@ -83,7 +85,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 		 * // Check for PK constraint else throw
 		 * error return false; }
 		 */
-		catch (Exception e) {
+		catch (DataAccessException | DataAccessLayerException e) {
 			throw new TokenIdGenerationException(TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
 					TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
 		}

@@ -6,6 +6,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		LocalDateTime lDateAndTime = null;
 		try {
 			lDateAndTime = MapperUtils.parseToLocalDateTime(effDtime);
-		} catch (Exception e) {
+		} catch (DateTimeParseException e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage() + "  "
