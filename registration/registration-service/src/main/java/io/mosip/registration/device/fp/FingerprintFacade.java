@@ -37,7 +37,7 @@ import javafx.scene.image.WritableImage;
  * It takes a decision based on the input provider name and initialize the
  * respective implementation class and perform the required operation.
  * 
- * @author M1046564
+ * @author SaravanaKumar G
  *
  */
 @Component
@@ -118,11 +118,11 @@ public class FingerprintFacade {
 		}
 	}
 
-	/*
-	 * @Autowired public FingerprintFacade(List<MosipFingerprintProvider>
-	 * fingerprintProviders) { this.fingerprintProviders = fingerprintProviders; }
+	/**
+	 * Assign all the Fingerprint providers which extends the MosipFingerprintProvider to the list.
+	 * @param make
+	 * @return
 	 */
-
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		for (MosipFingerprintProvider mosipFingerprintProvider : fingerprintProviders) {
 			if (mosipFingerprintProvider.getClass().getName().toLowerCase().contains(make.toLowerCase())) {
@@ -248,6 +248,12 @@ public class FingerprintFacade {
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
 	}
 
+	/**
+	 * Validate the Input Finger with the finger that is fetched from the Database
+	 * @param fingerprintDetailsDTO
+	 * @param userFingerprintDetails
+	 * @return
+	 */
 	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails) {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(fingerprintDetailsDTO.getFingerPrint());

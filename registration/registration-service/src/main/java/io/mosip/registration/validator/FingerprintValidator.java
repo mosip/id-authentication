@@ -13,6 +13,10 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 
+/**
+ * @author SaravanaKumar G
+ *
+ */
 @Component
 public class FingerprintValidator extends AuthenticationValidatorImplementation {
 
@@ -22,18 +26,15 @@ public class FingerprintValidator extends AuthenticationValidatorImplementation 
 	@Autowired
 	FingerprintFacade fingerprintFacade;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.validator.AuthenticationValidatorImplementation#
-	 * validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
+	/**
+	 * Validate the Fingerprint with the AuthenticationValidatorDTO as input
 	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		if (fingerPrintType.equals("single")) {
+		if (RegistrationConstants.FINGER_PRINT_SINGLE.equals(fingerPrintType)) {
 			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));
-		} else if (fingerPrintType.equals("multiple")) {
+		} else if (RegistrationConstants.FINGER_PRINT_MULTIPLE.equals(fingerPrintType)) {
 			return validateManyToManyFP(authenticationValidatorDTO.getFingerPrintDetails());
 		}
 		return false;

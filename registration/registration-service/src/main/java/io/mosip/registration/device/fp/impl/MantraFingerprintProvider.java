@@ -13,7 +13,7 @@ import io.mosip.registration.service.BaseService;
 /**
  * Mantra finger print device specific functionality implemented.
  * 
- * @author M1046564
+ * @author SaravanaKumar G
  *
  */
 @Component

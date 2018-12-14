@@ -80,6 +80,9 @@ public class RegistrationConstants {
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
 	public static final String SUPERVISOR_NAME = "Supervisor";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
+	public static final String FINGER_PRINT_SINGLE = "single";
+	public static final String FINGER_PRINT_MULTIPLE = "multiple";
+	public static final String OTP_VALIDATION_SUCCESS = "success";
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");

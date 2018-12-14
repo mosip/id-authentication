@@ -14,22 +14,26 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
-@Component("otpValidator")
+/**
+ * @author SaravanaKumar G
+ *
+ */
+@Component
 public class OTPValidator extends AuthenticationValidatorImplementation {
 
 	@Autowired
 	ServiceDelegateUtil serviceDelegateUtil;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationValidatorImplementation#validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
+	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		boolean status = false;
-		// Create Response to Return to UI layer
 		OtpValidatorResponseDTO otpValidatorResponseDto = null;
 
-		// prepare request params to pass through URI
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegistrationConstants.USERNAME_KEY, authenticationValidatorDTO.getUserId());
 		requestParamMap.put(RegistrationConstants.OTP_GENERATED, authenticationValidatorDTO.getOtp());
@@ -39,9 +43,7 @@ public class OTPValidator extends AuthenticationValidatorImplementation {
 			otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
 					.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
 			if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
-					&& otpValidatorResponseDto.getStatus().equalsIgnoreCase("success")) {
-
-				// Create Success Response
+					&& RegistrationConstants.OTP_VALIDATION_SUCCESS.equals(otpValidatorResponseDto.getStatus())) {
 
 				status = true;
 
