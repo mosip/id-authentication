@@ -16,8 +16,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 @RestControllerAdvice
 public class SyncHandlerControllerAdvice {
-	@ExceptionHandler(MasterDataServiceException.class)
-	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final MasterDataServiceException e) {
+	@ExceptionHandler(SyncDataServiceException.class)
+	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final SyncDataServiceException e) {
 		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

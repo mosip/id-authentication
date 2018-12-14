@@ -16,8 +16,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +30,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.exception.MasterDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.MasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
@@ -45,9 +47,32 @@ public class SyncDataServiceTest {
 
 	@Autowired
 	RestTemplate restemplate;
-	
-	private final String BASEURL="http://104.211.212.28:51000/kernel-syncdata-service/test/DEV_SPRINT6_SYNC_HANDLER";
-	
+
+	/**
+	 * Environment instance
+	 */
+	@Autowired
+	private Environment env;
+
+	/**
+	 * file name referred from the properties file
+	 */
+	@Value("${io.mosip.kernel.syncdata.registration-center-config-file}")
+	private String regCenterfileName;
+
+	/**
+	 * file name referred from the properties file
+	 */
+	@Value("${io.mosip.kernel.syncdata.global-config-file}")
+	private String globalConfigFileName;
+
+	private String configServerUri = null;
+	private String configLabel = null;
+	private String configProfile = null;
+	private String configAppName = null;
+
+	private StringBuilder uriBuilder;
+
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
 	private MasterDataResponseDto masterDataResponseDto;
@@ -65,7 +90,7 @@ public class SyncDataServiceTest {
 		masterDataSyncSetup();
 		configDetialsSyncSetup();
 	}
-	
+
 	public void masterDataSyncSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		applications = new ArrayList<>();
@@ -86,6 +111,7 @@ public class SyncDataServiceTest {
 		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop", "Laptop", true));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
+
 	public void configDetialsSyncSetup() {
 		globalConfigMap = new JSONObject();
 		globalConfigMap.put("archivalPolicy", "arc_policy_2");
@@ -102,24 +128,31 @@ public class SyncDataServiceTest {
 		regCentreConfigMap.put("faceRetry", 12);
 		regCentreConfigMap.put("supervisorVerificationRequiredForExceptions", true);
 		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
+		configServerUri = env.getProperty("spring.cloud.config.uri");
+		configLabel = env.getProperty("spring.cloud.config.label");
+		configProfile = env.getProperty("spring.profiles.active");
+		configAppName = env.getProperty("spring.application.name");
+		uriBuilder = new StringBuilder();
+		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+				.append(configLabel + "/");
 
 	}
 
-	@Test(expected = MasterDataServiceException.class)
+	@Test(expected = SyncDataServiceException.class)
 	public void syncDataFailure() throws InterruptedException, ExecutionException {
 		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any()))
-				.thenThrow(MasterDataServiceException.class);
+				.thenThrow(SyncDataServiceException.class);
 		masterDataService.syncData("1001", null);
 
 	}
 
 	@Test
 	public void globalConfigsyncSuccess() {
-        
-		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withSuccess());
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getGlobalConfigDetails();
-		
+
 	}
 
 	@Test
@@ -127,29 +160,28 @@ public class SyncDataServiceTest {
 		JSONObject jsonObject = syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 		Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
 	}
-	
-	
-	@Test(expected=MasterDataServiceException.class)
+
+	@Test(expected = SyncDataServiceException.class)
 	public void registrationConfigsyncFailure() {
-		
-		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(BASEURL+"/registration-center-config.json")).andRespond(withBadRequest());
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-		}
-	
-	@Test(expected=MasterDataServiceException.class)
+	}
+
+	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFailure() {
-		
-		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withBadRequest());
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
-		}
-	
-	@Test(expected=MasterDataServiceException.class)
+	}
+
+	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFileNameNullFailure() {
-		
-		MockRestServiceServer server= MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(BASEURL+"/global-config.json")).andRespond(withBadRequest());
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
-		}
+	}
 }

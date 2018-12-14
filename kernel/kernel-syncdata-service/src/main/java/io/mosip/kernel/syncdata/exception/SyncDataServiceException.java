@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
-public class MasterDataServiceException extends BaseUncheckedException {
+public class SyncDataServiceException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
@@ -24,7 +24,7 @@ public class MasterDataServiceException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public MasterDataServiceException(String errorCode, String errorMessage) {
+	public SyncDataServiceException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
@@ -38,7 +38,7 @@ public class MasterDataServiceException extends BaseUncheckedException {
 	 * @param rootCause
 	 *            the specified cause
 	 */
-	public MasterDataServiceException(String errorCode, String errorMessage, Throwable rootCause) {
+	public SyncDataServiceException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 

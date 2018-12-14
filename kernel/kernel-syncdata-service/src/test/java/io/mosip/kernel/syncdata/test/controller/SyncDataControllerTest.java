@@ -25,7 +25,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.exception.MasterDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.MasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
@@ -130,7 +130,7 @@ public class SyncDataControllerTest {
 	@Test
 	public void syncGlobalConfigDetailsFailure() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails())
-				.thenThrow(new MasterDataServiceException("KER-SYNC-127", "Error occured in service"));
+				.thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 }

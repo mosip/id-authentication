@@ -63,7 +63,7 @@ import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
-import io.mosip.kernel.syncdata.exception.MasterDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -174,7 +174,7 @@ public class MasterDataServiceHelper {
 				machineDetailList = machineRepository.findMachineById(machineId);
 
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
@@ -206,7 +206,7 @@ public class MasterDataServiceHelper {
 		} catch (
 
 		DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.MACHINE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
@@ -238,7 +238,7 @@ public class MasterDataServiceHelper {
 					machineSpecification = machineSpecificationRepository.findByMachineId(machineId);
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -268,7 +268,7 @@ public class MasterDataServiceHelper {
 			else
 				list = registrationCenterRepository.findRegistrationCenterByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (list != null && !list.isEmpty()) {
@@ -300,7 +300,7 @@ public class MasterDataServiceHelper {
 				registrationCenterType = registrationCenterTypeRepository
 						.findRegistrationCenterTypeByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.REG_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -327,7 +327,7 @@ public class MasterDataServiceHelper {
 			else
 				applicationList = applicationRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (!(applicationList.isEmpty())) {
@@ -354,7 +354,7 @@ public class MasterDataServiceHelper {
 				templateList = templateRepository.findAll();
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
@@ -381,7 +381,7 @@ public class MasterDataServiceHelper {
 				templateTypes = templateFileFormatRepository.findAllTemplateFormat();
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		templateFormats = MapperUtils.mapAll(templateTypes, TemplateFileFormatDto.class);
@@ -406,7 +406,7 @@ public class MasterDataServiceHelper {
 				reasons = reasonCategoryRepository.findAllReasons();
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (reasons != null && !reasons.isEmpty()) {
@@ -432,7 +432,7 @@ public class MasterDataServiceHelper {
 			else
 				reasons = reasonListRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -462,7 +462,7 @@ public class MasterDataServiceHelper {
 				holidays = holidayRepository.findAllByMachineId(machineId);
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -491,7 +491,7 @@ public class MasterDataServiceHelper {
 				words = blacklistedWordsRepository.findAll();
 			}
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (words != null && !words.isEmpty()) {
@@ -518,7 +518,7 @@ public class MasterDataServiceHelper {
 			else
 				biometricTypesList = biometricTypeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (!(biometricTypesList.isEmpty())) {
@@ -545,7 +545,7 @@ public class MasterDataServiceHelper {
 			else
 				biometricAttrs = biometricAttributeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.BIOMETRIC_ATTR_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_ATTR_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (biometricAttrs != null && !biometricAttrs.isEmpty()) {
@@ -571,7 +571,7 @@ public class MasterDataServiceHelper {
 			else
 				titles = titleRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (titles != null && !titles.isEmpty()) {
@@ -598,7 +598,7 @@ public class MasterDataServiceHelper {
 			else
 				languages = languageRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (languages != null && !languages.isEmpty()) {
@@ -625,7 +625,7 @@ public class MasterDataServiceHelper {
 			else
 				genderType = genderTypeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (!(genderType.isEmpty())) {
@@ -653,7 +653,7 @@ public class MasterDataServiceHelper {
 			else
 				devices = deviceRepository.findDeviceByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -679,7 +679,7 @@ public class MasterDataServiceHelper {
 			else
 				documentCategories = documentCategoryRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -706,7 +706,7 @@ public class MasterDataServiceHelper {
 			else
 				documentTypes = documentTypeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -733,7 +733,7 @@ public class MasterDataServiceHelper {
 			else
 				idTypes = idTypeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (idTypes != null && !idTypes.isEmpty())
@@ -762,7 +762,7 @@ public class MasterDataServiceHelper {
 			else
 				deviceSpecificationList = deviceSpecificationRepository.findDeviceTypeByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(
+			throw new SyncDataServiceException(
 					MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty())
@@ -788,7 +788,7 @@ public class MasterDataServiceHelper {
 			else
 				locations = locationRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		if (!locations.isEmpty()) {
@@ -814,7 +814,7 @@ public class MasterDataServiceHelper {
 			else
 				templateTypes = templateTypeRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -843,7 +843,7 @@ public class MasterDataServiceHelper {
 			else
 				deviceTypes = deviceTypeRepository.findDeviceTypeByMachineId(machineId);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
@@ -870,7 +870,7 @@ public class MasterDataServiceHelper {
 			else
 				validDocuments = validDocumentRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 
