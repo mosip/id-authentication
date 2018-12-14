@@ -16,7 +16,7 @@ mvn javadoc:javadoc
 * **Admin** can only make these configuration changes.
 
 ```
-endpoint: /v1.0/globalconfigs 
+endpoint: /syncdata/v1.0/globalconfigs 
 ```
 
 ** Sample Usage: **
@@ -26,7 +26,7 @@ Request:
 ```
 OkHttpClient client = new OkHttpClient();
 
-Request request = new Request.Builder().url("http://localhost:8086/v1.0/globalconfigs").get().build();
+Request request = new Request.Builder().url("http://localhost:8086/syncdata/v1.0/globalconfigs").get().build();
 
 Response response = client.newCall(request).execute();
 
@@ -66,7 +66,7 @@ Status: 200 OK
 *  **Admin** can only make these configuration changes.
 
 ```
-endpoint: /v1.0/registrationcenterconfig/{reg_center_id}
+endpoint: /syncdata/v1.0/registrationcenterconfig/{reg_center_id}
 ```
 
 ** Sample Usage: **
@@ -76,7 +76,7 @@ Request:
 ```
 OkHttpClient client = new OkHttpClient();
 
-Request request = new Request.Builder().url("http://localhost:8086/v1.0/registrationcenterconfig/1").get().build();
+Request request = new Request.Builder().url("http://localhost:8086/syncdata/v1.0/registrationcenterconfig/1").get().build();
 
 Response response = client.newCall(request).execute();
 
@@ -123,7 +123,7 @@ Status: 200 OK
 * Device related data should be sent only for devices mapped to the machine from which request is received
 
 ```
-endpoint:  /v1.0/syncmasterdata/{machineId}?lastUpdated=?
+endpoint:  /syncdata/v1.0/masterdata/{machineId}?lastUpdated=?
 
 ```
 Sample Usage:
@@ -132,7 +132,7 @@ Request:
 
 ```
 
-Request request = new Request.Builder().url("http://localhost:8086/v1.0/syncmasterdata/1001").get().build();
+Request request = new Request.Builder().url("http://localhost:8086/syncdata/v1.0/masterdata/1001").get().build();
 
 Response response = client.newCall(request).execute();
 ```
