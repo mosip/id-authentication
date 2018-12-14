@@ -52,7 +52,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationController.class); 	
+	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationController.class);
 
 	@FXML
 	private AnchorPane temporaryLogin;
@@ -82,7 +82,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	private TextField otp;
 
 	@Autowired
-	private FingerprintFacade fingerprintFacade ;
+	private FingerprintFacade fingerprintFacade;
 
 	@Value("${QUALITY_SCORE}")
 	private int qualityScore;
@@ -122,8 +122,8 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION_OPERATOR_AUTHENTICATION_CONTROLLER", APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the Operator Authentication Page");
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"Entering the Operator Authentication Page");
 
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = false;
@@ -134,6 +134,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate the password in case of password based authentication
 	 */
 	public void validatePwd() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
+
 		if (username.getText().isEmpty() && password.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (username.getText().isEmpty()) {
@@ -163,14 +165,13 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
 			} else {
-					if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
-						loadNextScreen();
-					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
-					}
+				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
+					loadNextScreen();
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -181,6 +182,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating credentials using database");
+		
 		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
 		if (userDetail == null) {
 			return RegistrationConstants.USER_NOT_ONBOARDED;
@@ -191,11 +195,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		}
 	}
 
-
 	/**
 	 * to generate OTP in case of OTP based authentication
 	 */
 	public void generateOtp() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Generate OTP for OTP based Authentication");
+		
 		if (!otpUserId.getText().isEmpty()) {
 			// Response obtained from server
 			ResponseDTO responseDTO = null;
@@ -223,6 +229,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate OTP in case of OTP based authentication
 	 */
 	public void validateOTP() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating OTP for OTP based Authentication");
+		
 		if (isSupervisor) {
 			if (otpUserId.getText() != null) {
 				if (fetchUserRole(otpUserId.getText())) {
@@ -260,6 +269,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate the fingerprint in case of fingerprint based authentication
 	 */
 	public void validateFingerprint() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Fingerprint for Fingerprint based Authentication");
+		
 		if (isSupervisor) {
 			if (fpUserId.getText() != null) {
 				if (fetchUserRole(fpUserId.getText())) {
@@ -287,6 +299,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to get the configured modes of authentication
 	 */
 	private void getAuthenticationModes() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Loading configured modes of authentication");
+		
 		count = 1;
 		if (isSupervisor) {
 			userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
@@ -302,9 +317,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * authentication modes
 	 */
 	private void loadNextScreen() {
-		Boolean toogleBioException = (Boolean)SessionContext.getInstance().getUserContext().getUserMap().
-				get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Loading next authentication screen");
 		
+		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
+				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+
 		if (!userAuthenticationTypeMap.isEmpty()) {
 			String authenticationType = String.valueOf(userAuthenticationTypeMap.get(String.valueOf(count)));
 			userAuthenticationTypeMap.remove(String.valueOf(count));
@@ -331,6 +349,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 *            - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Loading the respective authentication screen in UI");
+		
 		switch (loginMode) {
 		case RegistrationConstants.LOGIN_METHOD_OTP:
 			enableOTP();
@@ -350,6 +371,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to enable the OTP based authentication mode and disable rest of modes
 	 */
 	private void enableOTP() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling OTP based Authentication Screen in UI");
+		
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
@@ -370,6 +394,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to enable the password based authentication mode and disable rest of modes
 	 */
 	private void enablePWD() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling Password based Authentication Screen in UI");
+		
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -390,6 +417,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to enable the fingerprint based authentication mode and disable rest of modes
 	 */
 	private void enableFingerPrint() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling Fingerprint based Authentication Screen in UI");
+		
 		fingerprintBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		pwdBasedLogin.setVisible(false);
@@ -414,6 +444,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 *         or "false", if not
 	 */
 	private boolean fetchUserRole(String userId) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the user role in case of Supervisor Authentication");
+		
 		RegistrationUserDetail registrationUserDetail = loginService.getUserDetail(userId);
 		if (registrationUserDetail != null) {
 			return registrationUserDetail.getUserRole().stream().anyMatch(userRole -> userRole
@@ -430,6 +463,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Capturing and Validating Fingerprint");
+		
 		boolean fpMatchStatus = false;
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
 		int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
@@ -450,26 +486,33 @@ public class AuthenticationController extends BaseController implements Initiali
 				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-				if(isSupervisor) {
-					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
-					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+				if (isSupervisor) {
+					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
+							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 				} else {
-					RegistrationDTO registrationDTO =(RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
-					registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 				}
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
 				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
 						.getValidator(RegistrationConstants.VALIDATION_TYPE_FP);
-				authenticationValidatorImplementation.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+				authenticationValidatorImplementation
+						.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
 				fpMatchStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
-				
+
 				if (fpMatchStatus) {
 					if (isSupervisor) {
-						fingerprintDetailsDTO.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()));
+						fingerprintDetailsDTO
+								.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()));
 					} else {
-						fingerprintDetailsDTO.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()));
+						fingerprintDetailsDTO
+								.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()));
 					}
 				}
 			}
@@ -481,6 +524,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to submit the registration after successful authentication
 	 */
 	public void submitRegistration() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Submit Registration after Operator Authentication");
+		
 		packetHandlerController.showReciept(capturePhotoUsingDevice);
 	}
 }
