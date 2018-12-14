@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.converter;
+package io.mosip.kernel.syncdata.utils;
 
 import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
@@ -12,9 +12,12 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenter;
  */
 public class RegistrationCenterConverter implements DataConverter<RegistrationCenter, RegistrationCenterDto> {
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.datamapper.spi.DataConverter#convert(java.lang.Object, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.datamapper.spi.DataConverter#convert(java.lang.Object,
+	 * java.lang.Object)
 	 */
 	@Override
 	public void convert(RegistrationCenter source, RegistrationCenterDto destination) {

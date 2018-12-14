@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.syncdata.converter.RegistrationCenterConverter;
 import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;

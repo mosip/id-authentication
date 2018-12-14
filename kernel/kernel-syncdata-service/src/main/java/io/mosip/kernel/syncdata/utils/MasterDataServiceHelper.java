@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.service;
+package io.mosip.kernel.syncdata.utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -90,7 +90,6 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.syncdata.utils.MapperUtils;
 
 /**
  * Sync handler masterData service helper

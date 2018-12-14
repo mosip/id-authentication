@@ -26,7 +26,10 @@ import net.minidev.json.JSONObject;
  */
 @RestController
 @RequestMapping(value = "/v1.0")
-public class SyncHandlerController {
+public class SyncDataController {
+	/**
+	 * Service instance {@link MasterDataService}
+	 */
 	@Autowired
 	private MasterDataService masterDataService;
 
@@ -60,7 +63,7 @@ public class SyncHandlerController {
 	}
 
 	/**
-	 * api to fetch masterdata
+	 * Api to fetch masterdata
 	 * 
 	 * @param machineId
 	 *            machine id - mandatory param
@@ -73,7 +76,7 @@ public class SyncHandlerController {
 	 * @throws ExecutionException
 	 *             this API will throw Execution exception
 	 */
-	@GetMapping("/syncmasterdata/{machineId}")
+	@GetMapping("/masterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
 			throws InterruptedException, ExecutionException {

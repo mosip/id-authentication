@@ -30,8 +30,8 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.MasterDataServiceException;
 import io.mosip.kernel.syncdata.service.MasterDataService;
-import io.mosip.kernel.syncdata.service.MasterDataServiceHelper;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
 import net.minidev.json.JSONObject;
 
 @SpringBootTest

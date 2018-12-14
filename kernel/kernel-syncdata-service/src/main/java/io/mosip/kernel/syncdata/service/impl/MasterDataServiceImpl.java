@@ -36,7 +36,7 @@ import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.service.MasterDataService;
-import io.mosip.kernel.syncdata.service.MasterDataServiceHelper;
+import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
 
 /**
  * Masterdata sync handler service impl

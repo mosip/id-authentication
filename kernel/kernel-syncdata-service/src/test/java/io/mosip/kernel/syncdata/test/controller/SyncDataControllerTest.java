@@ -33,7 +33,7 @@ import net.minidev.json.JSONObject;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class SyncHandlerControllerTest {
+public class SyncDataControllerTest {
 	private MasterDataResponseDto masterDataResponseDto;
 	@Autowired
 	private MockMvc mockMvc;
@@ -45,14 +45,14 @@ public class SyncHandlerControllerTest {
 	private SyncConfigDetailsService syncConfigDetailsService;
 
 	JSONObject globalConfigMap = null;
-	JSONObject regCentreConfigMap=null;
+	JSONObject regCentreConfigMap = null;
 
 	@Before
 	public void setup() {
-	
-	     configDetialsSyncSetup();
-	     syncMasterDataSetup();
-		
+
+		configDetialsSyncSetup();
+		syncMasterDataSetup();
+
 	}
 
 	public void configDetialsSyncSetup() {
@@ -73,7 +73,7 @@ public class SyncHandlerControllerTest {
 		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
 
 	}
-	
+
 	public void syncMasterDataSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		List<ApplicationDto> applications = new ArrayList<>();
@@ -98,19 +98,19 @@ public class SyncHandlerControllerTest {
 	@Test
 	public void syncMasterDataSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull())).thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}", "1001")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}", "1001")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.any())).thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-01-01T01:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01", "1001"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
-		mockMvc.perform(get("/v1.0/syncmasterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -119,16 +119,18 @@ public class SyncHandlerControllerTest {
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void syncRegistrationConfigDetailsSuccess() throws Exception {
-		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString())).thenReturn(globalConfigMap);
+		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString()))
+				.thenReturn(globalConfigMap);
 		mockMvc.perform(get("/v1.0/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
-	
+
 	@Test
-	public void syncGlobalConfigDetailsFailure() throws Exception  {
-		when(syncConfigDetailsService.getGlobalConfigDetails()).thenThrow(new MasterDataServiceException("KER-SYNC-127","Error occured in service"));
+	public void syncGlobalConfigDetailsFailure() throws Exception {
+		when(syncConfigDetailsService.getGlobalConfigDetails())
+				.thenThrow(new MasterDataServiceException("KER-SYNC-127", "Error occured in service"));
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 }
