@@ -36,8 +36,8 @@
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
-            <Button fx:id="editBtn" layoutX="645.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" styleClass="RegbuttonStyle" />
+            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" styleClass="RegbuttonStyle" />
              </children>
     </AnchorPane>
   </content>

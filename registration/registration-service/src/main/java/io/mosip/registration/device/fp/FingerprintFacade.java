@@ -166,7 +166,7 @@ public class FingerprintFacade {
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_FORMAT_KEY, "jpg");
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedFingerPrintBytes);
 			if (path.contains(RegistrationConstants.THUMBS)) {
-				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 70.0);
+				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
 			} else if (path.contains(RegistrationConstants.LEFTPALM)) {
 				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 85.0);
 			} else if (path.contains(RegistrationConstants.RIGHTPALM)) {

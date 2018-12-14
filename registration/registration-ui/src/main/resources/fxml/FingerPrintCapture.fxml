@@ -26,12 +26,12 @@
             <ImageView fx:id="thumbImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
-      <Button fx:id="scanBtn" layoutX="17.0" layoutY="381.0" mnemonicParsing="false" onAction="#scan" prefHeight="23.0" prefWidth="75.0" text="Scan">
+      <Button fx:id="scanBtn" layoutX="17.0" layoutY="381.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
-      <Button fx:id="nextBtn" layoutX="763.0" layoutY="380.0" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="23.0" prefWidth="55.0" text="Next">
+      <Button fx:id="nextBtn" layoutX="763.0" layoutY="500.0" mnemonicParsing="false" onAction="#goToNextPage" text="Next" styleClass="RegbuttonStyle">
          <font>
             <Font size="10.0" />
          </font>
@@ -42,7 +42,7 @@
       <Label layoutX="288.0" layoutY="309.0" text="Quality %       :" />
       <Label layoutX="559.0" layoutY="336.0" text="Threshold %   :" />
       <Label layoutX="559.0" layoutY="309.0" text="Quality %       :" />
-      <Button fx:id="previousBtn" layoutX="674.0" layoutY="381.0" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="23.0" prefWidth="55.0" text="Previous">
+      <Button fx:id="previousBtn" layoutX="684.0" layoutY="500" mnemonicParsing="false" onAction="#goToPreviousPage" text="Previous" styleClass="RegbuttonStyle" >
          <font>
             <Font size="10.0" />
          </font>

@@ -11,7 +11,7 @@
    <children>
       <AnchorPane layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="483.0" styleClass="subPane">
          <children>
-            <Button layoutX="387.0" layoutY="233.0" mnemonicParsing="false" onAction="#scan" prefHeight="30.0" prefWidth="68.0" text="Scan" styleClass="buttonStyle">
+            <Button layoutX="387.0" layoutY="233.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle" >
                <font>
                   <Font size="10.0" />
                </font></Button>

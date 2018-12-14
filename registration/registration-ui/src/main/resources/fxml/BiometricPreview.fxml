@@ -133,8 +133,8 @@
 						</TitledPane>
 					</content>
 				</TitledPane>
-				<Button fx:id="nextBtn" layoutX="793.0" layoutY="921.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
-				<Button fx:id="editBtn" layoutX="664.0" layoutY="921.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
+				<Button fx:id="nextBtn" layoutX="793.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" styleClass="RegbuttonStyle" />
+				<Button fx:id="editBtn" layoutX="710.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" styleClass="RegbuttonStyle" />
 			</children>
 		</AnchorPane>
 	</content>

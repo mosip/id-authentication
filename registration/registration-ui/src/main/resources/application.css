@@ -207,14 +207,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit,#submitBtn,#scanBtn,#nextBtn,#previousBtn, #irisPrevious, #irisNext, #scanIris {
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
-    -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
+
 #exitButton, #rejectionExit, #authExit,#authenticationExit,#fingerPrintScanExit{
 	 -fx-border-color: transparent;
      -fx-padding: 4 0 4 0;
@@ -319,15 +312,24 @@
 	-fx-background-color:#ffffff;
 }
 
-.buttonStyle {
+#submit, #rejectionSubmit,#submitBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
     -fx-text-fill: black;
     -fx-font-size: 10px;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-    -fx-pref-height: 28px;
-    -fx-pref-width: 68px;
+} 
+
+.RegbuttonStyle {
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-pref-height:20px;
+    -fx-pref-width:60px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
 .imagePane {

@@ -276,8 +276,11 @@ public class RegistrationController extends BaseController {
 	private AnchorPane anchorPaneRegistration;
 
 	@FXML
-	private Button prevAddressButton;
-
+	private Label copyAddressLabel;
+	
+	@FXML
+	private ImageView copyAddressImage;
+	
 	private boolean toggleAgeOrDobField;
 
 	private boolean isChild;
@@ -422,9 +425,6 @@ public class RegistrationController extends BaseController {
 			loadListOfDocuments();
 			setScrollFalse();
 			loadKeyboard();
-			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
-				prevAddressButton.setVisible(false);
-			}
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
@@ -602,7 +602,13 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
-
+			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR,
+						"Address could not be loaded as there is no previous entry");
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Address could not be loaded as there is no previous entry");
+				
+			}else {
 			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
 			region.setText(locationDto.getRegion());
@@ -611,11 +617,13 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(locationDto.getPostalCode());
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
+			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING ADDRESS FROM PREVIOUS ENTRY FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
+
 
 	/**
 	 * 
@@ -947,7 +955,6 @@ public class RegistrationController extends BaseController {
 		poiScanBtn.setVisible(false);
 		porScanBtn.setVisible(false);
 		dobScanBtn.setVisible(false);
-		prevAddressButton.setVisible(false);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
 	}
@@ -1065,7 +1072,7 @@ public class RegistrationController extends BaseController {
 							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
 
-						fullName.setText(fullName.getText().replaceAll(".$", ""));
+						fullName.setText(oldValue);
 						fullName.requestFocus();
 					} else {
 						fullNameLocalLanguage.setText(fullName.getText());
@@ -1080,7 +1087,7 @@ public class RegistrationController extends BaseController {
 					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
 
-						addressLine1.setText(addressLine1.getText().replaceAll(".$", ""));
+						addressLine1.setText(oldValue);
 						addressLine1.requestFocus();
 					} else {
 						addressLine1LocalLanguage.setText(addressLine1.getText());
@@ -1111,7 +1118,7 @@ public class RegistrationController extends BaseController {
 					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
 							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
-						mobileNo.setText(mobileNo.getText().replaceAll(".$", ""));
+						mobileNo.setText(oldValue);
 						mobileNo.requestFocus();
 					}
 				}
@@ -1124,7 +1131,7 @@ public class RegistrationController extends BaseController {
 					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
 							|| newValue.length() > 50)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
-						emailId.setText(emailId.getText().replaceAll(".$", ""));
+						emailId.setText(oldValue);
 						emailId.requestFocus();
 					}
 				}
@@ -1137,7 +1144,7 @@ public class RegistrationController extends BaseController {
 					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR,
 								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
-						cniOrPinNumber.setText(cniOrPinNumber.getText().replaceAll(".$", ""));
+						cniOrPinNumber.setText(oldValue);
 						cniOrPinNumber.requestFocus();
 					}
 				}
@@ -1151,7 +1158,7 @@ public class RegistrationController extends BaseController {
 							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
 
-						parentName.setText(parentName.getText().replaceAll(".$", ""));
+						parentName.setText(oldValue);
 						parentName.requestFocus();
 					}
 				}
@@ -1163,7 +1170,7 @@ public class RegistrationController extends BaseController {
 						final String newValue) {
 					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
-						uinId.setText(uinId.getText().replaceAll(".$", ""));
+						uinId.setText(oldValue);
 						uinId.requestFocus();
 					}
 				}
@@ -1175,11 +1182,20 @@ public class RegistrationController extends BaseController {
 						final String newValue) {
 					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.POSTAL_CODE_REGEX_INITIAL)) {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POSTAL_CODE_WARNING);
-						postalCode.setText(postalCode.getText().replaceAll(".$", ""));
+						postalCode.setText(oldValue);
 						postalCode.requestFocus();
 					}
 				}
 			});
+			
+			copyAddressImage.setOnMouseEntered((e)->{
+				copyAddressLabel.setVisible(true);
+			});
+			
+			copyAddressImage.setOnMouseExited((e)->{
+				copyAddressLabel.setVisible(false);
+			});
+			
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
