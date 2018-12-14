@@ -22,13 +22,13 @@ import io.mosip.kernel.syncdata.entity.Language;
 public interface LanguageRepository extends BaseRepository<Language, String> {
 
 	/**
-	 * This method provides all the languages having <b>isActive</b> is <b>true</b>
-	 * and <b>isDeleted</b> is <b>false</b> present in MOSIP system.
+	 * Method to find list of Language created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @see Language
-	 * @return List<Language>
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link Language}
 	 */
-	public List<Language> findAllByIsDeletedFalse();
 	@Query("FROM Language WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<Language> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

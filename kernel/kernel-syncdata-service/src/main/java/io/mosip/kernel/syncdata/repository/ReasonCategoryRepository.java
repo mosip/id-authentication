@@ -9,24 +9,22 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 
 public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory, String> {
-
 	/**
+	 * Method to find list of ReasonCategory created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @return
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link ReasonCategory}
 	 */
-	List<ReasonCategory> findReasonCategoryByIsDeletedFalse();
-
-	/**
-	 * 
-	 * @param code
-	 * @param languageCode
-	 * @return
-	 */
-	List<ReasonCategory> findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
-
 	@Query(value = "select rc.code,rc.lang_code,rc.cr_by,rc.cr_dtimes,rc.del_dtimes,rc.is_active,rc.is_deleted,rc.upd_by,rc.upd_dtimes,rc.descr,rc.name from master.reason_category rc where rc.cr_dtimes > ?1 or rc.upd_dtimes > ?1 or rc.del_dtimes > ?1", nativeQuery = true)
 	List<ReasonCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 
+	/**
+	 * Method to fetch all the Reason categories.
+	 * 
+	 * @return list of {@link ReasonCategory}
+	 */
 	@Query(value = "select rc.code,rc.lang_code,rc.cr_by,rc.cr_dtimes,rc.del_dtimes,rc.is_active,rc.is_deleted,rc.upd_by,rc.upd_dtimes,rc.descr,rc.name from master.reason_category rc", nativeQuery = true)
 	List<ReasonCategory> findAllReasons();
 }

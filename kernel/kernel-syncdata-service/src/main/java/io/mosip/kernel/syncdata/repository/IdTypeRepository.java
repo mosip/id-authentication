@@ -18,14 +18,13 @@ import io.mosip.kernel.syncdata.entity.IdType;
  */
 public interface IdTypeRepository extends BaseRepository<IdType, String> {
 	/**
-	 * Method that returns the list of id types for the specific language code.
+	 * Method to find list of IdType created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @param languageCode
-	 *            the language code.
-	 * @return the list of id types.
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link IdType}
 	 */
-	List<IdType> findByLangCodeAndIsDeletedFalse(String languageCode);
-
 	@Query("FROM IdType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<IdType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

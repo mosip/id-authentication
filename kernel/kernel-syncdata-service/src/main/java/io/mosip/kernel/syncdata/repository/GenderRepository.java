@@ -18,9 +18,14 @@ import io.mosip.kernel.syncdata.entity.Gender;
  */
 @Repository
 public interface GenderRepository extends BaseRepository<Gender, String> {
-
-	List<Gender> findGenderByLangCodeAndIsDeletedFalse(String langCode);
-
+	/**
+	 * Method to find list of Gender created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link Gender}
+	 */
 	@Query("FROM Gender WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<Gender> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

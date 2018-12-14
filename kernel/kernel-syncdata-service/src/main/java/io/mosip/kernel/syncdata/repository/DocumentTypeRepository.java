@@ -19,13 +19,13 @@ import io.mosip.kernel.syncdata.entity.DocumentType;
 @Repository
 public interface DocumentTypeRepository extends BaseRepository<DocumentType, String> {
 	/**
-	 * @param code
-	 * @param langCode
-	 * @return
+	 * Method to find list of DocumentType created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link DocumentType}
 	 */
-	@Query(value = "select dt.code, dt.name, dt.descr , dt.lang_code , dt.is_active ,dt.cr_by ,dt.cr_dtimes ,dt.upd_by ,dt.upd_dtimes ,dt.is_deleted ,dt.del_dtimes from master.valid_document vd , master.doc_type dt , master.doc_category dc where vd.doctyp_code = dt.code and dt.is_deleted = false and vd.doccat_code = dc.code and dc.code = ?1 and dc.lang_code = ?2", nativeQuery = true)
-	List<DocumentType> findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
-
 	@Query("FROM DocumentType WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<DocumentType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

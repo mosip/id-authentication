@@ -14,6 +14,14 @@ import io.mosip.kernel.syncdata.entity.ReasonList;
  *
  */
 public interface ReasonListRepository extends BaseRepository<ReasonList, String> {
+	/**
+	 * Method to find list of ReasonList created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link ReasonList}
+	 */
 	@Query("FROM ReasonList WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<ReasonList> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

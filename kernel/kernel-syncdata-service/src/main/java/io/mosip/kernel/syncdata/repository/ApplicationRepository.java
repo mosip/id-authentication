@@ -19,29 +19,13 @@ import io.mosip.kernel.syncdata.entity.Application;
 public interface ApplicationRepository extends BaseRepository<Application, String> {
 
 	/**
-	 * Get all Application types
+	 * Method to find list of Application created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @return {@link List<Application>}
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByIsDeletedFalse(Class<Application> entityClass);
-
-	/**
-	 * Get all Application types of a specific language using language code
-	 * 
-	 * @param langCode
-	 * @return {@link List<Application>}
-	 */
-	public List<Application> findAllByLangCodeAndIsDeletedFalse(String languageCode);
-
-	/**
-	 * Get Application type by specific id and language code
-	 * 
-	 * @param code
-	 * @param langCode
-	 * @return {@linkplain Application}
-	 */
-	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
-
 	@Query("FROM Application WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<Application> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

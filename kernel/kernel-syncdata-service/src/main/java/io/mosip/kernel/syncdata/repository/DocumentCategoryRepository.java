@@ -17,31 +17,14 @@ import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
  */
 @Repository
 public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeAndLanguageCodeID> {
-
 	/**
-	 * Get all DocumentCategory types
-	 *
-	 * @return {@link List<DocumentCategory>}
-	 */
-	public List<DocumentCategory> findAllByIsDeletedFalse(Class<DocumentCategory> entityClass);
-
-	/**
-	 * Get all Document category of a specific language using language code
+	 * Method to find list of DocumentCategory created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @param langCode
-	 * @return {@link List<DocumentCategory>}
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link DocumentCategory}
 	 */
-	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalse(String langCode);
-
-	/**
-	 * Get Document Category by specific id and language code
-	 * 
-	 * @param code
-	 * @param langCode
-	 * @return {@linkplain DocumentCategory}
-	 */
-	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
-
 	@Query("FROM DocumentCategory WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<DocumentCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

@@ -16,21 +16,15 @@ import io.mosip.kernel.syncdata.entity.BlacklistedWords;
  */
 public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWords, String> {
 
-	/**
-	 * method to fetch list of blacklisted words by language code
-	 * 
-	 * @param langCode
-	 * @return {@link List of BlacklistedWords }
-	 */
-	List<BlacklistedWords> findAllByLangCode(String langCode);
 
 	/**
-	 * method to fetch all the blacklisted words
+	 * Method to find list of BlacklistedWords created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @return {@link List of BlacklistedWords }
-	 */
-	List<BlacklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
-	
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link BlacklistedWords}
+	 */	
 	@Query("FROM BlacklistedWords WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<BlacklistedWords> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 }

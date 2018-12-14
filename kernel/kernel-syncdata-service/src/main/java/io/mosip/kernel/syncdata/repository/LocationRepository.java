@@ -19,16 +19,14 @@ import io.mosip.kernel.syncdata.entity.Location;
 @Repository
 public interface LocationRepository extends BaseRepository<Location, String> {
 
-	List<Location> findLocationHierarchyByIsDeletedFalse();
-
-	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse(String locCode, String languagecode);
-
-	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsDeletedFalse(String parentLocCode,
-			String languageCode);
-
-	@Query(value = "select distinct hierarchy_level,hierarchy_level_name,is_active from master.location where lang_code=?1 and is_deleted='f'", nativeQuery = true)
-	List<Object[]> findDistinctLocationHierarchyByIsDeletedFalse(String langCode);
-
+	/**
+	 * Method to find list of Location created , updated or deleted time is
+	 * greater than lastUpdated timeStamp.
+	 * 
+	 * @param lastUpdated
+	 *            timeStamp
+	 * @return list of {@link Location}
+	 */
 	@Query("FROM Location WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
 	List<Location> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
 
