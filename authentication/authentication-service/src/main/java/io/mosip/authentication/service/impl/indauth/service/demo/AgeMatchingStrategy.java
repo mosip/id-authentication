@@ -16,11 +16,14 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-		if (reqInfo instanceof Integer && entityInfo instanceof Integer) {
-			return DemoMatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) entityInfo);
-		} else {
-			return 0;
-		}
+			try {
+				int reqAge = Integer.parseInt(String.valueOf(reqInfo));
+				int entityAge = Integer.parseInt(String.valueOf(entityInfo));
+				return DemoMatcherUtil.doLessThanEqualToMatch(reqAge,entityAge);
+			} catch (NumberFormatException e) {
+				// Don't handle
+				return 0;
+			}
 	});
 
 	/** The match function. */
