@@ -232,10 +232,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
 		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
-		System.out.println("got from ++++++"+ fileInStream);
 		try {
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(fileInStream, PacketMetaInfo.class);
-			System.out.println(packetMetaInfo);
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getLocalizedMessage());
 		}

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.manual.adjudication.controller;
+package io.mosip.registration.processor.manual.verification.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -87,7 +88,7 @@ public class ManualVerificationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/assignment").content(userDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-verification/assignment").content(userDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -107,7 +108,7 @@ public class ManualVerificationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-verification/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -130,7 +131,7 @@ public class ManualVerificationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantBiometric").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-verification/applicantBiometric").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -153,7 +154,7 @@ public class ManualVerificationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/applicantDemographic").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-verification/applicantDemographic").content(jsonfileRequestDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
 		} catch (Exception e) {
@@ -240,7 +241,7 @@ public class ManualVerificationControllerTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-adjudication/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/registration-processor/manual-verification/decision").content(manualVerificationDto).contentType(MediaType.APPLICATION_JSON);
 		try {
 			this.mockMvc.perform(requestBuilder).andExpect(status().isForbidden());
 		} catch (Exception e) {
