@@ -32,14 +32,27 @@ public interface PDFGenerator {
 	 * save to the given path with given fileName.
 	 * 
 	 * @param templatePath
-	 *     the processedTemplate in the form of a {@link String}
+	 *            the processedTemplate in the form of a {@link String}
 	 * @param outputFilePath
-	 *                     Output File Path
+	 *            Output File Path
 	 * @param outputFileName
-	 * 			Output File Name
+	 *            Output File Name
 	 * @throws IOException
 	 *             throws IOException
 	 */
 	public void generate(String templatePath, String outputFilePath, String outputFileName) throws IOException;
+
+	/**
+	 * This method will convert InputStream to OutputStream
+	 * 
+	 * @param is
+	 *            the processedTemplate in the form of a {@link InputStream}
+	 * @param resourceLoc
+	 *            resourceLoction {@link String}
+	 * @throws IOException
+	 *             throws IOException
+	 * @return outpustStream
+	 */
+	public OutputStream generate(InputStream is, String resourceLoc) throws IOException;
 
 }

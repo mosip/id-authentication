@@ -134,8 +134,6 @@ public class MapperUtils {
 		return destination;
 	}
 
-	
-
 	/**
 	 * This method takes <code>source</code> and <code>destinationClass</code>, take
 	 * all values from source and create an object of <code>destinationClass</code>
@@ -167,14 +165,12 @@ public class MapperUtils {
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
-		} catch (Exception e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
 					+ source.getClass().getName() + " to destination : " + destinationClass.getClass().getName(), e);
 		}
 		return (D) map(source, destination);
 	}
-
-	
 
 	/**
 	 * This method takes <code>sourceList</code> and <code>destinationClass</code>,
@@ -408,7 +404,7 @@ public class MapperUtils {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch ( IllegalAccessException e) {
 
 			throw new DataAccessLayerException("KER-MSD-993", "Exception raised while mapping values form "
 					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
@@ -431,7 +427,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void setFieldValue(S source, D destination, Field sf, Field dtf)
 			throws IllegalAccessException {
-		//check whether user wants to map null values into destination object or not
+		// check whether user wants to map null values into destination object or not
 		if (!mapNullValues && EmptyCheckUtils.isNullEmpty(sf.get(source))) {
 			return;
 		}

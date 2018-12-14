@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -348,7 +349,7 @@ public final class DateUtils {
 	public static boolean after(Date d1, Date d2) {
 		try {
 			return d1.after(d2);
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -376,7 +377,7 @@ public final class DateUtils {
 	public static boolean before(Date d1, Date d2) {
 		try {
 			return d1.before(d2);
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -406,7 +407,7 @@ public final class DateUtils {
 	public static boolean isSameDay(Date d1, Date d2) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.isSameDay(d1, d2);
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -434,7 +435,7 @@ public final class DateUtils {
 	public static boolean isSameInstant(Date d1, Date d2) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.isSameInstant(d1, d2);
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -455,20 +456,10 @@ public final class DateUtils {
 	 *         <tt>LocalDateTime</tt> object is strictly later than the instant
 	 *         represented by <tt>d2</tt>; <b>false</b> otherwise.
 	 * 
-	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
-	 *             if the <code>d1</code> , <code>d2</code> is null
-	 * 
-	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
-	 * 
 	 * @see java.time.LocalDateTime
 	 */
 	public static boolean after(LocalDateTime d1, LocalDateTime d2) {
-		try {
-			return d1.isAfter(d2);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
+		return d1.isAfter(d2);
 	}
 
 	/**
@@ -484,20 +475,10 @@ public final class DateUtils {
 	 *         <tt>LocalDateTime</tt> object is strictly earlier than the instant
 	 *         represented by <tt>d2</tt>; <b>false</b> otherwise.
 	 * 
-	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
-	 *             if the <code>d1</code> , <code>d2</code> is null
-	 * 
-	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
-	 * 
 	 * @see java.time.LocalDateTime
 	 */
 	public static boolean before(LocalDateTime d1, LocalDateTime d2) {
-		try {
-			return d1.isBefore(d2);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
+		return d1.isBefore(d2);
 	}
 
 	/**
@@ -513,20 +494,10 @@ public final class DateUtils {
 	 * 
 	 * @return <b>true</b> if they represent the same day
 	 * 
-	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
-	 *             if the <code>d1</code> , <code>d2</code> is null
-	 * 
-	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
-	 * 
 	 * @see java.time.LocalDateTime
 	 */
 	public static boolean isSameDay(LocalDateTime d1, LocalDateTime d2) {
-		try {
-			return d1.toLocalDate().isEqual(d2.toLocalDate());
-		} catch (Exception e) {
-			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
+		return d1.toLocalDate().isEqual(d2.toLocalDate());
 	}
 
 	/**
@@ -542,20 +513,10 @@ public final class DateUtils {
 	 * 
 	 * @return <b>true</b> if they represent the same millisecond instant
 	 * 
-	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
-	 *             if the <code>d1</code> , <code>d2</code> is null
-	 * 
-	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
-	 * 
 	 * @see java.time.LocalDateTime
 	 */
 	public static boolean isSameInstant(LocalDateTime d1, LocalDateTime d2) {
-		try {
-			return d1.isEqual(d2);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
+		return d1.isEqual(d2);
 	}
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -590,7 +551,6 @@ public final class DateUtils {
 		return df.format(date);
 	}
 
-	
 	/**
 	 * Formats java.time.LocalDateTime to UTC string in default ISO pattern -
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> ignoring zone offset.
@@ -604,7 +564,7 @@ public final class DateUtils {
 	public static String formatToISOString(LocalDateTime localDateTime) {
 		return localDateTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
-	
+
 	/**
 	 * Provides current UTC java.time.LocalDateTime.
 	 * 
@@ -691,7 +651,7 @@ public final class DateUtils {
 	 * 
 	 * @return a LocalDateTime
 	 * 
-	 * @throws java.time.format.DateTimeParseException
+	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if not able to parse the utcDateTime string for the pattern
 	 * 
 	 * @see java.time.LocalDateTime
@@ -699,8 +659,10 @@ public final class DateUtils {
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
 		try {
 			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
-		} catch (Exception e) {
-			return LocalDateTime.parse(dateTime);
+		} catch (DateTimeParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
 		}
 
 	}

@@ -64,11 +64,11 @@ public class KeyStoreImplExceptionTest {
 	 * }
 	 */
 
-	@Test(expected = KeystoreProcessingException.class)
-	public void testGetAllAliasKeystoreProcessingException() throws Exception {
-		when(keyStore.aliases()).thenThrow(KeyStoreException.class);
-		keyStoreImpl.getAllAlias();
-	}
+//	@Test(expected = KeystoreProcessingException.class)
+//	public void testGetAllAliasKeystoreProcessingException() throws Exception {
+//		when(keyStore.aliases()).thenThrow(KeyStoreException.class);
+//		keyStoreImpl.getAllAlias();
+//	}
 
 	@Test(expected = KeystoreProcessingException.class)
 	public void testGetKeyKeystoreProcessingException() throws Exception {
