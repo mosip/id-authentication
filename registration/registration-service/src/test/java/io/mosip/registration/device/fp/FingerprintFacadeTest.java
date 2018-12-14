@@ -62,7 +62,6 @@ public class FingerprintFacadeTest {
 	@Test
 	public void testGetIsoTemplate() {
 		byte[] testdata = "SampleString".getBytes();
-		System.out.println(testdata);
 		Mockito.when(fingerprintProvider.getIsoTemplate()).thenReturn(testdata);
 		byte[] res = fingerprintFacade.getIsoTemplate();
 		assertEquals(testdata, res);
@@ -117,7 +116,7 @@ public class FingerprintFacadeTest {
 		assertEquals("thumbs.jpg", fingerprintDTO2.getFingerprintImageName());
 		assertEquals("thumbs", fingerprintDTO2.getFingerType());
 		assertEquals(0, fingerprintDTO2.getNumRetry());
-		assertEquals(70.0, fingerprintDTO2.getQualityScore(), 0.1);
+		assertEquals(90.0, fingerprintDTO2.getQualityScore(), 0.1);
 		assertEquals(false, fingerprintDTO2.isForceCaptured());
 	}
 
