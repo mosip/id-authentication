@@ -353,6 +353,9 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
+	
+	@Autowired
+	private WebCameraController webCameraController;
 
 	private boolean dobSelectionFromCalendar = true;
 
@@ -779,7 +782,6 @@ public class RegistrationController extends BaseController {
 		try {
 			toggleIrisCaptureVisibility(true);
 			togglePhotoCaptureVisibility(false);
-			// demoGraphicTitlePane.setExpanded(true);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -793,7 +795,10 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void openCamForApplicantPhoto() {
-		openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
+		if (webCameraController.webCameraPane == null
+				|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
+			openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
+		}
 	}
 
 	/**
@@ -803,7 +808,10 @@ public class RegistrationController extends BaseController {
 	 */
 	@FXML
 	private void openCamForExceptionPhoto() {
-		openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
+		if (webCameraController.webCameraPane == null
+				|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
+			openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
+		}
 	}
 
 	/**

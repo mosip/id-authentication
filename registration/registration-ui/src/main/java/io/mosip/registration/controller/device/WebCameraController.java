@@ -45,7 +45,7 @@ public class WebCameraController extends BaseController implements Initializable
 	private static final Logger LOGGER = AppConfig.getLogger(WebCameraController.class);
 
 	@FXML
-	private AnchorPane demographicPane;
+	public AnchorPane webCameraPane;
 
 	@FXML
 	private SwingNode webcamera;
@@ -80,7 +80,7 @@ public class WebCameraController extends BaseController implements Initializable
 		
 		if (webcam != null) {
 			photoProvider.close(webcam);
-		}
+		}		
 		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
 		webcam = photoProvider.connect(640, 480);
@@ -92,7 +92,7 @@ public class WebCameraController extends BaseController implements Initializable
 			webcamera.setContent(jPanelWindow);
 		} else {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.WEBCAM_ALERT_CONTEXT);
-			((Stage) demographicPane.getScene().getWindow()).close();
+			((Stage) webCameraPane.getScene().getWindow()).close();			
 		}
 	}
 
