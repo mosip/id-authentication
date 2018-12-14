@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,9 +40,10 @@ public class TemplateFileFormatController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
-	public CodeAndLanguageCodeID createTemplateFileFormat(
+	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
-		return templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
+		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
+				HttpStatus.CREATED);
 
 	}
 }

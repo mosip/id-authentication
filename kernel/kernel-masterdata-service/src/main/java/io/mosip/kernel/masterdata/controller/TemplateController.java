@@ -52,7 +52,7 @@ public class TemplateController {
 	 * Method to fetch all Template details based on language code
 	 * 
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/{langcode}")

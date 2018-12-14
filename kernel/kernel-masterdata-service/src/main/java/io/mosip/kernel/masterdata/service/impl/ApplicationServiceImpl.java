@@ -41,9 +41,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	private List<Application> applicationList;
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getAllApplication()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.ApplicationService#getAllApplication()
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplication() {
@@ -70,9 +72,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getAllApplicationByLanguageCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#
+	 * getAllApplicationByLanguageCode(java.lang.String)
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
@@ -99,8 +103,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.ApplicationService#getApplicationByCodeAndLanguageCode(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#
+	 * getApplicationByCodeAndLanguageCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
@@ -108,7 +115,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code, languageCode);
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
+					languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -126,8 +134,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.ApplicationService#createApplication(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.ApplicationService#createApplication(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {

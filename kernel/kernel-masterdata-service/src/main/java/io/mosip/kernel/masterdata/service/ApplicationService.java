@@ -25,7 +25,7 @@ public interface ApplicationService {
 	 * Get All Applications by language code
 	 * 
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String langCode);
@@ -34,9 +34,9 @@ public interface ApplicationService {
 	 * Get An Application by code and language code
 	 * 
 	 * @param code
-	 * 			the code
+	 *            the code
 	 * @param langCode
-	 * 			the language code
+	 *            the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String langCode);

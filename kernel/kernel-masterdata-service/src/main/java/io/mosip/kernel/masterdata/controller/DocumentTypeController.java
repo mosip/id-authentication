@@ -57,6 +57,7 @@ public class DocumentTypeController {
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);
 
 	}
+
 	/**
 	 * 
 	 * @param types
