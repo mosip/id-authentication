@@ -29,7 +29,7 @@ public class CryptomanagerConfig {
 	@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		{
+		
 			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
 			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
@@ -43,6 +43,6 @@ public class CryptomanagerConfig {
 
 			requestFactory.setHttpClient(httpClient);
 			return new RestTemplate(requestFactory);
-		}
+		
 	}
 }

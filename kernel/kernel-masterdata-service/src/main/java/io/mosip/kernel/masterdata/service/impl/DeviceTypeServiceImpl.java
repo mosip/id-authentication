@@ -41,7 +41,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDeviceTypes(RequestDto<DeviceTypeDto> deviceType) {
+	public CodeAndLanguageCodeID createDeviceType(RequestDto<DeviceTypeDto> deviceType) {
 		DeviceType renDeviceType = null;
 
 		DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType.getRequest(), DeviceType.class);

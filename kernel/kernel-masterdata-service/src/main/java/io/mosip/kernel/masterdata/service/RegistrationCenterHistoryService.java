@@ -14,8 +14,9 @@ public interface RegistrationCenterHistoryService {
 	 * Function to fetch specific registration center history detail by registration
 	 * center id
 	 * 
-	 * @param registrationCenterId
-	 * @param effectiveDate
+	 * @param registrationCenterId registrationCenterId
+	 * @param langCode langCode
+	 * @param effectiveDate effectiveDate
 	 * @return {@link RegistrationCenterDto}
 	 */
 	RegistrationCenterHistoryResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,

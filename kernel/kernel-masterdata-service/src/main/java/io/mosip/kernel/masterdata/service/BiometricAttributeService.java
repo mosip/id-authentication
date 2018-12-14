@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
@@ -17,7 +16,7 @@ public interface BiometricAttributeService {
 
 	/**
 	 * 
-	 * methods to fetch list of biometricAttribute for given biometric type code and
+	 * Method to fetch list of biometricAttribute for given biometric type code and
 	 * language code
 	 * 
 	 * @param biometricTypeCode
@@ -34,7 +33,7 @@ public interface BiometricAttributeService {
 	 * @param biometricAttribute
 	 *             biometric attribute dto
 	 * 
-	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	CodeAndLanguageCodeID createBiometricAttribute(BiometricAttributeDto biometricAttribute);
 

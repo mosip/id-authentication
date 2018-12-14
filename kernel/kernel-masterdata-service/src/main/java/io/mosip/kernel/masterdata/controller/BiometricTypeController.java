@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +45,28 @@ public class BiometricTypeController {
 		return biometricTypeService.getAllBiometricTypes();
 	}
 
+	/**
+	 * API to fetch all Biometric types details based on language code
+	 * 
+	 * @param langCode
+	 * 			The language code
+	 * 
+	 * @return All Biometric type details
+	 */
 	@GetMapping("/{langcode}")
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
+	/**
+	 * API to fetch Biometric type details based on code and language code
+	 * 
+	 * @param code
+	 * 			the code
+	 * @param langCode
+	 * 			the language code
+	 * @return Biometric type
+	 */
 	@GetMapping("/{code}/{langcode}")
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
@@ -55,7 +74,7 @@ public class BiometricTypeController {
 	}
 
 	/**
-	 * API to create a Biometric type
+	 * API to insert Biometric type
 	 * 
 	 * @param biometricType
 	 *            is of type {@link BiometricType}
@@ -63,7 +82,7 @@ public class BiometricTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping
-	public CodeAndLanguageCodeID addBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
-		return biometricTypeService.addBiometricType(biometricType);
+	public ResponseEntity<CodeAndLanguageCodeID> createBiometricType(@Valid @RequestBody RequestDto<BiometricTypeData> biometricType) {
+		return new ResponseEntity<>(biometricTypeService.createBiometricType(biometricType), HttpStatus.CREATED);
 	}
 }

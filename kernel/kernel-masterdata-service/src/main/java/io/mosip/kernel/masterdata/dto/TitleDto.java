@@ -13,7 +13,7 @@ import lombok.Data;
 
 
 public class TitleDto {
-	private String titleCode;
+	private String code;
 	private String titleName;
 	private String titleDescription;
 	private Boolean isActive;

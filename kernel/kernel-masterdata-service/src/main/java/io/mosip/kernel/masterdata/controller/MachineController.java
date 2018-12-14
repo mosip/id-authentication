@@ -116,7 +116,7 @@ public class MachineController {
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdResponseDto> saveMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
+	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
 
