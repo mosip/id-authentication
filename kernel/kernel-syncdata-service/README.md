@@ -1,10 +1,16 @@
 ## Sync Data Service 
 
+[Background & Design](https://github.com/mosip/mosip/wiki/Kernel-APIs) 
+
+
+
+** API Documentation **
+
 ```
 mvn javadoc:javadoc
 
 ```
-** 1. Global config ***
+** 1. Global config **
 
 * This API takes care of the overall configuration of the application.   
 * **Admin** can only make these configuration changes.
@@ -54,7 +60,7 @@ Status: 200 OK
 ```
 
 
-** 2. Registration Center Config ***
+** 2. Registration Center Config **
 
 *  This API takes care of the configuration that is specific to Registration center.
 *  **Admin** can only make these configuration changes.
