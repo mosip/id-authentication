@@ -54,7 +54,7 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class AuthRequestValidatorTest{
+public class AuthRequestValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -73,13 +73,12 @@ public class AuthRequestValidatorTest{
 
 	@Mock
 	VidValidatorImpl vidValidator;
-	
+
 	@Mock
 	EmailValidatorImpl emailValidatorImpl;
-	
+
 	@Mock
 	PhoneValidatorImpl phoneValidatorImpl;
-
 
 	@InjectMocks
 	RollingFileAppender idaRollingFileAppender;
@@ -92,8 +91,10 @@ public class AuthRequestValidatorTest{
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
-		/*ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
-		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);*/
+
+		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
+		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
+
 	}
 
 	@Test
@@ -1045,55 +1046,56 @@ public class AuthRequestValidatorTest{
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
-	
+
 	@Test
 	public void testValidateEmail() {
 		AuthRequestDTO authRequestDTO = getAuthRequestDto();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		
+
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
-		
-		List<IdentityInfoDTO>  emailId = new ArrayList<>();
+
+		List<IdentityInfoDTO> emailId = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("sample@sample.com");
 		emailId.add(identityInfoDTO);
 		identity.setEmailId(emailId);
-		
+
 		identity.setEmailId(emailId);
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
-	
+
 		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString())).thenReturn(true);
-		
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateEmail", authRequestDTO,errors);
+
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateEmail", authRequestDTO, errors);
 	}
-	
+
 	@Test
 	public void testValidatePhone() {
 		AuthRequestDTO authRequestDTO = getAuthRequestDto();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		
+
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
-		
-		List<IdentityInfoDTO>  phone = new ArrayList<>();
+
+		List<IdentityInfoDTO> phone = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("76598749689");
 		phone.add(identityInfoDTO);
 		identity.setEmailId(phone);
-		
+
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
-	
+
 		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString())).thenReturn(true);
-		
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "validatePhone", authRequestDTO,errors);
+
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validatePhone", authRequestDTO, errors);
 	}
-	
+
+	// ----------- Supporting method ---------------
+
 	private AuthRequestDTO getAuthRequestDto() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
@@ -1102,12 +1104,11 @@ public class AuthRequestValidatorTest{
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		
+
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
-		
-		
+
 		return authRequestDTO;
 	}
 }

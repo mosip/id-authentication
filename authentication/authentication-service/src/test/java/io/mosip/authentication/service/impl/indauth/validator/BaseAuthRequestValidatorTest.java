@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
@@ -9,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.Before;
@@ -16,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -37,6 +40,7 @@ import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
@@ -46,7 +50,6 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  *
  * @author Rakesh Roshan
  */
-
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -64,16 +67,14 @@ public class BaseAuthRequestValidatorTest {
 
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
-	
+
 	@Mock
 	EmailValidatorImpl emailValidatorImpl;
-	
+
 	@Mock
 	PhoneValidatorImpl phoneValidatorImpl;
 
 	Errors error;
-	
-	private static final String FACE = "face";
 
 	@Before
 	public void before() {
@@ -83,7 +84,6 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
 	}
 
-	
 	@Test
 	public void testValidateVersionAndId() {
 		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
@@ -92,7 +92,7 @@ public class BaseAuthRequestValidatorTest {
 		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateId_HasId_NoError() {
 
@@ -108,7 +108,7 @@ public class BaseAuthRequestValidatorTest {
 		baseAuthRequestValidator.validateId(id, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateVersion_ValidVersion_NoError() {
 		String ver = "1.0";
@@ -122,14 +122,14 @@ public class BaseAuthRequestValidatorTest {
 		baseAuthRequestValidator.validateVer(ver, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateVersion_NoVersion_hasError() {
 		String ver = null;
 		baseAuthRequestValidator.validateVer(ver, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateBioDetails_IfBioInfoIsNull_hasError() {
 
@@ -148,7 +148,7 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 
 	}
-	
+
 	@Test
 	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty_hasError() {
 
@@ -156,7 +156,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		authRequestDTO.setAuthType(authType);
-		
+
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		authRequestDTO.setBioInfo(bioInfoList);
 
@@ -533,7 +533,6 @@ public class BaseAuthRequestValidatorTest {
 		assertFalse(error.hasErrors());
 	}
 
-
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
 		authRequestDTO = getAuthRequestDTO();
@@ -562,7 +561,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
@@ -642,11 +641,11 @@ public class BaseAuthRequestValidatorTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO,error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
-	
+
 	@Test
 	public void testValidateIrisRequestCount_hasLeftEyeRequestMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
@@ -664,7 +663,157 @@ public class BaseAuthRequestValidatorTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO,error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+
+	}
+
+	@Test
+	public void testCheckOTPAuth_HasNoError() {
+		String otp = "456789";
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue(otp);
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		List<PinInfo> listOfPinInfo = new ArrayList<>();
+		listOfPinInfo.add(pinInfo);
+		authRequestDTO.setPinInfo(listOfPinInfo);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+		assertFalse(error.hasErrors());
+	}
+
+	@Test
+	public void testCheckOTPAuth_HasNullValue_HasError() {
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		authRequestDTO.setPinInfo(null);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void testCheckOTPAuth_HasEmptyOTP_HasError() {
+		String otp = "";
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue(otp);
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		List<PinInfo> listOfPinInfo = new ArrayList<>();
+		listOfPinInfo.add(pinInfo);
+		authRequestDTO.setPinInfo(listOfPinInfo);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void testGetOtpValue() {
+
+		String otp = "456789";
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue(otp);
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		List<PinInfo> listOfPinInfo = new ArrayList<>();
+		listOfPinInfo.add(pinInfo);
+
+		authRequestDTO.setPinInfo(listOfPinInfo);
+		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getOtpValue",
+				authRequestDTO);
+		assertTrue(isOtp.isPresent());
+	}
+
+	@Test
+	public void testValidateEmail_ValidateEmail_IsTrue() {
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+
+		List<IdentityInfoDTO> emailId = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("sample@sample.com");
+		emailId.add(identityInfoDTO);
+		identity.setEmailId(emailId);
+
+		identity.setEmailId(emailId);
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString())).thenReturn(true);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
+		assertFalse(error.hasErrors());
+	}
+
+	@Test
+	public void testValidateEmail_ValidateEmail_IsFalse() {
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+
+		List<IdentityInfoDTO> emailId = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("sample5878");
+		emailId.add(identityInfoDTO);
+		identity.setEmailId(emailId);
+
+		identity.setEmailId(emailId);
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString())).thenReturn(false);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void testValidatePhone_ValidatePhone_IsTrue() {
+		List<IdentityInfoDTO> phoneNumber = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("89754765987676");
+
+		phoneNumber.add(identityInfoDTO);
+
+		IdentityDTO phone = new IdentityDTO();
+		phone.setPhoneNumber(phoneNumber);
+
+		RequestDTO phoneRequest = new RequestDTO();
+		phoneRequest.setIdentity(phone);
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		authRequestDTO.setRequest(phoneRequest);
+
+		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString())).thenReturn(true);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
+		assertFalse(error.hasErrors());
+
+	}
+
+	@Test
+	public void testValidatePhone_ValidatePhone_IsFalse() {
+		List<IdentityInfoDTO> phoneNumber = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("8975476lghfhhj");
+
+		phoneNumber.add(identityInfoDTO);
+
+		IdentityDTO phone = new IdentityDTO();
+		phone.setPhoneNumber(phoneNumber);
+
+		RequestDTO phoneRequest = new RequestDTO();
+		phoneRequest.setIdentity(phone);
+		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+		authRequestDTO.setRequest(phoneRequest);
+
+		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString())).thenReturn(false);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}

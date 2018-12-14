@@ -178,8 +178,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						&& isDuplicateBioType(authRequestDTO, BioType.FGRIMG))) {
 
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
+			if (!errors.hasErrors()) {
+				validateFingerRequestCount(authRequestDTO, errors);
+			}
 
-			validateFingerRequestCount(authRequestDTO, errors);
 		}
 	}
 
@@ -194,8 +196,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (isAvailableBioType(bioInfo, BioType.IRISIMG) && isDuplicateBioType(authRequestDTO, BioType.IRISIMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
+			if (!errors.hasErrors()) {
+				validateIrisRequestCount(authRequestDTO, errors);
+			}
 
-			validateIrisRequestCount(authRequestDTO,errors);
 		}
 	}
 
@@ -370,7 +374,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * 
 	 * @param authRequestDTO
 	 */
-	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO,Errors errors) {
+	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 
 		List<IdentityInfoDTO> leftEye = identity.getLeftEye();
@@ -670,7 +674,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				boolean isValidEmail = emailValidatorImpl.validateEmail(email.getValue());
 
 				if (!isValidEmail) {
-					errors.rejectValue("emailId", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { "emailId" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
@@ -692,7 +696,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			for (IdentityInfoDTO phone : phoneNumber) {
 				boolean isValidPhone = phoneValidatorImpl.validatePhone(phone.getValue());
 				if (!isValidPhone) {
-					errors.rejectValue("phoneNumber",
+					errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { "phoneNumber" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
