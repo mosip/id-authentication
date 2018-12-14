@@ -25,6 +25,7 @@ import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
 import javafx.event.Event;
@@ -313,6 +314,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							runtimeException.getMessage(), runtimeException.getCause()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
+							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()));
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
 
@@ -320,7 +328,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
 			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage) {
+			Stage popupStage) throws RegBaseCheckedException {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
@@ -463,9 +471,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				} else {
 					FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.getInstance()
 							.getMapObject().get(RegistrationConstants.DUPLICATE_FINGER);
-					
-					Iterator<FingerprintDetailsDTO> iterator=fingerprintDetailsDTOs.iterator();
-					
+
+					Iterator<FingerprintDetailsDTO> iterator = fingerprintDetailsDTOs.iterator();
+
 					while (iterator.hasNext()) {
 						FingerprintDetailsDTO value = iterator.next();
 						for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {

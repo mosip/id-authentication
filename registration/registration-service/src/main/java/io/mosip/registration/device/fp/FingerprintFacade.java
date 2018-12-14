@@ -45,7 +45,7 @@ public class FingerprintFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(FingerprintFacade.class);
 	private List<MosipFingerprintProvider> fingerprintProviders;
-	
+
 	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
 
@@ -78,7 +78,8 @@ public class FingerprintFacade {
 		return fingerprintProvider.getFingerPrintImage();
 	}
 
-	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) {
+	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
+			throws RegBaseCheckedException {
 
 		Map<String, Object> fingerMap = null;
 
@@ -93,7 +94,9 @@ public class FingerprintFacade {
 			} else if (fingerType.equals(RegistrationConstants.THUMBS)) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
 			}
-			if (fpDetailsDTO.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY)) {
+
+			if ((fingerMap != null) && (fpDetailsDTO
+					.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY))) {
 				fpDetailsDTO.setFingerPrint((byte[]) fingerMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				fpDetailsDTO.setFingerprintImageName(fingerType.concat(RegistrationConstants.DOT)
 						.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
@@ -102,27 +105,28 @@ public class FingerprintFacade {
 
 				fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
 			}
-		} catch (RegBaseCheckedException e) {
 
 		} finally {
-			if (!fingerMap.isEmpty())
+			if (fingerMap != null && !fingerMap.isEmpty())
 				fingerMap.clear();
 		}
 	}
 
-	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath) {
-		try {
-			readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath);
-		} catch (RegBaseCheckedException e) {
+	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath)
+			throws RegBaseCheckedException {
 
-		}
+		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath);
+
 	}
 
 	/**
-	 * Assign all the Fingerprint providers which extends the MosipFingerprintProvider to the list.
+	 * Assign all the Fingerprint providers which extends the
+	 * MosipFingerprintProvider to the list.
+	 * 
 	 * @param make
 	 * @return
 	 */
+
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		for (MosipFingerprintProvider mosipFingerprintProvider : fingerprintProviders) {
 			if (mosipFingerprintProvider.getClass().getName().toLowerCase().contains(make.toLowerCase())) {
@@ -250,6 +254,7 @@ public class FingerprintFacade {
 
 	/**
 	 * Validate the Input Finger with the finger that is fetched from the Database
+	 * 
 	 * @param fingerprintDetailsDTO
 	 * @param userFingerprintDetails
 	 * @return
