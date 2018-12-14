@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -598,9 +600,10 @@ public class PacketInfoManagerImplTest {
 	}
 
 	@Test
-	public void findDemoByIdTest() {
+	public void findDemoByIdTest() throws ParseException {
 		List<DemographicInfoDto> depdupeList = new ArrayList<>();
-		Date date = new Date(1995, 04, 16);
+		String dob = "Thu Jan 01 00:00:00 IST 2015";
+		Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
 		DemographicInfoDto uinDto = new DemographicInfoDto();
 		uinDto.setRegId("2018782130000103122018105604");
 		uinDto.setGenderCode("mâle");
