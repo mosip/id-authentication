@@ -39,6 +39,39 @@ public class MetaDataUtils {
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
+	 * @param source
+	 *            is the source
+	 * @param destination
+	 *            is the destination
+	 * @param mapNullvalues
+	 *            if marked as false then field inside source which are null will
+	 *            not be mapped into destination
+	 * @return an entity class which extends {@link BaseEntity}
+	 * @throws DataAccessLayerException
+	 *             if any error occurs while mapping values
+	 * @see MapperUtils#map(Object, Object, Boolean)
+	 */
+	public static <S, D extends BaseEntity> D setUpdateMetaData(final S source, D destination, Boolean mapNullvalues) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
+
+		D entity = MapperUtils.map(source, destination, mapNullvalues);
+
+		setUpdatedDateTime(contextUser, entity);
+		return entity;
+	}
+
+	/**
+	 * This method takes <code>source</code> object like an DTO and a class which
+	 * must extends {@link BaseEntity} and map all values from DTO object to the
+	 * <code>destinationClass</code> object and return it.
+	 * 
 	 * @param <T>
 	 *            is a type parameter
 	 * @param <D>
@@ -88,6 +121,11 @@ public class MetaDataUtils {
 	private static <D extends BaseEntity> void setCreatedDateTime(String contextUser, D entity) {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
+	}
+
+	private static <D extends BaseEntity> void setUpdatedDateTime(String contextUser, D entity) {
+		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		entity.setUpdatedBy(contextUser);
 	}
 
 }
