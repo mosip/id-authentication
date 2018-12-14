@@ -2,9 +2,7 @@ package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
