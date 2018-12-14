@@ -3,7 +3,7 @@ package io.mosip.registration.processor.camel.bridge;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
-import io.mosip.registration.processor.camel.bridge.processor.ValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.MessageDTOValidator;
 import io.mosip.registration.processor.camel.bridge.statuscode.MessageEnum;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
  */
 public class MosipBridgeRoutes extends RouteBuilder {
 
-	private static Processor validateStructure = new ValidationProcessor();
+	private static Processor messageDTOValidator = new MessageDTOValidator();
 
 	/*
 	 * (non-Javadoc)
@@ -34,7 +34,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN));
 
 		// Structure Validation to Demographic Validation routing
-		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(validateStructure).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(messageDTOValidator).choice()
 				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
@@ -43,7 +43,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 
 		// OSI validation to demo dedupe stage routing
-		from(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)).process(validateStructure).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)).process(messageDTOValidator).choice()
 				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
@@ -52,7 +52,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 
 		//DemoDedupe to quality check
-		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)).process(validateStructure).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)).process(messageDTOValidator).choice()
 		.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 		.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
@@ -61,7 +61,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 		.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
 			
 		//Manual Verification to UIN Generation
-		from(BridgeUtil.getEndpoint(MessageBusAddress.MANUAL_VERIFICATION_BUS)).process(validateStructure).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.MANUAL_VERIFICATION_BUS)).process(messageDTOValidator).choice()
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.UIN_GENERATION_BUS_IN));
 
