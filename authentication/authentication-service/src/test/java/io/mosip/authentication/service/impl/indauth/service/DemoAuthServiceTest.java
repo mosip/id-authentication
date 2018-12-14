@@ -47,6 +47,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 
 @RunWith(SpringRunner.class)
@@ -545,6 +546,7 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
+
 	}
 
 }
