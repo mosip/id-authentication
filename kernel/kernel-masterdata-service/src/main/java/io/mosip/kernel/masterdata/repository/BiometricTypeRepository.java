@@ -33,7 +33,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *            is of type {@link String}
 	 * @return list of {@link BiometricType}
 	 */
-	@Query("FROM BiometricType WHERE langCode =?1 AND (isDeletd is null OR isDeleted = false)")
+	@Query("FROM BiometricType WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
 	List<BiometricType> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
