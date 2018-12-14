@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.manual.adjudication.service;
 
 import org.springframework.stereotype.Service;
+
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
 
@@ -46,4 +48,6 @@ public interface ManualAdjudicationService {
 	 * @return The updated {@link ManualVerificationDTO}
 	 */
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO);
+
+	public PacketMetaInfo getApplicantPacketInfo(String regId);
 }

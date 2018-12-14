@@ -1,7 +1,11 @@
 package io.mosip.registration.processor.manual.adjudication.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -16,7 +20,9 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationStatus;
@@ -81,6 +87,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			manualVerificationDTO.setMatchedRefType(manualVerificationEntity.getId().getMatchedRefType());
 			manualVerificationDTO.setMvUsrId(manualVerificationEntity.getMvUsrId());
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
+			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
 			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
 			if (entities.isEmpty()) {
@@ -138,8 +145,6 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
 		} else if (fileName.equals(PacketFiles.DEMOGRAPHICINFO.name())) {
 			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.DEMOGRAPHICINFO);
-		} else if (fileName.equals(PacketFiles.PACKETMETAINFO.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		} else {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
@@ -184,6 +189,7 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		} else {
 			manualVerificationEntity = entities.get(0);
 			manualVerificationEntity.setStatusCode(manualVerificationDTO.getStatusCode());
+			manualVerificationEntity.setReasonCode(manualVerificationDTO.getReasonCode());
 		}
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
@@ -223,6 +229,27 @@ public class ManualAdjudicationServiceImpl implements ManualAdjudicationService 
 		}
 		return manualVerificationDTO;
 
+	}
+
+	@Override
+	public PacketMetaInfo getApplicantPacketInfo(String regId) {
+		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
+		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
+		System.out.println("got from ++++++"+ fileInStream);
+		try {
+			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(fileInStream, PacketMetaInfo.class);
+			System.out.println(packetMetaInfo);
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		if (packetMetaInfo != null) {
+			packetMetaInfo.getIdentity().setMetaData(null);
+			packetMetaInfo.getIdentity().setHashSequence(null);
+			packetMetaInfo.getIdentity().setCheckSum(null);
+			packetMetaInfo.getIdentity().setOsiData(null);
+		}
+
+		return packetMetaInfo;
 	}
 
 }

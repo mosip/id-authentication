@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.adjudication.dto.FileRequestDto;
 import io.mosip.registration.processor.manual.adjudication.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.adjudication.dto.UserDto;
@@ -58,14 +61,23 @@ public class ManualAdjudicationController {
 		byte[] packetInfo = manualAdjudicationService.getApplicantFile(dto.getRegId(),dto.getFileName());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
-
-	@PostMapping(value = "/packetInfo", produces = MediaType.APPLICATION_JSON_VALUE)
+	
+	@PostMapping(value = "/applicantDemographic", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public ResponseEntity<byte[]> getApplicantDemographic(@RequestBody(required=true)FileRequestDto dto) {
-		byte[] packetInfo = manualAdjudicationService.getApplicantFile(dto.getRegId(),dto.getFileName());
+	public ResponseEntity<byte[]> getApplicantDemographic(String regId) {
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(regId, PacketFiles.DEMOGRAPHICINFO.name());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
+	@PostMapping(value = "/packetInfo")
+	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
+			@ApiResponse(code = 400, message = "Invalid file requested"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public ResponseEntity<PacketMetaInfo> getPacketInfo(String regId) {
+		PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(regId);
+		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
+	}
 }
+

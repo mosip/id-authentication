@@ -25,6 +25,8 @@ public class ManualVerificationDTO implements Serializable {
 	private String matchedRefId;
 	
 	private String matchedRefType;
+	
+	private String reasonCode;
 
 	/**
 	 * @return the regId
@@ -161,6 +163,20 @@ public class ManualVerificationDTO implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return the reasonCode
+	 */
+	public String getReasonCode() {
+		return reasonCode;
+	}
+
+	/**
+	 * @param reasonCode the reasonCode to set
+	 */
+	public void setReasonCode(String reasonCode) {
+		this.reasonCode = reasonCode;
 	}
 	
 	
