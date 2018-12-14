@@ -33,13 +33,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${io.mosip.kernel.syncdata.registration-center-config-file}")
+	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
 	private String regCenterfileName;
 
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${io.mosip.kernel.syncdata.global-config-file}")
+	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
 
 	@Override

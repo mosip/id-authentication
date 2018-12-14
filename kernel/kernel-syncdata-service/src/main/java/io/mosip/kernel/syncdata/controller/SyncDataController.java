@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.swagger.annotations.ApiOperation;
 import net.minidev.json.JSONObject;
 
 /**
@@ -44,6 +46,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/globalconfigs")
 	public JSONObject getGlobalConfigDetails() {
 		return syncConfigDetailsService.getGlobalConfigDetails();
@@ -57,16 +60,17 @@ public class SyncDataController {
 	 *            registration Id
 	 * @return JSONObject
 	 */
+	@ApiOperation(value = "Api to get registration center configuration")
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
 		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
 	}
 
 	/**
-	 * Api to fetch masterdata
+	 * Api to sync masterdata
 	 * 
 	 * @param machineId
-	 *            machine id - mandatory param
+	 *            id of the machine from the request is received to sync masterdata
 	 * @param lastUpdated
 	 *            last updated timestamp -optional if last updated timestamp is null
 	 *            then fetch all the masterdata
@@ -76,6 +80,7 @@ public class SyncDataController {
 	 * @throws ExecutionException
 	 *             this API will throw Execution exception
 	 */
+	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata/{machineId}")
 	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
@@ -84,7 +89,7 @@ public class SyncDataController {
 		if (lastUpdated != null) {
 			try {
 				timestamp = LocalDateTime.parse(lastUpdated);
-			} catch (Exception e) {
+			} catch (DateTimeParseException e) {
 				throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage());
 			}
