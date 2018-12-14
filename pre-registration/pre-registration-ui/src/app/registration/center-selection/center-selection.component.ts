@@ -7,7 +7,7 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { BookingModel } from './booking.model';
-import { BookingModelRequest } from './booking-request.model';
+import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
@@ -42,7 +42,7 @@ export class CenterSelectionComponent implements OnInit {
   showMap = false;
   showMessage = false;
   enableNextButton = false;
-  bookingDataList: BookingModel[] = [];
+  bookingDataList = [];
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
@@ -129,19 +129,25 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.bookingDataList = [];
     this.timeSelectionComponent.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
-            const bookingData = new BookingModel(name.preRegId, this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
-            this.bookingDataList.push(bookingData);
+            const bookingData = new BookingModel(this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
+            const requestObject = {
+              newBookingDetails: bookingData,
+              oldBookingDetails: name.regDto,
+              pre_registration_id: name.preRegId
+            };
+            this.bookingDataList.push(requestObject);
           });
         }
       });
     });
     const request = new BookingModelRequest(this.bookingDataList);
     console.log(request);
-    this.dataService.makeBooking(request).subscribe(response => {
+    this.dataService.makeBooking(request).subscribe(() => {
         const data = {
             case: 'MESSAGE',
             title: 'Success',
