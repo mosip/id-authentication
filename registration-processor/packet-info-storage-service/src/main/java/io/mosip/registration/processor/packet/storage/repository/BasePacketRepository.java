@@ -2,9 +2,11 @@ package io.mosip.registration.processor.packet.storage.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
@@ -69,4 +71,10 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
 	public List<E> getAssignedApplicantDetails(@Param("mvUserId") String mvUserId,
 			@Param("statusCode") String statusCode);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
+	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
+
 }
