@@ -33,15 +33,6 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
  * @since 1.0.0
  *
  */
-
-/**
- * @author M1046571
- *
- */
-/**
- * @author M1046571
- *
- */
 @Component
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
