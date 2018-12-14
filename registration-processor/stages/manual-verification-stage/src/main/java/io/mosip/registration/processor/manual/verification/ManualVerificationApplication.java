@@ -16,7 +16,7 @@ import io.mosip.registration.processor.manual.verification.stage.ManualVerificat
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver",
 		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client",
-		"io.mosip.registration.processor.manual.adjudication",
+		"io.mosip.registration.processor.manual.verification",
 		"io.mosip.registration.processor.filesystem.ceph.adapter.impl" })
 public class ManualVerificationApplication {
 
