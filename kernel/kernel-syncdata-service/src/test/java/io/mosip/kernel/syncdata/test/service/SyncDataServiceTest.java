@@ -29,19 +29,19 @@ import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.MasterDataServiceException;
-import io.mosip.kernel.syncdata.service.MasterDataService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
-import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class SyncDataServiceTest {
 	@MockBean
-	private MasterDataServiceHelper masterDataServiceHelper;
+	private SyncMasterDataServiceHelper masterDataServiceHelper;
 
 	@Autowired
-	private MasterDataService masterDataService;
+	private SyncMasterDataService masterDataService;
 
 	@Autowired
 	RestTemplate restemplate;

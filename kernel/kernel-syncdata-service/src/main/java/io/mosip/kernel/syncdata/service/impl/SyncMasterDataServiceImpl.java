@@ -35,8 +35,8 @@ import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.service.MasterDataService;
-import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
 /**
  * Masterdata sync handler service impl
@@ -45,10 +45,10 @@ import io.mosip.kernel.syncdata.utils.MasterDataServiceHelper;
  * @since 1.0.0
  */
 @Service
-public class MasterDataServiceImpl implements MasterDataService {
+public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Autowired
-	MasterDataServiceHelper serviceHelper;
+	SyncMasterDataServiceHelper serviceHelper;
 
 	/*
 	 * (non-Javadoc)

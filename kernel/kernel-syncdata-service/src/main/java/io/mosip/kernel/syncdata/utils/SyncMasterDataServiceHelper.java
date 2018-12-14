@@ -98,7 +98,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  * @since 1.0.0
  */
 @Component
-public class MasterDataServiceHelper {
+public class SyncMasterDataServiceHelper {
 	@Autowired
 	private MapperUtils mapper;
 	@Autowired
