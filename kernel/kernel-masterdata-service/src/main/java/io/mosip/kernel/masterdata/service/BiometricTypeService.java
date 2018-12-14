@@ -74,5 +74,5 @@ public interface BiometricTypeService {
 	 * @throws MasterDataServiceException
 	 *             If fails to insert the Biometric Type
 	 */
-	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto);
+	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto);
 }

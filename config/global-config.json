@@ -1,0 +1,17 @@
+{
+		"archivalPolicy":"arc_policy_2",
+		"otpTimeOutInMinutes":2,
+		"numberOfWrongAttemptsForOtp":5,
+		"accountFreezeTimeoutInHours":10, 
+		"uinLength":24,
+		"vidLength":32,
+		"pridLength":32,
+		"tokenIdLength":23,
+		"tspIdLength":24,
+		"registrationCenterId":"KDUE83CJ3",
+		"machineId":"MCBD3UI3",
+		"mobilenumberlength":10,
+		"restrictedNumbers":[
+			"8732","321","65"
+		]
+}

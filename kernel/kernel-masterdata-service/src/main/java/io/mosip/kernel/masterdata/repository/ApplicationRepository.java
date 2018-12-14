@@ -2,13 +2,13 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Application;
 
 /**
- * 
  * @author Neha
  * @since 1.0.0
  *
@@ -23,7 +23,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link Application}
 	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
+	List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
 
 	/**
 	 * 
@@ -33,7 +33,8 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link String}
 	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(String languageCode);
+	@Query("FROM Application WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Application> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String languageCode);
 
 	/**
 	 * Get Application type by specific id and language code
@@ -44,6 +45,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            - language code
 	 * @return {@link Application}
 	 */
-	public Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedNull(String code, String languageCode);
+	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String languageCode);
 
 }

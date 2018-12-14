@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -22,7 +23,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the entity class type
 	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByIsDeletedFalseOrIsDeletedNull(Class<Template> entityClass);
+	List<Template> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<Template> entityClass);
 
 	/**
 	 * To fetch all the {@link Template} based on language code
@@ -31,7 +32,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the language code
 	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByLangCodeAndIsDeletedFalseOrIsDeletedNull(String langCode);
+	@Query("FROM Template WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
 	 * To fetch all the {@link Template} based on language code and template type
@@ -43,6 +45,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the template type code
 	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedNull(String langCode,
+	@Query("FROM Template WHERE langCode =?1 AND templateTypeCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode,
 			String templateTypeCode);
 }
