@@ -96,7 +96,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
 				if (zipEntry.getName().endsWith(".json")) {
 					registrationDTO = parseDemographicJson(zipInputStream, zipEntry, registrationDTO);
-				} else {
+				} else if(zipEntry.getName().endsWith(".testfile")){
 					documentDetailsDTO = new DocumentDetailsDTO();
 					documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 					if (zipEntry.getName().contains("_")) {
