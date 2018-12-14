@@ -1630,9 +1630,9 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
 
 			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			poiDocuments.getItems().addAll(RegistrationConstants.getPoiDocumentList());
-			porDocuments.getItems().addAll(RegistrationConstants.getPorDocumentList());
-			dobDocuments.getItems().addAll(RegistrationConstants.getDobDocumentList());
+			poiDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
+			porDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
+			dobDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
