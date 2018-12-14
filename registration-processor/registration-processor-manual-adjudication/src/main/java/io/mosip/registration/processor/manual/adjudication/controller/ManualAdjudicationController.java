@@ -59,12 +59,12 @@ public class ManualAdjudicationController {
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
-	@PostMapping(value = "/applicantDemographic", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/packetInfo", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<byte[]> getApplicantDemographic(@RequestBody(required=true)FileRequestDto dto) {
-		byte[] packetInfo = manualAdjudicationService.getApplicantData(dto.getRegId(),dto.getFileName());
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(dto.getRegId(),dto.getFileName());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 

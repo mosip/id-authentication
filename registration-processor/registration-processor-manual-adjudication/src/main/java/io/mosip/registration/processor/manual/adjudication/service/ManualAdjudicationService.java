@@ -37,17 +37,6 @@ public interface ManualAdjudicationService {
 	public byte[] getApplicantFile(String regId, String fileName);
 
 	/**
-	 * This method returns data related to a regId
-	 * 
-	 * @param regId
-	 *            The registration ID
-	 * @param fileName
-	 *            The file required
-	 * @return The file as bytes
-	 */
-	public byte[] getApplicantData(String regId, String fileName);
-
-	/**
 	 * This method updates the Manual Verification status of a regId according to
 	 * decision taken by manual verifier
 	 * 
