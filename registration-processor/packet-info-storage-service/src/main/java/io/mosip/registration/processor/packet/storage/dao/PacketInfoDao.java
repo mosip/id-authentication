@@ -189,6 +189,11 @@ public class PacketInfoDao {
 		return demographicDedupeRepository.getApplicantFingerPrintImageNameById(regId);
 	}
 
+	public void updateIsActiveIfDuplicateFound(String regId) {
+		demographicDedupeRepository.updateIsActiveIfDuplicateFound(regId);
+
+	}
+
 	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
 			Date dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();

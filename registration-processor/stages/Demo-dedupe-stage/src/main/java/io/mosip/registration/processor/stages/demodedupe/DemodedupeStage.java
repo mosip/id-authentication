@@ -21,6 +21,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -55,6 +56,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
+	@Autowired
+	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -120,6 +124,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
 					description = "Packet Demo dedupe failed for registration id : " + registrationId;
+					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);
