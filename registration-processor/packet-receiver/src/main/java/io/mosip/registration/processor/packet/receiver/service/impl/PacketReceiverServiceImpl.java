@@ -83,59 +83,62 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	public Boolean storePacket(MultipartFile file) {
 		boolean storageFlag = false;
 
-		if (!file.isEmpty()) {
+		if (file.getOriginalFilename() != null && !file.isEmpty()) {
 
 			String registrationId = file.getOriginalFilename().split("\\.")[0];
-			boolean isTransactionSuccessful = false;
-			SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			if (regEntity == null) {
-				logger.info("Registration Packet is Not yet sync in Sync table");
-				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
-			}
+			if (registrationId != null) {
 
-			if (file.getSize() > getMaxFileSize()) {
-				throw new FileSizeExceedException(
-						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
-			}
-			if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
-				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
-			} else if (!(isDuplicatePacket(registrationId))) {
-				try {
-					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
-
-					InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
-					dto.setRegistrationId(registrationId);
-					dto.setRegistrationType(regEntity.getRegistrationType());
-					dto.setReferenceRegistrationId(null);
-					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-					dto.setLangCode("eng");
-					dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
-					dto.setIsActive(true);
-					dto.setCreatedBy(USER);
-					dto.setIsDeleted(false);
-					registrationStatusService.addRegistrationStatus(dto);
-					storageFlag = true;
-					isTransactionSuccessful = true;
-				} catch (DataAccessException | IOException e) {
-					logger.info(LOG_FORMATTER, "Error while updating status", e.getMessage());
-				} finally {
-					String eventId = "";
-					String eventName = "";
-					String eventType = "";
-					eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-					eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-							: EventName.EXCEPTION.toString();
-					eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-							: EventType.SYSTEM.toString();
-					String description = isTransactionSuccessful ? "Packet registration status updated successfully"
-							: "Packet registration status updation unsuccessful";
-
-					auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-							registrationId);
+				boolean isTransactionSuccessful = false;
+				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
+				if (regEntity == null) {
+					logger.info("Registration Packet is Not yet sync in Sync table");
+					throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 				}
-			} else {
-				throw new DuplicateUploadRequestException(
-						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+
+				if (file.getSize() > getMaxFileSize()) {
+					throw new FileSizeExceedException(
+							PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+				}
+				if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
+					throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
+				} else if (!(isDuplicatePacket(registrationId))) {
+					try {
+						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
+
+						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
+						dto.setRegistrationId(registrationId);
+						dto.setRegistrationType(regEntity.getRegistrationType());
+						dto.setReferenceRegistrationId(null);
+						dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+						dto.setLangCode("eng");
+						dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+						dto.setIsActive(true);
+						dto.setCreatedBy(USER);
+						dto.setIsDeleted(false);
+						registrationStatusService.addRegistrationStatus(dto);
+						storageFlag = true;
+						isTransactionSuccessful = true;
+					} catch (DataAccessException | IOException e) {
+						logger.info(LOG_FORMATTER, "Error while updating status", e.getMessage());
+					} finally {
+						String eventId = "";
+						String eventName = "";
+						String eventType = "";
+						eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+						eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+								: EventName.EXCEPTION.toString();
+						eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+								: EventType.SYSTEM.toString();
+						String description = isTransactionSuccessful ? "Packet registration status updated successfully"
+								: "Packet registration status updation unsuccessful";
+
+						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+								registrationId);
+					}
+				} else {
+					throw new DuplicateUploadRequestException(
+							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+				}
 			}
 		}
 		return storageFlag;
