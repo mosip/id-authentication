@@ -104,7 +104,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto saveDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);

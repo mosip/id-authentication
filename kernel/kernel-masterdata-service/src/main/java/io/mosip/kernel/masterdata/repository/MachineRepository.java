@@ -8,7 +8,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
- * Repository function to save and fetch machine details
+ * Repository to perform CRUD operations on Machine.
  * 
  * @author Megha Tanga
  * @since 1.0.0
