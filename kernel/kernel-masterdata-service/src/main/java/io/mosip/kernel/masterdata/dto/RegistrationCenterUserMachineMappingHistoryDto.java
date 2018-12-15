@@ -29,7 +29,7 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	
 	private Boolean isActive;
 	
-	private LocalDateTime effectDateTime;
+	private LocalDateTime effectivetimes;
 	
 
 }

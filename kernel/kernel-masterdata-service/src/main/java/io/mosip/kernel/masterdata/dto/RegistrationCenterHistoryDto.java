@@ -87,5 +87,5 @@ public class RegistrationCenterHistoryDto {
 	@NotNull
 	private Boolean isActive;
 	
-	private LocalDateTime effectDateTime;
+	private LocalDateTime effectivetimes;
 }

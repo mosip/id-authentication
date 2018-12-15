@@ -14,7 +14,7 @@ public enum MachineHistoryErrorCode {
 	MACHINE_HISTORY_FETCH_EXCEPTION("KER-MSD-031",
 			"Error occured while fetching Machine History details"), MACHINE_HISTORY_NOT_FOUND_EXCEPTION("KER-MSD-032",
 					"Machine History not found"), INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-MSD-033",
-							"Invalid date format");
+							"Invalid date format. Require ISO-8601 format without offset e.g. 2011-12-03T10:15:30");
 
 	private final String errorCode;
 	private final String errorMessage;
