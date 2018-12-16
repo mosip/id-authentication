@@ -48,12 +48,12 @@ public class JsonValidatorConfigServerExceptionTest {
 
 	}
 	
-	//@Test
+	@Test
 	public void testWhenValidJsonProvided()
 			throws HttpRequestException, JsonValidationProcessingException, IOException, JsonIOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "mosip-identity-json-schema.json";
+		String schemaName = "mosip-prereg-identity-json-schema.json";
 		ValidationReport validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
 		assertEquals(true, isValid);

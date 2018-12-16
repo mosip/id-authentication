@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.test.exception;
+package io.mosip.kernel.idrepo.controller;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,10 +42,6 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @ActiveProfiles("test")
 public class IdRepoExceptionHandlerTest {
 
-	/** The env. */
-	@Autowired
-	Environment env;
-
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -63,7 +59,6 @@ public class IdRepoExceptionHandlerTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(handler, "env", env);
 		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
@@ -99,6 +94,19 @@ public class IdRepoExceptionHandlerTest {
 		});
 	}
 
+	@Test
+	public void testHandleExceptionInternalTimeout() {
+		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
+				"handleExceptionInternal", new AsyncRequestTimeoutException(), null, null,
+				HttpStatus.EXPECTATION_FAILED, null);
+		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
+		List<ErrorDTO> errorCode = response.getErr();
+		errorCode.forEach(e -> {
+			assertEquals("KER-IDR-009", e.getErrCode());
+			assertEquals("Connection Timed out", e.getErrMessage());
+		});
+	}
+
 	/**
 	 * Test handle id app exception.
 	 */
@@ -120,7 +128,7 @@ public class IdRepoExceptionHandlerTest {
 	@Test
 	public void testHandleIdAppExceptionWithCause() {
 		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN,
-				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN));
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, "mosip.id.create"), "mosip.id.create");
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
@@ -140,6 +148,14 @@ public class IdRepoExceptionHandlerTest {
 				"handleExceptionInternal",
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 				null);
+		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
+		response.getErr();
+	}
+
+	@Test
+	public void testHandleExceptionInternalWithOtherException() {
+		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
+				"handleExceptionInternal", new IdRepoAppException(), null, null, null, null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
 		response.getErr();
 	}

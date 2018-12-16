@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.test.shard;
+package io.mosip.kernel.idrepo.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.idrepo.service.impl.DefaultShardResolver;
 
 /**
@@ -24,31 +25,13 @@ public class DefaultShardResolverTest {
 	/** The resolver. */
 	DefaultShardResolver resolver = new DefaultShardResolver();
 
-	/** The data sources. */
-	private Map<String, DataSource> dataSources = new HashMap<>();
-
-	/** The driver manager data source 1. */
-	DriverManagerDataSource driverManagerDataSource1 = new DriverManagerDataSource();
-
-	/** The driver manager data source 2. */
-	DriverManagerDataSource driverManagerDataSource2 = new DriverManagerDataSource();
-
-	/**
-	 * Before.
-	 */
-	@Before
-	public void before() {
-		dataSources.put("shard1", driverManagerDataSource1);
-		dataSources.put("shard2", driverManagerDataSource2);
-		ReflectionTestUtils.setField(resolver, "dataSources", dataSources);
-	}
-
 	/**
 	 * Test get shrad.
+	 * @throws IdRepoAppException 
 	 */
 	@Test
-	public void testGetShrad() {
-		assertEquals(driverManagerDataSource1, resolver.getShard("1234"));
-		assertEquals(driverManagerDataSource2, resolver.getShard("5678"));
+	public void testGetShrad() throws IdRepoAppException {
+		assertEquals("shard1", resolver.getShard("1234"));
+		assertEquals("shard2", resolver.getShard("5678"));
 	}
 }

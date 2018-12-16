@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.test.exception;
+package io.mosip.kernel.idrepo.exception;
 
 import org.junit.Test;
 

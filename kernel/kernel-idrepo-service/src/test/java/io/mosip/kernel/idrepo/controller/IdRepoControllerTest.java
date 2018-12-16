@@ -1,15 +1,21 @@
-package io.mosip.kernel.idrepo.test.controller;
+package io.mosip.kernel.idrepo.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,9 +30,11 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
@@ -39,30 +47,28 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
+@ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoControllerTest {
 
-	/** The controller. */
-	@InjectMocks
-	IdRepoController controller;
+	private Map<String, String> id;
 
-	/** The id repo service. */
 	@Mock
-	private IdRepoService idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
 
-	/** The validator. */
 	@Mock
 	private IdRequestValidator validator;
 
-	/** The uin validator. */
 	@Mock
-	private UinValidatorImpl uinValidator;
+	private UinValidatorImpl uinValidatorImpl;
 
-	/**
-	 * Test add identity.
-	 *
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
+	@InjectMocks
+	IdRepoController controller;
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(controller, "id", id);
+	}
+
 	@Test
 	public void testAddIdentity() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
@@ -97,13 +103,13 @@ public class IdRepoControllerTest {
 	@Test
 	public void testRetrieveIdentity() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
-		when(uinValidator.validateId(anyString())).thenReturn(true);
+		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentity(any())).thenReturn(response);
 		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234");
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
-	
+
 	/**
 	 * Test retrieve identity.
 	 *
@@ -113,11 +119,9 @@ public class IdRepoControllerTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityInvalidUin() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
-		when(uinValidator.validateId(anyString())).thenReturn(false);
+		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.retrieveIdentity(any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234");
-		assertEquals(response, responseEntity.getBody());
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		controller.retrieveIdentity("1234");
 	}
 
 	/**
@@ -132,18 +136,6 @@ public class IdRepoControllerTest {
 	}
 
 	/**
-	 * Test retrieve identity invalid id.
-	 *
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityInvalidId() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException("errorCode", "errorMessage"));
-		controller.retrieveIdentity("1234");
-	}
-
-	/**
 	 * Test update identity.
 	 *
 	 * @throws IdRepoAppException
@@ -154,10 +146,10 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
 		when(idRepoService.updateIdentity(any())).thenReturn(response);
-//		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity(request,
-//				new BeanPropertyBindingResult(request, "IdRequestDTO"));
-//		assertEquals(response, responseEntity.getBody());
-//		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity("1234", request,
+				new BeanPropertyBindingResult(request, "IdRequestDTO"));
+		assertEquals(response, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	/**
@@ -171,7 +163,7 @@ public class IdRepoControllerTest {
 		IdRequestDTO request = new IdRequestDTO();
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		errors.reject("errorCode");
-//		controller.updateIdentity(request, errors);
+		controller.updateIdentity("1234", request, errors);
 	}
 
 	/**
@@ -182,5 +174,13 @@ public class IdRepoControllerTest {
 		ReflectionTestUtils.setField(controller, "validator", new IdRequestValidator());
 		WebDataBinder binder = new WebDataBinder(new IdRequestDTO());
 		controller.initBinder(binder);
+	}
+
+	public Map<String, String> getId() {
+		return id;
+	}
+
+	public void setId(Map<String, String> id) {
+		this.id = id;
 	}
 }

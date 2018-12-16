@@ -287,7 +287,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData.get(IDENTITY)
 								.put(key, findDifference(value.leftValue(), value.rightValue())));
 
-				uinObject = updateIdenityInfo(dbUinData, encryptIdentity(convertToBytes(dbData)));
+				uinObject = updateIdentityInfo(dbUinData, encryptIdentity(convertToBytes(dbData)));
 			}
 
 			if (Objects.isNull(uinObject)) {
@@ -369,7 +369,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 *             the id repo app exception
 	 */
 	@Transactional
-	public Uin updateIdenityInfo(Uin uin, byte[] identityInfo) throws IdRepoAppException {
+	public Uin updateIdentityInfo(Uin uin, byte[] identityInfo) throws IdRepoAppException {
 		try {
 			UinDetail uinDetail = uin.getUinDetail();
 			uinDetail.setUinData(identityInfo);

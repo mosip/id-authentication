@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.test.util;
+package io.mosip.kernel.idrepo.util;
 
 import org.junit.Before;
 import org.junit.Test;

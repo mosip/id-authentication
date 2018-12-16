@@ -1,7 +1,5 @@
 package io.mosip.kernel.idrepo.config;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -21,7 +19,6 @@ import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
@@ -29,7 +26,6 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -37,7 +33,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -165,17 +160,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	@Bean
 	public RestTemplate restTemplate() {
 		turnOffSslChecking();
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-
-			@Override
-			public void handleError(ClientHttpResponse response) throws IOException {
-				mosipLogger.error("sessionId", "IdRepoConfig", "REestTemplate - Error - ",
-						IOUtils.toString(response.getBody(), Charset.defaultCharset()));
-			}
-		});
-		
-		return restTemplate;
+		return new RestTemplate();
 
 	}
 
@@ -263,7 +248,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return driverManagerDataSource;
 	}
 
-	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+	private TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 			return null;
 		}

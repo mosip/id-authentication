@@ -25,12 +25,12 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -55,7 +55,7 @@ public class IdRepoController {
 
 	/** The uin validator. */
 	@Autowired
-	private UinValidatorImpl uinValidator;
+	private IdValidator<String> uinValidatorImpl;
 
 	/**
 	 * Inits the binder.
@@ -103,7 +103,7 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin) throws IdRepoAppException {
 		try {
 			if (!Objects.isNull(uin)) {
-				uinValidator.validateId(uin);
+				uinValidatorImpl.validateId(uin);
 				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin), HttpStatus.OK);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);

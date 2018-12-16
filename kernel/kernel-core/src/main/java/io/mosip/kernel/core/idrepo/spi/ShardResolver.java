@@ -1,5 +1,7 @@
 package io.mosip.kernel.core.idrepo.spi;
 
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
+
 /**
  * The Interface ShardResolver.
  *
@@ -13,5 +15,5 @@ public interface ShardResolver {
 	 * @param id the id
 	 * @return the shrad
 	 */
-	String getShard(String id);
+	String getShard(String id) throws IdRepoAppException;
 }

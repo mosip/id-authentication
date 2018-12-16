@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.google.common.collect.Lists;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
@@ -72,11 +69,4 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		+ ". Time difference between request and response in Seconds: " + (((double) duration / 1000) % 60));
 	}
 	
-	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		AntPathMatcher pathMatcher = new AntPathMatcher();
-	    return Lists.newArrayList("").stream()
-	        .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
-	}
-
 }

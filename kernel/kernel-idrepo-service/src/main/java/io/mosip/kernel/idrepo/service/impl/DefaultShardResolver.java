@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 
 /**
@@ -17,11 +18,13 @@ public class DefaultShardResolver implements ShardResolver {
 	/** The Constant pattern. */
 	private static final Pattern pattern = Pattern.compile("[0-4].*");
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.kernel.core.idrepo.shard.ShardResolver#getShrad(java.lang.String)
 	 */
 	@Override
-	public String getShard(String id) {
+	public String getShard(String id) throws IdRepoAppException {
 		if (pattern.matcher(id).matches()) {
 			return "shard1";
 		} else {

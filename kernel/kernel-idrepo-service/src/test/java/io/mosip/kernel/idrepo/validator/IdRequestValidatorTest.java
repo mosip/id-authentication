@@ -1,12 +1,12 @@
-package io.mosip.kernel.idrepo.test.validator;
+package io.mosip.kernel.idrepo.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -36,9 +36,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
+import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
 /**
  * @author Manoj SP
@@ -48,7 +56,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRequestValidatorTest {
 
 	@InjectMocks
@@ -59,13 +67,19 @@ public class IdRequestValidatorTest {
 
 	private Map<String, String> id;
 
-	private Map<String, String> status;
+	List<String> status;
 
 	@Autowired
 	ObjectMapper mapper;
 
 	@Mock
-	private UinValidatorImpl uinValidator;
+	private UinValidatorImpl uinValidatorImpl;
+
+	@Mock
+	private JsonValidatorImpl jsonValidator;
+
+	@Mock
+	private RidValidatorImpl ridValidatorImpl;
 
 	public Map<String, String> getId() {
 		return id;
@@ -75,11 +89,11 @@ public class IdRequestValidatorTest {
 		this.id = id;
 	}
 
-	public Map<String, String> getStatus() {
+	public List<String> getStatus() {
 		return status;
 	}
 
-	public void setStatus(Map<String, String> status) {
+	public void setStatus(List<String> status) {
 		this.status = status;
 	}
 
@@ -87,10 +101,11 @@ public class IdRequestValidatorTest {
 
 	@Before
 	public void setup() {
+		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
 		ReflectionTestUtils.setField(validator, "id", id);
 		ReflectionTestUtils.setField(validator, "status", status);
 		ReflectionTestUtils.setField(validator, "env", env);
-		ReflectionTestUtils.setField(validator, "uinValidator", uinValidator);
+		ReflectionTestUtils.setField(validator, "mapper", mapper);
 		errors = new BeanPropertyBindingResult(new IdRequestDTO(), "idRequestDto");
 	}
 
@@ -124,27 +139,10 @@ public class IdRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateIdNullVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", null, errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "ver"),
-					error.getDefaultMessage());
-			assertEquals("ver", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateIdInvalidVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", "abc", errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "ver"),
-					error.getDefaultMessage());
-			assertEquals("ver", ((FieldError) error).getField());
-		});
+	public void testValidUin() {
+		when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		ReflectionTestUtils.invokeMethod(validator, "validateUin", "1234", errors);
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
@@ -161,7 +159,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testInvalidUin() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		ReflectionTestUtils.invokeMethod(validator, "validateUin", "1234", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
@@ -196,6 +194,28 @@ public class IdRequestValidatorTest {
 	}
 
 	@Test
+	public void testValidateRegIdValidRegId() {
+		when(ridValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		ReflectionTestUtils.invokeMethod(validator, "validateRegId", "1234", errors);
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testValidateRegIdInvalidRegId() {
+		when(ridValidatorImpl.validateId(Mockito.anyString()))
+				.thenThrow(new InvalidIDException("errorCode", "errorMessage"));
+		ReflectionTestUtils.invokeMethod(validator, "validateRegId", "1234", errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
+					error.getDefaultMessage());
+			assertEquals("registrationId", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
 	public void testValidateRegIdNullRegId() {
 		ReflectionTestUtils.invokeMethod(validator, "validateRegId", null, errors);
 		assertTrue(errors.hasErrors());
@@ -205,6 +225,57 @@ public class IdRequestValidatorTest {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
 			assertEquals("registrationId", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
+	public void testValidateRequestInvalidSchema() throws JsonParseException, JsonMappingException, IOException,
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		when(jsonValidator.validateJson(Mockito.any(), Mockito.any()))
+				.thenThrow(new NullJsonSchemaException("errorCode", "errorMessage"));
+		Object request = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage(), "request"),
+					error.getDefaultMessage());
+			assertEquals("request", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
+	public void testValidateRequestInvalidLang() throws JsonParseException, JsonMappingException, IOException {
+		Object request = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"),
+					error.getDefaultMessage());
+			assertEquals("request", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
+	public void testValidateRequestDuplicates() throws JsonParseException, JsonMappingException, IOException {
+		Object request = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"},{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]},\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"),
+					error.getDefaultMessage());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -245,16 +316,58 @@ public class IdRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidate() throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+	public void testValidateReqTimeFutureReqTime() {
+		ReflectionTestUtils.invokeMethod(validator, "validateReqTime", "9999-12-31T15:28:28.610", errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+					error.getDefaultMessage());
+			assertEquals("timestamp", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
+	public void testValidateCreate() throws JsonParseException, JsonMappingException, JsonProcessingException,
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		ValidationReport value = new ValidationReport(true, null);
+		Mockito.when(jsonValidator.validateJson(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(ridValidatorImpl.validateId(Mockito.any())).thenReturn(true);
+		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
 		request.setRegistrationId("1234");
 		request.setUin("1234");
 		request.setStatus("REGISTERED");
-		request.setTimestamp(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
-		request.setRequest(mapper.readValue(mapper.writeValueAsBytes(request), Object.class));
+		request.setTimestamp("2018-12-15T15:28:43.824");
+		request.setRequest(mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class));
 		validator.validate(request, errors);
+		errors.getAllErrors().forEach(System.err::println);
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testValidateUpdate() throws JsonParseException, JsonMappingException, JsonProcessingException,
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		ValidationReport value = new ValidationReport(true, null);
+		Mockito.when(jsonValidator.validateJson(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(ridValidatorImpl.validateId(Mockito.any())).thenReturn(true);
+		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.update");
+		request.setRegistrationId("1234");
+		request.setUin("1234");
+		request.setStatus("REGISTERED");
+		request.setTimestamp("2018-12-15T15:28:43.824");
+		request.setRequest(mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class));
+		validator.validate(request, errors);
+		errors.getAllErrors().forEach(System.err::println);
 		assertFalse(errors.hasErrors());
 	}
 }

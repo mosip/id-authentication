@@ -80,11 +80,6 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 		return new BufferedReader(new InputStreamReader(servletStream));
 	}
 
-	public void replaceData(byte[] newData) {
-		rawData = newData;
-		servletStream.stream = new ByteArrayInputStream(rawData);
-	}
-
 	/**
 	 * The Class ResettableServletInputStream.
 	 */
