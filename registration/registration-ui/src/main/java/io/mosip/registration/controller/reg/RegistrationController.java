@@ -1270,13 +1270,9 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			ageField.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
+			ageField.textProperty().addListener((obsValue,oldValue,newValue)->{
 					if (ageField.getText().length() > 3) {
-						String age = ageField.getText().substring(0, 3);
-						ageField.setText(age);
+						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
 					}
@@ -1284,40 +1280,26 @@ public class RegistrationController extends BaseController {
 					if (newValue.matches("\\d{1,3}")) {
 						if (Integer.parseInt(ageField.getText()) > Integer
 								.parseInt(AppConfig.getApplicationProperty("max_age"))) {
-							String age = ageField.getText().substring(0, 2);
-							ageField.setText(age);
+							ageField.setText(oldValue);
 							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
 									+ AppConfig.getApplicationProperty("max_age"));
 						}
 					}
 					// to populate date of birth based on age
-
+					int age = 0;
 					if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
-						int age = Integer.parseInt(ageField.getText());												
+						age = Integer.parseInt(ageField.getText());												
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						LocalDate dob = currentYear.minusYears(age);
 						autoAgeDatePicker.setValue(dob);
 					}
-					if (ageField.getText().length() == 0) {
-						ageDatePicker.setValue(null);
-					}
 					if (!newValue.matches("\\d*")) {
-						ageField.setText(newValue.replaceAll("[^\\d]", ""));
+						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
 
 					}
-				}
-			});
-			ageField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
-						Boolean newPropertyValue) {
-					int ageValue = 0;
-					if (!newPropertyValue && !ageField.getText().equals("")) {
-						ageValue = Integer.parseInt(ageField.getText());
-					}
-					if (ageValue < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))
-							&& ageValue != 0) {
+					
+					if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 						childSpecificFields.setVisible(true);
 						isChild = true;
 						documentFields.setLayoutY(134.00);
@@ -1326,8 +1308,7 @@ public class RegistrationController extends BaseController {
 						childSpecificFields.setVisible(false);
 						documentFields.setLayoutY(25.00);
 					}
-				}
-			});
+				});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 		} catch (RuntimeException runtimeException) {
@@ -1593,7 +1574,6 @@ public class RegistrationController extends BaseController {
 				}
 			}
 		}
-
 		return gotoNext;
 	}
 
@@ -1703,11 +1683,7 @@ public class RegistrationController extends BaseController {
 
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
-		int age = 3;
-		if (age < 5) {
-			childSpecificFields.setVisible(true);
-			isChild = true;
-		}
+		int age = 45;
 		ageField.setText("" + age);
 		toggleAgeOrDobField = true;
 		gender.setValue("MALE");
