@@ -1,9 +1,11 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -71,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		TransactionDto dto = null;
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegIdAndStatusCode(regId,
 				statusCode);
-		if (transactionEntityList != null) {
+		if (!CollectionUtils.isEmpty(transactionEntityList)) {
 			dto = convertEntityToDto(transactionEntityList.get(0));
 		}
 
