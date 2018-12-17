@@ -178,9 +178,12 @@ public class FullAddressMatchingStrategyTest {
 	}
 
 	/**
-	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 * Assert Phonetics Match Value via doPhoneticsMatch method Doing phonetic match
+	 * with input request and stored-request with language-name(arabic),NOT language-code(ar).
+	 * If give language code, get java.lang.IllegalArgumentException: No rules found
+	 * for gen, rules, language-code(ar).
 	 */
-	
+
 	@Test
 	public void TestPhoneticsMatchValueWithLanguageName_ReturnWithMatchValue() {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
