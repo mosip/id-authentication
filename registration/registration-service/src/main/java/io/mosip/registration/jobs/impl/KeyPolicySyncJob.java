@@ -41,7 +41,7 @@ public class KeyPolicySyncJob extends BaseJob{
 	/**
 	 * LOGGER for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(PacketSyncStatusJob.class);
+	private static final Logger LOGGER = AppConfig.getLogger(KeyPolicySyncJob.class);
 
 	/*
 	 * (non-Javadoc)
@@ -54,80 +54,59 @@ public class KeyPolicySyncJob extends BaseJob{
 	public void executeInternal(JobExecutionContext context) {
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
+		this.responseDTO = new ResponseDTO();
 
+		String syncJobId=null;
 		try {
+			if(context!=null) {
+				 this.jobId = loadContext(context);
 
-			/*
-			 * Get Application Context from JobExecutionContext's job detail
-			 */
-			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
-					.get("applicationContext");
-
-			//Sync Transaction Manager
-			syncManager = this.applicationContext.getBean(SyncManager.class);
-
-			//Job Manager
-			jobManager =this.applicationContext.getBean(JobManager.class);
-			
-			
-			// Get Current JobId
-			String syncJobId = jobManager.getJobId(context);
-
-			// Get Job Map
-			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
-			
-			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,syncJobId);
-
-			if(responseDTO.getSuccessResponseDTO()!=null) {
-				executeChildJob(syncJobId, jobMap);
 			}
-
-		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 			
+		} catch(RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					exception.getMessage());
-		} catch (NullPointerException nullPointerException) {
-			
-			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
-			
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-
+				RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+			throw baseUncheckedException;
 		}
+		
+		
+		// Run the Parent JOB always first
+		SessionContext sessionContext =  SessionContext.getInstance();
+		String centerId=sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
+
+		this.responseDTO = policySyncService.fetchPolicy(centerId);
+
+		// To run the child jobs after the parent job Success
+		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
+			executeChildJob(syncJobId, jobMap);
+		}
+		
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
 
-	@Override
-	public ResponseDTO executeJob(String jobId) {
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute Job started");
-
-		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute job ended");
-
-		return executeJob(triggerPoint, jobId);
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		String centerId=SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
-
-		ResponseDTO responseDTO = policySyncService.fetchPolicy(centerId);
-
+		
+		this.triggerPoint = triggerPoint;
+		this.jobId = jobId;
+		
+		executeInternal(null);
+		
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
-		return syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+		 return responseDTO;
 
 	}
 

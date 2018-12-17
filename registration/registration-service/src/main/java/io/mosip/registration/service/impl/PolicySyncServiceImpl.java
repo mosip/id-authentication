@@ -38,16 +38,15 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  *
  */
 @Service
-public class PolicySyncServiceImpl implements PolicySyncService{
+public class PolicySyncServiceImpl implements PolicySyncService {
 
 	@Autowired
 	private PolicySyncDAO policySyncDAO;
-	
-	
 
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final Logger LOGGER = AppConfig.getLogger(PolicySyncServiceImpl.class);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -61,18 +60,19 @@ public class PolicySyncServiceImpl implements PolicySyncService{
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-     
+
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE);
 		} else {
 			keyStore = policySyncDAO.findByMaxExpireTime();
-			
+
 			if (keyStore != null) {
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
 				Date currentDate = new Date(new Timestamp(System.currentTimeMillis()).getTime());
 				long difference = ChronoUnit.DAYS.between(validDate.toInstant(), currentDate.toInstant());
-				if (Integer.parseInt((String) ApplicationContext.getInstance().getApplicationMap().get("name")) < Math.abs(difference)) {
+				if (Integer.parseInt((String) ApplicationContext.getInstance().getApplicationMap().get("name")) < Math
+						.abs(difference)) {
 					successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
 					successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
 					successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -80,8 +80,9 @@ public class PolicySyncServiceImpl implements PolicySyncService{
 				}
 			} else {
 				// make the rest call and get the data like as below.
-				String data = "{\r\n" + "  \"publicKey\": \"publicKey\",\r\n" + "  \"keyExpiryTime\": \"2018-12-29\",\r\n"
-						+ "  \"keyGenerationTime\": \"2018-11-29\"\r\n" + "}";
+				String data = "{\r\n" + "  \"publicKey\": \"publicKey\",\r\n"
+						+ "  \"keyExpiryTime\": \"2018-12-29\",\r\n" + "  \"keyGenerationTime\": \"2018-11-29\"\r\n"
+						+ "}";
 
 				try {
 					policyDTO = objectMapper.readValue(data, PolicyDTO.class);
@@ -94,24 +95,26 @@ public class PolicySyncServiceImpl implements PolicySyncService{
 					keyStore.setCreatedDtimes(new Timestamp(System.currentTimeMillis()));
 					keyStore.setUpdatedBy("updatedBy");
 					keyStore.setUpdatedTimes(new Timestamp(System.currentTimeMillis()));
-					
+
 					policySyncDAO.updatePolicy(keyStore);
-					
+
 					successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
 					successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
 					successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 					responseDTO.setSuccessResponseDTO(successResponseDTO);
 					LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "synch is success");
-			}  catch (IOException e) {
+				} catch (IOException e) {
 
-				responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
-						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
-				LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "error response is created");
-			}catch(RuntimeException exception) {
-				responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
-						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
-				LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-			}
+					responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
+							RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
+					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+							"error response is created");
+				} catch (RuntimeException exception) {
+					responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
+							RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
+					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage());
+				}
 			}
 		}
 		return responseDTO;
