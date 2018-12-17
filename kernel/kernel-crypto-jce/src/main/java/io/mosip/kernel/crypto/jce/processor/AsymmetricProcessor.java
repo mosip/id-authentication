@@ -67,11 +67,11 @@ public class AsymmetricProcessor {
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(),e);
 		}
 		return cipher;
 
@@ -97,7 +97,7 @@ public class AsymmetricProcessor {
 		} catch (BadPaddingException | IllegalStateException | IllegalBlockSizeException e) {
 			throw new InvalidDataException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage());
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage(),e);
 		}
 
 	}

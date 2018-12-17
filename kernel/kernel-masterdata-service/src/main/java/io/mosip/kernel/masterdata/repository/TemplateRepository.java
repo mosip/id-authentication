@@ -2,13 +2,13 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Template;
 
 /**
- * 
  * @author Neha
  * @since 1.0.0
  * 
@@ -17,29 +17,35 @@ import io.mosip.kernel.masterdata.entity.Template;
 public interface TemplateRepository extends BaseRepository<Template, String> {
 
 	/**
-	 * Get all Biometric types
+	 * Get all Template types
 	 *
-	 * @return {@link List<BiometricType>}
+	 * @param entityClass
+	 *            the entity class type
+	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByIsDeletedFalse(Class<Template> entityClass);
+	List<Template> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<Template> entityClass);
 
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param languageCode
-	 * @return {@link List<Template>}
+	 * @param langCode
+	 *            the language code
+	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByLangCodeAndIsDeletedFalse(String langCode);
+	@Query("FROM Template WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
 	 * To fetch all the {@link Template} based on language code and template type
 	 * code
 	 * 
-	 * @param languageCode
+	 * @param langCode
+	 *            the language code
 	 * @param templateTypeCode
-	 * @return {@link List<Template>}
+	 *            the template type code
+	 * @return All the {@link Template}
 	 */
-	public List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(String langCode,
+	@Query("FROM Template WHERE langCode =?1 AND templateTypeCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode,
 			String templateTypeCode);
-
 }

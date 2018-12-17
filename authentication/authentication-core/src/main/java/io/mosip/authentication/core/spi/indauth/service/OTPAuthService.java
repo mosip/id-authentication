@@ -17,9 +17,10 @@ public interface OTPAuthService {
 
 	/**
 	 * 
-	 * @param pinValue - pin value
-	 * @param UIN      - Unique Number
-	 * @return
+	 * @param authreqdto AuthRequestDTO
+	 * @param txnId      txnId
+	 * @return AuthStatusInfo
+	 * @throws IdAuthenticationBusinessException exception
 	 */
 	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
 }

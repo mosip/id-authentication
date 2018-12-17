@@ -26,7 +26,7 @@ public class OtpControllerAdvice {
 	/**
 	 * This method handles MethodArgumentNotValidException.
 	 * 
-	 * @param exception
+	 * @param e
 	 *            The exception
 	 * @return The response entity.
 	 */

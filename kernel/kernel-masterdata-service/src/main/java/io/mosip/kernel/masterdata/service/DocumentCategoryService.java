@@ -17,27 +17,30 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 public interface DocumentCategoryService {
 
 	/**
-	 * To fetch all Document Category
+	 * Method to fetch all Document category details
 	 * 
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return DocumentCategoryDTO list
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategory();
 
 	/**
-	 * To fetch all Document Category using language code
+	 * Method to fetch all Document category details based on language code
 	 * 
 	 * @param langCode
-	 *            the language code
-	 * @return {@linkplain DocumentCategoryDto}
+	 *            The language code
+	 * 
+	 * @return DocumentCategoryDTO list
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode);
 
 	/**
-	 * To fetch Document Category using id and language code
+	 * Method to fetch A Document category details based on id and language code
 	 * 
 	 * @param code
+	 *            The Id of Document Category
 	 * @param langCode
-	 * @return {@linkplain DocumentCategoryDto}
+	 *            The language code
+	 * @return DocumentCategoryDTO
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
 

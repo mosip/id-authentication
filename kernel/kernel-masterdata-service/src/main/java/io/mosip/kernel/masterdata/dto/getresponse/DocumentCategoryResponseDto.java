@@ -3,9 +3,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -13,8 +11,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-
-
 public class DocumentCategoryResponseDto {
 	private List<DocumentCategoryDto> documentcategories;
 }

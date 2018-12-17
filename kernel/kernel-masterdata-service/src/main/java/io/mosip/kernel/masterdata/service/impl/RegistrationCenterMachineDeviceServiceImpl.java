@@ -1,6 +1,7 @@
-package io.mosip.kernel.masterdata.service.impl;
+ package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -32,34 +33,32 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	@Autowired
 	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
 
-	@Autowired
-	private MapperUtils mapperUtils;
-
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService#createRegistrationCenterMachineAndDevice(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
-	public ResponseRrgistrationCenterMachineDeviceDto saveRegistrationCenterMachineAndDevice(
+	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 
 		try {
-			RegistrationCenterMachineDevice registrationCenterMachineDevice = metadataUtils
+			RegistrationCenterMachineDevice registrationCenterMachineDevice = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDevice.class);
 
 			RegistrationCenterMachineDevice savedRegistrationCenterMachineDevice = registrationCenterMachineDeviceRepository
 					.create(registrationCenterMachineDevice);
 
-			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = metadataUtils
+			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDeviceHistory.class);
 			registrationCenterMachineDeviceHistory
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
 
-			responseRrgistrationCenterMachineDeviceDto = mapperUtils.map(
+			responseRrgistrationCenterMachineDeviceDto = MapperUtils.map(
 					savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					ResponseRrgistrationCenterMachineDeviceDto.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
 							.getErrorCode(),

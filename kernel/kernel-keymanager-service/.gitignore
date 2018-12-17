@@ -18,3 +18,5 @@ tmp/
 local.properties
 .loadpath
 .DS_Store
+*.log
+logs/

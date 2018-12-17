@@ -10,19 +10,6 @@
 mvn javadoc:javadoc
 ```
 
-**Maven dependency**
-  
- ```
-    <dependency>
-		<groupId>io.mosip.kernel</groupId>
-		<artifactId>kernel-packetserver-http</artifactId>
-		<version>${project.version}</</version>
-	</dependency>
- ```
-
-**Properties to be added in parent Spring Application environment**
-
-[kernel-packetserver-http-dev.properties](../../config/kernel-packetserver-http-dev.properties)
 
 **Usage Sample**
 

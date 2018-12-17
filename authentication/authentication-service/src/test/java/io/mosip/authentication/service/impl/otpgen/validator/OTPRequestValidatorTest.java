@@ -94,7 +94,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
-		OtpRequestDTO.setVer("1.1");
+		//OtpRequestDTO.setVer("1.1");
 		OtpRequestDTO.setMuaCode("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
@@ -123,7 +123,7 @@ public class OTPRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		OtpRequestDTO.setId("id");
-		OtpRequestDTO.setVer("1.1");
+		//OtpRequestDTO.setVer("1.1");
 		OtpRequestDTO.setMuaCode("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -178,7 +178,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
-		otpRequestDTO.setVer("1.12");
+		//otpRequestDTO.setVer("1.12");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -190,7 +190,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
-		otpRequestDTO.setVer("1.1");
+		//otpRequestDTO.setVer("1.1");
 		otpRequestDTO.setMuaCode("");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -203,7 +203,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
-		otpRequestDTO.setVer("1.1");
+		//otpRequestDTO.setVer("1.1");
 		otpRequestDTO.setTxnID("");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -216,7 +216,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId(null);
-		otpRequestDTO.setVer("1.1");
+		//otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -228,7 +228,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType(null);
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
-		otpRequestDTO.setVer("1.1");
+		//otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

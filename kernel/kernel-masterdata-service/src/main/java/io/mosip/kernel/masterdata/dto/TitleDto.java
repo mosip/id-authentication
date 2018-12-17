@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO class for fetching titles from masterdata
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 
 public class TitleDto {
-	private String titleCode;
+	private String code;
 	private String titleName;
 	private String titleDescription;
 	private Boolean isActive;

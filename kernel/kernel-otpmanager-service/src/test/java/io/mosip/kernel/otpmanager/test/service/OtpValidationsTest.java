@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,10 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
+import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 
 @RunWith(SpringRunner.class)
@@ -61,4 +65,60 @@ public class OtpValidationsTest {
 		assertThat(returnResponse.getStatus(), is("failure"));
 	}
 
+	@Test
+	public void testOtpValidatorServiceKeyEmptyCase() throws Exception {
+		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(serviceError);
+		when(otpRepository.findById(OtpEntity.class, "testKey"))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/v1.0/otp/validate?key=&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotAcceptable()).andReturn();
+	}
+
+	@Test
+	public void testOtpValidatorServiceOtpEmptyCase() throws Exception {
+		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(serviceError);
+		when(otpRepository.findById(OtpEntity.class, "testKey"))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/v1.0/otp/validate?key=testkey&otp=").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotAcceptable()).andReturn();
+	}
+
+	@Test
+	public void testOtpValidatorServiceKeyLengthLessThanRequiredCase() throws Exception {
+		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(serviceError);
+		when(otpRepository.findById(OtpEntity.class, "testKey"))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/v1.0/otp/validate").param("key", "sa").param("otp", "123456")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+	}
+
+	@Test
+	public void testOtpValidatorServiceKeyLengthMoreThanRequiredCase() throws Exception {
+		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(serviceError);
+		when(otpRepository.findById(OtpEntity.class, "testKey"))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/v1.0/otp/validate").param("key",
+				"ykbbgyhogsmziqozetsyexoazpqhcpqywqmuyyijaweoswjlvhemamrmbuorixvnwlrhgfbnrmoorscjkllmgzqxtauoolvhoiyxfwoiotkvimcqshxvxplrqsfxmlmroyxcphstayxnowmjsnwdwhazpotqqrafuvpcaccaxneavptzwwsukhjqzwhjpdgrbqfybsyyryqlbrpdakuvtvswcwpzvkkaonblwlkjvytiodlnvsodsxkkgbbzvxkjbgbhnnvpkohydywdaudekflgbvbkeqwrekdgsneomyovczvnqhuitmr")
+				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
+				.andReturn();
+	}
+
+	@Test
+	public void testOtpValidatorServiceOtpIsCharacter() throws Exception {
+		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+		validationErrorsList.add(serviceError);
+		when(otpRepository.findById(OtpEntity.class, "testKey"))
+				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
+		mockMvc.perform(get("/v1.0/otp/validate").param("key", "test").param("otp", "INVALID-TYPE")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+	}
 }
