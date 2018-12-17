@@ -26,10 +26,8 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
@@ -115,7 +113,7 @@ public class MasterDataServiceTest {
 	private List<Application> applicationList;
 	private ApplicationDto applicationDto;
 
-	private RequestDto<ApplicationData> applicationRequestDto;
+	private RequestDto<ApplicationDto> applicationRequestDto;
 	private RequestDto<DocumentCategoryData> documentCategoryRequestDto;
 
 	@MockBean
@@ -237,7 +235,7 @@ public class MasterDataServiceTest {
 	@Autowired
 	MachineHistoryService machineHistoryService;
 
-	private RequestDto<BiometricTypeData> biometricTypeRequestDto;
+	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
 	private BiometricTypeDto biometricTypeDto;
 
@@ -490,15 +488,15 @@ public class MasterDataServiceTest {
 		biometricTypeList.add(biometricType1);
 		biometricTypeList.add(biometricType2);
 
-		biometricTypeRequestDto = new RequestDto<BiometricTypeData>();
-		BiometricTypeData request = new BiometricTypeData();
+		biometricTypeRequestDto = new RequestDto<BiometricTypeDto>();
+		// BiometricTypeData request = new BiometricTypeData();
 		biometricTypeDto = new BiometricTypeDto();
 		biometricTypeDto.setCode("1");
 		biometricTypeDto.setName("DNA MATCHING");
 		biometricTypeDto.setDescription(null);
 		biometricTypeDto.setLangCode("ENG");
-		request.setBiometricType(biometricTypeDto);
-		biometricTypeRequestDto.setRequest(request);
+		// request.setBiometricType(biometricTypeDto);
+		biometricTypeRequestDto.setRequest(biometricTypeDto);
 	}
 
 	private void biometricAttrSetup() {
@@ -541,15 +539,15 @@ public class MasterDataServiceTest {
 		applicationList.add(application1);
 		applicationList.add(application2);
 
-		applicationRequestDto = new RequestDto<ApplicationData>();
-		ApplicationData request = new ApplicationData();
+		applicationRequestDto = new RequestDto<ApplicationDto>();
+		// ApplicationData request = new ApplicationData();
 		applicationDto = new ApplicationDto();
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("ENG");
-		request.setApplicationtype(applicationDto);
-		applicationRequestDto.setRequest(request);
+		// request.setApplicationtype(applicationDto);
+		applicationRequestDto.setRequest(applicationDto);
 	}
 
 	private void templateFileFormatSetup() {
@@ -605,10 +603,8 @@ public class MasterDataServiceTest {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.createApplication(applicationRequestDto);
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(applicationRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(applicationRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -759,9 +755,9 @@ public class MasterDataServiceTest {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenReturn(biometricType1);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService.createBiometricType(biometricTypeRequestDto);
-		assertEquals(biometricTypeRequestDto.getRequest().getBiometricType().getCode(),
+		assertEquals(biometricTypeRequestDto.getRequest().getCode(),
 				codeAndLanguageCodeId.getCode());
-		assertEquals(biometricTypeRequestDto.getRequest().getBiometricType().getLangCode(),
+		assertEquals(biometricTypeRequestDto.getRequest().getLangCode(),
 				codeAndLanguageCodeId.getLangCode());
 	}
 
