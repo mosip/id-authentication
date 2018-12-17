@@ -164,9 +164,9 @@ stage('---------- SonarQube Analysis --------------') {
 
 
 @NonCPS
-def showChangeLogs() {
+def getChangedModules() {
+ Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- changedModules = []
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
   for (int j = 0; j < entries.length; j++) {
@@ -182,4 +182,6 @@ def showChangeLogs() {
    }
   }
  }
+ echo "Changed modules are ::::::::::> "+changedModules
+ return changedModules
 }
