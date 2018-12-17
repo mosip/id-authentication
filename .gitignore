@@ -22,5 +22,8 @@ local.properties
 .DS_Store
 test.txt
 .idea/
+.settings/
+.sonarlint/
+.recommenders/
 META-INF/
 /.recommenders/
