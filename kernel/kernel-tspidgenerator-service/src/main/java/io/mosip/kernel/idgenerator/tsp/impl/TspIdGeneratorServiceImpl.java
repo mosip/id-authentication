@@ -51,7 +51,7 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 				tspIdLength - 1);
 
 		Tsp entity = null;
-		
+
 		try {
 
 			entity = tspRepository.findMaxTspId();
@@ -64,19 +64,16 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 		if (entity == null) {
 			entity = new Tsp();
 			entity.setTspId(initialValue);
-			entity.setCreatedBy("admin");
-			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
-			entity.setCreatedDateTime(time);
 
 		} else {
 			long lastGeneratedId = entity.getTspId();
 			entity = new Tsp();
 			entity.setTspId(lastGeneratedId + 1);
-			entity.setCreatedBy("admin");
-			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
-			entity.setCreatedDateTime(time);
-
 		}
+
+		entity.setCreatedBy("admin");
+		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
+		entity.setCreatedDateTime(time);
 		try {
 
 			tspRepository.save(entity);
