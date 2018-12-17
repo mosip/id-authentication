@@ -140,13 +140,11 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
-	 * addDocumentCategoriesData(io.mosip.kernel.masterdata.dto.
-	 * DocumentCategoryRequestDto)
+	 * createDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
-		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(),
-				DocumentCategory.class);
+		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
 			documentCategory = documentCategoryRepository.create(entity);
