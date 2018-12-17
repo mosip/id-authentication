@@ -233,7 +233,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Validating OTP for OTP based Authentication");
 		
 		if (isSupervisor) {
-			if (otpUserId.getText() != null) {
+			if (!otpUserId.getText().isEmpty()) {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
@@ -273,7 +273,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Validating Fingerprint for Fingerprint based Authentication");
 		
 		if (isSupervisor) {
-			if (fpUserId.getText() != null) {
+			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
 						loadNextScreen();

@@ -147,6 +147,10 @@ public class ServiceDelegateUtil {
 		// DTO need to to be prepared
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
+		if (requestParams.containsKey(RegistrationConstants.IS_PRE_REG_SYNC)) {
+			requestHTTPDTO.setPregRegSync(true);
+			requestParams.remove(RegistrationConstants.IS_PRE_REG_SYNC);
+		}
 		// prepare httpDTO except rquest type and uri build
 		requestHTTPDTO = prepareRequest(requestHTTPDTO, serviceName, null);
 

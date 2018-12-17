@@ -22,6 +22,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
@@ -67,11 +68,17 @@ public class PreRegistrationDataSyncServiceTest {
 
 	static byte[] preRegPacket;
 
+	static Map<String, Object> preRegData = new HashMap<>();
+
 	@BeforeClass
 	public static void initialize() throws IOException {
+
 		URL url = PreRegZipHandlingServiceTest.class.getResource("/70694681371453.zip");
 		File packetZipFile = new File(url.getFile());
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
+
+		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
+		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
 	}
 
 	@Test
@@ -93,7 +100,7 @@ public class PreRegistrationDataSyncServiceTest {
 		Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
 		Mockito.when(preRegistrationDAO.getPreRegistration(Mockito.anyString())).thenReturn(null);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegPacket);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		Mockito.when(preRegistrationDAO.savePreRegistration(preRegistrationList)).thenReturn(preRegistrationList);
@@ -108,7 +115,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegPacket);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 
@@ -130,7 +137,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 	private void mockEncryptedPacket() throws RegBaseCheckedException {
 		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
-		preRegistrationDTO.setPacketPath("path");	
+		preRegistrationDTO.setPacketPath("path");
 		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
 		preRegistrationDTO.setEncryptedPacket(preRegPacket);
 		preRegistrationDTO.setPreRegId("70694681371453");

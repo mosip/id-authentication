@@ -629,6 +629,10 @@ public class RegistrationConstants {
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
 	public static final String PRE_REG_SUCCESS_MESSAGE = "Got Pre registartion ";
+	public static final String IS_PRE_REG_SYNC = "PreRegSync";
+	public static final String PRE_REG_FILE_NAME = "fileName";
+	public static final String PRE_REG_FILE_CONTENT = "fileContent";
+	public static final String PRE_REG_APPOINMENT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	// UI Date Format	
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
