@@ -1,11 +1,7 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.Map;
-
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +10,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.jobs.JobManager;
-import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.PolicySyncService;
 
 /**
@@ -29,9 +22,8 @@ import io.mosip.registration.service.PolicySyncService;
  *
  */
 @Component(value = "keyPolicySyncJob")
-public class KeyPolicySyncJob extends BaseJob{
+public class KeyPolicySyncJob extends BaseJob {
 
-	
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
@@ -56,31 +48,30 @@ public class KeyPolicySyncJob extends BaseJob{
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId=null;
+		String syncJobId = null;
 		try {
-			if(context!=null) {
-				 this.jobId = loadContext(context);
+			if (context != null) {
+				this.jobId = loadContext(context);
 
 			}
-			
-		} catch(RegBaseUncheckedException baseUncheckedException) {
+
+		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
-		
-		
+
 		// Run the Parent JOB always first
-		SessionContext sessionContext =  SessionContext.getInstance();
-		String centerId=sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
+		SessionContext sessionContext = SessionContext.getInstance();
+		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
 
 		this.responseDTO = policySyncService.fetchPolicy(centerId);
 
 		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
+		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
 			executeChildJob(syncJobId, jobMap);
 		}
-		
+
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -88,25 +79,27 @@ public class KeyPolicySyncJob extends BaseJob{
 
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		
+
 		this.triggerPoint = triggerPoint;
 		this.jobId = jobId;
-		
+
 		executeInternal(null);
-		
+
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
-		 return responseDTO;
+		return responseDTO;
 
 	}
 

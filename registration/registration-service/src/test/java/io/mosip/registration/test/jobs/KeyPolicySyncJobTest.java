@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -32,52 +31,47 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.KeyPolicySyncJob;
-import io.mosip.registration.jobs.impl.PreRegistrationDataSyncJob;
 import io.mosip.registration.service.PolicySyncService;
-import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 public class KeyPolicySyncJobTest {
 
-	
 	@InjectMocks
-	KeyPolicySyncJob keyPolicySyncJob;
+	private KeyPolicySyncJob keyPolicySyncJob;
 
 	@Mock
-	BaseJob baseJob;
+	private BaseJob baseJob;
 
-	
 	@Mock
 	private PolicySyncService policySyncService;
-
 
 	@Mock
 	private ApplicationContext applicationContext;
 
 	@Mock
 	SyncManager syncManager;
-	
+
 	@Mock
 	private SyncJobConfigDAO jobConfigDAO;
-	
-	@Mock
-	JobManager jobManager;
 
 	@Mock
-	JobExecutionContext context;
+	private JobManager jobManager;
 
 	@Mock
-	JobDetail jobDetail;
+	private JobExecutionContext context;
 
 	@Mock
-	JobDataMap jobDataMap;
+	private JobDetail jobDetail;
+
 	@Mock
-	SessionContext sessionContext;
+	private JobDataMap jobDataMap;
 	@Mock
-	UserContext userContext;
+	private SessionContext sessionContext;
 	@Mock
-	RegistrationCenterDetailDTO registrationCenterDetailDTO;
-	
-		@Rule
+	private UserContext userContext;
+	@Mock
+	private RegistrationCenterDetailDTO registrationCenterDetailDTO;
+
+	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	private LinkedList<SyncJobDef> syncJobList;
@@ -97,13 +91,11 @@ public class KeyPolicySyncJobTest {
 			jobMap.put(job.getId(), job);
 		});
 		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
-		
+
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("CNTR123");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO); 
- 
+		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 
-		
 	}
 
 	@Test
@@ -111,22 +103,20 @@ public class KeyPolicySyncJobTest {
 
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");
-		
-		Map<String, SyncJobDef> jobMap=new HashMap<>();
-		
+
+		Map<String, SyncJobDef> jobMap = new HashMap<>();
+
 		jobMap.put(syncJob.getId(), syncJob);
-		
+
 		syncJob.setId("2");
 		syncJob.setParentSyncJobId("1");
-		
-		
+
 		jobMap.put("2", syncJob);
-		
+
 		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
-		
-		//Mockito.when(SessionContext.getInstance()).thenReturn(sessionContext);
+
 		Mockito.when(sessionContext.getUserContext()).thenReturn(userContext);
 		Mockito.when(userContext.getRegistrationCenterDetailDTO()).thenReturn(registrationCenterDetailDTO);
 		Mockito.when(registrationCenterDetailDTO.getRegistrationCenterId()).thenReturn("CNTR123");
@@ -137,72 +127,61 @@ public class KeyPolicySyncJobTest {
 		Mockito.when(applicationContext.getBean(SyncManager.class)).thenReturn(syncManager);
 		Mockito.when(applicationContext.getBean(JobManager.class)).thenReturn(jobManager);
 		Mockito.when(applicationContext.getBean(PolicySyncService.class)).thenReturn(policySyncService);
-		
+
 		Mockito.when(jobManager.getChildJobs(Mockito.any())).thenReturn(jobMap);
 		Mockito.when(jobManager.getJobId(Mockito.any(JobExecutionContext.class))).thenReturn("1");
-		
-		
-		
+
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(keyPolicySyncJob);
-	
+
 		Mockito.when(policySyncService.fetchPolicy(Mockito.anyString())).thenReturn(responseDTO);
 
-	
 		keyPolicySyncJob.executeInternal(context);
 		keyPolicySyncJob.executeJob("User", "1");
 
 	}
-	
 
-
-	
-	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void executejobNoSuchBeanDefinitionExceptionTest() {
-		ResponseDTO responseDTO=new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
-//		Mockito.when(applicationContext.getBean(SyncManager.class)).thenThrow(NoSuchBeanDefinitionException.class);
-//				preRegistrationDataSyncJob.executeJob("User");
-//				
+
 		Mockito.when(context.getJobDetail()).thenThrow(NoSuchBeanDefinitionException.class);
 		keyPolicySyncJob.executeInternal(context);
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void executejobNullPointerExceptionTest() {
-		ResponseDTO responseDTO=new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 		Mockito.when(context.getJobDetail()).thenThrow(NullPointerException.class);
-		
+
 		keyPolicySyncJob.executeInternal(context);
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void executeChildJobsTest() throws JobExecutionException {
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");
-		
-		Map<String, SyncJobDef> jobMap=new HashMap<>();
-		
+
+		Map<String, SyncJobDef> jobMap = new HashMap<>();
+
 		jobMap.put(syncJob.getId(), syncJob);
-		
+
 		syncJob.setId("2");
 		syncJob.setParentSyncJobId("1");
-		
-		
+
 		jobMap.put("2", syncJob);
-		
+
 		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-		
+
 		keyPolicySyncJob.executeChildJob("1", jobMap);
 
 	}
 
 }
-
