@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
-import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
 @RunWith(SpringRunner.class)
@@ -39,7 +38,8 @@ public class DocumentNotFoundTest {
 
 		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
 
-		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft",new Timestamp(System.currentTimeMillis()), "Jagadishwari");
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft",
+				new Timestamp(System.currentTimeMillis()), "Jagadishwari");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -56,7 +56,7 @@ public class DocumentNotFoundTest {
 
 		} catch (DocumentNotFoundException e) {
 			assertThat("Should throw dopcument not found exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_006.toString()));
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString()));
 			assertThat("Should throw dopcument not found exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(DOCUMENT_Not_FOUND));
 		}

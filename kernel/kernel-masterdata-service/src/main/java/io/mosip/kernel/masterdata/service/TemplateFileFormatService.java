@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -21,6 +21,6 @@ public interface TemplateFileFormatService {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createTemplateFileFormat(
-			RequestDto<TemplateFileFormatData> templateFileFormatRequestDto);
+			RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto);
 
 }

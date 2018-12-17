@@ -26,7 +26,7 @@ public interface AuthFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest)
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
 	AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);

@@ -5,15 +5,12 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.function.ToIntBiFunction;
-
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 public class AgeMatchingStrategyTest {
-
-	private IdentityValue identityValue = new IdentityValue();
 
 	/**
 	 * Check for Exact type matched with Enum value of Age Matching Strategy
@@ -44,7 +41,7 @@ public class AgeMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -54,12 +51,12 @@ public class AgeMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
-		identityValue.setValue("25");
-		int value = matchFunction.applyAsInt(25, identityValue);
+		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match(25, 25, null);
 		assertEquals(100, value);
-		identityValue.setValue("100");
-		int value1 = matchFunction.applyAsInt(100, identityValue);
+
+		int value1 = matchFunction.match(100, 100, null);
 		assertEquals(100, value1);
 	}
 
@@ -69,29 +66,24 @@ public class AgeMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, IdentityValue> matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
 
-		identityValue.setValue("50");
-		int value = matchFunction.applyAsInt(250, identityValue);
+		int value = matchFunction.match(250, "50", null);
 		assertEquals(0, value);
 
-		identityValue.setValue("25");
-		int value1 = matchFunction.applyAsInt(50, identityValue);
+		int value1 = matchFunction.match(50, "25", null);
 		assertEquals(0, value1);
 
-		identityValue.setValue("25");
-		int value2 = matchFunction.applyAsInt(100, identityValue);
+		int value2 = matchFunction.match(100, "25", null);
 		assertEquals(0, value2);
 
-		identityValue.setValue("24");
-		int value3 = matchFunction.applyAsInt(25, identityValue);
+		int value3 = matchFunction.match(25, "24", null);
 		assertEquals(0, value3);
 
-		int value4 = matchFunction.applyAsInt(null, null);
+		int value4 = matchFunction.match(null, null, null);
 		assertEquals(0, value4);
 
-		identityValue.setValue("1");
-		int value6 = matchFunction.applyAsInt("abc", identityValue);
+		int value6 = matchFunction.match("abc", "1", null);
 		assertEquals(0, value6);
 	}
 }

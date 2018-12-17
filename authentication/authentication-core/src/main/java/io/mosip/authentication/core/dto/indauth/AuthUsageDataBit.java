@@ -18,7 +18,7 @@ public enum AuthUsageDataBit {
 
 	/** The used pi dob. */
 	USED_PI_DOB(1, 0),
-	
+
 	/** The used pi dob type. */
 	USED_PI_DOBTYPE(2, 3),
 
@@ -45,19 +45,19 @@ public enum AuthUsageDataBit {
 
 	/** The used ad addr line1 sec. */
 	USED_AD_ADDR_LINE1_SEC(4, 3),
-	
+
 	/** The used ad addr line2 pri. */
 	USED_AD_ADDR_LINE2_PRI(4, 2),
 
 	/** The used ad addr line2 sec. */
 	USED_AD_ADDR_LINE2_SEC(4, 1),
-	
+
 	/** The used ad addr line3 pri. */
 	USED_AD_ADDR_LINE3_PRI(4, 0),
 
 	/** The used ad addr line3 sec. */
 	USED_AD_ADDR_LINE3_SEC(5, 3),
-	
+
 	/** The used ad location1 pri. */
 	USED_AD_LOCATION1_PRI(5, 2),
 
@@ -75,15 +75,21 @@ public enum AuthUsageDataBit {
 
 	/** The used ad location3 sec. */
 	USED_AD_LOCATION3_SEC(6, 1),
-	
+
 	/** The used ad addr pincode pri. */
 	USED_AD_ADDR_PINCODE_PRI(6, 0),
-	
+
 	/** The used ad addr pincode sec. */
 	USED_AD_ADDR_PINCODE_SEC(7, 3),
-	
 
-	
+	USED_BIO_FINGERPRINT_MINUTIAE(7, 2),
+
+	USED_BIO_FINGERPRINT_IMAGE(7, 1),
+
+	USED_BIO_IRIS(7, 0),
+
+	USED_BIO_FACE(8, 3),
+
 	// Matched bits from 9 to 16 Hex digits
 
 	/** The matched otp. */
@@ -97,7 +103,7 @@ public enum AuthUsageDataBit {
 
 	/** The matched pi dob. */
 	MATCHED_PI_DOB(9, 0),
-	
+
 	/** The matched pi dob type. */
 	MATCHED_PI_DOB_TYPE(10, 3),
 
@@ -124,19 +130,19 @@ public enum AuthUsageDataBit {
 
 	/** The matched addr line1 sec. */
 	MATCHED_AD_ADDR_LINE1_SEC(12, 3),
-	
+
 	/** The matched addr line2 pri. */
 	MATCHED_AD_ADDR_LINE2_PRI(12, 2),
 
 	/** The matched addr line2 sec. */
 	MATCHED_AD_ADDR_LINE2_SEC(12, 1),
-	
+
 	/** The matched addr line3 pri. */
 	MATCHED_AD_ADDR_LINE3_PRI(12, 0),
 
 	/** The matched addr line3 sec. */
 	MATCHED_AD_ADDR_LINE3_SEC(13, 3),
-	
+
 	/** The matched location1 pri. */
 	MATCHED_AD_LOCATION1_PRI(13, 2),
 
@@ -145,25 +151,32 @@ public enum AuthUsageDataBit {
 
 	/** The matched location2 pri. */
 	MATCHED_AD_LOCATION2_PRI(13, 0),
-           
+
 	/** The matched location2 sec. */
 	MATCHED_AD_LOCATION2_SEC(14, 3),
-    
+
 	/** The matched location3 pri. */
 	MATCHED_AD_LOCATION3_PRI(14, 2),
-          
+
 	/** The matched location3 sec. */
 	MATCHED_AD_LOCATION3_SEC(14, 1),
-	
+
 	/** The matched addr pincode pri. */
 	MATCHED_AD_ADDR_PINCODE_PRI(14, 0),
 
 	/** The matched addr pincode sec. */
-	MATCHED_AD_ADDR_PINCODE_SEC(15, 3)
+	MATCHED_AD_ADDR_PINCODE_SEC(15, 3),
 
-;
-	
-	
+	MATCHED_BIO_FINGERPRINT_MINUTIAE(15, 2),
+
+	MATCHED_BIO_FINGERPRINT_IMAGE(15, 1),
+
+	MATCHED_BIO_IRIS(15, 0),
+
+	MATCHED_BIO_FACE(16, 3)
+
+	;
+
 	private int hexNum;
 
 	/** The bit index. */

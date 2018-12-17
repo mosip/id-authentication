@@ -1,27 +1,44 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { SharedService } from 'src/app/shared/shared.service';
+import { NameList } from '../demographic/name-list.modal';
+import { MatDialog } from '@angular/material';
+import { DialougComponent } from '../../shared/dialoug/dialoug.component';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 @Component({
   selector: 'app-time-selection',
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit {
+export class TimeSelectionComponent implements OnInit, OnChanges {
 
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
-  numbers: number[];
+  @Input() registrationCenter: any;
   selectedCard = 0;
   selectedTile = null;
-  limit = 3;
+  limit = [];
   showAddButton = false;
-  names: number[];
+  names: NameList[];
   deletedNames = [];
+  availabilityData = [];
+  cutoff = 1;
+  days = 7;
+  MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  constructor() { }
+  constructor(private sharedService: SharedService, private dialog: MatDialog, private dataService: DataStorageService) { }
 
   ngOnInit() {
-    this.numbers = Array(10).fill(0).map((x, i) => i); // [0,1,2,3,4]
-    this.names = this.numbers;
+    this.names = this.sharedService.getNameList();
+    this.sharedService.resetNameList();
+    console.log('in onInit', this.names);
+    this.getSlotsforCenter(this.registrationCenter.id);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.availabilityData = [];
+    console.log('On changes triggered');
+    this.getSlotsforCenter(changes.registrationCenter.currentValue.id);
   }
 
   public scrollRight(): void {
@@ -41,9 +58,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   dateSelected(index: number) {
-    if (index % 3 !== 0) {
-      this.selectedTile = index;
-    }
+    this.selectedTile = index;
+    console.log('selected tile index', this.selectedTile);
+    this.placeNamesInSlots();
   }
 
   cardSelected(index: number): void {
@@ -51,14 +68,90 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   changeLimit(): void {
-    this.limit += 2;
+    this.limit[this.selectedCard] += 2;
   }
 
   itemDelete(index: number): void {
-    this.deletedNames.push(this.names[index]);
-    this.names.splice(index, 1);
+    this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
+    this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
     console.log(index, 'item to be deleted from card', this.deletedNames);
     this.showAddButton = true;
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '400px',
+      data: {
+        case: 'SLOTS',
+        title: 'Select names for the Slot',
+        names: this.deletedNames
+      }
+    }).afterClosed().subscribe(addedList => {
+      addedList.forEach(item => {
+        // tslint:disable-next-line:max-line-length
+        if (this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.length < this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].availability) {
+          this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(item);
+        } else {
+          this.deletedNames.push(item);
+        }
+      });
+      if (this.deletedNames.length === 0) {
+        this.showAddButton = false;
+      }
+    });
+  }
+
+  formatJson(centerDetails: any) {
+    centerDetails.forEach(element => {
+      let sumAvailability = 0;
+      element.timeSlots.forEach(slot => {
+        sumAvailability += slot.availability;
+        slot.names = [];
+        slot.DisplayTime = slot.fromTime.split(':')[0] + ':' + slot.fromTime.split(':')[1];
+        if (Number(slot.fromTime.split(':')[0]) < 12) {
+          slot.DisplayTime += ' AM';
+        } else {
+          slot.DisplayTime += ' PM';
+        }
+      });
+      element.TotalAvailable = sumAvailability;
+      const cutOffDate = new Date();
+      cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
+      if (new Date(Date.parse(element.date)) < cutOffDate) {
+        element.inActive = true;
+      } else {
+        element.inActive = false;
+      }
+      element.displayDate = element.date.split('-')[2] + ' ' + this.MONTHS[Number(element.date.split('-')[1])];
+      if (!element.inActive) {
+        this.availabilityData.push(element);
+      }
+    });
+  }
+
+  placeNamesInSlots() {
+    console.log('in plot function', this.names);
+    this.availabilityData[this.selectedTile].timeSlots.forEach(slot => {
+      if (this.names.length !== 0) {
+        while (slot.names.length < slot.availability && this.names.length !== 0) {
+          slot.names.push(this.names[0]);
+          this.names.splice(0, 1);
+        }
+        this.limit.push(3);
+      }
+    });
+    console.log(this.availabilityData);
+  }
+
+  getSlotsforCenter(id) {
+    this.dataService.getAvailabilityData(id).subscribe(response => {
+      console.log(response);
+      if (response['response']) {
+        this.formatJson(response['response'].centerDetails);
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
 }

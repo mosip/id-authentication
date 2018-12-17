@@ -7,9 +7,5 @@ package io.mosip.preregistration.application.errorcodes;
  *
  */
 public enum ErrorCodes {
-	PRG_PAM‌_001 ,
-	PRG_PAM‌_004 ,
-	PRG_PAM‌_007,
-	PRG_PAM_010,
-	PRG_PAM_DOC_015
+	PRG_PAM_APP_001, PRG_PAM_APP_002, PRG_PAM_APP_003, PRG_PAM_APP_004, PRG_PAM_APP_005, PRG_PAM_APP_006, PRG_PAM_APP_007, PRG_PAM_APP_008, PRG_PAM_APP_009, PRG_PAM_DOC_015,PRG_BOOK_RCI_013;
 }

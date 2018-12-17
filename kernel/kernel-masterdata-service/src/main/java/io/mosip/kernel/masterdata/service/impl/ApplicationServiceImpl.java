@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
-import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
@@ -142,8 +141,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationData> applicationRequestDto) {
-		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest().getApplicationtype(),
+	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationDto> applicationRequestDto) {
+		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest(),
 				Application.class);
 		Application application;
 		try {

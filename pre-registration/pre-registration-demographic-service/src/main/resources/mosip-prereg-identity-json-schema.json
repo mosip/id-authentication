@@ -1,0 +1,90 @@
+{
+	"$id": "http://mosip.io/schemas/mosip-id-schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "MOSIP ID schema",
+	"description": "Sample ID schema to refer to",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"identity": {
+			"title": "identity",
+			"description": "This holds all the attributes of an Identity",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"FullName": {
+					"$ref": "#/definitions/values"
+				},
+				"dateOfBirth": {
+					"$ref": "#/definitions/values"
+				},
+				"gender": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine1": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine2": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine3": {
+					"$ref": "#/definitions/values"
+				},
+				"region": {
+					"$ref": "#/definitions/values"
+				},
+				"province": {
+					"$ref": "#/definitions/values"
+				},
+				"city": {
+					"$ref": "#/definitions/values"
+				},
+				"postalcode": {
+					"$ref": "#/definitions/values"
+				},
+				"localAdministrativeAuthority": {
+					"$ref": "#/definitions/values"
+				},
+				"emailId": {
+					"$ref": "#/definitions/values"
+				},
+				"mobileNumber": {
+					"$ref": "#/definitions/values"
+				},
+				"CNEOrPINNumber": {
+					"$ref": "#/definitions/values"
+				},
+				"age": {
+					"$ref": "#/definitions/values"
+				}
+			}
+		}
+	},
+	"definitions": {
+		"values": {
+			"type": "array",
+			"additionalItems": false,
+			"uniqueItems": true,
+			"items": {
+				"type": "object",
+				"required": [
+					"language",
+					"label",
+					"value"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"language": {
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}

@@ -12,7 +12,15 @@ public class RecordNotFoundException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public RecordNotFoundException(String errorCodes) {
-		super(errorCodes, errorCodes);
+	public RecordNotFoundException(String msg) {
+		super("", msg);
+	}
+
+	public RecordNotFoundException(String errCode, String msg) {
+		super(errCode, msg);
+	}
+
+	public RecordNotFoundException(String errCode, String msg, Throwable cause) {
+		super(errCode, msg, cause);
 	}
 }
