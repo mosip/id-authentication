@@ -48,7 +48,6 @@ public class KeyPolicySyncJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId = null;
 		try {
 			if (context != null) {
 				this.jobId = loadContext(context);
@@ -69,7 +68,7 @@ public class KeyPolicySyncJob extends BaseJob {
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
-			executeChildJob(syncJobId, jobMap);
+			executeChildJob(jobId, jobMap);
 		}
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
@@ -90,11 +89,11 @@ public class KeyPolicySyncJob extends BaseJob {
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-
-		this.triggerPoint = triggerPoint;
-		this.jobId = jobId;
-
-		executeInternal(null);
+		SessionContext sessionContext = SessionContext.getInstance();
+		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
+		
+		this.responseDTO = policySyncService.fetchPolicy(centerId);
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");

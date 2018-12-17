@@ -41,7 +41,6 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId = null;
 		try {
 			if(context!=null) {
 				this.jobId = loadContext(context);
@@ -61,7 +60,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
-			executeChildJob(syncJobId, jobMap);
+			executeChildJob(jobId, jobMap);
 		}
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
@@ -83,10 +82,8 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.triggerPoint = triggerPoint;
-		this.jobId = jobId;
-
-		executeInternal(null);
+		this.responseDTO = preRegistrationDataSyncService.getPreRegistration(jobId);
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");

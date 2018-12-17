@@ -35,7 +35,8 @@ public class MasterSyncJob extends BaseJob {
 	/**
 	 * Execute internal.
 	 *
-	 * @param context the context
+	 * @param context
+	 *            the context
 	 */
 	/*
 	 * (non-Javadoc)
@@ -50,10 +51,9 @@ public class MasterSyncJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId = null;
 		try {
-			if(null!=context) {
-			this.jobId = loadContext(context);
+			if (null != context) {
+				this.jobId = loadContext(context);
 			}
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
@@ -69,7 +69,7 @@ public class MasterSyncJob extends BaseJob {
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
-			executeChildJob(syncJobId, jobMap);
+			executeChildJob(jobId, jobMap);
 		}
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
@@ -84,10 +84,8 @@ public class MasterSyncJob extends BaseJob {
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.triggerPoint = triggerPoint;
-		this.jobId = jobId;
-
-		executeInternal(null);
+		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");

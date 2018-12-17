@@ -16,7 +16,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -92,17 +91,17 @@ public abstract class BaseJob extends QuartzJobBean {
 		try {
 
 			// Check for current job's child
-			jobMap.forEach((jobId, childJob) -> {
+			jobMap.forEach((jobIdForChild, childJob) -> {
 				if (childJob.getParentSyncJobId() != null && childJob.getParentSyncJobId().equals(currentJobID)) {
 
 					// Parent SyncJob
 					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
 					// Response of parentBaseJob
-					ResponseDTO responseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
+					ResponseDTO childJobResponseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 							childJob.getId());
 
-					if (responseDTO.getSuccessResponseDTO() != null) {
+					if (childJobResponseDTO.getSuccessResponseDTO() != null) {
 						// Execute its next child Job
 						executeChildJob(childJob.getId(), jobMap);
 					}

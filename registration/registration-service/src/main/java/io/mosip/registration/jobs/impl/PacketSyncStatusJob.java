@@ -1,24 +1,16 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.Map;
-
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.jobs.JobManager;
-import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**
@@ -56,7 +48,6 @@ public class PacketSyncStatusJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId = null;
 		try {
 			if(context!=null) {
 				this.jobId = loadContext(context);
@@ -77,7 +68,7 @@ public class PacketSyncStatusJob extends BaseJob {
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
-			executeChildJob(syncJobId, jobMap);
+			executeChildJob(jobId, jobMap);
 		}
 		
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
@@ -97,10 +88,8 @@ public class PacketSyncStatusJob extends BaseJob {
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 		
-		this.triggerPoint = triggerPoint;
-		this.jobId = jobId;
-		
-		executeInternal(null);
+		this.responseDTO = packetStatusService.packetSyncStatus();
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 		
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
