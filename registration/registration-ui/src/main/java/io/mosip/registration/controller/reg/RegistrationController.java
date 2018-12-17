@@ -20,9 +20,12 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -277,10 +280,10 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label copyAddressLabel;
-	
+
 	@FXML
 	private ImageView copyAddressImage;
-	
+
 	private boolean toggleAgeOrDobField;
 
 	private boolean isChild;
@@ -355,15 +358,14 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
+
 	@Autowired
 	private WebCameraController webCameraController;
 
 	private boolean dobSelectionFromCalendar = true;
 
-	/*
-	 * @Autowired private IdValidator<String> pridValidatorImpl;
-	 */
+	@Autowired
+	private IdValidator<String> pridValidatorImpl;
 
 	@FXML
 	private void initialize() {
@@ -477,8 +479,8 @@ public class RegistrationController extends BaseController {
 				ageDatePicker.setDisable(true);
 				ageField.setDisable(false);
 				ageField.setText(demographicInfoDTO.getAge());
-				if(isEditPage())
-				autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
+				if (isEditPage())
+					autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
 
 			gender.setValue(demographicInfoDTO.getGender());
@@ -570,12 +572,17 @@ public class RegistrationController extends BaseController {
 		if (StringUtils.isEmpty(preRegId)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
 			return;
-		} /*
-			 * else if(pridValidatorImpl.validateId(preRegId)) {
-			 * generateAlert(RegistrationConstants.ALERT_ERROR,
-			 * RegistrationConstants.PRE_REG_ID_NOT_VALID); return; }
-			 */
-
+		} else if (preRegId.length() != 14 || !preRegId.matches("\\d+")) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_NOT_VALID);
+			return;
+		} else {
+			try {
+				pridValidatorImpl.validateId(preRegId);
+			} catch (InvalidIDException invalidIDException) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, invalidIDException.getErrorText());
+				return;
+			}
+		}
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
@@ -606,24 +613,24 @@ public class RegistrationController extends BaseController {
 				generateAlert(RegistrationConstants.ALERT_ERROR,
 						"Address could not be loaded as there is no previous entry");
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "Address could not be loaded as there is no previous entry");
-				
-			}else {
-			LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
-			region.setText(locationDto.getRegion());
-			city.setText(locationDto.getCity());
-			province.setText(locationDto.getProvince());
-			postalCode.setText(locationDto.getPostalCode());
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
+						RegistrationConstants.APPLICATION_ID,
+						"Address could not be loaded as there is no previous entry");
+
+			} else {
+				LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
+				region.setText(locationDto.getRegion());
+				city.setText(locationDto.getCity());
+				province.setText(locationDto.getProvince());
+				postalCode.setText(locationDto.getPostalCode());
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING ADDRESS FROM PREVIOUS ENTRY FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
-
 
 	/**
 	 * 
@@ -1187,15 +1194,14 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			});
-			
-			copyAddressImage.setOnMouseEntered((e)->{
+
+			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
-			
-			copyAddressImage.setOnMouseExited((e)->{
+
+			copyAddressImage.setOnMouseExited((e) -> {
 				copyAddressLabel.setVisible(false);
 			});
-			
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
@@ -1270,45 +1276,45 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			ageField.textProperty().addListener((obsValue,oldValue,newValue)->{
-					if (ageField.getText().length() > 3) {
+			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if (ageField.getText().length() > 3) {
+					ageField.setText(oldValue);
+					generateAlert(RegistrationConstants.ALERT_ERROR,
+							RegistrationConstants.MAX_AGE_WARNING + " " + AppConfig.getApplicationProperty("max_age"));
+				}
+
+				if (newValue.matches("\\d{1,3}")) {
+					if (Integer.parseInt(ageField.getText()) > Integer
+							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
 					}
+				}
+				// to populate date of birth based on age
+				int age = 0;
+				if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
+					age = Integer.parseInt(ageField.getText());
+					LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+					LocalDate dob = currentYear.minusYears(age);
+					autoAgeDatePicker.setValue(dob);
+				}
+				if (!newValue.matches("\\d*")) {
+					ageField.setText(oldValue);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
 
-					if (newValue.matches("\\d{1,3}")) {
-						if (Integer.parseInt(ageField.getText()) > Integer
-								.parseInt(AppConfig.getApplicationProperty("max_age"))) {
-							ageField.setText(oldValue);
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
-									+ AppConfig.getApplicationProperty("max_age"));
-						}
-					}
-					// to populate date of birth based on age
-					int age = 0;
-					if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
-						age = Integer.parseInt(ageField.getText());												
-						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-						LocalDate dob = currentYear.minusYears(age);
-						autoAgeDatePicker.setValue(dob);
-					}
-					if (!newValue.matches("\\d*")) {
-						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
+				}
 
-					}
-					
-					if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-						childSpecificFields.setVisible(true);
-						isChild = true;
-						documentFields.setLayoutY(134.00);
-					} else {
-						isChild = false;
-						childSpecificFields.setVisible(false);
-						documentFields.setLayoutY(25.00);
-					}
-				});
+				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
+					childSpecificFields.setVisible(true);
+					isChild = true;
+					documentFields.setLayoutY(134.00);
+				} else {
+					isChild = false;
+					childSpecificFields.setVisible(false);
+					documentFields.setLayoutY(25.00);
+				}
+			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 		} catch (RuntimeException runtimeException) {

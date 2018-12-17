@@ -13,9 +13,11 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
@@ -65,6 +67,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
+	
+	@Autowired
+	private RidGenerator <String> ridGeneratorImpl;
 
 	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
@@ -108,7 +113,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
-						String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
+						String rid = getRegistrationData() == null ? "RID" : ridGeneratorImpl.
+								generateId(RegistrationConstants.CENTER_ID, RegistrationConstants.MACHINE_ID_GEN);
 
 						if (!number.isEmpty()
 								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {

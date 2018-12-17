@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import io.mosip.registration.context.ApplicationContext;
 
 /**
@@ -15,6 +17,9 @@ import io.mosip.registration.context.ApplicationContext;
  */
 public class RegistrationConstants {
 
+	public static final String CENTER_ID = RandomStringUtils.randomNumeric(5);
+	public static final String MACHINE_ID_GEN = RandomStringUtils.randomNumeric(5);
+	
 	/**
 	 * private constructor
 	 */
