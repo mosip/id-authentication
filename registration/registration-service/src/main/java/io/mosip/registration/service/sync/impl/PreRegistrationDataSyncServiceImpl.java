@@ -18,6 +18,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -141,6 +142,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return responseDTO;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId) {
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -167,13 +169,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			try {
 				/** REST call to get packet */
-				byte[] packet = (byte[]) serviceDelegateUtil.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
+				requestParamMap.put(RegistrationConstants.IS_PRE_REG_SYNC, "true");
+				Map<String, Object> packet = (Map<String, Object>) serviceDelegateUtil
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
 
-				if (packet != null) {
+				if (packet != null && !packet.isEmpty()) {
 
 					/** Get PreRegistrationDTO by taking packet Information */
 					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService.encryptAndSavePreRegPacket(preRegistrationId,
-							packet);
+							(byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT));
 					
 					encryptedPacket = preRegistrationDTO.getEncryptedPacket();
 					symmetricKey = preRegistrationDTO.getSymmetricKey();
@@ -186,6 +190,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					// save in Pre-Reg List
 					PreRegistrationList preRegistrationList = preparePreRegistration(syncTransaction,
 							preRegistrationDTO);
+					String fileName = (String) packet.get(RegistrationConstants.PRE_REG_FILE_NAME);
+					String appointmentDate = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate,
+							RegistrationConstants.PRE_REG_APPOINMENT_DATE_FORMAT));
 					preRegistrationDAO.savePreRegistration(preRegistrationList);
 
 					/** set success response */
