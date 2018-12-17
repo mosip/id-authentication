@@ -10,6 +10,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,6 +29,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//@SelectBeforeUpdate(true)
+@DynamicUpdate(true)
 @Entity
 @Table(name = "machine_spec", schema = "master")
 public class MachineSpecification extends BaseEntity implements Serializable {

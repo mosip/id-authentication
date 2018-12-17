@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,6 +63,18 @@ public class MetaDataUtils {
 		}
 
 		D entity = MapperUtils.map(source, destination, mapNullvalues);
+
+		setUpdatedDateTime(contextUser, entity);
+		return entity;
+	}
+	
+	public static <S, D extends BaseEntity> D setUpdateMachineMetaData(final S source, D destination) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
+
+		D entity = MapperUtils.map(source, destination);
 
 		setUpdatedDateTime(contextUser, entity);
 		return entity;

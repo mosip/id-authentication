@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -157,6 +158,33 @@ public class MachineServiceImpl implements MachineService {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);
 
+		return idResponseDto;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
+		Machine  updMachine = null;
+		Optional<Machine> machineOptional = machineRepository.findById(machine.getId());
+		
+		/*if(machineOptional.isPresent()){	
+			try {
+				Machine entity  = MetaDataUtils.setUpdateMetaData(machine.getRequest(),machineOptional , true);
+				MachineHistory entityHistory   = MetaDataUtils.setUpdateMetaData(machine.getRequest(), MachineHistory.class, true);
+				updMachine = machineRepository.save(entity);	
+				machineHistoryRepository.save(entityHistory);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+				MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+				}
+			}else{
+			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}*/
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(updMachine, idResponseDto);
 		return idResponseDto;
 	}
 
