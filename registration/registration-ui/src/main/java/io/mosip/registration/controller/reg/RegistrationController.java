@@ -572,9 +572,6 @@ public class RegistrationController extends BaseController {
 		if (StringUtils.isEmpty(preRegId)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
 			return;
-		} else if (preRegId.length() != 14 || !preRegId.matches("\\d+")) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_NOT_VALID);
-			return;
 		} else {
 			try {
 				pridValidatorImpl.validateId(preRegId);
