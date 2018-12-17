@@ -46,7 +46,6 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
@@ -2209,8 +2208,9 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isOk());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -2218,8 +2218,9 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isNotFound());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -2228,8 +2229,9 @@ public class MasterdataIntegrationTest {
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 								.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -2404,8 +2406,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryTest() throws Exception {
-		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
-		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2414,8 +2415,7 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
-		requestDto.setRequest(documentCategoryData);
+		requestDto.setRequest(documentCategoryDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
@@ -2425,8 +2425,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
-		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2435,8 +2434,7 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
-		requestDto.setRequest(documentCategoryData);
+		requestDto.setRequest(documentCategoryDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any()))
