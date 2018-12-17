@@ -202,7 +202,7 @@ public class OTPControllerTest {
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
 		otpRequestDto.setIdvId("1234567890");
-		otpRequestDto.setVer("1.0");
+		//otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}
