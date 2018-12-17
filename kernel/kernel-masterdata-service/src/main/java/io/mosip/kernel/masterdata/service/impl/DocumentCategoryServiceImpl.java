@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
@@ -141,13 +140,11 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
-	 * addDocumentCategoriesData(io.mosip.kernel.masterdata.dto.
-	 * DocumentCategoryRequestDto)
+	 * createDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryData> category) {
-		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest().getDocumentcategorytype(),
-				DocumentCategory.class);
+	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
+		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
 			documentCategory = documentCategoryRepository.create(entity);
