@@ -1,17 +1,13 @@
 package io.mosip.registration.test.service;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,12 +25,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
-import io.mosip.registration.dto.PolicyDTO;
-import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.repositories.PolicySyncRepository;
 import io.mosip.registration.service.impl.PolicySyncServiceImpl;
