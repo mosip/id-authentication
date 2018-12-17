@@ -39,19 +39,19 @@ import io.mosip.registration.util.restclient.RestClientUtil;
 public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Autowired
-	private RegistrationDAO registrationDAO;
+	private RegistrationDAO syncRegistrationDAO;
 
 	@Autowired
-	private RestClientUtil restClientUtil;
+	private RestClientUtil syncRestClientUtil;
 
 	@Value("${PACKET_SYNC_URL}")
-	private String urlPath;
+	private String syncUrlPath;
 	
 	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int readTimeout;
+	private int syncReadTimeout;
 	
 	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int connectTimeout; 
+	private int syncConnectTimeout; 
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
@@ -67,7 +67,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	public List<Registration> fetchPacketsToBeSynched() {
 		LOGGER.debug("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
-		return registrationDAO.getPacketsToBeSynched(RegistrationConstants.getPacketStatus());
+		return syncRegistrationDAO.getPacketsToBeSynched(RegistrationConstants.getPacketStatus());
 	}
 
 	/*
@@ -91,12 +91,12 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(javaObjectToJsonString(syncDtoList), headers);
 		requestHTTPDTO.setHttpEntity(requestEntity);
 		requestHTTPDTO.setClazz(String.class);
-		requestHTTPDTO.setUri(new URI(urlPath));
+		requestHTTPDTO.setUri(new URI(syncUrlPath));
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object response = null;
 		try {
 			
-			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
+			response = syncRestClientUtil.invoke(setTimeout(requestHTTPDTO));
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
@@ -128,7 +128,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the status of the synched packets to the database");
 		for (Registration syncPacket : synchedPackets) {
-			registrationDAO.updatePacketSyncStatus(syncPacket);
+			syncRegistrationDAO.updatePacketSyncStatus(syncPacket);
 		}
 		return true;
 
@@ -137,8 +137,8 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	private RequestHTTPDTO  setTimeout(RequestHTTPDTO requestHTTPDTO) {
 		// Timeout in milli second
 		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
-		requestFactory.setReadTimeout(readTimeout);
-		requestFactory.setConnectTimeout(connectTimeout);
+		requestFactory.setReadTimeout(syncReadTimeout);
+		requestFactory.setConnectTimeout(syncConnectTimeout);
 		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
 		return requestHTTPDTO;
 	}
