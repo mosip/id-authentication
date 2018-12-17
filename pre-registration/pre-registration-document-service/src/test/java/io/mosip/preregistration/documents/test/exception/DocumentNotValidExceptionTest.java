@@ -38,20 +38,14 @@ public class DocumentNotValidExceptionTest {
 
 		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
 
-		DocumentDto documentDto = new DocumentDto("48690172097498",
-				"address",
-				"POA",
-				"PDF",
-				"Draft",
-				new Timestamp(System.currentTimeMillis()),
-				"Jagadishwari");
-		
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft",
+				new Timestamp(System.currentTimeMillis()), "Jagadishwari");
+
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 
-		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart",
-				new FileInputStream(file));
+		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
 		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))
 				.thenThrow(documentNotValidException);
@@ -62,7 +56,7 @@ public class DocumentNotValidExceptionTest {
 
 		} catch (DocumentNotValidException e) {
 			assertThat("Should throw dopcument invalid exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_004.toString()));
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_004.toString()));
 			assertThat("Should throw dopcument invalid exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(DOCUMENT_INVALID_FORMAT));
 		}

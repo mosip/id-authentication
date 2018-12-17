@@ -22,11 +22,11 @@ public class DocumentNotFoundException extends BaseUncheckedException {
 	}
 
 	public DocumentNotFoundException(String message) {
-		super(ErrorCodes.PRG_PAM‌_006.toString(), message);
+		super(ErrorCodes.PRG_PAM_DOC_005.toString(), message);
 	}
 
 	public DocumentNotFoundException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM‌_006.toString(),message, cause);
+		super(ErrorCodes.PRG_PAM_DOC_005.toString(),message, cause);
 	}
 
 }
