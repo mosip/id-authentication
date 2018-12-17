@@ -88,7 +88,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateVersionAndId() {
 		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
 		baseAuthRequestDTO.setId("123456");
-		baseAuthRequestDTO.setVer("1.0");
+		//baseAuthRequestDTO.setVer("1.0");
 		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
@@ -109,26 +109,26 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 	}
 
-	@Test
-	public void testValidateVersion_ValidVersion_NoError() {
-		String ver = "1.0";
-		baseAuthRequestValidator.validateVer(ver, error);
-		assertFalse(error.hasErrors());
-	}
-
-	@Test
-	public void testValidateVersion_InvalidVersion_hasError() {
-		String ver = "1.00";
-		baseAuthRequestValidator.validateVer(ver, error);
-		assertTrue(error.hasErrors());
-	}
-
-	@Test
-	public void testValidateVersion_NoVersion_hasError() {
-		String ver = null;
-		baseAuthRequestValidator.validateVer(ver, error);
-		assertTrue(error.hasErrors());
-	}
+//	@Test
+//	public void testValidateVersion_ValidVersion_NoError() {
+//		String ver = "1.0";
+//		baseAuthRequestValidator.validateVer(ver, error);
+//		assertFalse(error.hasErrors());
+//	}
+//
+//	@Test
+//	public void testValidateVersion_InvalidVersion_hasError() {
+//		String ver = "1.00";
+//		baseAuthRequestValidator.validateVer(ver, error);
+//		assertTrue(error.hasErrors());
+//	}
+//
+//	@Test
+//	public void testValidateVersion_NoVersion_hasError() {
+//		String ver = null;
+//		baseAuthRequestValidator.validateVer(ver, error);
+//		assertTrue(error.hasErrors());
+//	}
 
 	@Test
 	public void testValidateBioDetails_IfBioInfoIsNull_hasError() {
@@ -822,7 +822,7 @@ public class BaseAuthRequestValidatorTest {
 	private AuthRequestDTO getAuthRequestDTO() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))

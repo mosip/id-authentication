@@ -52,7 +52,7 @@ public interface AuthType {
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO);
 
 	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			Function<LanguageType, String> languageInfoFetcher) {
+			IdInfoFetcher languageInfoFetcher) {
 		return Collections.emptyMap();
 	}
 
