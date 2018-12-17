@@ -9,7 +9,7 @@
 			"weight": 20
 		},
 		"dob": {
-			"value": "dob",
+			"value": "dateOfBirth",
 			"weight": 20
 		},
 		"pheoniticName": {

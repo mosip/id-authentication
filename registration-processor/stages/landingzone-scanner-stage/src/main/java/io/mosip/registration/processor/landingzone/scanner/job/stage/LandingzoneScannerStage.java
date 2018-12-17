@@ -70,10 +70,9 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		List<InternalRegistrationStatusDto> getEnrols = new ArrayList<>();
 		try {
 
-			getEnrols = this.registrationStatusService
+			List<InternalRegistrationStatusDto> getEnrols = this.registrationStatusService
 					.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 
 			if (!(getEnrols.isEmpty())) {

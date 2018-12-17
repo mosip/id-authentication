@@ -43,4 +43,28 @@ public interface LanguageService {
 	 */
 	CodeResponseDto saveLanguage(RequestDto<LanguageDto> requestDto);
 
+	/**
+	 * This method update {@link LanguageDto} provide by the user in database.
+	 * 
+	 * @param requestDto
+	 *            request {@link LanguageDto} data provided by the user which is
+	 *            going to be persisted
+	 * 
+	 * @return language code which is created of type {@link CodeResponseDto}
+	 * 
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving languages
+	 */
+	CodeResponseDto updateLanguage(RequestDto<LanguageDto> requestDto);
+
+	/**
+	 * This method is used to delete a language present in database.
+	 * 
+	 * @param code
+	 *            is the language code present in the database.
+	 * @return the language code deleted.
+	 */
+	CodeResponseDto deleteLanguage(String code);
+
 }
