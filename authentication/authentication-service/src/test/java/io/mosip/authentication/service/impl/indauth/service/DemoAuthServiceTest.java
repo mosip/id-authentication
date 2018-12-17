@@ -138,7 +138,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
@@ -239,7 +239,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -317,7 +317,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -467,7 +467,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		return authRequestDTO;
 
 	}
@@ -519,7 +519,7 @@ public class DemoAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<>();

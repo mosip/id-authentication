@@ -56,7 +56,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
 			validateId(requestDTO.getId(), errors);
 			validateIdvId(requestDTO.getIdvId(), requestDTO.getIdvIdType(), errors);
-			validateVer(requestDTO.getVer(), errors);
+			//validateVer(requestDTO.getVer(), errors);
 			validateTxnId(requestDTO.getTxnID(), errors);
 			validateDate(requestDTO, errors);
 			validateRequest(requestDTO, errors);

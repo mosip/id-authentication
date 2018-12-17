@@ -141,33 +141,33 @@ public class IdAuthValidatorTest {
 	});
     }
     
-    /**
-     * Test null ver.
-     */
-    @Test
-    public void testNullVer() {
-	validator.validateVer(null, errors);
-	errors.getAllErrors().forEach(error -> {
-	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-		    error.getDefaultMessage());
-	    assertEquals("ver", ((FieldError) error).getField());
-	});
-    }
-    
-    /**
-     * Test invalid ver.
-     */
-    @Test
-    public void testInvalidVer() {
-	validator.validateVer("1234", errors);
-	errors.getAllErrors().forEach(error -> {
-	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-		    error.getDefaultMessage());
-	    assertEquals("ver", ((FieldError) error).getField());
-	});
-    }
+//    /**
+//     * Test null ver.
+//     */
+//    @Test
+//    public void testNullVer() {
+//	validator.validateVer(null, errors);
+//	errors.getAllErrors().forEach(error -> {
+//	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+//	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+//		    error.getDefaultMessage());
+//	    assertEquals("ver", ((FieldError) error).getField());
+//	});
+//    }
+//    
+//    /**
+//     * Test invalid ver.
+//     */
+//    @Test
+//    public void testInvalidVer() {
+//	validator.validateVer("1234", errors);
+//	errors.getAllErrors().forEach(error -> {
+//	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+//	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+//		    error.getDefaultMessage());
+//	    assertEquals("ver", ((FieldError) error).getField());
+//	});
+//    }
     
     /**
      * Test null mua code.

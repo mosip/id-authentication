@@ -115,18 +115,18 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param ver            the ver
 	 * @param errors            the errors
 	 */
-	public void validateVer(String ver, Errors errors) {
-		if (Objects.isNull(ver)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + VER);
-			errors.rejectValue(VER, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {VER},
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		} else if (!verPattern.matcher(ver).matches()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
-					"INVALID_INPUT_PARAMETER - ver - value -> " + ver);
-			errors.rejectValue(VER, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {VER},
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-		}
-	}
+	//public void validateVer(String ver, Errors errors) {
+	//	if (Objects.isNull(ver)) {
+	//		mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + VER);
+	//		errors.rejectValue(VER, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {VER},
+	//				IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+	//	} else if (!verPattern.matcher(ver).matches()) {
+	//		mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+	//				"INVALID_INPUT_PARAMETER - ver - value -> " + ver);
+	//		errors.rejectValue(VER, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {VER},
+	//				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+	//	}
+	//}
 
 	/**
 	 * Validate mua code - check whether it is of length 10 and alphanumeric.
