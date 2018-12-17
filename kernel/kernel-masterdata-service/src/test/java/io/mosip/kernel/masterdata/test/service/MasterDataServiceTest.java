@@ -30,7 +30,6 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
@@ -114,7 +113,7 @@ public class MasterDataServiceTest {
 	private ApplicationDto applicationDto;
 
 	private RequestDto<ApplicationDto> applicationRequestDto;
-	private RequestDto<DocumentCategoryData> documentCategoryRequestDto;
+	private RequestDto<DocumentCategoryDto> documentCategoryRequestDto;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;
@@ -406,16 +405,16 @@ public class MasterDataServiceTest {
 		documentCategoryList.add(documentCategory1);
 		documentCategoryList.add(documentCategory2);
 
-		documentCategoryRequestDto = new RequestDto<DocumentCategoryData>();
-		DocumentCategoryData request = new DocumentCategoryData();
+		documentCategoryRequestDto = new RequestDto<DocumentCategoryDto>();
+		// DocumentCategoryData request = new DocumentCategoryData();
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
 		documentCategoryDto.setCode("102");
 		documentCategoryDto.setName("POR");
 		documentCategoryDto.setDescription(null);
 		documentCategoryDto.setLangCode("ENG");
 
-		request.setDocumentcategorytype(documentCategoryDto);
-		documentCategoryRequestDto.setRequest(request);
+		// request.setDocumentcategorytype(documentCategoryDto);
+		documentCategoryRequestDto.setRequest(documentCategoryDto);
 	}
 
 	private void deviceSpecSetup() {
@@ -755,10 +754,8 @@ public class MasterDataServiceTest {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenReturn(biometricType1);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService.createBiometricType(biometricTypeRequestDto);
-		assertEquals(biometricTypeRequestDto.getRequest().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(biometricTypeRequestDto.getRequest().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(biometricTypeRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(biometricTypeRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1032,10 +1029,8 @@ public class MasterDataServiceTest {
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = documentCategoryService
 				.createDocumentCategory(documentCategoryRequestDto);
-		assertEquals(documentCategoryRequestDto.getRequest().getDocumentcategorytype().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(documentCategoryRequestDto.getRequest().getDocumentcategorytype().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(documentCategoryRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(documentCategoryRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
