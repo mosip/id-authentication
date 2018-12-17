@@ -393,6 +393,10 @@ public class MasterdataControllerTest {
 
 		biometricTypeResponseDto = new BiometricTypeResponseDto();
 		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtoList);
+
+		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
+		codeAndLanguageCodeId.setCode("1");
+		codeAndLanguageCodeId.setLangCode("DNA MATCHING");
 	}
 
 	private void blackListedWordSetUp() {
@@ -443,11 +447,10 @@ public class MasterdataControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
-						+ "  \"timestamp\": \"2018-12-14T06:35:40.171Z\",\n" + "  \"request\": {\n"
-						+ "    \"biometricType\": {\n" + "      \"code\": \"string\",\n"
-						+ "      \"description\": \"string\",\n" + "      \"isActive\": true,\n"
-						+ "      \"langCode\": \"string\",\n" + "      \"name\": \"string\"\n" + "    }\n" + "  }\n"
-						+ "}"))
+						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n"
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n"
+						+ "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 
@@ -487,11 +490,10 @@ public class MasterdataControllerTest {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/applicationtypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
-						+ "  \"timestamp\": \"2018-11-29T09:55:39.821Z\",\n" + "  \"request\": {\n"
-						+ "    \"applicationtype\": {\n" + "      \"code\": \"101\",\n"
-						+ "      \"name\": \"pre-registeration\",\n"
-						+ "      \"description\": \"Pre-registration Application Form\",\n"
-						+ "      \"langCode\": \"ENG\",\n" + "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
+						+ "  \"timestamp\": \"2018-12-17T07:15:06.724Z\",\n" + "  \"request\": {\n"
+						+ "    \"code\": \"101\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n"
+						+ "    \"name\": \"pre-registeration\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 
@@ -772,16 +774,16 @@ public class MasterdataControllerTest {
 	}
 
 	// -----------------------------TemplateFileFormatControllerTest------------------------
+
 	@Test
 	public void addTemplateFileFormatTest() throws Exception {
 		Mockito.when(templateFileFormatService.createTemplateFileFormat(Mockito.any()))
 				.thenReturn(codeAndLanguageCodeId);
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
-						+ "  \"timestamp\": \"2018-11-29T09:32:01.911Z\",\n" + "  \"request\": {\n"
-						+ "    \"templateFileFormat\": {\n" + "      \"code\": \"xml\",\n"
-						+ "      \"description\": \"string\",\n" + "      \"langCode\": \"FRE\",\n"
-						+ "      \"isActive\": true\n" + "    }\n" + "  }\n" + "}"))
+						+ "  \"timestamp\": \"2018-12-17T07:19:33.655Z\",\n" + "  \"request\": {\n"
+						+ "    \"code\": \"xml\",\n" + "    \"description\": \"string\",\n"
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"FRE\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 

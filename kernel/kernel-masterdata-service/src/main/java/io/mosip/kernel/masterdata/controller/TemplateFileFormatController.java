@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.swagger.annotations.Api;
@@ -41,7 +41,7 @@ public class TemplateFileFormatController {
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
-			@Valid @RequestBody RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
+			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
 		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
 				HttpStatus.CREATED);
 

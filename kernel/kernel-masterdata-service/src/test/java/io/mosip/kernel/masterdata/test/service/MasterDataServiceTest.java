@@ -35,7 +35,6 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -202,7 +201,7 @@ public class MasterDataServiceTest {
 
 	private TemplateFileFormat templateFileFormat;
 
-	private RequestDto<TemplateFileFormatData> templateFileFormatRequestDto;
+	private RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -406,14 +405,12 @@ public class MasterDataServiceTest {
 		documentCategoryList.add(documentCategory2);
 
 		documentCategoryRequestDto = new RequestDto<DocumentCategoryDto>();
-		// DocumentCategoryData request = new DocumentCategoryData();
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
 		documentCategoryDto.setCode("102");
 		documentCategoryDto.setName("POR");
 		documentCategoryDto.setDescription(null);
 		documentCategoryDto.setLangCode("ENG");
 
-		// request.setDocumentcategorytype(documentCategoryDto);
 		documentCategoryRequestDto.setRequest(documentCategoryDto);
 	}
 
@@ -554,14 +551,12 @@ public class MasterDataServiceTest {
 		templateFileFormat.setCode("xml");
 		templateFileFormat.setLangCode("ENG");
 
-		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatData>();
-		TemplateFileFormatData request = new TemplateFileFormatData();
+		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatDto>();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
 		templateFileFormatDto.setLangCode("ENG");
 
-		request.setTemplateFileFormat(templateFileFormatDto);
-		templateFileFormatRequestDto.setRequest(request);
+		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
