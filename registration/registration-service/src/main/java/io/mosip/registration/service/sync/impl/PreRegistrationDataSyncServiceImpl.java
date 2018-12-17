@@ -152,10 +152,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		/** Check in Database whether required record already exists or not */
 		PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegistrationId);
 
-		byte[] encryptedPacket = null;
+		byte[] decryptedPacket =null;
 		
-		String symmetricKey=null;
-
 		boolean isJob = (!RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(syncJobId));
 
 		/** Get Packet From REST call */
@@ -175,12 +173,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				if (packet != null && !packet.isEmpty()) {
 
+					decryptedPacket = (byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT);
 					/** Get PreRegistrationDTO by taking packet Information */
-					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService.encryptAndSavePreRegPacket(preRegistrationId,
-							(byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT));
-					
-					encryptedPacket = preRegistrationDTO.getEncryptedPacket();
-					symmetricKey = preRegistrationDTO.getSymmetricKey();
+					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService
+							.encryptAndSavePreRegPacket(preRegistrationId, decryptedPacket);
 					
 					// Transaction
 					SyncTransaction syncTransaction = syncManager.createSyncTransaction(
@@ -228,13 +224,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		if (!isJob) {
 			try {
 				if (preRegistration != null) {
-
-					encryptedPacket = FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath()));
-					symmetricKey = preRegistration.getPacketSymmetricKey();
-
+					/*
+					 * if the packet is already available,read encrypted packet from disk and
+					 * decrypt
+					 */
+					decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(
+							preRegistration.getPacketSymmetricKey(),
+							FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath())));
 				}
-
-				byte[] decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(symmetricKey, encryptedPacket);
+				
 				/** set decrypted packet into Response */
 				setPacketToResponse(responseDTO, decryptedPacket, preRegistrationId);
 
