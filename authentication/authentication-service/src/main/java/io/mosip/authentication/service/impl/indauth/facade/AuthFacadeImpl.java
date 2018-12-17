@@ -142,7 +142,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			idInfo = getIdEntity(idResDTO);
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-					.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
+					.setReqTime(authRequestDTO.getReqTime());
 
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId, isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);

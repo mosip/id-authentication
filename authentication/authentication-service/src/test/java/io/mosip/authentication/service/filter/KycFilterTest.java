@@ -150,7 +150,7 @@ public class KycFilterTest{
 		k.setEPrintReq(true);
 		k.setSecLangReq(true);
 		k.setId(null);
-		k.setVer(null);
+		//k.setVer(null);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setTxnID("121332");
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
@@ -159,7 +159,7 @@ public class KycFilterTest{
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");

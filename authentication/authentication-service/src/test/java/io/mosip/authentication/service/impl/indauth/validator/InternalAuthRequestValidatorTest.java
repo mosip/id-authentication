@@ -102,7 +102,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -142,7 +142,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -185,7 +185,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -220,7 +220,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -255,7 +255,7 @@ public class InternalAuthRequestValidatorTest {
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -304,7 +304,7 @@ public class InternalAuthRequestValidatorTest {
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -334,7 +334,7 @@ public class InternalAuthRequestValidatorTest {
 
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -369,7 +369,7 @@ public class InternalAuthRequestValidatorTest {
 
 		authRequestDTO.setReqTime("2018-11-24T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -402,7 +402,7 @@ public class InternalAuthRequestValidatorTest {
 	public void TestInvalidTimeFormat() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		authRequestDTO.setVer("1.1");
+		//authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime("a2018-11-11");
