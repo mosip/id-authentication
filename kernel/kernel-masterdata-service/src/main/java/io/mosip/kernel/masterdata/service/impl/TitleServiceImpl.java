@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.entity.Title;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * Implementing service class for fetching titles from master db
@@ -87,6 +91,28 @@ public class TitleServiceImpl implements TitleService {
 		titleResponseDto.setTitleList(titleDto);
 
 		return titleResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#saveTitle(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto) {
+		Title entity = MetaDataUtils.setCreateMetaData(titleRequestDto.getRequest(), Title.class);
+		Title title;
+		try {
+			title = titleRepository.create(entity);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_INSERT_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		MapperUtils.map(title, codeLangCodeId);
+		return codeLangCodeId;
 	}
 
 }

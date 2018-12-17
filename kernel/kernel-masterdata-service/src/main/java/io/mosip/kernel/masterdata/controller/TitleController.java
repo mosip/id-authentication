@@ -1,11 +1,20 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.swagger.annotations.Api;
 
@@ -44,6 +53,19 @@ public class TitleController {
 	@GetMapping(value = "/v1.0/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 		return titleService.getByLanguageCode(langCode);
+	}
+
+	/**
+	 * Method to add a new row of title data
+	 * 
+	 * @param title
+	 *            input from user
+	 * @return primary key of entered row
+	 */
+	@PostMapping("/v1.0/title")
+	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestDto<TitleDto> title) {
+		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.CREATED);
+
 	}
 
 }
