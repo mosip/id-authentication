@@ -29,7 +29,7 @@ import io.mosip.registration.service.PolicySyncService;
  *
  */
 @Component(value = "keyPolicySyncJob")
-public class KeyPolicySyncJob extends BaseJob {
+public class KeyPolicySyncJob extends BaseJob{
 
 	
 	/**
@@ -52,7 +52,7 @@ public class KeyPolicySyncJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 
 		try {
@@ -84,13 +84,13 @@ public class KeyPolicySyncJob extends BaseJob {
 
 		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 			
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					exception.getMessage());
 		} catch (NullPointerException nullPointerException) {
 			
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
 			
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
@@ -98,18 +98,18 @@ public class KeyPolicySyncJob extends BaseJob {
 
 		}
 
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
 
 	@Override
 	public ResponseDTO executeJob(String jobId) {
-		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
-		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return executeJob(triggerPoint, jobId);
@@ -118,13 +118,13 @@ public class KeyPolicySyncJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 		String centerId=SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
 
-		ResponseDTO responseDTO = policySyncService.fetchPolicy("centerId");
+		ResponseDTO responseDTO = policySyncService.fetchPolicy(centerId);
 
-		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return syncTransactionUpdate(responseDTO, triggerPoint, jobId);
