@@ -9,8 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.exception.InValidUinException;
 import io.mosip.kernel.core.idgenerator.exception.VidGenerationFailedException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
@@ -101,7 +103,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 		try {
 			vidRepository.save(newVid);
 			vidCacheManager.saveOrUpdate(newVid);
-		} catch (Exception e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new VidGenerationFailedException(VidErrorCode.VID_GENERATION_FAILED.getErrorCode(),
 					VidErrorCode.VID_GENERATION_FAILED.getErrorMessage());
 		}

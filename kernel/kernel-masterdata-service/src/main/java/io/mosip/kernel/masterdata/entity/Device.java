@@ -27,12 +27,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@Table(name = "device_master", schema = "master")
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "device_master", schema = "master")
 public class Device extends BaseEntity implements Serializable {
 
 	/**
@@ -82,14 +83,12 @@ public class Device extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
-	 
+
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
-	
+
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private DeviceSpecification deviceSpecification;
 
 }

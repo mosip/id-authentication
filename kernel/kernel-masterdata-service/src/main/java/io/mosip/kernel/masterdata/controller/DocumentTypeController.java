@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -32,9 +33,19 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
+@Api(tags = { "DocumentType" })
 public class DocumentTypeController {
 	@Autowired
 	DocumentTypeService documentTypeService;
+
+	/**
+	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param documentcategoryCode
+	 *            input from user
+	 * @return {@link ValidDocumentTypeResponseDto}}
+	 */
 
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
 	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
@@ -47,6 +58,12 @@ public class DocumentTypeController {
 
 	}
 
+	/**
+	 * 
+	 * @param types
+	 *            Input from user DocumentTypeDto
+	 * @return {@link CodeAndLanguageCodeID }
+	 */
 	@PostMapping("/v1.0/documenttypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {

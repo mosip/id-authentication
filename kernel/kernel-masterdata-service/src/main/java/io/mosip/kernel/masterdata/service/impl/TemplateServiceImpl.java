@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * 
  * @author Neha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -31,105 +33,110 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateRepository templateRepository;
 
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaUtils;
-
 	private List<Template> templateList;
 
 	private List<TemplateDto> templateDtoList;
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return {@link List<TemplateDto>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplate() {
+	public TemplateResponseDto getAllTemplate() {
 		try {
-			templateList = templateRepository.findAllByIsDeletedFalse(Template.class);
+			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
+	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
-			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
+			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
 	}
 
-	/**
-	 * To fetch all the {@link Template} based on language code and template type
-	 * code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param languageCode
-	 * @param templateTypeCode
-	 * @return {@link List<Template>}
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByLanguageCodeAndTemplateTypeCode(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
+	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalse(languageCode,
-					templateTypeCode);
+			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
+			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
 		} else {
 			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
-		return templateDtoList;
+		templateResponseDto.setTemplates(templateDtoList);
+		return templateResponseDto;
+
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.
+	 * kernel.masterdata.dto.TemplateDto)
+	 */
 	@Override
 	public IdResponseDto createTemplate(TemplateDto template) {
-		Template entity = metaUtils.setCreateMetaData(template, Template.class);
+		Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 		Template templateEntity;
 		try {
 			templateEntity = templateRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + "  "
 							+ ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		objectMapperUtil.mapNew(templateEntity, idResponseDto);
+		MapperUtils.map(templateEntity, idResponseDto);
 
 		return idResponseDto;
 	}
-
 }

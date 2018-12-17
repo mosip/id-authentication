@@ -44,16 +44,6 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Autowired
 	private DataMapper dataMapper;
-	/**
-	 * Autowired reference for {@link MapperUtils}
-	 */
-	@Autowired
-	private MapperUtils mapperUtil;
-	/**
-	 * Autowired reference for {@link MetaDataUtils}
-	 */
-	@Autowired
-	private MetaDataUtils metaUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -73,7 +63,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (words != null && !words.isEmpty()) {
-			wordsDto = mapperUtil.mapAll(words, BlacklistedWordsDto.class);
+			wordsDto = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
 		} else {
 			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
 					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
@@ -124,15 +114,15 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Override
 	public WordAndLanguageCodeID createBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		BlacklistedWords entity = metaUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
+		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
 				BlacklistedWords.class);
 		BlacklistedWords blacklistedWords;
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(dataAccessLayerException));
+							+ ExceptionUtils.parseException(e));
 		}
 		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
 		dataMapper.map(blacklistedWords, wordAndLanguageCodeID, true, null, null, true);
