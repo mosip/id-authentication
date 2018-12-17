@@ -2,7 +2,7 @@ package io.mosip.authentication.service.factory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -66,7 +66,7 @@ public class AuditRequestFactory {
 	request.setEventId(event.getEventId());
 	request.setEventName(event.getEventName());
 	request.setEventType(event.getEventType());
-	request.setActionTimeStamp(OffsetDateTime.now());
+	request.setActionTimeStamp(LocalDateTime.now());
 	request.setHostName(hostName);
 	request.setHostIp(hostAddress);
 	request.setApplicationId(env.getProperty("application.id"));

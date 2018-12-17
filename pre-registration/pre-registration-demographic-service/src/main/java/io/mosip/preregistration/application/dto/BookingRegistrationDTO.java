@@ -25,9 +25,9 @@ public class BookingRegistrationDTO implements Serializable{
 	/**
 	 * booked Time Slot
 	 */
-	@JsonProperty("time-slot-from")
+	@JsonProperty("time_slot_from")
 	private String slotFromTime;
 	
-	@JsonProperty("time-slot-to")
+	@JsonProperty("time_slot_to")
 	private String slotToTime;
 }

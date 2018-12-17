@@ -81,7 +81,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param id            the id
 	 * @param errors            the errors
 	 */
-	protected void validateId(String id, Errors errors) {
+	public void validateId(String id, Errors errors) {
 		if (Objects.isNull(id)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {ID},
@@ -99,7 +99,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param idTypeFieldName the id type field name
 	 * @param errors            the errors
 	 */
-	protected void validateIdvId(String id, String idType, Errors errors) {
+	public void validateIdvId(String id, String idType, Errors errors) {
 		if (Objects.isNull(id)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID},
@@ -115,7 +115,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param ver            the ver
 	 * @param errors            the errors
 	 */
-	protected void validateVer(String ver, Errors errors) {
+	public void validateVer(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + VER);
 			errors.rejectValue(VER, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {VER},
@@ -131,18 +131,20 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate mua code - check whether it is of length 10 and alphanumeric.
 	 *
-	 * @param muaCode            the mua code
-	 * @param errors            the errors
+	 * @param muaCode the mua code
+	 * @param errors  the errors
 	 */
 	protected void validateMuaCode(String muaCode, Errors errors) {
 		if (Objects.isNull(muaCode)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + MUA_CODE);
-			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {MUA_CODE},
+			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MUA_CODE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (!A_Z0_9_10.matcher(muaCode).matches()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
 					"INVALID_INPUT_PARAMETER - muaCode - value -> " + muaCode);
-			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {MUA_CODE},
+			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MUA_CODE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
@@ -175,9 +177,10 @@ public abstract class IdAuthValidator implements Validator {
 	protected void validateReqTime(String reqTime, Errors errors) {
 		if (Objects.isNull(reqTime)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {REQ_TIME},
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { REQ_TIME },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		} 
+		}
 	}
 
 	/**
@@ -192,14 +195,15 @@ public abstract class IdAuthValidator implements Validator {
 	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
 		if (Objects.isNull(idType)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
-			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID_TYPE},
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
 			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(), 
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
@@ -212,7 +216,8 @@ public abstract class IdAuthValidator implements Validator {
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
-			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID_TYPE},
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}

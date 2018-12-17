@@ -24,6 +24,7 @@ import org.junit.Test;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 
 
@@ -54,6 +55,8 @@ public class DemoMatchTypeTest {
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
 	}
+	
+	
 
 	@Ignore
 	@Test
@@ -109,7 +112,7 @@ public class DemoMatchTypeTest {
 		int curYear = Calendar.getInstance().get(Calendar.YEAR);
 		int currentAge = curYear - dobYear;
 
-		Function<String, String> entityInfoFetcher = DemoMatchType.AGE.getEntityInfoFetcher();
+		Function<String, String> entityInfoFetcher = DemoMatchType.AGE.getEntityInfoMapper();
 		String age = entityInfoFetcher.apply(dob);
 		System.out.println(entityInfoFetcher);
 		assertEquals(age, String.valueOf(currentAge));

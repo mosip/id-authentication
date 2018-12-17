@@ -23,8 +23,8 @@ public class UinEntity {
 	/** The id. */
 	@Id
 	@NotNull
-	@Column(name = "id", nullable = false)
-	String id;
+	@Column(name = "uin", nullable = false)
+	String uin;
 
 	/** The uin. */
 	@NotNull

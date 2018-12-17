@@ -242,7 +242,7 @@ public class PreRegistrationServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(ResponseDTO.class))).thenReturn(res);
 
-		Mockito.when(preRegistrationRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId())).thenReturn(true);
+		Mockito.when(preRegistrationRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId())).thenReturn(1);
 
 		ResponseDTO<DeletePreRegistartionDTO> actualres = preRegistrationService.deleteIndividual(preRegId);
 		System.out.println("Out put " + actualres);

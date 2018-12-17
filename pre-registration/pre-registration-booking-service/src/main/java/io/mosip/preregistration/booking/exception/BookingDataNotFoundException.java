@@ -29,4 +29,8 @@ public class BookingDataNotFoundException extends BaseUncheckedException {
 	public BookingDataNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public BookingDataNotFoundException() {
+		super();
+	}
 }

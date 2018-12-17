@@ -1,6 +1,5 @@
 package io.mosip.preregistration.booking.dto;
 
-import java.sql.Timestamp;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class RequestDto<T> {
 	
 	private String id;
 	private String ver;
-	private Timestamp reqTime;
+	private String reqTime;
 	private T request;
 
 }
