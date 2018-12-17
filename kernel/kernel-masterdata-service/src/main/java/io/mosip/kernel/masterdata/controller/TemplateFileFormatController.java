@@ -35,7 +35,7 @@ public class TemplateFileFormatController {
 	 * API to create a templatefileformat
 	 * 
 	 * @param templateFileFormatRequestDto
-	 *            {@link TemplateFileFormatData} instance
+	 *            {@link TemplateFileFormatDto} instance
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
