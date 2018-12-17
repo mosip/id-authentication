@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -45,10 +46,18 @@ public abstract class BaseJob extends QuartzJobBean {
 	@Autowired
 	protected SyncManager syncManager;
 
+	protected  String jobId;
+
+	protected  String triggerPoint;
+
+	protected  ResponseDTO responseDTO;
+
 	/**
 	 * LOGGER for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(BaseJob.class);
+
+	protected Map<String, SyncJobDef> jobMap;
 
 	/**
 	 * To get current job class
@@ -68,8 +77,6 @@ public abstract class BaseJob extends QuartzJobBean {
 	 * @return Response of execution
 	 */
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
-
-	public abstract ResponseDTO executeJob(String jobId);
 
 	/**
 	 * Job Execution process
@@ -129,10 +136,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 					// Insert Sync Control transaction
 					syncManager.createSyncControlTransaction(syncTransaction);
-					
-					Map<String, Object> attributes=new HashMap<>();
+
+					Map<String, Object> attributes = new HashMap<>();
 					attributes.put("syncTransaction", syncTransaction);
-		
+
 					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 					successResponseDTO.setOtherAttributes(attributes);
 
@@ -162,6 +169,48 @@ public abstract class BaseJob extends QuartzJobBean {
 
 		}
 		return responseDTO;
+
+	}
+
+	public String loadContext(JobExecutionContext context) {
+		try {
+
+			/*
+			 * Get Application Context from JobExecutionContext's job detail
+			 */
+			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
+					.get("applicationContext");
+
+			// Sync Transaction Manager
+			syncManager = this.applicationContext.getBean(SyncManager.class);
+
+			// Job Manager
+			jobManager = this.applicationContext.getBean(JobManager.class);
+
+			// Get Job Map
+			if (jobMap == null) {
+				jobMap = jobManager.getChildJobs(context);
+
+			}
+
+		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
+
+			LOGGER.error(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
+					exception.getMessage());
+		} catch (NullPointerException nullPointerException) {
+
+			LOGGER.error(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
+
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
+					nullPointerException.getMessage());
+
+		}
+
+		// Get Current JobId
+		return jobManager.getJobId(context);
 
 	}
 }

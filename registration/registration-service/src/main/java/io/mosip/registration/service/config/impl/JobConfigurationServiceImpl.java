@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -215,11 +216,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			
 			SyncJobDef syncJobDef= SYNC_JOB_MAP.get(jobId);
 			
+			
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
+			String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
+			
 			// Job Invocation
-			responseDTO = job.executeJob(jobId);
+			responseDTO = job.executeJob(triggerPoint,jobId);
+			
 		} catch (NoSuchBeanDefinitionException | NullPointerException |IllegalArgumentException exception) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
