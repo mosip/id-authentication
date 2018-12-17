@@ -87,7 +87,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			String fileOriginalName = file.getOriginalFilename();
 			if (fileOriginalName != null) {
 
-				String registrationId = file.getOriginalFilename().split("\\.")[0];
+				String registrationId = fileOriginalName.split("\\.")[0];
 
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
@@ -100,7 +100,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					throw new FileSizeExceedException(
 							PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 				}
-				if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
+				if (!(fileOriginalName.endsWith(getFileExtension()))) {
 					throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {

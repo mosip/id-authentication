@@ -49,7 +49,11 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			Class<?> responseType) throws ApisResourceAccessException {
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+
+		UriComponentsBuilder builder = null;
+		if (apiHostIpPort != null)
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+
 		if (builder != null) {
 
 			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
@@ -99,8 +103,9 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
-
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+		UriComponentsBuilder builder = null;
+		if (apiHostIpPort != null)
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 		if (builder != null) {
 
 			if (!((queryParamName == null) || (("").equals(queryParamName)))) {
