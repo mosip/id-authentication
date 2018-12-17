@@ -49,8 +49,9 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 *            input from user
 	 * @param langCode
 	 *            input from user
-	 * @return list of holidays for the particular hoilday id and language code
+	 * @return list of holidays for the particular holiday id and language code
 	 */
 	List<Holiday> findHolidayByIdAndHolidayIdLangCode(int holidayId, String langCode);
-
+	
+	
 }

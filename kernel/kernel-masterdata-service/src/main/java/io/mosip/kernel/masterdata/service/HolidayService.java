@@ -65,4 +65,26 @@ public interface HolidayService {
 	 *             when entered data not created
 	 */
 	public HolidayID saveHoliday(RequestDto<HolidayDto> holidayDto);
+
+	/**
+	 * Method to update a holiday data
+	 * 
+	 * @param holidayDto
+	 *            input values for holidays
+	 * @return primary key of entered row of holiday data
+	 * @throws MasterDataServiceException
+	 *             when entered data not updated
+	 */
+	public HolidayID updateHoliday(RequestDto<HolidayDto> holidayDto);
+
+	/**
+	 * Method to delete a holiday
+	 * 
+	 * @param holidayID
+	 *            id of the holiday
+	 * @return primary key of entered row of holiday data
+	 * @throws MasterDataServiceException
+	 *             when entered data not deleted
+	 */
+	public HolidayID deleteHoliday(RequestDto<HolidayID> holidayID);
 }

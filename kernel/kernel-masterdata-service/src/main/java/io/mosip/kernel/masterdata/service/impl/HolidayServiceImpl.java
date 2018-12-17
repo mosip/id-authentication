@@ -144,4 +144,43 @@ public class HolidayServiceImpl implements HolidayService {
 		return holidayId;
 
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.HolidayService#updateHoliday(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public HolidayID updateHoliday(RequestDto<HolidayDto> holidayDto) {
+		HolidayID id = null;
+		Holiday holiday = null;
+		List<Holiday> holidays = null;
+		HolidayDto dto = holidayDto.getRequest();
+		try {
+			holidays = holidayRepository.findHolidayByIdAndHolidayIdLangCode(dto.getId(), dto.getLangCode());
+			if (!holidays.isEmpty()) {
+				holiday = holidays.get(0);
+				MetaDataUtils.setUpdateMetaData(dto, holiday, false);
+				id = holidayRepository.update(holiday).getHolidayId();
+			}
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return id;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.HolidayService#deleteHoliday(io.mosip.
+	 * kernel.masterdata.entity.id.HolidayID)
+	 */
+	@Override
+	public HolidayID deleteHoliday(RequestDto<HolidayID> holidayID) {
+		return null;
+	}
 }

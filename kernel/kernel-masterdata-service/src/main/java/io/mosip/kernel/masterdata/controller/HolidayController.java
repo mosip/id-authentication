@@ -5,9 +5,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Controller class for Holiday table
@@ -85,4 +88,31 @@ public class HolidayController {
 		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.CREATED);
 
 	}
+
+	/**
+	 * This method to update a holiday
+	 * 
+	 * @param holiday
+	 *            input values to update the data
+	 * @return primary key of inserted Holiday data
+	 */
+	@PutMapping
+	@ApiOperation(value = "to update a holiday", response = HolidayID.class)
+	public HolidayID updateHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
+		return holidayService.updateHoliday(holiday);
+	}
+
+	/**
+	 * This method to delete a holiday
+	 * 
+	 * @param holiday
+	 *            input values to update the data
+	 * @return primary key of inserted Holiday data
+	 */
+	@DeleteMapping
+	@ApiOperation(value = "to delete a holiday", response = HolidayID.class)
+	public HolidayID deleteHoliday(@Valid @RequestBody RequestDto<HolidayID> holidayId) {
+		return holidayService.deleteHoliday(holidayId);
+	}
+
 }
