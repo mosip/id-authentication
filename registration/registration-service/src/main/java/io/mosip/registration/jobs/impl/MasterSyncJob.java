@@ -40,6 +40,11 @@ public class MasterSyncJob extends BaseJob {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncJob.class);
 
+	/**
+	 * Execute internal.
+	 *
+	 * @param context the context
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -55,28 +60,19 @@ public class MasterSyncJob extends BaseJob {
 
 		try {
 
-			/*
-			 * Get Application Context from JobExecutionContext's job detail
-			 */
 			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
 					.get("applicationContext");
 
-			// Sync Transaction Manager
 			syncManager = this.applicationContext.getBean(SyncManager.class);
 
-			// Job Manager
 			jobManager = this.applicationContext.getBean(JobManager.class);
 
-			// Get Current JobId
 			String syncJobId = jobManager.getJobId(context);
 
-			// Get Job Map
 			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
 
-			// Executing parent job first.
 			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, syncJobId);
 
-			// Execute child jobs only after parent job success
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				executeChildJob(syncJobId, jobMap);
 			}
