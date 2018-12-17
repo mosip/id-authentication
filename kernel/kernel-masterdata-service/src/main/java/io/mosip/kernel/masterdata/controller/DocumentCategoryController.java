@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
@@ -29,7 +28,6 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "DocumentCategory" })
-@RequestMapping("/v1.0/documentcategories")
 public class DocumentCategoryController {
 
 	@Autowired
@@ -40,7 +38,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping
+	@GetMapping("/v1.0/documentcategories")
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
@@ -53,7 +51,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
-	@GetMapping("/{langcode}")
+	@GetMapping("/v1.0/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
@@ -67,7 +65,7 @@ public class DocumentCategoryController {
 	 *            the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
-	@GetMapping("/{code}/{langcode}")
+	@GetMapping("/v1.0/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
@@ -81,7 +79,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PostMapping
+	@PostMapping("/v1.0/documentcategories")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
