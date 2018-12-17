@@ -48,8 +48,6 @@ public class HomeController extends BaseController implements Initializable {
 
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
-			AnchorPane updateRoot = BaseController.load(getClass().getResource(RegistrationConstants.UPDATE_PAGE));
-			mainBox.getChildren().add(updateRoot);
 			AnchorPane optionRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			mainBox.getChildren().add(optionRoot);
