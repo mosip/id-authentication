@@ -180,7 +180,7 @@ public class PacketInfoDaoTest {
 		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
 				.thenReturn(irisImageList);
 
-		List<String> result = demographicDedupeRepository.getApplicantIrisImageNameById("2018782130000224092018121229");
+		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");
 		assertEquals("leftEye", result.get(0));
 
 	}
@@ -189,10 +189,10 @@ public class PacketInfoDaoTest {
 	public void getApplicantFingerPrintImageNameByIdTest() {
 		List<String> applicantFingerPrint = new ArrayList<>();
 		applicantFingerPrint.add("leftThumb");
-		Mockito.when(demographicDedupeRepository.getApplicantFingerPrintImageNameById(ArgumentMatchers.anyString()))
+		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
 				.thenReturn(applicantFingerPrint);
 
-		List<String> result = demographicDedupeRepository.getApplicantIrisImageNameById("2018782130000224092018121229");
+		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");
 		assertEquals("leftThumb", result.get(0));
 
 	}
