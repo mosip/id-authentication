@@ -48,7 +48,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	@Override
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
 			String effectiveTimestamp, String registrationCenterId, String machineId, String userId) {
-		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
+		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines;
 		LocalDateTime lDateAndTime = null;
 		try {
 			lDateAndTime = MapperUtils.parseToLocalDateTime(effectiveTimestamp);

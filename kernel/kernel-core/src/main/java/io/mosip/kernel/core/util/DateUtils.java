@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -1013,9 +1014,10 @@ public final class DateUtils {
 	 * @see SimpleDateFormat
 	 */
 	public static String determineDateFormat(String dateString) {
-		for (String regexp : AVAILABLE_DATE_FORMATS.keySet()) {
+		for (Entry<String, String> entry : AVAILABLE_DATE_FORMATS.entrySet()) {
+			String regexp = entry.getKey();
 			if (dateString.toLowerCase().matches(regexp)) {
-				return AVAILABLE_DATE_FORMATS.get(regexp);
+				return entry.getValue();
 			}
 		}
 		return null; // Unknown format.
