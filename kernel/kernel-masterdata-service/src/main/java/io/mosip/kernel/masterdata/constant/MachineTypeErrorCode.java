@@ -9,8 +9,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum MachineTypeErrorCode {
 
-	
-	MACHINE_TYPE_INSERT_EXCEPTION("KER-MSD-001","Error occurred while inserting Machine Type details");
+	MACHINE_TYPE_INSERT_EXCEPTION("KER-MSD-001", "Error occurred while inserting Machine Type details");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -15,13 +15,13 @@ import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 public interface PacketRejectionReasonService {
 	/**
 	 * 
-	 * @param reasonRequestDto
+	 * @param reasonRequestDto- reason reqest dto
 	 * @return codeAndLanguageCodeId - composite key
 	 */
     public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto);
     /**
      * 
-     * @param reasonRequestDto
+     * @param reasonRequestDto - reason reqest dto
      * @return codeLangCodeAndRsnCatCode - composite key
      */
     public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto);
@@ -34,8 +34,8 @@ public interface PacketRejectionReasonService {
 	
 	/**
 	 * 
-	 * @param categoryCode
-	 * @param langCode
+	 * @param categoryCode - category code
+	 * @param langCode - language code
 	 * @return PacketRejectionReasonResponseDto
 	 */
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,String langCode);
