@@ -56,15 +56,19 @@ public class PacketSyncStatusJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId=null;
+		String syncJobId = null;
 		try {
-			 this.jobId = loadContext(context);
+			if(context!=null) {
+				this.jobId = loadContext(context);
+			}
 
-		} catch(RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+		} catch (RegBaseUncheckedException baseUncheckedException) {
+			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
+
 		
 		this.triggerPoint  = (context!=null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
 		

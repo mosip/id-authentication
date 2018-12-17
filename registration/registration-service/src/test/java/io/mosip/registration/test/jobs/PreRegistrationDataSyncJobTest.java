@@ -122,46 +122,17 @@ public class PreRegistrationDataSyncJobTest {
 		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(preRegistrationDataSyncJob);
 	
-		Mockito.when(preRegistrationDataSyncService.getPreRegistrationIds(Mockito.anyString())).thenReturn(responseDTO);
+		Mockito.when(preRegistrationDataSyncService.getPreRegistration(Mockito.anyString())).thenReturn(responseDTO);
 
 	
 		preRegistrationDataSyncJob.executeInternal(context);
+		preRegistrationDataSyncJob.executeJob("User", "1");
 
 	}
 	
 
 
-	@Test
-	public void executejobTest() {
-		ResponseDTO responseDTO=new ResponseDTO();
-		ErrorResponseDTO  errorResponseDTO=new ErrorResponseDTO();
-		errorResponseDTO.setCode("ERROR");
-		LinkedList<ErrorResponseDTO> errorResponseDTOs=new LinkedList<>();
-		errorResponseDTOs.add(errorResponseDTO);
-		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-		Mockito.when(applicationContext.getBean(SyncManager.class)).thenReturn(syncManager);
-		Mockito.when(applicationContext.getBean(PreRegistrationDataSyncService.class)).thenReturn(preRegistrationDataSyncService);
-		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
-		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
-		
-		Mockito.when(preRegistrationDataSyncService.getPreRegistrationIds(Mockito.anyString())).thenReturn(responseDTO);
-		preRegistrationDataSyncJob.executeJob("User");
-	}
 	
-	
-	@Test
-	public void executejobExceptionTest() {
-		ResponseDTO responseDTO=new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
-		responseDTO.setSuccessResponseDTO(successResponseDTO);
-		Mockito.when(applicationContext.getBean(SyncManager.class)).thenReturn(syncManager);
-		Mockito.when(applicationContext.getBean(PreRegistrationDataSyncService.class)).thenReturn(preRegistrationDataSyncService);
-		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
-		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
-		
-		Mockito.when(preRegistrationDataSyncService.getPreRegistrationIds(Mockito.anyString())).thenReturn(responseDTO);
-		preRegistrationDataSyncJob.executeJob("User");
-	}
 	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void executejobNoSuchBeanDefinitionExceptionTest() {
@@ -180,8 +151,8 @@ public class PreRegistrationDataSyncJobTest {
 		ResponseDTO responseDTO=new ResponseDTO();
 		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
-		Mockito.when(applicationContext.getBean(SyncManager.class)).thenThrow(NullPointerException.class);
-				preRegistrationDataSyncJob.executeJob("User");
+		Mockito.when(context.getJobDetail()).thenThrow(NullPointerException.class);
+		
 	preRegistrationDataSyncJob.executeInternal(context);
 	}
 	

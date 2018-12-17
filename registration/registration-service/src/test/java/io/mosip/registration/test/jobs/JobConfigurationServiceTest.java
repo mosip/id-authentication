@@ -143,7 +143,7 @@ public class JobConfigurationServiceTest {
 	@Test
 	public void executeJobJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
-		Mockito.when(packetSyncJob.executeJob(Mockito.anyString())).thenReturn(new ResponseDTO());
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(),Mockito.anyString())).thenReturn(new ResponseDTO());
 		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
 	}
 	@Test

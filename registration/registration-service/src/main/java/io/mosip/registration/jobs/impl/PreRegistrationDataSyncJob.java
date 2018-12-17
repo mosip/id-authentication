@@ -1,26 +1,17 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.Map;
-
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.jobs.JobManager;
-import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
-
 
 /**
  * This is a job to sync the pre registrations
@@ -30,8 +21,8 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
  *
  */
 @Component(value = "preRegistrationDataSyncJob")
-public class PreRegistrationDataSyncJob extends BaseJob{
-	
+public class PreRegistrationDataSyncJob extends BaseJob {
+
 	private static final Logger LOGGER = AppConfig.getLogger(PreRegistrationDataSyncJob.class);
 
 	@Autowired
@@ -50,26 +41,29 @@ public class PreRegistrationDataSyncJob extends BaseJob{
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
-		String syncJobId=null;
+		String syncJobId = null;
 		try {
-			 this.jobId = loadContext(context);
+			if(context!=null) {
+				this.jobId = loadContext(context);
+			}
 
-		} catch(RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+		} catch (RegBaseUncheckedException baseUncheckedException) {
+			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
-		
-		this.triggerPoint  = (context!=null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
-		
+
+		this.triggerPoint = (context != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
+
 		// Run the Parent JOB always first
 		this.responseDTO = preRegistrationDataSyncService.getPreRegistration(jobId);
 
 		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
+		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
 			executeChildJob(syncJobId, jobMap);
 		}
-		
+
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -77,28 +71,28 @@ public class PreRegistrationDataSyncJob extends BaseJob{
 
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		
+
 		this.triggerPoint = triggerPoint;
 		this.jobId = jobId;
-		
+
 		executeInternal(null);
-		
+
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
-		 return responseDTO;
+		return responseDTO;
 
 	}
-
-
 
 }
