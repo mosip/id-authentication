@@ -36,34 +36,6 @@ public class PreRegistrationDataSyncJob extends BaseJob{
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
-	
-	
-
-	@Override
-	public ResponseDTO executeJob(String triggerPoint, String jobId) {
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute Job started");
-
-		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(jobId);
-
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute job ended");
-
-		return syncTransactionUpdate(responseDTO, triggerPoint, jobId);
-	}
-
-	@Override
-	public ResponseDTO executeJob(String jobId) {
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute Job started");
-
-		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute job ended");
-
-		return executeJob(triggerPoint, jobId);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -76,54 +48,57 @@ public class PreRegistrationDataSyncJob extends BaseJob{
 	public void executeInternal(JobExecutionContext context) {
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
+		this.responseDTO = new ResponseDTO();
 
+		String syncJobId=null;
 		try {
+			 this.jobId = loadContext(context);
 
-			/*
-			 * Get Application Context from JobExecutionContext's job detail
-			 */
-			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
-					.get("applicationContext");
-
-			//Sync Transaction Manager
-			syncManager = this.applicationContext.getBean(SyncManager.class);
-
-			//Job Manager
-			jobManager =this.applicationContext.getBean(JobManager.class);
-			
-			
-			// Get Current JobId
-			String syncJobId = jobManager.getJobId(context);
-
-			// Get Job Map
-			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
-			
-			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,syncJobId);
-
-			if(responseDTO.getSuccessResponseDTO()!=null) {
-				executeChildJob(syncJobId, jobMap);
-			}
-
-		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
-			
+		} catch(RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					exception.getMessage());
-		} catch (NullPointerException nullPointerException) {
-			
-			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
-			
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-
+				RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+			throw baseUncheckedException;
 		}
+		
+		this.triggerPoint  = (context!=null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
+		
+		// Run the Parent JOB always first
+		this.responseDTO = preRegistrationDataSyncService.getPreRegistration(jobId);
+
+		// To run the child jobs after the parent job Success
+		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
+			executeChildJob(syncJobId, jobMap);
+		}
+		
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseDTO executeJob(String triggerPoint, String jobId) {
+
+		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "execute Job started");
+		
+		this.triggerPoint = triggerPoint;
+		this.jobId = jobId;
+		
+		executeInternal(null);
+		
+		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "execute job ended");
+
+		 return responseDTO;
+
+	}
+
 
 
 }
