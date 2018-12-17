@@ -64,6 +64,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
@@ -270,6 +271,9 @@ public class MasterdataIntegrationTest {
 	RegistrationCenterHistory center;
 	Device device;
 	private DeviceDto deviceDto;
+
+	Title title;
+	private TitleDto titleDto;
 
 	List<RegistrationCenterHistory> centers = new ArrayList<>();
 
@@ -760,7 +764,7 @@ public class MasterdataIntegrationTest {
 
 	private void titleIntegrationSetup() {
 		titleList = new ArrayList<>();
-		Title title = new Title();
+		title = new Title();
 		titleId = new CodeAndLanguageCodeID();
 		titleId.setLangCode("ENG");
 		titleId.setCode("ABC");
@@ -1733,6 +1737,25 @@ public class MasterdataIntegrationTest {
 
 		Mockito.when(titleRepository.getThroughLanguageCode(Mockito.anyString())).thenReturn(titleList);
 		mockMvc.perform(get("/v1.0/title/{langcode}", "ENG")).andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void saveTitleTest() throws Exception {
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		when(titleRepository.create(Mockito.any())).thenReturn(title);
+		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void saveTitleExceptionTest() throws Exception {
+
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		when(titleRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
+		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
 
 	}
 
