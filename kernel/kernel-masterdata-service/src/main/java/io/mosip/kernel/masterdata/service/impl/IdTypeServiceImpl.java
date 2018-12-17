@@ -3,10 +3,10 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -30,24 +30,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Service
 public class IdTypeServiceImpl implements IdTypeService {
-
-	/**
-	 * Autowired reference for {@link MetaDataUtils}
-	 */
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	/**
-	 * Autowired reference for {@link MapperUtils}
-	 */
-	@Autowired
-	private MapperUtils mapperUtils;
-
-	/**
-	 * Autowired reference for {@link DataMapper}
-	 */
-	@Autowired
-	private DataMapper dataMapper;
 
 	/**
 	 * Autowired reference for {@link IdTypeRepository}
@@ -75,7 +57,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (idList != null && !idList.isEmpty()) {
-			idDtoList = mapperUtils.mapAll(idList, IdTypeDto.class);
+			idDtoList = MapperUtils.mapAll(idList, IdTypeDto.class);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -93,17 +75,17 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createIdType(RequestDto<IdTypeDto> idTypeRequestDto) {
-		IdType entity = metaUtils.setCreateMetaData(idTypeRequestDto.getRequest(), IdType.class);
+		IdType entity = MetaDataUtils.setCreateMetaData(idTypeRequestDto.getRequest(), IdType.class);
 		IdType idType;
 		try {
 			idType = idRepository.create(entity);
-		} catch (DataAccessLayerException dataAccessLayerException) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(dataAccessLayerException));
+							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
-		dataMapper.map(idType, codeAndLanguageCodeID, true, null, null, true);
+		MapperUtils.map(idType, codeAndLanguageCodeID);
 		return codeAndLanguageCodeID;
 	}
 }

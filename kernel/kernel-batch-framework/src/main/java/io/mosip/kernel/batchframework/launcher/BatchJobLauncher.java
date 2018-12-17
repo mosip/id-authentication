@@ -50,7 +50,7 @@ public class BatchJobLauncher {
 	 * This method register and launch batch jobs in cloud data flow server which
 	 * are mentioned in file whose uri is provided.
 	 * 
-	 * @param uri
+	 * @param file
 	 *            uniform resource identifier of file contains (task names and uri
 	 *            of batch jobs) which need to be register and launch.
 	 */

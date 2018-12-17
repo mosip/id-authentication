@@ -1,14 +1,23 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.swagger.annotations.Api;
 
 /**
  * This controller class provides registration centers details based on user
@@ -24,6 +33,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
  *
  */
 @RestController
+@Api(tags = { "Registration" })
 public class RegistrationCenterController {
 
 	/**
@@ -124,10 +134,10 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param text
 	 *            input from user
-	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
+	 * @return {@link RegistrationCenterResponseDto}
 	 */
 	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevelname}/{name}")
-	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
+	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevelname") String hierarchyLevel,
 			@PathVariable("name") String text) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
@@ -135,4 +145,17 @@ public class RegistrationCenterController {
 
 	}
 
+	/**
+	 * This method creates registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the request dto for creating registration center.
+	 * @return the response i.e. the id of the registration center created.
+	 */
+	@PostMapping("/v1.0/registrationcenters")
+	public ResponseEntity<IdResponseDto> createRegistrationCenter(
+			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
+				HttpStatus.CREATED);
+	}
 }

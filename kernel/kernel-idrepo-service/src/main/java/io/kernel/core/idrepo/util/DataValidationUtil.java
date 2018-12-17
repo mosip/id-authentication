@@ -19,13 +19,11 @@ public final class DataValidationUtil {
 
 	/**
 	 * Get list of errors from error object and throws
-	 * {@link IDDataValidationException}, if any error is present.
+	 * {@link IdRepoDataValidationException}, if any error is present.
 	 *
-	 * @param exceptionConstant
-	 *            the exception constant
 	 * @param errors
 	 *            the errors
-	 * @throws IDDataValidationException
+	 * @throws IdRepoDataValidationException
 	 *             the ID data validation exception
 	 */
 	public static void validate(Errors errors) throws IdRepoDataValidationException {

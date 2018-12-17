@@ -16,7 +16,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	/**
 	 * method to fetch list of blacklisted words by language code
 	 * 
-	 * @param langCode
+	 * @param langCode language code
 	 * @return {@link List of BlacklistedWords }
 	 */
 	List<BlacklistedWords> findAllByLangCode(String langCode);

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricTypeData;
@@ -35,29 +36,22 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	DataMapper dataMapper;
 
 	@Autowired
-	private MetaDataUtils metaDataUtils;
-
-	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
 	private List<BiometricTypeDto> biometricTypeDtoList;
 	private List<BiometricType> biometricTypesList;
 
-	/**
-	 * Method to fetch all Biometric Type details
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see
+	 * io.mosip.kernel.masterdata.service.BiometricTypeService#getAllBiometricTypes(
+	 * )
 	 */
 	@Override
 	public BiometricTypeResponseDto getAllBiometricTypes() {
 		biometricTypeDtoList = new ArrayList<>();
 		try {
-			biometricTypesList = biometricTypeRepository.findAllByIsDeletedFalse(BiometricType.class);
+			biometricTypesList = biometricTypeRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(BiometricType.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -78,25 +72,17 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to fetch all Biometric Type details based on language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getAllBiometricTypesByLanguageCode(java.lang.String)
 	 */
 	@Override
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(String langCode) {
 		biometricTypeDtoList = new ArrayList<>();
 		try {
-			biometricTypesList = biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
+			biometricTypesList = biometricTypeRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -117,29 +103,19 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to fetch all Biometric Type details based on id and language code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param code
-	 *            The id of Biometric Type
-	 * 
-	 * @param langCode
-	 *            The language code
-	 * 
-	 * @return BiometricTypeResponseDto
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
-	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getBiometricTypeByCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
 		BiometricType biometricType;
 		BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
+			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
+					langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -159,25 +135,21 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeResponseDto;
 	}
 
-	/**
-	 * Method to create a Biometric Type
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param biometricTypeRequestDto
-	 *            The Biometric Type data
-	 * 
-	 * @return {@link CodeAndLanguageCodeID}
-	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to insert the Biometric Type
+	 * @see
+	 * io.mosip.kernel.masterdata.service.BiometricTypeService#addBiometricType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID addBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
-		BiometricType entity = metaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
+	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeData> biometricTypeRequestDto) {
+		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest().getBiometricType(),
 				BiometricType.class);
 		BiometricType biometricType;
 		try {
 			biometricType = biometricTypeRepository.create(entity);
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));

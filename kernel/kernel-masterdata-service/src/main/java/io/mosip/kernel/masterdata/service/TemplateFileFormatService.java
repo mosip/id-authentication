@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * Service API for Template File Format
@@ -18,11 +17,8 @@ public interface TemplateFileFormatService {
 	 * Method to create a templatefileformat
 	 * 
 	 * @param templateFileFormatRequestDto
-	 * 
+	 *            the template file format dto
 	 * @return {@link CodeAndLanguageCodeID}
-	 * 
-	 * @throws MasterDataServiceException
-	 * 					If the insertion of data fails
 	 */
 	public CodeAndLanguageCodeID createTemplateFileFormat(
 			RequestDto<TemplateFileFormatData> templateFileFormatRequestDto);
