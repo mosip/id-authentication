@@ -61,4 +61,6 @@ public interface DocumentCategoryService {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode);
 }
