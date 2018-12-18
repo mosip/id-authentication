@@ -5,9 +5,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,11 +86,46 @@ public class TemplateController {
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping
-	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code and LangCode", response = IdResponseDto.class)
+	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdResponseDto.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseEntity<IdResponseDto> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.CREATED);
+	}
+
+	/**
+	 * This method update template based on provided details.
+	 * 
+	 * @param template
+	 *            the template detail
+	 * @return {@link IdResponseDto}
+	 */
+	@PutMapping
+	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdResponseDto.class)
+	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = " creating any error occured") })
+	public ResponseEntity<IdResponseDto> updateTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+		return new ResponseEntity<>(templateService.updateTemplates(template.getRequest()), HttpStatus.CREATED);
+	}
+
+	/**
+	 * This method delete template based on provided details.
+	 * 
+	 * @param template
+	 *            the template detail
+	 * @return {@link IdResponseDto}
+	 */
+
+	@DeleteMapping("/{id}")
+	@ApiOperation(value = "Service to delete template", notes = "Delete template and return template id", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When template successfully deleted", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No template found"),
+			@ApiResponse(code = 500, message = "While deleting template  error occured") })
+	public ResponseEntity<IdResponseDto> deleteLanguage(@PathVariable("id") String id) {
+		return new ResponseEntity<>(templateService.deleteTemplates(id), HttpStatus.OK);
 	}
 }
