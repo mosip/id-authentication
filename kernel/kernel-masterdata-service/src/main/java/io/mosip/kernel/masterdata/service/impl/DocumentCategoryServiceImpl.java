@@ -181,7 +181,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
 					documentCategoryId);
 
-			if (!EmptyCheckUtils.isNullEmpty(documentCategory)) {
+			if (documentCategory != null) {
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
 				documentCategoryRepository.update(documentCategory);
 			} else {
