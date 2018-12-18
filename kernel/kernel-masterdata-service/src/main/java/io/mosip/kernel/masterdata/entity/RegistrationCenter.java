@@ -45,7 +45,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	 * the id of the registration center.
 	 */
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@Column(name = "id", unique = true, nullable = false, length = 10)
 	private String id;
 
 	/**

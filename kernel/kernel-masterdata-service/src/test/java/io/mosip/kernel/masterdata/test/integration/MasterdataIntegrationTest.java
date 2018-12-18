@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
@@ -1759,6 +1760,64 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	@Test
+	public void updateTitleTest() throws Exception {
+		RequestDto<TitleDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.title.update");
+		requestDto.setVer("1.0");
+		TitleDto titleDto = new TitleDto();
+		titleDto.setCode("001");
+		titleDto.setTitleDescription("mosip");
+		titleDto.setIsActive(true);
+		titleDto.setLangCode("ENG");
+		titleDto.setTitleName("mosip");
+		requestDto.setRequest(titleDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(title);
+		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateTitleNotFoundExceptionTest() throws Exception {
+		RequestDto<TitleDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.title.update");
+		requestDto.setVer("1.0");
+		TitleDto titleDto = new TitleDto();
+		titleDto.setCode("001");
+		titleDto.setTitleDescription("mosip");
+		titleDto.setIsActive(true);
+		titleDto.setLangCode("ENG");
+		titleDto.setTitleName("mosip");
+		requestDto.setRequest(titleDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void updateTitleDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<TitleDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.title.update");
+		requestDto.setVer("1.0");
+		TitleDto titleDto = new TitleDto();
+		titleDto.setCode("001");
+		titleDto.setTitleDescription("mosip");
+		titleDto.setIsActive(true);
+		titleDto.setLangCode("ENG");
+		titleDto.setTitleName("mosip");
+		requestDto.setRequest(titleDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(title);
+		when(titleRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -2463,6 +2522,64 @@ public class MasterdataIntegrationTest {
 		when(documentCategoryRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void updateDocumentCategoryTest() throws Exception {
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(true);
+		documentCategoryDto.setLangCode("ENG");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateDocumentCategoryNotFoundExceptionTest() throws Exception {
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(true);
+		documentCategoryDto.setLangCode("ENG");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void updateDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(true);
+		documentCategoryDto.setLangCode("ENG");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		when(documentCategoryRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
 
