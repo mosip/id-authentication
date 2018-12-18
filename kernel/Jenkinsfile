@@ -58,7 +58,7 @@ stage('---------- SonarQube Analysis --------------') {
   server.publishBuildInfo buildInfo
  }
 
-  stage('Docker Images : Push & Cleanup') {
+  stage('------ Docker Images : Push & Cleanup -------') {
   if ("${env.BUIILD_OPTION}" == "Build All") {
    echo "BUILD_OPTION is set to Build All."
    echo "Building all submodules."
