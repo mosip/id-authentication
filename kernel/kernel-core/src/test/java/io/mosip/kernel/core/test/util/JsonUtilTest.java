@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -90,7 +89,7 @@ public class JsonUtilTest {
 		assertThat(mapElements.toString(), is("{color=Black, type=FIAT}"));
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testJavaObjectToJsonFileWithIOException()
 			throws JsonGenerationException, JsonMappingException, IOException {
 
@@ -129,8 +128,7 @@ public class JsonUtilTest {
 		JsonUtils.jsonFileToJavaObject(ParentCar2.class, file.getAbsolutePath());
 	}
 
-	@Test
-	@Ignore
+	@Test(expected = IOException.class)
 	public void testjsonFiletoJavaObjectWithIOException()
 			throws JsonParseException, JsonMappingException, IOException {
 
