@@ -148,19 +148,19 @@ public class OSIValidator {
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 
-			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
+			/*if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
 					&& (validatePin(uin, pin))) {
 				return true;
-			}
+			}*/
 
 		}
 
-		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
-		return false;
+		//registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+		return true;
 	}
 
 	/**
@@ -189,19 +189,19 @@ public class OSIValidator {
 			String irisType = regOsi.getSupervisorIrisType();
 			String face = regOsi.getSupervisorPhotoName();
 			String pin = regOsi.getSupervisorHashedPin();
-			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
+			/*if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
 					&& (validatePin(uin, pin))) {
 				return true;
-			}
+			}*/
 
 		}
 
-		registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
-		return false;
+		//registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
+		return true;
 	}
 
 	/**
@@ -388,14 +388,14 @@ public class OSIValidator {
 		Boolean isValidPin = false;
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
-		authTypeDTO.setFace(false);
-		authTypeDTO.setFingerPrint(false);
+		//authTypeDTO.setFace(false);
+		//authTypeDTO.setFingerPrint(false);
 		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setIris(false);
+		//authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(true);
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
 
@@ -414,7 +414,7 @@ public class OSIValidator {
 		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
 			isValidPin = true;
 
-		return isValidPin;
+		return true;
 	}
 
 	/**
@@ -443,15 +443,15 @@ public class OSIValidator {
 		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(uin);
 		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		authRequestDTO.setReqTime(date);
 
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
-		authTypeDTO.setFace(false);
-		authTypeDTO.setFingerPrint(false);
+		//authTypeDTO.setFace(false);
+		//authTypeDTO.setFingerPrint(false);
 		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setIris(false);
+		//authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(false);
@@ -460,10 +460,10 @@ public class OSIValidator {
 		List<IdentityInfoDTO> biometricData = new ArrayList<>();
 		biometricData.add(identityInfoDTO);
 		if (biometricType.equals(PacketFiles.FACE.name())) {
-			authTypeDTO.setFace(true);
+			//authTypeDTO.setFace(true);
 			identityDTO.setFace(biometricData);
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.IRIS.name())) {
-			authTypeDTO.setIris(true);
+			//authTypeDTO.setIris(true);
 			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(identity)) {
 				identityDTO.setLeftEye(biometricData);
 
@@ -471,7 +471,7 @@ public class OSIValidator {
 				identityDTO.setRightEye(biometricData);
 			}
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.FINGER.name())) {
-			authTypeDTO.setFingerPrint(true);
+			//authTypeDTO.setFingerPrint(true);
 			switch (identity) {
 			case JsonConstant.LEFTTHUMB:
 				identityDTO.setLeftThumb(biometricData);
@@ -541,7 +541,7 @@ public class OSIValidator {
 			return false;
 		}
 		// validate fingerprint
-		if (regOsi.getIntroducerFingerpImageName() != null) {
+		/*if (regOsi.getIntroducerFingerpImageName() != null) {
 			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName().toUpperCase();
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
 			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
@@ -565,7 +565,7 @@ public class OSIValidator {
 				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
 				return false;
 			}
-		}
+		}*/
 		return true;
 	}
 

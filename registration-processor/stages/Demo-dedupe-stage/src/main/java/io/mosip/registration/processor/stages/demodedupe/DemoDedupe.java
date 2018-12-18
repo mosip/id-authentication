@@ -186,15 +186,15 @@ public class DemoDedupe {
 		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(duplicateUin);
 		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		authRequestDTO.setReqTime(date);
 
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
-		authTypeDTO.setFace(false);
-		authTypeDTO.setFingerPrint(false);
+		//authTypeDTO.setFace(false);
+		//authTypeDTO.setFingerPrint(false);
 		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setIris(false);
+		//authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(false);
@@ -210,11 +210,12 @@ public class DemoDedupe {
 		authRequestDTO.setRequest(request);
 
 		// sending request to get authentication response
-		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
+		/*AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
-				&& ("y").equalsIgnoreCase(authResponseDTO.getStatus());
+				&& ("y").equalsIgnoreCase(authResponseDTO.getStatus());*/
+		return false;
 	}
 
 	/**
@@ -229,10 +230,10 @@ public class DemoDedupe {
 	 */
 	private void setBiometric(String biometricName, List<IdentityInfoDTO> biometricData, String type) {
 		if (type.equalsIgnoreCase(PacketFiles.IRIS.name())) {
-			authTypeDTO.setIris(true);
+			//authTypeDTO.setIris(true);
 			setIrisBiometric(biometricName, biometricData);
 		} else if (type.equalsIgnoreCase(PacketFiles.FINGER.name())) {
-			authTypeDTO.setFingerPrint(true);
+			//authTypeDTO.setFingerPrint(true);
 			setFingerBiometric(biometricName, biometricData);
 		}
 	}
