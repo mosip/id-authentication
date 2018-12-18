@@ -1,12 +1,14 @@
 package io.mosip.kernel.qrcode.generator.constant;
 
 /**
+ * Exception constants for QR Code generator
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0
  */
 public enum QrcodeExceptionConstants {
-	
+
 	QRCODE_GENERATION_EXCEPTION("KER-QRG-001", "exception occured while writing QR code "),
 	IO_EXCEPTION("KER-QRG-002", "write to the byte stream failed"),
 	INVALID_INPUT_DATA_NULL("KER-QRG-003", "data can't be null"),

@@ -26,7 +26,23 @@ import io.mosip.kernel.qrcode.generator.util.QrcodegeneratorUtils;
  *
  * @since 1.0.0
  */
+
 public class QrcodeGenerator {
+
+	/**
+	 * {@link QRCodeWriter} instance
+	 */
+	private static QRCodeWriter qrCodeWriter;
+	/**
+	 * Configurations for QrCode Generator
+	 */
+	private static Map<EncodeHintType, Object> configMap;
+
+	static {
+		qrCodeWriter = new QRCodeWriter();
+		configMap = new EnumMap<>(EncodeHintType.class);
+		configMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+	}
 
 	/**
 	 * Constructor for this class
@@ -52,14 +68,11 @@ public class QrcodeGenerator {
 	public static byte[] generateQrCode(String data, QrVersion version)
 			throws QrcodeGenerationException, io.mosip.kernel.core.exception.IOException {
 		QrcodegeneratorUtils.verifyInput(data, version);
-		Map<EncodeHintType, Object> hintMap = new EnumMap<>(EncodeHintType.class);
-		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
-		hintMap.put(EncodeHintType.QR_VERSION, version.getVersion());
-		QRCodeWriter qrCodeWriter = new QRCodeWriter();
-		BitMatrix byteMatrix = null;
+		configMap.put(EncodeHintType.QR_VERSION, version.getVersion());
+	    BitMatrix byteMatrix = null;
 		try {
 			byteMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, version.getSize(), version.getSize(),
-					hintMap);
+					configMap);
 		} catch (WriterException | IllegalArgumentException exception) {
 			throw new QrcodeGenerationException(QrcodeExceptionConstants.QRCODE_GENERATION_EXCEPTION.getErrorCode(),
 					QrcodeExceptionConstants.QRCODE_GENERATION_EXCEPTION.getErrorMessage() + exception.getMessage(),
