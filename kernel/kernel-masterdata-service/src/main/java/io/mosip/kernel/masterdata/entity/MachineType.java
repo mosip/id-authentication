@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.entity;
 
-
 import java.io.Serializable;
 
 import javax.persistence.AttributeOverride;
@@ -18,6 +17,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
+ * Entity for Machine Type
+ * 
  * @author Megha Tanga
  * @since 1.0.0
  *
@@ -33,6 +34,9 @@ public class MachineType extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
+	/**
+	 * Field for composite primary key code and Language code
+	 */
 	@Id
 	@AttributeOverrides({
 			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
@@ -40,10 +44,15 @@ public class MachineType extends BaseEntity implements Serializable {
 	private String code;
 	private String langCode;
 
+	/**
+	 * Field for Machine Type name
+	 */
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
 
+	/**
+	 * Field for Machine Type description
+	 */
 	@Column(name = "descr", length = 128)
 	private String description;
 }
-

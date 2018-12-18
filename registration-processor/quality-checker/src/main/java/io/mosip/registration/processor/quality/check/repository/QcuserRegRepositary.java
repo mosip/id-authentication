@@ -19,7 +19,7 @@ public interface QcuserRegRepositary<T extends BaseQcuserEntity<?>, E> extends B
 	public List<E> findAllUserIds();
 
 	@Query("SELECT ape,ade FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ade"
-			+ " WHERE ade.id.refId=:refId")
+			+ " WHERE ade.id.regId=:refId")
 	public List<Object[]> getApplicantInfo(@Param("refId") String regId);
 
 }

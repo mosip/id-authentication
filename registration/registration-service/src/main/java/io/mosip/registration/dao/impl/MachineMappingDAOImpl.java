@@ -1,5 +1,12 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -23,19 +31,13 @@ import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.DeviceMasterRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 /**
  * This DAO implementation of {@link MachineMappingDAO}
@@ -89,6 +91,12 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Autowired
 	private RegistrationUserDetailRepository userDetailRepository;
+
+	/**
+	 * deviceMasterRepository instance creation using autowired annotation
+	 */
+	@Autowired
+	private DeviceMasterRepository deviceMasterRepository;
 
 	/*
 	 * (non-Javadoc) Getting station id based on mac address
@@ -316,6 +324,23 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"  addedMappedDevice method excecution has started");
 
 		registrationCenterMachineDeviceRepository.saveAll(regCentreMachineDevices);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#isValidDevice(java.lang.String,
+	 * java.lang.String, java.sql.Timestamp)
+	 */
+	@Override
+	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
+
+		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
+				" isValidDevice DAO Method called");
+
+		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
+				deviceType.getDeviceType(), new Timestamp(System.currentTimeMillis())) > 0 ? true : false;
 	}
 
 }

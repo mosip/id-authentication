@@ -19,6 +19,7 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
 /**
@@ -219,9 +220,12 @@ public enum DemoAuthType implements AuthType {
 
 	@Override
 	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			Function<LanguageType, String> languageInfoFetcher) {
+			IdInfoFetcher idInfoFetcher) {
 		HashMap<String, Object> valuemap = new HashMap<>();
-		valuemap.put("language", languageInfoFetcher.apply(getLangType()));
+		String languageCode = idInfoFetcher.getLanguageCode(getLangType());
+		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(languageCode);
+		valuemap.put("language", languageNameOpt.orElse("english"));
+		
 		return valuemap;
 	}
 	

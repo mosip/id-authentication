@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 
 @Data
+@ApiModel(value = "Device Type", description = "Device Type Detail resource")
 public class DeviceTypeDto {
 
 	@NotNull
@@ -24,7 +26,7 @@ public class DeviceTypeDto {
 
 	@NotNull
 	@Size(min = 1, max = 3)
-	@ApiModelProperty(value = "langCodes", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
 	
@@ -34,10 +36,10 @@ public class DeviceTypeDto {
 	private String name;
 
 	@Size(min = 1, max = 128)
-	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
 	
 	@NotNull
-	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.Boolean")
+	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.service.TitleService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class for fetching titles from master data
@@ -16,6 +17,7 @@ import io.mosip.kernel.masterdata.service.TitleService;
  *
  */
 @RestController
+@Api(tags = { "Title" })
 public class TitleController {
 
 	@Autowired

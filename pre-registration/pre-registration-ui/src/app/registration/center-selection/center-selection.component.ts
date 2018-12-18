@@ -137,7 +137,7 @@ export class CenterSelectionComponent implements OnInit {
             const bookingData = new BookingModel(this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
             const requestObject = {
               newBookingDetails: bookingData,
-              oldBookingDetails: name.regDto,
+              oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
               pre_registration_id: name.preRegId
             };
             this.bookingDataList.push(requestObject);

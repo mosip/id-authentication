@@ -6,13 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.exception.PridGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
-
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.prid.cache.PridCacheManager;
 import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorConstants;
 import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorErrorCodes;
 import io.mosip.kernel.idgenerator.prid.entity.Prid;
@@ -33,8 +33,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	private int pridLength;
 	@Autowired
 	private PridRepository pridRepository;
-	@Autowired
-	private PridCacheManager pridCacheManager;
+
 
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
 
@@ -57,24 +56,25 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 		String generatedPrid = null;
 		while (!unique) {
 			generatedPrid = this.generatePrid();
-			if (pridCacheManager.contains(generatedPrid)) {
-				unique = false;
-			} else {
-				unique = true;
-			}
+			long currentTimestamp = System.currentTimeMillis();
+			prid.setId(generatedPrid);
+			prid.setCreatedAt(currentTimestamp);
+			unique = saveGeneratedPrid(prid);
 		}
-		long currentTimestamp = System.currentTimeMillis();
-		prid.setId(generatedPrid);
-		prid.setCreatedAt(currentTimestamp);
-		saveGeneratedPrid(prid, generatedPrid);
 		return generatedPrid;
 	}
 
-	private void saveGeneratedPrid(Prid prid, String generatedPrid) {
+	private boolean saveGeneratedPrid(Prid prid) {
 		try {
 			pridRepository.save(prid);
-			pridCacheManager.add(prid.getId());
-		} catch (Exception e) {
+			return true;
+		}
+		/*
+		 * catch (DataAccessLayerException e) { 
+		 * // Check for PK constraint else throw
+		 * error return false; }
+		 */
+		catch (DataAccessException | DataAccessLayerException e) {
 			throw new PridGenerationException(PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
 					PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
 		}

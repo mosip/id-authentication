@@ -26,20 +26,21 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
-import io.mosip.registration.device.IGPSIntegrator;
+import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.SyncStatusValidatorServiceImpl;
+import io.mosip.registration.service.sync.impl.SyncStatusValidatorServiceImpl;
 
 public class SyncStatusValidatorServiceTest {
 
@@ -52,10 +53,12 @@ public class SyncStatusValidatorServiceTest {
 	@Mock
 	private SyncJobInfo syncJobnfo;
 	@Mock
-	private IGPSIntegrator gpsIntegrator;
+	private GPSFacade gpsFacade;
 
 	@Mock
 	private AuditFactory auditFactory;
+	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -74,8 +77,10 @@ public class SyncStatusValidatorServiceTest {
 		maplastTime.put("lastCapturedTime", lastCapturedTime);
 		SessionContext.getInstance().setMapObject(maplastTime);
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		
+		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test
@@ -107,7 +112,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
@@ -127,7 +132,7 @@ public class SyncStatusValidatorServiceTest {
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
 		assertEquals(
-				"Your client machine’s location is outside the registration centre. Please note that registration can be done only from within the registration centre",
+				"Your client machine location is outside the registration center. Please note that registration can be done only from within the registration centre",
 				errorResponseDTOs.get(3).getMessage());
 
 	}
@@ -157,7 +162,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -199,7 +204,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
@@ -218,7 +223,7 @@ public class SyncStatusValidatorServiceTest {
 				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again.",
+		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again",
 				errorResponseDTOs.get(3).getMessage());
 
 	}
@@ -252,7 +257,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
@@ -305,7 +310,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
@@ -358,7 +363,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
@@ -377,7 +382,7 @@ public class SyncStatusValidatorServiceTest {
 				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
 				errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-007", errorResponseDTOs.get(3).getCode());
-		assertEquals(RegistrationConstants.OPT_TO_REG_ICS‌_007_MSG,
+		assertEquals(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH,
 				errorResponseDTOs.get(3).getMessage());
 
 	}

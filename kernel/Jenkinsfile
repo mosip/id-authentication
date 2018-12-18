@@ -8,6 +8,8 @@ node {
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
  targetDeploymentServer = 'kernel-dev-server'
+ updatedServices = []
+ updatedDockerImages = []
  containersToRun = ''
  containerNames= ''
 
@@ -23,9 +25,9 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: '/'+projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
      ]]
 
     ],
@@ -56,12 +58,65 @@ stage('---------- SonarQube Analysis --------------') {
   server.publishBuildInfo buildInfo
  }
 
- stage('-----------Docker image push and cleanup-----------') {
+ stage('All Docker Images : Push & Cleanup'){
+ dir(branch) {
+   sh "find . -name 'Dockerfile'> directoryDockerFiles"
+   locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
+   sh "rm -f directoryDockerFiles"
+   Set servicesName = [] as TreeSet
+   Set servicesPath = [] as TreeSet
+   Set dockerFilesLocation = [] as TreeSet
+    for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+     if(locationOfDockerFiles[i].equals("")){
+     break;
+     }
+     def currentModule = locationOfDockerFiles[i]
+     sh "basename `dirname $currentModule` > parentDirectoryName"
+     parentDirectoryName = readFile('parentDirectoryName').trim()
+     sh "rm -f parentDirectoryName"
+     sh "dirname $currentModule > parentDirectoryPath"
+     parentDirectoryPath = readFile('parentDirectoryPath').trim()
+     sh "rm -f parentDirectoryPath"
+     parentDirectoryPathFormatted = parentDirectoryPath.substring(2);
+        servicesName.add(parentDirectoryName);
+        servicesPath.add(parentDirectoryPathFormatted);
+        dockerFilesLocation.add(currentModule);
+    
+   }
+
+   for (int j = 0; j < servicesName.size(); j++) {
+            def currentServiceName
+            echo "Updating changed images list"
+            updatedServices.add(servicesName[j])
+            updatedDockerImages.add(registryName+'/'+servicesName[j]+":$BUILD_NUMBER")
+            containersToRun=containersToRun+" "+registryName+'/'+servicesName[j]
+            containerNames=containerNames+" "+servicesName[j]
+            echo servicesPath[j] + " will be built"
+            docker.withRegistry(registryUrl, registryCredentials) {
+            def buildName = servicesName[j]+":$BUILD_NUMBER"
+            newApp = docker.build(buildName, '-f ' + dockerFilesLocation[j] + ' ' + servicesPath[j])
+            newApp.push()
+            newApp.push 'latest'
+            }
+            currentServiceName = servicesName[j]
+            sh "docker rmi $currentServiceName:$BUILD_NUMBER"
+            sh "docker rmi $registryName/$currentServiceName:$BUILD_NUMBER"
+            sh "docker rmi $registryName/$currentServiceName"
+   }
+
+  }
+
+ }
+
+ /*stage('Docker Images Δ : Push & Cleanup') {
   dir(branch) {
    sh "find . -name 'Dockerfile'> directoryDockerFiles"
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
-   showChangeLogs();
+   changedModules = getChangedModules();
+   Set modifiedServicesName = [] as TreeSet
+   Set modifiedServicesPath = [] as TreeSet
+   Set dockerFilesLocation = [] as TreeSet
    for (int j = 0; j < changedModules.size(); j++) {
     for (int i = 0; i < locationOfDockerFiles.size(); i++) {
      if(locationOfDockerFiles[i].equals("")){
@@ -74,31 +129,37 @@ stage('---------- SonarQube Analysis --------------') {
      sh "dirname $currentModule > parentDirectoryPath"
      parentDirectoryPath = readFile('parentDirectoryPath').trim()
      sh "rm -f parentDirectoryPath"
-
-     parentDirectoryPathForamtted = parentDirectoryPath.substring(2);
-     if (changedModules[j].contains(parentDirectoryPathForamtted)) {
-     echo "Updating changed images list"
-     containersToRun=containersToRun+" "+registryName+'/'+parentDirectoryName
-     containerNames=containerNames+" "+parentDirectoryName
-      echo parentDirectoryPathForamtted + " will be built"
-      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
-      newApp.push()
-      newApp.push 'latest'
-      }
-      sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-      sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
-      sh "docker rmi $registryName/$parentDirectoryName"
-
+     parentDirectoryPathFormatted = parentDirectoryPath.substring(2);
+     if (changedModules[j].contains(parentDirectoryPathFormatted)) {
+        modifiedServicesName.add(parentDirectoryName);
+        modifiedServicesPath.add(parentDirectoryPathFormatted);
+        dockerFilesLocation.add(currentModule)
     }
     }
+   }
 
-
+   for (int j = 0; j < modifiedServicesName.size(); j++) {
+            def currentServiceName
+            echo "Updating changed images list"
+            updatedServices.add(modifiedServicesName[j])
+            updatedDockerImages.add(registryName+'/'+modifiedServicesName[j]+":$BUILD_NUMBER")
+            containersToRun=containersToRun+" "+registryName+'/'+modifiedServicesName[j]
+            containerNames=containerNames+" "+modifiedServicesName[j]
+            echo modifiedServicesPath[j] + " will be built"
+            docker.withRegistry(registryUrl, registryCredentials) {
+            def buildName = modifiedServicesName[j]+":$BUILD_NUMBER"
+            newApp = docker.build(buildName, '-f ' + dockerFilesLocation[j] + ' ' + modifiedServicesPath[j])
+            newApp.push()
+            newApp.push 'latest'
+            }
+            currentServiceName = modifiedServicesName[j]
+            sh "docker rmi $currentServiceName:$BUILD_NUMBER"
+            sh "docker rmi $registryName/$currentServiceName:$BUILD_NUMBER"
+            sh "docker rmi $registryName/$currentServiceName"
    }
 
   }
- }
+ }*/
  
   stage('----deploy in dev----')
  {
@@ -164,9 +225,9 @@ stage('---------- SonarQube Analysis --------------') {
 
 
 @NonCPS
-def showChangeLogs() {
+def getChangedModules() {
+ Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- changedModules = []
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
   for (int j = 0; j < entries.length; j++) {
@@ -182,4 +243,6 @@ def showChangeLogs() {
    }
   }
  }
+ echo "Changed modules are ::::::::::> "+changedModules
+ return changedModules
 }

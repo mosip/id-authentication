@@ -1,5 +1,7 @@
 package io.mosip.registration.test.service;
 
+import static org.mockito.Mockito.when;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -8,16 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.StorageServiceImpl;
-
-import static org.mockito.Mockito.when;
+import io.mosip.registration.service.external.impl.StorageServiceImpl;
 
 public class StorageServiceTest {
 	@Rule

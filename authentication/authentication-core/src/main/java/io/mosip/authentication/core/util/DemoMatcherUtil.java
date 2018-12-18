@@ -137,8 +137,10 @@ public final class DemoMatcherUtil {
 	}
 
 	/**
-	 * 
+	 * Doing phonetic match with input request and stored-request with language-name,NOT language-code.
+	 * If give language code, get java.lang.IllegalArgumentException: No rules found for gen, rules, language-code.
 	 * @param refInfoName @param entityInfoName @return @throws
+	 * 
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
 		int value = 0;

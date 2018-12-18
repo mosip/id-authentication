@@ -97,7 +97,7 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrMin");
@@ -154,7 +154,7 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrMin");
@@ -212,7 +212,7 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setVer("1.0");
+		//authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrImg");

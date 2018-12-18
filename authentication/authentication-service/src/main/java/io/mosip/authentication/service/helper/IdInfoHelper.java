@@ -8,9 +8,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -18,14 +20,15 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
@@ -36,7 +39,7 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
  */
 
 @Component
-public class IdInfoHelper {
+public class IdInfoHelper implements IdInfoFetcher {
 
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
@@ -253,7 +256,7 @@ public class IdInfoHelper {
 							.orElseGet(() -> Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
 				}
 			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this::getLanguageCode);
+			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this);
 
 			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties);
 		}

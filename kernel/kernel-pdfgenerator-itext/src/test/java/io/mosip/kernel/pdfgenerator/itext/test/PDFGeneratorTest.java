@@ -118,6 +118,43 @@ public class PDFGeneratorTest {
 
 	}
 
+	@Test
+	public void testPdfGenerationWithInputStreamPassingResourceLoc() throws IOException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		String inputFile = classLoader.getResource("responsive.html").getFile();
+		File file = new File(inputFile);
+		if (file.getParentFile().isDirectory()) {
+			file = file.getParentFile();
+		}
+		String resourceLoc = file.getAbsolutePath();
+		InputStream is = new FileInputStream(inputFile);
+		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is, resourceLoc);
+		String outputPath = System.getProperty("user.dir");
+		String fileSepetator = System.getProperty("file.separator");
+		File OutPutPdfFile = new File(outputPath + fileSepetator + "responsive.pdf");
+		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+		op.write(bos.toByteArray());
+		op.flush();
+		assertTrue(OutPutPdfFile.exists());
+		if (op != null) {
+			op.close();
+		}
+
+	}
+
+	@Test(expected = PDFGeneratorException.class)
+	public void testPdfGeneratorExceptionInInputStreamPassingResourceLoc() throws IOException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		String inputFileName = classLoader.getResource("emptyFile.html").getFile();
+		File file = new File(inputFileName);
+		if (file.getParentFile().isDirectory()) {
+			file = file.getParentFile();
+		}
+		String resourceLoc = file.getAbsolutePath();
+		InputStream inputStream = new FileInputStream(inputFileName);
+		pdfGenerator.generate(inputStream, resourceLoc);
+	}
+
 	@AfterClass
 	public static void deleteOutputFile() {
 		String outputFilePath = System.getProperty("user.dir");
@@ -142,6 +179,10 @@ public class PDFGeneratorTest {
 		File temp1 = new File(outputFilePath + fileSepetator + "emptyFile" + outputFileExtension);
 		if (temp1.exists()) {
 			temp1.delete();
+		}
+		File temp6 = new File(outputFilePath + fileSepetator + "responsive" + outputFileExtension);
+		if (temp6.exists()) {
+			temp6.delete();
 		}
 
 	}
