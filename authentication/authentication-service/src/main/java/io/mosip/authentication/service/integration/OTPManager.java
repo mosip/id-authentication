@@ -46,6 +46,8 @@ public class OTPManager {
 
 	private static final String STATUS_FAILURE = "failure";
 
+	private static final String USER_BLOCKED = "USER_BLOCKED";
+
 	@Autowired
 	private RestHelper restHelper;
 
@@ -117,7 +119,9 @@ public class OTPManager {
 				String message = otpvalidateresponsedto.getMessage();
 				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-						if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+						if (message.equalsIgnoreCase(USER_BLOCKED)) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP);
+						} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
@@ -127,8 +131,9 @@ public class OTPManager {
 					}
 				} else {
 					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
-					// Do not throw server error for OTP not generated, throw invalid OTP error instead
-					if(errorCode.filter(code -> code.equals(ERR_CODE_OTP_NOT_GENERATED)).isPresent()) {
+					// Do not throw server error for OTP not generated, throw invalid OTP error
+					// instead
+					if (errorCode.filter(code -> code.equals(ERR_CODE_OTP_NOT_GENERATED)).isPresent()) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 					}
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
@@ -141,7 +146,7 @@ public class OTPManager {
 		}
 		return isValidOtp;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Optional<String> getErrorCode(String resBody) {
 		return Optional.of(resBody).map(str -> {
@@ -153,16 +158,9 @@ public class OTPManager {
 				logger.error("NA", "NA", "Error parsing response body", null);
 			}
 			return res;
-		})
-		.map(map -> map.get("errors"))
-		.filter(obj -> obj instanceof List)
-		.flatMap(obj -> ((List) obj)
-				.stream()
-				.filter(obj1 -> obj1 instanceof Map)
-				.map(map1 -> (((Map) map1).get("errorCode")))
-				.findAny())
-		.map(String::valueOf);
+		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()
+				.filter(obj1 -> obj1 instanceof Map).map(map1 -> (((Map) map1).get("errorCode"))).findAny())
+				.map(String::valueOf);
 	}
-	
 
 }
