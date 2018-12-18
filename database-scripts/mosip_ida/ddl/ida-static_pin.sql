@@ -17,8 +17,6 @@ create table ida.static_pin (
 	uin  character varying(28) not null,  			-- UIN of indivisuals and referenced from idrepo database
 	
 	generated_dtimes timestamp,
-	validation_retry_count smallint,
-	expiry_dtimes timestamp,
 	
 	is_active 	boolean not null,
 	cr_by 		character varying(32) not null,
