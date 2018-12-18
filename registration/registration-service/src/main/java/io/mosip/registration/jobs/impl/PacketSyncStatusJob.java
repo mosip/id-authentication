@@ -1,29 +1,17 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.LinkedList;
-import java.util.Map;
-
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.manager.JobManager;
-import io.mosip.registration.manager.SyncManager;
-import io.mosip.registration.manager.impl.SyncManagerImpl;
-import io.mosip.registration.service.RegPacketStatusService;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**
  * This is a job to sync the packet status
@@ -35,13 +23,13 @@ import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 @Component(value = "packetSyncStatusJob")
 public class PacketSyncStatusJob extends BaseJob {
 
-	
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
 	@Autowired
 	private RegPacketStatusService packetStatusService;
-
+	
+	
 	/**
 	 * LOGGER for logging
 	 */
@@ -56,75 +44,57 @@ public class PacketSyncStatusJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
+		this.responseDTO = new ResponseDTO();
 
 		try {
-
-			/*
-			 * Get Application Context from JobExecutionContext's job detail
-			 */
-			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
-					.get("applicationContext");
-
-			//Sync Transaction Manager
-			syncManager = this.applicationContext.getBean(SyncManager.class);
-
-			//Job Manager
-			jobManager =this.applicationContext.getBean(JobManager.class);
-			
-			
-			// Get Current JobId
-			String syncJobId = jobManager.getJobId(context);
-
-			// Get Job Map
-			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
-			
-			ResponseDTO responseDTO = executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,syncJobId);
-
-			if(responseDTO.getSuccessResponseDTO()!=null) {
-				executeChildJob(syncJobId, jobMap);
+			if(context!=null) {
+				this.jobId = loadContext(context);
 			}
 
-		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
-			
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					exception.getMessage());
-		} catch (NullPointerException nullPointerException) {
-			
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
-			
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-
+		} catch (RegBaseUncheckedException baseUncheckedException) {
+			LOGGER.error(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage());
+			throw baseUncheckedException;
 		}
 
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		
+		this.triggerPoint  = (context!=null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
+		
+		// Run the Parent JOB always first
+		this.responseDTO = packetStatusService.packetSyncStatus();
+
+		// To run the child jobs after the parent job Success
+		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
+			executeChildJob(jobId, jobMap);
+		}
+		
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+
+		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
 
-	@Override
-	public ResponseDTO executeJob(String jobId) {
-		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
-		return executeJob(triggerPoint, jobId);
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.jobs.BaseJob#executeJob(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-
-		ResponseDTO responseDTO = packetStatusService.packetSyncStatus();
-
+		
+		this.responseDTO = packetStatusService.packetSyncStatus();
+		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+		
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
-		return syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+		 return responseDTO;
 
 	}
 

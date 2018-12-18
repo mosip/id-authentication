@@ -1,5 +1,9 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +17,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
 
 /**
  * The implementation class of {@link AuditDAO}

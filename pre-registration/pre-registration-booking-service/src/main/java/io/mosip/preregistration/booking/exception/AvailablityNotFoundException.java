@@ -29,4 +29,8 @@ public class AvailablityNotFoundException extends BaseUncheckedException {
 	public AvailablityNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public AvailablityNotFoundException() {
+		super();
+	}
 }

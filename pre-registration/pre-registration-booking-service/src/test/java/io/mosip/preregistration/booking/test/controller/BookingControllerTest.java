@@ -29,6 +29,9 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingDTO;
+import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.RequestDto;
 import io.mosip.preregistration.booking.dto.ResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import net.minidev.json.parser.JSONParser;
@@ -55,6 +58,11 @@ public class BookingControllerTest {
 	@SuppressWarnings("rawtypes")
 	ResponseDto responseDto = new ResponseDto();
 	private Object jsonObject = null;
+	
+	private Object jsonObject1 = null;
+	CancelBookingResponseDTO cancelBookingResponseDTO=new CancelBookingResponseDTO();
+	CancelBookingDTO cancelbookingDto=new CancelBookingDTO();
+	RequestDto<CancelBookingDTO> dto=new RequestDto<>();
 
 	@SuppressWarnings({ "deprecation" })
 	@Before
@@ -86,6 +94,20 @@ public class BookingControllerTest {
 		bookingDTO.setRequest(bookingList);
 
 		responseDto.setErr(null);
+		
+		URI cancelUri = new URI(
+				classLoader.getResource("cancelAppointment.json").getFile().trim().replaceAll("\\u0020", "%20"));
+		File file1 = new File(cancelUri.getPath());
+		jsonObject1 = parser.parse(new FileReader(file1));
+		
+		cancelbookingDto.setPre_registration_id("12345");
+		cancelbookingDto.setRegistration_center_id("2");
+		cancelbookingDto.setSlotFromTime("09:00");
+		cancelbookingDto.setSlotToTime("09:20");
+		String restime="2018-12-04T07:22:57.086+0000";
+		cancelbookingDto.setReg_date(restime);
+		
+		dto.setRequest(cancelbookingDto);
 	}
 
 	@Test
@@ -107,6 +129,8 @@ public class BookingControllerTest {
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -141,5 +165,41 @@ public class BookingControllerTest {
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void cancelAppointmentSuccessTest() throws Exception {
+		
+		responseDto.setErr(null);
+		responseDto.setStatus(true);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
+		cancelBookingResponseDTO.setTransactionId("375765");
+		responseDto.setResponse(cancelBookingResponseDTO);
+		
+		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/booking/book")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
+		
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void cancelAppointmentFailureTest() throws Exception {
+		
+		responseDto.setStatus(false);
+		dto.setRequest(null);
+		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/booking/book")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
+		
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
 
 }

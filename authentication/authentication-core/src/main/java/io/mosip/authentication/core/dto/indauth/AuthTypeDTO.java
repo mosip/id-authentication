@@ -20,7 +20,7 @@ public class AuthTypeDTO {
 
 	/** For Full address Authentication */
 	private boolean fullAddress;
-	
+
 	/** For biometric Authentication */
 	private boolean bio;
 
@@ -29,16 +29,5 @@ public class AuthTypeDTO {
 
 	/** For pin Authentication */
 	private boolean pin;
-	
-	/** For FingerPrint Authentication */
-	private boolean fingerPrint;
-	
-	/** For Iris Authentication */
-	private boolean iris;
-	 
-	/** For Face Authentication  */
-	private boolean face;
-
-	
 
 }

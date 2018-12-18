@@ -30,7 +30,7 @@ public enum PacketUploaderConstant {
 	/**
 	 * Exception Breaker
 	 */
-	EXCEPTTION_BREAKER(" : "),
+	EXCEPTION_BREAKER(" : "),
 	/**
 	 * Minimum port allowed
 	 */

@@ -62,7 +62,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Timestamp time = new Timestamp(System.currentTimeMillis());
 
 			Registration registration = new Registration();
-			registration.setId(zipFileName.substring(zipFileName.lastIndexOf(File.separator) + 1));
+			registration.setId(zipFileName.substring(zipFileName.lastIndexOf('/') + 1));
 
 			registration.setRegType(RegistrationType.NEW.getCode());
 			registration.setRefRegId("12345");

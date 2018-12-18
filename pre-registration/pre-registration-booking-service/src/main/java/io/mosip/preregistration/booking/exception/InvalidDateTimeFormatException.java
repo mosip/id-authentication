@@ -29,4 +29,8 @@ public class InvalidDateTimeFormatException extends BaseUncheckedException {
 	public InvalidDateTimeFormatException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public InvalidDateTimeFormatException() {
+		super();
+	}
 }

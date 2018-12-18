@@ -1,11 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
 
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 
 /**
  * Interface class from which various implementation can be performed
@@ -17,21 +17,23 @@ public interface LocationService {
 	/**
 	 * this method will fetch LocationHierarchyDetails
 	 * 
-	 * @param locationHierarchyDTO
-	 * @return
+	 * @param langCode - language code
+	 * @return LocationHierarchyResponseDto -location response
 	 */
 	public LocationHierarchyResponseDto getLocationDetails(String langCode);
 	
 	/**
 	 * 
-	 * @param locationHierarchyDto
-	 * @return
+	 * @param locCode - location code 
+	 * @param langCode - language code
+	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode,String langCode);
 	
 	/**
 	 * 
-	 * @return 
+	 * @param locationRequestDto - lcoation request object
+	 * @return PostLocationCodeResponseDto
 	 */
-	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 }

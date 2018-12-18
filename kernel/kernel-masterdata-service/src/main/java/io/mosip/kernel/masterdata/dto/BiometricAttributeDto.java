@@ -5,19 +5,13 @@ import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * 
  * @author Uday Kumar
  * @since 1.0.0
- *
  */
 @Data
-
-
 @ApiModel(value = "BiometricAttribute", description = "BiometricAttribute resource representation")
 public class BiometricAttributeDto {
 	/**

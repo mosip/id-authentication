@@ -2,6 +2,7 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
+import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
@@ -123,5 +124,15 @@ public interface MachineMappingDAO {
 	 *            the list of devices to be removed from the machine
 	 */
 	void deleteUnMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices);
+	
+	/**
+	 * Method to check the device is valid
+	 * 
+	 * @param deviceType
+	 * @param deviceProvider
+	 * @return
+	 * 		It returns true when record found for the device else false
+	 */
+	boolean isValidDevice(DeviceTypes deviceType,String serialNo);
 
 }

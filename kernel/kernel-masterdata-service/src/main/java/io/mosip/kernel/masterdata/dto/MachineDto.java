@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -55,13 +53,14 @@ public class MachineDto {
 	/**
 	 * Field for machine IP address
 	 */
-	
-	@Size(min = 1, max = 64)
+
+	@Size(min = 1, max = 17)
 	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;
 	/**
 	 * Field for machine specification Id
 	 */
+	@NotNull
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "machineSpecId", required = true, dataType = "java.lang.String")
 	private String machineSpecId;
@@ -75,13 +74,11 @@ public class MachineDto {
 	/**
 	 * Field for is active
 	 */
-	@NotNull	
+	@NotNull
 	private Boolean isActive;
 	/**
 	 * Field for is validity of the Device
 	 */
-	//@DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ")
 	private LocalDateTime validityDateTime;
-	
 
 }

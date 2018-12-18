@@ -14,7 +14,7 @@ public enum KeymanagerErrorCode {
 
 	KEYSTORE_PROCESSING_ERROR("KER-KMA-003", "Error occured in processing Keystore: "),
 
-	NO_SUCH_ALIAS("KER-KMA-004", "No such alias"),
+	NO_SUCH_ALIAS("KER-KMA-004", "No such alias: "),
 
 	CERTIFICATE_PROCESSING_ERROR("KER-KMA-005", "Error occured while processing exception: ");
 

@@ -1,9 +1,12 @@
 package io.mosip.registration.service.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static java.lang.System.arraycopy;
+
 import java.security.Security;
 import java.util.List;
-
-import static java.lang.System.arraycopy;
 
 import javax.crypto.SecretKey;
 
@@ -11,27 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.AESSeedGenerator;
 import io.mosip.registration.service.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * API class to encrypt the data using AES algorithm
@@ -102,16 +101,16 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
-			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, AppModule.PACKET_AES_ENCRYPTOR,
+			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
 					"RSA and AES Encryption completed successfully", "RID", "Packet RID");
 			
 			return concat(rsaEncryptedKey, encryptedData);
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
 		} catch (MosipInvalidKeyException mosipInvalidKeyException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
-					RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.AES_ENCRYPTION_MANAGER,
 					runtimeException.toString());

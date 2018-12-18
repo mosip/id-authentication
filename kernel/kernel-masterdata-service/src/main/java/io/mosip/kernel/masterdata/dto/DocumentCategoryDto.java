@@ -3,9 +3,9 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Document Category Detail
@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-
-
+@ApiModel(value = "DocumentCategory", description = "DocumentCategory resource representation")
 public class DocumentCategoryDto {
 
 	/**
@@ -25,6 +24,7 @@ public class DocumentCategoryDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
 	/**
@@ -32,12 +32,14 @@ public class DocumentCategoryDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 64)
+	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 
 	/**
 	 * Document category description
 	 */
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
+	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
 	/**
@@ -45,12 +47,14 @@ public class DocumentCategoryDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 3)
+	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;
 
 	/**
 	 * Is active or not.
 	 */
 	@NotNull
+	@ApiModelProperty(value = "Application isActive Status", required =  true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 
 }

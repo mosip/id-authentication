@@ -1,5 +1,8 @@
 package io.mosip.registration.test.service.packet.encryption.aes;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -15,9 +18,6 @@ import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.AESSeedGeneratorImpl;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 public class AESSeedGeneratorTest {
 	@Rule

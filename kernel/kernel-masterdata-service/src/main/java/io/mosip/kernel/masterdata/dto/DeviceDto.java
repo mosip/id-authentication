@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Device Detail
@@ -19,8 +19,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@ApiModel(value = "Device", description = "Device Detail resource")
 public class DeviceDto {
 
 	/**
@@ -28,40 +27,49 @@ public class DeviceDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 	/**
 	 * Field for device name
 	 */
 	@NotNull
 	@Size(min = 1, max = 64)
+	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 	/**
 	 * Field for device serial number
 	 */
 	@NotNull
 	@Size(min = 1, max = 64)
+	@ApiModelProperty(value = "serialNum", required = true, dataType = "java.lang.String")
 	private String serialNum;
 	/**
 	 * Field for device device specification Id
 	 */
 	@NotNull
 	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "deviceSpecId", required = true, dataType = "java.lang.String")
 	private String deviceSpecId;
 	/**
 	 * Field for device mac address
 	 */
 	@NotNull
 	@Size(min = 1, max = 64)
+	@ApiModelProperty(value = "macAddress", required = true, dataType = "java.lang.String")
 	private String macAddress;
 	/**
 	 * Field for device ip address
 	 */
+
+	@Size(min = 1, max = 17)
+	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;
 	/**
 	 * Field for language code
 	 */
 	@NotNull
 	@Size(min = 1, max = 3)
+	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 	/**
 	 * Field for is active

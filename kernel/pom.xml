@@ -61,13 +61,14 @@
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
 		<commons-io>2.6</commons-io>
-		<commons-codec>1.10</commons-codec>
+		<commons-codec>1.11</commons-codec>
 		<guava.version>19.0</guava.version>
 		<seventeam-otp.version>1.0.0</seventeam-otp.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
+		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -82,7 +83,8 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
@@ -116,7 +118,9 @@
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
-		<module>kernel-crypto-service</module>
+		<module>kernel-cryptomanager-service</module>
+		<module>kernel-idrepo-service</module>
+		<module>kernel-syncdata-service</module>
 
 		<module>kernel-batch-framework</module>
 		<module>kernel-batch-server</module>
@@ -124,8 +128,6 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
-		
-		<module>kernel-idrepo-service</module>
 	</modules>
 
 	<dependencies>

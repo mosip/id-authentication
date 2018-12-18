@@ -138,8 +138,8 @@ public class DataSyncControllerTest {
 		DataSyncDTO dataSyncDTO = new DataSyncDTO();
 		DataSyncRequestDTO dataSyncRequestDTO = new DataSyncRequestDTO();
 		dataSyncRequestDTO.setRegClientId("59276903416082");
-		dataSyncRequestDTO.setFromDate(from);
-		dataSyncRequestDTO.setToDate(to);
+		dataSyncRequestDTO.setFromDate("01/01/2011");
+		dataSyncRequestDTO.setToDate("01/01/2013");
 		dataSyncRequestDTO.setUserId("Officer");
 		dataSyncDTO.setId("mosip.pre-registration.datasync");
 		dataSyncDTO.setDataSyncRequestDto(dataSyncRequestDTO);

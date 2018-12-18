@@ -9,7 +9,15 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
+import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.html2pdf.css.media.MediaDeviceDescription;
+import com.itextpdf.html2pdf.css.media.MediaType;
+import com.itextpdf.html2pdf.css.util.CssUtils;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.font.FontProvider;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
@@ -25,7 +33,6 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
  * @since 1.0.0
  *
  */
-
 @Component
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
@@ -107,6 +114,49 @@ public class PDFGeneratorImpl implements PDFGenerator {
 					PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 
+	}
+
+	/**
+	 * This method is used to convert Template obtained from an {@link InputStream}
+	 * to a PDF file and written to an {@link OutputStream}.
+	 *
+	 * @param is
+	 *            The {@link InputStream} with the source processed Template
+	 * @param resourceLoc
+	 *            The {@link String} resourceLocation
+	 * @return It will return generated PDF file as {@link OutputStream}
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred
+	 *
+	 */
+	@Override
+	public OutputStream generate(InputStream is, String resourceLoc) throws IOException {
+		Objects.requireNonNull(is, "Stream cannot be null");
+		OutputStream os = new ByteArrayOutputStream();
+		PdfWriter pdfWriter = new PdfWriter(os);
+		PdfDocument pdfDoc = new PdfDocument(pdfWriter);
+		ConverterProperties converterProperties = new ConverterProperties();
+		FontProvider fp = new FontProvider();
+		
+		pdfDoc.setTagged();
+		PageSize pageSize = PageSize.A4.rotate();
+		pdfDoc.setDefaultPageSize(pageSize);
+		float screenWidth = CssUtils.parseAbsoluteLength("" + pageSize.getWidth());
+		MediaDeviceDescription mediaDescription = new MediaDeviceDescription(MediaType.SCREEN);
+		mediaDescription.setWidth(screenWidth);
+		converterProperties.setMediaDeviceDescription(mediaDescription);
+		fp.addStandardPdfFonts();
+		fp.addDirectory(resourceLoc);
+		converterProperties.setFontProvider(fp);
+		converterProperties.setBaseUri(resourceLoc);
+		converterProperties.setCreateAcroForm(true);
+		try {
+			HtmlConverter.convertToPdf(is, pdfDoc, converterProperties);
+		} catch (Exception e) {
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		return os;
 	}
 
 }

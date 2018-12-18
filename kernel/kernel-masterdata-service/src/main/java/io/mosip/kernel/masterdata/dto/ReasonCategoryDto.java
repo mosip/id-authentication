@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -31,8 +30,6 @@ public class ReasonCategoryDto {
 
 	@NotNull
 	private Boolean isActive;
-
-	private Boolean isDeleted;
 
 	private List<ReasonListDto> reasonList = new ArrayList<>();
 }

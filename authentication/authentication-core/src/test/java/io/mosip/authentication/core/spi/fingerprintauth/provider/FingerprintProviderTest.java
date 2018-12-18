@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,6 +72,27 @@ public class FingerprintProviderTest {
 		}
 	};
 
+	FingerprintProvider fingerPrint = new FingerprintProvider() {
+
+		@Override
+		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FingerprintDeviceInfo deviceInfo() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
+
 	@Test
 	public void testISOScoreCalculatorSameFingerDiffScan() {
 		double score = fp.scoreCalculator(finger1, finger1scan2);
@@ -107,6 +129,15 @@ public class FingerprintProviderTest {
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(finger2);
 		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score < 100);
+	}
+
+	@Test
+	public void testmatchMinutiea() {
+		byte[] refInfo = Base64.getEncoder().encode(finger1);
+		String value = new String(refInfo);
+		fingerPrint.matchMinutiea(value, value);
+		fingerPrint.matchImage(value, value);
+		fingerPrint.decodeValue(value);
 	}
 
 }
