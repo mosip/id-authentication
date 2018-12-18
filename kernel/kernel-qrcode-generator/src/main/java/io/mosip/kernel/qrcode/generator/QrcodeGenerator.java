@@ -1,0 +1,78 @@
+package io.mosip.kernel.qrcode.generator;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
+import io.mosip.kernel.qrcode.generator.constant.QrVersion;
+import io.mosip.kernel.qrcode.generator.constant.QrcodeConstants;
+import io.mosip.kernel.qrcode.generator.constant.QrcodeExceptionConstants;
+import io.mosip.kernel.qrcode.generator.util.QrcodegeneratorUtils;
+
+/**
+ * Class which provides functionality to generate QR Code
+ * 
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
+public class QrcodeGenerator {
+
+	/**
+	 * Constructor for this class
+	 */
+	private QrcodeGenerator() {
+
+	}
+
+	/**
+	 * Method to generate QR Code
+	 * 
+	 * @param data
+	 *            data to encode in the QR code
+	 * @param version
+	 *            {@link QrVersion} class for QR Code version
+	 * @return array of byte containing QR Code in PNG format
+	 * @throws QrcodeGenerationException
+	 *             exceptions which may occur when encoding a QRcode using the
+	 *             Writer framework.
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 *             exceptions which may occur when write to the byte stream fail
+	 */
+	public static byte[] generateQrCode(String data, QrVersion version)
+			throws QrcodeGenerationException, io.mosip.kernel.core.exception.IOException {
+		QrcodegeneratorUtils.verifyInput(data, version);
+		Map<EncodeHintType, Object> hintMap = new EnumMap<>(EncodeHintType.class);
+		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+		hintMap.put(EncodeHintType.QR_VERSION, version.getVersion());
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();
+		BitMatrix byteMatrix = null;
+		try {
+			byteMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, version.getSize(), version.getSize(),
+					hintMap);
+		} catch (WriterException | IllegalArgumentException exception) {
+			throw new QrcodeGenerationException(QrcodeExceptionConstants.QRCODE_GENERATION_EXCEPTION.getErrorCode(),
+					QrcodeExceptionConstants.QRCODE_GENERATION_EXCEPTION.getErrorMessage() + exception.getMessage(),
+					exception);
+		}
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			MatrixToImageWriter.writeToStream(byteMatrix, QrcodeConstants.FILE_FORMAT, outputStream);
+		} catch (IOException exception) {
+			throw new io.mosip.kernel.core.exception.IOException(QrcodeExceptionConstants.IO_EXCEPTION.getErrorCode(),
+					QrcodeExceptionConstants.IO_EXCEPTION.getErrorMessage());
+		}
+		return outputStream.toByteArray();
+
+	}
+}
