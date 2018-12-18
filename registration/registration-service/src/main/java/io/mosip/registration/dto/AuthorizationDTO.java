@@ -12,7 +12,7 @@ import java.util.List;
 public class AuthorizationDTO {
 
 	private List<String> authorizationScreenId;
-	private String authorizationRoleCode;
+	private List<String> authorizationRoleCode;
 	private boolean authorizationIsPermitted;
 
 	/**
@@ -33,7 +33,7 @@ public class AuthorizationDTO {
 	/**
 	 * @return the authorizationRoleCode
 	 */
-	public String getAuthorizationRoleCode() {
+	public List<String> getAuthorizationRoleCode() {
 		return authorizationRoleCode;
 	}
 
@@ -41,7 +41,7 @@ public class AuthorizationDTO {
 	 * @param authorizationRoleCode
 	 *            the authorizationRoleCode to set
 	 */
-	public void setAuthorizationRoleCode(String authorizationRoleCode) {
+	public void setAuthorizationRoleCode(List<String> authorizationRoleCode) {
 		this.authorizationRoleCode = authorizationRoleCode;
 	}
 

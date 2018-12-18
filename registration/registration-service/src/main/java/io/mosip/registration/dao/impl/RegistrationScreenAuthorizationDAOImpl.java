@@ -3,8 +3,8 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
+import io.mosip.registration.dao.ScreenAuthorizationDetails;
 import io.mosip.registration.dto.AuthorizationDTO;
-import io.mosip.registration.entity.RegistrationScreenAuthorization;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
 
 /**
@@ -40,27 +40,23 @@ public class RegistrationScreenAuthorizationDAOImpl implements RegistrationScree
 	 * @see org.mosip.registration.dao.RegistrationScreenAuthorizationDAO#
 	 * getScreenAuthorizationDetails(java.lang.String)
 	 */
-	public AuthorizationDTO getScreenAuthorizationDetails(String roleCode) {
+	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
 
 		LOGGER.debug("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Fetching List of Screens to be authorized");
+				APPLICATION_NAME, APPLICATION_ID, "Fetching List of Screens to be authorized");
 
 		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
-		List<RegistrationScreenAuthorization> authorizationList = registrationScreenAuthorizationRepository
-				.findByRegistrationScreenAuthorizationIdRoleCodeAndIsPermittedTrueAndIsActiveTrue(roleCode);
+		List<ScreenAuthorizationDetails> authorizationList = registrationScreenAuthorizationRepository
+				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleCode);
 
-		List<String> authList = new ArrayList<>();
-		authorizationList.forEach(auth -> authList.add(auth.getRegistrationScreenAuthorizationId().getScreenId()));
-		authorizationDTO.setAuthorizationScreenId(authList);
+		authorizationDTO.setAuthorizationScreenId(
+				authorizationList.stream().map(auth -> auth.getRegistrationScreenAuthorizationId().getScreenId())
+						.collect(Collectors.toList()).stream().distinct().collect(Collectors.toList()));
 		authorizationDTO.setAuthorizationRoleCode(roleCode);
-		if (!authorizationList.isEmpty()) {
-			authorizationDTO.setAuthorizationIsPermitted(authorizationList.get(0).isPermitted());
+		authorizationDTO.setAuthorizationIsPermitted(true);
 
-		}
 		LOGGER.debug("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
-				APPLICATION_NAME, APPLICATION_ID,
-				"List of Screens to be authorized are fetched successfully");
+				APPLICATION_NAME, APPLICATION_ID, "List of Screens to be authorized are fetched successfully");
 
 		return authorizationDTO;
 	}

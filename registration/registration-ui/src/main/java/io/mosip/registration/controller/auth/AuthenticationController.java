@@ -304,9 +304,9 @@ public class AuthenticationController extends BaseController implements Initiali
 		
 		count = 1;
 		if (isSupervisor) {
-			userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
+			//userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
 		} else {
-			userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
+			//userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
 		}
 		userAuthenticationTypeMap.remove(RegistrationConstants.LOGIN_SEQUENCE);
 		loadNextScreen();
