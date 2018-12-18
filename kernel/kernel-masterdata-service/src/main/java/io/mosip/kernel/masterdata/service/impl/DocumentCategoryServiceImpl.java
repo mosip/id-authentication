@@ -23,8 +23,9 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch list of valid document category and to
- * create document category based on provided data.
+ * This class have methods to fetch list of valid document category, create
+ * document category based on provided data,update document category based on
+ * data provided and delete document category based on id provided.
  * 
  * @author Neha
  * @author Ritesh Sinha
@@ -194,6 +195,38 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorMessage());
 		}
+		return documentCategoryId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * deleteDocumentCategory(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode) {
+		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
+		documentCategoryId.setCode(code);
+		documentCategoryId.setLangCode(langCode);
+		try {
+			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
+					documentCategoryId);
+			if (documentCategory != null) {
+				MetaDataUtils.setDeleteMetaData(documentCategory);
+				documentCategoryRepository.update(documentCategory);
+			} else {
+				throw new DataNotFoundException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorCode(),
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorMessage());
+		}
+
 		return documentCategoryId;
 	}
 

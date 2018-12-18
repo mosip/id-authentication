@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -136,6 +137,49 @@ public class TemplateServiceImpl implements TemplateService {
 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(templateEntity, idResponseDto);
+
+		return idResponseDto;
+	}
+
+	@Override
+	public IdResponseDto updateTemplates(TemplateDto template) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			Template entity = templateRepository.findById(Template.class, template.getId());
+			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+				MetaDataUtils.setUpdateMetaData(template, entity, false);
+				templateRepository.update(entity);
+				idResponseDto.setId(entity.getId());
+			} else {
+				throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
+		return idResponseDto;
+	}
+
+	@Override
+	public IdResponseDto deleteTemplates(String id) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			Template entity = templateRepository.findById(Template.class, id);
+			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+				MetaDataUtils.setDeleteMetaData(entity);
+				templateRepository.delete(entity);
+				idResponseDto.setId(entity.getId());
+			} else {
+				throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
 
 		return idResponseDto;
 	}
