@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -86,7 +87,7 @@ public class Machine extends BaseEntity implements Serializable {
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
 

@@ -4,14 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +27,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@SelectBeforeUpdate(true)
-@DynamicUpdate(true)
 @Entity
 @Table(name = "machine_spec", schema = "master")
 public class MachineSpecification extends BaseEntity implements Serializable {
@@ -89,7 +85,7 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })

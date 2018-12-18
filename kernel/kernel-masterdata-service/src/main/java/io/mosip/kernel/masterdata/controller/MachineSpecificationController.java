@@ -69,13 +69,13 @@ public class MachineSpecificationController {
 	@PutMapping("/v1.0/machinespecifications/{id}")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine Specification successfully created", response = IdResponseDto.class),
+			@ApiResponse(code = 201, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
-			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
+			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseEntity<IdResponseDto> updateMachineSpecification(
-			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification, @PathVariable("id") String id) {
+			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification, id),
+		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
 				HttpStatus.OK);
 	}
 }

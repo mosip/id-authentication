@@ -38,6 +38,6 @@ public interface MachineSpecificationService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Machine Specification
 	 */
-	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification, String id);
+	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
 }

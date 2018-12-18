@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -153,36 +153,51 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
-		Machine  updMachine = null;
-		Optional<Machine> machineOptional = machineRepository.findById(machine.getId());
-		
-		/*if(machineOptional.isPresent()){	
-			try {
-				Machine entity  = MetaDataUtils.setUpdateMetaData(machine.getRequest(),machineOptional , true);
-				MachineHistory entityHistory   = MetaDataUtils.setUpdateMetaData(machine.getRequest(), MachineHistory.class, true);
-				updMachine = machineRepository.save(entity);	
-				machineHistoryRepository.save(entityHistory);
-			} catch (DataAccessLayerException | DataAccessException e) {
-				throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
-				MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-				}
-			}else{
-			throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}*/
+		Machine updMachine = null;
+		try {
+			Machine renmachine = machineRepository.findById(Machine.class, machine.getRequest().getId());
+
+			/*
+			 * MachineHistory renmachineHistory = machineHistoryRepository
+			 * .findByIdAndEffectDTimes(machine.getRequest().getId(),renmachine.
+			 * getCreatedDateTime() );
+			 */
+
+			if (renmachine != null) {
+				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
+				updMachine = machineRepository.update(renmachine);
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(MapperUtils.map(updMachine, MachineHistoryDto.class), machineHistory);
+				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
+				machineHistoryRepository.create(machineHistory);
+			} else {
+				throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(updMachine, idResponseDto);
 		return idResponseDto;

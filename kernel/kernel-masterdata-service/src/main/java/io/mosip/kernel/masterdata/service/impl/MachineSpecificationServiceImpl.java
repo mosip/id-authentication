@@ -1,19 +1,14 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -66,27 +61,30 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		return idResponseDto;
 
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
-	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification, String id) {
-		MachineSpecification  updMachineSpecification = null;
-	//	Optional<MachineSpecification> machineSpecOptional = machineSpecificationRepository.findById(machineSpecification.getId());
-	//	MachineSpecification renmachineSpecification = machineSpecificationRepository.findMachineSpecificationById(machineSpecification.getId());
-		MachineSpecification renmachineSpecification = machineSpecificationRepository.findMachineSpecificationByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
+	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+		MachineSpecification updMachineSpecification = null;
 		
-		if(!renmachineSpecification.getIsDeleted() && renmachineSpecification != null){	
-			try {
-				MachineSpecification entity  = MetaDataUtils.setUpdateMachineMetaData(machineSpecification.getRequest(),renmachineSpecification);
-				
-				
-				updMachineSpecification = machineSpecificationRepository.save(entity);	
-			} catch (DataAccessLayerException | DataAccessException e) {
-				throw new MasterDataServiceException(MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
-						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+		try {
+			MachineSpecification renmachineSpecification = machineSpecificationRepository
+					.findById(MachineSpecification.class, machineSpecification.getRequest().getId());
+			if (renmachineSpecification != null) {
+				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renmachineSpecification, false);
+				updMachineSpecification = machineSpecificationRepository.update(renmachineSpecification);
+			} else {
+				throw new DataNotFoundException(
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			}else{
-			throw new DataNotFoundException(MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(updMachineSpecification, idResponseDto);

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +35,7 @@ public class MetaDataUtils {
 	private static String contextUser = "TestAdmin";
 
 	/**
-	 * This method takes <code>source</code> object like an DTO and a class which
+	 * This method takes <code>source</code> object like an DTO and an object which
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destination</code> object and return it.
 	 * 
@@ -51,7 +50,7 @@ public class MetaDataUtils {
 	 * @param mapNullvalues
 	 *            if marked as false then field inside source which are null will
 	 *            not be mapped into destination
-	 * @return an entity class which extends {@link BaseEntity}
+	 * @return <code>destination</code> object which extends {@link BaseEntity}
 	 * @throws DataAccessLayerException
 	 *             if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Object, Boolean)
@@ -62,12 +61,12 @@ public class MetaDataUtils {
 			contextUser = authN.getName();
 		}
 
-		D entity = MapperUtils.map(source, destination, mapNullvalues);
+		MapperUtils.map(source, destination, mapNullvalues);
 
-		setUpdatedDateTime(contextUser, entity);
-		return entity;
+		setUpdatedDateTime(contextUser, destination);
+		return destination;
 	}
-	
+
 	public static <S, D extends BaseEntity> D setUpdateMachineMetaData(final S source, D destination) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		if (!EmptyCheckUtils.isNullEmpty(authN)) {
