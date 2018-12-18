@@ -9,16 +9,6 @@ import { BookingModelRequest } from './booking-request.model';
 export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
-<<<<<<< HEAD
-  SEND_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/documents';
-  DELETE_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/deleteDocument';
-  GET_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
-  BASE_URL2 = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applicationData';
-  BASE_URL = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
-  // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
-  // https://pre-reg-df354.firebaseio.com/applications.json
- // MASTER_DATA_URL = 'http://localhost:8086/masterdata/v1.0/';
-=======
   SEND_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
@@ -26,8 +16,7 @@ export class DataStorageService {
   BASE_URL = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
- // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
->>>>>>> 65f246e68846a5998674225f16dda1ea3ce759d5
+  // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
