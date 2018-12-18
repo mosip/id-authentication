@@ -13,53 +13,32 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import lombok.Data;
-
+/**
+ * 
+ * @author Girish Yarru
+ *
+ */
 @Entity
 @Table(name = "individual_demographic_dedup", schema = "regprc")
 public class IndividualDemographicDedupeEntity extends BasePacketEntity<IndividualDemographicDedupePKEntity>
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "first_name")
-	private String firstName;
+	@Column(name = "uin_ref_id")
+	private String uinRefId;
 
-	@Column(name = "middle_name")
-	private String middleName;
-
-	@Column(name = "last_name")
-	private String lastName;
-
-	@Column(name = "full_name")
-	private String fullName;
+	@Column(name = "name")
+	private String name;
 
 	@Temporal(TemporalType.DATE)
 	private Date dob;
 
 	@Column(name = "gender", nullable = false)
-	private String genderCode;
+	private String gender;
 
-	@Column(name = "address_line_1")
-	private String addrLine1;
+	@Column(name = "phonetic_name")
+	private String phoneticName;
 
-	@Column(name = "address_line_2")
-	private String addrLine2;
-
-	@Column(name = "address_line_3")
-	private String addrLine3;
-
-	@Column(name = "address_line_4")
-	private String addrLine4;
-
-	@Column(name = "address_line_5")
-	private String addrLine5;
-
-	@Column(name = "address_line_6")
-	private String addrLine6;
-
-	@Column(name = "zip_code")
-	private String zipCode;
-	
 	@Column(name = "is_active")
 	private Boolean isActive;
 
@@ -88,36 +67,12 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		super();
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setName(String fullName) {
+		this.name = fullName;
 	}
 
 	public Date getDob() {
@@ -128,68 +83,12 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.dob = dob;
 	}
 
-	public String getGenderCode() {
-		return genderCode;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
-	}
-
-	public String getAddrLine1() {
-		return addrLine1;
-	}
-
-	public void setAddrLine1(String addrLine1) {
-		this.addrLine1 = addrLine1;
-	}
-
-	public String getAddrLine2() {
-		return addrLine2;
-	}
-
-	public void setAddrLine2(String addrLine2) {
-		this.addrLine2 = addrLine2;
-	}
-
-	public String getAddrLine3() {
-		return addrLine3;
-	}
-
-	public void setAddrLine3(String addrLine3) {
-		this.addrLine3 = addrLine3;
-	}
-
-	public String getAddrLine4() {
-		return addrLine4;
-	}
-
-	public void setAddrLine4(String addrLine4) {
-		this.addrLine4 = addrLine4;
-	}
-
-	public String getAddrLine5() {
-		return addrLine5;
-	}
-
-	public void setAddrLine5(String addrLine5) {
-		this.addrLine5 = addrLine5;
-	}
-
-	public String getAddrLine6() {
-		return addrLine6;
-	}
-
-	public void setAddrLine6(String addrLine6) {
-		this.addrLine6 = addrLine6;
-	}
-
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setGender(String genderCode) {
+		this.gender = genderCode;
 	}
 
 	public Boolean getIsActive() {
@@ -247,6 +146,21 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
 	}
-	
-	
+
+	public String getPhoneticName() {
+		return phoneticName;
+	}
+
+	public void setPhoneticName(String pheoniticName) {
+		this.phoneticName = pheoniticName;
+	}
+
+	public String getUinRefId() {
+		return uinRefId;
+	}
+
+	public void setUinRefId(String uinRefId) {
+		this.uinRefId = uinRefId;
+	}
+
 }
