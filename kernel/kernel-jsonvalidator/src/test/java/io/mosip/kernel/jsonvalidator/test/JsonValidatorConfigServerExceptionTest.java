@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -48,12 +49,13 @@ public class JsonValidatorConfigServerExceptionTest {
 
 	}
 	
-	//@Test
+	@Test
+	@Ignore
 	public void testWhenValidJsonProvided()
 			throws HttpRequestException, JsonValidationProcessingException, IOException, JsonIOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "mosip-identity-json-schema.json";
+		String schemaName = "mosip-prereg-identity-json-schema.json";
 		ValidationReport validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
 		assertEquals(true, isValid);
