@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,5 +84,11 @@ public class DocumentCategoryController {
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/v1.0/documentcategories")
+	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
+			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
 	}
 }
