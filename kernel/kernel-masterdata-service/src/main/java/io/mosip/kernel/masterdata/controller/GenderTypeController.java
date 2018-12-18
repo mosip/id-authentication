@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class for fetching gender data from DB
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.service.GenderTypeService;
  *
  */
 @RestController
+@Api(tags = { "GenderType" })
 public class GenderTypeController {
 	@Autowired
 	private GenderTypeService genderTypeService;
@@ -54,14 +56,14 @@ public class GenderTypeController {
 	/**
 	 * Post API to enter a new Gender Type Data
 	 * 
-	 * @param genderRequestDto
-	 *            input columns for adding data
-	 * @return added row of gender type
+	 * @param gender
+	 *            input dto to enter a new gender data
+	 * @return primary key of entered row of gender
 	 */
 	@PostMapping("/v1.0/gendertype")
-	public ResponseEntity<CodeAndLanguageCodeID> createGenderType(
+	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.createGenderType(gender), HttpStatus.CREATED);
+		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.CREATED);
 
 	}
 

@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * This class provide services to MOSIP system to do CRUD operations on
+ * This class provide services to system to do CRUD operations on
  * Languages.
  * 
  * @author Bal Vikash Sharma
@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("/v1.0/languages")
-@Api(tags = { "languages" })
+@Api(tags = { "Language" })
 public class LanguageController {
 
 	/**

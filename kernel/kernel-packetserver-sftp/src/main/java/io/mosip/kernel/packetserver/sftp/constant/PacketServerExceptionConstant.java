@@ -11,15 +11,15 @@ public enum PacketServerExceptionConstant {
 	/**
 	 * {@link #MOSIP_PUBLIC_KEY_EXCEPTION} exception constant
 	 */
-	MOSIP_PUBLIC_KEY_EXCEPTION("KER-FTU-001", "cannot read public key"),
+	MOSIP_PUBLIC_KEY_EXCEPTION("KER-FTM-FTP-001", "cannot read public key"),
 	/**
 	 * {@link #MOSIP_INVALID_SPEC_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_SPEC_EXCEPTION("KER-FTU-002", "public key is does not have valid spec"),
+	MOSIP_INVALID_SPEC_EXCEPTION("KER-FTM-FTP-002", "public key is does not have valid spec"),
 	/**
 	 * {@link #MOSIP_ILLEGAL_STATE_EXCEPTION} exception constant
 	 */
-	MOSIP_ILLEGAL_STATE_EXCEPTION("KER-FTU-003", "server went into illegal state");
+	MOSIP_ILLEGAL_STATE_EXCEPTION("KER-FTM-FTP-003", "server went into illegal state");
 	/**
 	 * Error Code for Exception
 	 */

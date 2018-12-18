@@ -14,7 +14,7 @@ public class OtpRequestDTO  {
 
 	private String id;
 
-	private String ver;
+	//private String ver;
 
 	private String idvId;
 

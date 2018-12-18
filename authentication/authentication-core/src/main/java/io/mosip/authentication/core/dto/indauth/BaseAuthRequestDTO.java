@@ -13,5 +13,5 @@ public class BaseAuthRequestDTO {
 
 	private String id;
 	
-	private String ver;
+	//private String ver;
 }

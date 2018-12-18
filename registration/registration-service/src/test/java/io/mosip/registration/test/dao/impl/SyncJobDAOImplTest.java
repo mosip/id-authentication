@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Rule;
@@ -17,6 +18,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
 import io.mosip.registration.dao.impl.SyncJobDAOImpl;
 import io.mosip.registration.entity.Registration;
@@ -40,20 +42,16 @@ public class SyncJobDAOImplTest {
 	private SyncJobInfo syncJobnfo;
 	@Mock
 	private AuditFactoryImpl auditFactory;
+	
+	private static final List<String> REG_STATUS_CODES = Arrays.asList(RegistrationClientStatusCode.CREATED.getCode(),
+			RegistrationClientStatusCode.REJECTED.getCode(), RegistrationClientStatusCode.APPROVED.getCode(),
+			RegistrationClientStatusCode.CORRECTION.getCode(), RegistrationClientStatusCode.UIN_UPDATE.getCode(),
+			RegistrationClientStatusCode.UIN_LOST.getCode(),
+			RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), RegistrationClientStatusCode.ON_HOLD.getCode());
 
 	@Test
 	public void testGetSyncStatus() {
 		List<SyncControl> comparableList = new ArrayList<>();
-		List<String> statusCodes = new ArrayList<>();
-		statusCodes.add("R");
-		statusCodes.add("I");
-		statusCodes.add("A");
-		statusCodes.add("C");
-		statusCodes.add("U");
-		statusCodes.add("L");
-		statusCodes.add("S");
-		statusCodes.add("H");
-		statusCodes.add("E");
 
 		List<Registration> registrationsList = new ArrayList<>();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -79,18 +77,14 @@ public class SyncJobDAOImplTest {
 		comparableList.add(syncControl2);
 
 		Mockito.when(syncStatusRepository.findAll()).thenReturn(comparableList);
-		Mockito.when(registrationRepository.findByClientStatusCodeIn(statusCodes)).thenReturn(registrationsList);
+		Mockito.when(registrationRepository.findByClientStatusCodeIn(REG_STATUS_CODES)).thenReturn(registrationsList);
 
 		syncJobnfo = syncJobDAOImpl.getSyncStatus();
 		assertEquals("MDS_J00001", syncJobnfo.getSyncControlList().get(0).getSyncJobId());
 		assertEquals("LER_J00009", syncJobnfo.getSyncControlList().get(1).getSyncJobId());
 		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(0).getLastSyncDtimes());
 		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(1).getLastSyncDtimes());
-		if (syncJobnfo.getYetToExportCount() == registrationsList.size())
-			;
-		{
-			assertTrue(true);
-		}
+		assertTrue(syncJobnfo.getYetToExportCount() == registrationsList.size());
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,5 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +20,9 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.RegistrationUserDetailDAOImpl;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.UserBiometricRepository;
 
 public class RegistrationUserDetailDAOTest {
 
@@ -31,6 +34,9 @@ public class RegistrationUserDetailDAOTest {
 
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
+	
+	@Mock
+	private UserBiometricRepository userBiometricRepository;
 
 	@Test
 	public void getUserDetailSuccessTest() {
@@ -67,6 +73,22 @@ public class RegistrationUserDetailDAOTest {
 		registrationUserDetail.setUserlockTillDtimes(new Timestamp(new Date().getTime()));
 		Mockito.when(registrationUserDetailRepository.save(registrationUserDetail)).thenReturn(registrationUserDetail);
 		registrationUserDetailDAOImpl.updateLoginParams(registrationUserDetail);
+	}
+	
+	@Test
+	public void getAllActiveUsersTest() {
+		List<UserBiometric> bioList=new ArrayList<>();
+		Mockito.when(userBiometricRepository.findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(Mockito.anyString())).thenReturn(bioList);
+		assertEquals(bioList, registrationUserDetailDAOImpl.getAllActiveUsers("leftThumb"));
+	}
+	
+	@Test
+	public void getUserSpecificFingerprintDetailsTest() {
+
+		List<UserBiometric> bioList=new ArrayList<>();
+		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrue(Mockito.anyString())).thenReturn(bioList);
+		assertEquals(bioList, registrationUserDetailDAOImpl.getUserSpecificFingerprintDetails("abcd"));
+	
 	}
 
 }

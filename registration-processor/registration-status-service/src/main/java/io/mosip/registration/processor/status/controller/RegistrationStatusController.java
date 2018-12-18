@@ -2,7 +2,6 @@ package io.mosip.registration.processor.status.controller;
 
 import java.util.List;
 
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.swagger.annotations.Api;
@@ -41,7 +42,7 @@ public class RegistrationStatusController {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
-	SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
 	/**
 	 * Search.
@@ -70,10 +71,15 @@ public class RegistrationStatusController {
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
-	public ResponseEntity<List<SyncRegistrationDto>> syncRegistrationController(
-			@RequestBody(required = true) List<SyncRegistrationDto> syncRegistrationDto) {
-		List<SyncRegistrationDto> syncRegistrationDtoResponse = syncRegistrationService.sync(syncRegistrationDto);
-		return ResponseEntity.status(HttpStatus.OK).body(syncRegistrationDtoResponse);
+			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched")})
+	public ResponseEntity<Object> syncRegistrationController(
+			@RequestBody(required = true) List<SyncRegistrationDto> syncRegistrationList) {
+		List<SyncResponseDto> syncResponseDtoList = syncRegistrationService.sync(syncRegistrationList);
+		if(!syncResponseDtoList.isEmpty()) {
+			return ResponseEntity.ok().body(syncResponseDtoList);
+		}else {
+			System.out.println("Calling else block");
+			return ResponseEntity.badRequest().body(syncResponseDtoList);
+		}
 	}
 }

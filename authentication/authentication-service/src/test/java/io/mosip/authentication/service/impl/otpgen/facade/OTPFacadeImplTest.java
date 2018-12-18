@@ -295,7 +295,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");
 		otpRequestDto.setIdvId("2345678901234");
-		otpRequestDto.setVer("1.0");
+		//otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}

@@ -23,12 +23,13 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.PacketSynchServiceImpl;
+import io.mosip.registration.service.packet.impl.PacketSynchServiceImpl;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
@@ -47,11 +48,14 @@ public class PacketSynchServiceImplTest {
 
 	@InjectMocks
 	private PacketSynchServiceImpl packetSynchServiceImpl;
+	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@Before
 	public void initialize() {
-		ReflectionTestUtils.setField(packetSynchServiceImpl, "urlPath",
+		ReflectionTestUtils.setField(packetSynchServiceImpl, "syncUrlPath",
 				"http://104.211.209.102:8080/v0.1/registration-processor/registration-status/sync");
+		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test

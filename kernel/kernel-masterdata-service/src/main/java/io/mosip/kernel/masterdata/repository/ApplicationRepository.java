@@ -2,13 +2,13 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Application;
 
 /**
- * 
  * @author Neha
  * @since 1.0.0
  *
@@ -19,26 +19,33 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	/**
 	 * Get all Application types
 	 * 
-	 * @return {@link List<Application>}
+	 * @param entityClass
+	 *            of type {@link Application}
+	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByIsDeletedFalse(Class<Application> entityClass);
-	
+	List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
+
 	/**
-	 * Get all Application types of a specific language
-	 * using language code
 	 * 
-	 * @param langCode
-	 * @return {@link List<Application>}
+	 * Get all Application types of a specific language using language code
+	 * 
+	 * @param languageCode
+	 *            of type {@link String}
+	 * @return list of {@link Application}
 	 */
-	public List<Application> findAllByLangCodeAndIsDeletedFalse(String languageCode);
-	
+	@Query("FROM Application WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Application> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String languageCode);
+
 	/**
 	 * Get Application type by specific id and language code
 	 * 
 	 * @param code
-	 * @param langCode
-	 * @return {@linkplain Application}
+	 *            -code
+	 * @param languageCode
+	 *            - language code
+	 * @return {@link Application}
 	 */
-	public Application findByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
-	
+	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String languageCode);
+
 }

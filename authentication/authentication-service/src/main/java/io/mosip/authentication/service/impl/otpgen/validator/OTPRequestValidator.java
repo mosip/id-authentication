@@ -76,7 +76,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (!errors.hasErrors()) {
 			validateId(otpRequestDto.getId(), errors);
 
-			validateVer(otpRequestDto.getVer(), errors);
+			//validateVer(otpRequestDto.getVer(), errors);
 
 			validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 

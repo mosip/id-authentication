@@ -8,11 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.SyncJobTransactionDAO;
-import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 
 /**

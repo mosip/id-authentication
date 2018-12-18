@@ -129,7 +129,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
-			validateVer(baseAuthRequestDTO.getVer(), errors);
+			//validateVer(baseAuthRequestDTO.getVer(), errors);
 		}
 	}
 

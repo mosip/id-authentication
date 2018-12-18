@@ -20,7 +20,7 @@ import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderExceptionConst
 import io.mosip.kernel.packetuploader.sftp.util.PacketUploaderUtils;
 
 /**
- * Mosip packet uploader SFTP
+ * Packet uploader SFTP
  * 
  * @author Urvil Joshi
  * @since 1.0.0
@@ -33,6 +33,7 @@ public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChanne
 	 */
 	public SFTPChannel createSFTPChannel(SFTPServer sftpServer)  {
 		PacketUploaderUtils.checkConfiguration(sftpServer);
+		PacketUploaderUtils.checkKey(sftpServer);
         JSch jsch = new JSch();
 		if (sftpServer.getPrivateKeyFileName() != null) {
 			PacketUploaderUtils.addIdentity(jsch, sftpServer);
@@ -46,7 +47,7 @@ public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChanne
 			channel.connect();
 		} catch (JSchException e) {
 			throw new ConnectionException(PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION.getErrorCode(),
-					PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION.getErrorMessage(), e);
+					PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION.getErrorMessage() + PacketUploaderConstant.EXCEPTION_BREAKER.getValue() + e.getMessage(), e);
 		}
 		return sftpChannel;
 	}
@@ -62,7 +63,7 @@ public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChanne
 			channelSftp.put(source, target);
 		} catch (SftpException e) {
 			throw new SFTPException(PacketUploaderExceptionConstant.MOSIP_SFTP_EXCEPTION.getErrorCode(),
-					PacketUploaderExceptionConstant.MOSIP_SFTP_EXCEPTION.getErrorMessage(), e);
+					PacketUploaderExceptionConstant.MOSIP_SFTP_EXCEPTION.getErrorMessage() + PacketUploaderConstant.EXCEPTION_BREAKER.getValue() + e.getMessage(), e);
 		}
 	}
 
@@ -77,7 +78,7 @@ public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChanne
 		} catch (JSchException e) {
 			throw new NoSessionException(
 					PacketUploaderExceptionConstant.MOSIP_NO_SESSION_FOUND_EXCEPTION.getErrorCode(),
-					PacketUploaderExceptionConstant.MOSIP_NO_SESSION_FOUND_EXCEPTION.getErrorMessage(), e);
+					PacketUploaderExceptionConstant.MOSIP_NO_SESSION_FOUND_EXCEPTION.getErrorMessage() + PacketUploaderConstant.EXCEPTION_BREAKER.getValue() + e.getMessage(), e);
 		}
 		channelSftp.exit();
 		if (session != null) {

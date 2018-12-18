@@ -13,8 +13,8 @@ import lombok.Data;
  */
 @Data
 public class ErrorResponse<T> {
-	private int status;
 	private long timestamp = Instant.now().toEpochMilli();
+	private int status;
 	private List<T> errors = new ArrayList<>();
 
 }
