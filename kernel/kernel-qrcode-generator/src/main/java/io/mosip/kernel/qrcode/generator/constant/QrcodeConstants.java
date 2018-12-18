@@ -8,6 +8,7 @@ package io.mosip.kernel.qrcode.generator.constant;
  * @since 1.0.0
  */
 public class QrcodeConstants {
+	
 	/**
 	 * Constructor for this class
 	 */
