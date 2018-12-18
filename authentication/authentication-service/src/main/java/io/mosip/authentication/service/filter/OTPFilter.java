@@ -13,7 +13,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  */
 @Component
 public class OTPFilter extends BaseAuthFilter {
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,6 +53,15 @@ public class OTPFilter extends BaseAuthFilter {
 			Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
 		return responseBody;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
+	 */
+	@Override
+	protected boolean validateSignature(Map<String, Object> requestBody, String signature) throws IdAuthenticationAppException {
+		//TODO to be included
+		return true;
 	}
 
 }

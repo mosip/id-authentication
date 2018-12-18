@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.preregistration.application.code.StateManagment;
-import io.mosip.preregistration.application.dto.ResponseDto;
+import io.mosip.preregistration.application.code.StatusCodes;
+import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
@@ -33,9 +33,9 @@ public class DocumentFailedToDeleteTest {
 	@MockBean
 	private PreRegistrationRepository preRegistrationRepository;
 
-	private ResponseEntity<ResponseDto> responseEntity;
+	private ResponseEntity<ResponseDTO> responseEntity;
 	
-	private HttpEntity<ResponseDto> entity;
+	private HttpEntity<ResponseDTO> entity;
 	
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
@@ -62,13 +62,11 @@ public class DocumentFailedToDeleteTest {
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		PreRegistrationEntity  preRegistrationEntity= new PreRegistrationEntity();
 		
-		preRegistrationEntity.setStatusCode(StateManagment.Pending_Appointment.name());
+		preRegistrationEntity.setStatusCode(StatusCodes.Pending_Appointment.name());
 		Mockito.when(preRegistrationRepository.findBypreRegistrationId(preregId)).thenReturn(preRegistrationEntity);
-		
 
-	
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.any(), Mockito.any(HttpEntity.class),
-				Mockito.eq(ResponseDto.class))).thenReturn(responseEntity);
+				Mockito.eq(ResponseDTO.class))).thenReturn(responseEntity);
 		
 		preRegistrationService.deleteIndividual(preregId);
 //		Mockito.when(preRegistrationService.deleteIndividual(preregId))

@@ -19,7 +19,7 @@ import lombok.Data;
 public class BiometricTypeDto {
 
 	@NotNull
-	@Size(min = 1, max = 3)
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 

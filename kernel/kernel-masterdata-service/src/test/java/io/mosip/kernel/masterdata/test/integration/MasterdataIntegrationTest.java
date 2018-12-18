@@ -46,7 +46,6 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
@@ -65,6 +64,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
@@ -271,6 +271,9 @@ public class MasterdataIntegrationTest {
 	RegistrationCenterHistory center;
 	Device device;
 	private DeviceDto deviceDto;
+
+	Title title;
+	private TitleDto titleDto;
 
 	List<RegistrationCenterHistory> centers = new ArrayList<>();
 
@@ -761,7 +764,7 @@ public class MasterdataIntegrationTest {
 
 	private void titleIntegrationSetup() {
 		titleList = new ArrayList<>();
-		Title title = new Title();
+		title = new Title();
 		titleId = new CodeAndLanguageCodeID();
 		titleId.setLangCode("ENG");
 		titleId.setCode("ABC");
@@ -1737,6 +1740,25 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	@Test
+	public void saveTitleTest() throws Exception {
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		when(titleRepository.create(Mockito.any())).thenReturn(title);
+		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void saveTitleExceptionTest() throws Exception {
+
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		when(titleRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
+		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
+
+	}
+
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -2209,8 +2231,9 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isOk());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -2218,8 +2241,9 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isNotFound());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -2228,8 +2252,9 @@ public class MasterdataIntegrationTest {
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 								.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-				"2018-01-01T10:10:30.956")).andExpect(status().isInternalServerError());
+		mockMvc.perform(
+				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -2404,8 +2429,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryTest() throws Exception {
-		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
-		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2414,8 +2438,7 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
-		requestDto.setRequest(documentCategoryData);
+		requestDto.setRequest(documentCategoryDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any())).thenReturn(category);
@@ -2425,8 +2448,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		RequestDto<DocumentCategoryData> requestDto = new RequestDto<>();
-		DocumentCategoryData documentCategoryData = new DocumentCategoryData();
+		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
@@ -2435,8 +2457,7 @@ public class MasterdataIntegrationTest {
 		documentCategoryDto.setIsActive(true);
 		documentCategoryDto.setLangCode("ENG");
 		documentCategoryDto.setName("POI");
-		documentCategoryData.setDocumentcategorytype(documentCategoryDto);
-		requestDto.setRequest(documentCategoryData);
+		requestDto.setRequest(documentCategoryDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 
 		when(documentCategoryRepository.create(Mockito.any()))

@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_kernel" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all data which is required for kernel transaction and operations.]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="ids" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="uins">
+	<schema name="ids"/>
+	<role name="sysadmin"/>
+	<position x="50" y="50"/>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="12"/>
+	</column>
+	<column name="used">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="uins_pkey" type="pk-constr" table="ids.uins">
+		<columns names="uin" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="prid">
+	<schema name="ids"/>
+	<role name="sysadmin"/>
+	<position x="343.116" y="50"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="14"/>
+	</column>
+	<column name="created_at">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="prid_pkey" type="pk-constr" table="ids.prid">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="rid">
+	<schema name="ids"/>
+	<role name="sysadmin"/>
+	<position x="670.232" y="50"/>
+	<column name="dongle_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="sequence_id" not-null="true">
+		<type name="numeric" length="5" precision="0"/>
+	</column>
+	<constraint name="rid_pkey" type="pk-constr" table="ids.rid">
+		<columns names="dongle_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<schema name="kernel" rect-visible="true" fill-color="#5aa578">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="otp_transaction">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[OTP Transaction table to store all otp related information and status]]></comment>
+	<position x="31.3487" y="202"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[OTP id is unique value to store identification of each otp transactions]]></comment>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="otp">
+		<type name="character varying" length="8"/>
+	</column>
+	<column name="generated_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="expiry_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="validation_retry_count">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_otptrn_id" type="pk-constr" table="kernel.otp_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_job_def">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Kernel sync_job_def table which hold all sync job details]]></comment>
+	<position x="420.465" y="202"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="api_name">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="parent_syncjob_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_freq">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lock_duration">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_syncjob_id" type="pk-constr" table="kernel.sync_job_def">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_syncjob_name" table="kernel.sync_job_def"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="name"/>
+		</idxelement>
+</index>
+
+<table name="sync_transaction">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[kernel sync_transaction table which hold all sync job details and transactions]]></comment>
+	<position x="896.481" y="536"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="trigger_point">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="sync_from">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="sync_to">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sync_param">
+		<type name="character varying" length="2048"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_synctrn_id" type="pk-constr" table="kernel.sync_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_control">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[kernel sync_control table which hold all sucessfull sync job details]]></comment>
+	<position x="906.097" y="194"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="synctrn_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="last_sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_synctrl_id" type="pk-constr" table="kernel.sync_control">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_synctrn_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_transaction">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_control">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_synctrn" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_transaction" table="kernel.sync_control">
+	<columns names="synctrn_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_sync_transaction_sync_job_def" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="kernel.sync_transaction"
+	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrn_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_job_def" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="kernel.sync_control"
+	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrl_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_transaction" type="relfk"
+	 custom-color="#249b49"
+	 src-table="kernel.sync_control"
+	 dst-table="kernel.sync_transaction" reference-fk="fk_synctrl_synctrn"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="kerneluser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="ids" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="ids" type="schema"/>
+	<roles names="kerneluser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="ids.uins" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="ids.uins" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="ids.prid" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="ids.prid" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="ids.rid" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="ids.rid" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="kernel" type="schema"/>
+	<roles names="kerneluser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="kernel.otp_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.otp_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_job_def" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_job_def" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_control" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_control" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

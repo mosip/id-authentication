@@ -1,7 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 
 import { RegistrationService } from '../registration.service';
+import { DataStorageService } from '../../shared/data-storage.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+
+interface Applicant {
+  name: string;
+  files: ApplicantFiles[];
+  preId: string;
+}
+
+interface ApplicantFiles {
+  doc_cat_code: string;
+  doc_file_format: string;
+  doc_id: string;
+  doc_name: string;
+  doc_typ_code: string;
+  multipartFile: any;
+  prereg_id: string;
+}
 
 @Component({
   selector: 'app-file-upload',
@@ -9,7 +26,23 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
+  applicantFile: ApplicantFiles = {
+    doc_cat_code: 'POR',
+    doc_file_format: 'application/pdf',
+    doc_id: '160',
+    doc_name: 'ieltsreadinganswersheet.pdf',
+    doc_typ_code: 'address',
+    multipartFile: '',
+    prereg_id: '35079431854826'
+  };
   applicantName;
+  documentType;
+  loginId;
+  applicant: Applicant = {
+    name: '',
+    files: [this.applicantFile],
+    preId: ''
+  };
   uploadedFile;
   numberOfApplicants = 0;
   fileType;
@@ -73,15 +106,19 @@ export class FileUploadComponent implements OnInit {
       ]
     }
   ];
-  documentString = {
-    prereg_id: '59276903416082',
-    doc_cat_code: 'POA',
-    doc_typ_code: 'address',
-    doc_file_format: 'pdf',
-    status_code: 'Pending-Appoinment',
-    lang_code: '1233',
-    upd_by: '9217148168',
-    cr_by: 'Rajath'
+  JsonString = {
+    id: 'mosip.pre-registration.document.upload',
+    ver: '1.0',
+    reqTime: '2018-10-17T07:22:57.086+0000',
+    request: {
+      prereg_id: '21398510941906',
+      doc_cat_code: 'POA',
+      doc_typ_code: 'address',
+      doc_file_format: 'pdf',
+      status_code: 'Pending-Appoinment',
+      upload_by: '9217148168',
+      upload_DateTime: '2018-10-17T07:22:57.086+0000'
+    }
   };
 
   POAFileName = '';
@@ -97,43 +134,24 @@ export class FileUploadComponent implements OnInit {
 
   fileToUpload: File = null;
   DataSent = false;
-  applicants: any[] = [
-    {
-      name: 'Ravi Balaji',
-      seq: 1,
-      files: ['f1', 'f2', 'f3', 'f1']
-    },
-    {
-      name: 'Shashank Agrawal',
-      seq: 2,
-      files: ['f4', 'f5', 'f6', 'f1']
-    },
-    {
-      name: 'Agnitra Banerjee',
-      seq: 3,
-      files: ['f7', 'f8', 'f9', 'f1']
-    },
-    {
-      name: 'Chacha Kumar',
-      seq: 4,
-      files: ['f10', 'f11', 'f12', 'f1']
-    }
-  ];
-
+  applicants: Applicant[] = [];
   step = 1;
 
-  constructor(private registration: RegistrationService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private registration: RegistrationService,
+    private dataStroage: DataStorageService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-  setStep(applicant) {
-    this.step = applicant.seq;
+  setStep(applicant, step) {
+    this.step = step + 1;
     this.applicantName = applicant.name;
   }
 
   nextStep() {
     this.step++;
-    if (this.step === 5) {
-      this.router.navigate(['../pick-center'], { relativeTo: this.route });
-    }
+    this.router.navigate(['../pick-center'], { relativeTo: this.route });
   }
 
   prevStep() {
@@ -142,7 +160,13 @@ export class FileUploadComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      this.numberOfApplicants = +params['id'];
+      this.loginId = params['id'];
+    });
+    this.registration.getUsers().forEach(element => {
+      this.applicant.name = element.identity.FullName[0].value;
+      this.applicant.preId = element.preRegId;
+      this.applicants.push(this.applicant);
+      console.log('element', element);
     });
   }
 
@@ -151,12 +175,17 @@ export class FileUploadComponent implements OnInit {
     console.log(event.target.value);
     this.uploadedFile = event.target.value;
     console.log('files', event.target.files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
+    this.JsonString.request.prereg_id = this.applicant.preId;
+    this.JsonString.request.doc_cat_code = this.documentType;
+    this.JsonString.request.doc_file_format = files[0].type;
+    this.JsonString.request.upload_by = this.loginId;
     const formData = new FormData();
-    formData.append('documentString', JSON.stringify(this.documentString));
+    formData.append('JsonString', JSON.stringify(this.JsonString));
     formData.append('file', files.item(0));
-    // this.registration.sendFile(formData).subscribe(response => {
-    //   console.log(response);
-    // });
+    console.log('formData', formData);
+    this.dataStroage.sendFile(formData).subscribe(response => {
+      console.log(response);
+    });
     this.browseDisabled = false;
     for (const app of this.applicants) {
       if (app.name === this.applicantName) {
@@ -165,9 +194,27 @@ export class FileUploadComponent implements OnInit {
     }
   }
 
+  handleFileDrop(fileList) {
+    console.log(fileList, 'event from drag and drop');
+    const files = fileList;
+    const formData = new FormData();
+    formData.append('JsonString', JSON.stringify(this.JsonString));
+    formData.append('file', files.item(0));
+    this.dataStroage.sendFile(formData).subscribe(response => {
+      console.log(response);
+    });
+    for (const app of this.applicants) {
+      if (app.name === this.applicantName) {
+        app.files[this.documentIndex] = files[0];
+      }
+    }
+  }
+
   selectChange(event, index: number) {
     console.log('event from select :', event);
     this.fileType = event.source._id;
+
+    this.documentType = event.source.placeholder;
     this.browseDisabled = false;
     this.documentIndex = index;
   }
@@ -183,6 +230,6 @@ export class FileUploadComponent implements OnInit {
   }
 
   removeFile(applicantIndex, fileIndex) {
-    this.applicants[applicantIndex].files[fileIndex] = '';
+    // this.applicants[applicantIndex].files[fileIndex] = '';
   }
 }

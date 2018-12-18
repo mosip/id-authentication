@@ -1,7 +1,11 @@
 FROM openjdk:8
 
-COPY ./target/kernel-auditmanager-service-1.0.0-SNAPSHOT.jar kernel-auditmanager-service-1.0.0-SNAPSHOT.jar
+ARG active_profile
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
+
+COPY ./target/kernel-auditmanager-service-*.jar kernel-auditmanager-service.jar
 
 EXPOSE 8081
 
-CMD ["java","-jar","-Dspring.profiles.active=int","kernel-auditmanager-service-1.0.0-SNAPSHOT.jar"]
+CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-auditmanager-service.jar"]

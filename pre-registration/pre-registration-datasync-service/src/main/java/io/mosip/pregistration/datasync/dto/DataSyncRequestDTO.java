@@ -1,11 +1,12 @@
 package io.mosip.pregistration.datasync.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author M1043226
@@ -25,11 +26,11 @@ public class DataSyncRequestDTO implements Serializable{
 	
 	/** The from-date. */
 	@JsonProperty("from-date")
-	private Timestamp fromDate;
+	private String fromDate;
 	
 	/** The To-date. */
 	@JsonProperty("to-date")
-	private Timestamp toDate;
+	private String toDate;
 	
 	/** The UserId. */
 	@JsonProperty("user-id")

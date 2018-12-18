@@ -1,0 +1,78 @@
+<div *ngIf="input.case === 'APPLICANTS'">
+  <h1 mat-dialog-title>Number of Applicants</h1>
+  <div mat-dialog-content>
+    <p>The details of the first applicant will be treated as primary</p>
+    <mat-form-field>
+      <input matInput (keyup)="validNumberOfUsers()" type="number" max="10" [(ngModel)]="applicantNumber" />
+    </mat-form-field>
+
+    <div *ngIf="invalidApplicantNumber"><div>Number should be between 1 and 10</div></div>
+  </div>
+  <div mat-dialog-actions>
+    <button [disabled]="invalidApplicantNumber" mat-button [mat-dialog-close]="applicantNumber" cdkFocusInitial>
+      Ok
+    </button>
+  </div>
+</div>
+<div *ngIf="input.case === 'DISCARD'">
+  <h1 mat-dialog-title>Discard</h1>
+  <div mat-dialog-content class="body-height">
+    <mat-radio-group [(ngModel)]="selectedOption">
+      <mat-radio-button [disabled]="input.disabled.radioButton1" value="1"
+        >Discard entire application.</mat-radio-button
+      >
+      <mat-radio-button [disabled]="input.disabled.radioButton2" value="2"
+        >Cancel appointement and save the details</mat-radio-button
+      >
+    </mat-radio-group>
+  </div>
+  <div mat-dialog-actions><button mat-button [mat-dialog-close]="selectedOption" cdkFocusInitial>Submit</button></div>
+</div>
+<div *ngIf="input.case === 'MESSAGE'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions><button mat-button (click)="onNoClick()" cdkFocusInitial>Dismiss</button></div>
+</div>
+<div *ngIf="input.case === 'CONFIRMATION'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <span
+      ><button mat-button [mat-dialog-close]="confirm" cdkFocusInitial>{{ input.yesButtonText }}</button></span
+    >
+    <span
+      ><button mat-button (click)="onNoClick()" cdkFocusInitial>{{ input.noButtonText }}</button></span
+    >
+  </div>
+</div>
+<div *ngIf="input.case === 'SLOTS'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <span>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedName" (selectionChange)="enableButton()" placeholder="Select Names">
+          <mat-option *ngFor="let name of input.names" [value]="name">
+            {{name.fullName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+  <span class="button-placer">
+      <button mat-raised-button [disabled]="disableAddButton" (click)="addToList()">Add</button>
+  </span>
+  <span>
+    <ul>
+      <li *ngFor="let addedItem of addedList">
+        {{addedItem.fullName}}<i (click)="itemDelete(addedItem)" class="material-icons close-button-sizing">close</i>
+      </li>
+    </ul>
+  </span>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="addedList" cdkFocusInitial>Add to Slot</button>
+  </div>
+</div>

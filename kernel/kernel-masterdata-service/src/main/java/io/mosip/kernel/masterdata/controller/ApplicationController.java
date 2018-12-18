@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ApplicationData;
+import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -85,7 +85,7 @@ public class ApplicationController {
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createApplication(
-			@Valid @RequestBody RequestDto<ApplicationData> application) {
+			@Valid @RequestBody RequestDto<ApplicationDto> application) {
 		return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.CREATED);
 
 	}

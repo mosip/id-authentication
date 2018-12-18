@@ -111,7 +111,7 @@ public class AuthController {
 		try {
 			DataValidationUtil.validate(errors);
 
-			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto,true);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -147,7 +147,7 @@ public class AuthController {
 
 			DataValidationUtil.validate(errors);
 
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest());
+			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true);
 			if (authResponseDTO != null) {
 				if (authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
 					kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);

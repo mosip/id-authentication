@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
@@ -59,8 +60,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 		if (idList != null && !idList.isEmpty()) {
 			idDtoList = MapperUtils.mapAll(idList, IdTypeDto.class);
 		} else {
-			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					IdTypeErrorCode.ID_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		idTypeResponseDto.setIdtypes(idDtoList);
 		return idTypeResponseDto;

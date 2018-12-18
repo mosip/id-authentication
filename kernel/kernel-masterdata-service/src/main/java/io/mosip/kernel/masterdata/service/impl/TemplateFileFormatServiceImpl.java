@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -31,9 +31,9 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	 */
 	@Override
 	public CodeAndLanguageCodeID createTemplateFileFormat(
-			RequestDto<TemplateFileFormatData> templateFileFormatRequestDto) {
-		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(
-				templateFileFormatRequestDto.getRequest().getTemplateFileFormat(), TemplateFileFormat.class);
+			RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(templateFileFormatRequestDto.getRequest(),
+				TemplateFileFormat.class);
 		TemplateFileFormat templateFileFormat;
 		try {
 			templateFileFormat = templateFileFormatRepository.create(entity);
