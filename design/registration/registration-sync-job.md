@@ -1,6 +1,7 @@
 Design - Sync Job
 
 
+
 **Background**
 
 The job will run at the background of the Registration client application to sync some of the configuration from
