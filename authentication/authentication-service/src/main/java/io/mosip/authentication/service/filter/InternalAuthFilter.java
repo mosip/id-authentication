@@ -68,12 +68,9 @@ public class InternalAuthFilter extends BaseAuthFilter {
 		responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
 		return responseBody;
 	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
-	 */
+	
 	@Override
-	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
+	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 

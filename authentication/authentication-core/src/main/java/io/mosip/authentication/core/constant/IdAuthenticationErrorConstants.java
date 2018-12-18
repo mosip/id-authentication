@@ -73,7 +73,9 @@ public enum IdAuthenticationErrorConstants {
 	// Bio validation
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of fgerMin / fgerImg should not exceed 10."),
-	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data");
+	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
+	INVALID_SIGNATURE("IDA-TSA-001", "Digital signature verification failed"),
+	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature");
 
 	private final String errorCode;
 	private final String errorMessage;

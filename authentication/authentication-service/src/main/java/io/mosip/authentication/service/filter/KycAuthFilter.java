@@ -96,14 +96,6 @@ public class KycAuthFilter extends BaseAuthFilter {
 		responseBody.replace("txnID", authReq.get("txnID"));
 		return responseBody;
 	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
-	 */
-	@Override
-	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
-		return true;
-	}
 	
 	protected Object decodeToMap(String stringToDecode)
 			throws IdAuthenticationAppException {
@@ -123,6 +115,11 @@ public class KycAuthFilter extends BaseAuthFilter {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorMessage());
 		}
+	}
+	
+	@Override
+	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
+		return true;
 	}
 
 }

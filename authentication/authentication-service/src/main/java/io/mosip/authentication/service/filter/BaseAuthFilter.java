@@ -3,12 +3,20 @@ package io.mosip.authentication.service.filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,6 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -37,6 +48,7 @@ import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**
@@ -48,7 +60,7 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
  */
 @Component
 public abstract class BaseAuthFilter implements Filter {
-
+	
 	/** The env. */
 	@Autowired
 	protected Environment env;
@@ -83,7 +95,12 @@ public abstract class BaseAuthFilter implements Filter {
 
 	/** The time formatter. */
 	private DateTimeFormatter timeFormatter;
+	
+	/** The Constant MOSIP_TSP_ORGANIZATION. */
+	private static final String MOSIP_TSP_ORGANIZATION = "mosip.tsp.organization";
 
+	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
+	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -113,20 +130,20 @@ public abstract class BaseAuthFilter implements Filter {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
-
-		String signature = requestWrapper.getHeader("Authorization");
-
+		String signature = requestWrapper.getHeader("Authorization");//FIXME header name
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
-
-		String requestAsString = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
-		logSize(requestAsString);
+		byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
+		logSize(new String(requestAsByte));
 		requestWrapper.resetInputStream();
-
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-			if (!validateSignature(requestBody, signature)) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
+			if (!validateSignature(signature, requestAsByte)) {
+				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_SIGNATURE
+						.getErrorCode(),
+				IdAuthenticationErrorConstants.INVALID_SIGNATURE
+						.getErrorMessage());			
 			}
 			Map<String, Object> decodedRequest = decodedRequest(requestBody);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
@@ -344,14 +361,74 @@ public abstract class BaseAuthFilter implements Filter {
 	/**
 	 * Validate signature.
 	 *
-	 * @param requestBody
-	 *            the request body
-	 * @param signature
-	 *            the signature
+	 * @param signature            the signature
+	 * @param requestAsByte the request as byte
 	 * @return true, if successful
-	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected abstract boolean validateSignature(Map<String, Object> requestBody, String signature)
-			throws IdAuthenticationAppException;
+	protected boolean validateSignature(String signature, byte[] requestAsByte)
+			throws IdAuthenticationAppException {
+		boolean isSigned = false;
+		JsonWebSignature jws = new JsonWebSignature();
+		try {
+			jws.setCompactSerialization(signature);
+			List<X509Certificate> certificateChainHeaderValue = jws.getCertificateChainHeaderValue();
+			if(certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE && 
+					jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGO))) {
+				X509Certificate certificate = certificateChainHeaderValue.get(0);
+				certificate.checkValidity();
+				certificate.verify(certificate.getPublicKey());
+				jws.setKey(certificate.getPublicKey());
+				isSigned = checkValidSign(requestAsByte, isSigned, certificate, jws);
+			} else {
+				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE
+						.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_CERTIFICATE
+						.getErrorMessage());	
+			}
+		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException | SignatureException e) {
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE
+					.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_CERTIFICATE
+					.getErrorMessage());
+		}
+		return isSigned;		
+	}
+
+	/**
+	 * Check valid sign.
+	 *
+	 * @param requestAsByte the request as byte
+	 * @param isSigned the is signed
+	 * @param certificate the certificate
+	 * @param jws the jws
+	 * @return true, if successful
+	 * @throws JoseException the jose exception
+	 */
+	private boolean checkValidSign(byte[] requestAsByte, boolean isSigned, X509Certificate certificate, JsonWebSignature jws)
+			throws JoseException {
+		if(jws.verifySignature() && validateOrg(certificate) && 
+				jws.getPayload().equalsIgnoreCase(HMACUtils.digestAsPlainText(HMACUtils.generateHash((requestAsByte))))) {
+			isSigned = true;
+		}
+		return isSigned;
+	}
+
+	/**
+	 * Validate org.
+	 *
+	 * @param certNew the cert new
+	 * @return true, if successful
+	 */
+	private boolean validateOrg(X509Certificate certNew) {
+		String[] subject = certNew.getSubjectDN().getName().split(",");
+		return Stream.of(subject)
+				.map(s -> s.split("="))
+				.filter(ar -> ar.length == 2)
+				.filter(ar -> ar[0].trim().equals("O"))
+				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
+	}
 
 }
