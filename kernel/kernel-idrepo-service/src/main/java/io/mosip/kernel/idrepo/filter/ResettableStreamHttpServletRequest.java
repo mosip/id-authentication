@@ -83,7 +83,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 	/**
 	 * The Class ResettableServletInputStream.
 	 */
-	private class ResettableServletInputStream extends ServletInputStream {
+	private static class ResettableServletInputStream extends ServletInputStream {
 
 		/** The stream. */
 		private InputStream stream;

@@ -29,6 +29,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.kernel.idrepo.controller.IdRepoController;
+import io.mosip.kernel.idrepo.filter.CharResponseWrapper;
+import io.mosip.kernel.idrepo.filter.IdRepoFilter;
+import io.mosip.kernel.idrepo.filter.ResettableStreamHttpServletRequest;
 
 /**
  * @author Manoj SP

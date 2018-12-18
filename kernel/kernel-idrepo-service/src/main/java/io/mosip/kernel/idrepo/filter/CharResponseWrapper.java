@@ -24,9 +24,6 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/** The closed. */
 	private boolean closed;
 
-	/** The writer. */
-	private PrintWriter writer;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -47,7 +44,6 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	public CharResponseWrapper(HttpServletResponse response)
 			throws IOException {
 		super(response);
-		this.writer = response.getWriter();
 		this.output = new ByteArrayOutputStream();
 	}
 

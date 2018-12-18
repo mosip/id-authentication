@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -149,7 +150,7 @@ public class IdRequestValidator implements Validator {
 	 * org.springframework.validation.Errors)
 	 */
 	@Override
-	public void validate(Object target, Errors errors) {
+	public void validate(@NonNull Object target, Errors errors) {
 		IdRequestDTO request = (IdRequestDTO) target;
 
 		validateReqTime(request.getTimestamp(), errors);
@@ -338,10 +339,16 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 		} else {
 			try {
-				DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
-						env.getProperty(DATETIME_PATTERN));
-				timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-				if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+				if (Objects.nonNull(env.getProperty(DATETIME_PATTERN))) {
+					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
+							env.getProperty(DATETIME_PATTERN));
+					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
+					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+						errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+										TIMESTAMP));
+					}
+				} else {
 					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 				}

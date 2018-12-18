@@ -1,7 +1,7 @@
 package io.mosip.kernel.idrepo.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +24,6 @@ public class HistoryPK implements Serializable {
 	private String uinRefId;
 	
 	/** The effective date time. */
-	private Date effectiveDateTime;
+	private LocalDateTime effectiveDateTime;
 
 }

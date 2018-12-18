@@ -1,6 +1,6 @@
 package io.mosip.kernel.idrepo.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,9 +12,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The Class UinDetail.
@@ -36,6 +39,8 @@ public class UinDetail {
 	@Lob
 	@Type(type="org.hibernate.type.BinaryType")
 	@Basic(fetch=FetchType.LAZY)
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private byte[] uinData;
 	
 	/** The created by. */
@@ -44,7 +49,7 @@ public class UinDetail {
 	
 	/** The created date time. */
 	@Column(name = "cr_dtimes")
-	private Date createdDateTime;
+	private LocalDateTime createdDateTime;
 	
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -52,12 +57,31 @@ public class UinDetail {
 	
 	/** The updated date time. */
 	@Column(name = "upd_dtimes")
-	private Date updatedDateTime;
+	private LocalDateTime updatedDateTime;
 	
 	/** The is deleted. */
 	private Boolean isDeleted;
 	
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	private Date deletedDateTime;
+	private LocalDateTime deletedDateTime;
+
+	/**
+	 * Gets the uin data.
+	 *
+	 * @return the uin data
+	 */
+	public byte[] getUinData() {
+		return uinData;
+	}
+
+	/**
+	 * Sets the uin data.
+	 *
+	 * @param uinData
+	 *            the new uin data
+	 */
+	public void setUinData(byte[] uinData) {
+		this.uinData = uinData.clone();
+	}
 }

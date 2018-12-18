@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -49,6 +50,7 @@ public class JsonValidatorConfigServerExceptionTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testWhenValidJsonProvided()
 			throws HttpRequestException, JsonValidationProcessingException, IOException, JsonIOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");

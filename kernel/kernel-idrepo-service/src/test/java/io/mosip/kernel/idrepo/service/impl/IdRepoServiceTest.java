@@ -48,6 +48,8 @@ import io.mosip.kernel.idrepo.repository.UinDetailHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDetailRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
+import io.mosip.kernel.idrepo.service.impl.DefaultShardResolver;
+import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**

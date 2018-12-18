@@ -11,12 +11,12 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 
@@ -275,8 +275,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			}
 
 			byte[] decryptedIdentity = decryptIdentity(dbUinData.getUinDetail().getUinData());
-			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()),
-					new String(decryptedIdentity))) {
+			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()), new String(decryptedIdentity))) {
 				Map<String, Map<String, List<Map<String, String>>>> requestData = convertToMap(request.getRequest());
 				Map<String, Map<String, List<Map<String, String>>>> dbData = (Map<String, Map<String, List<Map<String, String>>>>) convertToObject(
 						decryptedIdentity, Map.class);
@@ -394,7 +393,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			ObjectNode body = restTemplate
 					.exchange(env.getProperty(MOSIP_KERNEL_UINGEN_URL), HttpMethod.GET, null, ObjectNode.class)
 					.getBody();
-			if (body.has(UIN)) {
+			if (Objects.nonNull(body) && body.has(UIN) && Objects.nonNull(body.get(UIN))) {
 				return body.get(UIN).textValue();
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED);
@@ -647,11 +646,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	private Date now() throws IdRepoAppException {
+	private LocalDateTime now() throws IdRepoAppException {
 		try {
-			return DateUtils.parseToDate(
-					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone("GMT")),
-					env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone("GMT"));
+			return DateUtils.parseUTCToLocalDateTime(
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)),
+					env.getProperty(DATETIME_PATTERN));
 		} catch (ParseException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 		}

@@ -1,6 +1,6 @@
 package io.mosip.kernel.idrepo.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +41,7 @@ public class Uin {
 	
 	/** The created date time. */
 	@Column(name = "cr_dtimes")
-	private Date createdDateTime;
+	private LocalDateTime createdDateTime;
 	
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -49,14 +49,14 @@ public class Uin {
 	
 	/** The updated date time. */
 	@Column(name = "upd_dtimes")
-	private Date updatedDateTime;
+	private LocalDateTime updatedDateTime;
 	
 	/** The is deleted. */
 	private Boolean isDeleted;
 	
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	private Date deletedDateTime;
+	private LocalDateTime deletedDateTime;
 	
 	/** The uin detail. */
 	@PrimaryKeyJoinColumn
