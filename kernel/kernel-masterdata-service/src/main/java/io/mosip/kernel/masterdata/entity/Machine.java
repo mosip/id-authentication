@@ -43,7 +43,7 @@ public class Machine extends BaseEntity implements Serializable {
 	 * Field for machine ID
 	 */
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@Column(name = "id", unique = true, nullable = false, length = 10)
 	private String id;
 
 	/**

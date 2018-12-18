@@ -125,7 +125,7 @@ public class LanguageServiceImpl implements LanguageService {
 			Language language = languageRepository.findById(Language.class, code);
 			if (!EmptyCheckUtils.isNullEmpty(language)) {
 				MetaDataUtils.setDeleteMetaData(language);
-				languageRepository.delete(language);
+				languageRepository.update(language);
 				response.setCode(language.getCode());
 			} else {
 				throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
