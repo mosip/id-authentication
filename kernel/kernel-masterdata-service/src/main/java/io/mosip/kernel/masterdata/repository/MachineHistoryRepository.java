@@ -39,6 +39,6 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	List<MachineHistory> findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String id, String langCode, LocalDateTime effectDtimes);
 	
-	@Query("From MachineHistory where id=?1 and effectDateTime=?2")
-	MachineHistory findByIdAndEffectDTimes(String id , LocalDateTime effectDateTime);
+	/*@Query("From MachineHistory where id=?1 and effectDateTime=?2")
+	MachineHistory findByIdAndEffectDTimes(String id , LocalDateTime effectDateTime);*/
 }
