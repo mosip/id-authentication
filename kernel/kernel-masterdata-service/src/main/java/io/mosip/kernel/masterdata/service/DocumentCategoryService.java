@@ -52,4 +52,13 @@ public interface DocumentCategoryService {
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to update Document Category based on data provided.
+	 * 
+	 * @param category
+	 *            the request dto.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category);
 }
