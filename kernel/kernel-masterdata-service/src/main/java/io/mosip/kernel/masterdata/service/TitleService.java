@@ -50,5 +50,7 @@ public interface TitleService {
 	 *             when entered data not created
 	 */
 	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto);
+	
+	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles);
 
 }

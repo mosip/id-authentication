@@ -6,7 +6,7 @@ import io.mosip.kernel.qrcode.generator.constant.QrVersion;
 import io.mosip.kernel.qrcode.generator.constant.QrcodeExceptionConstants;
 
 /**
- * Utils class for QR code
+ * Utils class for QR code generator
  * 
  * @author Urvil Joshi
  *
@@ -14,15 +14,19 @@ import io.mosip.kernel.qrcode.generator.constant.QrcodeExceptionConstants;
  */
 public class QrcodegeneratorUtils {
 	/**
-	 * 
+	 * Constructor for this class
 	 */
 	private QrcodegeneratorUtils() {
 
 	}
 
 	/**
+	 * Verify the input send by user
+	 * 
 	 * @param data
+	 *            data send by user
 	 * @param version
+	 *            {@link QrVersion} send by user
 	 */
 	public static void verifyInput(String data, QrVersion version) {
 		if (data == null) {

@@ -90,7 +90,10 @@ public enum QrVersion {
 	/**
 	 * Constructor for {@link QrVersion}
 	 * 
-	 * @param size no of Modules
+	 * @param version
+	 *            version of QR code
+	 * @param size
+	 *            no of Modules
 	 */
 	private QrVersion(final int version, final int size) {
 		this.version = version;

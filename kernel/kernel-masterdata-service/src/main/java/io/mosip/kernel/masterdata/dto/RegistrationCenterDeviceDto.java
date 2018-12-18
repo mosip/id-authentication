@@ -16,7 +16,7 @@ import lombok.Data;
 public class RegistrationCenterDeviceDto {
 
 	@NotNull
-	@Size(min = 1, max = 36)
+	@Size(min = 1, max = 10)
 	private String regCenterId;
 
 	@NotNull
