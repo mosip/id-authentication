@@ -18,13 +18,14 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This class have methods to fetch list of valid document category and to
- * create document category based on list provided.
+ * create document category based on provided data.
  * 
  * @author Neha
  * @author Ritesh Sinha
@@ -159,6 +160,42 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		MapperUtils.map(documentCategory, codeLangCodeId);
 
 		return codeLangCodeId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category) {
+
+		DocumentCategoryDto categoryDto = category.getRequest();
+
+		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(categoryDto, documentCategoryId);
+		try {
+
+			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
+					documentCategoryId);
+
+			if (documentCategory != null) {
+				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
+				documentCategoryRepository.update(documentCategory);
+			} else {
+				throw new DataNotFoundException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorCode(),
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return documentCategoryId;
 	}
 
 }
