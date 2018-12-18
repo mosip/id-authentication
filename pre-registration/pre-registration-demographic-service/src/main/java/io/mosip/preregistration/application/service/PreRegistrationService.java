@@ -1,8 +1,11 @@
 package io.mosip.preregistration.application.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +33,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
@@ -38,6 +40,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
@@ -46,7 +49,6 @@ import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
-import io.mosip.preregistration.application.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
@@ -58,10 +60,12 @@ import io.mosip.preregistration.application.exception.DocumentFailedToDeleteExce
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
+import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
+import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
@@ -112,21 +116,17 @@ public class PreRegistrationService {
 	private RestTemplateBuilder restTemplateBuilder;
 
 	protected String trueStatus = "true";
-	
+
 	Map<String, String> requiredRequestMap = new HashMap<>();
-	
+
 	@PostConstruct
 	public void setup() {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
 
-
-	private RestTemplate restTemplate;
-
 	@Value("${appointmentResourse.url}")
 	private String appointmentResourseUrl;
-
 
 	/*
 	 * (non-Javadoc)
@@ -137,8 +137,6 @@ public class PreRegistrationService {
 	 */
 	public ResponseDTO<CreatePreRegistrationDTO> addPreRegistration(String jsonString) {
 
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
-		List<CreatePreRegistrationDTO> saveList = new ArrayList<>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 		String prid = null;
 		PreRegistrationEntity preRegistrationEntity = null;
@@ -148,69 +146,46 @@ public class PreRegistrationService {
 			applicantDetailJson = (JSONObject) jsonParser.parse(jsonString);
 			JSONObject reqObject = (JSONObject) applicantDetailJson.get(RequestCodes.request.toString());
 			JSONObject demoObj = (JSONObject) reqObject.get(RequestCodes.demographicDetails.toString());
-			inputValidation.put(RequestCodes.id.toString(),
-					applicantDetailJson.get(RequestCodes.id.toString()).toString());
-			inputValidation.put(RequestCodes.ver.toString(),
-					applicantDetailJson.get(RequestCodes.ver.toString()).toString());
-			inputValidation.put(RequestCodes.reqTime.toString(),
-					applicantDetailJson.get(RequestCodes.reqTime.toString()).toString());
-			inputValidation.put(RequestCodes.request.toString(),
-					applicantDetailJson.get(RequestCodes.request.toString()).toString());
-			
-			InvalidRequestParameterException exception = ValidationUtil.requestValidator(inputValidation, requiredRequestMap);
-			if (exception == null) {
+			inputValidation = checkInputValidation(applicantDetailJson);
+
+			InvalidRequestParameterException requestParameterexception = ValidationUtil
+					.requestValidator(inputValidation, requiredRequestMap);
+			if (requestParameterexception == null) {
 
 				jsonValidator.validateJson(demoObj.toString(), "mosip-prereg-identity-json-schema.json");
 
 				preRegistrationEntity = new PreRegistrationEntity();
 				prid = (String) reqObject.get(RequestCodes.preRegistrationId.toString());
 				String json = applicantDetailJson.toString();
-				preRegistrationEntity.setLangCode((String) (reqObject.get(RequestCodes.langCode.toString())));
-				preRegistrationEntity.setGroupId("1234567890");
-				preRegistrationEntity.setCr_appuser_id((String) (applicantDetailJson.get(RequestCodes.id.toString())));
-				preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
+				preparePreIdEntity(preRegistrationEntity, applicantDetailJson, reqObject);
 				createDto.setDemographicDetails(demoObj);
 
-				if (prid == null || prid.equals("")) {
-					prid = pridGenerator.generateId();
-
-					preRegistrationEntity.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
-					preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
-					preRegistrationEntity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-					preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
-					preRegistrationEntity.setPreRegistrationId(prid);
-					preRegistrationDao.save(preRegistrationEntity);
-					createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-
-					createDto.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
+				if (nullChecker(prid)) {
+					if (!nullChecker(preRegistrationEntity.getCreatedBy())) {
+						prid = pridGenerator.generateId();
+						preRegistrationDao
+								.save(createPreregistrationEntity(prid, preRegistrationEntity, reqObject, json));
+						createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
+						createDto.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
+					} else {
+						throw new OperationNotAllowedException(ErrorCodes.PRG_PAM_APP_010.toString(),
+								ErrorMessages.UNABLE_TO_CREATE_THE_PRE_REGISTRATION.toString());
+					}
 				} else {
 					preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(prid);
-
-					if (preRegistrationEntity != null) {
-						preRegistrationRepository.deleteByPreRegistrationId(prid);
-						preRegistrationEntity
-								.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
+					if (!nullChecker(preRegistrationEntity)) {
 						preRegistrationEntity.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
-						preRegistrationEntity.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
-						preRegistrationEntity.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
-						preRegistrationEntity.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
-						preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
-						preRegistrationEntity.setPreRegistrationId(prid);
-
-						preRegistrationDao.save(preRegistrationEntity);
-
-						createDto.setCreatedBy(preRegistrationEntity.getCreatedBy());
-						createDto.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
-						createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
-						createDto.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+						preRegistrationRepository.deleteByPreRegistrationId(prid);
+						preRegistrationDao
+								.save(updatePreregistrationEntity(prid, preRegistrationEntity, reqObject, json));
+						setterForCreateDTO(createDto, preRegistrationEntity, reqObject);
 					} else {
 						throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 								ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 					}
 				}
 			} else {
-				
-           throw exception;
+				throw requestParameterexception;
 			}
 		} catch (HttpRequestException e) {
 			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
@@ -236,7 +211,8 @@ public class PreRegistrationService {
 		}
 
 		createDto.setPrId(prid);
-
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
+		List<CreatePreRegistrationDTO> saveList = new ArrayList<>();
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus(trueStatus);
 		saveList.add(createDto);
@@ -244,6 +220,56 @@ public class PreRegistrationService {
 
 		return response;
 
+	}
+
+	private void setterForCreateDTO(CreatePreRegistrationDTO createDto, PreRegistrationEntity preRegistrationEntity,
+			JSONObject reqObject) {
+		createDto.setCreatedBy(preRegistrationEntity.getCreatedBy());
+		createDto.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
+		createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+		createDto.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+	}
+
+	private PreRegistrationEntity updatePreregistrationEntity(String prid, PreRegistrationEntity preRegistrationEntity,
+			JSONObject reqObject, String json) {
+		preRegistrationEntity.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
+		preRegistrationEntity.setUpdatedBy((String) (reqObject.get(RequestCodes.updatedBy.toString())));
+		preRegistrationEntity.setCreateDateTime(preRegistrationEntity.getCreateDateTime());
+		preRegistrationEntity.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
+		preRegistrationEntity.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+		preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
+		preRegistrationEntity.setPreRegistrationId(prid);
+		return preRegistrationEntity;
+	}
+
+	private PreRegistrationEntity createPreregistrationEntity(String prid, PreRegistrationEntity preRegistrationEntity,
+			JSONObject reqObject, String json) {
+		preRegistrationEntity.setStatusCode((String) (reqObject.get(RequestCodes.statusCode.toString())));
+		preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
+		preRegistrationEntity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
+		preRegistrationEntity.setApplicantDetailJson(json.getBytes(StandardCharsets.UTF_8));
+		preRegistrationEntity.setPreRegistrationId(prid);
+		return preRegistrationEntity;
+	}
+
+	private Map<String, String> checkInputValidation(JSONObject applicantDetailJson) {
+		Map<String, String> inputValidation = new HashMap<>();
+		inputValidation.put(RequestCodes.id.toString(), applicantDetailJson.get(RequestCodes.id.toString()).toString());
+		inputValidation.put(RequestCodes.ver.toString(),
+				applicantDetailJson.get(RequestCodes.ver.toString()).toString());
+		inputValidation.put(RequestCodes.reqTime.toString(),
+				applicantDetailJson.get(RequestCodes.reqTime.toString()).toString());
+		inputValidation.put(RequestCodes.request.toString(),
+				applicantDetailJson.get(RequestCodes.request.toString()).toString());
+		return inputValidation;
+	}
+
+	private void preparePreIdEntity(PreRegistrationEntity preRegistrationEntity, JSONObject applicantDetailJson,
+			JSONObject reqObject) {
+		preRegistrationEntity.setLangCode((String) (reqObject.get(RequestCodes.langCode.toString())));
+		preRegistrationEntity.setGroupId("1234567890");
+		preRegistrationEntity.setCr_appuser_id((String) (applicantDetailJson.get(RequestCodes.id.toString())));
+		preRegistrationEntity.setCreatedBy((String) (reqObject.get(RequestCodes.createdBy.toString())));
 	}
 
 	/**
@@ -352,16 +378,12 @@ public class PreRegistrationService {
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 		String strUriBuilder = null;
 
-		RestTemplate restTemplate = null;
-		UriComponentsBuilder uriBuilder = null;
-		HttpHeaders headers = null;
-
 		HttpEntity<ResponseDTO<?>> httpEntity = null;
 		try {
-			restTemplate = restTemplateBuilder.build();
-			uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId")
-					.queryParam("preId", preregId);
-			headers = new HttpHeaders();
+			RestTemplate restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId").queryParam("preId", preregId);
+			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			httpEntity = new HttpEntity<>(headers);
 
@@ -369,16 +391,15 @@ public class PreRegistrationService {
 
 			PreRegistrationEntity preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(preregId);
 
-			if (preRegistrationEntity != null) {
+			if (!nullChecker(preRegistrationEntity)) {
 				String preRegStatusCode = preRegistrationEntity.getStatusCode();
 				if (preRegStatusCode.equals(StatusCodes.Pending_Appointment.name())
 						|| preRegStatusCode.equals(StatusCodes.Booked.name())) {
-					System.out.println("strUriBuilder"+strUriBuilder);
-					ResponseEntity<ResponseDTO> responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE,
+					ResponseEntity<?> responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE,
 							httpEntity, ResponseDTO.class);
 					if (responseEntity.getStatusCode() == HttpStatus.OK) {
 						int isDeleted = preRegistrationRepository.deleteByPreRegistrationId(preregId);
-						if (isDeleted <=0) {
+						if (isDeleted <= 0) {
 							throw new RecordFailedToDeleteException(ErrorCodes.PRG_PAM_APP_004.name(),
 									ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.name());
 						} else {
@@ -399,11 +420,9 @@ public class PreRegistrationService {
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 			}
 		} catch (DataAccessLayerException e) {
-			e.printStackTrace();
 			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 					ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 		} catch (RestClientException e) {
-			e.printStackTrace();
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 		}
@@ -485,27 +504,20 @@ public class PreRegistrationService {
 		return response;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
-
-		restTemplate = restTemplateBuilder.build();
-		BookingResponseDTO<BookingRegistrationDTO> resultDto = null;
+		RestTemplate restTemplate = restTemplateBuilder.build();
+		BookingResponseDTO<?> resultDto = null;
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
 					.queryParam("preRegID", preId);
 			HttpHeaders headers = new HttpHeaders();
-			// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<BookingRegistrationDTO> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			System.out.println("uriBuilder: " + uriBuilder);
-			ResponseEntity<?> respEntity = (ResponseEntity) restTemplate
-					.exchange(uriBuilder, HttpMethod.GET, httpEntity, BookingResponseDTO.class);
+			ResponseEntity<?> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
+					BookingResponseDTO.class);
 			if (respEntity.getStatusCode() == HttpStatus.OK) {
-
-				resultDto = (BookingResponseDTO<BookingRegistrationDTO>)respEntity.getBody();
-				System.out.println("resultDto : " + resultDto.getResponse());
-				// bookingRegistrationDTO = (BookingRegistrationDTO)resultDto.getResponse();
+				resultDto = (BookingResponseDTO<?>) respEntity.getBody();
 				ObjectMapper mapper = new ObjectMapper();
 				bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
 			}
@@ -514,5 +526,60 @@ public class PreRegistrationService {
 		}
 
 		return bookingRegistrationDTO;
+	}
+
+	public ResponseDTO<String> getPreRegistrationByDate(String fromDate, String toDate) {
+		ResponseDTO<String> response = new ResponseDTO<>();
+		List<PreRegistrationEntity> details = new ArrayList<>();
+		List<String> preIds = new ArrayList<>();
+		try {
+			String dateFormat = "yyyy-MM-dd HH:mm:ss";
+			Date myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+			Date myToDate = null;
+			if (toDate == null) {
+				myToDate = myFromDate;
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(myToDate);
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				myToDate = cal.getTime();
+			} else {
+				myToDate = DateUtils.parse(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+			}
+
+			details = preRegistrationRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
+					new Timestamp(myToDate.getTime()));
+
+			for (PreRegistrationEntity entity : details) {
+				preIds.add(entity.getPreRegistrationId());
+			}
+			response.setResponse(preIds);
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException(ErrorCodes.PRG_PAM_APP_002.toString(),
+					ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		} catch (java.text.ParseException e) {
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), e.getCause());
+		} catch (UnsupportedEncodingException e) {
+			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
+					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
+		}
+		response.setResTime(new Date(System.currentTimeMillis()));
+		response.setStatus("true");
+		response.setErr(null);
+		return response;
+	}
+
+	public boolean nullChecker(Object key) {
+		if (key instanceof String) {
+			if (key.equals(""))
+				return true;
+		} else {
+			if (key == null)
+				return true;
+		}
+		return false;
+
 	}
 }

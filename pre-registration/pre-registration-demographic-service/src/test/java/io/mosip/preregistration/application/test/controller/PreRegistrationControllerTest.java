@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
+import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
@@ -192,4 +194,65 @@ public class PreRegistrationControllerTest {
 	// mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	// }
 
+	/**
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getApplicationSuccessTest() throws Exception {
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
+		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
+
+		createDto.setPrId("22893647484937");
+		saveList.add(createDto);
+		response.setResponse(saveList);
+
+		Mockito.when(preRegistrationService.getPreRegistration("1234")).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationData")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", createDto.getPrId());
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateApplicationStatusTest() throws Exception {
+		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
+		response.setErr(null);
+		response.setResponse("Status Updated sucessfully");
+		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setStatus("true");
+
+		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/applications")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", "1234").param("status", "Booked");
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getAllApplicationByDateTest() throws Exception {
+
+		String fromDate = "2018-12-06 09:49:29";
+		String toDate = "2018-12-06 12:59:29";
+		ResponseDTO<String> response = new ResponseDTO<>();
+		List<String> preIds = new ArrayList<>();
+		preIds.add("1234");
+		response.setResponse(preIds);
+
+		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationDataByDateTime/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("fromDate", fromDate)
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("toDate", toDate);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+
+	}
 }

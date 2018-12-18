@@ -134,5 +134,22 @@ public class PreRegistrationController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
+	
+	/**
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully retrieved"),
+			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
+	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(
+			@RequestParam(value = "fromDate") String fromDate,
+			@RequestParam(value = "toDate") String toDate) {
+		ResponseDTO<String> response = preRegistrationService.getPreRegistrationByDate(fromDate,
+				toDate);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
 }

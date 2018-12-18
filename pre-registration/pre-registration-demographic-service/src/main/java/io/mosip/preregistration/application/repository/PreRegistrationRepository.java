@@ -1,5 +1,6 @@
 package io.mosip.preregistration.application.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -34,5 +35,8 @@ public interface PreRegistrationRepository extends BaseRepository<PreRegistratio
 	public PreRegistrationEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
 	public int deleteByPreRegistrationId(String preId);
+	
+	public List<PreRegistrationEntity> findBycreateDateTimeBetween(Timestamp start,Timestamp end);
+
 
 }
