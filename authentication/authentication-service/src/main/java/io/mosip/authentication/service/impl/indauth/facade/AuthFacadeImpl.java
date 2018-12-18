@@ -79,6 +79,8 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	private static final String VER = "1.0";
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
@@ -140,7 +142,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			idInfo = getIdEntity(idResDTO);
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-					.setReqTime(authRequestDTO.getReqTime());
+					.setReqTime(authRequestDTO.getReqTime()).setVersion(VER);
 
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, refId, isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
