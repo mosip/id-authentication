@@ -26,19 +26,15 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.ApplicationData;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeData;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatData;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -115,8 +111,8 @@ public class MasterDataServiceTest {
 	private List<Application> applicationList;
 	private ApplicationDto applicationDto;
 
-	private RequestDto<ApplicationData> applicationRequestDto;
-	private RequestDto<DocumentCategoryData> documentCategoryRequestDto;
+	private RequestDto<ApplicationDto> applicationRequestDto;
+	private RequestDto<DocumentCategoryDto> documentCategoryRequestDto;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;
@@ -205,7 +201,7 @@ public class MasterDataServiceTest {
 
 	private TemplateFileFormat templateFileFormat;
 
-	private RequestDto<TemplateFileFormatData> templateFileFormatRequestDto;
+	private RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -237,7 +233,7 @@ public class MasterDataServiceTest {
 	@Autowired
 	MachineHistoryService machineHistoryService;
 
-	private RequestDto<BiometricTypeData> biometricTypeRequestDto;
+	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
 	private BiometricTypeDto biometricTypeDto;
 
@@ -408,16 +404,14 @@ public class MasterDataServiceTest {
 		documentCategoryList.add(documentCategory1);
 		documentCategoryList.add(documentCategory2);
 
-		documentCategoryRequestDto = new RequestDto<DocumentCategoryData>();
-		DocumentCategoryData request = new DocumentCategoryData();
+		documentCategoryRequestDto = new RequestDto<DocumentCategoryDto>();
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
 		documentCategoryDto.setCode("102");
 		documentCategoryDto.setName("POR");
 		documentCategoryDto.setDescription(null);
 		documentCategoryDto.setLangCode("ENG");
 
-		request.setDocumentcategorytype(documentCategoryDto);
-		documentCategoryRequestDto.setRequest(request);
+		documentCategoryRequestDto.setRequest(documentCategoryDto);
 	}
 
 	private void deviceSpecSetup() {
@@ -490,15 +484,15 @@ public class MasterDataServiceTest {
 		biometricTypeList.add(biometricType1);
 		biometricTypeList.add(biometricType2);
 
-		biometricTypeRequestDto = new RequestDto<BiometricTypeData>();
-		BiometricTypeData request = new BiometricTypeData();
+		biometricTypeRequestDto = new RequestDto<BiometricTypeDto>();
+		// BiometricTypeData request = new BiometricTypeData();
 		biometricTypeDto = new BiometricTypeDto();
 		biometricTypeDto.setCode("1");
 		biometricTypeDto.setName("DNA MATCHING");
 		biometricTypeDto.setDescription(null);
 		biometricTypeDto.setLangCode("ENG");
-		request.setBiometricType(biometricTypeDto);
-		biometricTypeRequestDto.setRequest(request);
+		// request.setBiometricType(biometricTypeDto);
+		biometricTypeRequestDto.setRequest(biometricTypeDto);
 	}
 
 	private void biometricAttrSetup() {
@@ -541,15 +535,15 @@ public class MasterDataServiceTest {
 		applicationList.add(application1);
 		applicationList.add(application2);
 
-		applicationRequestDto = new RequestDto<ApplicationData>();
-		ApplicationData request = new ApplicationData();
+		applicationRequestDto = new RequestDto<ApplicationDto>();
+		// ApplicationData request = new ApplicationData();
 		applicationDto = new ApplicationDto();
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("ENG");
-		request.setApplicationtype(applicationDto);
-		applicationRequestDto.setRequest(request);
+		// request.setApplicationtype(applicationDto);
+		applicationRequestDto.setRequest(applicationDto);
 	}
 
 	private void templateFileFormatSetup() {
@@ -557,14 +551,12 @@ public class MasterDataServiceTest {
 		templateFileFormat.setCode("xml");
 		templateFileFormat.setLangCode("ENG");
 
-		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatData>();
-		TemplateFileFormatData request = new TemplateFileFormatData();
+		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatDto>();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
 		templateFileFormatDto.setLangCode("ENG");
 
-		request.setTemplateFileFormat(templateFileFormatDto);
-		templateFileFormatRequestDto.setRequest(request);
+		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -605,10 +597,8 @@ public class MasterDataServiceTest {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService.createApplication(applicationRequestDto);
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(applicationRequestDto.getRequest().getApplicationtype().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(applicationRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(applicationRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -759,10 +749,8 @@ public class MasterDataServiceTest {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenReturn(biometricType1);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService.createBiometricType(biometricTypeRequestDto);
-		assertEquals(biometricTypeRequestDto.getRequest().getBiometricType().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(biometricTypeRequestDto.getRequest().getBiometricType().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(biometricTypeRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(biometricTypeRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1036,10 +1024,8 @@ public class MasterDataServiceTest {
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = documentCategoryService
 				.createDocumentCategory(documentCategoryRequestDto);
-		assertEquals(documentCategoryRequestDto.getRequest().getDocumentcategorytype().getCode(),
-				codeAndLanguageCodeId.getCode());
-		assertEquals(documentCategoryRequestDto.getRequest().getDocumentcategorytype().getLangCode(),
-				codeAndLanguageCodeId.getLangCode());
+		assertEquals(documentCategoryRequestDto.getRequest().getCode(), codeAndLanguageCodeId.getCode());
+		assertEquals(documentCategoryRequestDto.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)

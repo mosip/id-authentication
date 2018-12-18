@@ -68,6 +68,19 @@ public class MetaDataUtils {
 	}
 
 	/**
+	 * This method is used to set meta data used for delete.
+	 * 
+	 * @param entity
+	 *            which extends base entity
+	 * @return entity having isDeleted value as true and deleted times
+	 */
+	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		entity.setIsDeleted(true);
+		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		return entity;
+	}
+
+	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.

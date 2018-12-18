@@ -1,18 +1,11 @@
 package io.mosip.pregistration.datasync.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
+import java.util.Date;
 
-import javax.persistence.Column;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * DataSync entity
@@ -32,6 +25,6 @@ public class ReverseDataSyncDTO implements Serializable {
 
 	private String id;
 	private String ver;
-	private Timestamp reqTime;
+	private Date reqTime;
 	private ReverseDataSyncRequestDTO request;
 }

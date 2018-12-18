@@ -1,13 +1,24 @@
 <div class="spinner" *ngIf="!isFetched"><mat-spinner></mat-spinner></div>
 
 <div *ngIf="!isNewApplication && isFetched">
-  <!-- <div *ngIf="!isNewApplication"> -->
   <div class="modifydata">
-    <mat-icon class="icon" style="cursor: pointer;" (click)="onHome()">home</mat-icon>
-    <button class="addButtonPlacer" mat-raised-button (click)="onNewApplication()"><mat-icon>add_circle_outline</mat-icon>Application</button>
+    <mat-icon class="icon" style="cursor: pointer;" routerLink="/">home</mat-icon>
+    <button class="addButtonPlacer" mat-raised-button (click)="onNewApplication()">
+      <mat-icon>add_circle_outline</mat-icon>Application
+    </button>
     <span style="width: 100px; margin-left: 72px;"></span>
-    <button class="modify" mat-raised-button (click)="onModifyData()">Modify Data</button>
-    <button class="modify" mat-raised-button (click)="onModifyAppointment()">Modify Appointment</button>
+    <button class="modify" mat-raised-button [disabled]="disableModifyDataButton" (click)="onModifyData(true)">
+      <div *ngIf="fetchedDetails">Modify Data</div>
+      <div *ngIf="!fetchedDetails"><mat-progress-bar mode="indeterminate"></mat-progress-bar></div>
+    </button>
+    <button
+      class="modify"
+      mat-raised-button
+      [disabled]="disableModifyAppointmentButton"
+      (click)="onModifyAppointment(true)"
+    >
+      Modify Appointment
+    </button>
   </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -29,6 +40,8 @@
           (click)="$event.stopPropagation()"
           (change)="$event ? selection.toggle(row) : null"
           [checked]="selection.isSelected(row)"
+          (change)="onModifyData(false)"
+          (change)="onModifyAppointment(false)"
         >
         </mat-checkbox>
       </td>
@@ -36,7 +49,7 @@
 
     <ng-container matColumnDef="appId">
       <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">ApplicationID</th>
-      <td mat-cell *matCellDef="let element1">{{ element1.applicationID }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.applicationID }}</td>
     </ng-container>
 
     <ng-container matColumnDef="name">
@@ -57,7 +70,12 @@
     <ng-container matColumnDef="operation">
       <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }"></th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon style="cursor: pointer;" (click)="onDelete(element)">delete</mat-icon>
+        <mat-icon
+          *ngIf="element.status.toLowerCase() !== 'expired'"
+          style="cursor: pointer;"
+          (click)="onDelete(element)"
+          >delete</mat-icon
+        >
       </td>
     </ng-container>
   </table>

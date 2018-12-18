@@ -1,108 +1,108 @@
-.highlight{
+.highlight {
   /* font-weight: 900; */
   /* font-size: 1.02em; */
   background: #d9d9d9; /* green */
 }
 
-.mat-elevation-z8{
-    width: 100%;
+.mat-elevation-z8 {
+  width: 100%;
 }
 ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .card-wrapper {
-    position: relative;
-    padding: 15px 30px 40px;
-    margin: 0 auto 20px;
-    border: 1px solid #999;
-    border-radius: 10px;
-    box-shadow: 2px 6px 20px -8px;
-    max-width: 360px;
+  position: relative;
+  padding: 15px 30px 40px;
+  margin: 0 auto 20px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  box-shadow: 2px 6px 20px -8px;
+  max-width: 360px;
 }
 .card-wrapper > div:not(:last-of-type) {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
-.row1{
-    position: relative;
+.row1 {
+  position: relative;
 }
 .row2 {
-    display: flex;
+  display: flex;
 }
 .row2 span {
-    flex:1
+  flex: 1;
 }
 .row2 span:last-of-type {
-    text-align: right;
+  text-align: right;
 }
 .row1 input {
-    position: absolute;
-    left: -25px;
-    top:0;
+  position: absolute;
+  left: -25px;
+  top: 0;
 }
 .edit {
-    position: absolute;
-    bottom: 20px;
-    right: 30px;
-    color: black;
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  color: black;
 }
 
-@media(max-width:500px){
-    .mat-elevation-z8 {
-        display: none;
-    }
+@media (max-width: 500px) {
+  .mat-elevation-z8 {
+    display: none;
+  }
 }
 
-@media(min-width:500px){
-    .card-wrapper {
-        display: none;
-    }
+@media (min-width: 500px) {
+  .card-wrapper {
+    display: none;
+  }
 }
 
-.aligned-with-icon{
-    position: absolute;
-    margin-top: 5px;
-    margin-left: 5px; /* optional */
+.aligned-with-icon {
+  position: absolute;
+  margin-top: 5px;
+  margin-left: 5px; /* optional */
 }
 
-.spinner{
-    position: absolute;
-    width: 19% ;
-    height: 85px ;
-    top:25%; 
-    left  : 40%;
+.spinner {
+  position: absolute;
+  width: 19%;
+  height: 85px;
+  top: 25%;
+  left: 40%;
 }
 
 .icon {
-    margin-top: 13px;
-    font-size: 15px;
-    float: left;
+  margin-top: 13px;
+  font-size: 15px;
+  float: left;
 }
 
 .mat-button.mat-small {
-    min-width: 1%;
+  min-width: 1%;
 }
 
-.modifydata{
-    text-align: right;
+.modifydata {
+  text-align: right;
 }
 
-.modify{
-    height: 11px;
-    font-size: 8px;
-    margin-left: 10px;
+.modify {
+  height: 11px;
+  font-size: 8px;
+  margin-left: 10px;
 }
 
-.mat-raised-button{
-    margin-left: 8px;
-    padding: 8px 16px;
-    line-height: 0px;
-    margin-bottom: 10px;
+.mat-raised-button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  line-height: 0px;
+  margin-bottom: 10px;
 }
 
-@media(min-width: 990px) {
-    .addButtonPlacer{
-        right: 300px;
-    }
+@media (min-width: 990px) {
+  .addButtonPlacer {
+    right: 300px;
+  }
 }

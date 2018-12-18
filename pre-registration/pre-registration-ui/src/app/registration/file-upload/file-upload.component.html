@@ -1,5 +1,5 @@
 <mat-accordion class="example-headers-align" *ngFor="let applicant of applicants;let applicantIndex = index">
-  <mat-expansion-panel [expanded]="step === applicant.seq" (opened)="setStep(applicant)">
+  <mat-expansion-panel [expanded]="step === (applicantIndex +1)" (opened)="setStep(applicant,applicantIndex)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Document upload
@@ -11,7 +11,7 @@
 
     <mat-grid-list cols="3" rowHeight="4em">
       <mat-grid-tile [colspan]="1" [rowspan]="3">
-        <div class="draggableDiv" appDraggable (filesChangeEmiter)="handleFileInput($event)">
+        <div class="draggableDiv" appDraggable (filesChangeEmiter)="handleFileDrop($event)">
           <div class="text-wrapper">
             <div class="centered">Drop your file here!</div>
           </div>
@@ -46,7 +46,7 @@
       </mat-grid-tile>
     </mat-grid-list>
     <mat-action-row>
-      <button *ngIf="applicant.seq !== 1 " mat-button color="warn" (click)="prevStep()">Previous</button>
+      <button *ngIf="applicantIndex !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
       <button mat-button color="primary" (click)="nextStep()">Next</button>
     </mat-action-row>
   </mat-expansion-panel>

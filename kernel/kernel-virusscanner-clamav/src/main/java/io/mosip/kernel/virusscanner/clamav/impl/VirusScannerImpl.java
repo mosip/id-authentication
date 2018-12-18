@@ -106,7 +106,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 
 		return result;
 	}
-	
+
 	/**
 	 * This Method is used to scan byte array
 	 * 
@@ -155,11 +155,9 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	public Boolean scanDocument(File doc) throws IOException {
 		Boolean result = Boolean.FALSE;
 
-		FileInputStream docInputStream = null;
-
 		createConnection();
-		try {
-			docInputStream = new FileInputStream(doc);
+		try (FileInputStream docInputStream = new FileInputStream(doc)) {
+
 			ScanResult scanResult = this.clamavClient.scan(docInputStream);
 			if (scanResult.getStatus() == Status.OK) {
 				result = Boolean.TRUE;
@@ -171,9 +169,6 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 			LOGGER.error(LOGDISPLAY, e.getMessage());
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
 					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
-		} finally {
-
-			docInputStream.close();
 		}
 
 		return result;

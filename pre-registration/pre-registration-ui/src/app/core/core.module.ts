@@ -6,9 +6,10 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ContactComponent } from './contact/contact.component';
 import { AppRoutingModule } from '../app-routing.module';
+import { MaterialModule } from '../material.module';
 
 @NgModule({
-  imports: [CommonModule, AppRoutingModule],
+  imports: [CommonModule, AppRoutingModule, MaterialModule],
   declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
   exports: [HeaderComponent, FooterComponent]
 })
