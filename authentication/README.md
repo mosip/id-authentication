@@ -1,4 +1,4 @@
-## ID Authentication
+## ID Authentication:
 ID Authentication (IDA) is the authentication project used to authenticate Individuals using their UIN/VID. Below are the various authentication types supported by MOSIP - 
 1. OTP Auth
 2. Demographic Auth
