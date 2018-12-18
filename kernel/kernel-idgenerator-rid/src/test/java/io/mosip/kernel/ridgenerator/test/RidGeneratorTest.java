@@ -34,8 +34,7 @@ public class RidGeneratorTest {
 		entity.setDongleId("23432");
 		entity.setSequenceId(00001);
 		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
-		System.err.println(ridGeneratorImpl.generateId("1234", "23432"));
-//		assertThat(ridGeneratorImpl.generateId("1234", "23432"), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId("1234", "23432"), isA(String.class));
 	}
 
 	@Test(expected = NullValueException.class)
@@ -80,8 +79,7 @@ public class RidGeneratorTest {
 		entity.setDongleId("23432");
 		entity.setSequenceId(99999);
 		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
-		System.err.println(ridGeneratorImpl.generateId("1234", "23432"));
-//		assertThat(ridGeneratorImpl.generateId("1234", "23432"), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId("1234", "23432"), isA(String.class));
 	}
 
 }
