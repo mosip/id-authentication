@@ -268,7 +268,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
-		locationDto.setLanguageCode("HIN");
+		locationDto.setLangCode("HIN");
 
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
@@ -277,7 +277,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
-		locationDto.setLanguageCode("KAN");
+		locationDto.setLangCode("KAN");
 		locationDto.setIsActive(true);
 
 		locationDto.setIsActive(true);

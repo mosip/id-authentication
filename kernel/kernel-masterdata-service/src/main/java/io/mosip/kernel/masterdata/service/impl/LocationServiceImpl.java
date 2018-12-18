@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
@@ -226,17 +227,27 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
 		LocationDto locationDto = locationRequestDto.getRequest();
+		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
+		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
+		locationId.setCode(locationDto.getCode());
+		locationId.setLangCode(locationDto.getLangCode());
 		try {
-			Location location = locationRepository.findById(Location.class, locationDto.getCode());
-			location = MetaDataUtils.map(locationDto, location, true);
-		    locationRepository.update(location);
-		    MapperUtils.
-			
-		} catch (DataAccessException | DataAccessLayerException ex) {
+			Location location = locationRepository.findById(Location.class, locationId);
 
+			if (location == null) {
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			location = MetaDataUtils.setUpdateMetaData(locationDto, location, true);
+			locationRepository.update(location);
+			MapperUtils.map(location, postLocationCodeResponseDto);
+
+		} catch (DataAccessException | DataAccessLayerException ex) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
 		}
 
-		return null;
+		return postLocationCodeResponseDto;
 	}
 
 	@Override

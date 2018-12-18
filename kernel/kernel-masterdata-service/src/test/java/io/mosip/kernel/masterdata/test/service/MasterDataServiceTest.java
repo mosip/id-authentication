@@ -303,7 +303,7 @@ public class MasterDataServiceTest {
 		locationHierarchy.setHierarchyLevel(0);
 		locationHierarchy.setHierarchyName(null);
 		locationHierarchy.setParentLocCode(null);
-		locationHierarchy.setLanguageCode("HIN");
+		locationHierarchy.setLangCode("HIN");
 		locationHierarchy.setCreatedBy("dfs");
 		locationHierarchy.setUpdatedBy("sdfsd");
 		locationHierarchy.setIsActive(true);
@@ -314,7 +314,7 @@ public class MasterDataServiceTest {
 		locationHierarchy1.setHierarchyLevel(1);
 		locationHierarchy1.setHierarchyName(null);
 		locationHierarchy1.setParentLocCode("TEST");
-		locationHierarchy1.setLanguageCode("KAN");
+		locationHierarchy1.setLangCode("KAN");
 		locationHierarchy1.setCreatedBy("dfs");
 		locationHierarchy1.setUpdatedBy("sdfsd");
 		locationHierarchy1.setIsActive(true);
@@ -330,7 +330,7 @@ public class MasterDataServiceTest {
 		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(2);
 		locationDto.setHierarchyName("STATE");
-		locationDto.setLanguageCode("FRA");
+		locationDto.setLangCode("FRA");
 		locationDto.setParentLocCode("IND");
 		locationDto.setIsActive(true);
 		requestLocationDto = new RequestDto<>();
