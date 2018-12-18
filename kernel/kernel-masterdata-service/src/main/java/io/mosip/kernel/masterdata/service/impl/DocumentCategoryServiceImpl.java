@@ -23,8 +23,9 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch list of valid document category and to
- * create document category based on provided data.
+ * This class have methods to fetch list of valid document category, create
+ * document category based on provided data,update document category based on
+ * data provided and delete document category based on id provided.
  * 
  * @author Neha
  * @author Ritesh Sinha
