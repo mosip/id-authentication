@@ -96,7 +96,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PostMapping()
+	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
@@ -121,6 +121,7 @@ public class DeviceController {
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device updated successfully", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
 	public ResponseEntity<IdResponseDto> updateDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 

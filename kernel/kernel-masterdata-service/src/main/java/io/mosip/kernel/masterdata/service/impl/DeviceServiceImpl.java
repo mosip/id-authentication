@@ -123,18 +123,24 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Override
 	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
-		Device device = null;
-
-		Device entity = MetaDataUtils.setCreateMetaData(deviceRequestDto.getRequest(), Device.class);
-		try {
-			device = deviceRepository.update(entity);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-		}
+		Device oldDevice = deviceRepository.findById(Device.class, deviceRequestDto.getRequest().getId());
+		Device entity = null;
 		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(device, idResponseDto);
+		if (oldDevice == null) {
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		} else {
 
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
+								+ ExceptionUtils.parseException(e));
+			}
+		}
+		MapperUtils.map(entity, idResponseDto);
 		return idResponseDto;
 	}
 
