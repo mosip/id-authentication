@@ -5,9 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,11 +112,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
 
-	private int count = 1;
-
 	private boolean isSupervisor = false;
 
-	private Map<String, Object> userAuthenticationTypeMap = new LinkedHashMap<>();
+	private List<String> userAuthenticationTypeList;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -302,13 +298,11 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 		
-		count = 1;
 		if (isSupervisor) {
-			//userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
+			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
 		} else {
-			//userAuthenticationTypeMap = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
+			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
 		}
-		userAuthenticationTypeMap.remove(RegistrationConstants.LOGIN_SEQUENCE);
 		loadNextScreen();
 	}
 
@@ -323,10 +317,9 @@ public class AuthenticationController extends BaseController implements Initiali
 		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
-		if (!userAuthenticationTypeMap.isEmpty()) {
-			String authenticationType = String.valueOf(userAuthenticationTypeMap.get(String.valueOf(count)));
-			userAuthenticationTypeMap.remove(String.valueOf(count));
-			count++;
+		if (!userAuthenticationTypeList.isEmpty()) {
+			String authenticationType = String.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
+			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
 			loadAuthenticationScreen(authenticationType);
 		} else {
 			if (!isSupervisor) {
