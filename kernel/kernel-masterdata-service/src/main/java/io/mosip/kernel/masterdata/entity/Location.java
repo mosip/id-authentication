@@ -7,9 +7,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.LocationCodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "location", schema = "master")
-
+@IdClass(LocationCodeAndLanguageCodeID.class)
 public class Location extends BaseEntity implements Serializable {
 
 	/**
@@ -51,10 +53,11 @@ public class Location extends BaseEntity implements Serializable {
 	@Column(name = "parent_loc_code", nullable = false, length = 32)
 	private String parentLocCode;
 
+	@Id
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-	@OneToMany(mappedBy = "locationCode", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
 	private List<RegistrationCenter> registrationCenters;
 
 }

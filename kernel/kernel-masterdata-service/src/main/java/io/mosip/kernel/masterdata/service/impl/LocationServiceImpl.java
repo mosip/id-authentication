@@ -77,8 +77,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode - location code 
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return LocationHierarchyResponseDto-
 	 */
 	@Override
@@ -100,7 +102,7 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				
+
 				List<LocationDto> locationHierarchies = MapperUtils.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
@@ -124,8 +126,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode - location code	
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -137,8 +141,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -151,8 +157,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierachy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
@@ -171,8 +179,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierachy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -203,16 +213,36 @@ public class LocationServiceImpl implements LocationService {
 		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException  | DataAccessException   ex) {
+		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		
-         locationCodeDto=MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
+		locationCodeDto = MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
-	
+
+	@Override
+	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
+		LocationDto locationDto = locationRequestDto.getRequest();
+		try {
+			Location location = locationRepository.findById(Location.class, locationDto.getCode());
+			location = MetaDataUtils.map(locationDto, location, true);
+		    locationRepository.update(location);
+		    MapperUtils.
+			
+		} catch (DataAccessException | DataAccessLayerException ex) {
+
+		}
+
+		return null;
+	}
+
+	@Override
+	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
