@@ -1,9 +1,8 @@
 package io.mosip.kernel.idgenerator.uin.service.impl;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
@@ -20,6 +19,7 @@ import io.mosip.kernel.idgenerator.uin.service.UinGeneratorService;
  *
  */
 @Service
+@Transactional
 public class UinGeneratorServiceImpl implements UinGeneratorService {
 
 	/**
@@ -34,7 +34,6 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 * @see io.mosip.kernel.core.uingenerator.service.UinGeneratorService#getId()
 	 */
 	@Override
-	@Transactional
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
 		UinEntity uinBean = uinDao.findUnusedUin();

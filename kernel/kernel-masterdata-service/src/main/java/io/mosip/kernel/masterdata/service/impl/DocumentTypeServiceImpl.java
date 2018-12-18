@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -35,16 +34,11 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	DataMapper dataMapper;
-
-	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
-	@Autowired
-	private MapperUtils mapperUtil;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#getAllValidDocumentType(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
@@ -57,7 +51,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (documents != null && !documents.isEmpty()) {
-			listOfDocumentTypeDto = mapperUtil.mapAll(documents, DocumentTypeDto.class);
+			listOfDocumentTypeDto = MapperUtils.mapAll(documents, DocumentTypeDto.class);
 		} else {
 			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -76,18 +70,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
-		DocumentType entity = metaUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
+		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
 		DocumentType documentType;
 		try {
 			documentType = documentTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
+		MapperUtils.map(documentType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

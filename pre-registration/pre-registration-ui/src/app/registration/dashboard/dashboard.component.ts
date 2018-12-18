@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -13,6 +13,8 @@ import { Applicant } from './dashboard.modal';
 import { UserModel } from '../demographic/user.model';
 import { AttributeModel } from '../demographic/attribute.model';
 import { IdentityModel } from '../demographic/identity.model';
+import { FileModel } from '../demographic/file.model';
+import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
 @Component({
   selector: 'app-registration',
@@ -20,6 +22,9 @@ import { IdentityModel } from '../demographic/identity.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
+  userFile: FileModel;
+  userFiles: any[] = [];
+  tempFiles;
   disableModifyDataButton = true;
   disableModifyAppointmentButton = true;
   numSelected: number;
@@ -47,7 +52,8 @@ export class DashBoardComponent implements OnInit {
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -61,14 +67,22 @@ export class DashBoardComponent implements OnInit {
     this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
-        console.log(applicants);
         if (applicants['response'] !== null) {
           for (let index = 0; index < applicants['response'].length; index++) {
+            const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
+            let appointmentDateTime = '-';
+            if (bookingRegistrationDTO !== null && applicants['response'][index]['statusCode'].toLowerCase() === 'booked') {
+              const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
+              const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
+              const toTime = applicants['response'][index].bookingRegistrationDTO.time_slot_to;
+              appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
+            }
             const applicant: Applicant = {
               applicationID: applicants['response'][index]['preId'],
-              name: applicants['response'][index]['firstname'],
-              appointmentDateTime: applicants['response'][index]['appointmentDate'],
-              status: applicants['response'][index]['status_code']
+              name: applicants['response'][index]['fullname'],
+              appointmentDateTime: appointmentDateTime,
+              status: applicants['response'][index]['statusCode'],
+              regDto: bookingRegistrationDTO
             };
             this.users.push(applicant);
           }
@@ -121,17 +135,27 @@ export class DashBoardComponent implements OnInit {
   }
 
   onDelete(element) {
-    const data = {
-      case: 'DISCARD',
-      disabled: {
-        radioButton1: false,
-        radioButton2: true
-      }
-    };
+    let data = {};
+    if (element.status.toLowerCase() === 'booked') {
+      data = {
+        case: 'DISCARD',
+        disabled: {
+          radioButton1: false,
+          radioButton2: false
+        }
+      };
+    } else {
+      data = {
+        case: 'DISCARD',
+        disabled: {
+          radioButton1: false,
+          radioButton2: true
+        }
+      };
+    }
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      if (selectedOption) {
-        console.log(selectedOption, element);
+      if (selectedOption && Number(selectedOption) === 1) {
         const body = {
           case: 'CONFIRMATION',
           title: 'Confirm',
@@ -142,10 +166,8 @@ export class DashBoardComponent implements OnInit {
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            console.log(confirm);
             this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
               response => {
-                console.log(response);
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
@@ -154,6 +176,50 @@ export class DashBoardComponent implements OnInit {
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
                 this.users.splice(index, 1);
+                this.dataSource._updateChangeSubscription();
+              },
+              error => {
+                console.log(error);
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Error',
+                  message: 'Action could not be completed'
+                };
+                dialogRef = this.openDialog(message, '250px');
+              }
+            );
+          } else {
+            const message = {
+              case: 'MESSAGE',
+              title: 'Error',
+              message: 'Action could not be completed'
+            };
+            dialogRef = this.openDialog(message, '250px');
+          }
+        });
+      } else if (selectedOption && Number(selectedOption) === 2) {
+        const body = {
+          case: 'CONFIRMATION',
+          title: 'Confirm',
+          message: 'The selected application will be deleted. Please confirm.',
+          yesButtonText: 'Confirm',
+          noButtonText: 'Cancel'
+        };
+        dialogRef = this.openDialog(body, '250px');
+        dialogRef.afterClosed().subscribe(confirm => {
+          if (confirm) {
+            element.regDto.pre_registration_id = element.applicationID;
+            this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
+              response => {
+                const message = {
+                  case: 'MESSAGE',
+                  title: 'Success',
+                  message: 'Action was completed successfully'
+                };
+                dialogRef = this.openDialog(message, '250px');
+                const index = this.users.indexOf(element);
+                this.dataSource.data[index].status = 'Pending_Appointment';
+                this.dataSource.data[index].appointmentDateTime = '-';
                 this.dataSource._updateChangeSubscription();
               },
               error => {
@@ -184,16 +250,22 @@ export class DashBoardComponent implements OnInit {
       this.fetchedDetails = false;
       this.disableModifyDataButton = true;
       const preId = this.selection.selected[0].applicationID;
+      this.dataStorageService.getUserDocuments(preId).subscribe(response => {
+        this.setUserFiles(response);
+      });
+      console.log('user files 2', this.userFiles);
+
       this.dataStorageService.getUser(preId).subscribe(
         response => {
           this.disableModifyDataButton = true;
           const identity = this.createIdentityJSON(response['response'][0].demographicDetails.identity);
-          this.regService.addUser(new UserModel(preId, identity, []));
+          console.log('user model before', new UserModel(preId, identity, this.userFiles));
+          this.regService.addUser(new UserModel(preId, identity, this.userFiles));
         },
         error => {
           this.disableModifyDataButton = false;
           this.fetchedDetails = true;
-          console.log(error);
+          console.log('error', error);
         },
         () => {
           this.fetchedDetails = true;
@@ -216,7 +288,14 @@ export class DashBoardComponent implements OnInit {
       for (let index = 0; index < this.numSelected; index++) {
         const preId = this.selection.selected[index].applicationID;
         const fullName = this.selection.selected[index].name;
-        this.sharedService.addNameList({ fullName: fullName, preRegId: preId });
+        const regDto = this.selection.selected[index].regDto;
+        const status = this.selection.selected[index].status;
+        this.sharedService.addNameList({
+          fullName: fullName,
+          preRegId: preId,
+          regDto: regDto,
+          status: status
+        });
       }
       this.router.navigate(['pick-center'], { relativeTo: this.route });
     }
@@ -229,30 +308,37 @@ export class DashBoardComponent implements OnInit {
   }
 
   private createIdentityJSON(obj) {
+    console.log('obj', obj);
+
     const identity = new IdentityModel(
-      [new AttributeModel(obj.FullName[1].language, obj.FullName[1].label, obj.FullName[1].value)],
-      [new AttributeModel(obj.dateOfBirth[1].language, obj.dateOfBirth[1].label, obj.dateOfBirth[1].value)],
-      [new AttributeModel(obj.gender[1].language, obj.gender[1].label, obj.gender[1].value)],
-      [new AttributeModel(obj.addressLine1[1].language, obj.addressLine1[1].label, obj.addressLine1[1].value)],
-      [new AttributeModel(obj.addressLine2[1].language, obj.addressLine2[1].label, obj.addressLine2[1].value)],
-      [new AttributeModel(obj.addressLine3[1].language, obj.addressLine3[1].label, obj.addressLine3[1].value)],
-      [new AttributeModel(obj.region[1].language, obj.region[1].label, obj.region[1].value)],
-      [new AttributeModel(obj.province[1].language, obj.province[1].label, obj.province[1].value)],
-      [new AttributeModel(obj.city[1].language, obj.city[1].label, obj.city[1].value)],
-      [new AttributeModel(obj.postalcode[1].language, obj.postalcode[1].label, obj.postalcode[1].value)],
+      [new AttributeModel(obj.FullName[0].language, obj.FullName[0].label, obj.FullName[0].value)],
+      [new AttributeModel(obj.dateOfBirth[0].language, obj.dateOfBirth[0].label, obj.dateOfBirth[0].value)],
+      [new AttributeModel(obj.gender[0].language, obj.gender[0].label, obj.gender[0].value)],
+      [new AttributeModel(obj.addressLine1[0].language, obj.addressLine1[0].label, obj.addressLine1[0].value)],
+      [new AttributeModel(obj.addressLine2[0].language, obj.addressLine2[0].label, obj.addressLine2[0].value)],
+      [new AttributeModel(obj.addressLine3[0].language, obj.addressLine3[0].label, obj.addressLine3[0].value)],
+      [new AttributeModel(obj.region[0].language, obj.region[0].label, obj.region[0].value)],
+      [new AttributeModel(obj.province[0].language, obj.province[0].label, obj.province[0].value)],
+      [new AttributeModel(obj.city[0].language, obj.city[0].label, obj.city[0].value)],
+      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
       [
         new AttributeModel(
-          obj.localAdministrativeAuthority[1].language,
-          obj.localAdministrativeAuthority[1].label,
-          obj.localAdministrativeAuthority[1].value
+          obj.localAdministrativeAuthority[0].language,
+          obj.localAdministrativeAuthority[0].label,
+          obj.localAdministrativeAuthority[0].value
         )
       ],
-      [new AttributeModel(obj.emailId[1].language, obj.emailId[1].label, obj.emailId[1].value)],
-      [new AttributeModel(obj.mobileNumber[1].language, obj.mobileNumber[1].label, obj.mobileNumber[1].value)],
-      [new AttributeModel(obj.CNEOrPINNumber[1].language, obj.CNEOrPINNumber[1].label, obj.CNEOrPINNumber[1].value)],
-      [new AttributeModel(obj.age[1].language, obj.age[1].label, obj.age[1].value)]
+      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
+      [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
+      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)],
+      [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
     );
 
     return identity;
+  }
+
+  setUserFiles(response) {
+    this.userFile = response.response;
+    this.userFiles.push(this.userFile);
   }
 }

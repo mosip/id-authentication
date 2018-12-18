@@ -33,8 +33,11 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -48,7 +51,13 @@ public abstract class BaseAuthFilter implements Filter {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	protected Environment env;
+
+	@Autowired
+	protected DecryptorImpl decryptor;
+
+	@Autowired
+	protected KeyManager keyManager;
 
 	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
@@ -86,6 +95,8 @@ public abstract class BaseAuthFilter implements Filter {
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
+		decryptor = context.getBean(DecryptorImpl.class);
+		keyManager = context.getBean(KeyManager.class);
 		timeFormatter = DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"));
 	}
 
@@ -98,24 +109,26 @@ public abstract class BaseAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		requestTime = mapper.convertValue(new Date(), String.class);
-
+		requestTime = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 
+		String signature = requestWrapper.getHeader("Authorization");
+
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 
-		double requestSize = ((double) IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset())
-				.length()) / 1024;
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime
-				+ " with Request size : " + ((requestSize > 0) ? requestSize : 1) + " kb");
+		String requestAsString = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
+		logSize(requestAsString);
 		requestWrapper.resetInputStream();
 
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
-
-			Map<String, Object> decodedRequest = decodedRequest(getRequestBody(requestWrapper.getInputStream()));
-
+			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			if (!validateSignature(requestBody, signature)) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
+			}
+			Map<String, Object> decodedRequest = decodedRequest(requestBody);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Input Request: \n" + objectWriter.writeValueAsString(decodedRequest));
 			requestWrapper.resetInputStream();
@@ -139,10 +152,13 @@ public abstract class BaseAuthFilter implements Filter {
 			requestWrapper.resetInputStream();
 			responseWrapper = sendErrorResponse(response, chain, requestWrapper);
 		} finally {
-			double responseSize = ((double) responseWrapper.toString().length()) / 1024;
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Response sent with Request size : " + ((responseSize > 0) ? responseSize : 1) + " kb");
+			logSize(responseWrapper.toString());
 		}
+	}
+
+	private void logSize(String data) {
+		double size = ((double) data.length()) / 1024;
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Data size : " + ((size > 0) ? size : 1) + " kb");
 	}
 
 	/**
@@ -218,13 +234,11 @@ public abstract class BaseAuthFilter implements Filter {
 	protected Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
 			if (stringToDecode != null) {
-				return mapper.readValue(Base64.getDecoder().decode(stringToDecode),
-						new TypeReference<Map<String, Object>>() {
-						});
+				return Base64.getDecoder().decode(stringToDecode);
 			} else {
 				return stringToDecode;
 			}
-		} catch (IllegalArgumentException | IOException e) {
+		} catch (IllegalArgumentException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
@@ -326,5 +340,18 @@ public abstract class BaseAuthFilter implements Filter {
 	public void destroy() {
 
 	}
+
+	/**
+	 * Validate signature.
+	 *
+	 * @param requestBody
+	 *            the request body
+	 * @param signature
+	 *            the signature
+	 * @return true, if successful
+	 * @throws IdAuthenticationAppException
+	 */
+	protected abstract boolean validateSignature(Map<String, Object> requestBody, String signature)
+			throws IdAuthenticationAppException;
 
 }

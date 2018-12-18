@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * implemented from {@link LocationService}}
  * 
  * @author Srinivasan
+ * @since 1.0.0
  *
  */
 @Service
@@ -39,16 +40,7 @@ public class LocationServiceImpl implements LocationService {
 	 * creates an instance of repository class {@link LocationRepository}}
 	 */
 	@Autowired
-	LocationRepository locationRepository;
-
-	/**
-	 * creates an instance of repository class {@link MapperUtils}}
-	 */
-	@Autowired
-	private MapperUtils objectMapperUtil;
-
-	@Autowired
-	private MetaDataUtils metaDataUtils;
+	private LocationRepository locationRepository;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> parentHierarchyList = null;
@@ -67,11 +59,12 @@ public class LocationServiceImpl implements LocationService {
 			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()+" "+ExceptionUtils.parseException(e));
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		if (!locations.isEmpty()) {
-			
-			responseList = objectMapperUtil.objectToDtoConverter(locations);
+
+			responseList = MapperUtils.objectToDtoConverter(locations);
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -84,9 +77,9 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode
-	 * @param langcode
-	 * @return LocationHierarchyResponseDto-List<LocationHierachy>
+	 * @param locCode - location code 
+	 * @param langCode - language code
+	 * @return LocationHierarchyResponseDto-
 	 */
 	@Override
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode) {
@@ -107,8 +100,8 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				//List<LocationDto> locationHierarchies = objectMapperUtil.mapAll(locHierList, LocationDto.class);
-				List<LocationDto> locationHierarchies = objectMapperUtil.mapAllNew(locHierList, LocationDto.class);
+				
+				List<LocationDto> locationHierarchies = MapperUtils.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
@@ -120,7 +113,8 @@ public class LocationServiceImpl implements LocationService {
 		catch (DataAccessException e) {
 
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()+" "+ExceptionUtils.parseException(e));
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 
 		}
 		return locationHierarchyResponseDto;
@@ -130,8 +124,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code	
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -143,8 +137,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -157,9 +151,9 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierachy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode
-	 * @param langCode
-	 * @return
+	 * @param locCode - location code
+	 * @param langCode - language code
+	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
 
@@ -177,8 +171,8 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierachy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode
-	 * @param langCode
+	 * @param locCode - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -194,30 +188,31 @@ public class LocationServiceImpl implements LocationService {
 
 		return parentHierarchyList;
 	}
-    
+
 	/**
-	 * Method creates location hierarchy data into the table based on the request parameter sent
-	 * {@inheritDoc}
+	 * Method creates location hierarchy data into the table based on the request
+	 * parameter sent {@inheritDoc}
 	 */
 	@Override
-	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
-		LocationCodeDto locationCodeDto = null;
+		PostLocationCodeResponseDto locationCodeDto = null;
 
-		location = metaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
+		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException ex) {
+		} catch (DataAccessLayerException  | DataAccessException   ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		//locationCodeDto = objectMapperUtil.map(locationResultantEntity, LocationCodeDto.class);
-         locationCodeDto=objectMapperUtil.mapNew(locationResultantEntity, LocationCodeDto.class);
+		
+         locationCodeDto=MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
+	
 
 }

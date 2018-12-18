@@ -28,3 +28,4 @@ local.properties
 /Key_Store/
 /Packet_Store/
 dist/*
+coverage/*

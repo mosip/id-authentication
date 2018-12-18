@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 import { RegistrationService } from '../registration.service';
+import { DataStorageService } from '../../shared/data-storage.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-
-interface Applicant {
-  name: string;
-  files: any[];
-  preId: string;
-}
+import { UserModel } from '../demographic/user.model';
+import { FileModel } from '../demographic/file.model';
 
 @Component({
   selector: 'app-file-upload',
@@ -15,16 +12,14 @@ interface Applicant {
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
-  applicantName;
-  applicant: Applicant = {
-    name: '',
-    files: [],
-    preId: ''
-  };
-  uploadedFile;
-  numberOfApplicants = 0;
-  fileType;
-  fileName = [];
+  applicantPreRegId;
+  userFiles: FileModel = new FileModel();
+  formData = new FormData();
+  user: UserModel = new UserModel();
+  users: UserModel[];
+
+  documentType;
+  loginId;
   documentIndex;
   LOD = [
     {
@@ -84,21 +79,20 @@ export class FileUploadComponent implements OnInit {
       ]
     }
   ];
-  documentString = {
-    prereg_id: '59276903416082',
-    doc_cat_code: 'POA',
-    doc_typ_code: 'address',
-    doc_file_format: 'pdf',
-    status_code: 'Pending-Appoinment',
-    lang_code: '1233',
-    upd_by: '9217148168',
-    cr_by: 'Rajath'
+  JsonString = {
+    id: 'mosip.pre-registration.document.upload',
+    ver: '1.0',
+    reqTime: '2018-10-17T07:22:57.086+0000',
+    request: {
+      prereg_id: '21398510941906',
+      doc_cat_code: 'POA',
+      doc_typ_code: 'address',
+      doc_file_format: 'pdf',
+      status_code: 'Pending-Appoinment',
+      upload_by: '9217148168',
+      upload_DateTime: '2018-10-17T07:22:57.086+0000'
+    }
   };
-
-  POAFileName = '';
-  POIFileName = '';
-  POBFileName = '';
-  PORFileName = '';
 
   browseDisabled = true;
 
@@ -106,21 +100,25 @@ export class FileUploadComponent implements OnInit {
 
   documents = ['Document type POA', 'Document type POI', 'Document type POB', 'Document type POR'];
 
-  fileToUpload: File = null;
-  DataSent = false;
-  applicants: Applicant[] = [];
-  step = 1;
+  step = 0;
 
-  constructor(private registration: RegistrationService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private registration: RegistrationService,
+    private dataStroage: DataStorageService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   setStep(applicant, step) {
-    this.step = step + 1;
-    this.applicantName = applicant.name;
+    this.step = step;
+    this.applicantPreRegId = applicant.preRegId;
+    this.user = applicant;
+    this.users[this.step].files.push(['']);
   }
 
-  nextStep() {
+  nextStep(applicantIndex) {
     this.step++;
-    if (this.step === 5) {
+    if (applicantIndex === this.users.length - 1) {
       this.router.navigate(['../pick-center'], { relativeTo: this.route });
     }
   }
@@ -130,68 +128,97 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.registration.getUsers().forEach(element => {
-      this.applicant.name = element.identity.FullName[0].value;
-      this.applicant.preId = element.preRegId;
-      this.applicants.push(this.applicant);
-      console.log(element);
+    this.users = this.registration.getUsers();
+    console.log('users on init', this.users);
+    this.route.params.subscribe((params: Params) => {
+      this.loginId = params['id'];
     });
+    // this.users.forEach(element => {
+    //   let i = 0;
+    //   this.applicant.name = element.identity.FullName[0].value;
+    //   this.applicant.preId = element.preRegId;
+    //   element.files.forEach(fileElement => {
+    //     this.applicant.files[i] = fileElement;
+    //   });
+    //   this.applicants.push(this.applicant);
+    //   i++;
+    // });
   }
 
   handleFileInput(event) {
-    // console.log(event, 'event from drag and drop');
-    // const files = event;
-    // for (const app of this.applicants) {
-    //   if (app.name === this.applicantName) {
-    //     app.files[this.documentIndex] = files.item(0);
-    //   }
-    // }
-    const files = event.target.files;
-    console.log(event.target.value);
-    this.uploadedFile = event.target.value;
-    console.log('files', event.target.files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
-    const formData = new FormData();
-    formData.append('documentString', JSON.stringify(this.documentString));
-    formData.append('file', files.item(0));
-    // this.registration.sendFile(formData).subscribe(response => {
-    //   console.log(response);
-    // });
+    console.log('event', event.target.files);
+    this.setJsonString(event);
+    this.sendFile(event);
     this.browseDisabled = false;
-    for (const app of this.applicants) {
-      if (app.name === this.applicantName) {
-        app.files[this.documentIndex] = files.item(0);
-      }
-    }
   }
 
-  handleFileDrop(fileList) {
-    console.log(fileList, 'event from drag and drop');
-    const files = fileList;
-    for (const app of this.applicants) {
-      if (app.name === this.applicantName) {
-        app.files[this.documentIndex] = files[0];
-      }
-    }
-  }
+  handleFileDrop(fileList) {}
 
   selectChange(event, index: number) {
-    console.log('event from select :', event);
-    this.fileType = event.source._id;
+    this.documentType = event.source.placeholder;
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
   openedChange(event, index: number) {
-    console.log('event from select :', event);
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
-  onFilesChange(fileList: FileList) {
-    console.log(fileList);
-  }
+  onFilesChange(fileList: FileList) {}
 
   removeFile(applicantIndex, fileIndex) {
-    this.applicants[applicantIndex].files[fileIndex] = '';
+    console.log(applicantIndex, ' ; ', fileIndex);
+
+    this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
+      console.log(res);
+      this.users[applicantIndex].files[0][fileIndex] = '';
+    });
+    // this.applicants[applicantIndex].files[fileIndex] = '';
+  }
+
+  setJsonString(event) {
+    this.JsonString.request.doc_cat_code = this.documentType;
+    this.JsonString.request.prereg_id = this.user.preRegId;
+    this.JsonString.request.doc_file_format = event.target.files[0].type;
+    this.JsonString.request.upload_by = this.loginId;
+    console.log('Json String', this.JsonString);
+  }
+
+  sendFile(event): any {
+    this.formData.append('JsonString', JSON.stringify(this.JsonString));
+    this.formData.append('file', event.target.files.item(0));
+    this.dataStroage.sendFile(this.formData).subscribe(response => {
+      // this.setApplicantsArray(this.fileResponse, event.target.files);
+      this.updateUsers(response, event);
+    });
+    this.formData = new FormData();
+  }
+
+  updateUsers(fileResponse, event) {
+    console.log('fileResponse from Update Users method', fileResponse);
+    this.userFiles.doc_cat_code = this.documentType;
+    this.userFiles.doc_file_format = event.target.files[0].type;
+    this.userFiles.doc_id = fileResponse.response[0].documnetId;
+    this.userFiles.doc_name = event.target.files[0].name;
+    this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
+    this.userFiles.multipartFile = event.target.files[0];
+    this.userFiles.prereg_id = this.applicantPreRegId;
+    console.log('step:', this.step);
+
+    console.log('users befor update', this.users);
+    this.users.forEach(element => {
+      if (element.preRegId === this.applicantPreRegId) {
+        if (element.files[0].length) {
+          this.users[this.step].files[0][this.documentIndex] = this.userFiles;
+          // element.files[0][this.documentIndex] = this.userFiles;
+        } else {
+          this.users[this.step].files[0].push(this.userFiles);
+        }
+      }
+    });
+    this.userFiles = new FileModel();
+    this.registration.updateUser(this.step, this.users[this.step]);
+    console.log('userFiles updaated', this.users);
   }
 }

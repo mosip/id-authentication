@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.swagger.annotations.Api;
 
 /**
  * 
@@ -29,6 +30,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
  *
  */
 @RestController
+@Api(tags = { "Location" })
 @RequestMapping(value = "/v1.0/locations")
 public class LocationController {
 
@@ -36,12 +38,12 @@ public class LocationController {
 	 * Creates an instance of {@link LocationService}
 	 */
 	@Autowired
-	LocationService locationHierarchyService;
+	private LocationService locationHierarchyService;
 
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
-	 * 
-	 * @return List<LocationHierarchyDto>
+	 * @param langcode language code
+	 * @return  list of location hierarchies
 	 */
 	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -50,18 +52,18 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<LocationCodeDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
+	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
 		
 		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),HttpStatus.CREATED);
 	}
 
 	/**
-	 * This API fetches location hierarchy details based on location code and
-	 * language code arguments
 	 * 
-	 * @param locCode
+	 * @param locationCode
+	 *                location code
 	 * @param langCode
-	 * @return List<LocationHierarchyDto>
+	 *                language code
+	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/{locationcode}/{langcode}")
 	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
