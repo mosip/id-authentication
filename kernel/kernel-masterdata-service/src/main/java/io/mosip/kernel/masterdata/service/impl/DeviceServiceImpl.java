@@ -27,6 +27,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * This class have methods to fetch and save Device Details
  * 
  * @author Megha Tanga
+ * @author Neha Sinha
  * @since 1.0.0
  *
  */
@@ -135,12 +136,33 @@ public class DeviceServiceImpl implements DeviceService {
 			try {
 				deviceRepository.update(entity);
 			} catch (DataAccessLayerException | DataAccessException e) {
-				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " "
 								+ ExceptionUtils.parseException(e));
 			}
 		}
-		MapperUtils.map(entity, idResponseDto);
+		idResponseDto.setId(entity.getId());
+		return idResponseDto;
+	}
+
+	@Override
+	public IdResponseDto deleteDevice(String id) {
+		Device device = deviceRepository.findById(Device.class, id);
+		Device entity = null;
+		IdResponseDto idResponseDto = new IdResponseDto();
+		if (device == null) {
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		} else {
+			try {
+				entity = MetaDataUtils.setDeleteMetaData(device);
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
+			}
+		}
+		idResponseDto.setId(entity.getId());
 		return idResponseDto;
 	}
 
