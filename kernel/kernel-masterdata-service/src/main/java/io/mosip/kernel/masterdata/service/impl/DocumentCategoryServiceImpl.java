@@ -197,6 +197,12 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return documentCategoryId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * deleteDocumentCategory(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode) {
 		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
