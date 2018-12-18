@@ -7,10 +7,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -114,5 +117,36 @@ public class TitleServiceImpl implements TitleService {
 		MapperUtils.map(title, codeLangCodeId);
 		return codeLangCodeId;
 	}
+	
+	@Override
+	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles) {
+
+		TitleDto titleDto = titles.getRequest();
+
+		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(titleDto, titleId);
+		try {
+
+			Title title = titleRepository.findById(Title.class,
+					titleId);
+
+			if (title != null) {
+				MetaDataUtils.setUpdateMetaData(titleDto, title, false);
+				titleRepository.update(title);
+			} else {
+				throw new DataNotFoundException(
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return titleId;
+	}
+
 
 }
