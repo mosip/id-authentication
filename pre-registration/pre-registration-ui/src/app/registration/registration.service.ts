@@ -40,4 +40,8 @@ export class RegistrationService {
     this.users.splice(index, 1);
     this.usersChanged.next(this.users.slice());
   }
+
+  getUserFiles(index: number) {
+    return this.users[index].files.slice();
+  }
 }
