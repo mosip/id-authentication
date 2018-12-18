@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller with api to fetch registration center history
@@ -16,6 +18,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
  *
  */
 @RestController
+@Api(tags = { "RegistrationCenterHistory" })
 public class RegistrationCenterHistoryController {
 
 	/**
@@ -29,14 +32,14 @@ public class RegistrationCenterHistoryController {
 	 * 
 	 * @param registrationCenterId
 	 *            The id of registration center
-	 * @param languageCode
+	 * @param langCode
 	 *            The language code
 	 * @param effectiveDate
 	 *            The effective date
 	 * @return {@link RegistrationCenterResponseDto} instance
 	 */
 	@GetMapping("/v1.0/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
-	public RegistrationCenterResponseDto getRegistrationCentersHistory(
+	public RegistrationCenterHistoryResponseDto getRegistrationCentersHistory(
 			@PathVariable("registrationCenterId") String registrationCenterId, @PathVariable("langcode") String langCode,
 			@PathVariable("effectiveDate") String effectiveDate) {
 

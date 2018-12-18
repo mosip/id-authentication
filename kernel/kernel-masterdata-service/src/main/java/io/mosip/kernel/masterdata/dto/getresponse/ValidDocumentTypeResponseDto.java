@@ -5,7 +5,6 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 

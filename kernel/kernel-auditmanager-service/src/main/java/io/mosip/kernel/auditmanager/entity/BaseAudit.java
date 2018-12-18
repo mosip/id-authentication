@@ -1,6 +1,7 @@
 package io.mosip.kernel.auditmanager.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -37,7 +38,7 @@ public class BaseAudit {
 	 */
 	public BaseAudit() {
 		uuid = UUID.randomUUID().toString();
-		createdAt = LocalDateTime.now();
+		createdAt = LocalDateTime.now(ZoneId.of("UTC"));
 	}
 
 }

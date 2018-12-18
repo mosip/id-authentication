@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
+import io.swagger.annotations.Api;
 
 /**
  * Controller class for RegistrationCenterType operations.
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
  *
  */
 @RestController
+@Api(tags = { "RegistrationCenterType" })
 public class RegistrationCenterTypeController {
 
 	/**

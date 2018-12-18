@@ -5,6 +5,10 @@ package io.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -22,7 +26,7 @@ public class SyncRegistrationDto implements Serializable {
 	private String registrationId;
 
 	/** The sync type dto. */
-	private SyncTypeDto syncType;
+	private String syncType = SyncTypeDto.NEW.getValue();
 
 	/** The parent registration id. */
 	private String parentRegistrationId;
@@ -67,7 +71,7 @@ public class SyncRegistrationDto implements Serializable {
 	 * @param langCode
 	 *            the lang code
 	 */
-	public SyncRegistrationDto(String registrationId, SyncTypeDto syncTypeDto, String parentRegistrationId,
+	public SyncRegistrationDto(String registrationId, String syncTypeDto, String parentRegistrationId,
 			SyncStatusDto syncStatusDto, String statusComment, String langCode) {
 		super();
 		this.registrationId = registrationId;
@@ -178,17 +182,17 @@ public class SyncRegistrationDto implements Serializable {
 	 *
 	 * @return the sync type dto
 	 */
-	public SyncTypeDto getSyncType() {
+	public String getSyncType() {
 		return syncType;
 	}
 
 	/**
 	 * Sets the sync type dto.
 	 *
-	 * @param syncTypeDto
+	 * @param String
 	 *            the new sync type dto
 	 */
-	public void setSyncType(SyncTypeDto syncTypeDto) {
+	public void setSyncType(String syncTypeDto) {
 		this.syncType = syncTypeDto;
 	}
 

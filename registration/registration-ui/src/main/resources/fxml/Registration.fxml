@@ -7,8 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationController">
+<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
   <content>
     <AnchorPane id="anchor-pane-registration" fx:id="anchorPaneRegistration" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="950.0">
          <children>
@@ -27,7 +28,7 @@
                   </ImageView>
                   <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="438.0" prefWidth="819.0" visible="false">
                  	<children>
-                 	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
+                 	 <AnchorPane id="childSpecificFields" fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
                             <Label layoutX="25.0" layoutY="8.0" text="%parent_or_guardian_name" />
                             <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
@@ -37,28 +38,51 @@
                    </AnchorPane>
                    <AnchorPane fx:id="documentFields" layoutX="36.0" layoutY="134.0" prefHeight="123.0" prefWidth="389.0">
                       <children>
-                      <ComboBox fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
-                       <Label fx:id="poaLabel" layoutX="220.0" layoutY="10.0" text="" />
-                       <Button fx:id="poaScanBtn" layoutX="300.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" />
-                       <ComboBox fx:id="poiDocuments" layoutX="10.0" layoutY="40.0" prefWidth="150.0" promptText="POI Document" />
-                       <Label fx:id="poiLabel" layoutX="220.0" layoutY="40.0" text="" />
-                       <Button fx:id="poiScanBtn" layoutX="300.0" layoutY="40.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" />
-                       <ComboBox fx:id="porDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POR Document" />
-                       <Label fx:id="porLabel" layoutX="220.0" layoutY="70.0" text="" />
-                       <Button fx:id="porScanBtn" layoutX="300.0" layoutY="70.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" />
+                      <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
+                            <ScrollPane fx:id="poaScroll" layoutX="172.0" layoutY="12.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="poaScanBtn" layoutX="350.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="poiDocuments" fx:id="poiDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POI Document" />
+                            <ScrollPane fx:id="poiScroll" layoutX="172.0" layoutY="72.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="poiBox" fx:id="poiBox" layoutX="195.0" layoutY="72.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="poiScanBtn" layoutX="350.0" layoutY="72.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="porDocuments" fx:id="porDocuments" layoutX="10.0" layoutY="130.0" prefWidth="150.0" promptText="POR Document" />
+                            <ScrollPane fx:id="porScroll" layoutX="172.0" layoutY="130.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="porBox" fx:id="porBox" layoutX="195.0" layoutY="130.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="porScanBtn" layoutX="350.0" layoutY="130.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="DOB Document" />
+                            <ScrollPane fx:id="dobScroll" layoutX="172.0" layoutY="190.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="dobScanBtn" layoutX="350.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" text="%scan" styleClass="RegbuttonStyle" />
                       </children>
                    </AnchorPane>
-                   <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
-               	   <Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
-                   <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="50.0" layoutY="260.0" prefHeight="15.0" prefWidth="15.0" />
-                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="60.0" layoutY="260.0" prefHeight="15.0" prefWidth="10.0" />
-                   <Label layoutX="90.0" layoutY="260.0" text="Biometric Exception" />
+                   <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" styleClass="RegbuttonStyle" />
+               	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Previous" styleClass="RegbuttonStyle" />
+                        <AnchorPane id="biometricException" layoutX="50.0" layoutY="370.0">
+                           <children>
+                         <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="9.1" />
+                         <Label text="Biometric Exception" />
+                         <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="9.0" />
+                           </children>
+                        </AnchorPane>
                         <Line endX="560.0" layoutX="221.0" layoutY="10.0" startX="-200.0" />
                  	</children>
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <Accordion id="registrationAccordian" fx:id="accord" layoutX="80.0" layoutY="85.0" pickOnBounds="false" visible="true">
+            <Accordion id="registrationAccordian" fx:id="accord" layoutX="40.0" layoutY="85.0" pickOnBounds="false" visible="true">
               <panes>
                   <TitledPane fx:id="demoGraphicTitlePane" text="%titleDemographicPane">
                      <content>
@@ -66,7 +90,7 @@
                            <children>
                               <Label layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                               <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
-                              <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" prefHeight="5.0" prefWidth="70.0" text="%fetch" />
+                              <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" styleClass="RegbuttonStyle" />
                               <Label layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%full_name" />
                               <TextField id="fullName" fx:id="fullName" layoutX="44.0" layoutY="90.0" prefHeight="10.0" prefWidth="320.0" />
                               <AnchorPane layoutX="40.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
@@ -75,8 +99,8 @@
                                     <TextField fx:id="ageField" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
                                     <Label layoutX="130.0" layoutY="9.0" text="%dob" />
                                     <DatePicker fx:id="ageDatePicker" editable="false" layoutX="130.0" layoutY="25.0" onAction="#ageValidationInDatePicker" prefHeight="10.0" prefWidth="200.0" />
-                                    <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="15.0" text="" />
-                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="10.0" text="" />
+                                    <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
+                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                  </children>
                               </AnchorPane>
                               <Label layoutX="47.0" layoutY="175.0" text="%gender" />
@@ -106,7 +130,6 @@
                                     <TextField fx:id="province" layoutX="14.0" layoutY="232.0" prefHeight="30.0" prefWidth="153.0" />
                                     <Label layoutX="180.0" layoutY="220.0" text="%postal_code" />
                                     <TextField fx:id="postalCode" layoutX="180.0" layoutY="232.0" prefHeight="30.0" prefWidth="155.0" />
-                                     <Button fx:id="prevAddressButton" layoutX="350.0" layoutY="240.0" mnemonicParsing="false" onAction="#loadAddressFromPreviousEntry" text="Fetch address from last entry"/>
                                     <Label layoutX="17.0" layoutY="270.0" text="%local_administrative_authority" />
                                     <TextField fx:id="localAdminAuthority" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label layoutX="17.0" layoutY="320.0" text="%mobile_number" />
@@ -121,7 +144,7 @@
                                     <TextField fx:id="addressLine2LocalLanguage" layoutX="410.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label fx:id="addressLine3LocalLanguagelabel" layoutX="410.0" layoutY="110.0" text="" />
                                     <TextField fx:id="addressLine3LocalLanguage" layoutX="410.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Button fx:id="nextBtn" layoutX="639.0" layoutY="435.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" prefHeight="20.0" prefWidth="70.0" text="%next" />
+                                    <Button fx:id="nextBtn" layoutX="639.0" layoutY="435.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" text="%next" styleClass="RegbuttonStyle" />
                                     <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                     	<image>
                   						<Image url="@../images/keyboard.png" />
@@ -147,6 +170,10 @@
             			 			</image>
                                 
                                                 </ImageView>
+                                <ImageView fx:id="copyAddressImage" fitHeight="20.0" fitWidth="27.0" layoutX="382.0" layoutY="220.0" onMouseClicked="#loadAddressFromPreviousEntry" pickOnBounds="true" preserveRatio="true">
+              						<Image url="@../images/CopyAddress.png" />
+                                </ImageView>
+                                <Label fx:id ="copyAddressLabel" layoutX="352.0" layoutY="240.0" text="Copy Address" visible="false"/>
                               <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
                               <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                            </children>
@@ -154,14 +181,14 @@
                      </content></TitledPane>
                   <TitledPane fx:id="biometricTitlePane" text="Applicant Biometrics">
                      <content>
-                        <AnchorPane id="demographicPane" prefHeight="85.0" prefWidth="417.0" visible="false">
+                        <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0">
                            <children>
-                              <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
-                              <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
-                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0">
+                           <fx:include fx:id="fingerPrintCapturePane" source="FingerPrintCapture.fxml" />
+                           <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
+                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
                                  <children>
-                                    <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
-                                    <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
+                                    <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" styleClass="RegbuttonStyle" />
+                                    <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" styleClass="RegbuttonStyle"/>
                                     <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
                                     <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
                                     <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
@@ -184,12 +211,12 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="284.0" layoutY="390.0" text="85%">
+                                    <Label layoutX="284.0" layoutY="390.0" text="				85%">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="656.0" layoutY="390.0" text="85%">
+                                    <Label layoutX="656.0" layoutY="390.0" text="				85%">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -213,14 +240,19 @@
                                        </children>
                                     </HBox>
                                     <Label layoutX="104.0" layoutY="54.0" text="Image" />
-                                    <Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" text="Previous" />
-                                    <Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
+                                    <Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" text="Previous" styleClass="RegbuttonStyle" />
+                                    <Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" styleClass="RegbuttonStyle" />
                                  </children>
                               </AnchorPane>
                               <Line endX="840.0" startX="10.0" />
                            </children>
                         </AnchorPane>
                      </content>
+                  </TitledPane>
+                  <TitledPane fx:id="authenticationTitlePane" disable="true" text="Operator Authentication">
+                    <content>
+                      <fx:include fx:id="operatorAuthentication" source="OperatorAuthentication.fxml" />
+                    </content>
                   </TitledPane>
               </panes>
             </Accordion>

@@ -6,13 +6,13 @@ import java.util.LinkedList;
 
 import org.junit.Assert;
 import org.junit.Test;
-import io.mosip.registration.test.util.datastub.DataProvider;
 
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
 public class HMACGenerationTest {

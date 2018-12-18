@@ -16,9 +16,7 @@ import io.mosip.kernel.masterdata.entity.BiometricAttribute;
  */
 @Repository
 public interface BiometricAttributeRepository extends BaseRepository<BiometricAttribute, String> {
-	public static final String GET_BIOMETRIC_TYPE_BY_BIO_TYPE_CODE_AND_LANG_CODE_IS_DELETED_FALSE_AND_IS_NULL = "select b from BiometricAttribute b where b.biometricTypeCode = ?1 and b.langCode = ?2 and (b.isDeleted is null or b.isDeleted = false) ";
-
-	@Query(GET_BIOMETRIC_TYPE_BY_BIO_TYPE_CODE_AND_LANG_CODE_IS_DELETED_FALSE_AND_IS_NULL)
+	@Query("select b from BiometricAttribute b where b.biometricTypeCode = ?1 and b.langCode = ?2 and (b.isDeleted is null or b.isDeleted = false) ")
 	List<BiometricAttribute> findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
 			String biometricTypeCode, String langCode);
 

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -31,36 +32,30 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
-
-	@Autowired
-	private MapperUtils mapperUtils;
-
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see RegistrationCenterDeviceService#saveRegistrationCenterAndDevice(RequestDto)
+	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestDto)
 	 */
 	@Override
-	public ResponseRegistrationCenterDeviceDto saveRegistrationCenterAndDevice(
+	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
-			RegistrationCenterDevice registrationCenterDevice = metadataUtils.setCreateMetaData(requestDto.getRequest(),
+			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto.getRequest(),
 					RegistrationCenterDevice.class);
 			RegistrationCenterDevice savedRegistrationCenterDevice = registrationCenterDeviceRepository
 					.create(registrationCenterDevice);
 
-			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = metadataUtils
+			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
 			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
 
-			registrationCenterDeviceDto = mapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),
+			registrationCenterDeviceDto = MapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),
 					ResponseRegistrationCenterDeviceDto.class);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION.getErrorMessage()

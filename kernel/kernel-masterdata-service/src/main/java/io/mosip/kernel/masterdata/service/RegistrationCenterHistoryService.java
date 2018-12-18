@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 
 /**
  * @author Dharmesh Khandelwal
@@ -14,10 +14,11 @@ public interface RegistrationCenterHistoryService {
 	 * Function to fetch specific registration center history detail by registration
 	 * center id
 	 * 
-	 * @param registrationCenterId
-	 * @param effectiveDate
+	 * @param registrationCenterId registrationCenterId
+	 * @param langCode langCode
+	 * @param effectiveDate effectiveDate
 	 * @return {@link RegistrationCenterDto}
 	 */
-	RegistrationCenterResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,
+	RegistrationCenterHistoryResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,
 			String effectiveDate);
 }

@@ -8,13 +8,17 @@
 	-fx-background-color: #f8f9fa;
 }
 
-#demographicPane{
+#demographicPane {
  	-fx-padding: 10;
 	-fx-border-color: black;
     -fx-background-color : white;
     -fx-border-width: 0 0 0 0;
 	-fx-font-size : 12px;   
     
+}
+
+#operatorAuthenticationPane {
+	-fx-background-color : white;
 }
 
 #virtualKeyboard {
@@ -41,12 +45,12 @@
     -fx-border-width : 1 1 0 1;
 }
 
-#registrationAccordian.accordion >.titled-pane:collapsed > .title
-{
-	
+#registrationAccordian.accordion >.titled-pane:collapsed > .title {	
+ 
+ 
     -fx-border-width : 1 1 1 1;
     -fx-border-color: black;
-    
+	
 
 }
 
@@ -177,19 +181,19 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
-#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane{
+#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane,#fingerPrintScanAnchorPane{
 	-fx-background-color:#ffffff;
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane,#authenticationRoot{
+#onHoldPane, #rejectionPane,#authenticationRoot,#fingerPrintScanRoot{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
 #onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
 	-fx-background-color:#808080;
 }
-#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane{
+#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane,#fingerPrintCapturePane,#fingerPrintScanRootSubPane{
 	-fx-background-color:#ffffff;
 }
 #pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
@@ -203,15 +207,8 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit,#submitBtn,#scanBtn{
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
-    -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
-#exitButton, #rejectionExit, #authExit,#authenticationExit{
+
+#exitButton, #rejectionExit, #authExit,#authenticationExit,#fingerPrintScanExit{
 	 -fx-border-color: transparent;
      -fx-padding: 4 0 4 0;
      -fx-text-fill: black;
@@ -283,4 +280,75 @@
 #applicantImageHBox, #exceptionImageHBox {
 	-fx-border-color: black;
 	-fx-border-width: 2;
+}
+/* Registration - Biometric - Iris Capture */
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
+	-fx-border-color: lightgrey;
+}
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
+	-fx-border-color: black;
+}
+
+.scanScrollPane {
+	-fx-background-color: white;
+	-fx-border-width:0 0 0 0;
+}
+
+.scanVBox {
+	-fx-background-color: white;
+	-fx-border-width:0 0 0 0;
+}
+
+.headerPane {
+	-fx-background-color:#808080;
+}
+
+.paneRoot {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+
+.subPane {
+	-fx-background-color:#ffffff;
+}
+
+#submit, #rejectionSubmit,#submitBtn{
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+} 
+
+.RegbuttonStyle {
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-pref-height:20px;
+    -fx-pref-width:60px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.imagePane {
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+
+.exit {
+	-fx-border-color: transparent;
+    -fx-padding: 4 0 4 0;
+    -fx-text-fill: black;
+}
+
+#duplicateCheckLbl{
+	-fx-text-fill: red;
+	-fx-font-size: 12px;
+}
+
+#bioPreviewGridId{
+	-fx-background-color: white;
 }

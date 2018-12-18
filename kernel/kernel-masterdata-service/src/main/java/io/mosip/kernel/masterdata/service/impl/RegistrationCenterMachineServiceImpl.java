@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -31,32 +32,30 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	@Autowired
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
-	@Autowired
-	private MetaDataUtils metadataUtils;
 
-	@Autowired
-	private MapperUtils mapperUtils;
-
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#createRegistrationCenterAndMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
-	public ResponseRrgistrationCenterMachineDto saveRegistrationCenterAndMachine(
+	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
 
 		try {
-			RegistrationCenterMachine registrationCenterMachine = metadataUtils
+			RegistrationCenterMachine registrationCenterMachine = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachine.class);
 			RegistrationCenterMachine savedRegistrationCenterMachine = registrationCenterMachineRepository
 					.create(registrationCenterMachine);
 
-			RegistrationCenterMachineHistory registrationCenterMachineHistory = metadataUtils
+			RegistrationCenterMachineHistory registrationCenterMachineHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineHistory.class);
 			registrationCenterMachineHistory.setEffectivetimes(savedRegistrationCenterMachine.getCreatedDateTime());
 			registrationCenterMachineHistoryRepository.create(registrationCenterMachineHistory);
 
-			responseRrgistrationCenterMachineDto = mapperUtils.map(
+			responseRrgistrationCenterMachineDto = MapperUtils.map(
 					savedRegistrationCenterMachine.getRegistrationCenterMachinePk(),
 					ResponseRrgistrationCenterMachineDto.class);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
