@@ -121,4 +121,21 @@ public class DeviceServiceImpl implements DeviceService {
 
 	}
 
+	@Override
+	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
+		Device device = null;
+
+		Device entity = MetaDataUtils.setCreateMetaData(deviceRequestDto.getRequest(), Device.class);
+		try {
+			device = deviceRepository.update(entity);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(device, idResponseDto);
+
+		return idResponseDto;
+	}
+
 }
