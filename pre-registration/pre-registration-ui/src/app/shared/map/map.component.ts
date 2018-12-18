@@ -9,7 +9,7 @@ import OlXyzSource from 'ol/source/XYZ';
 import OlTileLayer from 'ol/layer/Tile';
 import { Icon, Style } from 'ol/style';
 
-import { fromLonLat } from 'ol/proj';
+import { fromLonLat, addCommon as addCommonProjections } from 'ol/proj';
 import { SharedService } from '../shared.service';
 
 @Component({
@@ -68,6 +68,8 @@ export class MapComponent implements OnInit {
         console.log(this.lonLat);
         console.log(this.centers);
 
+        addCommonProjections();
+
         this.centers.forEach( center => {
             if (!isNaN(center.latitude)) {
                 this.marker = new OlFeature({
@@ -87,7 +89,7 @@ export class MapComponent implements OnInit {
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'pixels',
                 opacity: 0.75,
-                src: '/src/assets/marker.png'
+                src: 'assets/marker.png'
             }))
         });
 

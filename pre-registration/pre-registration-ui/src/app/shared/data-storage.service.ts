@@ -16,7 +16,7 @@ export class DataStorageService {
   BASE_URL = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
- // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
+  // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;

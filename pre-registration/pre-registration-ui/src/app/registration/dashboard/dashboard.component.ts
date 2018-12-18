@@ -67,6 +67,7 @@ export class DashBoardComponent implements OnInit {
     this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
+        console.log(applicants);
         if (applicants['response'] !== null) {
           for (let index = 0; index < applicants['response'].length; index++) {
             const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
