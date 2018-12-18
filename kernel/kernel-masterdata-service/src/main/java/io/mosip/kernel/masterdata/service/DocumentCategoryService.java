@@ -61,4 +61,15 @@ public interface DocumentCategoryService {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to delete Document Category based on id provided.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * @param langCode
+	 *            the language code.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode);
 }
