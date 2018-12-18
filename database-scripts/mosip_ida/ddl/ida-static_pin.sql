@@ -14,7 +14,7 @@ create table ida.static_pin (
 	
 	id character varying(36) not null,
 	
-	uin_ref_id character varying(28) not null,  		-- uin.uin.uin_ref_id 
+	uin  character varying(28) not null,  			-- UIN of indivisuals and referenced from idrepo database
 	
 	generated_dtimes timestamp,
 	validation_retry_count smallint,
@@ -32,7 +32,7 @@ create table ida.static_pin (
 ;
 
 -- keys section --------------------------------------------------------------------------
-alter table ida.static_pin add constraint pk_spin_id primary key (uin_ref_id, id, is_active)
+alter table ida.static_pin add constraint pk_spin_id primary key (id, uin, is_active, generated_dtimes)
  ;
 
 -- indexes section ------------------------------------------------------------------------
