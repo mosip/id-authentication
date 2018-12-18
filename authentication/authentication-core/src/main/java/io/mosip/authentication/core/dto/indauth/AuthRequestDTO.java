@@ -36,6 +36,8 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 
 	private List<PinInfo> pinInfo;
 
+	private List<BioInfo> bioInfo;
+
 	private RequestDTO request;
 
 }

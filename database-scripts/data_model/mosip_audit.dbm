@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_audit" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all transaction audit details for all the module applications]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="audit" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="app_audit_log">
+	<schema name="audit"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Application Audit Log table is to track application related audit details for analysing, auditing and reporting purposes]]></comment>
+	<position x="50" y="50"/>
+	<column name="log_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="log_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="log_desc">
+		<type name="character varying" length="2048"/>
+	</column>
+	<column name="event_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="event_type" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="event_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="action_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="host_name" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="host_ip" not-null="true">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="session_user_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="session_user_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="app_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="module_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="module_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<constraint name="pk_audlog_log_id" type="pk-constr" table="audit.app_audit_log">
+		<columns names="log_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<permission>
+	<object name="mosip_audit" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_audit" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_audit" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_audit" type="database"/>
+	<roles names="audituser"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="audit" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="audit" type="schema"/>
+	<roles names="audituser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="audit.app_audit_log" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="audit.app_audit_log" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

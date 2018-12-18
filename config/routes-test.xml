@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <!-- here we define the bar route -->
+    <route id="verticle1">
+        <from uri="vertx:verticle1.address.out"/>
+        <to uri="vertx:verticle2.address.in"/>
+    </route>
+	<!-- we could add more routes if we like,
+         but in this example we stick to one route only -->
+</routes>
