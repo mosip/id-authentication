@@ -25,6 +25,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
   cutoff = 1;
   days = 7;
   MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  enableBookButton = true;
 
   constructor(private sharedService: SharedService, private dialog: MatDialog, private dataService: DataStorageService) { }
 
@@ -76,6 +77,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
     this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
     console.log(index, 'item to be deleted from card', this.deletedNames);
     this.showAddButton = true;
+    this.enableBookButton = false;
   }
 
   openDialog() {
@@ -97,6 +99,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
       });
       if (this.deletedNames.length === 0) {
         this.showAddButton = false;
+        this.enableBookButton = true;
       }
     });
   }
