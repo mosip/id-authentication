@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -189,6 +191,61 @@ public class IdRepoServiceTest {
 		service.addIdentity(request);
 	}
 
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityRecordExists()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		ObjectNode obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				ObjectNode.class);
+		request.setRequest(obj);
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
+		when(uinRepo.existsById(Mockito.anyString())).thenReturn(true);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
+				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+		service.addIdentity(request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		ObjectNode obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				ObjectNode.class);
+		request.setRequest(obj);
+		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
+		when(uinRepo.existsById(Mockito.anyString())).thenReturn(true);
+		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
+		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
+				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+		service.addIdentity(request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateuinStatusDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
+		service.updateUinStatus(new Uin(), "status");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateUinidentityInfoDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(uinDetailRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
+		Uin uinObj = new Uin();
+		UinDetail uinDObj = new UinDetail();
+		uinObj.setUinDetail(uinDObj);
+		service.updateIdentityInfo(uinObj, "status".getBytes());
+	}
+
 	/**
 	 * Test add identity exception.
 	 *
@@ -322,5 +379,56 @@ public class IdRepoServiceTest {
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		service.updateIdentity(request);
+	}
+
+	@Test
+	public void testUpdateIdentityInvalidRequest()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		request.setStatus("REGISTERED");
+		request.setRequest(mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setStatusCode("REGISTERED");
+		UinDetail uinDetailObj = new UinDetail();
+		uinDetailObj.setUinData(
+				"rgAADOjjov89sjVwvI8Gc4ngK9lQgPxMpNDe+LXb5qI=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE="
+						.getBytes());
+		uinObj.setUinDetail(uinDetailObj);
+		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		service.updateIdentity(request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testconvertToMap() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(service, "convertToMap",
+					mapper.readValue("{\"uin\":\"1234\"}".getBytes(), Object.class));
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	/**
+	 * @throws Throwable 
+	 * 
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testvalidateUIN() throws Throwable {
+		try {
+			when(uinRepo.existsByUin(Mockito.anyString())).thenReturn(true);
+			when(uinRepo.getStatusByUin(Mockito.anyString())).thenReturn("wrong");
+			ReflectionTestUtils.invokeMethod(service, "validateUIN", "1234");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 }
