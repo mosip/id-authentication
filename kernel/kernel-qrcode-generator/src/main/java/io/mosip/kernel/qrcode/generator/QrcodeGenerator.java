@@ -62,11 +62,11 @@ public class QrcodeGenerator {
 	 * @throws QrcodeGenerationException
 	 *             exceptions which may occur when encoding a QRcode using the
 	 *             Writer framework.
-	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws IOException
 	 *             exceptions which may occur when write to the byte stream fail
 	 */
 	public static byte[] generateQrCode(String data, QrVersion version)
-			throws QrcodeGenerationException, io.mosip.kernel.core.exception.IOException {
+			throws QrcodeGenerationException,  IOException {
 		QrcodegeneratorUtils.verifyInput(data, version);
 		configMap.put(EncodeHintType.QR_VERSION, version.getVersion());
 	    BitMatrix byteMatrix = null;
@@ -79,12 +79,7 @@ public class QrcodeGenerator {
 					exception);
 		}
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			MatrixToImageWriter.writeToStream(byteMatrix, QrcodeConstants.FILE_FORMAT, outputStream);
-		} catch (IOException exception) {
-			throw new io.mosip.kernel.core.exception.IOException(QrcodeExceptionConstants.IO_EXCEPTION.getErrorCode(),
-					QrcodeExceptionConstants.IO_EXCEPTION.getErrorMessage());
-		}
+		MatrixToImageWriter.writeToStream(byteMatrix, QrcodeConstants.FILE_FORMAT, outputStream);
 		return outputStream.toByteArray();
 
 	}
