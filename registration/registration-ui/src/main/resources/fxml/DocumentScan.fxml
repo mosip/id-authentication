@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane layoutX="36.0" layoutY="134.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" prefHeight="123.0" prefWidth="389.0" fx:controller="io.mosip.registration.controller.reg.DocumentScanController">
+                      <children>
+                      <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
+                            <ScrollPane fx:id="poaScroll" layoutX="172.0" layoutY="12.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="poaScanBtn" layoutX="350.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="poiDocuments" fx:id="poiDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POI Document" />
+                            <ScrollPane fx:id="poiScroll" layoutX="172.0" layoutY="72.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="poiBox" fx:id="poiBox" layoutX="195.0" layoutY="72.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="poiScanBtn" layoutX="350.0" layoutY="72.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="porDocuments" fx:id="porDocuments" layoutX="10.0" layoutY="130.0" prefWidth="150.0" promptText="POR Document" />
+                            <ScrollPane fx:id="porScroll" layoutX="172.0" layoutY="130.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="porBox" fx:id="porBox" layoutX="195.0" layoutY="130.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="porScanBtn" layoutX="350.0" layoutY="130.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" styleClass="RegbuttonStyle" />
+                          <ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="DOB Document" />
+                            <ScrollPane fx:id="dobScroll" layoutX="172.0" layoutY="190.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
+                                <content>
+                                	<VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
+                                 </content>
+                             </ScrollPane>
+                          <Button fx:id="dobScanBtn" layoutX="350.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" text="%scan" styleClass="RegbuttonStyle" />
+                      </children>
+                   </AnchorPane>

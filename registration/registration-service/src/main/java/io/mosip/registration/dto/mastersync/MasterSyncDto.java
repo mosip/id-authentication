@@ -156,7 +156,6 @@ public class MasterSyncDto {
 	 * @param languages the languages to set
 	 */
 	public void setLanguages(List<LanguageResponseDto> languages) {
-		System.out.println();
 		this.languages = languages;
 	}
 

@@ -63,7 +63,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private RegistrationController registrationController;
 
 	@Autowired
-	private ScanController scanController;
+	private ScanPopUpViewController scanPopUpViewController;
 
 	/** The finger print capture pane. */
 	@FXML
@@ -239,7 +239,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
 					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))) {
 
-				scanController.init(this, RegistrationConstants.FINGERPRINT);
+				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
@@ -362,7 +362,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
-		scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
 

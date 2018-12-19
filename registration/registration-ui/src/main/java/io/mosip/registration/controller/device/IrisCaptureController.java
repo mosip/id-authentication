@@ -66,7 +66,7 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private RegistrationController registrationController;
 	@Autowired
-	private ScanController scanController;
+	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
 	private IrisFacade irisFacade;
 
@@ -183,7 +183,7 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisDetailsDTO == null || (irisDetailsDTO.getNumOfIrisRetry() < Integer
 					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)))) {
-				scanController.init(this, "Iris");
+				scanPopUpViewController.init(this, "Iris");
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCAN_RETRIES_EXCEEDED);
 			}
@@ -227,7 +227,7 @@ public class IrisCaptureController extends BaseController {
 			irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 
 			// Display the Scanned Iris Image in the Scan pop-up screen
-			scanController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Iris captured successfully");
 

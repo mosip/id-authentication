@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.ScanController" styleClass="paneRoot">
+<AnchorPane prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.ScanPopUpViewController" styleClass="paneRoot">
    <children>
       <AnchorPane layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="483.0" styleClass="subPane">
          <children>
