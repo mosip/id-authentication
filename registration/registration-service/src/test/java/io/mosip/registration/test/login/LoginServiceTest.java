@@ -106,7 +106,7 @@ public class LoginServiceTest {
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationUserDetailRepository.findByIdIgnoreCaseAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(registrationUserDetailList);
 		
 		Mockito.when(registrationUserDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(registrationUserDetail);
