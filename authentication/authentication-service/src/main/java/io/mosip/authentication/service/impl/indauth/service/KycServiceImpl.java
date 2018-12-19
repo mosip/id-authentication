@@ -93,10 +93,11 @@ public class KycServiceImpl implements KycService {
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
 				isSecLangInfoRequired);
 		kycInfo.setIdentity(filteredIdentityInfo);
-
 		Object maskedUin = uin;
-		if (env.getProperty("uin.masking.required", Boolean.class)) {
-			maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
+		Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
+		Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
+		if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
+			maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
 		}
 		Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
 		String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
@@ -116,7 +117,7 @@ public class KycServiceImpl implements KycService {
 	 */
     private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(KycType eKycType,
 	    Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired) {
-	Map<String, List<IdentityInfoDTO>> identityInfo;
+	Map<String, List<IdentityInfoDTO>> identityInfo = null;
 	String kycTypeKey;
 
 	if (eKycType == KycType.LIMITED) {
@@ -125,10 +126,12 @@ public class KycServiceImpl implements KycService {
 	    kycTypeKey = "ekyc.type.fullkyc";
 	}
 
-	List<String> limitedKycDetail = Arrays.asList(env.getProperty(kycTypeKey).split(","));
-	identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
-		.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
+	String kycType = env.getProperty(kycTypeKey);
+	if (null != kycType) {
+		List<String> limitedKycDetail = Arrays.asList(kycType.split(","));
+		identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
 	if (!isSecLangInfoRequired) {
 	    String primaryLanguage = env.getProperty("mosip.primary.lang-code");
 	    identityInfo = identityInfo.entrySet().stream()
@@ -229,17 +232,22 @@ public class KycServiceImpl implements KycService {
 	String pdfDetails = null;
 	try {
 	    String template = null;
-	    if (eKycType == KycType.LIMITED && isSecLangInfoRequired) {
-		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
-	    } else if (eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
-		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
-	    } else if (eKycType == KycType.FULL && isSecLangInfoRequired) {
-		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
-	    } else {
-		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
-	    }
-
-	    ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
+	    String limitedKycFull = env.getProperty("ekyc.template.limitedkyc.full");
+	    String limitedKycPri = env.getProperty("ekyc.template.limitedkyc.pri");
+	    String fullKycPri = env.getProperty("ekyc.template.fullkyc.pri");
+	    String fullKyc = env.getProperty("ekyc.template.fullkyc.full");
+	    if (checkTemplatePresent(limitedKycFull, limitedKycPri, fullKycPri, fullKyc)) {
+			if (eKycType == KycType.LIMITED && isSecLangInfoRequired) {
+				template = idTemplateManager.applyTemplate(limitedKycFull, identity);
+			} else if (eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
+				template = idTemplateManager.applyTemplate(limitedKycPri, identity);
+			} else if (eKycType == KycType.FULL && isSecLangInfoRequired) {
+				template = idTemplateManager.applyTemplate(fullKyc, identity);
+			} else{
+				template = idTemplateManager.applyTemplate(fullKycPri, identity);
+			} 
+		}
+		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
 	    deleteFileOnExit(identity);
 	    pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
 	} catch (IOException e) {
@@ -248,6 +256,11 @@ public class KycServiceImpl implements KycService {
 	}
 	return pdfDetails;
     }
+
+
+	private boolean checkTemplatePresent(String limitedKycFull, String limitedKycPri, String fullKycPri, String fullKyc) {
+		return null != limitedKycFull || null != limitedKycPri || null != fullKyc || null != fullKycPri;
+	}
 
     /**
 	 * Method to delete the temp file created for image
