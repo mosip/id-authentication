@@ -35,6 +35,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -86,6 +87,9 @@ public class AuthRequestValidatorTest {
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
 
+	@InjectMocks
+	IdInfoHelper idinfoHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
@@ -94,6 +98,9 @@ public class AuthRequestValidatorTest {
 
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
+		
+		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
+		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 
 	}
 
@@ -116,7 +123,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -159,7 +166,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -194,7 +201,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -232,7 +239,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setIdvId("5371843613598211");
-		//authRequestDTO.setVer("1.12");
+		// authRequestDTO.setVer("1.12");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -244,7 +251,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setIdvId("5371843613598211");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -257,7 +264,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setIdvId("5371843613598211");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTxnID("");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -270,7 +277,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setIdvId(null);
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -282,7 +289,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(null);
 		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setIdvId("5371843613598211");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -292,7 +299,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -331,7 +338,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -397,7 +404,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -467,7 +474,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -537,7 +544,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -607,7 +614,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -677,7 +684,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -747,7 +754,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -820,7 +827,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -898,7 +905,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -974,7 +981,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -1099,7 +1106,7 @@ public class AuthRequestValidatorTest {
 	private AuthRequestDTO getAuthRequestDto() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))

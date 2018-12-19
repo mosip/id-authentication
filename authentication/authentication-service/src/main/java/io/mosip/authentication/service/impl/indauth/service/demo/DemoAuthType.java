@@ -59,7 +59,7 @@ public enum DemoAuthType implements AuthType {
 
 	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress,
 			"Full Address"),
-	//FIXME move this to PIN auth type
+	// FIXME move this to PIN auth type
 	OTP("otp", Collections.emptySet(), LanguageType.PRIMARY_LANG, AuthTypeDTO::isOtp, "OTP")
 
 	/**  */
@@ -198,9 +198,10 @@ public enum DemoAuthType implements AuthType {
 	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
 		String language = languageInfoFetcher.apply(langType);
-		if(matchInfos != null) {
-			return matchInfos.parallelStream().filter(id -> id.getLanguage() != null
-					&& language.equalsIgnoreCase(id.getLanguage()) && getType().equals(id.getAuthType()))
+		if (matchInfos != null) {
+			return matchInfos.parallelStream()
+					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage())
+							&& getType().equals(id.getAuthType()))
 					.<T>map(infoFunction).filter(Objects::nonNull).findAny();
 		} else {
 			return Optional.empty();
@@ -219,23 +220,20 @@ public enum DemoAuthType implements AuthType {
 	}
 
 	@Override
-	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			IdInfoFetcher idInfoFetcher) {
+	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
 		HashMap<String, Object> valuemap = new HashMap<>();
 		String languageCode = idInfoFetcher.getLanguageCode(getLangType());
 		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(languageCode);
 		valuemap.put("language", languageNameOpt.orElse("english"));
-		
+		valuemap.put("languageType", getLangType());
 		return valuemap;
 	}
-	
+
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getMatchInfo())
-				.flatMap(list -> 
-						list.stream()
-						.filter(matchInfo -> matchInfo.getAuthType()
-								.equalsIgnoreCase(getType())).findAny())
+		return Optional
+				.ofNullable(authRequestDTO.getMatchInfo()).flatMap(list -> list.stream()
+						.filter(matchInfo -> matchInfo.getAuthType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}
 

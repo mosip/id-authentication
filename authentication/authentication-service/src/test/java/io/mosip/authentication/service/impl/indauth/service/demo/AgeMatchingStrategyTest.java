@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -48,9 +49,10 @@ public class AgeMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match(25, 25, null);
@@ -63,9 +65,10 @@ public class AgeMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match(250, "50", null);

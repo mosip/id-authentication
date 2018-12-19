@@ -36,6 +36,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.UinEntity;
+import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import reactor.ipc.netty.http.HttpResources;
@@ -51,6 +52,9 @@ public class OTPAuthServiceTest {
 
 	@InjectMocks
 	private OTPAuthServiceImpl authserviceimpl;
+
+	@InjectMocks
+	private OTPServiceImpl otpserviceimpl;
 
 	@Autowired
 	Environment env;

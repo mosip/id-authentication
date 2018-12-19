@@ -39,7 +39,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
 					authRequestDTO.getRequest().getIdentity(), bioIdentity);
-			//Using OR condition on the match output for Bio auth.
+			// Using OR condition on the match output for Bio auth.
 			boolean bioMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 			return idInfoHelper.buildStatusInfo(bioMatched, listMatchInputs, listMatchOutputs, BioAuthType.values());
 		}
@@ -51,7 +51,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	}
 
 	private List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
-			Map<String, List<IdentityInfoDTO>> demoEntity) {
+			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
 		return idInfoHelper.matchIdentityData(identitydto, demoEntity, listMatchInputs);
 	}
 

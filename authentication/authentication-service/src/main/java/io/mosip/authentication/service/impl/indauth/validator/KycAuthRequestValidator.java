@@ -73,7 +73,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (kycAuthRequestDTO.getAuthRequest() != null) {
 				AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
-				BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(authRequest, errors.getObjectName());
+				BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(authRequest,
+						errors.getObjectName());
 				authRequestValidator.validate(authRequest, authErrors);
 				errors.addAllErrors(authErrors);
 			} else {
@@ -103,17 +104,29 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	}
 
+	/**
+	 * 
+	 * @param errors
+	 * @param kycAuthRequestDTO
+	 */
+
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String key = ACCESS_LEVEL + Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getMuaCode).orElse("");
+		String key = ACCESS_LEVEL
+				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getMuaCode).orElse("");
 		String accesslevel = env.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
 		}
-		//FIXME handle accesslevel being null for the KUA
+		// FIXME handle accesslevel being null for the KUA
 	}
 
+	/**
+	 * 
+	 * @param errors
+	 * @param kycAuthRequestDTO
+	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		if (kycAuthRequestDTO.getEKycAuthType() != null) {
 			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
@@ -135,6 +148,11 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	}
 
+	/**
+	 * 
+	 * @param kycAuthRequestDTO
+	 * @param errors
+	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentReq()) {
 			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),

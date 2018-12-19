@@ -77,6 +77,8 @@ public class MatchTest {
 		};
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdInfoFetcher languageInfoFetcher=null;
+		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher);
 
 		System.err.println(authType.getLangType());
 		System.err.println(authType.getDisplayName());
