@@ -97,6 +97,8 @@ public enum IdAuthenticationErrorConstants {
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of fgerMin / fgerImg should not exceed 10."),
 	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
+	FGRMIN_MISMATCH("IDA-BIA-001", "Biometric data – fgerMin did not match", "A0143"),
+	FGRIMG_MISMATCH("IDA-BIA-002", "Biometric data – fgerImg did not match", "A0144"),
 	INVALID_SIGNATURE("IDA-TSA-001", "Digital signature verification failed"),
 	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature");
 

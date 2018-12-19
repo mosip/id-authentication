@@ -40,13 +40,13 @@ public enum BioAuthType implements AuthType {
 			AuthTypeDTO::isBio, "Fingerprint") {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-				IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchMinutiea;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
 		}
@@ -59,13 +59,13 @@ public enum BioAuthType implements AuthType {
 			AuthTypeDTO::isBio, "Fingerprint") {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-				IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchImage;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
 		}
