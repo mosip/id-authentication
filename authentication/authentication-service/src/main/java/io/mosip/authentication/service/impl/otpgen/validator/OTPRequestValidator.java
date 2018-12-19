@@ -100,8 +100,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			if ((!maxTimeInMinutes.isEmpty())
-					&& Duration.between(reqTimeInstance, now).toMinutes() > Integer.parseInt(maxTimeInMinutes)) {
+			if (maxTimeInMinutes!=null && Duration.between(reqTimeInstance, now).toMinutes() > Integer.parseInt(maxTimeInMinutes)) {
 				mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
