@@ -76,7 +76,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (!errors.hasErrors()) {
 			validateId(otpRequestDto.getId(), errors);
 
-			//validateVer(otpRequestDto.getVer(), errors);
+			// validateVer(otpRequestDto.getVer(), errors);
 
 			validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
@@ -89,25 +89,25 @@ public class OTPRequestValidator extends IdAuthValidator {
 	/**
 	 * Checks if is timestamp valid.
 	 *
-	 * @param timestamp
-	 *            the timestamp
+	 * @param timestamp the timestamp
 	 * @return true, if is timestamp valid
 	 */
 	private void validateRequestTimedOut(String timestamp, Errors errors) {
 		try {
+
+			String maxTimeInMinutes = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS);
 			Instant reqTimeInstance = dateHelper.convertStringToDate(timestamp).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			if (Duration.between(reqTimeInstance, now).toMinutes() > env
-					.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class)) {
+			if ((!maxTimeInMinutes.isEmpty())
+					&& Duration.between(reqTimeInstance, now).toMinutes() > Integer.parseInt(maxTimeInMinutes)) {
 				mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
-								Duration.between(reqTimeInstance, now).toMinutes()
-										- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class)));
+								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
 				errors.rejectValue(REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
 						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
