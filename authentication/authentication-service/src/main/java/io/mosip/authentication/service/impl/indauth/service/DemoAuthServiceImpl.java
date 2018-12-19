@@ -54,9 +54,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param identitydto    the demo DTO
 	 * @param demoEntity     the demo entity
 	 * @return the match output
+	 * @throws IdAuthenticationBusinessException
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
-			Map<String, List<IdentityInfoDTO>> demoEntity) {
+			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
 		return idInfoHelper.matchIdentityData(identitydto, demoEntity, listMatchInputs);
 	}
 
@@ -77,7 +78,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getRequest().getIdentity(),
 				demoEntity);
-		//Using AND condition on the match output for Bio auth.
+		// Using AND condition on the match output for Bio auth.
 		boolean demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 
 		return idInfoHelper.buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs, DemoAuthType.values());
@@ -92,7 +93,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return idInfoHelper.constructMatchInput(authRequestDTO,  DemoAuthType.values(), DemoMatchType.values());
+		return idInfoHelper.constructMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values());
 	}
 
 }

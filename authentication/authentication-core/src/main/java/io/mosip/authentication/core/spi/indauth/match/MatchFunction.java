@@ -2,6 +2,8 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -10,6 +12,7 @@ import java.util.Map;
 @FunctionalInterface
 public interface MatchFunction {
 
-	int match(Object value1, Object value2, Map<String, Object> matchProperties);
+	int match(Object value1, Object value2, Map<String, Object> matchProperties)
+			throws IdAuthenticationBusinessException;
 
 }

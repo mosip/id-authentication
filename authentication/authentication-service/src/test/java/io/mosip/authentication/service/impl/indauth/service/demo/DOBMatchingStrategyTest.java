@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -57,9 +58,10 @@ public class DOBMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
 
@@ -71,9 +73,10 @@ public class DOBMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match("1993-02-07", "1993-02-27", null);

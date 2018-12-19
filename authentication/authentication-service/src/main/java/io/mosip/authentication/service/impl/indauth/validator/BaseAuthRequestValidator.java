@@ -33,6 +33,8 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
@@ -93,6 +95,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String IRIS = "iris";
 
+	private static final String FULLADDRESS = "fullAddress";
+
+	private static final String ADDRESS = "Address";
+
+	private static final String PERSONALIDENTITY = "personalIdentity";
+
 	private static final String FACE = "face";
 
 	/** email Validator */
@@ -106,6 +114,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The env. */
 	@Autowired
 	protected Environment env;
+
+	@Autowired
+	protected IdInfoHelper idInfoHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -129,7 +140,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
-			//validateVer(baseAuthRequestDTO.getVer(), errors);
+			// validateVer(baseAuthRequestDTO.getVer(), errors);
 		}
 	}
 
@@ -405,14 +416,109 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean hasMatch = false;
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest)) {
+				boolean hasAuthInfo = false;
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
 					List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoFunction()
 							.apply(authRequest.getRequest().getIdentity());
 					if (identityInfos != null) {
+						hasAuthInfo = true;
 						hasMatch = true;
 						checkIdentityInfoValue(identityInfos, errors);
 						checkLangaugeDetails(matchType, identityInfos, errors);
+					}
+				}
+				if (!hasAuthInfo) {
+					if ((authType.equals(DemoAuthType.FAD_PRI)) || (authType.equals(DemoAuthType.FAD_SEC))) {
+						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+								"Full Address is Missing");
+						errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_FAD.getErrorCode(),
+								new Object[] { FULLADDRESS },
+								IdAuthenticationErrorConstants.MISSING_FAD.getErrorMessage());
+					} else if ((authType.equals(DemoAuthType.AD_PRI)) || (authType.equals(DemoAuthType.AD_SEC))) {
+						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+								"Address is Missing");
+						errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AD.getErrorCode(),
+								new Object[] { ADDRESS }, IdAuthenticationErrorConstants.MISSING_AD.getErrorMessage());
+					} else if ((authType.equals(DemoAuthType.PI_PRI)) || (authType.equals(DemoAuthType.PI_SEC))) {
+						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+								"personalIdentity is Missing");
+						errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PI.getErrorCode(),
+								new Object[] { PERSONALIDENTITY },
+								IdAuthenticationErrorConstants.MISSING_PI.getErrorMessage());
+					}
+				}
+
+				Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest,
+						idInfoHelper::getLanguageCode);
+				if (matchingStrategy.isPresent()) {
+					if (!MatchingStrategyType.getMatchStrategyType(matchingStrategy.get()).isPresent()) {
+						if (authType.equals(DemoAuthType.FAD_PRI)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"fullAddress Matching Strategy is Missing");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorCode(),
+									new Object[] { FULLADDRESS },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.FAD_SEC)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"fullAddress Matching Strategy is Missing");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_SEC.getErrorCode(),
+									new Object[] { FULLADDRESS },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_SEC.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.PI_PRI)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"personalIdentity Matching Strategy is Missing");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.PI_SEC)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"personalIdentity Matching Strategy is Missing");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_SEC.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_SEC.getErrorMessage());
+						}
+					}
+				}
+
+				Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest,
+						idInfoHelper::getLanguageCode, env);
+				if (matchingThreshold.isPresent()) {
+					Integer integer = matchingThreshold.get();
+					if (integer <= 0 || integer >= 100) {
+						if (authType.equals(DemoAuthType.FAD_PRI)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"Full Address Matching Strategy is Missing");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.FAD_SEC)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"Full Address Matching Threshold is Invalid");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_SEC.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_SEC.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.PI_PRI)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"Personal Identity Matching Threshold is Invalid");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorMessage());
+						} else if (authType.equals(DemoAuthType.PI_SEC)) {
+							mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+									"Personal Identity Matching Threshold is Invalid");
+							errors.rejectValue(REQUEST,
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_SEC.getErrorCode(),
+									new Object[] { PERSONALIDENTITY },
+									IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_SEC.getErrorMessage());
+						}
 					}
 				}
 			}
@@ -696,8 +802,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			for (IdentityInfoDTO phone : phoneNumber) {
 				boolean isValidPhone = phoneValidatorImpl.validatePhone(phone.getValue());
 				if (!isValidPhone) {
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { "phoneNumber" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}

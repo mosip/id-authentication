@@ -39,6 +39,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -64,6 +65,9 @@ public class InternalAuthRequestValidatorTest {
 	@InjectMocks
 	private InternalAuthRequestValidator internalAuthRequestValidator;
 
+	@InjectMocks
+	IdInfoHelper idinfoHelper;
+
 	@Mock
 	UinValidatorImpl uinValidator;
 
@@ -81,18 +85,20 @@ public class InternalAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
+		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
 
 	@Test
 	public void testSupportTrue() {
 		assertTrue(internalAuthRequestValidator.supports(AuthRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testSupportFalse() {
 		assertFalse(internalAuthRequestValidator.supports(OtpRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testinValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -102,7 +108,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -128,21 +134,24 @@ public class InternalAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
-		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv); 
-		/*Environment env = mock(Environment.class);
-		Mockito.when(env.getProperty("internal.allowed.auth.type")).thenReturn("fulladdresss");*/
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv);
+		/*
+		 * Environment env = mock(Environment.class);
+		 * Mockito.when(env.getProperty("internal.allowed.auth.type")).thenReturn(
+		 * "fulladdresss");
+		 */
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testinValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -168,9 +177,12 @@ public class InternalAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
-		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv); 
-		/*Environment env = mock(Environment.class);
-		Mockito.when(env.getProperty("internal.allowed.auth.type")).thenReturn("fulladdresss");*/
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv);
+		/*
+		 * Environment env = mock(Environment.class);
+		 * Mockito.when(env.getProperty("internal.allowed.auth.type")).thenReturn(
+		 * "fulladdresss");
+		 */
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -185,7 +197,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -210,7 +222,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testinValiddata() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -220,7 +232,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -246,7 +258,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -255,7 +267,7 @@ public class InternalAuthRequestValidatorTest {
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -267,7 +279,7 @@ public class InternalAuthRequestValidatorTest {
 		bioInfo.setBioType("fgrImg");
 		dInfo.setModel("Mantra");
 		dInfo.setDeviceId("1234");
-		bioInfo.setDeviceInfo(dInfo);		
+		bioInfo.setDeviceInfo(dInfo);
 		List<BioInfo> lb = new ArrayList<>();
 		lb.add(bioInfo);
 		authRequestDTO.setBioInfo(lb);
@@ -304,7 +316,7 @@ public class InternalAuthRequestValidatorTest {
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -334,7 +346,7 @@ public class InternalAuthRequestValidatorTest {
 
 		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -369,7 +381,7 @@ public class InternalAuthRequestValidatorTest {
 
 		authRequestDTO.setReqTime("2018-11-24T17:00:57.086+0530");
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -402,7 +414,7 @@ public class InternalAuthRequestValidatorTest {
 	public void TestInvalidTimeFormat() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime("a2018-11-11");

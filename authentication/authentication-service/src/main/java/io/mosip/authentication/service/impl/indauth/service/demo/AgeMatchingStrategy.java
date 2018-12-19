@@ -2,6 +2,8 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -16,14 +18,15 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-			try {
-				int reqAge = Integer.parseInt(String.valueOf(reqInfo));
-				int entityAge = Integer.parseInt(String.valueOf(entityInfo));
-				return DemoMatcherUtil.doLessThanEqualToMatch(reqAge,entityAge);
-			} catch (NumberFormatException e) {
-				// Don't handle
-				return 0;
-			}
+		try {
+			int reqAge = Integer.parseInt(String.valueOf(reqInfo));
+			int entityAge = Integer.parseInt(String.valueOf(entityInfo));
+			return DemoMatcherUtil.doLessThanEqualToMatch(reqAge, entityAge);
+		} catch (NumberFormatException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AGE_MISMATCH, e);
+			// Don't handle
+//				return 0;
+		}
 	});
 
 	/** The match function. */

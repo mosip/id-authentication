@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -48,9 +49,10 @@ public class EmailMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match("abc@mail.com", "abc@mail.com", null);
 		assertEquals(100, value);
@@ -59,9 +61,10 @@ public class EmailMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
 

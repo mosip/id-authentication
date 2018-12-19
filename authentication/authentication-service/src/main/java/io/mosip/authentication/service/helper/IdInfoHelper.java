@@ -19,6 +19,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -86,11 +87,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	private Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String languageForMatchType) {
 		if (identityInfos != null && !identityInfos.isEmpty()) {
-			return identityInfos.parallelStream()
-					.filter((IdentityInfoDTO id) -> {
-						return checkLanguageType(languageForMatchType, id.getLanguage());
-					})
-					.<Object>map(IdentityInfoDTO::getValue).findAny();
+			return identityInfos.parallelStream().filter((IdentityInfoDTO id) -> {
+				return checkLanguageType(languageForMatchType, id.getLanguage());
+			}).<Object>map(IdentityInfoDTO::getValue).findAny();
 		}
 		return Optional.empty();
 	}
@@ -108,7 +107,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
-		if(languageFromReq == null || languageFromReq.isEmpty()) {
+		if (languageFromReq == null || languageFromReq.isEmpty()) {
 			return getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
 		} else {
 			return languageForMatchType.equalsIgnoreCase(languageFromReq);
@@ -156,9 +155,16 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @return the list
 	 */
 	public List<MatchOutput> matchIdentityData(IdentityDTO identityDTO,
-			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs) {
-		return listMatchInputs.parallelStream().map(input -> matchType(identityDTO, identityEntity, input))
-				.filter(Objects::nonNull).collect(Collectors.toList());
+			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs)
+			throws IdAuthenticationBusinessException {
+		List<MatchOutput> matchOutputList = new ArrayList<>();
+		for (MatchInput matchInput : listMatchInputs) {
+			MatchOutput matchOutput = matchType(identityDTO, identityEntity, matchInput);
+			if (matchOutput != null) {
+				matchOutputList.add(matchOutput);
+			}
+		}
+		return matchOutputList;
 	}
 
 	/**
@@ -168,9 +174,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param demoEntity  the demo entity
 	 * @param input       the input
 	 * @return the match output
+	 * @throws IdAuthenticationBusinessException
 	 */
 	private MatchOutput matchType(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
-			MatchInput input) {
+			MatchInput input) throws IdAuthenticationBusinessException {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
