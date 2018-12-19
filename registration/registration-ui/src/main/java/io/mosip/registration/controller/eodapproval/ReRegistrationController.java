@@ -57,6 +57,9 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
 
+	@Autowired
+	private EODController eodController;
+
 	/**
 	 * Table to display the created packets
 	 */
@@ -166,7 +169,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Informed Button
 	 */
 	public void informedToUser() {
-		submitBtn.setVisible(true);
+		submitBtn.setDisable(false);
 		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
 		informedBtn.setSelected(true);
 		notInformedBtn.setSelected(false);
@@ -176,7 +179,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Not Informed Button
 	 */
 	public void notInformedToUser() {
-		submitBtn.setVisible(true);
+		submitBtn.setDisable(false);
 		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
 		informedBtn.setSelected(false);
 		notInformedBtn.setSelected(true);
@@ -237,6 +240,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
+		eodController.getReRegisterTitledPane().setText("Re-Register ( "+reRegistrationPacketsList.size()+" )");
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
 			ObservableList<PacketStatusDTO> observableList = FXCollections
@@ -253,7 +257,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private void setInvisible() {
 		informedBtn.setVisible(false);
 		notInformedBtn.setVisible(false);
-		submitBtn.setVisible(false);
+		submitBtn.setDisable(true);
 		imageAnchorPane.setVisible(false);
 		imageView.imageProperty().set(null);
 	}

@@ -12,15 +12,11 @@
 	<children>
       <Accordion fx:id="approvalAccordion" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
         <panes>
-          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="Pending Approval">
+          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="Pending Approval ">
                <content>
                   <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </TitledPane>
-          <TitledPane fx:id="pendingActionTitledPane" animated="false" onMouseClicked="#loadPendingActionController" prefWidth="850.0" text="Pending Action">
-               <content>
-                  <AnchorPane fx:id="pendingActionAnchorPane" prefHeight="200.0" prefWidth="200.0" />
-               </content></TitledPane>
             <TitledPane fx:id="reRegisterTitledPane" animated="false" prefWidth="850.0" text="Re Register">
                <content>
                   <AnchorPane fx:id="reRegisterAnchorPane" prefHeight="200.0" prefWidth="200.0" />

@@ -7,26 +7,49 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="authenticationRoot" prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintAuthenticationController">
+<AnchorPane fx:id="fingerPrintScanRoot" prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
    <children>
-      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="474.0">
+      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="300.0" prefWidth="480.0">
          <children>
-            <Button fx:id="scanBtn" layoutX="406.0" layoutY="233.0" mnemonicParsing="false" onAction="#scanFinger" text="Scan">
-               <font>
-                  <Font size="14.0" />
-               </font></Button>
-            <ComboBox fx:id="deviceCmbBox" layoutX="10.0" layoutY="20.0" prefHeight="39.0" prefWidth="283.0" promptText="-Select-" />
-            <AnchorPane fx:id="fingerPrintAnchorPane" layoutX="10.0" layoutY="71.0" prefHeight="184.0" prefWidth="220.0">
+            <AnchorPane fx:id="fingerprintBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
                <children>
-                  <ImageView fx:id="fingerScannedImage" fitHeight="192.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="fingerPrintLabel" layoutX="132.0" layoutY="38.0" text="RO Fingerprint Authentication" />
+                  <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/fingerprint.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" prefHeight="39.0" prefWidth="308.0" promptText="Username" />
                </children>
             </AnchorPane>
-            <Label layoutX="74.0" layoutY="274.0" text="Finger Scan" />
+            <AnchorPane fx:id="otpBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
+               <children>
+                  <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
+                  <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="Registration Officer Verification" />
+                  <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
+                  <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
+                  <TextField fx:id="otp" layoutX="106.0" layoutY="139.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
+                  <Label fx:id="otpValidity" layoutX="106.0" layoutY="248.0">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
+               <children>
+                  <Button layoutX="190.0" layoutY="214.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
+                  <TextField fx:id="username" layoutX="106.0" layoutY="95.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
+                  <Label fx:id="passwdLabel" layoutX="126.0" layoutY="47.0" text="Registration Officer Verification" />
+                  <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0">
          <children>
-            <Label layoutX="178.0" layoutY="14.0" text="Authentication">
+            <Label layoutX="131.0" layoutY="14.0" text="Supervisor Authentication">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
