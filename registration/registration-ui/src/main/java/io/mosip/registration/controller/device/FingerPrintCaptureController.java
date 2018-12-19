@@ -203,12 +203,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private void loadingImageFromSessionContext() {
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-		leftHandPalmImageview.setImage(null);
-		rightHandPalmImageview.setImage(null);
-		thumbImageview.setImage(null);
-		leftSlapQualityScore.setText("");
-		rightSlapQualityScore.setText("");
-		thumbsQualityScore.setText("");
 		if (null != registrationDTOContent) {
 			registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 					.forEach(item -> {
