@@ -195,7 +195,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource);
-		em.setPackagesToScan("io.mosip.kernel.idRepo.*");
+		em.setPackagesToScan("io.mosip.kernel.idrepo.*");
 
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
