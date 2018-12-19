@@ -137,14 +137,15 @@ public class NotificationServiceImpl implements NotificationService {
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
 		String maskedUin = "";
-		if (ismaskRequired) {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
+		String charCount = env.getProperty("uin.masking.charcount");
+		if (ismaskRequired && charCount!=null) {
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
 		}
-
 		values.put(UIN2, maskedUin);
+		
 		values.put(AUTH_TYPE,
 
-				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, demoHelper))
 						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
@@ -178,8 +179,11 @@ public class NotificationServiceImpl implements NotificationService {
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
 		try {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
-			values.put("uin", maskedUin);
+			String charCount = env.getProperty("uin.masking.charcount");
+			if(charCount!=null) {
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
+			}
+				values.put("uin", maskedUin);
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));
 			values.put(DATE, date);
@@ -305,10 +309,12 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String contentTemplate,
 			String notificationMobileNo) throws IdAuthenticationBusinessException {
-		if (sender == SenderType.AUTH) {
-			contentTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
-		} else if (sender == SenderType.OTP) {
-			contentTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
+		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+		if (sender == SenderType.AUTH && authSmsTemplate!=null) {
+			contentTemplate = authSmsTemplate;
+		} else if (sender == SenderType.OTP && otpSmsTemplate!=null) {
+			contentTemplate = otpSmsTemplate;
 		}
  
 		String smsTemplate = applyTemplate(values, contentTemplate);
@@ -326,12 +332,16 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender,
 			String contentTemplate, String subjectTemplate) throws IdAuthenticationBusinessException {
-		if (sender == SenderType.AUTH) {
-			subjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
-			contentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-		} else if (sender == SenderType.OTP) {
-			subjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
-			contentTemplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
+		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
+		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
+		if (sender == SenderType.AUTH && authEmailSubjectTemplate!=null && authEmailContentTemplate!=null) {
+			subjectTemplate = authEmailSubjectTemplate;
+			contentTemplate = authEmailContentTemplate;
+		} else if (sender == SenderType.OTP && otpSubjectTemplate!=null && otpContentTemaplate!=null) {
+			subjectTemplate = otpSubjectTemplate;
+			contentTemplate = otpContentTemaplate;
 		}
 
 		String mailSubject = applyTemplate(values, subjectTemplate);
