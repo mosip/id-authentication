@@ -5,10 +5,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
@@ -2581,6 +2583,34 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void deleteDocumentCategoryTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		category.setIsDeleted(true);
+		category.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		when(documentCategoryRepository.update(Mockito.any())).thenReturn(category);
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDocumentCategoryNotFoundExceptionTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		when(documentCategoryRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
