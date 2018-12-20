@@ -81,6 +81,20 @@ public class LocationController {
 
 	/**
 	 * 
+	 * @author M1043226
+	 * @param hierarchyName
+	 *            hierarchy Name
+	 * @return list of location hierarchies
+	 */
+	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
+	public LocationResponseDto getLocationDataByHierarchyName(@PathVariable(value = "hierarchyname") String hierarchyName) {
+
+		return locationHierarchyService.getLocationDataByHierarchyName(hierarchyName);
+
+	}
+
+	/**
+	 * 
 	 * @param locationRequestDto - location request DTO
 	 * @return PostLocationCodeResponseDto 
 	 */
@@ -96,4 +110,5 @@ public class LocationController {
 			@PathVariable(value="langcode") String langCode) {
 	return locationHierarchyService.deleteLocationDetials(locationCode,langCode);	
 	}
+	
 }
