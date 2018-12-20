@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -1135,6 +1136,57 @@ public class MasterDataServiceTest {
 	public void locationHierarchySaveNegativeTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		locationHierarchyService.createLocationHierarchy(requestLocationDto);
+	}
+
+	@Test
+	public void updateLocationDetailsTest() {
+
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateLocationDetailsExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateLocationDetailsDataNotFoundTest() {
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any()))
+				.thenReturn(null);
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test
+	public void deleteLocationDetailsTest() {
+		Optional<Location> locationOptionalObj = Optional.of(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
+		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void deleteLocationDetailsServiceExceptionTest() {
+		Optional<Location> locationOptionalObj = Optional.of(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void deleteLocationDetailDataNotFoundExceptionTest() {
+        Optional<Location> locationOptionalObj= Optional.empty();
+        Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+
+		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+
 	}
 
 	// ------------------ TemplateServiceTest -----------------//
