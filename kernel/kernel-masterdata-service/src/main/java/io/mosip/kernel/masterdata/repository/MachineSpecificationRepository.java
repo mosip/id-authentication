@@ -19,5 +19,8 @@ public interface MachineSpecificationRepository extends BaseRepository<MachineSp
 	
 	@Query("FROM MachineSpecification m where m.id = ?1 and (m.isDeleted = true)")
 	MachineSpecification findMachineSpecificationByIdAndIsDeletedtrue(String id);
+	
+	@Query("FROM MachineSpecification m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false)")
+	MachineSpecification findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 }

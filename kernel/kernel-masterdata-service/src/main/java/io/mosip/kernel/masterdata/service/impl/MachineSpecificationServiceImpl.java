@@ -9,10 +9,11 @@ import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
-import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
@@ -38,6 +39,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
+	
+	@Autowired
+	MachineRepository machineRepository;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -104,16 +108,16 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	public IdResponseDto deleteMachineSpecification(String id) {
 		MachineSpecification delMachineSpecification = null;	
 		try {	
-			MachineSpecification renmachineSpecification = machineSpecificationRepository.findById(MachineSpecification.class, id);
+			MachineSpecification renmachineSpecification = machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (renmachineSpecification != null) {
-				MachineType renmachineType = machineTypeRepository.findMachineTypeByIdAndByLangCodeIsDeletedtrue(renmachineSpecification.getMachineTypeCode(), renmachineSpecification.getLangCode());
-				if(renmachineType != null) {
+				Machine renmachine = machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renmachineSpecification.getId());
+				if(renmachine == null) {
 					MetaDataUtils.setDeleteMetaData(renmachineSpecification);
 					machineSpecificationRepository.update(renmachineSpecification);
 				}else{
 					throw new DataNotFoundException(
-							MachineSpecificationErrorCode.MACHINE_TYPE_DELETE_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_TYPE_DELETE_EXCEPTION.getErrorMessage());
+							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage());
 				}			
 			} else {
 				throw new DataNotFoundException(
