@@ -180,7 +180,7 @@ public class MachineServiceImpl implements MachineService {
 	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository.findById(Machine.class, machine.getRequest().getId());
+			Machine renmachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);

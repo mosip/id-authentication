@@ -79,7 +79,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		
 		try {
 			MachineSpecification renmachineSpecification = machineSpecificationRepository
-					.findById(MachineSpecification.class, machineSpecification.getRequest().getId());
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(machineSpecification.getRequest().getId());
 			if (renmachineSpecification != null) {
 				
 				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renmachineSpecification, false);
@@ -113,7 +113,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				Machine renmachine = machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renmachineSpecification.getId());
 				if(renmachine == null) {
 					MetaDataUtils.setDeleteMetaData(renmachineSpecification);
-					machineSpecificationRepository.update(renmachineSpecification);
+					delMachineSpecification = machineSpecificationRepository.update(renmachineSpecification);
 				}else{
 					throw new DataNotFoundException(
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
