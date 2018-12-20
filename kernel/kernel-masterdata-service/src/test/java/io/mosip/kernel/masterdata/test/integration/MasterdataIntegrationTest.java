@@ -1842,7 +1842,7 @@ public class MasterdataIntegrationTest {
 		when(genderTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+.andExpect(status().isInternalServerError());
 
 	}
 	
@@ -1913,7 +1913,7 @@ public class MasterdataIntegrationTest {
 		when(genderTypeRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+                 .andExpect(status().isInternalServerError());
 
 	}
 
