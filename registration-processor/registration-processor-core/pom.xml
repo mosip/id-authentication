@@ -43,12 +43,16 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+<<<<<<< HEAD
 		<!-- Kernel Logback Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+=======
+
+>>>>>>> 76c9c2287950d3bd53bd501c6cc57277131876b6
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -60,6 +64,15 @@
 			<version>${vertx.version}</version>
 			<scope>test</scope>
 		</dependency>
+<<<<<<< HEAD
+=======
+		
+		<dependency>
+   			<groupId>io.mosip.kernel</groupId>
+   			<artifactId>kernel-templatemanager-velocity</artifactId>
+   			<version>${project.version}</version>
+		</dependency>
+>>>>>>> 76c9c2287950d3bd53bd501c6cc57277131876b6
 
 
 	</dependencies>
