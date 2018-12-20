@@ -113,6 +113,12 @@ public class DocumentCategoryController {
 	}
 
 	@DeleteMapping("/v1.0/documentcategories/{code}/{langcode}")
+	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When document category successfully deleted", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No document category found"),
+			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> deleteDocumentCategory(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return new ResponseEntity<CodeAndLanguageCodeID>(documentCategoryService.deleteDocumentCategory(code, langCode),

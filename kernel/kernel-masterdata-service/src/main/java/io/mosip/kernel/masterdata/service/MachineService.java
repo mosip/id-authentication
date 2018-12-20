@@ -76,5 +76,18 @@ public interface MachineService {
 	 *             if any error occurred while saving Machine
 	 */
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine);
+	/**
+	 * Abstract method to update Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            machine DTO 
+	 * 
+	 * @return IdResponseDto returning machine id which is updated successfully
+	 *         {@link IdResponseDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 */
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine);
 
 }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -274,8 +275,6 @@ public class MasterdataIntegrationTest {
 	private DeviceDto deviceDto;
 
 	Title title;
-	private TitleDto titleDto;
-
 	List<RegistrationCenterHistory> centers = new ArrayList<>();
 
 	@MockBean
@@ -1363,7 +1362,7 @@ public class MasterdataIntegrationTest {
 				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(null);
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -1372,7 +1371,7 @@ public class MasterdataIntegrationTest {
 				reasonRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -2581,6 +2580,34 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void deleteDocumentCategoryTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		category.setIsDeleted(true);
+		category.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		when(documentCategoryRepository.update(Mockito.any())).thenReturn(category);
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDocumentCategoryNotFoundExceptionTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
+		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		when(documentCategoryRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
