@@ -80,4 +80,4 @@ The solution is divided into 3 parts :
 
 **Sequence Diagram**
 
-![Demo dedupe sequence diagram](_images/demo_dedupe_seq_diagram.png)
+![Demo dedupe sequence diagram](_images/123456789.png)
