@@ -5,8 +5,10 @@ public enum MachineSpecificationErrorCode {
 	MACHINE_SPECIFICATION_INSERT_EXCEPTION("KER-APP-444",
 			"Error occurred while inserting Machine Specification details"),
 	MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION("KER-APP-000","Machine Specification not Found"),
-	MACHINE_SPECIFICATION_UPDATE_EXCEPTION("KER-APP-000",
-			"Error occurred while updating Machine Specification details");
+	MACHINE_SPECIFICATION_UPDATE_EXCEPTION("KER-APP-001",
+			"Error occurred while updating Machine Specification details"),
+	MACHINE_TYPE_DELETE_EXCEPTION("KER-APP-002","Error occurred while deleting Machine Specification details Beacuse Machine Type Dependency is there"),
+	MACHINE_SPECIFICATION_DELETE_EXCEPTION("KER-APP-003","Error occurred while deleteding Machine Specification details");
 
 	private final String errorCode;
 	private final String errorMessage;

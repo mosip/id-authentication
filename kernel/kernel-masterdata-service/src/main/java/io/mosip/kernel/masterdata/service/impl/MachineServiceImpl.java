@@ -14,10 +14,14 @@ import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
+import io.mosip.kernel.masterdata.entity.MachineSpecification;
+import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
+import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
+import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -43,6 +47,12 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
+
+	@Autowired
+	MachineSpecificationRepository machineSpecificationRepository;
+
+	@Autowired
+	MachineTypeRepository machineTypeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -178,9 +188,9 @@ public class MachineServiceImpl implements MachineService {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
 				updMachine = machineRepository.update(renmachine);
 				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(updMachine,machineHistory);
-				MapperUtils.setBaseFieldValue(updMachine,machineHistory);
-				
+				MapperUtils.map(updMachine, machineHistory);
+				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
+
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
 				machineHistoryRepository.create(machineHistory);
 			} else {
@@ -196,6 +206,54 @@ public class MachineServiceImpl implements MachineService {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(updMachine, idResponseDto);
 		return idResponseDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineService#deleteMachine(java.lang.String)
+	 */
+	public IdResponseDto deleteMachine(String id) {
+		Machine delMachine = null;
+		try {
+			Machine renMachine = machineRepository.findById(Machine.class, id);
+			if (renMachine != null) {
+				MachineSpecification renMachineSpecification = machineSpecificationRepository
+						.findMachineSpecificationByIdAndIsDeletedtrue(renMachine.getMachineSpecId());
+				if (renMachineSpecification != null) {
+					MachineType renMachineType = machineTypeRepository.findMachineTypeByIdAndByLangCodeIsDeletedtrue(
+							renMachineSpecification.getMachineTypeCode(), renMachineSpecification.getLangCode());
+					if (renMachineType != null) {
+						MetaDataUtils.setDeleteMetaData(renMachine);
+						delMachine=machineRepository.update(renMachine);
+						
+						MachineHistory machineHistory = new MachineHistory();
+						MapperUtils.map(delMachine, machineHistory);
+						MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+
+						machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
+						machineHistoryRepository.create(machineHistory);
+					} else {
+						throw new DataNotFoundException(MachineErrorCode.MACHINE_TYPE_DELETE_EXCEPTION.getErrorCode(),
+								MachineErrorCode.MACHINE_TYPE_DELETE_EXCEPTION.getErrorMessage());
+					}
+				} else {
+					throw new DataNotFoundException(
+							MachineErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage());
+				}
+			} else {
+				throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(delMachine, idResponseDto);
+		return idResponseDto;
+
 	}
 
 }

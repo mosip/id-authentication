@@ -12,7 +12,13 @@ public enum MachineErrorCode {
 			"KER-MSD-030", "Machine not Found"), MACHINE_INSERT_EXCEPTION("KER-APP-000",
 					"Error occurred while inserting Machine details"),
 	 MACHINE_UPDATE_EXCEPTION("KER-APP-000",
-				"Error occurred while updating Machine details");
+				"Error occurred while updating Machine details"),
+	MACHINE_DELETE_EXCEPTION("KER-APP-001",
+			"Error occurred while deleting Machine details"),
+	MACHINE_SPECIFICATION_DELETE_EXCEPTION("KER-APP-002",
+			"Error occurred while deleting Machine details Beacuse Machine Specification Dependency is there"),
+	MACHINE_TYPE_DELETE_EXCEPTION("KER-APP-001",
+			"Error occurred while deleting Machine details Machine Type Dependency is there");
 
 	private final String errorCode;
 	private final String errorMessage;
