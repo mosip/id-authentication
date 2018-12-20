@@ -1854,7 +1854,7 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(genderType);
+		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(genderType);
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 
@@ -1868,7 +1868,7 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isNotFound());
 
@@ -1882,30 +1882,15 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(genderType);
+		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(genderType);
 		when(genderTypeRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
 	
-	@Test
-	public void updateGenderTypeDataNotFoundExceptionTest() throws Exception {
-		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
-		requestDto.setId("mosip.idtype.create");
-		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
-		requestDto.setRequest(genderTypeDto);
-		String contentJson = mapper.writeValueAsString(requestDto);
-		genderType.setIsDeleted(true);
-		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(genderType);
-		when(genderTypeRepository.update(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
-	}
-
-	@Test
+	
+    @Test
 	public void deleteGenderTypeTest() throws Exception {
 	    when(genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(genderTypes);
 		when(genderTypeRepository.update(Mockito.any())).thenReturn(genderType);

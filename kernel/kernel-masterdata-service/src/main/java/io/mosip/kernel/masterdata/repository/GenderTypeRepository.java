@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
@@ -25,4 +26,13 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	@Query("FROM Gender WHERE code =?1 and (isDeleted is null or isDeleted =false)")
 	List<Gender> findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 
+	/**
+	 * Get Gender Type by code provided.
+	 * 
+	 * @param code
+	 *            the gender type code.
+	 * @return list of {@link DocumentCategory}.
+	 */
+	@Query("FROM Gender WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	Gender findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code,String langCode);
 }

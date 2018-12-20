@@ -139,11 +139,15 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
-            Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
-            verifygenderType(genderType);
-            MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
+			Gender genderType = genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					genderTypeDto.getCode(), genderTypeDto.getLangCode());
+			if (genderType == null) {
+				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
+			}
+			MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
 			genderTypeRepository.update(genderType);
-        } catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
 		}
@@ -162,8 +166,8 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		try {
 			List<Gender> genderType = genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
 			if (!genderType.isEmpty()) {
-				 genderType.stream().map(MetaDataUtils::setDeleteMetaData).forEach(genderTypeRepository::update);
-             } else {
+				genderType.stream().map(MetaDataUtils::setDeleteMetaData).forEach(genderTypeRepository::update);
+			} else {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
@@ -171,19 +175,9 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
 		}
-		CodeResponseDto codeResponseDto= new CodeResponseDto();
+		CodeResponseDto codeResponseDto = new CodeResponseDto();
 		codeResponseDto.setCode(code);
-		return  codeResponseDto;
+		return codeResponseDto;
 	}
-	
-    private void verifygenderType(Gender genderType) {
-		if (genderType == null) {
-			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
-		} else if (genderType.getIsDeleted()) {
-			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
-		}
 
-	}
 }
