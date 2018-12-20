@@ -62,6 +62,8 @@ The solution is divided into 3 parts :
 	- Call abis insert API.
 	- After receiving successful response, Save the RequestId - ReferenceId - RegistrationId mapping in table for future reference
 	- Send response.
+	
+	![Insert Process Flow](_images/biodedupe-insert.png)
 ##### Perform Dedupe
 	- Create unique requestId. 
 	- Get the referenceId for the input registrationID.
@@ -69,6 +71,7 @@ The solution is divided into 3 parts :
 	- Call Identify api to perform dedupe.
 	- It returns list of candidates which has same or more score than targetFPIR. These are the duplicate referenceIds. Find the registrationId against the candidate reference ids.
 	- Return list of duplicate registrationIds.
+	![Identify Process Flow](_images/biodedupe-identify.png)
 
 
 
