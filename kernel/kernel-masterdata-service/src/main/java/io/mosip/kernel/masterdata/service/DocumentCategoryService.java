@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -67,9 +68,8 @@ public interface DocumentCategoryService {
 	 * 
 	 * @param code
 	 *            the document category code.
-	 * @param langCode
-	 *            the language code.
-	 * @return {@link CodeAndLanguageCodeID}
+	 * 
+	 * @return {@link CodeResponseDto}
 	 */
-	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode);
+	public CodeResponseDto deleteDocumentCategory(String code);
 }
