@@ -13,6 +13,7 @@ node {
  containersToRun = ''
  containerNames= ''
 
+	
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
   dir(branch) {
@@ -25,9 +26,9 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: '/mosip/'+projectToBuild + '/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
      ]]
 
     ],
