@@ -27,7 +27,7 @@ node {
 
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
      ]]
 
     ],
