@@ -1817,6 +1817,34 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void deleteTitleTest() throws Exception {
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(title);
+		title.setIsDeleted(true);
+		title.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		when(titleRepository.update(Mockito.any())).thenReturn(title);
+		mockMvc.perform(delete("/v1.0/title/ABC/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteTitleNotFoundExceptionTest() throws Exception {
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/title/ABC/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteTitleDatabaseConnectionExceptionTest() throws Exception {
+		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(title);
+		when(titleRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/title/ABC/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -1842,16 +1870,16 @@ public class MasterdataIntegrationTest {
 		when(genderTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(content))
-.andExpect(status().isInternalServerError());
+				.andExpect(status().isInternalServerError());
 
 	}
-	
+
 	@Test
 	public void updateGenderTypeTest() throws Exception {
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
+		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(genderType);
@@ -1865,7 +1893,7 @@ public class MasterdataIntegrationTest {
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
+		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
@@ -1879,7 +1907,7 @@ public class MasterdataIntegrationTest {
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto= new GenderTypeDto("GEN01", "Male", "ENG", true);
+		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.findById(Mockito.any(), Mockito.any())).thenReturn(genderType);
@@ -1913,7 +1941,7 @@ public class MasterdataIntegrationTest {
 		when(genderTypeRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01/ENG").contentType(MediaType.APPLICATION_JSON))
-                 .andExpect(status().isInternalServerError());
+				.andExpect(status().isInternalServerError());
 
 	}
 
