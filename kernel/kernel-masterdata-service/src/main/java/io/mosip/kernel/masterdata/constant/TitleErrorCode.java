@@ -10,7 +10,8 @@ package io.mosip.kernel.masterdata.constant;
 public enum TitleErrorCode {
 
 	TITLE_FETCH_EXCEPTION("KER-MSD-047", "Error occured while fetching Titles"), TITLE_NOT_FOUND("KER-MSD-048",
-			"Title not found"), TITLE_INSERT_EXCEPTION("KER-MSD-XXX", "Could not insert data"), TITLE_UPDATE_EXCEPTION("","Could not update data");
+			"Title not found"), TITLE_INSERT_EXCEPTION("KER-MSD-XXX", "Could not insert data"), TITLE_UPDATE_EXCEPTION(
+					"", "Could not update data"), TITLE_DELETE_EXCEPTION("", "Cannot delete data");
 
 	private final String errorCode;
 	private final String errorMessage;
