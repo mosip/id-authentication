@@ -42,7 +42,7 @@ public class DocumentTypeController {
 	 * 
 	 * @param langCode
 	 *            input from user
-	 * @param documentcategoryCode
+	 * @param documentCategoryCode
 	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
@@ -51,8 +51,8 @@ public class DocumentTypeController {
 	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
-			@PathVariable("documentcategorycode") String documentcategoryCode) {
-		List<DocumentTypeDto> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentcategoryCode,
+			@PathVariable("documentcategorycode") String documentCategoryCode) {
+		List<DocumentTypeDto> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
 				langCode);
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);
 

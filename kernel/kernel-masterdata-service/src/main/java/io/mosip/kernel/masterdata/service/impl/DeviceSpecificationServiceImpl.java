@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -26,6 +27,10 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Megha Tanga
  * @author Uday
  * @since 1.0.0
+ *
+ */
+/**
+ * @author M1046571
  *
  */
 @Service
@@ -115,6 +120,67 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(renDeviceSpecification, idResponseDto);
+
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#
+	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			DeviceSpecification entity = deviceSpecificationRepository.findById(DeviceSpecification.class,
+					deviceSpecification.getRequest().getId());
+			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
+				deviceSpecificationRepository.update(entity);
+				idResponseDto.setId(entity.getId());
+			} else {
+				throw new DataNotFoundException(
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#
+	 * deleteDeviceSpecification(java.lang.String)
+	 */
+	@Override
+	public IdResponseDto deleteDeviceSpecification(String id) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			DeviceSpecification deviceSpecification = deviceSpecificationRepository.findById(DeviceSpecification.class,
+					id);
+			if (!EmptyCheckUtils.isNullEmpty(deviceSpecification)) {
+				MetaDataUtils.setDeleteMetaData(deviceSpecification);
+				deviceSpecificationRepository.update(deviceSpecification);
+				idResponseDto.setId(deviceSpecification.getId());
+			} else {
+				throw new DataNotFoundException(
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
 
 		return idResponseDto;
 	}
