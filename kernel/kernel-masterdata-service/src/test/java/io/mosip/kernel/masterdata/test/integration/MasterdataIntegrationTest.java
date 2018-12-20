@@ -1086,6 +1086,107 @@ public class MasterdataIntegrationTest {
 
 	// -----------------------------LanguageImplementationTest----------------------------------
 	@Test
+	public void updateLanguagesTest() throws Exception {
+		RequestDto<LanguageDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.update");
+		requestDto.setVer("1.0.0");
+
+		LanguageDto frenchDto = new LanguageDto();
+		frenchDto.setCode("FRN");
+		frenchDto.setFamily("french");
+		frenchDto.setName("FRENCH");
+		frenchDto.setIsActive(true);
+		requestDto.setRequest(frenchDto);
+
+		Language french = new Language();
+		french.setCode("FRN");
+		french.setFamily("frn");
+		french.setName("french");
+		french.setIsActive(true);
+		french.setNativeName("french_naiv");
+		String content = mapper.writeValueAsString(requestDto);
+		when(languageRepository.findById(Language.class, frenchDto.getCode())).thenReturn(french);
+		when(languageRepository.update(Mockito.any())).thenReturn(french);
+		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateLanguagesDataAccessLayerTest() throws Exception {
+		RequestDto<LanguageDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.update");
+		requestDto.setVer("1.0.0");
+
+		LanguageDto frenchDto = new LanguageDto();
+		frenchDto.setCode("FRN");
+		frenchDto.setFamily("french");
+		frenchDto.setName("FRENCH");
+		frenchDto.setIsActive(true);
+		requestDto.setRequest(frenchDto);
+
+		Language french = new Language();
+		french.setCode("FRN");
+		french.setFamily("frn");
+		french.setName("french");
+		french.setIsActive(true);
+		french.setNativeName("french_naiv");
+		String content = mapper.writeValueAsString(requestDto);
+		when(languageRepository.findById(Language.class, frenchDto.getCode())).thenReturn(french);
+		when(languageRepository.update(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void updateLanguagesNotFoundTest() throws Exception {
+		RequestDto<LanguageDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.update");
+		requestDto.setVer("1.0.0");
+
+		LanguageDto frenchDto = new LanguageDto();
+		frenchDto.setCode("FRN");
+		frenchDto.setFamily("french");
+		frenchDto.setName("FRENCH");
+		frenchDto.setIsActive(true);
+		requestDto.setRequest(frenchDto);
+
+		Language french = new Language();
+		french.setCode("FRN");
+		french.setFamily("frn");
+		french.setName("french");
+		french.setIsActive(true);
+		french.setNativeName("french_naiv");
+		String content = mapper.writeValueAsString(requestDto);
+		when(languageRepository.findById(Language.class, frenchDto.getCode())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteLanguagesTest() throws Exception {
+		when(languageRepository.findById(Language.class, languageDto.getCode())).thenReturn(language);
+		when(languageRepository.update(Mockito.any())).thenReturn(language);
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDataAccessLayerLanguagesTest() throws Exception {
+		when(languageRepository.findById(Language.class, languageDto.getCode())).thenReturn(language);
+		when(languageRepository.update(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode()))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void deleteNotFoundLanguagesTest() throws Exception {
+		when(languageRepository.findById(Language.class, languageDto.getCode())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isNotFound());
+	}
+
+	@Test
 	public void saveLanguagesTest() throws Exception {
 		RequestDto<LanguageDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.language.create");
