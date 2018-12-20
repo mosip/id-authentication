@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
@@ -65,6 +67,7 @@ public class LocationServiceImpl implements LocationService {
 		if (!locations.isEmpty()) {
 
 			responseList = MapperUtils.objectToDtoConverter(locations);
+
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -77,8 +80,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode - location code 
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return LocationHierarchyResponseDto-
 	 */
 	@Override
@@ -100,7 +105,7 @@ public class LocationServiceImpl implements LocationService {
 				}
 				locHierList.addAll(childList);
 				locHierList.addAll(parentList);
-				
+
 				List<LocationDto> locationHierarchies = MapperUtils.mapAll(locHierList, LocationDto.class);
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
@@ -124,8 +129,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode - location code	
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -137,8 +144,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -151,8 +160,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierachy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
@@ -171,8 +182,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierachy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -203,16 +216,68 @@ public class LocationServiceImpl implements LocationService {
 		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
-		} catch (DataAccessLayerException  | DataAccessException   ex) {
+		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		
-         locationCodeDto=MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
+		locationCodeDto = MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
 		return locationCodeDto;
 	}
-	
+
+	@Override
+	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
+		LocationDto locationDto = locationRequestDto.getRequest();
+		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
+		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
+		locationId.setCode(locationDto.getCode());
+		locationId.setLangCode(locationDto.getLangCode());
+		try {
+			Location location = locationRepository.findById(Location.class, locationId);
+
+			if (location == null) {
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			location = MetaDataUtils.setUpdateMetaData(locationDto, location, true);
+			locationRepository.update(location);
+			MapperUtils.map(location, postLocationCodeResponseDto);
+
+		} catch (DataAccessException | DataAccessLayerException ex) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+		}
+
+		return postLocationCodeResponseDto;
+	}
+
+	@Override
+	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode, String langCode) {
+		Optional<Location> location = null;
+
+		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
+		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
+		codeAndLanguageCodeId.setCode(locationCode);
+		codeAndLanguageCodeId.setLangCode(langCode);
+		try {
+			location = locationRepository.findById(codeAndLanguageCodeId);
+			if (location.isPresent()) {
+				Location locationEntity=MetaDataUtils.setDeleteMetaData(location.get());
+				locationRepository.update(locationEntity);
+				MapperUtils.map(location.get(), postLocationCodeResponseDto);
+			} else {
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+             
+			
+		} catch (DataAccessException | DataAccessLayerException ex) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+		}
+
+		return postLocationCodeResponseDto;
+	}
 
 }
