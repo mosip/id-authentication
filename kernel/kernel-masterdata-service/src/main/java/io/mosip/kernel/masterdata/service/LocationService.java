@@ -49,6 +49,6 @@ public interface LocationService {
 	 * @param locationCode - location code
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode);
+	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode,String langCode);
 	
 }

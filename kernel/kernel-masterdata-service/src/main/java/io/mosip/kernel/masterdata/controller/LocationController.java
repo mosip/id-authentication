@@ -91,8 +91,9 @@ public class LocationController {
 		return locationHierarchyService.updateLocationDetails(locationRequestDto);
 	}
 	
-	@DeleteMapping(value="/{locationcode}")
-	public PostLocationCodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value="locationcode")String locationCode) {
-	return locationHierarchyService.deleteLocationDetials(locationCode);	
+	@DeleteMapping(value="/{locationcode}/{langcode}")
+	public PostLocationCodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value="locationcode")String locationCode,
+			@PathVariable(value="langcode") String langCode) {
+	return locationHierarchyService.deleteLocationDetials(locationCode,langCode);	
 	}
 }
