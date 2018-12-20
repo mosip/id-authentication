@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -116,6 +117,7 @@ public class MachineController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
 	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
@@ -133,11 +135,34 @@ public class MachineController {
 	@PutMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine successfully udated", response = IdResponseDto.class),
+			@ApiResponse(code = 200, message = "When Machine successfully udated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
 	public ResponseEntity<IdResponseDto> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
+	}
+	/**
+	 * Post API to deleted a row of Machine data
+	 * 
+	 * @param machine
+	 *            input from user Machine DTO
+	 * 
+	 * @return ResponseEntity Machine Id which is deleted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@DeleteMapping("/v1.0/machine/{id}")
+	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine successfully deleted", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
+	public ResponseEntity<IdResponseDto> deleteMachine(
+			@Valid @PathVariable("id") String id) {
+
+		return new ResponseEntity<>(machineService.deleteMachine(id),
+				HttpStatus.OK);
 	}
 
 }
