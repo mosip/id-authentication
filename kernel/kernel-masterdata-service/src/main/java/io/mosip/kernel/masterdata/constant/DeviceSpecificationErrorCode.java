@@ -4,6 +4,7 @@ package io.mosip.kernel.masterdata.constant;
  * Constants for Device Specification
  * 
  * @author Udya Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */

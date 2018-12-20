@@ -100,6 +100,13 @@ public class DocumentCategoryController {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
 	}
 
+	/**
+	 * Api to update Document category.
+	 * 
+	 * @param category
+	 *            is of type {@link DocumentCategoryDto}
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
 	@PutMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
@@ -112,16 +119,23 @@ public class DocumentCategoryController {
 		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/v1.0/documentcategories/{code}/{langcode}")
+	/**
+	 * Api to delete Document Category.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * @param langCode
+	 *            the document category language code.
+	 * @return the code.
+	 */
+	@DeleteMapping("/v1.0/documentcategories/{code}")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When document category successfully deleted", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No document category found"),
 			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> deleteDocumentCategory(@PathVariable("code") String code,
-			@PathVariable("langcode") String langCode) {
-		return new ResponseEntity<CodeAndLanguageCodeID>(documentCategoryService.deleteDocumentCategory(code, langCode),
-				HttpStatus.OK);
+	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
+		return new ResponseEntity<CodeResponseDto>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);
 	}
 }
