@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -121,59 +124,66 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateGenderType(
-			@Valid RequestDto<GenderTypeDto> gender) {
+	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
 
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
 
 		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
-
-			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
-
-			if (genderType != null) {
-				MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
-				genderTypeRepository.update(genderType);
-			} else {
-				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
-						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
-			}
-
-		} catch (DataAccessLayerException | DataAccessException e) {
+            Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
+            verifygenderType(genderType);
+            MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
+			genderTypeRepository.update(genderType);
+        } catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
 		}
 		return genderTypeId;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#deleteGenderType(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#deleteGenderType(java.
+	 * lang.String, java.lang.String)
 	 */
 	@Override
-	public CodeAndLanguageCodeID deleteGenderType(String code,
-			String langCode) {
-		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID(code, langCode);
+	public CodeResponseDto deleteGenderType(String code) {
 		try {
-			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
-
-			if (genderType != null) {
-				MetaDataUtils.setDeleteMetaData(genderType);
-				genderTypeRepository.update(genderType);
-			} else {
+			List<Gender> genderType = genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+			if (!genderType.isEmpty()) {
+				 genderType.stream().map(MetaDataUtils::setDeleteMetaData).forEach(genderTypeRepository::update);
+             } else {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
-
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
 		}
-		return genderTypeId;
+		CodeResponseDto codeResponseDto= new CodeResponseDto();
+		codeResponseDto.setCode(code);
+		return  codeResponseDto;
 	}
+	
+    private void verifygenderType(Gender genderType) {
+		if (genderType == null) {
+			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
+		} else if (genderType.getIsDeleted()) {
+			throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+					GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
+		}
 
+	}
 }

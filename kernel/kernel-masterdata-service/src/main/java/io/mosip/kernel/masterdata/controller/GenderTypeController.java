@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 import io.swagger.annotations.Api;
@@ -92,17 +95,14 @@ public class GenderTypeController {
 	 * 
 	 * @param code
 	 *            the code whose gender is to be deleted
-	 * @param langCode
-	 *            the language code whose gender is to be deleted
-	 * @return key of deleted row
+	 * @return code of deleted rows
 	 */
 	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
-	@DeleteMapping("/v1.0/gendertypes/{code}/{langcode}")
-	public ResponseEntity<CodeAndLanguageCodeID> deleteGenderType(
-			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code,
-			@ApiParam("Language code of Gender Type to be deleted") @PathVariable("langcode") String langCode) {
+	@DeleteMapping("/v1.0/gendertypes/{code}")
+	public ResponseEntity<CodeResponseDto> deleteGenderType(
+			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
 		return new ResponseEntity<>(
-				genderTypeService.deleteGenderType(code, langCode),
+				genderTypeService.deleteGenderType(code),
 				HttpStatus.OK);
 	}
 }
