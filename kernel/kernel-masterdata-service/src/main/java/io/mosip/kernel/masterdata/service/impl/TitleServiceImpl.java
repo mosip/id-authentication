@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.entity.Title;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * Implementing service class for fetching titles from master db
@@ -30,7 +34,6 @@ public class TitleServiceImpl implements TitleService {
 	@Autowired
 	private TitleRepository titleRepository;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,7 +46,7 @@ public class TitleServiceImpl implements TitleService {
 		List<Title> titles = null;
 		try {
 			titles = titleRepository.findAll(Title.class);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -74,7 +77,7 @@ public class TitleServiceImpl implements TitleService {
 
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -88,6 +91,78 @@ public class TitleServiceImpl implements TitleService {
 		titleResponseDto.setTitleList(titleDto);
 
 		return titleResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#saveTitle(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto) {
+		Title entity = MetaDataUtils.setCreateMetaData(titleRequestDto.getRequest(), Title.class);
+		Title title;
+		try {
+			title = titleRepository.create(entity);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_INSERT_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
+		MapperUtils.map(title, codeLangCodeId);
+		return codeLangCodeId;
+	}
+
+	@Override
+	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles) {
+
+		TitleDto titleDto = titles.getRequest();
+
+		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(titleDto, titleId);
+		try {
+
+			Title title = titleRepository.findById(Title.class, titleId);
+
+			if (title != null) {
+				MetaDataUtils.setUpdateMetaData(titleDto, title, false);
+				titleRepository.update(title);
+			} else {
+				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return titleId;
+	}
+
+	@Override
+	public CodeAndLanguageCodeID deleteTitle(String code, String langCode) {
+		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
+		titleId.setCode(code);
+		titleId.setLangCode(langCode);
+		try {
+			Title title = titleRepository.findById(Title.class, titleId);
+			if (title != null) {
+				MetaDataUtils.setDeleteMetaData(title);
+				titleRepository.update(title);
+			} else {
+				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage());
+		}
+
+		return titleId;
 	}
 
 }

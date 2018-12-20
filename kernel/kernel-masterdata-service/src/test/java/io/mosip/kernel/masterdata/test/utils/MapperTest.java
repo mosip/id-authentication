@@ -2,8 +2,11 @@ package io.mosip.kernel.masterdata.test.utils;
 
 import static io.mosip.kernel.masterdata.utils.MapperUtils.map;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setCreateMetaData;
+import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setUpdateMetaData;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * 
@@ -70,6 +74,44 @@ public class MapperTest {
 
 		assertTrue(newRcdDto != null);
 
+	}
+
+	@Test
+	public void testCopyEntities() {
+		LanguageDto d1 = new LanguageDto();
+		LanguageDto d2 = new LanguageDto();
+		d1.setCode("HIN");
+
+		MapperUtils.setBaseFieldValue(d1, d2);
+
+		assertNull(d2.getCode());
+
+	}
+
+	@Test
+	public void testSetUpdateMetaData() {
+		LanguageDto dto = new LanguageDto();
+		Language entity = new Language();
+
+		dto.setCode("ENG");
+		dto.setFamily("English");
+
+		entity.setCode("eng");
+		entity.setFamily("english");
+		entity.setName("english");
+		entity.setNativeName("english");
+		entity.setIsActive(true);
+		entity.setCreatedDateTime(LocalDateTime.now());
+		entity.setCreatedBy("admin");
+
+		setUpdateMetaData(dto, entity, false);
+
+		assertTrue(entity.getCode().equals(dto.getCode()));
+		assertTrue(entity.getFamily().equals(dto.getFamily()));
+		assertTrue(entity.getName().equals("english"));
+		assertTrue(entity.getNativeName().equals("english"));
+		assertTrue(entity.getUpdatedBy() != null);
+		assertTrue(entity.getUpdatedDateTime() != null);
 	}
 
 	@Test

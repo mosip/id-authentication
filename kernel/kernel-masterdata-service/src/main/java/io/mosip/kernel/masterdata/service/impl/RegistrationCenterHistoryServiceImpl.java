@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @Service
 public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterHistoryService {
 
-
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 
@@ -49,15 +49,14 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(effectiveDate);
-			;
-		} catch (Exception e) {
+		} catch (DateTimeParseException e) {
 			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
 		}
 		try {
 			registrationCenters = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId,
-							langCode, localDateTime);
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							registrationCenterId, langCode, localDateTime);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

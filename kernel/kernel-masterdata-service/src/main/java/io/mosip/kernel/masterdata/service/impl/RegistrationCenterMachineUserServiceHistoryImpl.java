@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,16 +49,17 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
 			String effectiveTimestamp, String registrationCenterId, String machineId, String userId) {
 		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachines = null;
+		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		LocalDateTime lDateAndTime = null;
 		try {
 			lDateAndTime = MapperUtils.parseToLocalDateTime(effectiveTimestamp);
-		} catch (Exception e) {
+		} catch (DateTimeParseException e) {
 			throw new RequestException(RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
 		}
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalse(
+					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId), lDateAndTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
@@ -66,19 +68,18 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorMessage());
 		}
-		if (registrationCenterUserMachines != null && registrationCenterUserMachines.isEmpty()) {
+		if (registrationCenterUserMachines == null || registrationCenterUserMachines.isEmpty()) {
 			throw new DataNotFoundException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND
 							.getErrorMessage());
+		} else {
+			List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
+			registrationCenters = MapperUtils.mapAll(registrationCenterUserMachines,
+					RegistrationCenterUserMachineMappingHistoryDto.class);
+			centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);
 		}
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = MapperUtils.mapAll(registrationCenterUserMachines,
-				RegistrationCenterUserMachineMappingHistoryDto.class);
-		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);
 		return centerUserMachineMappingResponseDto;
 	}
 

@@ -46,17 +46,59 @@ public class MapperUtils {
 		super();
 	}
 
-	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
+	/**
+	 * This flag is used to restrict copy null values.
+	 */
+	private static Boolean mapNullValues = Boolean.TRUE;
+
+	/**
+	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
+	 * {@link LocalDateTime}
+	 * 
+	 * @param dateTime
+	 *            of type {@link String} of pattern UTC_DATETIME_PATTERN
+	 * @return a {@link LocalDateTime} of given pattern
+	 */
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	}
 
 	/*
 	 * #############Public method used for mapping################################
 	 */
+
+	/**
+	 * This method map the values from <code>source</code> to
+	 * <code>destination</code> if name and type of the fields inside the given
+	 * parameters are same.If any of the parameters are <code>null</code> this
+	 * method return <code>null</code>.This method internally check whether the
+	 * source or destinationClass is DTO or an Entity type and map accordingly. If
+	 * any {@link Collection} type or Entity type field is their then only matched
+	 * name fields value will be set but not the embedded IDs and super class
+	 * values.
+	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param mapNullValues
+	 *            by default marked as true so, it will map null values but if
+	 *            marked as false then null values will be ignored
+	 * @return the <code>destination</code> object
+	 * @throws NullPointerException
+	 *             if either <code>source</code> or <code>destination</code> is null
+	 */
+	public static <S, D> D map(final S source, D destination, Boolean mapNullValues) {
+		MapperUtils.mapNullValues = mapNullValues;
+		return map(source, destination);
+	}
 
 	/**
 	 * This method map the values from <code>source</code> to
@@ -123,7 +165,7 @@ public class MapperUtils {
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
-		} catch (Exception e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
 					+ source.getClass().getName() + " to destination : " + destinationClass.getClass().getName(), e);
 		}
@@ -192,10 +234,63 @@ public class MapperUtils {
 
 	}
 
+	/**
+	 * Map values from {@link BaseEntity} class source object to destination or vice
+	 * versa and this method will be used to map {@link BaseEntity} values from
+	 * entity to entity. Like when both <code>source</code> and
+	 * <code>destination</code> are object which extends {@link BaseEntity}.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 */
+	public static <S, D> void setBaseFieldValue(S source, D destination) {
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
+		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
+		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
+		// object
+		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
+		String objectClassName = Object.class.getName();// object class fully qualified name
+
+		// if source is an entity
+		if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else if (destinationSupername.equals(baseEntityClassName) && !sourceSupername.equals(baseEntityClassName)) {
+			// if destination is an entity
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else {
+			if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
+				Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+				Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+				mapFieldValues(source, destination, sourceFields, destinationFields);
+			}
+		}
+
+	}
+
 	/*
 	 * #############Private method used for mapping################################
 	 */
 
+	/**
+	 * Map values from source object to destination object.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws InstantiationException
+	 *             if not able to create instance of field having annotation
+	 *             {@link EmbeddedId}
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
@@ -207,6 +302,19 @@ public class MapperUtils {
 		}
 	}
 
+	/**
+	 * This method map source DTO to a class object which extends {@link BaseEntity}
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws InstantiationException
+	 *             if not able to create instance of field having annotation
+	 *             {@link EmbeddedId}
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapDtoToEntity(S source, D destination)
 			throws InstantiationException, IllegalAccessException {
 		Field[] fields = destination.getClass().getDeclaredFields();
@@ -226,6 +334,16 @@ public class MapperUtils {
 		}
 	}
 
+	/**
+	 * Map source which extends {@link BaseEntity} to a DTO object.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
 	private static <S, D> void mapEntityToDto(S source, D destination) throws IllegalAccessException {
 		Field[] sourceFields = source.getClass().getDeclaredFields();
 		/*
@@ -255,29 +373,18 @@ public class MapperUtils {
 		}
 	}
 
-	private static <S, D> void setBaseFieldValue(S source, D destination) {
-
-		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
-		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
-																						// object
-		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
-
-		// if source is an entity
-		if (sourceSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-			return;
-		}
-		// if destination is an entity
-		if (destinationSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-		}
-
-	}
-
+	/**
+	 * Map values from source field to destination.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param sf
+	 *            source fields
+	 * @param dtf
+	 *            destination fields
+	 */
 	private static <D, S> void mapFieldValues(S source, D destination, Field[] sourceFields,
 			Field[] destinationFields) {
 		try {
@@ -305,18 +412,36 @@ public class MapperUtils {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (IllegalAccessException e) {
 
 			throw new DataAccessLayerException("KER-MSD-993", "Exception raised while mapping values form "
 					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
 		}
 	}
 
-	private static <S, D> void setFieldValue(S source, D destination, Field ef, Field dtf)
+	/**
+	 * Take value from source field and insert value into destination field.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 * @param sf
+	 *            source fields
+	 * @param dtf
+	 *            destination fields
+	 * @throws IllegalAccessException
+	 *             if provided fields are not accessible
+	 */
+	private static <S, D> void setFieldValue(S source, D destination, Field sf, Field dtf)
 			throws IllegalAccessException {
-		dtf.set(destination, ef.get(source));
+		// check whether user wants to map null values into destination object or not
+		if (!mapNullValues && EmptyCheckUtils.isNullEmpty(sf.get(source))) {
+			return;
+		}
+		dtf.set(destination, sf.get(source));
 		dtf.setAccessible(false);
-		ef.setAccessible(false);
+		sf.setAccessible(false);
 	}
 	// ----------------------------------------------------------------------------------------------------------------------------
 

@@ -11,8 +11,6 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-
-
 public class DocumentCategoryResponseDto {
 	private List<DocumentCategoryDto> documentcategories;
 }

@@ -321,35 +321,10 @@ public final class DateUtilTest {
 		DateUtils.before(currDate, null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testDateEqualExceptionDateNull() {
-		DateUtils.isSameDay(null, currDate);
-	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testIsSameInstantExceptionDateNull() {
-		DateUtils.isSameInstant(currDate, null);
-	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testLocalDateTimeAfterExceptionLocalDateTimeNull() {
-		DateUtils.after(null, currLocalDateTime);
-	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testLocalDateTimeBeforeExceptionLocalDateTimeNull() {
-		DateUtils.before(currLocalDateTime, null);
-	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testLocalDateTimeEqualExceptionLocalDateTimeNull() {
-		DateUtils.isSameDay(null, currLocalDateTime);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testIsSameInstantExceptionLocalDateTimeNull() {
-		DateUtils.isSameInstant(currLocalDateTime, null);
-	}
 
 	// -----------------------------Parsing date test----------------------------
 

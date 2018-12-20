@@ -33,7 +33,7 @@ public class ReverseDataSyncEntity implements Serializable {
 
 	@Id
 	@EmbeddedId
-	private Ipprlst_PK ipprlst_PK;
+	private InterfaceDataSyncTablePK ipprlst_PK;
 
 	@Column(name = "lang_code")
 	private String langCode;

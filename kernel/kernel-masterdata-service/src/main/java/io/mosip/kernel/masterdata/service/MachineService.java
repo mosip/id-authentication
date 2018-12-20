@@ -8,7 +8,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
- * This interface has abstract methods to save and fetch a Machine Details
+ * This interface provides methods to do CRUD operations on Machine details
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -67,7 +67,7 @@ public interface MachineService {
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            input from user
+	 *            machine DTO 
 	 * 
 	 * @return IdResponseDto returning machine id which is inserted successfully
 	 *         {@link IdResponseDto}
@@ -76,5 +76,18 @@ public interface MachineService {
 	 *             if any error occurred while saving Machine
 	 */
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine);
+	/**
+	 * Abstract method to update Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            machine DTO 
+	 * 
+	 * @return IdResponseDto returning machine id which is updated successfully
+	 *         {@link IdResponseDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 */
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine);
 
 }

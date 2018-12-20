@@ -68,6 +68,7 @@
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
+		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -81,8 +82,12 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+		
+		<!--QR Code-->
+		<google.zxing.version>3.3.3</google.zxing.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
@@ -109,6 +114,7 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-keymanager-softhsm</module>
+		<module>kernel-qrcode-generator</module>
 
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
@@ -117,6 +123,8 @@
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
 		<module>kernel-cryptomanager-service</module>
+		<module>kernel-idrepo-service</module>
+		<module>kernel-syncdata-service</module>
 
 		<module>kernel-batch-framework</module>
 		<module>kernel-batch-server</module>
@@ -124,8 +132,6 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
-		
-		<module>kernel-idrepo-service</module>
 	</modules>
 
 	<dependencies>
@@ -142,7 +148,7 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
+	<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

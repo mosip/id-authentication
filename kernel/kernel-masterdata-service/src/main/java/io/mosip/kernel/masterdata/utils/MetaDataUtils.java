@@ -35,6 +35,64 @@ public class MetaDataUtils {
 	private static String contextUser = "TestAdmin";
 
 	/**
+	 * This method takes <code>source</code> object like an DTO and an object which
+	 * must extends {@link BaseEntity} and map all values from DTO object to the
+	 * <code>destination</code> object and return it.
+	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
+	 * @param source
+	 *            is the source
+	 * @param destination
+	 *            is the destination
+	 * @param mapNullvalues
+	 *            if marked as false then field inside source which are null will
+	 *            not be mapped into destination
+	 * @return <code>destination</code> object which extends {@link BaseEntity}
+	 * @throws DataAccessLayerException
+	 *             if any error occurs while mapping values
+	 * @see MapperUtils#map(Object, Object, Boolean)
+	 */
+	public static <S, D extends BaseEntity> D setUpdateMetaData(final S source, D destination, Boolean mapNullvalues) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
+
+		MapperUtils.map(source, destination, mapNullvalues);
+
+		setUpdatedDateTime(contextUser, destination);
+		return destination;
+	}
+
+	public static <S, D extends BaseEntity> D setUpdateMachineMetaData(final S source, D destination) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
+
+		D entity = MapperUtils.map(source, destination);
+
+		setUpdatedDateTime(contextUser, entity);
+		return entity;
+	}
+
+	/**
+	 * This method is used to set meta data used for delete.
+	 * 
+	 * @param entity
+	 *            which extends base entity
+	 * @return entity having isDeleted value as true and deleted times
+	 */
+	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		entity.setIsDeleted(true);
+		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		return entity;
+	}
+
+	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.
@@ -88,6 +146,11 @@ public class MetaDataUtils {
 	private static <D extends BaseEntity> void setCreatedDateTime(String contextUser, D entity) {
 		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setCreatedBy(contextUser);
+	}
+
+	private static <D extends BaseEntity> void setUpdatedDateTime(String contextUser, D entity) {
+		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		entity.setUpdatedBy(contextUser);
 	}
 
 }

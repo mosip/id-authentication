@@ -35,9 +35,8 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - lcoation request object
-	 * @return PostLocationCodeResponseDto
+	 * @param locationRequestDto - location request object
+	 * @return {@link PostLocationCodeResponseDto}
 	 */
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 
@@ -49,4 +48,19 @@ public interface LocationService {
 	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName);
+	
+	/**
+	 * 
+	 * @param locationRequestDto - location request DTO
+	 * @return {@link PostLocationCodeResponseDto}
+	 */
+	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto);
+	
+	/**
+	 * 
+	 * @param locationCode - location code
+	 * @return {@link PostLocationCodeResponseDto}
+	 */
+	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode,String langCode);
+	
 }

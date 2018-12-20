@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -95,15 +96,36 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PostMapping()
+	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseEntity<IdResponseDto> saveDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdResponseDto> createDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.saveDevice(deviceRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.CREATED);
 	}
 
+	/**
+	 * API to update an existing row of Device data
+	 * 
+	 * @param deviceRequestDto
+	 *            input parameter deviceRequestDto
+	 * 
+	 * @return ResponseEntity Device Id which is updated successfully
+	 *         {@link ResponseEntity}
+	 */
+	@PutMapping
+	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device updated successfully", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When Device is not found"),
+			@ApiResponse(code = 500, message = "While updating device any error occured") })
+	public ResponseEntity<IdResponseDto> updateDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+
+		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.CREATED);
+	}
+	
 }

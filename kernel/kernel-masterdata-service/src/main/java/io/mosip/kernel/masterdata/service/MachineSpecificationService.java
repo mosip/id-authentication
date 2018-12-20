@@ -6,8 +6,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
- * This interface has abstract methods to fetch and save Machine Specification
- * Details
+ * This interface provides methods to do CRUD operations on MachineSpecification
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -16,16 +15,29 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 public interface MachineSpecificationService {
 
 	/**
-	 * Function to save Machine Specification Details to the Database
+	 * Abstract method to save Machine Specification Details to the Database
 	 * 
 	 * @param machineSpecification
-	 *            input from user
+	 *            machineSpecification DTO
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully inserted
 	 *         {@link IdResponseDto}
 	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Device
+	 *             if any error occurred while saving Machine Specification
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
+	
+	/**
+	 * Abstract method to update Machine Specification Details to the Database
+	 * 
+	 * @param machineSpecification
+	 *            machineSpecification DTO
+	 * 
+	 * @return IdResponseDto Machine Specification ID which is successfully updated
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine Specification
+	 */
+	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
 }
