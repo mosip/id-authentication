@@ -215,4 +215,35 @@ public class LocationServiceImpl implements LocationService {
 	}
 	
 
+	/**
+	 * @author M1043226 
+	 * Method creates location hierarchy data into the table based
+	 *         on the request parameter sent {@inheritDoc}
+	 */
+	@Override
+	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName) {
+		List<Location> locationlist = null;
+		LocationResponseDto locationHierarchyResponseDto = new LocationResponseDto();
+		try {
+			locationlist = locationRepository.findAllByHierarchyNameIgnoreCase(hierarchyName);
+
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
+		if (!(locationlist.isEmpty())) {
+			List<LocationDto> hierarchyList = MapperUtils.mapAll(locationlist, LocationDto.class);
+			locationHierarchyResponseDto.setLocations(hierarchyList);
+
+		} else {
+
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		return locationHierarchyResponseDto;
+
+	}
+
 }
