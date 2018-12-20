@@ -12,20 +12,26 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.fp.FingerprintFacade;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import javafx.animation.PauseTransition;
@@ -61,14 +67,20 @@ public class BaseController {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
-	
+
 	@Autowired
 	protected FXComponents fXComponents;
-	
+
+	@Autowired
+	private LoginService loginService;
+
+	@Value("${USERNAME_PWD_LENGTH}")
+	private int usernamePwdLength;
+
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
-	
+
 	protected Scene scene;
-	
+
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -89,11 +101,11 @@ public class BaseController {
 		fXComponents.getStage().addEventHandler(EventType.ROOT, event);
 		return fXComponents.getStage();
 	}
-	
+
 	protected Scene getScene(Parent borderPane) {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		scene = fXComponents.getScene(); 
-		if(scene == null) {
+		scene = fXComponents.getScene();
+		if (scene == null) {
 			scene = new Scene(borderPane, 950, 630);
 			fXComponents.setScene(scene);
 		}
@@ -130,10 +142,14 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified title, header, and context
 	 * 
-	 * @param title     alert title
-	 * @param alertType type of alert
-	 * @param header    alert header
-	 * @param context   alert context
+	 * @param title
+	 *            alert title
+	 * @param alertType
+	 *            type of alert
+	 * @param header
+	 *            alert header
+	 * @param context
+	 *            alert context
 	 */
 	protected void generateAlert(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -152,7 +168,8 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization
 	 * 
-	 * @param screenId the screenId
+	 * @param screenId
+	 *            the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -164,8 +181,10 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern
 	 * 
-	 * @param field        concerned field
-	 * @param regexPattern pattern need to checked
+	 * @param field
+	 *            concerned field
+	 * @param regexPattern
+	 *            pattern need to checked
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
 		if (field instanceof TextField) {
@@ -227,28 +246,32 @@ public class BaseController {
 	/**
 	 * Gets the finger print status.
 	 *
-	 * @param PrimaryStage the primary stage
+	 * @param PrimaryStage
+	 *            the primary stage
 	 * @return the finger print status
 	 */
 	public void getFingerPrintStatus(Stage primaryStage) {
-	
+
 	}
-	
+
 	/**
 	 * Scans documents
 	 *
-	 * @param popupStage the stage
+	 * @param popupStage
+	 *            the stage
 	 */
 	public void scan(Stage popupStage) {
-		
+
 	}
 
 	/**
 	 * This method is for saving the Applicant Image and Exception Image which are
 	 * captured using webcam
 	 * 
-	 * @param capturedImage BufferedImage that is captured using webcam
-	 * @param imageType     Type of image that is to be saved
+	 * @param capturedImage
+	 *            BufferedImage that is captured using webcam
+	 * @param imageType
+	 *            Type of image that is to be saved
 	 */
 	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
@@ -257,7 +280,8 @@ public class BaseController {
 	/**
 	 * This method used to clear the images that are captured using webcam
 	 * 
-	 * @param imageType Type of image that is to be cleared
+	 * @param imageType
+	 *            Type of image that is to be cleared
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
@@ -272,11 +296,12 @@ public class BaseController {
 
 	/**
 	 * it will wait for the mentioned time to get the capture image from Bio Device.
+	 * 
 	 * @param count
 	 * @param waitTimeInSec
 	 * @param fingerprintFacade
 	 */
-	protected void waitToCaptureBioImage(int count, int waitTimeInSec, FingerprintFacade fingerprintFacade ) {
+	protected void waitToCaptureBioImage(int count, int waitTimeInSec, FingerprintFacade fingerprintFacade) {
 		int counter = 0;
 		while (counter < 5) {
 			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())
@@ -293,11 +318,11 @@ public class BaseController {
 			counter++;
 		}
 	}
-	
+
 	protected Image convertBytesToImage(byte[] imageBytes) {
 		return new Image(new ByteArrayInputStream(imageBytes));
 	}
-	
+
 	protected Timer onlineAvailabilityCheck() {
 		Timer timer = new Timer();
 		fXComponents.setTimer(timer);
@@ -315,5 +340,73 @@ public class BaseController {
 	public Timer getTimer() {
 		return fXComponents.getTimer() == null ? onlineAvailabilityCheck() : fXComponents.getTimer();
 	}
-	
+
+	/**
+	 * to validate the password in case of password based authentication
+	 */
+	protected Boolean validatePwd(String username, String password) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
+
+		if (username.isEmpty() && password.isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
+		} else if (username.isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+		} else if (password.isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PWORD_FIELD_EMPTY);
+		} else if (username.length() > usernamePwdLength) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
+		} else if (password.length() > usernamePwdLength) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
+		} else {
+			String hashPassword = null;
+
+			// password hashing
+			if (!(password.isEmpty())) {
+				byte[] bytePassword = password.getBytes();
+				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
+			}
+
+			LoginUserDTO userDTO = new LoginUserDTO();
+			userDTO.setUserId(username);
+			userDTO.setPassword(hashPassword);
+
+			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO.setUserId(username);
+			authenticationValidatorDTO.setPassword(hashPassword);
+			String userStatus = validatePassword(authenticationValidatorDTO);
+
+			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
+			} else {
+				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
+					return true;
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * to validate the password and send appropriate message to display
+	 * 
+	 * @param authenticationValidatorDTO
+	 *            - DTO which contains the username and password entered by the user
+	 * @return appropriate message after validation
+	 */
+	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating credentials using database");
+
+		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+		if (userDetail == null) {
+			return RegistrationConstants.USER_NOT_ONBOARDED;
+		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+			return RegistrationConstants.PWD_MATCH;
+		} else {
+			return RegistrationConstants.PWD_MISMATCH;
+		}
+	}
+
 }

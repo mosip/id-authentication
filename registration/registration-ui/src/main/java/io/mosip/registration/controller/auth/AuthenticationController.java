@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -24,7 +23,6 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -134,70 +132,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		getAuthenticationModes();
 	}
 
-	/**
-	 * to validate the password in case of password based authentication
-	 */
-	public void validatePwd() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
+	
 
-		if (username.getText().isEmpty() && password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
-		} else if (username.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
-		} else if (password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PWORD_FIELD_EMPTY);
-		} else if (username.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
-		} else if (password.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
-		} else {
-			String hashPassword = null;
-
-			// password hashing
-			if (!(password.getText().isEmpty())) {
-				byte[] bytePassword = password.getText().getBytes();
-				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-			}
-			LoginUserDTO userDTO = new LoginUserDTO();
-			userDTO.setUserId(username.getText());
-			userDTO.setPassword(hashPassword);
-			// Server connection check
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			authenticationValidatorDTO.setUserId(username.getText());
-			authenticationValidatorDTO.setPassword(hashPassword);
-			String userStatus = validatePassword(authenticationValidatorDTO);
-			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
-			} else {
-				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
-					loadNextScreen();
-				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
-				}
-			}
-		}
-	}
-
-	/**
-	 * to validate the password and send appropriate message to display
-	 * 
-	 * @param authenticationValidatorDTO - DTO which contains the username and
-	 *                                   password entered by the user
-	 * @return appropriate message after validation
-	 */
-	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-				"Validating credentials using database");
-
-		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		if (userDetail == null) {
-			return RegistrationConstants.USER_NOT_ONBOARDED;
-		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
-			return RegistrationConstants.PWD_MATCH;
-		} else {
-			return RegistrationConstants.PWD_MISMATCH;
-		}
-	}
 
 	/**
 	 * to generate OTP in case of OTP based authentication
@@ -266,6 +202,12 @@ public class AuthenticationController extends BaseController implements Initiali
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
 			}
+		}
+	}
+	
+	public void validatePwd() {
+		if(validatePwd(username.getText(), password.getText())) {
+			loadNextScreen();
 		}
 	}
 

@@ -833,4 +833,8 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
 	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
+	
+	//PRE-REG DELETE JOB
+	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
+	public static final String PRE_REG_DELETE_FAILURE = "Error While Deleting the records";
 }

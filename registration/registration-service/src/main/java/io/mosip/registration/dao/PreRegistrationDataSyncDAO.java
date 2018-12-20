@@ -1,5 +1,8 @@
 package io.mosip.registration.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import io.mosip.registration.entity.PreRegistrationList;
 
 /**
@@ -23,4 +26,18 @@ public interface PreRegistrationDataSyncDAO {
 	 * @return saved pre registartion
 	 */
 	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration);
+	
+	/**
+	 * Fetch the Pre-Reg Records that needs to be deleted
+	 * @param startDate
+	 * @return
+	 */
+	public List<PreRegistrationList> fetchRecordsToBeDeleted(Date startDate);
+	
+	/**
+	 * Update the Deleted Pre-Reg Records in the table
+	 * @param preReg
+	 * @return
+	 */
+	public PreRegistrationList updateDeletedRecord(PreRegistrationList preReg);
 }
