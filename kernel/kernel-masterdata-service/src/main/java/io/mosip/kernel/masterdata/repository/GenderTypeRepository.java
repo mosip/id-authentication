@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Gender;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * Repository class for fetching gender data
@@ -16,7 +17,7 @@ import io.mosip.kernel.masterdata.entity.Gender;
  *
  */
 @Repository
-public interface GenderTypeRepository extends BaseRepository<Gender, String> {
+public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLanguageCodeID> {
 
 	@Query("FROM Gender WHERE langCode =?1 and (isDeleted is null or isDeleted =false)")
 	List<Gender> findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);

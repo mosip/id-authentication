@@ -169,7 +169,7 @@ public class TemplateServiceImpl implements TemplateService {
 			Template entity = templateRepository.findById(Template.class, id);
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setDeleteMetaData(entity);
-				templateRepository.delete(entity);
+				templateRepository.update(entity);
 				idResponseDto.setId(entity.getId());
 			} else {
 				throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
