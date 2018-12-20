@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(description = "Model representing a Request")
 public class GenderTypeDto {
-	
+
 	@ApiModelProperty(notes = "Code of gender ", example = "GC001", required = true)
 	@NotNull
 	@Size(min = 1, max = 16)

@@ -82,7 +82,8 @@ public class GenderTypeController {
 	@PutMapping("/v1.0/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.updateGenderType(gender), HttpStatus.OK);
+		return new ResponseEntity<>(genderTypeService.updateGenderType(gender),
+				HttpStatus.OK);
 
 	}
 
@@ -97,9 +98,11 @@ public class GenderTypeController {
 	 */
 	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
 	@DeleteMapping("/v1.0/gendertypes/{code}/{langcode}")
-	public ResponseEntity<CodeAndLanguageCodeID> deleteGenderType(@ApiParam("Gender type Code of gender to be deleted")@PathVariable("code") String code,
-			@ApiParam("Language code of Gender Type to be deleted")	@PathVariable("langcode") String langCode) {
-		return new ResponseEntity<>(genderTypeService.deleteGenderType(code, langCode), HttpStatus.OK);
+	public ResponseEntity<CodeAndLanguageCodeID> deleteGenderType(
+			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code,
+			@ApiParam("Language code of Gender Type to be deleted") @PathVariable("langcode") String langCode) {
+		return new ResponseEntity<>(
+				genderTypeService.deleteGenderType(code, langCode),
+				HttpStatus.OK);
 	}
-	
 }

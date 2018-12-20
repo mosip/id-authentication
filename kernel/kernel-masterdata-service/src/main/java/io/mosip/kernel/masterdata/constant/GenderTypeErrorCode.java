@@ -17,9 +17,9 @@ public enum GenderTypeErrorCode {
 	
 	GENDER_TYPE_INSERT_EXCEPTION("KER-MSD-XX", "Could not insert Gender Data"),
 	
-	GENDER_TYPE_UPDATE_EXCEPTION("xxx","Exception during update"),
-	
-	GENDER_TYPE_DELETE_EXCEPTION("xxx","Exception during deletion");
+	GENDER_TYPE_UPDATE_EXCEPTION("xxx", "Exception during update"),
+
+	GENDER_TYPE_DELETE_EXCEPTION("xxx", "Exception during deletion");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -130,28 +130,25 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeAndLanguageCodeID updateGenderType(
 			@Valid RequestDto<GenderTypeDto> gender) {
-		GenderTypeDto genderTypeDto=gender.getRequest();
-		
+		GenderTypeDto genderTypeDto = gender.getRequest();
+
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
 
 		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
 
-			Gender genderType = genderTypeRepository.findById(Gender.class,
-					genderTypeId);
+			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
 
 			if (genderType != null) {
 				MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
 				genderTypeRepository.update(genderType);
 			} else {
-				throw new DataNotFoundException(
-						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(
-					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
 		}
 		return genderTypeId;
@@ -163,23 +160,20 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeAndLanguageCodeID deleteGenderType(String code,
 			String langCode) {
-		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID(code,langCode);
+		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID(code, langCode);
 		try {
-			Gender genderType = genderTypeRepository.findById(Gender.class,
-					genderTypeId);
+			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
 
 			if (genderType != null) {
 				MetaDataUtils.setDeleteMetaData(genderType);
 				genderTypeRepository.update(genderType);
 			} else {
-				throw new DataNotFoundException(
-						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(
-					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
 		}
 		return genderTypeId;
