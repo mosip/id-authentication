@@ -27,6 +27,7 @@ create table reg.pre_registration_list (
 
 	sjob_id character varying(36),					-- no fk.  data populate.
 	synctrn_id character varying (36),				-- no fk.  data populate.
+	last_upd_dtimes timestamp,
 
 	lang_code character varying(3) not null,		-- no fk.  data populate.
 
