@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Title;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * Repository class for fetching titles from master db
@@ -17,7 +18,7 @@ import io.mosip.kernel.masterdata.entity.Title;
  *
  */
 @Repository
-public interface TitleRepository extends BaseRepository<Title, String> {
+public interface TitleRepository extends BaseRepository<Title, CodeAndLanguageCodeID> {
 	/**
 	 * method to get titles for a particular language code
 	 * 

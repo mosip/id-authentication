@@ -5,7 +5,9 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,5 +58,24 @@ public class MachineSpecificationController {
 		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
 				HttpStatus.CREATED);
 	}
+	/**
+	 * Put API to update a new row of Machine Specification data
+	 * 
+	 * @param machineSpecification
+	 *            input Machine specification DTO from user
+	 * @return ResponseEntity Machine Specification ID which is successfully
+	 *         updated
+	 */
+	@PutMapping("/v1.0/machinespecifications/{id}")
+	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
+	public ResponseEntity<IdResponseDto> updateMachineSpecification(
+			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
 
+		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
+				HttpStatus.OK);
+	}
 }

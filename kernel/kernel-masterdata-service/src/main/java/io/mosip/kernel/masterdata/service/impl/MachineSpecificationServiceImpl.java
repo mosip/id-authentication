@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
@@ -59,6 +60,35 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 		return idResponseDto;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+		MachineSpecification updMachineSpecification = null;
+		
+		try {
+			MachineSpecification renmachineSpecification = machineSpecificationRepository
+					.findById(MachineSpecification.class, machineSpecification.getRequest().getId());
+			if (renmachineSpecification != null) {
+				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renmachineSpecification, false);
+				updMachineSpecification = machineSpecificationRepository.update(renmachineSpecification);
+			} else {
+				throw new DataNotFoundException(
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(updMachineSpecification, idResponseDto);
+		return idResponseDto;
 	}
 
 }

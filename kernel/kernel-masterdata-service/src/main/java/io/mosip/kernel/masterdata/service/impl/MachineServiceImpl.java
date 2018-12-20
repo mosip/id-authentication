@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -152,11 +153,49 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);
 
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
+		Machine updMachine = null;
+		try {
+			Machine renmachine = machineRepository.findById(Machine.class, machine.getRequest().getId());
+
+			if (renmachine != null) {
+				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
+				updMachine = machineRepository.update(renmachine);
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(updMachine,machineHistory);
+				MapperUtils.setBaseFieldValue(updMachine,machineHistory);
+				
+				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
+				machineHistoryRepository.create(machineHistory);
+			} else {
+				throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(updMachine, idResponseDto);
 		return idResponseDto;
 	}
 
