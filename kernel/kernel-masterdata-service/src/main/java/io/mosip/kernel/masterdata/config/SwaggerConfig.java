@@ -90,7 +90,7 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag("GenderType", "operations related to gender type")).groupName(TITLE)
+				.tags(new Tag("GenderType", "Operations related to gender type")).groupName(TITLE)
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
 				.build();
 
