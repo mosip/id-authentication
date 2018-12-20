@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
@@ -74,8 +74,7 @@ public class TitleController {
 		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.CREATED);
 
 	}
-	
-	
+
 	@PutMapping("/v1.0/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
@@ -86,6 +85,18 @@ public class TitleController {
 	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
 			@ApiParam("Title DTO to update") @Valid @RequestBody RequestDto<TitleDto> titles) {
 		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/v1.0/title/{code}/{langcode}")
+	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No title found"),
+			@ApiResponse(code = 500, message = "While deleting title any error occured") })
+	public ResponseEntity<CodeAndLanguageCodeID> deleteTitle(@PathVariable("code") String code,
+			@PathVariable("langcode") String langCode) {
+		return new ResponseEntity<CodeAndLanguageCodeID>(titleService.deleteTitle(code, langCode), HttpStatus.OK);
 	}
 
 }

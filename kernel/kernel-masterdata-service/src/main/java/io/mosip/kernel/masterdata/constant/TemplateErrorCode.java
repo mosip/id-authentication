@@ -13,7 +13,6 @@ public enum TemplateErrorCode {
 					"Template not found."), TEMPLATE_UPDATE_EXCEPTION("KER-MSD-XXX",
 							"Error occured while updating Template"), TEMPLATE_DELETE_EXCEPTION("KER-MSD-XXX",
 									"Error occured while deleting Template");
-	;
 
 	private final String errorCode;
 	private final String errorMessage;
