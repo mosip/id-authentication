@@ -253,20 +253,19 @@ public class MapperUtils {
 		// object
 		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
 		String objectClassName = Object.class.getName();// object class fully qualified name
-		if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
 
-			// if source is an entity
-			if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
-				Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
-				Field[] destinationFields = destination.getClass().getDeclaredFields();
-				mapFieldValues(source, destination, sourceFields, destinationFields);
-			} else if (destinationSupername.equals(baseEntityClassName)
-					&& !sourceSupername.equals(baseEntityClassName)) {
-				// if destination is an entity
-				Field[] sourceFields = source.getClass().getDeclaredFields();
-				Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
-				mapFieldValues(source, destination, sourceFields, destinationFields);
-			} else {
+		// if source is an entity
+		if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else if (destinationSupername.equals(baseEntityClassName) && !sourceSupername.equals(baseEntityClassName)) {
+			// if destination is an entity
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else {
+			if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
 				Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 				Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
 				mapFieldValues(source, destination, sourceFields, destinationFields);

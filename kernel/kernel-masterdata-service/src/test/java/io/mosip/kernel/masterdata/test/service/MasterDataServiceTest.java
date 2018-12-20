@@ -302,7 +302,7 @@ public class MasterDataServiceTest {
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
 		locationHierarchy.setHierarchyLevel(0);
-		locationHierarchy.setHierarchyName(null);
+		locationHierarchy.setHierarchyName("country");
 		locationHierarchy.setParentLocCode(null);
 		locationHierarchy.setLangCode("HIN");
 		locationHierarchy.setCreatedBy("dfs");
@@ -336,6 +336,7 @@ public class MasterDataServiceTest {
 		locationDto.setIsActive(true);
 		requestLocationDto = new RequestDto<>();
 		requestLocationDto.setRequest(locationDto);
+
 	}
 
 	private void langServiceSetup() {
@@ -1378,5 +1379,6 @@ public class MasterDataServiceTest {
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
+
 
 }

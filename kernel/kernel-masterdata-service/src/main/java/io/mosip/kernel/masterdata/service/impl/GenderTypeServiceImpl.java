@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * This class contains service methods to fetch gender type data from DB
  * 
  * @author Sidhant Agarwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -116,6 +119,61 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		MapperUtils.map(gender, codeLangCodeId);
 		return codeLangCodeId;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID updateGenderType(
+			@Valid RequestDto<GenderTypeDto> gender) {
+		GenderTypeDto genderTypeDto = gender.getRequest();
+
+		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
+		try {
+
+			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
+
+			if (genderType != null) {
+				MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
+				genderTypeRepository.update(genderType);
+			} else {
+				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return genderTypeId;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#deleteGenderType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CodeAndLanguageCodeID deleteGenderType(String code,
+			String langCode) {
+		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID(code, langCode);
+		try {
+			Gender genderType = genderTypeRepository.findById(Gender.class, genderTypeId);
+
+			if (genderType != null) {
+				MetaDataUtils.setDeleteMetaData(genderType);
+				genderTypeRepository.update(genderType);
+			} else {
+				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
+					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
+		}
+		return genderTypeId;
 	}
 
 }

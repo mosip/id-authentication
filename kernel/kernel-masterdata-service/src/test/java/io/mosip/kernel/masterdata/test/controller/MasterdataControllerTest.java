@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -194,16 +194,31 @@ public class MasterdataControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		biometricTypeSetup();
+
 		applicationSetup();
+
 		biometricAttributeSetup();
+
+		// TODO DeviceControllerTest
+		// TODO DeviceSpecificationControllerTest
+
 		documentCategorySetup();
+
 		documentTypeSetup();
+
 		idTypeSetup();
+
 		locationSetup();
+
+		// TODO MachineDetailControllerTest
+		// TODO MachineHistoryControllerTest
+
 		registrationCenterController();
 		blackListedWordSetUp();
 		templateSetup();
+
 		templateFileFormatSetup();
+
 	}
 
 	private void templateSetup() {
@@ -415,7 +430,7 @@ public class MasterdataControllerTest {
 
 	}
 
-	// -------------------------------BiometricTypeControllerTest--------------------------//
+	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
@@ -737,6 +752,7 @@ public class MasterdataControllerTest {
 		.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
+	
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test

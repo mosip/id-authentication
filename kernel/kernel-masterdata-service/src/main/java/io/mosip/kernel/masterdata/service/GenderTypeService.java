@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import javax.validation.Valid;
+
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
@@ -10,6 +12,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 /**
  * This class contains methods to fetch gender types
  * 
+ * @author Urvil Joshi
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
@@ -47,5 +50,25 @@ public interface GenderTypeService {
 	 *             when entered data not created
 	 */
 	public CodeAndLanguageCodeID saveGenderType(RequestDto<GenderTypeDto> genderRequestDto);
+
+	/**
+	 * Method to update Gender Type based on data provided.
+	 * 
+	 * @param gender
+	 *            {@link RequestDto} the request dto.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender);
+
+	/**
+	 * Method to delete Gender Type based on data provided.
+	 * 
+	 * @param code
+	 *            the gender code.
+	 * @param langCode
+	 *            the language code.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID deleteGenderType(String code, String langCode);
 
 }
