@@ -135,7 +135,7 @@ public class MachineController {
 	@PutMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine successfully udated", response = IdResponseDto.class),
+			@ApiResponse(code = 200, message = "When Machine successfully udated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
@@ -154,7 +154,7 @@ public class MachineController {
 	@DeleteMapping("/v1.0/machine/{id}")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine successfully deleted", response = IdResponseDto.class),
+			@ApiResponse(code = 200, message = "When Machine successfully deleted", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
