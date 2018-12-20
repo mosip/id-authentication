@@ -27,7 +27,7 @@ node {
 
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: '/mosip/'+projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: '/mosip/'+projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
      ]]
 
     ],
