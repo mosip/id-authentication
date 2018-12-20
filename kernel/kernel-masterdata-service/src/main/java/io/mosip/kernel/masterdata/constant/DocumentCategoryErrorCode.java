@@ -4,16 +4,16 @@ package io.mosip.kernel.masterdata.constant;
  * Constants for Document category
  * 
  * @author Neha
- * @author Uday Kumar
+ * @author Ritesh Sinha
  * @since 1.0.0
  */
 public enum DocumentCategoryErrorCode {
 
-	DOCUMENT_CATEGORY_FETCH_EXCEPTION("KER-MSD-013","Error occured while fetching Device Specifications"),
-	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-113","Exception during inserting data into db"),
+	DOCUMENT_CATEGORY_FETCH_EXCEPTION("KER-MSD-013","Error occured while fetching Document Category"),
+	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-113","Error occured while inserting Document Category"),
 	DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION("KER-MSD-014","Document Category not found"),
-	DOCUMENT_CATEGORY_UPDATE_EXCEPTION("xxx","Exception during update"),
-	DOCUMENT_CATEGORY_DELETE_EXCEPTION("xxx","Exception during deletion");
+	DOCUMENT_CATEGORY_UPDATE_EXCEPTION("xxx","Error occured while updating Document Category"),
+	DOCUMENT_CATEGORY_DELETE_EXCEPTION("xxx","Error occured while deleting Document Category");
 
 	private final String errorCode;
 	private final String errorMessage;

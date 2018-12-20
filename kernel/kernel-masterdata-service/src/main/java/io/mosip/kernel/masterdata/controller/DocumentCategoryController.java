@@ -100,6 +100,13 @@ public class DocumentCategoryController {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
 	}
 
+	/**
+	 * Api to update Document category.
+	 * 
+	 * @param category
+	 *            is of type {@link DocumentCategoryDto}
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
 	@PutMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
@@ -112,6 +119,15 @@ public class DocumentCategoryController {
 		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
 	}
 
+	/**
+	 * Api to delete Document Category.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * @param langCode
+	 *            the document category language code.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
 	@DeleteMapping("/v1.0/documentcategories/{code}/{langcode}")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
