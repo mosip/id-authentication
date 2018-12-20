@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -78,11 +79,19 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
+
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value2);
 
 	}
 
@@ -142,7 +151,6 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 
-		matchProperties.put("languageType", "");
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 

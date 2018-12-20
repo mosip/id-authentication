@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -139,13 +140,40 @@ public class NameMatchingStrategyTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
+	}
+
+	public void TestInvaliExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
+		assertEquals(0, value1);
+
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
 	}
 
 	/**
