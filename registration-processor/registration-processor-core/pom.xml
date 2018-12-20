@@ -55,6 +55,12 @@
 			<version>${vertx.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+   			<groupId>io.mosip.kernel</groupId>
+   			<artifactId>kernel-templatemanager-velocity</artifactId>
+   			<version>${project.version}</version>
+		</dependency>
 
 
 	</dependencies>
