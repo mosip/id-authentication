@@ -76,7 +76,7 @@ The solution is divided into 3 parts :
 
 **Class Diagram**
 
-![Demo dedupe class diagram](_images/demo_dedupe_class_diagram.png)
+![Demo dedupe class diagram](_images/bio-dedupe-class-diagram.png)
 
 **Sequence Diagram**
 
