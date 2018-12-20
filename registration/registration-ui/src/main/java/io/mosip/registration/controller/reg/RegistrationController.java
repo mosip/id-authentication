@@ -30,11 +30,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.VirtualKeyboard;
+import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -94,10 +96,12 @@ public class RegistrationController extends BaseController {
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
-	
+
 	@Autowired
 	private DocumentScanController documentScanController;
 
+	@Autowired
+	private AuthenticationController authenticationController;
 	@FXML
 	private TextField preRegistrationId;
 
@@ -241,7 +245,7 @@ public class RegistrationController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
-	
+
 	@FXML
 	private AnchorPane biometricsPane;
 	@FXML
@@ -277,7 +281,7 @@ public class RegistrationController extends BaseController {
 	private boolean toggleBiometricException;
 
 	private Image defaultImage;
-	
+
 	@FXML
 	private TitledPane authenticationTitlePane;
 
@@ -352,8 +356,8 @@ public class RegistrationController extends BaseController {
 			populateTheLocalLangFields();
 			loadLanguageSpecificKeyboard();
 			loadLocalLanguageFields();
-			//loadListOfDocuments();
-			//setScrollFalse();
+			// loadListOfDocuments();
+			// setScrollFalse();
 			loadKeyboard();
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
@@ -734,8 +738,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -918,11 +921,11 @@ public class RegistrationController extends BaseController {
 				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 					isChild = true;
-					//documentFields.setLayoutY(134.00);
+					// documentFields.setLayoutY(134.00);
 				} else {
 					isChild = false;
 					childSpecificFields.setVisible(false);
-					//documentFields.setLayoutY(25.00);
+					// documentFields.setLayoutY(25.00);
 				}
 				// to populate age based on date of birth
 				ageField.setText("" + (Period.between(ageDatePicker.getValue(), LocalDate.now()).getYears()));
@@ -1205,11 +1208,11 @@ public class RegistrationController extends BaseController {
 				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 					isChild = true;
-					//documentFields.setLayoutY(134.00);
+					// documentFields.setLayoutY(134.00);
 				} else {
 					isChild = false;
 					childSpecificFields.setVisible(false);
-					//documentFields.setLayoutY(25.00);
+					// documentFields.setLayoutY(25.00);
 				}
 			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1454,8 +1457,8 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
 			parentName.requestFocus();
 		} else if (isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-				uinId.requestFocus();
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
+			uinId.requestFocus();
 		} else {
 			gotoNext = documentScanController.validateDocuments();
 		}
@@ -1499,7 +1502,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
 	}
-	
+
 	private boolean validateAgeOrDob() {
 		boolean gotoNext = false;
 		if (toggleAgeOrDobField) {
@@ -1647,8 +1650,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1660,6 +1662,12 @@ public class RegistrationController extends BaseController {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 
+			if (toggleBiometricException) {
+				authenticationController.initData(ProcessNames.EXCEPTION.getType());
+			} else {
+				authenticationController.initData(ProcessNames.PACKET.getType());
+
+			}
 			accord.setExpandedPane(authenticationTitlePane);
 			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 
@@ -1675,8 +1683,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1744,12 +1751,11 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
-	
+
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1758,8 +1764,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);

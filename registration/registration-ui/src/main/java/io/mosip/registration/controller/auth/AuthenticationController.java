@@ -3,10 +3,8 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,6 @@ import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -44,9 +41,12 @@ import javafx.stage.Stage;
 /**
  * Class for Operator Authentication
  *
+ * 
+ * 
+ * 
  */
 @Controller
-public class AuthenticationController extends BaseController implements Initializable {
+public class AuthenticationController extends BaseController {
 
 	/**
 	 * Instance of {@link Logger}
@@ -115,25 +115,14 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	private boolean isSupervisor = false;
 
+	private boolean isEODAuthentication = false;
+
 	private List<String> userAuthenticationTypeList;
 
 	private Stage primaryStage;
 
 	@Autowired
 	BaseController baseController;
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Entering the Operator Authentication Page");
-
-		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
-		isSupervisor = false;
-		getAuthenticationModes();
-	}
-
-	
-
 
 	/**
 	 * to generate OTP in case of OTP based authentication
@@ -204,9 +193,9 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		}
 	}
-	
+
 	public void validatePwd() {
-		if(validatePwd(username.getText(), password.getText())) {
+		if (validatePwd(username.getText(), password.getText())) {
 			loadNextScreen();
 		}
 	}
@@ -244,15 +233,19 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to get the configured modes of authentication
 	 */
-	private void getAuthenticationModes() {
+	private void getAuthenticationModes(String authType) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
-		if (isSupervisor) {
+		if (ProcessNames.EXCEPTION.getType().equals(authType)) {
+
 			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
-		} else {
+		} else if (ProcessNames.PACKET.getType().equals(authType)) {
 			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
+		} else if (ProcessNames.EOD.getType().equals(authType)) {
+			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EOD.getType());
 		}
+
 		loadNextScreen();
 	}
 
@@ -271,17 +264,23 @@ public class AuthenticationController extends BaseController implements Initiali
 			String authenticationType = String
 					.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
+
 			loadAuthenticationScreen(authenticationType);
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
 					isSupervisor = true;
-					getAuthenticationModes();
+					getAuthenticationModes(ProcessNames.EXCEPTION.getType());
 				} else {
 					submitRegistration();
 				}
 			} else {
-				submitRegistration();
+				if (isEODAuthentication) {
+
+					baseController.getFingerPrintStatus(primaryStage);
+				} else {
+					submitRegistration();
+				}
 			}
 		}
 	}
@@ -324,8 +323,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		if (isSupervisor) {
 			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			otpLabel.setLayoutX(342);
-			otpLabel.setLayoutY(58);
 			otpUserId.setEditable(true);
 		} else {
 			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -347,8 +344,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		if (isSupervisor) {
 			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			passwdLabel.setLayoutX(351);
-			passwdLabel.setLayoutY(80);
 			username.setEditable(true);
 		} else {
 			username.setText(SessionContext.getInstance().getUserContext().getUserId());
@@ -370,8 +365,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			fpUserId.setEditable(true);
 			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
-			fingerPrintLabel.setLayoutX(311);
-			fingerPrintLabel.setLayoutY(126);
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 			fpUserId.setEditable(false);
@@ -490,8 +483,17 @@ public class AuthenticationController extends BaseController implements Initiali
 	 */
 	public void init(BaseController parentControllerObj, String authType, Stage stage) {
 		isSupervisor = true;
+		isEODAuthentication=true;
 		primaryStage = stage;
-		getAuthenticationModes();
+		getAuthenticationModes(authType);
 		baseController = parentControllerObj;
+
 	}
+
+	public void initData(String authType) {
+		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
+		isSupervisor = false;
+		getAuthenticationModes(authType);
+	}
+
 }
