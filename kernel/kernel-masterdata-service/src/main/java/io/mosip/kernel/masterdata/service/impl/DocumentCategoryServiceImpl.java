@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -202,19 +203,19 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
-	 * deleteDocumentCategory(java.lang.String, java.lang.String)
+	 * deleteDocumentCategory(java.lang.String)
 	 */
 	@Override
-	public CodeAndLanguageCodeID deleteDocumentCategory(String code, String langCode) {
-		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
-		documentCategoryId.setCode(code);
-		documentCategoryId.setLangCode(langCode);
+	public CodeResponseDto deleteDocumentCategory(String code) {
+
 		try {
-			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
-					documentCategoryId);
-			if (documentCategory != null) {
-				MetaDataUtils.setDeleteMetaData(documentCategory);
-				documentCategoryRepository.update(documentCategory);
+
+			final List<DocumentCategory> documentCategoryList = documentCategoryRepository.findByCode(code);
+
+			if (!documentCategoryList.isEmpty()) {
+				documentCategoryList.stream().map(MetaDataUtils::setDeleteMetaData)
+						.forEach(documentCategoryRepository::update);
+
 			} else {
 				throw new DataNotFoundException(
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -226,8 +227,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorMessage());
 		}
+		CodeResponseDto responseDto = new CodeResponseDto();
+		responseDto.setCode(code);
+		return responseDto;
 
-		return documentCategoryId;
 	}
 
 }
