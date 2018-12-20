@@ -3,7 +3,10 @@ package io.mosip.kernel.masterdata.constant;
 public enum MachineSpecificationErrorCode {
 
 	MACHINE_SPECIFICATION_INSERT_EXCEPTION("KER-APP-444",
-			"Error occurred while inserting Machine Specification details");
+			"Error occurred while inserting Machine Specification details"),
+	MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION("KER-APP-000","Machine Specification not Found"),
+	MACHINE_SPECIFICATION_UPDATE_EXCEPTION("KER-APP-000",
+			"Error occurred while updating Machine Specification details");
 
 	private final String errorCode;
 	private final String errorMessage;
