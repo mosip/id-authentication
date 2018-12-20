@@ -2683,28 +2683,28 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteDocumentCategoryTest() throws Exception {
-		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
-		category.setIsDeleted(true);
-		category.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
+		when(documentCategoryRepository.findByCode(Mockito.any())).thenReturn(entities);
 		when(documentCategoryRepository.update(Mockito.any())).thenReturn(category);
-		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteDocumentCategoryNotFoundExceptionTest() throws Exception {
-		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+		
+		when(documentCategoryRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<DocumentCategory>());
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
 	}
 
 	@Test
 	public void deleteDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
-		when(documentCategoryRepository.findById(Mockito.any(), Mockito.any())).thenReturn(category);
+		when(documentCategoryRepository.findByCode(Mockito.any())).thenReturn(entities);
 		when(documentCategoryRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
-		mockMvc.perform(delete("/v1.0/documentcategories/DC001/ENG").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 
 	}
