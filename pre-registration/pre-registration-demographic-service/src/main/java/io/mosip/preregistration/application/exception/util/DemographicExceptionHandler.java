@@ -1,4 +1,4 @@
-package io.mosip.preregistration.application.exception;
+package io.mosip.preregistration.application.exception.util;
 
 import java.sql.Timestamp;
 
@@ -12,6 +12,10 @@ import io.mosip.preregistration.application.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
@@ -24,7 +28,7 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
  *
  */
 @RestControllerAdvice
-public class PreRegistrationExceptionHandler {
+public class DemographicExceptionHandler {
 	protected String falseStatus = "false";
 
 	@ExceptionHandler(TablenotAccessibleException.class)

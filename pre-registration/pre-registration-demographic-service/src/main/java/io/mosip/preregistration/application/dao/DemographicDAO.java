@@ -4,16 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import io.mosip.preregistration.application.entity.PreRegistrationEntity;
-import io.mosip.preregistration.application.repository.PreRegistrationRepository;
+import io.mosip.preregistration.application.entity.DemographicEntity;
+import io.mosip.preregistration.application.repository.DemographicRepository;
 
 @Component
-public class PreRegistrationDao {
+public class DemographicDAO {
 
 	/** The registration status repositary. */
 	@Autowired
 	@Qualifier("registrationRepository")
-	PreRegistrationRepository preRegistrationRepository;
+	DemographicRepository preRegistrationRepository;
 
 	/**
 	 * Save.
@@ -22,7 +22,7 @@ public class PreRegistrationDao {
 	 *            the registration status entity
 	 * @return the registration status entity
 	 */
-	public PreRegistrationEntity save(PreRegistrationEntity preRegistrationEntity) {
+	public DemographicEntity save(DemographicEntity preRegistrationEntity) {
 		return preRegistrationRepository.save(preRegistrationEntity);
 	}
 

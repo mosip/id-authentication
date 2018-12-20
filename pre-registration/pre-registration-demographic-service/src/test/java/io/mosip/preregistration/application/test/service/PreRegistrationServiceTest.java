@@ -45,7 +45,7 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.preregistration.application.dao.PreRegistrationDao;
+import io.mosip.preregistration.application.dao.DemographicDAO;
 import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
@@ -53,15 +53,15 @@ import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
-import io.mosip.preregistration.application.entity.PreRegistrationEntity;
+import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
-import io.mosip.preregistration.application.repository.PreRegistrationRepository;
-import io.mosip.preregistration.application.service.PreRegistrationService;
+import io.mosip.preregistration.application.repository.DemographicRepository;
+import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 /**
@@ -76,10 +76,10 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 public class PreRegistrationServiceTest {
 
 	@MockBean
-	private PreRegistrationRepository preRegistrationRepository;
+	private DemographicRepository preRegistrationRepository;
 
 	@MockBean
-	private PreRegistrationDao preRegistrationDao;
+	private DemographicDAO preRegistrationDao;
 
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
@@ -93,12 +93,12 @@ public class PreRegistrationServiceTest {
 	JSONParser parser = new JSONParser();
 
 	@Autowired
-	private PreRegistrationService preRegistrationService;
+	private DemographicService preRegistrationService;
 
-	List<PreRegistrationEntity> userDetails = new ArrayList<>();
+	List<DemographicEntity> userDetails = new ArrayList<>();
 	List<PreRegistrationViewDTO> response = new ArrayList<PreRegistrationViewDTO>();
 	private PreRegistrationViewDTO responseDto;
-	private PreRegistrationEntity preRegistrationEntity;
+	private DemographicEntity preRegistrationEntity;
 	private JSONObject jsonObject;
 	private JSONObject jsonTestObject;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -109,7 +109,7 @@ public class PreRegistrationServiceTest {
 	public void setup() throws ParseException, FileNotFoundException, IOException,
 			org.json.simple.parser.ParseException, URISyntaxException {
 
-		preRegistrationEntity = new PreRegistrationEntity();
+		preRegistrationEntity = new DemographicEntity();
 		ClassLoader classLoader = getClass().getClassLoader();
 		URI uri = new URI(
 				classLoader.getResource("pre-registration-crby.json").getFile().trim().replaceAll("\\u0020", "%20"));
@@ -153,7 +153,7 @@ public class PreRegistrationServiceTest {
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		ResponseDTO<CreatePreRegistrationDTO> res = preRegistrationService.addPreRegistration(jsonObject.toString());
-		assertEquals(res.getResponse().get(0).getPrId(), "67547447647457");
+		assertEquals(res.getResponse().get(0).getPreRegistrationId(), "67547447647457");
 	}
 
 	@Test
@@ -349,7 +349,7 @@ public class PreRegistrationServiceTest {
 
 	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
-		System.out.println("===========" + preRegistrationRepository.findById(PreRegistrationEntity.class, "1234")
+		System.out.println("===========" + preRegistrationRepository.findById(DemographicEntity.class, "1234")
 				+ "===================");
 		Mockito.when(preRegistrationRepository.findBypreRegistrationId("1234")).thenReturn(null);
 		preRegistrationService.addPreRegistration(jsonTestObject.toString());
@@ -384,8 +384,8 @@ public class PreRegistrationServiceTest {
 		String toDate = "2018-12-06 12:59:29";
 		ResponseDTO<String> response = new ResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
-		List<PreRegistrationEntity> details = new ArrayList<>();
-		PreRegistrationEntity entity = new PreRegistrationEntity();
+		List<DemographicEntity> details = new ArrayList<>();
+		DemographicEntity entity = new DemographicEntity();
 		entity.setPreRegistrationId("1234");
 		details.add(entity);
 
@@ -419,8 +419,8 @@ public class PreRegistrationServiceTest {
 		String toDate = "2018-12-06 12:59:29";
 		ResponseDTO<String> response = new ResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
-		List<PreRegistrationEntity> details = new ArrayList<>();
-		PreRegistrationEntity entity = new PreRegistrationEntity();
+		List<DemographicEntity> details = new ArrayList<>();
+		DemographicEntity entity = new DemographicEntity();
 		entity.setPreRegistrationId("1234");
 		details.add(entity);
 

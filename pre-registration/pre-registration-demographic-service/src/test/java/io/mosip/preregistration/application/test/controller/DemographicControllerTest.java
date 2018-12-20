@@ -28,27 +28,27 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.preregistration.application.controller.PreRegistrationController;
+import io.mosip.preregistration.application.controller.DemographicController;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
-import io.mosip.preregistration.application.service.PreRegistrationService;
+import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(PreRegistrationController.class)
-public class PreRegistrationControllerTest {
+@WebMvcTest(DemographicController.class)
+public class DemographicControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
-	private PreRegistrationService preRegistrationService;
+	private DemographicService preRegistrationService;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -70,7 +70,7 @@ public class PreRegistrationControllerTest {
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 
-		createDto.setPrId("22893647484937");
+		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
@@ -104,7 +104,7 @@ public class PreRegistrationControllerTest {
 		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
-		createDto.setPrId("22893647484937");
+		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 		Mockito.when(preRegistrationService.addPreRegistration(Mockito.any())).thenReturn(response);
@@ -204,7 +204,7 @@ public class PreRegistrationControllerTest {
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 
-		createDto.setPrId("22893647484937");
+		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
@@ -212,7 +212,7 @@ public class PreRegistrationControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationData")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", createDto.getPrId());
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", createDto.getPreRegistrationId());
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}

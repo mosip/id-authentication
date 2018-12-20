@@ -1,6 +1,5 @@
 package io.mosip.preregistration.application.controller;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,11 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
-import io.mosip.preregistration.application.service.PreRegistrationService;
+import io.mosip.preregistration.application.service.DemographicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -37,13 +37,13 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
 @CrossOrigin("*")
-public class PreRegistrationController {
+public class DemographicController {
 
 	/**
 	 * Field for {@link #ViewRegistrationService}
 	 */
 	@Autowired
-	private PreRegistrationService preRegistrationService;
+	private DemographicService preRegistrationService;
 
 	/**
 	 * 
@@ -54,25 +54,21 @@ public class PreRegistrationController {
 
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create form data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully Created"),
-			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration Entity") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
+			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
 	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> register(
-			@RequestBody(required = true) JSONObject jsonObject) {
-		ResponseDTO<CreatePreRegistrationDTO> response = preRegistrationService
-				.addPreRegistration(jsonObject.toJSONString());
-
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+			@RequestBody(required = true) DemographicRequestDTO<CreatePreRegistrationDTO> jsonObject) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
 	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully retrieved"),
-			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
+			@ApiResponse(code = 400, message = "Unable to get the demographic data") })
 	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> getApplication(
 			@RequestParam(value = "preRegId", required = true) String preRegId) {
-		ResponseDTO<CreatePreRegistrationDTO> response = preRegistrationService.getPreRegistration(preRegId);
-
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegId));
 	}
 
 	@PutMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -82,9 +78,8 @@ public class PreRegistrationController {
 	public ResponseEntity<UpdateResponseDTO<String>> updateApplicationStatus(
 			@RequestParam(value = "preRegId", required = true) String preRegId,
 			@RequestParam(value = "status", required = true) String status) {
-		UpdateResponseDTO<String> response = preRegistrationService.updatePreRegistrationStatus(preRegId, status);
-
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.updatePreRegistrationStatus(preRegId, status));
 	}
 
 	/**
@@ -98,9 +93,7 @@ public class PreRegistrationController {
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
 	public ResponseEntity<ResponseDTO<PreRegistrationViewDTO>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId) {
-		ResponseDTO<PreRegistrationViewDTO> response = preRegistrationService.getAllApplicationDetails(userId);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getAllApplicationDetails(userId));
 	}
 
 	/**
@@ -113,10 +106,8 @@ public class PreRegistrationController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch application status ") })
 	public ResponseEntity<ResponseDTO<PreRegistartionStatusDTO>> getApplicationStatus(
-			@RequestParam(value = "preId", required = true) String preId){
-		ResponseDTO<PreRegistartionStatusDTO> response = preRegistrationService.getApplicationStatus(preId);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+			@RequestParam(value = "preId", required = true) String preId) {
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getApplicationStatus(preId));
 	}
 
 	/**
@@ -130,11 +121,9 @@ public class PreRegistrationController {
 			@ApiResponse(code = 400, message = "Unable to delete individual") })
 	public ResponseEntity<ResponseDTO<DeletePreRegistartionDTO>> discardIndividual(
 			@RequestParam(value = "preId") String preId) {
-		ResponseDTO<DeletePreRegistartionDTO> response = preRegistrationService.deleteIndividual(preId);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId));
 	}
-	
+
 	/**
 	 * @param fromDate
 	 * @param toDate
@@ -142,14 +131,12 @@ public class PreRegistrationController {
 	 */
 	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully retrieved"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
-	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(
-			@RequestParam(value = "fromDate") String fromDate,
+	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(@RequestParam(value = "fromDate") String fromDate,
 			@RequestParam(value = "toDate") String toDate) {
-		ResponseDTO<String> response = preRegistrationService.getPreRegistrationByDate(fromDate,
-				toDate);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.getPreRegistrationByDate(fromDate, toDate));
 	}
 
 }
