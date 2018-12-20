@@ -47,12 +47,6 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
-
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 	
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
@@ -82,7 +76,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	String registrationId ="";
 	
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		this.consume(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT);
 	}
 

@@ -2,13 +2,11 @@ package io.mosip.registration.processor.landingzone.scanner.job.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -37,12 +35,6 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	private static final String LOGDISPLAY = "{} - {}";
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
@@ -59,7 +51,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
 			process(new MessageDTO());
 			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO());

@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -38,16 +37,10 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
 	MosipEventBus mosipEventBus = null;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -199,7 +192,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	}
 
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass());
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
 		// sendMessage(mosipEventBus, new MessageDTO())
 		process(new MessageDTO()));

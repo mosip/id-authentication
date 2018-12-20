@@ -30,7 +30,7 @@ public class ManualVerificationStage extends MosipVerticleManager {
 	
 	public void deployStage() {
 		if (this.mosipEventBus == null) {
-			this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+			this.mosipEventBus = this.getEventBus(this.getClass());
 		}
 	}
 
