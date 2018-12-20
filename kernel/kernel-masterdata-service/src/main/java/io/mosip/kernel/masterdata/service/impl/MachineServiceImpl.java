@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -175,17 +174,13 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			Machine renmachine = machineRepository.findById(Machine.class, machine.getRequest().getId());
 
-			/*
-			 * MachineHistory renmachineHistory = machineHistoryRepository
-			 * .findByIdAndEffectDTimes(machine.getRequest().getId(),renmachine.
-			 * getCreatedDateTime() );
-			 */
-
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
 				updMachine = machineRepository.update(renmachine);
 				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(MapperUtils.map(updMachine, MachineHistoryDto.class), machineHistory);
+				MapperUtils.map(updMachine,machineHistory);
+				MapperUtils.setBaseFieldValue(updMachine,machineHistory);
+				
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
 				machineHistoryRepository.create(machineHistory);
 			} else {

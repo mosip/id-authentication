@@ -52,5 +52,7 @@ public interface TitleService {
 	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto);
 	
 	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles);
+	
+	public CodeAndLanguageCodeID deleteTitle(String code, String langCode);
 
 }
