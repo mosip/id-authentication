@@ -117,6 +117,7 @@ public class MachineController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
 	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
@@ -136,6 +137,7 @@ public class MachineController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully udated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
 	public ResponseEntity<IdResponseDto> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
@@ -154,6 +156,7 @@ public class MachineController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully deleted", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
 	public ResponseEntity<IdResponseDto> deleteMachine(
 			@Valid @PathVariable("id") String id) {

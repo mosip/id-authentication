@@ -72,6 +72,7 @@ public class MachineSpecificationController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseEntity<IdResponseDto> updateMachineSpecification(
 			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
@@ -93,6 +94,7 @@ public class MachineSpecificationController {
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Specification successfully deleted", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While deleting Machine Specification any error occured") })
 	public ResponseEntity<IdResponseDto> deleteMachineSpecification(
 			@Valid @PathVariable("id") String id) {
