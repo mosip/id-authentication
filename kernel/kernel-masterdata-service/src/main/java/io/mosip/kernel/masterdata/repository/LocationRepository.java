@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 /**
  * This interface is JPA repository class which interacts with database and does the CRUD function. It is 
  * extended from {@link BaseRepository}

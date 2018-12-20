@@ -301,7 +301,7 @@ public class MasterDataServiceTest {
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
 		locationHierarchy.setHierarchyLevel(0);
-		locationHierarchy.setHierarchyName(null);
+		locationHierarchy.setHierarchyName("country");
 		locationHierarchy.setParentLocCode(null);
 		locationHierarchy.setLangCode("HIN");
 		locationHierarchy.setCreatedBy("dfs");
@@ -1168,7 +1168,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void masterDataServiceExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
-				.thenThrow(MasterDataServiceException.class);
+				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
