@@ -24,6 +24,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -126,7 +127,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		if (validateLanguageCode(registrationDto, syncResponseList)
 				&& validateStatusCode(registrationDto, syncResponseList)) {
 			if (validateRegistrationID(registrationDto, syncResponseList)) {
-				SyncResponseDto syncResponseDto = new SyncResponseDto();
+				SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 				try {
 					if (ridValidator.validateId(registrationDto.getRegistrationId())) {
 						if (registrationDto.getParentRegistrationId() != null) {
@@ -138,11 +139,12 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 						}
 					}
 				} catch (InvalidIDException e) {
-					syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-					syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-					syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
-					syncResponseDto.setMessage(e.getErrorText());
-					syncResponseList.add(syncResponseDto);
+					syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+					syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+					syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+					syncResponseFailureDto.setMessage(e.getErrorText());
+					syncResponseFailureDto.setErrorCode(e.getErrorCode());
+					syncResponseList.add(syncResponseFailureDto);
 				}
 			}
 		}
@@ -160,23 +162,24 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	private List<SyncResponseDto> validateParentRegId(SyncRegistrationDto registrationDto,
 			List<SyncResponseDto> syncResponseList) {
-		SyncResponseDto syncResponseDto = new SyncResponseDto();
+		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		try {
 			if (ridValidator.validateId(registrationDto.getParentRegistrationId())) {
 				syncResponseList = validateRegId(registrationDto, syncResponseList);
 			}
 		} catch (InvalidIDException e) {
-			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setErrorCode(e.getErrorCode());
 			if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
-				syncResponseDto.setMessage("Prid Length Must Be 29");
+				syncResponseFailureDto.setMessage("Prid Length Must Be 29");
 			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
-				syncResponseDto.setMessage("Prid Must Be Numeric Only");
+				syncResponseFailureDto.setMessage("Prid Must Be Numeric Only");
 			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
-				syncResponseDto.setMessage("Invalid Time Stamp Found in Prid");
+				syncResponseFailureDto.setMessage("Invalid Time Stamp Found in Prid");
 			}
-			syncResponseList.add(syncResponseDto);
+			syncResponseList.add(syncResponseFailureDto);
 		}
 		return syncResponseList;
 	}
@@ -208,13 +211,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} else if (SyncTypeDto.DEACTIVATE_UIN.getValue().equals(value)) {
 			return true;
 		} else {
-			SyncResponseDto syncResponseDto = new SyncResponseDto();
-			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseDto.setMessage(
-					"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN");
-			syncResponseList.add(syncResponseDto);
+			//SyncResponseDto syncResponseDto = new SyncResponseDto();
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_SYNCTYPE.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_SYNCTYPE.getCode());
+			syncResponseList.add(syncResponseFailureDto);
 			return false;
 		}
 	}
@@ -232,12 +236,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		if (registrationDto.getLangCode().length() == LANCODE_LENGTH) {
 			return true;
 		} else {
-			SyncResponseDto syncResponseDto = new SyncResponseDto();
-			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseDto.setMessage("Language Code must be of three character");
-			syncResponseList.add(syncResponseDto);
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_LANGUAGECODE.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_LANGUAGECODE.getCode());
+			syncResponseList.add(syncResponseFailureDto);
 			return false;
 		}
 	}
@@ -256,12 +261,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		if (!registrationDto.getRegistrationId().equals(registrationDto.getParentRegistrationId())) {
 			return true;
 		} else {
-			SyncResponseDto syncResponseDto = new SyncResponseDto();
-			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseDto.setMessage("RegistrationId and Parent RegistrationId cannot be same");
-			syncResponseList.add(syncResponseDto);
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGID_PARENTREGID.getCode());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGID_PARENTREGID.getMessage());
+			syncResponseList.add(syncResponseFailureDto);
 			return false;
 		}
 	}
@@ -280,12 +286,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		if (registrationDto.getRegistrationId() != null) {
 			return true;
 		} else {
-			SyncResponseDto syncResponseDto = new SyncResponseDto();
-			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseDto.setMessage("RegistrationId cannot be null");
-			syncResponseList.add(syncResponseDto);
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_EMPTY_REGISTRATIONID.getCode());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_EMPTY_REGISTRATIONID.getMessage());
+			syncResponseList.add(syncResponseFailureDto);
 			return false;
 		}
 	}

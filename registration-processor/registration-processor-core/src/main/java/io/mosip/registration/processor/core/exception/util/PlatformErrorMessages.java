@@ -29,6 +29,18 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "002",
 			"Transaction table is not accessible"),
+	
+	RPR_RGS_INVALID_SYNCTYPE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
+			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
+	
+	RPR_RGS_INVALID_LANGUAGECODE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
+			"Language Code must be of three character"),
+	
+	RPR_RGS_INVALID_REGID_PARENTREGID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "005",
+			"RegistrationId and Parent RegistrationId cannot be same"),
+	
+	RPR_RGS_EMPTY_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "006",
+			"RegistrationId cannot be null"),
 
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
