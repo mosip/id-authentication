@@ -72,7 +72,11 @@ The solution is divided into 3 parts :
 	- Return list of duplicate registrationIds.
 ![Identify Process Flow](_images/biodedupe-identify.png)
 
-
+##### Bio Dedupe Stage
+- Call BioDedupeService.insertBiometrics(RegistrationId) to insert the applicant biometric in Abis.
+- Call BioDedupeService.performDedupe(RegistrationId) method to check for duplicate records with matching biometric.
+- If the above method returns list of registration ids then save information in manual_adjudication table against the applicant regId and matching registrationIds. Send message to manual adjudication stage.
+- If performDedupe() doesnot return any registration ids that means there are no potential duplicate against the applicant. Send message to UIN Generator Stage for further processing.
 
 **Class Diagram**
 
@@ -80,4 +84,4 @@ The solution is divided into 3 parts :
 
 **Sequence Diagram**
 
-![Demo dedupe sequence diagram](_images/123456789.png)
+![Bio dedupe sequence diagram](_images/123456789.png)
