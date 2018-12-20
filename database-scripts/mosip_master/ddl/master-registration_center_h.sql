@@ -13,7 +13,7 @@ create schema if not exists master
 
 create table master.registration_center_h (
 		 
-		id character varying (36) not null ,			
+		id character varying (10) not null ,			
 		name  character varying(128) not null ,
 		
 		cntrtyp_code character varying (36) ,			-- master.reg_center_type.code

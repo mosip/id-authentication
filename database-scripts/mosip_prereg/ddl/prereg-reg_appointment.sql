@@ -13,7 +13,7 @@ create schema if not exists prereg
 	create table prereg.reg_appointment (
 		
 		id 					character varying (36) not null ,
-		regcntr_id 			character varying (36) not null ,	 -- master.registration_center
+		regcntr_id 			character varying (10) not null ,	 -- master.registration_center
 		prereg_id 			character varying(36) not null ,     -- prereg.applicant_demographic.prereg_id
 		booking_dtimes		timestamp not null,
 		appointment_date 	date,

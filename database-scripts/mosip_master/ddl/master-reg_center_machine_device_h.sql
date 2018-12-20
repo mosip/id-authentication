@@ -12,8 +12,8 @@ create schema if not exists master
 -- table section -------------------------------------------------
 create table master.reg_center_machine_device_h (
 
-	regcntr_id character varying (36) not null, -- master.registration_center.id
-	machine_id  character varying (36) not null, -- master.machine_master.id
+	regcntr_id character varying (10) not null, -- master.registration_center.id
+	machine_id  character varying (10) not null, -- master.machine_master.id
 	device_id   character varying (36) not null, -- master.device_master.id
 
 	is_active 	boolean not null,

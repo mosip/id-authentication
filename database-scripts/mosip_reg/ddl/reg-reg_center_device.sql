@@ -12,7 +12,7 @@ create schema if not exists reg
 -- table section -------------------------------------------------
 create table reg.reg_center_device (
 
-	regcntr_id 	character varying (36) not null,	-- reg.registration_center.id
+	regcntr_id 	character varying (10) not null,	-- reg.registration_center.id
 	device_id 	character varying (36) not null,  	-- reg.device_master.id
 
 	is_active 	boolean not null,

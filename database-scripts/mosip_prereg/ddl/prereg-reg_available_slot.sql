@@ -12,7 +12,7 @@ create schema if not exists prereg
 -- table section -------------------------------------------------
 	create table prereg.reg_available_slot (
 		
-		regcntr_id 			character varying (36) not null , -- master.registration_center
+		regcntr_id 			character varying (10) not null , -- master.registration_center
 		availability_date 	date not null,
 		slot_from_time 	time not null,
 		slot_to_time 	time,
