@@ -2,15 +2,11 @@ package io.mosip.registration.processor.landingzone.scanner.job.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -18,6 +14,8 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -31,11 +29,10 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Service
 public class LandingzoneScannerStage extends MosipVerticleManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandingzoneScannerStage.class);
-
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(LandingzoneScannerStage.class);
+	
 	private static final String USER = "MOSIP_SYSTEM";
-
-	private static final String LOGDISPLAY = "{} - {}";
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -96,13 +93,13 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 							isTransactionSuccessful = true;
 							description = registrationId + "moved successfully to virus scan.";
-							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(), "moved successfully to virus scan.");
+							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),"moved successfully to virus scan.");
 						}
 					} catch (TablenotAccessibleException e) {
-						LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE+e.getMessage());
 						description = "Registration status table not accessible for packet " + registrationId;
 					} catch (IOException | FileNotFoundInDestinationException e) {
-						LOGGER.error(LOGDISPLAY, VIRUS_SCAN_NOT_ACCESSIBLE, e);
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),VIRUS_SCAN_NOT_ACCESSIBLE+e.getMessage());
 						description = "Virus scan path set by the system is not accessible for packet "
 								+ registrationId;
 					} finally {
@@ -123,12 +120,12 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 				});
 			} else if (getEnrols.isEmpty()) {
-
-				LOGGER.info("There are currently no files to be moved");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),"NOFILESTOBEMOVED","There are currently no files to be moved");
 			}
 		} catch (TablenotAccessibleException e) {
-
-			LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE,e.getMessage());
+			
+	
 		}
 		return object;
 	}

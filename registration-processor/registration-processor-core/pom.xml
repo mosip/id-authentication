@@ -44,6 +44,13 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 
+		<!-- Kernel Logback Impl -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -55,7 +62,6 @@
 			<version>${vertx.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
    			<groupId>io.mosip.kernel</groupId>
    			<artifactId>kernel-templatemanager-velocity</artifactId>
@@ -71,8 +77,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-
 	</dependencies>
 
 	<properties>
