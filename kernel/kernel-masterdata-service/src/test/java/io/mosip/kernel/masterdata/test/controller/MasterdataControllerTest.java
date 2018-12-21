@@ -753,6 +753,44 @@ public class MasterdataControllerTest {
 
 	}
 	
+	/**
+	 * 
+	 * @author M1043226
+	 * @since 1.0.0
+	 *
+	 */
+	@Test
+	public void getLocationDataByHierarchyNameSuccessTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/state"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+	@Test
+	public void dataNotfoundExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
+
+	}
+
+	@Test
+	public void masterDataServiceExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
+	}
+	
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test

@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
@@ -106,7 +107,7 @@ public class LocationController {
 	}
 	
 	@DeleteMapping(value="/{locationcode}/{langcode}")
-	public PostLocationCodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value="locationcode")String locationCode,
+	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value="locationcode")String locationCode,
 			@PathVariable(value="langcode") String langCode) {
 	return locationHierarchyService.deleteLocationDetials(locationCode,langCode);	
 	}

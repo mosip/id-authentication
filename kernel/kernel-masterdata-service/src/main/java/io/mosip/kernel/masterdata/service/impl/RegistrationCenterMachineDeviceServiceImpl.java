@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -67,6 +68,17 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 		}
 
 		return responseRrgistrationCenterMachineDeviceDto;
+	}
+
+    /*
+     * (non-Javadoc)
+     * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService#deleteRegistrationCenterMachineAndDevice(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+	public RegistrationCenterMachineDeviceID deleteRegistrationCenterMachineAndDevice(String regCenterId,
+			String machineId, String deviceId) {
+		
+		return null;
 	}
 
 }

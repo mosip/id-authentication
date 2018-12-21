@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -253,36 +253,31 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode, String langCode) {
-		Optional<Location> location = null;
-
-		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
-		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
-		codeAndLanguageCodeId.setCode(locationCode);
-		codeAndLanguageCodeId.setLangCode(langCode);
+	public CodeResponseDto deleteLocationDetials(String locationCode, String langCode) {
+		List<Location> locations = null;
+        CodeResponseDto codeResponseDto=new CodeResponseDto();
 		try {
-			location = locationRepository.findById(codeAndLanguageCodeId);
-			if (location.isPresent()) {
-				Location locationEntity=MetaDataUtils.setDeleteMetaData(location.get());
-				locationRepository.update(locationEntity);
-				MapperUtils.map(location.get(), postLocationCodeResponseDto);
+			locations = locationRepository.findByCode(locationCode);
+			if (!locations.isEmpty()) {
+
+				locations.stream().map(MetaDataUtils::setDeleteMetaData)
+						.forEach(location -> locationRepository.update(location));
+
 			} else {
 				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-             
-			
+
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
 		}
-
-		return postLocationCodeResponseDto;
+         codeResponseDto.setCode(locationCode);
+		return codeResponseDto;
 	}
 
 	/**
-	 * @author M1043226 
-	 * Method creates location hierarchy data into the table based
+	 * @author M1043226 Method creates location hierarchy data into the table based
 	 *         on the request parameter sent {@inheritDoc}
 	 */
 	@Override
