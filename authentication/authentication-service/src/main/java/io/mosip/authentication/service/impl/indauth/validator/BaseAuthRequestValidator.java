@@ -110,6 +110,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** phone Validator */
 	@Autowired
 	PhoneValidatorImpl phoneValidatorImpl;
+	
+	
 
 	/** The env. */
 	@Autowired
@@ -415,13 +417,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		AuthType[] authTypes = DemoAuthType.values();
 		boolean hasMatch = false;
 		for (AuthType authType : authTypes) {
-			if (authType.isAuthTypeEnabled(authRequest)) {
+			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
 				boolean hasAuthInfo = false;
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
-					List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoFunction()
-							.apply(authRequest.getRequest().getIdentity());
-					if (identityInfos != null) {
+					List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoList(authRequest.getRequest().getIdentity());
+					if (identityInfos != null && identityInfos.size() > 0) {
 						hasAuthInfo = true;
 						hasMatch = true;
 						checkIdentityInfoValue(identityInfos, errors);
@@ -575,8 +576,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (genderList != null) {
 			for (IdentityInfoDTO identityInfoDTO : genderList) {
 				if (!GenderType.isTypePresent(identityInfoDTO.getValue())) {
@@ -598,8 +598,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkDOBType(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (dobTypeList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobTypeList) {
 				if (!DOBType.isTypePresent(identityInfoDTO.getValue())) {
@@ -621,8 +620,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkAge(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (ageList != null) {
 			for (IdentityInfoDTO identityInfoDTO : ageList) {
 				try {
@@ -645,8 +643,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
@@ -773,8 +770,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
 
-		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (emailId != null) {
 			for (IdentityInfoDTO email : emailId) {
 				boolean isValidEmail = emailValidatorImpl.validateEmail(email.getValue());
@@ -796,8 +792,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
 
-		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoFunction()
-				.apply(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoList(authRequest.getRequest().getIdentity());
 		if (phoneNumber != null) {
 			for (IdentityInfoDTO phone : phoneNumber) {
 				boolean isValidPhone = phoneValidatorImpl.validatePhone(phone.getValue());

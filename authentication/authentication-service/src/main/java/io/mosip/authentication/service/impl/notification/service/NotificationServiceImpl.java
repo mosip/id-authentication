@@ -94,8 +94,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 	/** The demo auth service. */
 	@Autowired
-	private IdInfoHelper demoHelper;
-
+	private IdInfoHelper infoHelper;
+	
 	/** The id auth service. */
 	@Autowired
 	private IdAuthService idAuthService;
@@ -119,7 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
+		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
 		String resTime = authResponseDTO.getResTime();
 
 		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
@@ -145,7 +145,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		values.put(AUTH_TYPE,
 
-				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
 						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
@@ -155,8 +155,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String phoneNumber = null;
 		String email = null;
-		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
-		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
+		phoneNumber = infoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
 			notificationType = env.getProperty("auth.notification.type");
@@ -187,7 +187,7 @@ public class NotificationServiceImpl implements NotificationService {
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
+			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
 
 			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {

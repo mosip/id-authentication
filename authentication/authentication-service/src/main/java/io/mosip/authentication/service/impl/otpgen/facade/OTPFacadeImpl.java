@@ -238,11 +238,11 @@ public class OTPFacadeImpl implements OTPFacade {
 	}
 
 	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) {
-		return demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
+		return demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 	}
 
 	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) {
-		return demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
+		return demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
 }

@@ -175,8 +175,8 @@ public class KycServiceImpl implements KycService {
 	pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
 	pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
 	pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
-	pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo));
-	pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo));
+	pdfDetails.put("name_pri", demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, filteredIdentityInfo));
+	pdfDetails.put("name_sec", demoHelper.getEntityInfoAsString(DemoMatchType.NAME_SEC, filteredIdentityInfo));
 	faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
 	return pdfDetails;
     }

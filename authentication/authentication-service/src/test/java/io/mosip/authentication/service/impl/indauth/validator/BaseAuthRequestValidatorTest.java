@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -41,8 +42,12 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
  * Test class for {@link BaseAuthRequestValidator}.
@@ -52,7 +57,8 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(IDAMappingConfig.class)
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,IdTemplateManager.class,TemplateManagerBuilderImpl.class  })
 public class BaseAuthRequestValidatorTest {
 
 	@Mock
@@ -72,6 +78,12 @@ public class BaseAuthRequestValidatorTest {
 
 	@Mock
 	PhoneValidatorImpl phoneValidatorImpl;
+	
+	@InjectMocks
+	IdInfoHelper idInfoHelper;
+	
+	@Autowired
+	private IDAMappingConfig idMappingConfig;
 
 	Errors error;
 
@@ -80,7 +92,11 @@ public class BaseAuthRequestValidatorTest {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		
 	}
 
 	@Test

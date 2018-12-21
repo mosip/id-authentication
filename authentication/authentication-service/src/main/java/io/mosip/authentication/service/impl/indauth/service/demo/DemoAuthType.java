@@ -158,7 +158,7 @@ public enum DemoAuthType implements AuthType {
 	 * isAuthTypeEnabled(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
 	@Override
-	public boolean isAuthTypeEnabled(AuthRequestDTO authReq) {
+	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
 		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
 	}
 

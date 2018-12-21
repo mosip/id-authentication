@@ -28,7 +28,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public boolean isAuthTypeEnabled(AuthRequestDTO authReq) {
+			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 				// TODO Auto-generated method stub
 				return false;
 			}
@@ -98,7 +98,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+			public  Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -110,7 +110,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<String, String> getEntityInfoMapper() {
+			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -149,7 +149,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+			public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -161,7 +161,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<String, String> getEntityInfoMapper() {
+			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 				// TODO Auto-generated method stub
 				return null;
 			}
