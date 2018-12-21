@@ -75,6 +75,13 @@ public class TitleController {
 
 	}
 
+	/**
+	 * Controller class to update title data
+	 * 
+	 * @param titles
+	 *            input DTO for updated row
+	 * @return composite primary key of updated row
+	 */
 	@PutMapping("/v1.0/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
@@ -87,6 +94,15 @@ public class TitleController {
 		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
 	}
 
+	/**
+	 * Controller class to delete title data
+	 * 
+	 * @param code
+	 *            input from user
+	 * @param langCode
+	 *            input from user
+	 * @return composite key of deleted row of data
+	 */
 	@DeleteMapping("/v1.0/title/{code}/{langcode}")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
