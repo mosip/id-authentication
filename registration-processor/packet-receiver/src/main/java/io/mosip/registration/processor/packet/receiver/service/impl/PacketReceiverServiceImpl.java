@@ -113,7 +113,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
 						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN);
-						logger.info(DirectoryPathDto.VIRUS_SCAN + "--------------------------------------------");
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
 						dto.setRegistrationType(regEntity.getRegistrationType());
