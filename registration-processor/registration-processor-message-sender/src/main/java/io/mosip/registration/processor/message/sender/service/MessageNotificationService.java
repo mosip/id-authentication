@@ -9,4 +9,6 @@ import io.mosip.registration.processor.message.sender.dto.MessageNotificationRes
 public interface MessageNotificationService {
 
 	public MessageNotificationResponse sendSmsNotification(MessageNotificationRequest mes);
+
+	public MessageNotificationResponse sendEmailNotification(MessageNotificationRequest messageNotificationRequest);
 }

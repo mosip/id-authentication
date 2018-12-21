@@ -14,8 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class MessageNotificationConfig {
 	@Bean
 	public Docket registrationStatusBean() {
-		return new Docket(DocumentationType.SWAGGER_2).groupName("Sms Notification").select()
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Message Notification").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.message.sender"))
-				.paths(PathSelectors.ant("/v0.1/registration-processor/messgae-sender/*")).build();
+				.paths(PathSelectors.ant("/v0.1/registration-processor/message-sender/*")).build();
 	}
 }	
