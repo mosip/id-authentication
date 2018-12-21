@@ -28,6 +28,6 @@ public class RegistrationCenterMachineID implements Serializable {
 	@Column(name = "regcntr_id", unique = true, nullable = false, length = 10)
 	private String regCenterId;
 
-	@Column(name = "machine_id", unique = true, nullable = false, length = 36)
+	@Column(name = "machine_id", unique = true, nullable = false, length = 10)
 	private String machineId;
 }

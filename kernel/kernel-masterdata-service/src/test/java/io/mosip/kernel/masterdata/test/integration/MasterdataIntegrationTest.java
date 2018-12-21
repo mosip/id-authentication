@@ -1894,18 +1894,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeTest() throws Exception {
-		when(genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
-				.thenReturn(genderTypes);
-		when(genderTypeRepository.update(Mockito.any())).thenReturn(genderType);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any())).thenReturn(1);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteGenderTypeNotFoundExceptionTest() throws Exception {
-		List<Gender> genders = new ArrayList<>();
-		when(genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
-				.thenReturn(genders);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
@@ -1913,9 +1909,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeDatabaseConnectionExceptionTest() throws Exception {
-		when(genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
-				.thenReturn(genderTypes);
-		when(genderTypeRepository.update(Mockito.any()))
+		
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
