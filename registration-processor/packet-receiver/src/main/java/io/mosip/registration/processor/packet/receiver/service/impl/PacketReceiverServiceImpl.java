@@ -113,14 +113,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
 						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN);
-
+						logger.info(DirectoryPathDto.VIRUS_SCAN + "--------------------------------------------");
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
 						dto.setRegistrationType(regEntity.getRegistrationType());
 						dto.setReferenceRegistrationId(null);
-						dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+						dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 						dto.setLangCode("eng");
-						dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+						dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_VIRUS_SCAN_ZONE status");
 						dto.setIsActive(true);
 						dto.setCreatedBy(USER);
 						dto.setIsDeleted(false);
