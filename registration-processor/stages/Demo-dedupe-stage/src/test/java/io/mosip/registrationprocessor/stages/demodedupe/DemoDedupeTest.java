@@ -119,7 +119,7 @@ public class DemoDedupeTest {
 		assertEquals(true, duplicates.isEmpty());
 	}
 
-	@Test
+	/*@Test
 	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException {
 
 		String regId = "1234567890";
@@ -131,7 +131,7 @@ public class DemoDedupeTest {
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 
 		assertTrue(result);
-	}
+	}*/
 
 	@Test
 	public void testDemoDedupeAutheticationFailure() throws ApisResourceAccessException, IOException {
