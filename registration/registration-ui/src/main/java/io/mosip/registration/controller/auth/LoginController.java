@@ -228,14 +228,21 @@ public class LoginController extends BaseController implements Initializable {
 		
 		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 		
+		LoginUserDTO userDTO = new LoginUserDTO();
+		userDTO.setUserId(userId.getText());
+		userDTO.setPassword(password.getText());
+
+		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
-		if(validatePwd(userId.getText(), password.getText())) {
-			offlineStatus = validateInvalidLogin(userDetail, "");
-		} else {
-			offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
+		if(!serverStatus) {
+			if(validatePwd(userId.getText(), password.getText())) {
+				offlineStatus = validateInvalidLogin(userDetail, "");
+			} else {
+				offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
+			}
 		}
 		
-		if(offlineStatus) {
+		if(serverStatus || offlineStatus) {
 			try {
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
@@ -450,6 +457,9 @@ public class LoginController extends BaseController implements Initializable {
 		getOTP.setVisible(true);
 		fingerprint.setVisible(false);
 		fingerImage.setVisible(false);
+		if(!userId.getText().isEmpty()) {
+			userId.setEditable(false);
+		}
 		getOTP.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -475,6 +485,9 @@ public class LoginController extends BaseController implements Initializable {
 		getOTP.setVisible(false);
 		fingerprint.setVisible(false);
 		fingerImage.setVisible(false);
+		if(!userId.getText().isEmpty()) {
+			userId.setEditable(false);
+		}
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -492,6 +505,9 @@ public class LoginController extends BaseController implements Initializable {
 		getOTP.setVisible(false);
 		fingerprint.setVisible(true);
 		fingerImage.setVisible(true);
+		if(!userId.getText().isEmpty()) {
+			userId.setEditable(false);
+		}
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {

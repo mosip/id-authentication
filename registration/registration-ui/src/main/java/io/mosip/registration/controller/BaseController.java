@@ -24,7 +24,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -365,10 +364,6 @@ public class BaseController {
 				byte[] bytePassword = password.getBytes();
 				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
 			}
-
-			LoginUserDTO userDTO = new LoginUserDTO();
-			userDTO.setUserId(username);
-			userDTO.setPassword(hashPassword);
 
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
