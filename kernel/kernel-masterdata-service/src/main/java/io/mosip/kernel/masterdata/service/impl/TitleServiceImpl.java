@@ -115,6 +115,13 @@ public class TitleServiceImpl implements TitleService {
 		return codeLangCodeId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#updateTitle(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles) {
 
@@ -142,6 +149,13 @@ public class TitleServiceImpl implements TitleService {
 		return titleId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#deleteTitle(java.lang.String,
+	 * java.lang.String)
+	 */
 	@Override
 	public CodeAndLanguageCodeID deleteTitle(String code, String langCode) {
 		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
