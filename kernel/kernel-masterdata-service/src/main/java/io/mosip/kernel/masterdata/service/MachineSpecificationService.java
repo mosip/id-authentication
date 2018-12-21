@@ -26,5 +26,30 @@ public interface MachineSpecificationService {
 	 *             if any error occurred while saving Machine Specification
 	 */
 	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
+	
+	/**
+	 * Abstract method to update Machine Specification Details to the Database
+	 * 
+	 * @param machineSpecification
+	 *            machineSpecification DTO
+	 * 
+	 * @return IdResponseDto Machine Specification ID which is successfully updated
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine Specification
+	 */
+	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
+	/**
+	 * Abstract method to update Machine Specification Details to the Database
+	 * 
+	 * @param machineSpecification
+	 *            machineSpecification DTO
+	 * 
+	 * @return IdResponseDto Machine Specification ID which is successfully deleted
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while deleting Machine Specification
+	 */
+	public IdResponseDto deleteMachineSpecification(String id);
 
 }

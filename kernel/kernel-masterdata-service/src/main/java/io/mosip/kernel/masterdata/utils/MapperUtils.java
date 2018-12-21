@@ -234,6 +234,46 @@ public class MapperUtils {
 
 	}
 
+	/**
+	 * Map values from {@link BaseEntity} class source object to destination or vice
+	 * versa and this method will be used to map {@link BaseEntity} values from
+	 * entity to entity. Like when both <code>source</code> and
+	 * <code>destination</code> are object which extends {@link BaseEntity}.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 */
+	public static <S, D> void setBaseFieldValue(S source, D destination) {
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
+		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
+		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
+		// object
+		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
+		String objectClassName = Object.class.getName();// object class fully qualified name
+
+		// if source is an entity
+		if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else if (destinationSupername.equals(baseEntityClassName) && !sourceSupername.equals(baseEntityClassName)) {
+			// if destination is an entity
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else {
+			if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
+				Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+				Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+				mapFieldValues(source, destination, sourceFields, destinationFields);
+			}
+		}
+
+	}
+
 	/*
 	 * #############Private method used for mapping################################
 	 */
@@ -331,38 +371,6 @@ public class MapperUtils {
 				isSuperMapped = true;
 			}
 		}
-	}
-
-	/**
-	 * Map values from {@link BaseEntity} class source object to destination or vice
-	 * versa.
-	 * 
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destination
-	 *            where values is going to be mapped
-	 */
-	private static <S, D> void setBaseFieldValue(S source, D destination) {
-
-		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
-		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
-																						// object
-		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
-
-		// if source is an entity
-		if (sourceSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-			return;
-		}
-		// if destination is an entity
-		if (destinationSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-		}
-
 	}
 
 	/**

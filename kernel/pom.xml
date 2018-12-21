@@ -82,6 +82,14 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+		
+		<!--QR Code-->
+		<google.zxing.version>3.3.3</google.zxing.version>
+		<!-- itext core version-->
+		<itextcore.version>7.1.0</itextcore.version>
+		<!-- itext html2pdf version -->
+		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
+		
 		<!-- Freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>
 		<!-- Velocity -->

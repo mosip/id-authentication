@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -192,16 +193,31 @@ public class MasterdataControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		biometricTypeSetup();
+
 		applicationSetup();
+
 		biometricAttributeSetup();
+
+		// TODO DeviceControllerTest
+		// TODO DeviceSpecificationControllerTest
+
 		documentCategorySetup();
+
 		documentTypeSetup();
+
 		idTypeSetup();
+
 		locationSetup();
+
+		// TODO MachineDetailControllerTest
+		// TODO MachineHistoryControllerTest
+
 		registrationCenterController();
 		blackListedWordSetUp();
 		templateSetup();
+
 		templateFileFormatSetup();
+
 	}
 
 	private void templateSetup() {
@@ -267,7 +283,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
-		locationDto.setLanguageCode("HIN");
+		locationDto.setLangCode("HIN");
 
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
@@ -276,7 +292,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
-		locationDto.setLanguageCode("KAN");
+		locationDto.setLangCode("KAN");
 		locationDto.setIsActive(true);
 
 		locationDto.setIsActive(true);
@@ -412,7 +428,7 @@ public class MasterdataControllerTest {
 
 	}
 
-	// -------------------------------BiometricTypeControllerTest--------------------------//
+	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
@@ -709,6 +725,44 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+	}
+
+	/**
+	 * 
+	 * @author M1043226
+	 * @since 1.0.0
+	 *
+	 */
+	@Test
+	public void getLocationDataByHierarchyNameSuccessTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/state"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+	@Test
+	public void dataNotfoundExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
+
+	}
+
+	@Test
+	public void masterDataServiceExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
 	}
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------

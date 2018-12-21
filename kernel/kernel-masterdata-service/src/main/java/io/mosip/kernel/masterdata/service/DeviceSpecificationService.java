@@ -65,4 +65,30 @@ public interface DeviceSpecificationService {
 	 */
 	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 
+	/**
+	 * Function to update Device Specification
+	 * 
+	 * @param deviceSpecification
+	 *            input from user DeviceSpecification DTO
+	 * 
+	 * @return IdResponseDto Device Specification ID which is successfully updated
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating device Specification
+	 */
+
+	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
+
+	/**
+	 * Function to delete Device Specification
+	 * 
+	 * @param id
+	 *            input from user
+	 * 
+	 * @return IdResponseDto Device Specification ID which is successfully deleted
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving device Specification
+	 */
+
+	public IdResponseDto deleteDeviceSpecification(String id);
+
 }

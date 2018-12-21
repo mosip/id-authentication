@@ -115,4 +115,68 @@ public class TitleServiceImpl implements TitleService {
 		return codeLangCodeId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#updateTitle(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles) {
+
+		TitleDto titleDto = titles.getRequest();
+
+		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(titleDto, titleId);
+		try {
+
+			Title title = titleRepository.findById(Title.class, titleId);
+
+			if (title != null) {
+				MetaDataUtils.setUpdateMetaData(titleDto, title, false);
+				titleRepository.update(title);
+			} else {
+				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return titleId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#deleteTitle(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public CodeAndLanguageCodeID deleteTitle(String code, String langCode) {
+		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
+		titleId.setCode(code);
+		titleId.setLangCode(langCode);
+		try {
+			Title title = titleRepository.findById(Title.class, titleId);
+			if (title != null) {
+				MetaDataUtils.setDeleteMetaData(title);
+				titleRepository.update(title);
+			} else {
+				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage());
+		}
+
+		return titleId;
+	}
+
 }

@@ -11,11 +11,14 @@ import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -28,11 +31,18 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @since 1.0.0
  *
  */
+/**
+ * @author M1046571
+ *
+ */
 @Service
 public class DeviceSpecificationServiceImpl implements DeviceSpecificationService {
 
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
+
+	@Autowired
+	DeviceRepository deviceRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -115,6 +125,76 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(renDeviceSpecification, idResponseDto);
+
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#
+	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			DeviceSpecification entity = deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId());
+			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
+				deviceSpecificationRepository.update(entity);
+				idResponseDto.setId(entity.getId());
+			} else {
+				throw new DataNotFoundException(
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceSpecificationService#
+	 * deleteDeviceSpecification(java.lang.String)
+	 */
+	@Override
+	public IdResponseDto deleteDeviceSpecification(String id) {
+		IdResponseDto idResponseDto = new IdResponseDto();
+		try {
+			DeviceSpecification deviceSpecification = deviceSpecificationRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+
+			if (deviceSpecification != null) {
+				List<Device> renDeviceList = deviceRepository
+						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
+				if (renDeviceList.isEmpty()) {
+					MetaDataUtils.setDeleteMetaData(deviceSpecification);
+					deviceSpecificationRepository.update(deviceSpecification);
+					idResponseDto.setId(deviceSpecification.getId());
+				} else {
+					throw new DataNotFoundException(
+							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
+				}
+
+			} else {
+				throw new DataNotFoundException(
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage() + ": "
+							+ ExceptionUtils.parseException(e));
+		}
 
 		return idResponseDto;
 	}

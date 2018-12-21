@@ -1,7 +1,12 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -12,19 +17,23 @@ import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
+import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
- * This class have methods to fetch list of valid document category and to
- * create document category based on list provided.
+ * This class have methods to fetch list of valid document category, create
+ * document category based on provided data,update document category based on
+ * data provided and delete document category based on id provided.
  * 
  * @author Neha
  * @author Ritesh Sinha
@@ -36,6 +45,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
+
+	@Autowired
+	private ValidDocumentRepository validDocumentRepository;
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
@@ -159,6 +171,81 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		MapperUtils.map(documentCategory, codeLangCodeId);
 
 		return codeLangCodeId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category) {
+
+		DocumentCategoryDto categoryDto = category.getRequest();
+
+		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(categoryDto, documentCategoryId);
+		try {
+
+			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
+					documentCategoryId);
+
+			if (documentCategory != null) {
+				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
+				documentCategoryRepository.update(documentCategory);
+			} else {
+				throw new DataNotFoundException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorCode(),
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		return documentCategoryId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * deleteDocumentCategory(java.lang.String)
+	 */
+	@Override
+	@Transactional
+	public CodeResponseDto deleteDocumentCategory(String code) {
+
+		try {
+			List<ValidDocument> validDocument = validDocumentRepository.findByDocCategoryCode(code);
+
+			if (!validDocument.isEmpty()) {
+				throw new MasterDataServiceException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+			}
+
+			int updatedRows = documentCategoryRepository.deleteDocumentCategory(LocalDateTime.now(ZoneId.of("UTC")),
+					code);
+			if (updatedRows < 1) {
+
+				throw new DataNotFoundException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorCode(),
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorMessage());
+		}
+		CodeResponseDto responseDto = new CodeResponseDto();
+		responseDto.setCode(code);
+		return responseDto;
+
 	}
 
 }

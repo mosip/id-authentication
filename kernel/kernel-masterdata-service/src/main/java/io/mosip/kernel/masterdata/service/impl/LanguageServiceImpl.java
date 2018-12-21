@@ -94,7 +94,7 @@ public class LanguageServiceImpl implements LanguageService {
 		LanguageDto languageDto = requestDto.getRequest();
 		CodeResponseDto code = new CodeResponseDto();
 		try {
-			Language language = languageRepository.findById(Language.class, languageDto.getCode());
+			Language language = languageRepository.findLanguageById(languageDto.getCode());
 			if (!EmptyCheckUtils.isNullEmpty(language)) {
 				MetaDataUtils.setUpdateMetaData(languageDto, language, false);
 				languageRepository.update(language);
@@ -122,10 +122,10 @@ public class LanguageServiceImpl implements LanguageService {
 	public CodeResponseDto deleteLanguage(String code) {
 		CodeResponseDto response = new CodeResponseDto();
 		try {
-			Language language = languageRepository.findById(Language.class, code);
+			Language language = languageRepository.findLanguageById(code);
 			if (!EmptyCheckUtils.isNullEmpty(language)) {
 				MetaDataUtils.setDeleteMetaData(language);
-				languageRepository.delete(language);
+				languageRepository.update(language);
 				response.setCode(language.getCode());
 			} else {
 				throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
