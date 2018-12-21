@@ -53,9 +53,9 @@
 								</ImageView>
 							</graphic>
 							<items>
-								<MenuItem mnemonicParsing="false" text="Approve Registration" />
+								<MenuItem mnemonicParsing="false" onAction="#eodProcess" text="EOD Process" />
 								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" text="Upload Packet" />
+								<MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="Upload Packet" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" text="Virus Scan" />
 								<SeparatorMenuItem />

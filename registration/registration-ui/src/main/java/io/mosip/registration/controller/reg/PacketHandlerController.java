@@ -47,6 +47,9 @@ public class PacketHandlerController extends BaseController {
 	@FXML
 	private AnchorPane uploadRoot;
 
+	@FXML
+	private AnchorPane optionRoot;
+	
 	@Autowired
 	private AckReceiptController ackReceiptController;
 
@@ -112,7 +115,7 @@ public class PacketHandlerController extends BaseController {
 	/**
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
-	public void approvePacket(ActionEvent event) {
+	public void approvePacket() {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
@@ -122,9 +125,7 @@ public class PacketHandlerController extends BaseController {
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
+				VBox vBox = (VBox) (optionRoot.getParent());
 				ObservableList<Node> nodes = vBox.getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
@@ -143,7 +144,7 @@ public class PacketHandlerController extends BaseController {
 	/**
 	 * Validating screen authorization and Uploading packets to FTP server
 	 */
-	public void uploadPacket(ActionEvent event) {
+	public void uploadPacket() {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
@@ -153,9 +154,7 @@ public class PacketHandlerController extends BaseController {
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
+				VBox vBox = (VBox) (optionRoot.getParent());
 				ObservableList<Node> nodes = vBox.getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
@@ -169,4 +168,29 @@ public class PacketHandlerController extends BaseController {
 		}
 	}
 
+	public void updateUIN(ActionEvent event) {
+		try {
+			Parent root= BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+
+			LOGGER.debug("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "updating UIN");
+
+			if (!validateScreenAuthorization(root.getId())) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+			} else {
+				Button button = (Button) event.getSource();
+				AnchorPane anchorPane = (AnchorPane) button.getParent();
+				VBox vBox = (VBox) (anchorPane.getParent());
+				ObservableList<Node> nodes = vBox.getChildren();
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
+				nodes.add(root);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
+		}
+	}
 }

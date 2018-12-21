@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.updateuin.UINUpdateController">
+	<children>
+      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ UIN Update">
+         <font>
+            <Font size="10.0" />
+         </font></Text>
+		<Label layoutX="461.0" layoutY="19.0" text="UIN Update" />
+      <Label layoutX="32.0" layoutY="64.0" text="UIN">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Label>
+      <TextField layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="UIN">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </TextField>
+      <Label layoutX="32.0" layoutY="120.0" text="Select to update">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <CheckBox layoutX="374.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Fingerprint">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="216.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Iris">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="32.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Exception">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="335.0" layoutY="166.0" mnemonicParsing="false" text="Age / DOB">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="216.0" layoutY="166.0" mnemonicParsing="false" text="Name">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="483.0" layoutY="166.0" mnemonicParsing="false" text="Gender">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="580.0" layoutY="232.0" mnemonicParsing="false" text="CNIE/PIN/Residence Card Number">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="32.0" layoutY="295.0" mnemonicParsing="false" text="Parent/Guardian details">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="618.0" layoutY="166.0" mnemonicParsing="false" text="Address">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="764.0" layoutY="166.0" mnemonicParsing="false" text="Contact Details">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <Label layoutX="32.0" layoutY="166.0" text="Adult">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="137.0" layoutY="166.0" text="Child">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Button layoutX="858.0" layoutY="447.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="78.0" text="Submit">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.0" text="" />
+      <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.1" text="" />
+	</children>
+</AnchorPane>

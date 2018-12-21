@@ -79,6 +79,8 @@ public class HeaderController extends BaseController {
 	@Autowired
 	MasterSyncService masterSyncService;
 
+	@Autowired
+	PacketHandlerController packetHandlerController;
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -289,5 +291,12 @@ public class HeaderController extends BaseController {
 		}
 
 	}
+	
+	public void eodProcess() {
+		packetHandlerController.approvePacket();
+	}
 
+	public void uploadPacketToServer() {
+		packetHandlerController.uploadPacket();
+	}
 }
