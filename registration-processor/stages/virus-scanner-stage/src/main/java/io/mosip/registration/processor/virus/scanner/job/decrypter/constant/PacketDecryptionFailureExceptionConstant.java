@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.virus.scanner.job.decrypter.constant;
 
-public class PacketDecryptionFailureExceptionConstant {
+public enum PacketDecryptionFailureExceptionConstant {
+	MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE("RPR-PKD-004", "The Decryption for the Packet has failed");
 
 	public final String errorCode;
 	public final String errorMessage;
