@@ -28,7 +28,7 @@ public class PacketReceiverStage extends MosipVerticleManager {
 	}
 
 	public void sendMessage(MessageDTO messageDTO) {
-		this.send(this.mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, messageDTO);
+		this.send(this.mosipEventBus, MessageBusAddress.PACKET_RECEIVER_OUT, messageDTO);
 	}
 
 	@Override
