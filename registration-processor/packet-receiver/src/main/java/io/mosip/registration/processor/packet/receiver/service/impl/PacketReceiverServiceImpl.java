@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -23,6 +24,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
+import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -72,6 +74,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	PacketReceiverStage packetReceiverStage;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,6 +86,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 */
 	@Override
 	public Boolean storePacket(MultipartFile file) {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setInternalError(false);
+		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
 
 		if (file.getOriginalFilename() != null && !file.isEmpty()) {
@@ -104,7 +112,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
-						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
+						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN);
 
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
@@ -141,6 +149,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 			}
+		}
+		if (storageFlag) {
+
+			messageDTO.setIsValid(true);
+			packetReceiverStage.sendMessage(messageDTO);
+
 		}
 		return storageFlag;
 	}
