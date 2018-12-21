@@ -28,11 +28,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Registration controller
+ * This class provides the
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
+ 
 @RestController
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
@@ -47,8 +52,7 @@ public class DemographicController {
 
 	/**
 	 * 
-	 * @param list
-	 *            of application forms
+	 * @param list of application forms
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
@@ -58,10 +62,13 @@ public class DemographicController {
 			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
 	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> register(
 			@RequestBody(required = true) DemographicRequestDTO<CreatePreRegistrationDTO> jsonObject) {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.addPreRegistration(jsonObject));
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
+	/**
+	 * @param preRegId
+	 * @return
+	 */
 	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
@@ -71,6 +78,11 @@ public class DemographicController {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegId));
 	}
 
+	/**
+	 * @param preRegId
+	 * @param status
+	 * @return
+	 */
 	@PutMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update Pre-Registartion status")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Status successfully updated"),
@@ -97,7 +109,7 @@ public class DemographicController {
 	}
 
 	/**
-	 * Post api to fetch the status of a application
+	 * Post API to fetch the status of a application
 	 * 
 	 * @return status of application
 	 */
@@ -111,8 +123,8 @@ public class DemographicController {
 	}
 
 	/**
-	 * Delete api to delete the Individual applicant and documents associated with
-	 * it
+	 * Delete API to delete the Individual applicant and documents associated with
+	 * the PreId
 	 * 
 	 */
 	@DeleteMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)

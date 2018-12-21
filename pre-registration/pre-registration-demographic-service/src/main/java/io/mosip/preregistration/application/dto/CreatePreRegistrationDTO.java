@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author M1046129
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,12 +37,12 @@ public class CreatePreRegistrationDTO implements Serializable {
 
 	/** The update date time. */
 	private Date updatedDateTime;
-	
+
 	private String statusCode;
-	
+
 	private String langCode;
 	/**
-	 * 
+	 * Demographic details
 	 */
 	private JSONObject demographicDetails;
 

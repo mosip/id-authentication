@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.service.util;
 
 import java.io.UnsupportedEncodingException;
@@ -32,9 +36,20 @@ import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
 
+/**
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ */
 @Component
 public class DemographicServiceUtil {
 
+	/**
+	 * This setter method is used to assign the initial demographic entity values to
+	 * the createDTO
+	 * 
+	 * @param demographicEntity
+	 * @return createDTO with the values
+	 */
 	public CreatePreRegistrationDTO setterForCreateDTO(DemographicEntity demographicEntity) {
 		JSONParser jsonParser = new JSONParser();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
@@ -55,6 +70,15 @@ public class DemographicServiceUtil {
 		return createDto;
 	}
 
+	/**
+	 * This method is used to set the values from the request to the
+	 * demographicEntity entity fields.
+	 * 
+	 * @param demographicRequest
+	 * @param requestId
+	 * @param entityType
+	 * @return demographic entity with values
+	 */
 	public DemographicEntity prepareDemographicEntity(CreatePreRegistrationDTO demographicRequest, String requestId,
 			String entityType) {
 		DemographicEntity demographicEntity = new DemographicEntity();
@@ -82,7 +106,7 @@ public class DemographicServiceUtil {
 			} else if (entityType.equals("update")) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& !isNull(demographicRequest.getUpdatedBy())
-						&& !isNull(demographicEntity.getUpdateDateTime())) {
+						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 					demographicEntity
 							.setCreateDateTime(new Timestamp(demographicRequest.getCreatedDateTime().getTime()));
@@ -101,6 +125,13 @@ public class DemographicServiceUtil {
 		return demographicEntity;
 	}
 
+	/**
+	 * This method is used to add the initial request values into a map for input
+	 * validations.
+	 * 
+	 * @param demographicRequestDTO
+	 * @return a map for request input validation
+	 */
 	public Map<String, String> prepareRequestParamMap(
 			DemographicRequestDTO<CreatePreRegistrationDTO> demographicRequestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
@@ -112,6 +143,14 @@ public class DemographicServiceUtil {
 		return inputValidation;
 	}
 
+	/**
+	 * This method is used to set the JSON values to RequestCodes constants.
+	 * 
+	 * @param demographicData
+	 * @param identityKey
+	 * @return values from JSON
+	 * @throws ParseException
+	 */
 	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData, StandardCharsets.UTF_8));
@@ -121,6 +160,12 @@ public class DemographicServiceUtil {
 		return valueObj.get(RequestCodes.value.toString()).toString();
 	}
 
+	/**
+	 * This method is used as Null checker for different input keys.
+	 *
+	 * @param key
+	 * @return true if key not null and return false if key is null.
+	 */
 	public boolean isNull(Object key) {
 		if (key instanceof String) {
 			if (key.equals(""))
@@ -136,42 +181,54 @@ public class DemographicServiceUtil {
 
 	}
 
+	/**
+	 * This method is used to validate Pending_Appointment & Booked status codes.
+	 * 
+	 * @param statusCode
+	 * @return true or false
+	 */
 	public boolean checkStatusForDeletion(String statusCode) {
-		if (!statusCode.equals(StatusCodes.Pending_Appointment.name())
-				|| !statusCode.equals(StatusCodes.Booked.name())) {
+		if (statusCode.equals(StatusCodes.Pending_Appointment.name()) || statusCode.equals(StatusCodes.Booked.name())) {
+			return true;
+		} else {
 			throw new OperationNotAllowedException(ErrorCodes.PRG_PAM_APP_003.name(),
 					ErrorMessages.DELETE_OPERATION_NOT_ALLOWED.name());
 		}
-
-		return true;
 	}
-	
-    public Map<String,Timestamp> dateSetter(Map<String,String> dateMap, String format){
-    	Map<String,Timestamp> timeStampMap = new HashMap<>();
-    	try {
-    	Date fromDate = DateUtils.parse(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
-		Date toDate = null;
-		if (dateMap.get("ToDate") == null || isNull(dateMap.get("ToDate"))) {
-			toDate = fromDate;
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(toDate);
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			cal.set(Calendar.SECOND, 59);
-			toDate = cal.getTime();
-		} else {
-			toDate = DateUtils.parse(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
-		}
-		timeStampMap.put("FromDate", new Timestamp(fromDate.getTime()));
-		timeStampMap.put("ToDate", new Timestamp(toDate.getTime()));
-		
-    	}catch (java.text.ParseException e) {
-    		throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+
+	/**
+	 * This method is used for parsing & formatting the fromDate and toDate.
+	 * 
+	 * @param dateMap
+	 * @param format
+	 * @return map with formatted fromDate and toDate
+	 */
+	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
+		Map<String, Timestamp> timeStampMap = new HashMap<>();
+		try {
+			Date fromDate = DateUtils.parse(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
+			Date toDate = null;
+			if (dateMap.get("ToDate") == null || isNull(dateMap.get("ToDate"))) {
+				toDate = fromDate;
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(toDate);
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				toDate = cal.getTime();
+			} else {
+				toDate = DateUtils.parse(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
+			}
+			timeStampMap.put("FromDate", new Timestamp(fromDate.getTime()));
+			timeStampMap.put("ToDate", new Timestamp(toDate.getTime()));
+
+		} catch (java.text.ParseException e) {
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
 					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), e.getCause());
 		} catch (UnsupportedEncodingException e) {
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
 		}
-    	return timeStampMap;
-    }
+		return timeStampMap;
+	}
 }

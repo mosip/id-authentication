@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 
+/**
+ * @author M1037717
+ *
+ */
 @Component
 public class DemographicDAO {
 

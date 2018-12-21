@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.repository;
 
 import java.sql.Timestamp;
@@ -15,28 +19,33 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 /**
  * Registration Repository
  * 
- * @author M1037462
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ * 
  */
 @Repository("registrationRepository")
 @Transactional
 public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
-	public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
-	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where cr_appuser_id=:userId";
+	// public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
+//	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where cr_appuser_id=:userId";
 
-	@Query("SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
+//	@Query("SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
+	@Query
 	public List<DemographicEntity> findByuserId(@Param("userId") String userId);
 
-	@Query(value = countRec, nativeQuery = true)
+//	@Query(value = countRec, nativeQuery = true)
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
-	@Query("SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
+//	@Query("SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
 	public int deleteByPreRegistrationId(String preId);
-	
-	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start,Timestamp end);
 
+	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 
 }

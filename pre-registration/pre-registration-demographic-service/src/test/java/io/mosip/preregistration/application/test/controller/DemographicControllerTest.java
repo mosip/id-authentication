@@ -26,8 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.preregistration.application.controller.DemographicController;
 import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
@@ -40,6 +38,10 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+/**
+ * @author M1046129
+ *
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(DemographicController.class)
 public class DemographicControllerTest {
@@ -54,6 +56,11 @@ public class DemographicControllerTest {
 
 	private Object jsonObject = null;
 
+	/**
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -66,7 +73,7 @@ public class DemographicControllerTest {
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 
@@ -86,8 +93,6 @@ public class DemographicControllerTest {
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
-		ObjectMapper mapperObj = new ObjectMapper();
-
 		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService)
 				.addPreRegistration(Mockito.any());
 
@@ -101,7 +106,7 @@ public class DemographicControllerTest {
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 		createDto.setPreRegistrationId("22893647484937");
@@ -121,7 +126,7 @@ public class DemographicControllerTest {
 	public void getAllApplicationTest() throws Exception {
 
 		String userId = "9988905333";
-		ResponseDTO<PreRegistrationViewDTO> response = new ResponseDTO();
+		ResponseDTO<PreRegistrationViewDTO> response = new ResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreId("1234");
@@ -161,7 +166,7 @@ public class DemographicControllerTest {
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
-		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO();
+		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO<>();
 		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
@@ -197,10 +202,9 @@ public class DemographicControllerTest {
 	/**
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO();
+		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
 		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
 		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
 
@@ -208,7 +212,7 @@ public class DemographicControllerTest {
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
-		Mockito.when(preRegistrationService.getPreRegistration("1234")).thenReturn(response);
+		Mockito.when(preRegistrationService.getDemographicData("1234")).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationData")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")

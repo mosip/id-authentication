@@ -8,17 +8,23 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Registration entity
  * 
- * @author M1037717
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 @Component
@@ -27,7 +33,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@NamedQueries({
+		@NamedQuery(name = "DemographicEntity.findByuserId", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId"),
+		@NamedQuery(name = "DemographicEntity.noOfGroupIds", query = "SELECT DISTINCT groupId  FROM DemographicEntity where crAppuserId=:userId"),
+		@NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId"), })
 public class DemographicEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

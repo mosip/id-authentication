@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception.util;
 
 import org.json.simple.parser.ParseException;
@@ -23,7 +27,19 @@ import io.mosip.preregistration.application.exception.system.SystemUnsupportedEn
 import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
+/**
+ * This class is used to handle all the exceptions that occur while creating
+ * the pre-registration
+ * 
+ * @author M1046462
+ *
+ */
 public class DemographicExceptionCatcher {
+	/**
+	 * Method to handle the respective exceptions
+	 * 
+	 * @param ex
+	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
