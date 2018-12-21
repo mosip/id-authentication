@@ -122,7 +122,7 @@ public class MachineController {
 	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
 	}
-	
+
 	/**
 	 * Post API to update a row of Machine data
 	 * 
@@ -142,6 +142,7 @@ public class MachineController {
 	public ResponseEntity<IdResponseDto> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
 	}
+
 	/**
 	 * Post API to deleted a row of Machine data
 	 * 
@@ -158,11 +159,9 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
-	public ResponseEntity<IdResponseDto> deleteMachine(
-			@Valid @PathVariable("id") String id) {
+	public ResponseEntity<IdResponseDto> deleteMachine(@Valid @PathVariable("id") String id) {
 
-		return new ResponseEntity<>(machineService.deleteMachine(id),
-				HttpStatus.OK);
+		return new ResponseEntity<>(machineService.deleteMachine(id), HttpStatus.OK);
 	}
 
 }

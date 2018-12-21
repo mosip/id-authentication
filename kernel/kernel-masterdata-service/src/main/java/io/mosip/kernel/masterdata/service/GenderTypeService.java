@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -61,14 +62,12 @@ public interface GenderTypeService {
 	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender);
 
 	/**
-	 * Method to delete Gender Type based on data provided.
+	 * Method to delete Gender Type based on code provided.
 	 * 
 	 * @param code
 	 *            the gender code.
-	 * @param langCode
-	 *            the language code.
-	 * @return {@link CodeAndLanguageCodeID}
+	 * @return {@link CodeResponseDto}
 	 */
-	public CodeAndLanguageCodeID deleteGenderType(String code, String langCode);
+	public CodeResponseDto deleteGenderType(String code);
 
 }
