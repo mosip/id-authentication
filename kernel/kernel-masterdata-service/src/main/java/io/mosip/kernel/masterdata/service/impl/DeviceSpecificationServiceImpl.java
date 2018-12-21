@@ -135,9 +135,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository.findById(DeviceSpecification.class,
-					deviceSpecification.getId());
+					deviceSpecification.getRequest().getId());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
-				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);
+				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
 				deviceSpecificationRepository.update(entity);
 				idResponseDto.setId(entity.getId());
 			} else {

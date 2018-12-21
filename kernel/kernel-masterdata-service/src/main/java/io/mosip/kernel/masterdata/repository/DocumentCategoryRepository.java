@@ -48,4 +48,13 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
 
+	/**
+	 * Get Document categories by code provided.
+	 * 
+	 * @param code
+	 *            the document categories code.
+	 * @return list of {@link DocumentCategory}.
+	 */
+	@Query("FROM DocumentCategory WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<DocumentCategory> findByCode(String code);
 }

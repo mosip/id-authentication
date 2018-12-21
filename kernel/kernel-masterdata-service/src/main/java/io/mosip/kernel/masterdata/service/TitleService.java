@@ -51,8 +51,32 @@ public interface TitleService {
 	 */
 	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto);
 
+	/**
+	 * Service class to update title data
+	 * 
+	 * @param titles
+	 *            input from user
+	 * @return composite primary key of updated row of data
+	 * @throws DataNotFoundException
+	 *             when data not found
+	 * @throws MasterDataServiceException
+	 *             when data not updated successfully
+	 */
 	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles);
 
+	/**
+	 * Service class to delete title data
+	 * 
+	 * @param code
+	 *            input from user
+	 * @param langCode
+	 *            input from user
+	 * @return composite key of deleted row of data
+	 * @throws DataNotFoundException
+	 *             when data not found
+	 * @throws MasterDataServiceException
+	 *             when data not deleted successfully
+	 */
 	public CodeAndLanguageCodeID deleteTitle(String code, String langCode);
 
 }
