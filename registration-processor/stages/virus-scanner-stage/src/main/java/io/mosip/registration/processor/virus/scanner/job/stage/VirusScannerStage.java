@@ -90,7 +90,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
-		this.consume(mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN);
+		this.consume(mosipEventBus, MessageBusAddress.PACKET_RECEIVER_OUT);
 	}
 
 	@Override
@@ -122,12 +122,11 @@ public class VirusScannerStage extends MosipVerticleManager {
 			try {
 				isClean = virusScannerService.scanFile(filepath);
 				if (isClean) {
-					decryptedData = decryptor.decrypt(encryptedPacket, filepath);
+					decryptedData = decryptor.decrypt(encryptedPacket, entry.getRegistrationId());
 
 					try {
 
-						fileManager.put(getFileName(entry.getRegistrationId()), decryptedData,
-								DirectoryPathDto.VIRUS_SCAN);
+						fileManager.put(entry.getRegistrationId(), decryptedData, DirectoryPathDto.VIRUS_SCAN);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

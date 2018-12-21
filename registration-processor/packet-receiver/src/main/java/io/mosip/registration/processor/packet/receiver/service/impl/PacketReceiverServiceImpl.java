@@ -55,6 +55,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
 
+	@Value("${registration.processor.VIRUS_SCAN_ENC}")
+	private String vir_enc;
+
 	/** The max file size. */
 	@Value("${registration.processor.max.file.size}")
 	private int maxFileSize;
@@ -112,7 +115,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
-						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN);
+						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN_ENC);
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
 						dto.setRegistrationType(regEntity.getRegistrationType());
