@@ -283,8 +283,6 @@ public class RegistrationConstants {
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
-	public static final String REJECTION_BEAN_NAME = "rejectionController";
-	public static final String ONHOLD_BEAN_NAME = "onHoldController";
 	public static final String REGISTRATIONID = "registrationID";
 	public static final String STATUSCODE = "statusCode";
 	public static final String STATUSCOMMENT = "statusComment";
@@ -292,6 +290,8 @@ public class RegistrationConstants {
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
 	public static final String EMPTY = "";
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
+	public static final String APPROVED = "Approved";
+	public static final String REJECTED = "Rejected";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";

@@ -139,8 +139,7 @@ public class RejectionController extends BaseController implements Initializable
 
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
-					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-					RegistrationClientStatusCode.REJECTED.getCode().toLowerCase());
+					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),RegistrationConstants.REJECTED);
 			regRejectionTable.getItems().set(regRejectionTable.getSelectionModel().getSelectedIndex(), approvalDTO);
 
 			LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

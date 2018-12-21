@@ -43,7 +43,7 @@
       </ToggleButton>
       <Label layoutX="385.0" layoutY="272.0" prefHeight="20.0" prefWidth="425.0" text=" after all the applications have been Approved/Rejected">
          <font>
-            <Font size="12.0" />
+            <Font size="10.0" />
          </font></Label>
    </children>
 </AnchorPane>

@@ -43,7 +43,7 @@
             </Button>
             <Label layoutX="398.0" layoutY="292.0" prefHeight="20.0" prefWidth="332.0" text="after all the applications have been Actioned.">
                <font>
-                  <Font size="12.0" />
+                  <Font size="10.0" />
                </font></Label>
          </children>
       </AnchorPane>

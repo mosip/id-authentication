@@ -25,7 +25,6 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
-import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
 import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -292,8 +291,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					table.getSelectionModel().getSelectedItem().getId(),
-					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-					RegistrationClientStatusCode.APPROVED.getCode().toLowerCase());
+					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),RegistrationConstants.APPROVED);
 			table.getItems().set(table.getSelectionModel().getSelectedIndex(), approvalDTO);
 
 		} else {

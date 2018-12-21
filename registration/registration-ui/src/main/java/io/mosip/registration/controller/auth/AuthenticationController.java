@@ -421,17 +421,19 @@ public class AuthenticationController extends BaseController {
 				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-				if (isSupervisor) {
-					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-							.get(RegistrationConstants.REGISTRATION_DATA);
-					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
-							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-					SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
-				} else {
-					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-							.get(RegistrationConstants.REGISTRATION_DATA);
-					registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
-							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+				if (!isEODAuthentication) {
+					if (isSupervisor) {
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+								.get(RegistrationConstants.REGISTRATION_DATA);
+						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
+								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+						SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+					} else {
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+								.get(RegistrationConstants.REGISTRATION_DATA);
+						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+					}
 				}
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
@@ -483,7 +485,7 @@ public class AuthenticationController extends BaseController {
 	 */
 	public void init(BaseController parentControllerObj, String authType, Stage stage) {
 		isSupervisor = true;
-		isEODAuthentication=true;
+		isEODAuthentication = true;
 		primaryStage = stage;
 		getAuthenticationModes(authType);
 		baseController = parentControllerObj;

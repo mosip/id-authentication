@@ -18,7 +18,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -26,12 +25,10 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.validator.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressIndicator;
@@ -99,9 +96,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Autowired
 	private AuthenticationService validator;
 	
-	@Autowired
-	private AuthenticationController authenticationController;
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		/*try {

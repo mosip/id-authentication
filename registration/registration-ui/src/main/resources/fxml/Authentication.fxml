@@ -19,15 +19,15 @@
                         <Image url="@../images/fingerprint.jpg" />
                      </image>
                   </ImageView>
-                  <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
+                  <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="RegbuttonStyle" text="Scan" />
                   <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" prefHeight="39.0" prefWidth="308.0" promptText="Username" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="otpBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
                <children>
-                  <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
+                  <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="Get OTP" />
                   <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="Registration Officer Verification" />
-                  <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
+                  <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="RegbuttonStyle" text="Submit" />
                   <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
                   <TextField fx:id="otp" layoutX="106.0" layoutY="139.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
                   <Label fx:id="otpValidity" layoutX="106.0" layoutY="248.0">
@@ -37,9 +37,9 @@
                   </Label>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
+            <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0">
                <children>
-                  <Button layoutX="190.0" layoutY="214.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
+                  <Button layoutX="200.0" layoutY="206.0" mnemonicParsing="false" onAction="#validatePwd" styleClass="RegbuttonStyle" text="Submit" />
                   <TextField fx:id="username" layoutX="106.0" layoutY="95.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
                   <Label fx:id="passwdLabel" layoutX="126.0" layoutY="47.0" text="Registration Officer Verification" />
                   <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
