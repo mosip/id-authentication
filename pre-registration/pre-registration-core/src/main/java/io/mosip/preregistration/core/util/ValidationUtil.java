@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+import org.h2.engine.SysProperties;
+
 import io.mosip.preregistration.core.constants.RequestCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
@@ -31,34 +32,62 @@ public class ValidationUtil {
 		return matcher.matches();
 	}
 
-	public static InvalidRequestParameterException requestValidator(Map<String, String> requestMap,
+	public static boolean requestValidator(Map<String, String> requestMap,
 			Map<String, String> requiredRequestMap) {
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.ID)
 					&& (requestMap.get(RequestCodes.ID) == null || !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
-				return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_REQUEST_ID.toString());
 			} else if (key.equals(RequestCodes.VER) && (requestMap.get(RequestCodes.VER) == null
 					|| !requestMap.get(RequestCodes.VER).equals(requiredRequestMap.get(RequestCodes.VER)))) {
-				return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.toString(),
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.toString(),
 						ErrorMessages.INVALID_REQUEST_VERSION.toString());
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
-				return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
 						ErrorMessages.INVALID_REQUEST_DATETIME.toString());
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
-					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS").parse(requestMap.get(RequestCodes.REQ_TIME));
+					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(requestMap.get(RequestCodes.REQ_TIME));
+					System.out.println("date in core: "+new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(requestMap.get(RequestCodes.REQ_TIME)));
 				} catch (Exception ex) {
-					return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
 							ErrorMessages.INVALID_REQUEST_DATETIME.toString());
 				}
 			} else if (key.equals(RequestCodes.REQUEST)
 					&& (requestMap.get(RequestCodes.REQUEST) == null || requestMap.get(RequestCodes.REQUEST).equals(""))) {
-				return new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.toString(),
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.toString(),
 						ErrorMessages.INVALID_REQUEST_BODY.toString());
 			}
 		}
-		return null;
+		return true;
+	}
+	
+	public static boolean requstParamValidator(Map<String,String> requestMap) {
+		for (String key : requestMap.keySet()) {
+			if (key.equals(RequestCodes.USER_ID)
+					&& (requestMap.get(RequestCodes.USER_ID) == null || requestMap.get(RequestCodes.USER_ID).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_REQUEST_ID.toString());
+			}else if (key.equals(RequestCodes.PRE_REGISTRATION_ID)
+					&& (requestMap.get(RequestCodes.PRE_REGISTRATION_ID) == null || requestMap.get(RequestCodes.PRE_REGISTRATION_ID).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_PRE_REGISTRATION_ID.toString());
+			}else if (key.equals(RequestCodes.STATUS_CODE)
+					&& (requestMap.get(RequestCodes.STATUS_CODE) == null || requestMap.get(RequestCodes.STATUS_CODE).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_STATUS_CODE.toString());
+			}else if (key.equals(RequestCodes.FROM_DATE)
+					&& (requestMap.get(RequestCodes.FROM_DATE) == null || requestMap.get(RequestCodes.FROM_DATE).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_DATE.toString());
+			}else if (key.equals(RequestCodes.TO_DATE)
+					&& (requestMap.get(RequestCodes.TO_DATE) == null || requestMap.get(RequestCodes.TO_DATE).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_DATE.toString());
+			}  
+		}
+		return true;
 	}
 
 }

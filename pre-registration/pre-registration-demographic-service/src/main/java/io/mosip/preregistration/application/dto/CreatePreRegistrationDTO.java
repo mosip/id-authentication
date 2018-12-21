@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author M1046129
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,22 +24,25 @@ public class CreatePreRegistrationDTO implements Serializable {
 	private static final long serialVersionUID = 6705845720255847210L;
 
 	/** The pre-registration-Id. */
-	private String prId;
+	private String preRegistrationId;
 
 	/** The created by. */
 	private String createdBy;
 
 	/** The create date time. */
-	private Date createDateTime;
+	private Date createdDateTime;
 
 	/** The updated by. */
 	private String updatedBy;
 
 	/** The update date time. */
-	private Date updateDateTime;
+	private Date updatedDateTime;
 
+	private String statusCode;
+
+	private String langCode;
 	/**
-	 * 
+	 * Demographic details
 	 */
 	private JSONObject demographicDetails;
 

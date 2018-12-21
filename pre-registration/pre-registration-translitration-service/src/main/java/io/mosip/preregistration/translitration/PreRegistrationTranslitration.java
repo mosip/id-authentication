@@ -1,22 +1,17 @@
-package io.mosip.preregistration.booking;
+package io.mosip.preregistration.translitration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * @author M1046129
+ * @author M1043008
  *
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.*")
-public class PreRegistrationBooking {
-	/**
-	 * Method to start the Booking API service
-	 * 
-	 * @param args
-	 */
+public class PreRegistrationTranslitration {
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationBooking.class, args);
+		SpringApplication.run(PreRegistrationTranslitration.class, args);
 	}
 }

@@ -66,8 +66,16 @@ public class DemoDedupeTest {
 
 		List<String> fingers = new ArrayList<>();
 		fingers.add("LEFTTHUMB");
+		fingers.add("LEFTINDEX");
+		fingers.add("LEFTMIDDLE");
+		fingers.add("LEFTLITTLE");
+		fingers.add("LEFTRING");
+		fingers.add("RIGHTTHUMB");
+		fingers.add("RIGHTINDEX");
+		fingers.add("RIGHTMIDDLE");
+		fingers.add("RIGHTLITTLE");
 		fingers.add("RIGHTRING");
-
+		
 		List<String> iris = new ArrayList<>();
 		iris.add("LEFTEYE");
 		iris.add("RIGHTEYE");
@@ -119,7 +127,7 @@ public class DemoDedupeTest {
 		assertEquals(true, duplicates.isEmpty());
 	}
 
-	/*@Test
+	@Test
 	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException {
 
 		String regId = "1234567890";
@@ -131,7 +139,7 @@ public class DemoDedupeTest {
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 
 		assertTrue(result);
-	}*/
+	}
 
 	@Test
 	public void testDemoDedupeAutheticationFailure() throws ApisResourceAccessException, IOException {

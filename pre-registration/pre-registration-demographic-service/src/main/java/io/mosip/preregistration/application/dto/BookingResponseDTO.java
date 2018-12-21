@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author M1046129
+ *
+ * @param <T>
+ */
 @Getter
 @Setter
 @NoArgsConstructor
