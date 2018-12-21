@@ -135,7 +135,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 					// sendToDFS(file, entry);
 
 				} else {
-					sendToRetry(entry);
+					// fileManager.cleanUpFile(srcFolderLoc, destFolderLoc, fileName);
 				}
 			} catch (VirusScanFailedException e) {
 				LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
