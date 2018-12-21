@@ -9,9 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum RegistrationCenterDeviceErrorCode {
 
-	REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION("KER-MSD-XX",
-			"Error while mapping Registration center and device"), REGISTRATION_CENTER_DEVICE_CONSTRAINT_VOILATION_EXCEPTION(
-					"KER-MSD-XX", "Registration center id or Device id is not correct");
+	REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION("KER-MSD-075",
+			"Error occurred while inserting a mapping of Device and Center");
 
 	private final String errorCode;
 	private final String errorMessage;
