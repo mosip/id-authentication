@@ -58,7 +58,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	@Query("FROM Machine d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false)")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
 
 }
