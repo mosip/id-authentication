@@ -53,6 +53,8 @@ public class PacketHandlerController extends BaseController {
 	@Autowired
 	private AckReceiptController ackReceiptController;
 
+	@Autowired
+	private HomeController homeController;
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
@@ -125,8 +127,7 @@ public class PacketHandlerController extends BaseController {
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
-				VBox vBox = (VBox) (optionRoot.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
+				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
 					nodes.get(index).setManaged(false);
@@ -154,8 +155,8 @@ public class PacketHandlerController extends BaseController {
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
 			} else {
-				VBox vBox = (VBox) (optionRoot.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
+		
+				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
 					nodes.get(index).setManaged(false);

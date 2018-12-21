@@ -61,4 +61,18 @@ public class HomeController extends BaseController implements Initializable {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
+
+	/**
+	 * @return the mainBox
+	 */
+	public VBox getMainBox() {
+		return mainBox;
+	}
+
+	/**
+	 * @param mainBox the mainBox to set
+	 */
+	public void setMainBox(VBox mainBox) {
+		this.mainBox = mainBox;
+	}
 }
