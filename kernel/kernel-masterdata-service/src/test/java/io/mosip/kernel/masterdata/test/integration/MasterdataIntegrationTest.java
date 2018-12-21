@@ -902,18 +902,16 @@ public class MasterdataIntegrationTest {
 		holiday = new Holiday();
 
 		holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG","Diwali"));
 		holiday.setId(1);
-		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayID("KAH", date, "ENG"));
+		holiday2.setHolidayId(new HolidayID("KAH", date, "ENG","Durga Puja"));
 		holiday2.setId(1);
-		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
 		holiday2.setCreatedDateTime(specificDate);
 		holiday2.setHolidayDesc("Diwali");
@@ -1222,7 +1220,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getHolidayAllHolidaysSuccessTest() throws Exception {
-		when(holidayRepository.findAll(Holiday.class)).thenReturn(holidays);
+		when(holidayRepository.findAllNonDeletedHoliday()).thenReturn(holidays);
 		mockMvc.perform(get("/v1.0/holidays")).andExpect(status().isOk());
 	}
 
@@ -1234,7 +1232,7 @@ public class MasterdataIntegrationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAllHolidaysHolidayFetchExceptionTest() throws Exception {
-		when(holidayRepository.findAll(Mockito.any(Class.class))).thenThrow(DataRetrievalFailureException.class);
+		when(holidayRepository.findAllNonDeletedHoliday()).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/holidays")).andExpect(status().isInternalServerError());
 	}
 
