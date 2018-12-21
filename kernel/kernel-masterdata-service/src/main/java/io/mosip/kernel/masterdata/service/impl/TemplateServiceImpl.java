@@ -141,11 +141,14 @@ public class TemplateServiceImpl implements TemplateService {
 		return idResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#updateTemplates(io.mosip.kernel.masterdata.dto.TemplateDto)
+	 */
 	@Override
 	public IdResponseDto updateTemplates(TemplateDto template) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			Template entity = templateRepository.findById(Template.class, template.getId());
+			Template entity = templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(template.getId());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(template, entity, false);
 				templateRepository.update(entity);
@@ -162,11 +165,14 @@ public class TemplateServiceImpl implements TemplateService {
 		return idResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#deleteTemplates(java.lang.String)
+	 */
 	@Override
 	public IdResponseDto deleteTemplates(String id) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			Template entity = templateRepository.findById(Template.class, id);
+			Template entity = templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(id);
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setDeleteMetaData(entity);
 				templateRepository.update(entity);
