@@ -72,7 +72,10 @@ export class DashBoardComponent implements OnInit {
           for (let index = 0; index < applicants['response'].length; index++) {
             const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
             let appointmentDateTime = '-';
-            if (bookingRegistrationDTO !== null && applicants['response'][index]['statusCode'].toLowerCase() === 'booked') {
+            if (
+              bookingRegistrationDTO !== null &&
+              applicants['response'][index]['statusCode'].toLowerCase() === 'booked'
+            ) {
               const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
               const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
               const toTime = applicants['response'][index].bookingRegistrationDTO.time_slot_to;
@@ -331,8 +334,8 @@ export class DashBoardComponent implements OnInit {
       ],
       [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
       [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
-      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)],
-      [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
+      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)]
+      // [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
     );
 
     return identity;

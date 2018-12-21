@@ -1,204 +1,216 @@
-<div class="wrapper">
-  <div>
-    <mat-accordion class="expansion">
-      <div *ngFor="let applicant of numbers; let i = index">
-        <mat-expansion-panel
-          [disabled]="!isDisabled[i]"
-          [expanded]="step === applicant"
-          (opened)="setStep(applicant)"
-          hideToggle
-        >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Demographic Details {{ applicant + 1 }}
-              <img
-                *ngIf="applicant === 0"
-                src="assets/primary.png"
-                alt="primary"
-                class="img"
-                height="20"
-                width="60"
-              />
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+<div>
+  <div class="wrapper">
+    <div class="user">
+      <header>Demographic Details</header>
+      <hr />
+      <div class="user__container">
+        <form [formGroup]="userForm" class="user__form">
+          <h6>Language - English</h6>
 
-          <form [formGroup]="userForm">
-            <div class="user-container">
-              <div>
-                <mat-form-field>
-                  <input matInput #fullName maxlength="50" placeholder="{{demo.fullName}}" formControlName="fullName" />
-                  <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
-                </mat-form-field>
+          <mat-form-field>
+            <input matInput #fullName maxlength="50" placeholder="{{ demo.fullName }}" formControlName="fullName" />
+            <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
+            <mat-error *ngIf="!fullName.invalid">Full Name is required</mat-error>
+          </mat-form-field>
 
-                <span>
-                  <mat-form-field class="ageOrDobPref">
-                    <mat-select
-                      [ngClass]="{ highlight: !checked }"
-                      [(value)]="ageOrDobPref"
-                      placeholder="{{demo.dateOfBirth}}/{{demo.age}}"
-                      [(value)]="selected"
-                      (selectionChange)="onDOBChange($event.value)"
-                    >
-                      <mat-option value="age">Age</mat-option>
-                      <mat-option value="dob">DOB</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-
-                  <div *ngIf="showCalender; then: dob; else: age"></div>
-                </span>
-
-                <ng-template #dob>
-                  <span>
-                    <mat-form-field>
-                      <input
-                        (dateInput)="addDOB($event)"
-                        matInput
-                        [matDatepicker]="picker"
-                        placeholder="{{demo.dateOfBirth}}"
-                        [max]="maxDate"
-                        [min]="minDate"
-                      />
-                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                  </span>
-                </ng-template>
-
-                <ng-template #age>
-                  <span *ngIf="ageOrDobPref !== ''">
-                    <mat-form-field class="age">
-                      <input matInput type="text" placeholder="{{demo.age}}" formControlName="age" />
-                    </mat-form-field>
-                  </span>
-                </ng-template>
-                <div class="gender">
-                  <mat-button-toggle-group
-                    formControlName="gender"
-                    (change)="onGenderChange($event)"
-                    appearance="legacy"
-                    name="fontStyle"
-                    aria-label="Font Style"
-                  >
-                    <mat-button-toggle value="male">Male</mat-button-toggle>
-                    <mat-button-toggle value="female">Female</mat-button-toggle>
-                  </mat-button-toggle-group>
-                </div>
-
-                <mat-form-field>
-                  <input
-                    matInput
-                    #addressLine1
-                    maxlength="50"
-                    placeholder="{{demo.addressLine1}}"
-                    formControlName="addressLine1"
-                  />
-                  <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
-                </mat-form-field>
-                <mat-form-field>
-                  <input
-                    matInput
-                    #addressLine2
-                    maxlength="50"
-                    placeholder="{{demo.addressLine2}}"
-                    formControlName="addressLine2"
-                  />
-                  <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
-                </mat-form-field>
-                <mat-form-field>
-                  <input
-                    matInput
-                    #addressLine3
-                    maxlength="50"
-                    placeholder="{{demo.addressLine3}}"
-                    formControlName="addressLine3"
-                  />
-                  <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{demo.region}}" formControlName="region">
-                    <mat-option value="option">Option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{demo.province}}" formControlName="province">
-                    <mat-option value="option">Option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{demo.city}}" formControlName="city">
-                    <mat-option value="option">Option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select
-                    placeholder="{{demo.localAdministrativeAuthority}}"
-                    formControlName="localAdministrativeAuthority"
-                  >
-                    <mat-option value="option">Option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <input
-                    matInput
-                    type="text"
-                    #postalCode
-                    maxlength="5"
-                    placeholder="{{demo.postalCode}}"
-                    formControlName="postalCode"
-                  />
-                  <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <input
-                    matInput
-                    #mobilePhone
-                    type="text"
-                    maxlength="9"
-                    placeholder="{{demo.mobileNumber}}"
-                    formControlName="mobilePhone"
-                  />
-                  <mat-hint align="end">{{ mobilePhone.value.length }} / 9</mat-hint>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <input #email maxlength="50" matInput placeholder="{{demo.emailId}}" formControlName="email" />
-                  <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <input
-                    #pin
-                    maxlength="30"
-                    matInput
-                    type="text"
-                    placeholder="{{demo.CNEOrPINNumber}}"
-                    formControlName="pin"
-                  />
-                  <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
-                </mat-form-field>
-              </div>
+          <div class="user__age-or-date">
+            <div class="user__date">
+              <mat-form-field>
+                <input matInput placeholder="DD" #dd formControlName="date" (focusout)="onDOBChange()" />
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="MM" #mm formControlName="month" (focusout)="onDOBChange()" />
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="YYYY" #yyyy formControlName="year" (focusout)="onDOBChange()" />
+              </mat-form-field>
             </div>
-          </form>
 
-          <mat-action-row>
-            <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
-              <div *ngIf="dataUploadComplete">Next</div>
-              <div *ngIf="!dataUploadComplete"><mat-progress-bar mode="indeterminate"></mat-progress-bar></div>
-            </button>
-          </mat-action-row>
-        </mat-expansion-panel>
+            <div class="user__pref">OR</div>
+            <div class="user__age">
+              <mat-form-field>
+                <input matInput tabindex="-1" formControlName="age" placeholder="Age" #age (focusout)="onAgeChange()" />
+              </mat-form-field>
+              <span>Years</span>
+            </div>
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__dob__error"
+            *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
+          >
+            Age should be less than 150
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__dob__error"
+            *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
+          >
+            Enter 2 numeric digits for date
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__dob__error"
+            *ngIf="!userForm.get('month').valid && userForm.get('month').touched"
+          >
+            Enter 2 numeric digits for month
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__dob__error"
+            *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
+          >
+            Enter 4 numeric digits for years
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__dob__error"
+            *ngIf="userForm.get('dob').touched && userForm.get('dob').errors['incorrect']"
+          >
+            Enter Valid DOB
+          </div>
+
+          <div class="user__gender">
+            Gender
+            <mat-button-toggle-group
+              formControlName="gender"
+              (change)="onGenderChange($event)"
+              appearance="legacy"
+              name="fontStyle"
+              aria-label="Font Style"
+            >
+              <mat-button-toggle value="male">Male</mat-button-toggle>
+              <mat-button-toggle value="female">Female</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <mat-form-field>
+            <input
+              matInput
+              #addressLine1
+              maxlength="50"
+              placeholder="{{ demo.addressLine1 }}"
+              formControlName="addressLine1"
+            />
+            <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
+            <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              #addressLine2
+              maxlength="50"
+              placeholder="{{ demo.addressLine2 }}"
+              formControlName="addressLine2"
+            />
+            <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              #addressLine3
+              maxlength="50"
+              placeholder="{{ demo.addressLine3 }}"
+              formControlName="addressLine3"
+            />
+            <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
+          </mat-form-field>
+
+          <div class="user__dropdown">
+            <mat-form-field>
+              <mat-select placeholder="{{ demo.region }}" formControlName="region" #region>
+                <mat-option value="option">Option</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!region.invalid">Please select region</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="user__dropdown">
+            <mat-form-field>
+              <mat-select placeholder="{{ demo.province }}" formControlName="province" #province>
+                <mat-option value="option">Option</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!province.invalid">Please select province</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <mat-select placeholder="{{ demo.city }}" formControlName="city" #city>
+                <mat-option value="option">Option</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!city.invalid">Please select city</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <mat-select
+                placeholder="{{ demo.localAdministrativeAuthority }}"
+                formControlName="localAdministrativeAuthority"
+                #authority
+              >
+                <mat-option value="option">Option</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!authority.invalid">Please select localAdministrativeAuthority</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <input
+                matInput
+                type="text"
+                #postalCode
+                maxlength="5"
+                placeholder="{{ demo.postalCode }}"
+                formControlName="postalCode"
+                #postalCode
+              />
+              <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
+              <mat-error *ngIf="!postalCode.invalid">Please enter valid postalCode</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <input
+                matInput
+                #mobilePhone
+                type="text"
+                maxlength="9"
+                placeholder="{{ demo.mobileNumber }}"
+                formControlName="mobilePhone"
+              />
+              <mat-hint align="end">{{ mobilePhone.value.length }} / 9</mat-hint>
+              <mat-error *ngIf="!mobilePhone.invalid">Please enter valid mobile number</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <input #email maxlength="50" matInput placeholder="{{ demo.emailId }}" formControlName="email" />
+              <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
+              <mat-error *ngIf="!email.invalid">Please enter valid email id</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="user__dropdown">
+            <mat-form-field>
+              <input
+                #pin
+                maxlength="30"
+                matInput
+                type="text"
+                placeholder="{{ demo.CNEOrPINNumber }}"
+                formControlName="pin"
+              />
+              <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
+              <mat-error *ngIf="!pin.invalid">Please enter valid pin</mat-error>
+            </mat-form-field>
+          </div>
+        </form>
       </div>
-    </mat-accordion>
+      <div class="user__container">
+        Transliterated placeholder
+        <!-- <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner> -->
+      </div>
+    </div>
   </div>
-  <div>
-    Transliterated placeholder
-    <!-- <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner> -->
+  <div class="user__buttons">
+    <button class="user__btn" type="button" mat-button color="accent" (click)="onBack()">Back</button>
+    <button class="user__btn__continue" type="button" mat-button [disabled]="!dataUploadComplete" (click)="onSubmit()">
+      <div *ngIf="dataUploadComplete">Continue</div>
+      <div *ngIf="!dataUploadComplete"><mat-progress-bar mode="indeterminate"></mat-progress-bar></div>
+    </button>
   </div>
 </div>

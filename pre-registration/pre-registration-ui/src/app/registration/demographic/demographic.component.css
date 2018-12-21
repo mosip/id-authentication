@@ -1,58 +1,183 @@
-.expansion .mat-expansion-panel-header-title,
-.expansion .mat-expansion-panel-header-description {
-  flex-basis: 0;
+/* .highlight {
+  border: 1px solid red;
+} */
+
+/* mat-form-field {
+  margin-top: 7px;
+} */
+
+/* STARTING FRESH */
+
+.wrapper {
+  background-color: lightgray;
+  z-index: -1;
+  /* position: relative; */
+  padding: 10px;
+  padding-bottom: 0;
 }
 
-.expansion .mat-expansion-panel-header-description {
-  justify-content: space-between;
+.user {
+  z-index: 1;
+  margin: auto;
+  padding: 3rem;
+  padding-top: 1.2rem;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  width: 100%;
+  display: inline-block;
+}
+
+.user header {
+  margin: 0;
+  font-weight: bold;
+  color: pink;
+}
+
+.user hr {
+  border-top: 1.5px solid red;
+  position: relative;
+  left: -29px;
+  margin-top: 0.5rem;
+  width: calc(100% + 58px);
+}
+
+.user__container {
+  font-size: 1rem;
+  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
+  padding: 2rem 0 3.5rem 1.5rem;
+  width: 48%;
+  margin-left: 2%;
+  float: left;
+}
+
+.user__container h6 {
+  font-weight: bold;
+}
+
+.user__form {
+  width: 90%;
+  margin: auto;
+}
+
+.user__form mat-form-field {
+  width: 95%;
+  padding: 3px;
+}
+
+.user__age-or-date {
+  display: flex;
+  width: 95%;
   align-items: center;
 }
 
-.user-container {
-  /* display: flex;
-  flex-direction: column; */
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-}
-/* 
-.user-container > * {
-  width: 100%;
-} */
-
-.wrapper {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1em;
+.user__age-or-date > div {
+  width: 33.3%;
 }
 
-.mat-form-field {
-  width: 80%;
+.user__date {
+  display: flex;
 }
 
-.highlight {
+.user__form .user__date mat-form-field {
+  width: 32%;
+}
+
+.user__pref {
+  text-align: center;
+}
+
+.user__age {
+  text-align: end;
+}
+
+.user__age mat-form-field {
+  width: 32%;
+}
+
+.user__dob__error {
+  left: 3px;
+  position: relative;
+  top: -15px;
+  font-size: 75%;
+}
+
+.user__gender {
+  font-weight: bold;
+}
+
+.user__gender mat-button-toggle-group {
+  box-shadow: none;
+}
+
+.user__gender mat-button-toggle {
+  margin: 10px 10px 10px 10px;
+  color: lightblue;
+  padding: 0 10px;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.user__dropdown {
+  width: 47%;
+  margin-right: 3%;
+  display: inline-block;
+}
+
+.user__buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.user__btn {
+  padding: 5px 53px;
   border: 1px solid red;
+  margin: 5px;
 }
 
-mat-form-field {
-  margin-top: 7px;
+.user__btn__continue {
+  padding: 5px 40px;
+  color: white;
+  background-color: red;
+  margin: 5px;
+  float: right;
 }
 
-.age {
-  width: 3em;
-  margin-left: 15%;
+.user__btn__continue:disabled {
+  border: 1px solid grey;
+  color: black;
+  background-color: grey;
 }
 
-.gender {
-  text-align: left;
-  width: 100%;
+@media (max-width: 550px) {
+  .user__container {
+    width: 100%;
+    float: none;
+  }
 }
 
-.img {
-  margin: 2px 0 0 10px;
+@media (max-width: 754px) {
+  .user__age-or-date .user__date {
+    width: 100px;
+  }
+
+  .user__age-or-date .user__pref {
+    text-align: center;
+  }
+
+  .user__age-or-date .user__age {
+    width: 78px;
+    text-align: center;
+  }
 }
 
-.ageOrDobPref {
-  width: 150px;
+@media (max-width: 767px) {
+  .user__gender mat-button-toggle {
+    margin: 6px 4px 1px 1px;
+    padding: 0 1px;
+  }
+  user__age-or-date .user__age {
+    width: 78px;
+    text-align: end;
+  }
 }
