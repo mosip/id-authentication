@@ -1,7 +1,12 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,10 +19,12 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
+import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -38,6 +45,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
+
+	@Autowired
+	private ValidDocumentRepository validDocumentRepository;
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
@@ -206,17 +216,22 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * deleteDocumentCategory(java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public CodeResponseDto deleteDocumentCategory(String code) {
 
 		try {
+			List<ValidDocument> validDocument = validDocumentRepository.findByDocCategoryCode(code);
 
-			final List<DocumentCategory> documentCategoryList = documentCategoryRepository.findByCode(code);
+			if (!validDocument.isEmpty()) {
+				throw new MasterDataServiceException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+			}
 
-			if (!documentCategoryList.isEmpty()) {
-				documentCategoryList.stream().map(MetaDataUtils::setDeleteMetaData)
-						.forEach(documentCategoryRepository::update);
+			int updatedRows = documentCategoryRepository.deleteDocumentCategory(LocalDateTime.now(ZoneId.of("UTC")),
+					code);
+			if (updatedRows < 1) {
 
-			} else {
 				throw new DataNotFoundException(
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());

@@ -1,9 +1,9 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,13 +161,12 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#deleteGenderType(java.
 	 * lang.String, java.lang.String)
 	 */
+	@Transactional
 	@Override
 	public CodeResponseDto deleteGenderType(String code) {
 		try {
-			List<Gender> genderType = genderTypeRepository.findGenderByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
-			if (!genderType.isEmpty()) {
-				genderType.stream().map(MetaDataUtils::setDeleteMetaData).forEach(genderTypeRepository::update);
-			} else {
+			int updatedRows = genderTypeRepository.deleteGenderType(code, LocalDateTime.now());
+			if (updatedRows < 1) {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
