@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -169,16 +168,16 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto deleteDeviceSpecification(String id) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification renDeviceSpecification = deviceSpecificationRepository
+			DeviceSpecification deviceSpecification = deviceSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 
-			if (renDeviceSpecification != null) {
+			if (deviceSpecification != null) {
 				List<Device> renDeviceList = deviceRepository
-						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(renDeviceSpecification.getId());
+						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
 				if (renDeviceList.isEmpty()) {
-					MetaDataUtils.setDeleteMetaData(renDeviceSpecification);
-					deviceSpecificationRepository.update(renDeviceSpecification);
-					idResponseDto.setId(renDeviceSpecification.getId());
+					MetaDataUtils.setDeleteMetaData(deviceSpecification);
+					deviceSpecificationRepository.update(deviceSpecification);
+					idResponseDto.setId(deviceSpecification.getId());
 				} else {
 					throw new DataNotFoundException(
 							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
