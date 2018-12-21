@@ -86,6 +86,10 @@
 		
 		<!--QR Code-->
 		<google.zxing.version>3.3.3</google.zxing.version>
+		<!-- itext core version-->
+		<itextcore.version>7.1.0</itextcore.version>
+		<!-- itext html2pdf version -->
+		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
