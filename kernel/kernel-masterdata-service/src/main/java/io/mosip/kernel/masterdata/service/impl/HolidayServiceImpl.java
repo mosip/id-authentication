@@ -1,20 +1,28 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.HolidayIDDto;
+import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
+import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -33,6 +41,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private HolidayRepository holidayRepository;
+	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName   WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 
 	/*
 	 * (non-Javadoc)
@@ -45,7 +54,7 @@ public class HolidayServiceImpl implements HolidayService {
 		List<HolidayDto> holidayDto = null;
 		List<Holiday> holidays = null;
 		try {
-			holidays = holidayRepository.findAll(Holiday.class);
+			holidays = holidayRepository.findAllNonDeletedHoliday();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
@@ -54,8 +63,8 @@ public class HolidayServiceImpl implements HolidayService {
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayDto = MapperUtils.mapHolidays(holidays);
 		} else {
-			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 		}
 
 		holidayResponseDto = new HolidayResponseDto();
@@ -84,8 +93,8 @@ public class HolidayServiceImpl implements HolidayService {
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayDto = MapperUtils.mapHolidays(holidays);
 		} else {
-			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 		}
 
 		holidayResponseDto = new HolidayResponseDto();
@@ -114,8 +123,8 @@ public class HolidayServiceImpl implements HolidayService {
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayList = MapperUtils.mapHolidays(holidays);
 		} else {
-			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 		}
 		holidayResponseDto = new HolidayResponseDto();
 		holidayResponseDto.setHolidays(holidayList);
@@ -130,7 +139,7 @@ public class HolidayServiceImpl implements HolidayService {
 	 * .masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayID saveHoliday(RequestDto<HolidayDto> holidayDto) {
+	public HolidayIDDto saveHoliday(RequestDto<HolidayDto> holidayDto) {
 		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
 		Holiday holiday;
 		try {
@@ -139,10 +148,9 @@ public class HolidayServiceImpl implements HolidayService {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		HolidayID holidayId = new HolidayID();
+		HolidayIDDto holidayId = new HolidayIDDto();
 		MapperUtils.map(holiday, holidayId);
 		return holidayId;
-
 	}
 
 	/*
@@ -153,23 +161,28 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayID updateHoliday(RequestDto<HolidayDto> holidayDto) {
-		HolidayID id = null;
-		Holiday holiday = null;
-		List<Holiday> holidays = null;
-		HolidayDto dto = holidayDto.getRequest();
+	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto) {
+		HolidayIDDto idDto = null;
+		HolidayUpdateDto dto = holidayDto.getRequest();
+		Map<String, Object> params = bindDtoToMap(dto);
 		try {
-			holidays = holidayRepository.findHolidayByIdAndHolidayIdLangCode(dto.getId(), dto.getLangCode());
-			if (!holidays.isEmpty()) {
-				holiday = holidays.get(0);
-				MetaDataUtils.setUpdateMetaData(dto, holiday, false);
-				id = holidayRepository.update(holiday).getHolidayId();
-			}
+			/*int noOfRowAffected =
+			 holidayRepository.createNamedQueryUpdateOrDelete("Holiday.updateHoliday",Holiday.class,
+			 params);
+			 */
+			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);
+			if (noOfRowAffected != 0)
+				idDto = mapToHolidayIdDto(dto);
+			else
+				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
+
 		} catch (DataAccessException | DataAccessLayerException e) {
+			e.printStackTrace();
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage());
 		}
-		return id;
+		return idDto;
 	}
 
 	/*
@@ -180,7 +193,60 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.entity.id.HolidayID)
 	 */
 	@Override
-	public HolidayID deleteHoliday(RequestDto<HolidayID> holidayID) {
-		return null;
+	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> request) {
+		HolidayIdDeleteDto idDto = request.getRequest();
+		try {
+			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),
+					idDto.getHolidayName(), idDto.getHolidayDate(), idDto.getLocationCode());
+			if (affectedRows == 0)
+				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
+
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage());
+		}
+		return idDto;
+	}
+
+	private Map<String, Object> bindDtoToMap(HolidayUpdateDto dto) {
+		Map<String, Object> params = new HashMap<>();
+		if (dto.getNewHolidayName() != null && !dto.getNewHolidayName().isEmpty())
+			params.put("newHolidayName", dto.getNewHolidayName());
+		else
+			params.put("newHolidayName", dto.getCurrentHolidayName());
+		if (dto.getNewHolidayDate() != null)
+			params.put("newHolidayDate", dto.getNewHolidayDate());
+		else
+			params.put("newHolidayDate", dto.getCurrentHolidayDate());
+		if (dto.getNewHolidayDesc() != null && !dto.getNewHolidayDesc().isEmpty())
+			params.put("holidayDesc", dto.getNewHolidayDesc());
+		else
+			params.put("holidayDesc", dto.getCurrentHolidayDesc());
+
+		params.put("isActive", dto.getIsActive());
+		params.put("holidayDate", dto.getCurrentHolidayDate());
+		params.put("holidayName", dto.getCurrentHolidayName());
+		params.put("updatedBy", SecurityContextHolder.getContext().getAuthentication().getName());
+		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
+		params.put("locationCode", dto.getLocationCode());
+		params.put("langCode", dto.getLangCode());
+		return params;
+	}
+
+	private HolidayIDDto mapToHolidayIdDto(HolidayUpdateDto dto) {
+		HolidayIDDto idDto;
+		idDto = new HolidayIDDto();
+		if (dto.getNewHolidayName() != null)
+			idDto.setHolidayName(dto.getNewHolidayName());
+		else
+			idDto.setHolidayName(dto.getCurrentHolidayName());
+		if (dto.getNewHolidayDate() != null)
+			idDto.setHolidayDate(dto.getNewHolidayDate());
+		else
+			idDto.setHolidayDate(dto.getCurrentHolidayDate());
+		idDto.setLocationCode(dto.getLocationCode());
+		idDto.setLangCode(dto.getLangCode());
+		return idDto;
 	}
 }

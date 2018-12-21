@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.HolidayIDDto;
+import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
+import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -84,7 +86,7 @@ public class HolidayController {
 	 * @return primary key of inserted Holiday data
 	 */
 	@PostMapping
-	public ResponseEntity<HolidayID> saveHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
+	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
 		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.CREATED);
 
 	}
@@ -94,11 +96,11 @@ public class HolidayController {
 	 * 
 	 * @param holiday
 	 *            input values to update the data
-	 * @return primary key of inserted Holiday data
+	 * @return id of updated Holiday data
 	 */
 	@PutMapping
-	@ApiOperation(value = "to update a holiday", response = HolidayID.class)
-	public HolidayID updateHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
+	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
+	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestDto<HolidayUpdateDto> holiday) {
 		return holidayService.updateHoliday(holiday);
 	}
 
@@ -107,12 +109,12 @@ public class HolidayController {
 	 * 
 	 * @param holiday
 	 *            input values to update the data
-	 * @return primary key of inserted Holiday data
+	 * @return id of the deleted Holiday data
 	 */
 	@DeleteMapping
-	@ApiOperation(value = "to delete a holiday", response = HolidayID.class)
-	public HolidayID deleteHoliday(@Valid @RequestBody RequestDto<HolidayID> holidayId) {
-		return holidayService.deleteHoliday(holidayId);
+	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
+	public HolidayIdDeleteDto deleteHoliday(@Valid @RequestBody RequestDto<HolidayIdDeleteDto> request) {
+		return holidayService.deleteHoliday(request);
 	}
 
 }

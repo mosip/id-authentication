@@ -253,7 +253,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
-		mapFieldValues(source, destination);// this method simply map values if field name and type are same
+		    mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
@@ -404,7 +404,7 @@ public class MapperUtils {
 					}
 				}
 			}
-		} catch ( IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 
 			throw new DataAccessLayerException("KER-MSD-993", "Exception raised while mapping values form "
 					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
@@ -446,13 +446,14 @@ public class MapperUtils {
 			HolidayDto dto = new HolidayDto();
 			dto.setId(holiday.getId());
 			dto.setHolidayDate(date);
-			dto.setHolidayName(holiday.getHolidayName());
+			dto.setHolidayName(holidayId.getHolidayName());
 			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setHolidayDesc(holiday.getHolidayDesc());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;

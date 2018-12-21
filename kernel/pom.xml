@@ -82,7 +82,12 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
-
+		<!-- Freemarker -->
+		<freemarker.version>2.3.23</freemarker.version>
+		<!-- Velocity -->
+		<velocity.version>1.7</velocity.version>
+		<velocity.tool.version>2.0</velocity.tool.version>
+		
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
