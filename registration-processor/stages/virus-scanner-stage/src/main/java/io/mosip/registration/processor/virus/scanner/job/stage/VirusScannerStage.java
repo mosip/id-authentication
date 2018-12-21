@@ -126,7 +126,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 					try {
 
-						fileManager.put(entry.getRegistrationId(), decryptedData, DirectoryPathDto.VIRUS_SCAN);
+						fileManager.put(entry.getRegistrationId() + "_dec", decryptedData, DirectoryPathDto.VIRUS_SCAN);
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
