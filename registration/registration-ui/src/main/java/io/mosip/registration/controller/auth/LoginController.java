@@ -25,7 +25,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -226,77 +225,38 @@ public class LoginController extends BaseController implements Initializable {
 		
 		LOGGER.debug("REGISTRATION - LOGIN_MODE_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
-
-		if (userId.getText().isEmpty() && password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
-		} else if (userId.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
-		} else if (password.getText().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PWORD_FIELD_EMPTY);
-		} else if (userId.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
-		} else if (password.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
+		
+		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+		
+		boolean offlineStatus = false;
+		if(validatePwd(userId.getText(), password.getText())) {
+			offlineStatus = validateInvalidLogin(userDetail, "");
 		} else {
-
-			String hashPassword = null;
-
-			// password hashing
-			if (!(password.getText().isEmpty())) {
-				byte[] bytePassword = password.getText().getBytes();
-				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-			}
-			LoginUserDTO userDTO = new LoginUserDTO();
-			userDTO.setUserId(userId.getText());
-			userDTO.setPassword(hashPassword);
-			// Server connection check
-			boolean serverStatus = getConnectionCheck(userDTO);
-			boolean offlineStatus = false;
-			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
-
-			if (userDetail == null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
-			} else {
-				if (!serverStatus) {
-					LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-							"Retrieving User Password from database");
-
-					if (!userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) {
-						offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
-					} else {
-						offlineStatus = validateInvalidLogin(userDetail, "");
-					}
-				}
-				if (serverStatus || offlineStatus) {
-					if (validateUserStatus(userId.getText())) {
-
-						LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-								"Validating user status");
-
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
-					} else {
-						try {
-
-							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
-									APPLICATION_ID, "Loading next login screen");
-
-							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-
-						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-
-							LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
-									APPLICATION_ID, exception.getMessage());
-
-							generateAlert(RegistrationConstants.ALERT_ERROR,
-									RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
-						}
-					}
-				}
-			}
+			offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
 		}
+		
+		if(offlineStatus) {
+			try {
 
+				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
+						APPLICATION_ID, "Loading next login screen");
+
+				SessionContext sessionContext = SessionContext.getInstance();
+				loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
+				loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
+
+			} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+
+				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
+						APPLICATION_ID, exception.getMessage());
+
+				generateAlert(RegistrationConstants.ALERT_ERROR,
+						RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
+			}
+
+		} else {
+			
+		}
 	}
 
 	/**
@@ -811,7 +771,7 @@ public class LoginController extends BaseController implements Initializable {
 		}
 
 	}
-
+	
 	/**
 	 * Validating invalid number of login attempts
 	 * 
@@ -922,5 +882,6 @@ public class LoginController extends BaseController implements Initializable {
 		return (loginCount >= invalidLoginCount && TimeUnit.MILLISECONDS
 				.toMinutes(System.currentTimeMillis() - loginTime.getTime()) > invalidLoginTime);
 	}
+
 
 }

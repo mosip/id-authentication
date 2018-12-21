@@ -377,12 +377,12 @@ public class BaseController {
 
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
+			} else if (userStatus.equals(RegistrationConstants.BLOCKED_USER_ERROR)) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 			} else {
 				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 					return true;
-				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
-				}
+				} 
 			}
 		}
 		return false;
@@ -402,6 +402,8 @@ public class BaseController {
 		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
 		if (userDetail == null) {
 			return RegistrationConstants.USER_NOT_ONBOARDED;
+		} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+			return RegistrationConstants.BLOCKED_USER_ERROR;
 		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
