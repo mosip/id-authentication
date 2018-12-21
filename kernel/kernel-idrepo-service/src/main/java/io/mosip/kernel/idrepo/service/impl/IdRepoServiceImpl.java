@@ -4,7 +4,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -25,12 +27,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,7 +46,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -573,13 +574,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	public byte[] getKey(String keyType) throws IdRepoAppException {
 		try {
-			String path = "classpath:" + keyType;
-			File file = ResourceUtils.getFile(path);
-			return Files.toByteArray(file);
-		} catch (IOException e) {
+			FileInputStream inputStream = new FileInputStream(
+					new File(this.getClass().getClassLoader().getResource(keyType).toURI()));
+			return IOUtils.toByteArray(inputStream);
+		} catch (URISyntaxException | IOException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 		}
 	}
+
 
 	/**
 	 * Convert to bytes.
