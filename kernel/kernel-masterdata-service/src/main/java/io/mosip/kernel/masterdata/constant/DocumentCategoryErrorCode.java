@@ -10,7 +10,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum DocumentCategoryErrorCode {
 
 	DOCUMENT_CATEGORY_FETCH_EXCEPTION("KER-MSD-013","Error occured while fetching Document Category details"),
-	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-113","Error occured while inserting Document Category details"),
+	DOCUMENT_CATEGORY_INSERT_EXCEPTION("KER-MSD-051","Error occured while inserting Document Category details"),
 	DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION("KER-MSD-014","Document Category not found"),
 	DOCUMENT_CATEGORY_UPDATE_EXCEPTION("KER-MSD-089","Error occured while updating Document Category details"),
 	DOCUMENT_CATEGORY_DELETE_EXCEPTION("KER-MSD-090","Error occured while deleting Document Category details");
