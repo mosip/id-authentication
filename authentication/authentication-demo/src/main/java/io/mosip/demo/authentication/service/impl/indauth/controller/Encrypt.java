@@ -32,7 +32,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.SerializationUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +45,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -112,6 +112,10 @@ public class Encrypt {
 			throws InvalidKeySpecException, NoSuchAlgorithmException, IOException, KeyManagementException {
 		byte[] publicKeyBytes = getPublicKey();
 		PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+
+		// PublicKey publicKey =KeyFactory.getInstance("RSA").generatePublic(new
+		// RSAPublicKeySpec);
+
 		return publicKey;
 	}
 
@@ -155,10 +159,14 @@ public class Encrypt {
 		ResponseEntity<ObjectNode> exchange = restTemplate.exchange(uri, HttpMethod.GET, entity, ObjectNode.class);
 
 		if (exchange.getBody().has(PUBLICKEY)) {
-			jsonNode = exchange.getBody().get(PUBLICKEY);
+			return CryptoUtil.decodeBase64(exchange.getBody().get(PUBLICKEY).asText());
+		} else {
+			throw new IOException();
 		}
 
-		output = SerializationUtils.serialize(jsonNode.toString());
+
+		// ObjectMapper mapper = new ObjectMapper();
+		// output = mapper.writeValueAsBytes(jsonNode);
 
 		// String localpath = env.getProperty(FILEPATH);
 		// Object[] homedirectory = new Object[] { System.getProperty("user.home") +
@@ -171,7 +179,6 @@ public class Encrypt {
 		// } else {
 		// throw new IOException();
 		// }
-		return output;
 	}
 
 	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
@@ -208,4 +215,8 @@ public class Encrypt {
 		}
 	}
 
+	public static void main(String[] args)
+			throws KeyManagementException, InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		new Encrypt().loadPublicKey();
+	}
 }
