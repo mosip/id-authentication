@@ -301,7 +301,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private void buildUsageDataBits(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
 			if (matchOutput.isMatched()) {
-				statusInfoBuilder.addAuthUsageDataBits(matchOutput.getDemoMatchType().getMatchedBit());
+				statusInfoBuilder.addAuthUsageDataBits(matchOutput.getMatchType().getMatchedBit());
 			}
 		});
 	}
