@@ -89,6 +89,8 @@ public class IdRepoServiceImpl implements IdRepoService {
 					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
 					.filter(entry -> entry.getKey().equals("identity") && entry.getValue() instanceof Map)
 					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
+					.filter(entry -> entry.getKey().equals("identity") && entry.getValue() instanceof Map)
+					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
 					.collect(Collectors.toMap(Entry<String, Object>::getKey, entry -> {
 						Object val = entry.getValue();
 						if (val instanceof List) {

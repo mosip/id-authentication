@@ -57,6 +57,7 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
  * controllers.
  * 
  * @author Manoj SP
+ * @author Sanjay Murali
  */
 @Component
 public abstract class BaseAuthFilter implements Filter {

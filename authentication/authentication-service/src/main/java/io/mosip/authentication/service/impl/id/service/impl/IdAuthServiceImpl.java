@@ -23,7 +23,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -53,10 +52,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/** The audit factory. */
 	@Autowired
 	private AuditRequestFactory auditFactory;
-
-	/** The uin repository. */
-	@Autowired
-	UinRepository uinRepository;
 
 	/** The vid repository. */
 	@Autowired
@@ -125,29 +120,22 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @return the string
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
-		Map<String, Object> idRepo = null;
-		String refId = null;
+    Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
+    	Map<String, Object> idRepo = null;
+    	String refId = null;
 
-		Optional<String> findRefIdByVid = vidRepository.findRefIdByVid(vid);
-		if (findRefIdByVid.isPresent()) {
+    	Optional<String> findUinByRefId = vidRepository.findUinByVid(vid);
+    	if (findUinByRefId.isPresent()) {
+    		String uin = findUinByRefId.get().trim();
+    		try {
+    			idRepo = idRepoService.getIdRepo(uin);
+    		} catch (IdAuthenticationBusinessException e) {
+    			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
+    		}
+    	}
 
-			refId = findRefIdByVid.get().trim();
-			Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
-
-			if (findUinByRefId.isPresent()) {
-				String uin = findUinByRefId.get().trim();
-				try {
-					idRepo = idRepoService.getIdRepo(uin);
-				} catch (IdAuthenticationBusinessException e) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
-				}
-			}
-
-		}
-
-		return idRepo;
-	}
+    	return idRepo;
+    }
 
 	/**
 	 * Do validate UIN and checks whether it is active.

@@ -49,7 +49,6 @@ import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -111,9 +110,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	private BioAuthService bioAuthService;
-
-	@Autowired
-	UinRepository uinRepository;
 
 	@Autowired
 	private NotificationService notificationService;

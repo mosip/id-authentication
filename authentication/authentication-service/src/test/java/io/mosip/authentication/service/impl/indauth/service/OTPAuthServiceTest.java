@@ -34,7 +34,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -60,8 +59,6 @@ public class OTPAuthServiceTest {
 
 	@Mock
 	private AutnTxnRepository repository;
-
-	UinEntity uinentity = new UinEntity();
 
 	@Mock
 	OTPManager otpmanager;
