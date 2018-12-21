@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +60,8 @@ public class DOBMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
@@ -73,7 +76,8 @@ public class DOBMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
@@ -88,6 +92,14 @@ public class DOBMatchingStrategyTest {
 		int value3 = matchFunction.match(null, null, null);
 		assertEquals(0, value3);
 
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidDate() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match("test", "test-02-27", matchProperties);
+		assertEquals(0, value);
 	}
 
 }

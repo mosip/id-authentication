@@ -93,7 +93,16 @@ public class AddressMatchingStrategyTest {
 		matchProperties.put("languageType", DemoAuthType.AD_PRI);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
+	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidAddressmatchingStrategy() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value2);
 	}
 
 }

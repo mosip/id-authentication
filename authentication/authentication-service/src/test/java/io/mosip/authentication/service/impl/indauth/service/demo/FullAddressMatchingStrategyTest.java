@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -83,16 +82,83 @@ public class FullAddressMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
-		matchProperties = new HashMap<>();
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestExactMatchInvalidSecondaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
+	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestExactMatchOtherLangType() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", DemoAuthType.AD_PRI);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
+	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchSecondaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchOtherLangType() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value2);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatch() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchSecondaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchOtherLangType() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		assertEquals(0, value2);
 	}
 
 	/**

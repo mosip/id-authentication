@@ -146,18 +146,28 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
-		matchProperties = new HashMap<>();
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+	}
 
-		matchProperties = new HashMap<>();
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);
 	}
 
-	public void TestInvaliExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
@@ -165,12 +175,49 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
-		matchProperties = new HashMap<>();
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+	}
 
-		matchProperties = new HashMap<>();
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalid() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
+		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhonetics() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);

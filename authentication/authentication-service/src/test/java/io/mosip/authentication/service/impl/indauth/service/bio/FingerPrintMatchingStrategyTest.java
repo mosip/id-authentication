@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 
@@ -24,24 +25,37 @@ public class FingerPrintMatchingStrategyTest {
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestBusinessException() throws IdAuthenticationBusinessException {
+	public void TestFgrMinException() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(BioAuthType.class.getSimpleName(), BioAuthType.FGR_MIN);
 		int value = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value);
+	}
 
-		matchProperties = new HashMap<>();
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestFgrImgException() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(BioAuthType.class.getSimpleName(), BioAuthType.FGR_IMG);
 		int value1 = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value1);
 
-		matchProperties = new HashMap<>();
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestOtherType() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(BioAuthType.class.getSimpleName(), DemoAuthType.AD_PRI);
 		int value2 = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value2);
+	}
 
-		matchProperties = new HashMap<>();
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidAuthtype() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(BioAuthType.class.getSimpleName(), BioAuthType.IRIS_IMG);
 		int value3 = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value3);
