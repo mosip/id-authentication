@@ -54,8 +54,6 @@ public class IdRequestValidator implements Validator {
 
 	private static final String CREATE = "create";
 
-	private static final String UPDATE = "update";
-
 	private static final String DATETIME_TIMEZONE = "datetime.timezone";
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -157,12 +155,9 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
+			validateUin(request.getUin(), errors);
 			validateStatus(request.getStatus(), errors);
 			validateRequest(request.getRequest(), errors);
-		}
-
-		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
-			validateUin(request.getUin(), errors);
 		}
 
 		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {

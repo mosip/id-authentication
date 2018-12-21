@@ -17,7 +17,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
  * @author Manoj SP
  */
 @SpringBootApplication
-@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class, EncryptorImpl.class, DecryptorImpl.class, KeyGenerator.class })
+@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class, EncryptorImpl.class,
+		DecryptorImpl.class, KeyGenerator.class })
 public class IdRepoBootApplication {
 
 	/**

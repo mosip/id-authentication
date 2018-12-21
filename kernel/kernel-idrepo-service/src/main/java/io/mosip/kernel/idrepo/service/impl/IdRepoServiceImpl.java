@@ -86,10 +86,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	private static final String READ = "read";
 
-	private static final String MOSIP_KERNEL_UINGEN_URL = "mosip.kernel.uingen.url";
-
-	private static final String UIN = "uin";
-
 	private static final String REQUEST = "request";
 
 	private static final String UPDATE = "update";
@@ -139,10 +135,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Resource
 	private Map<String, String> id;
 
-	/** The rest template. */
-	@Autowired
-	private RestTemplate restTemplate;
-
 	/** The shard resolver. */
 	@Autowired
 	private ShardResolver shardResolver;
@@ -184,9 +176,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO addIdentity(IdRequestDTO request) throws IdRepoAppException {
 		try {
-			String uin = generateUIN();
-			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
-			return constructIdResponse(this.id.get(CREATE), addIdentity(uin, request.getRegistrationId(),
+			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(request.getUin()));
+			return constructIdResponse(this.id.get(CREATE), addIdentity(request.getUin(), request.getRegistrationId(),
 					encryptIdentity(convertToBytes(request.getRequest()))));
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e, this.id.get(CREATE));
@@ -209,7 +200,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Transactional
 	public Uin addIdentity(String uin, String uinRefId, byte[] identityInfo) throws IdRepoAppException {
 		try {
-			if (!uinRepo.existsById(uinRefId)) {
+			if (!uinRepo.existsById(uinRefId) && !uinRepo.existsByUin(uin)) {
 				uinHistoryRepo
 						.save(new UinHistory(uinRefId, now(), uin, env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED),
 								CREATED_BY, now(), UPDATED_BY, now(), false, now()));
@@ -378,28 +369,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			return uinRepo.getOne(uin.getUinRefId());
 		} catch (DataAccessException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		}
-	}
-
-	/**
-	 * Generate UIN.
-	 *
-	 * @return the string
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private String generateUIN() throws IdRepoAppException {
-		try {
-			ObjectNode body = restTemplate
-					.exchange(env.getProperty(MOSIP_KERNEL_UINGEN_URL), HttpMethod.GET, null, ObjectNode.class)
-					.getBody();
-			if (Objects.nonNull(body) && body.has(UIN) && Objects.nonNull(body.get(UIN))) {
-				return body.get(UIN).textValue();
-			} else {
-				throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED);
-			}
-		} catch (IdRepoAppException | RestClientException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.UIN_GENERATION_FAILED, e);
 		}
 	}
 
