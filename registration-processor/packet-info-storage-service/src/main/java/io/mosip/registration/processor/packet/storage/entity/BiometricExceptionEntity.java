@@ -2,13 +2,14 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-// TODO: Auto-generated Javadoc
 /**
  * The persistent class for the biometric_exceptions database table.
  * 
@@ -87,7 +88,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the prereg id.
 	 *
-	 * @param preregId the new prereg id
+	 * @param preregId
+	 *            the new prereg id
 	 */
 	public void setPreregId(String preregId) {
 		this.preregId = preregId;
@@ -105,7 +107,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the bio typ.
 	 *
-	 * @param bioTyp the new bio typ
+	 * @param bioTyp
+	 *            the new bio typ
 	 */
 	public void setBioTyp(String bioTyp) {
 		this.bioTyp = bioTyp;
@@ -123,7 +126,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the excp descr.
 	 *
-	 * @param excpDescr the new excp descr
+	 * @param excpDescr
+	 *            the new excp descr
 	 */
 	public void setExcpDescr(String excpDescr) {
 		this.excpDescr = excpDescr;
@@ -141,7 +145,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the excp typ.
 	 *
-	 * @param excpTyp the new excp typ
+	 * @param excpTyp
+	 *            the new excp typ
 	 */
 	public void setExcpTyp(String excpTyp) {
 		this.excpTyp = excpTyp;
@@ -159,7 +164,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the status code.
 	 *
-	 * @param statusCode the new status code
+	 * @param statusCode
+	 *            the new status code
 	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
@@ -177,7 +183,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -195,7 +202,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimes the new cr dtimes
+	 * @param crDtimes
+	 *            the new cr dtimes
 	 */
 	public void setCrDtimes(LocalDateTime crDtimes) {
 		this.crDtimes = crDtimes;
@@ -213,7 +221,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the del dtimes.
 	 *
-	 * @param delDtimes the new del dtimes
+	 * @param delDtimes
+	 *            the new del dtimes
 	 */
 	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
@@ -231,7 +240,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -249,7 +259,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -267,7 +278,8 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	/**
 	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimes the new upd dtimes
+	 * @param updDtimes
+	 *            the new upd dtimes
 	 */
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;

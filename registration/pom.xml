@@ -149,6 +149,21 @@
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idgenerator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derby</artifactId>
 				<version>${apache.derby.version}</version>
@@ -271,7 +286,7 @@
 			<properties>
 				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
 				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-				<sonar.projectName>Registration-LOCAL</sonar.projectName>
+				<sonar.projectName>Registration</sonar.projectName>
 				<sonar.projectVersion>master</sonar.projectVersion>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
+   <children>
+      <Label layoutX="29.0" layoutY="20.0" text="Iris Scan">
+         <font>
+            <Font size="23.0" />
+         </font></Label>
+      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+         <children>
+            <ImageView fx:id="leftIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/leftIris.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Label layoutX="29.0" layoutY="300.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
+      <Label layoutX="146.0" layoutY="300.0" text=":" />
+      <Label fx:id="leftIrisQualityScore" layoutX="155.0" layoutY="300.0" />
+      <Label layoutX="29.0" layoutY="340.0" text="Threshold %" />
+      <Label layoutX="146.0" layoutY="340.0" text=":" />
+      <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="340.0" />
+      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+         <children>
+            <ImageView fx:id="rightIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/rightIris.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Label layoutX="378.0" layoutY="300.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
+      <Label layoutX="495.0" layoutY="300.0" text=":" />
+      <Label fx:id="rightIrisQualityScore" layoutX="504.0" layoutY="300.0" />
+      <Label layoutX="378.0" layoutY="340.0" text="Threshold %" />
+      <Label layoutX="495.0" layoutY="340.0" text=":" />
+      <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="340.0" />
+      <Button fx:id="scanIris" layoutX="29.0" layoutY="379.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle" />
+      <Button fx:id="irisNext" layoutX="770.0" layoutY="510.0" mnemonicParsing="false" onAction="#nextSection" text="Next" styleClass="RegbuttonStyle" />
+      <Button fx:id="irisPrevious" layoutX="690.0" layoutY="510.0" mnemonicParsing="false" onAction="#previousSection" text="Previous" styleClass="RegbuttonStyle" />
+   </children>
+</AnchorPane>

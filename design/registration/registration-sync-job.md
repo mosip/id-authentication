@@ -1,6 +1,7 @@
 Design - Sync Job
 
 
+
 **Background**
 
 The job will run at the background of the Registration client application to sync some of the configuration from
@@ -39,4 +40,4 @@ The key **non-functional requirements** are
 	
 
 Class and Sequence Diagram:
-![Sync job sequence diagram](_images/registration-sync-batch-job.png)
+![Sync job sequence diagram](_images/registration-sync-batch-jobs.png)

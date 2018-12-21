@@ -5,9 +5,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,26 +18,29 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.GlobalParamService;
-import io.mosip.registration.service.SyncStatusValidatorService;
-import io.mosip.registration.util.biometric.FingerprintFacade;
+import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -56,28 +61,46 @@ public class BaseController {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
-
-	protected static Stage stage;
+	
+	@Autowired
+	protected FXComponents fXComponents;
+	
+	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	protected Scene scene;
 	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	protected Logger LOGGER = AppConfig.getLogger(this.getClass());
+	private static final Logger LOGGER = AppConfig.getLogger(BaseController.class);
 
 	/**
 	 * Adding events to the stage
 	 * 
 	 * @return
 	 */
-	protected static Stage getStage() {
+	protected Stage getStage() {
 		EventHandler<Event> event = new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
 				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
-		stage.addEventHandler(EventType.ROOT, event);
-		return stage;
+		fXComponents.getStage().addEventHandler(EventType.ROOT, event);
+		return fXComponents.getStage();
+	}
+	
+	protected Scene getScene(Parent borderPane) {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		scene = fXComponents.getScene(); 
+		if(scene == null) {
+			scene = new Scene(borderPane, 950, 630);
+			fXComponents.setScene(scene);
+		}
+		scene.setRoot(borderPane);
+		fXComponents.getStage().setScene(scene);
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		return scene;
 	}
 
 	/**
@@ -88,7 +111,7 @@ public class BaseController {
 	public static <T> T load(URL url) throws IOException {
 		clearDeviceOnboardingContext();
 		FXMLLoader loader = new FXMLLoader(url);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
 
@@ -99,7 +122,7 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url, ResourceBundle resource) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, resource);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
 
@@ -112,44 +135,13 @@ public class BaseController {
 	 * @param header    alert header
 	 * @param context   alert context
 	 */
-	protected void generateAlert(String title, AlertType alertType, String header, String context) {
-		Alert alert = new Alert(alertType);
-		alert.setHeaderText(header);
-		alert.setContentText(context);
-		alert.setTitle(title);
-		alert.showAndWait();
-	}
-
-	/**
-	 * Alert creation with specified title and context
-	 * 
-	 * @param title     alert title
-	 * @param alertType type of alert
-	 * @param context   alert context
-	 */
-	protected void generateAlert(String title, AlertType alertType, String context) {
-		Alert alert = new Alert(alertType);
-		alert.setContentText(context);
+	protected void generateAlert(String title, String context) {
+		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
+		alert.setContentText(context);
 		alert.setTitle(title);
+		alert.setGraphic(null);
 		alert.showAndWait();
-
-	}
-
-	/**
-	 * Alert creation with specified title and context
-	 * 
-	 * @param alertType type of alert
-	 * @param title     alert title
-	 * @param header    alert header
-	 */
-	protected void generateAlert(AlertType alertType, String title, String header) {
-		Alert alert = new Alert(alertType);
-		alert.setHeaderText(header);
-		alert.setContentText(null);
-		alert.setTitle(title);
-		alert.showAndWait();
-
 	}
 
 	protected ResponseDTO validateSyncStatus() {
@@ -205,7 +197,7 @@ public class BaseController {
 	 * login from config table
 	 */
 	protected void getGlobalParams() {
-		ApplicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**
@@ -219,8 +211,8 @@ public class BaseController {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
-					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
@@ -228,7 +220,7 @@ public class BaseController {
 
 	public static FXMLLoader loadChild(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url);
-		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader;
 	}
 
@@ -241,6 +233,15 @@ public class BaseController {
 	public void getFingerPrintStatus(Stage primaryStage) {
 	
 	}
+	
+	/**
+	 * Scans documents
+	 *
+	 * @param popupStage the stage
+	 */
+	public void scan(Stage popupStage) {
+		
+	}
 
 	/**
 	 * This method is for saving the Applicant Image and Exception Image which are
@@ -249,7 +250,7 @@ public class BaseController {
 	 * @param capturedImage BufferedImage that is captured using webcam
 	 * @param imageType     Type of image that is to be saved
 	 */
-	protected void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
 	}
 
@@ -258,7 +259,7 @@ public class BaseController {
 	 * 
 	 * @param imageType Type of image that is to be cleared
 	 */
-	protected void clearPhoto(String imageType) {
+	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
 	}
 
@@ -292,5 +293,27 @@ public class BaseController {
 			counter++;
 		}
 	}
+	
+	protected Image convertBytesToImage(byte[] imageBytes) {
+		return new Image(new ByteArrayInputStream(imageBytes));
+	}
+	
+	protected Timer onlineAvailabilityCheck() {
+		Timer timer = new Timer();
+		fXComponents.setTimer(timer);
+		return timer;
+	}
 
+	protected void stopTimer() {
+		if (fXComponents.getTimer() != null) {
+			fXComponents.getTimer().cancel();
+			fXComponents.getTimer().purge();
+			fXComponents.setTimer(null);
+		}
+	}
+
+	public Timer getTimer() {
+		return fXComponents.getTimer() == null ? onlineAvailabilityCheck() : fXComponents.getTimer();
+	}
+	
 }

@@ -83,7 +83,6 @@ public class DataProvider {
 		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
 			biometricInfoDTO.setFingerPrintBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			biometricInfoDTO.setNumOfIrisRetry(2);
 			biometricInfoDTO.setIrisBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
 		}
 		return biometricInfoDTO;
@@ -156,6 +155,7 @@ public class DataProvider {
 		irisDetailsDTO.setIrisType(irisType);
 		irisDetailsDTO.setForceCaptured(isForcedCaptured);
 		irisDetailsDTO.setQualityScore(qualityScore);
+		irisDetailsDTO.setNumOfIrisRetry(2);
 		return irisDetailsDTO;
 	}
 
@@ -219,17 +219,17 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
 		documentDetailsDTO.setDocumentCategory("PoI");
-		documentDetailsDTO.setDocumentOwner("Self");
 		documentDetailsDTO.setDocumentType("PAN");
+		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
+		documentDetailsDTO.setDocumentOwner("Self");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setDocumentCategory("PoA");
-		documentDetailsResidenceDTO.setDocumentOwner("hof");
 		documentDetailsResidenceDTO.setDocumentType("passport");
+		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
+		documentDetailsResidenceDTO.setDocumentOwner("hof");
 
 		docdetailsList.add(documentDetailsDTO);
 		docdetailsList.add(documentDetailsResidenceDTO);

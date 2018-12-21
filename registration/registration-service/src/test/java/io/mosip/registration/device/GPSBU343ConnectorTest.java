@@ -29,10 +29,9 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
-import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.device.gps.impl.GPSBU343Connector;
 
 @Ignore
 @RunWith(PowerMockRunner.class)
@@ -88,7 +87,7 @@ public class GPSBU343ConnectorTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * {@link io.mosip.registration.device.gps.GPSFacade#getLatLongDtls(double, double)}.
 	 * 
 	 * @throws Exception
 	 */
