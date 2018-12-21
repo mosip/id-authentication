@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.notification.spi.EmailNotification;
+import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.notification.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDetails;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -31,35 +31,41 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	private TemplateGenerator templateGenerator; 
 	@Autowired
 	EmailNotification<MultipartFile[], CompletableFuture<ResponseDto>> emailNotificationService; 
+	@Autowired
+	SmsNotification smsNotifierService; 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
 	
 	public MessageNotificationResponse sendSmsNotification(MessageNotificationRequest messageNotificationRequest) {
 		MessageNotificationResponse messageNotificationResponse=new MessageNotificationResponse();
-		
+		Map<String, Object> attributes=new HashMap<String, Object>();
+		DemographicInfo demographicInfo=new DemographicInfo();
 		if (messageNotificationRequest != null) {
 			try {
-				if(messageNotificationRequest.getRid().equalsIgnoreCase("RID")){
-					InputStream demographicInfoStream = adapter.getFile(messageNotificationRequest.getRid(), PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-					DemographicInfo demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,DemographicInfo.class);
-					for(DemographicDetails dto:demographicInfo.getIdentity().getMobileNumber()) {
-							dto.getValue();
-					}
-				}else if(messageNotificationRequest.getIdType().equalsIgnoreCase("UIN")) {
-					IndividualDemographicDedupeEntity individualDemographicDedupeEntity=basePacketRepository.getRegId(messageNotificationRequest.getRid());
-					InputStream packetMetaInfoStream = adapter.getFile(individualDemographicDedupeEntity.getId().getRegId(),PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-					DemographicInfo demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,DemographicInfo.class);
-					for(DemographicDetails dto:demographicInfo.getIdentity().getMobileNumber()) {
-						dto.getValue();
-					}
+				if (messageNotificationRequest.getRid().equalsIgnoreCase("RID")) {
+					InputStream demographicInfoStream = adapter.getFile(messageNotificationRequest.getRid(),
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+					demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
+							DemographicInfo.class);
+				} else if (messageNotificationRequest.getIdType().equalsIgnoreCase("UIN")) {
+					IndividualDemographicDedupeEntity individualDemographicDedupeEntity = basePacketRepository
+							.getRegId(messageNotificationRequest.getRid());
+					InputStream packetMetaInfoStream = adapter.getFile(
+							individualDemographicDedupeEntity.getId().getRegId(),
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+					demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+							DemographicInfo.class);
 				}
+				attributes.put("mobileNumber", demographicInfo.getIdentity().getMobileNumber()[0].getValue());
+				String msg=templateGenerator.templateGenerator(messageNotificationRequest.getTemplateCode(), attributes,messageNotificationRequest.getLangCode());
+				smsNotifierService.sendSmsNotification(attributes.get("mobileNumber").toString(), msg);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return messageNotificationResponse;
-	}
+	} 
 	
 	
 	
