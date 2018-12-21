@@ -142,8 +142,16 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
 					syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
 					syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
-					syncResponseFailureDto.setMessage(e.getErrorText());
-					syncResponseFailureDto.setErrorCode(e.getErrorCode());
+					if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
+						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getMessage());
+						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getCode());
+					} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
+						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getMessage());
+						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getCode());
+					} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
+						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getMessage());
+						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getCode());
+					}
 					syncResponseList.add(syncResponseFailureDto);
 				}
 			}
@@ -171,13 +179,15 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
 			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseFailureDto.setErrorCode(e.getErrorCode());
 			if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
-				syncResponseFailureDto.setMessage("Prid Length Must Be 29");
+				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID_LENGTH.getMessage());
+				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID_LENGTH.getCode());
 			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
-				syncResponseFailureDto.setMessage("Prid Must Be Numeric Only");
+				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID.getMessage());
+				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID.getCode());
 			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
-				syncResponseFailureDto.setMessage("Invalid Time Stamp Found in Prid");
+				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID_TIMESTAMP.getMessage());
+				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID_TIMESTAMP.getCode());
 			}
 			syncResponseList.add(syncResponseFailureDto);
 		}
@@ -211,7 +221,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} else if (SyncTypeDto.DEACTIVATE_UIN.getValue().equals(value)) {
 			return true;
 		} else {
-			//SyncResponseDto syncResponseDto = new SyncResponseDto();
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
 			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());

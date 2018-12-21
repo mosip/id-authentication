@@ -42,6 +42,24 @@ public enum PlatformErrorMessages {
 	RPR_RGS_EMPTY_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "006",
 			"RegistrationId cannot be null"),
 
+	RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "007",
+			"Invalid Time Stamp Found in RegistrationId"),
+
+	RPR_RGS_INVALID_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "008",
+			"RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_REGISTRATIONID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "009",
+			"RegistrationId Length Must Be 29"),
+	
+	RPR_RGS_INVALID_PRID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "010",
+			"Invalid Time Stamp Found in Parent RegistrationId"),
+
+	RPR_RGS_INVALID_PRID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "011",
+			"Parent RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_PRID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
+			"Parent RegistrationId Length Must Be 29"),
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"), RPR_PIS_IDENTITY_NOT_FOUND(
