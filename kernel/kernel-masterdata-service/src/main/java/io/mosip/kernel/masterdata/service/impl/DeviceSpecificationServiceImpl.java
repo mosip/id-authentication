@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
+import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
@@ -38,6 +41,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
+
+	@Autowired
+	DeviceRepository deviceRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -164,12 +170,22 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto deleteDeviceSpecification(String id) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification deviceSpecification = deviceSpecificationRepository.findById(DeviceSpecification.class,
-					id);
-			if (!EmptyCheckUtils.isNullEmpty(deviceSpecification)) {
-				MetaDataUtils.setDeleteMetaData(deviceSpecification);
-				deviceSpecificationRepository.update(deviceSpecification);
-				idResponseDto.setId(deviceSpecification.getId());
+			DeviceSpecification renDeviceSpecification = deviceSpecificationRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+
+			if (renDeviceSpecification != null) {
+				List<Device> renDeviceList = deviceRepository
+						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(renDeviceSpecification.getId());
+				if (renDeviceList.isEmpty()) {
+					MetaDataUtils.setDeleteMetaData(renDeviceSpecification);
+					deviceSpecificationRepository.update(renDeviceSpecification);
+					idResponseDto.setId(renDeviceSpecification.getId());
+				} else {
+					throw new DataNotFoundException(
+							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
+				}
+
 			} else {
 				throw new DataNotFoundException(
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),

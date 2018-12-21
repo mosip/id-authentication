@@ -17,8 +17,9 @@ public enum DeviceSpecificationErrorCode {
 	DEVICE_SPECIFICATION_INSERT_EXCEPTION(
 							"KER-MSD-054",
 							"Error occurred while inserting Device Specification details"),
-	DEVICE_SPECIFICATION_UPDATE_EXCEPTION("KER-MSD-XXX","Error occured while Device Specification"), 
-	DEVICE_SPECIFICATION_DELETE_EXCEPTION("KER-MSD-XXX", "Error occured while Device Specification");
+	DEVICE_SPECIFICATION_UPDATE_EXCEPTION("KER-MSD-XX1","Error occured while updating Device Specification"), 
+	DEVICE_SPECIFICATION_DELETE_EXCEPTION("KER-MSD-XX2", "Error occured while deleting Device Specification"),
+	DEVICE_DELETE_EXCEPTION("KER-MSD-XXX", "Error occured while deleting Device Specification Beacuse Device Depenency is there");
 
 	private final String errorCode;
 	private final String errorMessage;
