@@ -110,6 +110,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.entity.id.GenderID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -676,10 +677,16 @@ public class MasterdataIntegrationTest {
 		rcmdIdH.setDeviceId("101");
 		rcmdIdH.setMachineId("1789");
 		rcmdIdH.setRegCenterId("1");
-		registrationCenterMachineDeviceHistory.setRegistrationCenterMachineDeviceHistoryPk(rcmdIdH);
+		RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID= new RegistrationCenterMachineDeviceHistoryID();
+		registrationCenterMachineDeviceHistoryID.setDeviceId("101");
+		registrationCenterMachineDeviceHistoryID.setMachineId("1789");
+		registrationCenterMachineDeviceHistoryID.setRegCenterId("1");
+		registrationCenterMachineDeviceHistoryID.setEffectivetimes(registrationCenterMachineDevice.getCreatedDateTime());
+		registrationCenterMachineDeviceHistory.setRegistrationCenterMachineDeviceHistoryPk(registrationCenterMachineDeviceHistoryID);
 		registrationCenterMachineDeviceHistory.setCreatedDateTime(registrationCenterMachineDevice.getCreatedDateTime());
 		registrationCenterMachineDeviceHistory.setIsActive(true);
 		registrationCenterMachineDeviceHistory.setCreatedBy("admin");
+		
 
 	}
 

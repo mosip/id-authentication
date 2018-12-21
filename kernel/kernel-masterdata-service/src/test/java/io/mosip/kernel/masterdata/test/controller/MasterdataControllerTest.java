@@ -57,6 +57,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -746,9 +747,9 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testDeleteLocationDetails() throws Exception {
-		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(locationCodeDto);
-		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/locations/KAR/KAN").contentType(MediaType.APPLICATION_JSON))
+		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString()))
+				.thenReturn(new CodeResponseDto());
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/locations/KAR").contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}

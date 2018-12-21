@@ -76,6 +76,7 @@
 		<slf4j.version>1.7.19</slf4j.version>
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.version>1.7.4</powermock.version>
+		<powermock.beta.version>2.0.0-beta.5</powermock.beta.version>
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->

@@ -253,7 +253,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public CodeResponseDto deleteLocationDetials(String locationCode, String langCode) {
+	public CodeResponseDto deleteLocationDetials(String locationCode) {
 		List<Location> locations = null;
         CodeResponseDto codeResponseDto=new CodeResponseDto();
 		try {

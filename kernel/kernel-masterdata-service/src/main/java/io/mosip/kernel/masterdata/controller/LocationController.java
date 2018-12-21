@@ -88,7 +88,8 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
-	public LocationResponseDto getLocationDataByHierarchyName(@PathVariable(value = "hierarchyname") String hierarchyName) {
+	public LocationResponseDto getLocationDataByHierarchyName(
+			@PathVariable(value = "hierarchyname") String hierarchyName) {
 
 		return locationHierarchyService.getLocationDataByHierarchyName(hierarchyName);
 
@@ -96,8 +97,9 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationRequestDto - location request DTO
-	 * @return PostLocationCodeResponseDto 
+	 * @param locationRequestDto
+	 *            - location request DTO
+	 * @return PostLocationCodeResponseDto
 	 */
 	@PutMapping()
 	public PostLocationCodeResponseDto updateLocationHierarchyDetails(
@@ -105,11 +107,10 @@ public class LocationController {
 
 		return locationHierarchyService.updateLocationDetails(locationRequestDto);
 	}
-	
-	@DeleteMapping(value="/{locationcode}/{langcode}")
-	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value="locationcode")String locationCode,
-			@PathVariable(value="langcode") String langCode) {
-	return locationHierarchyService.deleteLocationDetials(locationCode,langCode);	
+
+	@DeleteMapping(value = "/{locationcode}")
+	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
+		return locationHierarchyService.deleteLocationDetials(locationCode);
 	}
-	
+
 }

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -1158,60 +1157,57 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void updateLocationDetailsDataNotFoundTest() {
-		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any()))
-				.thenReturn(null);
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
 		locationHierarchyService.updateLocationDetails(requestLocationDto);
 	}
 
 	@Test
 	public void deleteLocationDetailsTest() {
-		Optional<Location> locationOptionalObj = Optional.of(locationHierarchy);
-		Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(locationHierarchies);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
-		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+		locationHierarchyService.deleteLocationDetials("KAR");
 
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void deleteLocationDetailsServiceExceptionTest() {
-		Optional<Location> locationOptionalObj = Optional.of(locationHierarchy);
-		Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(locationHierarchies);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+		locationHierarchyService.deleteLocationDetials("KAR");
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void deleteLocationDetailDataNotFoundExceptionTest() {
-        Optional<Location> locationOptionalObj= Optional.empty();
-        Mockito.when(locationHierarchyRepository.findById(Mockito.any())).thenReturn(locationOptionalObj);
+		
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(new ArrayList<Location>());
 
-		locationHierarchyService.deleteLocationDetials("KAR", "KAN");
+		locationHierarchyService.deleteLocationDetials("KAR");
 
 	}
-	
+
 	/**
 	 * 
 	 * @author M1043226
 	 * @since 1.0.0
 	 *
 	 */
-	
+
 	@Test()
 	public void getLocationHierachyBasedOnHierarchyNameTest() {
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
 				.thenReturn(locationHierarchies);
 
-		LocationResponseDto locationResponseDto = locationHierarchyService
-				.getLocationDataByHierarchyName("country");
+		LocationResponseDto locationResponseDto = locationHierarchyService.getLocationDataByHierarchyName("country");
 		Assert.assertEquals("country", locationResponseDto.getLocations().get(0).getHierarchyName());
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void dataNotFoundExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123"))
-				.thenReturn(null);
+		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123")).thenReturn(null);
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
@@ -1223,7 +1219,6 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
-
 
 	// ------------------ TemplateServiceTest -----------------//
 
@@ -1414,6 +1409,5 @@ public class MasterDataServiceTest {
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
-
 
 }
