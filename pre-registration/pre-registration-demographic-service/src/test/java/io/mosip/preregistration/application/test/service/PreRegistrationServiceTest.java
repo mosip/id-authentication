@@ -449,48 +449,6 @@ public class PreRegistrationServiceTest {
 
 	}
 
-	@Test(expected = RecordFailedToDeleteException.class)
-	public void deleteFailedToDeleteTest() {
-		RecordFailedToDeleteException exception = new RecordFailedToDeleteException(ErrorCodes.PRG_PAM_APP_004.name(),
-				ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.name());
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		String preRegId = "1234";
-
-		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
-		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-		deleteAllList.add(deleteDTO);
-
-		ResponseDTO<DocumentDeleteDTO> delResponseDto = new ResponseDTO<>();
-		delResponseDto.setStatus("true");
-		delResponseDto.setErr(null);
-		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-
-		preRegistrationEntity.setCreateDateTime(times);
-		preRegistrationEntity.setCreatedBy("9988905444");
-		preRegistrationEntity.setStatusCode("Pending_Appointment");
-		preRegistrationEntity.setUpdateDateTime(times);
-		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
-		preRegistrationEntity.setPreRegistrationId("1234");
-
-		ResponseEntity<ResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
-		Mockito.when(preRegistrationRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-				Mockito.eq(ResponseDTO.class))).thenReturn(res);
-
-		preRegistrationRepository.deleteByPreRegistrationId("");
-
-		ResponseDTO<DeletePreRegistartionDTO> actualres = preRegistrationService.deleteIndividual(preRegId);
-
-		assertEquals("false", actualres.getStatus());
-
-	}
-
 	@Test
 	public void deleteIndividualSuccessTest() {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);

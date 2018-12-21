@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.h2.engine.SysProperties;
+
 import io.mosip.preregistration.core.constants.RequestCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
@@ -47,6 +49,7 @@ public class ValidationUtil {
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
 					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(requestMap.get(RequestCodes.REQ_TIME));
+					System.out.println("date in core: "+new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(requestMap.get(RequestCodes.REQ_TIME)));
 				} catch (Exception ex) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
 							ErrorMessages.INVALID_REQUEST_DATETIME.toString());
