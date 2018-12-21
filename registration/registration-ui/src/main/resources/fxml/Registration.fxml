@@ -30,9 +30,9 @@
                  	<children>
                  	 <AnchorPane id="childSpecificFields" fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
-                            <Label layoutX="25.0" layoutY="8.0" text="%parent_or_guardian_name" />
+                            <Label layoutX="25.0" layoutY="8.0" text="%parentName" />
                             <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
-                            <Label layoutX="25.0" layoutY="60.0" text="%rid_or_uin_id" />
+                            <Label layoutX="25.0" layoutY="60.0" text="%uinId" />
                             <TextField fx:id="uinId" layoutX="25.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                          </children>
                    </AnchorPane>
@@ -60,13 +60,13 @@
                               <Label layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                               <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
                               <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" styleClass="RegbuttonStyle" />
-                              <Label layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%full_name" />
+                              <Label layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
                               <TextField id="fullName" fx:id="fullName" layoutX="44.0" layoutY="90.0" prefHeight="10.0" prefWidth="320.0" />
                               <AnchorPane layoutX="40.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
                                  <children>
-                                    <Label layoutX="5.0" layoutY="9.0" text="%age" />
+                                    <Label layoutX="5.0" layoutY="9.0" text="%ageField" />
                                     <TextField fx:id="ageField" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
-                                    <Label layoutX="130.0" layoutY="9.0" text="%dob" />
+                                    <Label layoutX="130.0" layoutY="9.0" text="%ageDatePicker" />
                                     <DatePicker fx:id="ageDatePicker" editable="false" layoutX="130.0" layoutY="25.0" onAction="#ageValidationInDatePicker" prefHeight="10.0" prefWidth="200.0" />
                                     <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
                                     <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
@@ -85,11 +85,11 @@
                               
                               <AnchorPane layoutX="31.0" layoutY="210.0" prefHeight="484.0" prefWidth="777.0">
                                  <children>
-                                    <Label layoutX="17.0" layoutY="10.0" text="%address_line1" />
+                                    <Label layoutX="17.0" layoutY="10.0" text="%addressLine1" />
                                     <TextField fx:id="addressLine1" layoutX="14.0" layoutY="25.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="17.0" layoutY="60.0" text="%address_line2" />
+                                    <Label layoutX="17.0" layoutY="60.0" text="%addressLine2" />
                                     <TextField fx:id="addressLine2" layoutX="14.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="17.0" layoutY="112.0" text="%address_line3" />
+                                    <Label layoutX="17.0" layoutY="112.0" text="%addressLine3" />
                                     <TextField fx:id="addressLine3" layoutX="14.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label layoutX="17.0" layoutY="170.0" text="%region" />
                                     <TextField fx:id="region" layoutX="14.0" layoutY="185.0" prefHeight="30.0" prefWidth="151.0" />
@@ -97,15 +97,15 @@
                                     <TextField fx:id="city" layoutX="180.0" layoutY="185.0" prefHeight="30.0" prefWidth="155.0" />
                                     <Label layoutX="17.0" layoutY="220.0" text="%province" />
                                     <TextField fx:id="province" layoutX="14.0" layoutY="232.0" prefHeight="30.0" prefWidth="153.0" />
-                                    <Label layoutX="180.0" layoutY="220.0" text="%postal_code" />
+                                    <Label layoutX="180.0" layoutY="220.0" text="%postalCode" />
                                     <TextField fx:id="postalCode" layoutX="180.0" layoutY="232.0" prefHeight="30.0" prefWidth="155.0" />
-                                    <Label layoutX="17.0" layoutY="270.0" text="%local_administrative_authority" />
+                                    <Label layoutX="17.0" layoutY="270.0" text="%localAdminAuthority" />
                                     <TextField fx:id="localAdminAuthority" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="17.0" layoutY="320.0" text="%mobile_number" />
+                                    <Label layoutX="17.0" layoutY="320.0" text="%mobileNo" />
                                     <TextField fx:id="mobileNo" layoutX="14.0" layoutY="335.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="17.0" layoutY="370.0" text="%email_id" />
+                                    <Label layoutX="17.0" layoutY="370.0" text="%emailId" />
                                     <TextField fx:id="emailId" layoutX="17.0" layoutY="385.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="17.00" layoutY="420.0" text="CNIE Number / Pin Number" />
+                                    <Label layoutX="17.00" layoutY="420.0" text="%cniOrPinNumber" />
                                     <TextField fx:id="cniOrPinNumber" layoutX="17.00" layoutY="435.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label fx:id="addressLine1LocalLanguagelabel" layoutX="410.0" layoutY="13.0" text="" />
                                     <TextField fx:id="addressLine1LocalLanguage" layoutX="410.0" layoutY="27.0" prefHeight="30.0" prefWidth="320.0" />
@@ -132,7 +132,7 @@
                                  </children>
                               </AnchorPane>
                               <Label fx:id="fullNameLocalLanguageLabel" layoutX="435.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
-                              <TextField id="fullName_lc" fx:id="fullNameLocalLanguage" layoutX="435.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
+                              <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="435.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
                               <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="768.0" layoutY="100.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                               <image>
               					<Image url="@../images/keyboard.png" />

@@ -299,6 +299,9 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private IdValidator<String> pridValidatorImpl;
 
+	@Autowired
+	private Validations validation;
+
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -463,6 +466,7 @@ public class RegistrationController extends BaseController {
 				}
 			}
 
+			documentScanController.prepareEditPageContent();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
@@ -738,7 +742,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -975,12 +980,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
-							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
-
+					if (!validation.validateTextField(fullName, fullName.getId() + "_ontype")) {
 						fullName.setText(oldValue);
-						fullName.requestFocus();
 					} else {
 						fullNameLocalLanguage.setText(fullName.getText());
 					}
@@ -991,11 +992,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
-
+					if (!validation.validateTextField(addressLine1, addressLine1.getId() + "_ontype")) {
 						addressLine1.setText(oldValue);
-						addressLine1.requestFocus();
 					} else {
 						addressLine1LocalLanguage.setText(addressLine1.getText());
 					}
@@ -1022,11 +1020,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
-							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+					if (!validation.validateTextField(mobileNo, mobileNo.getId() + "_ontype")) {
 						mobileNo.setText(oldValue);
-						mobileNo.requestFocus();
 					}
 				}
 			});
@@ -1035,11 +1030,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
-							|| newValue.length() > 50)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
+					if (!validation.validateTextField(emailId, emailId.getId() + "_ontype")) {
 						emailId.setText(oldValue);
-						emailId.requestFocus();
 					}
 				}
 			});
@@ -1048,11 +1040,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
+					if (!validation.validateTextField(cniOrPinNumber, cniOrPinNumber.getId() + "_ontype")) {
 						cniOrPinNumber.setText(oldValue);
-						cniOrPinNumber.requestFocus();
 					}
 				}
 			});
@@ -1061,12 +1050,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
-							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
-
+					if (!validation.validateTextField(parentName, parentName.getId() + "_ontype")) {
 						parentName.setText(oldValue);
-						parentName.requestFocus();
 					}
 				}
 			});
@@ -1075,10 +1060,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
+					if (!validation.validateTextField(uinId, uinId.getId() + "_ontype")) {
 						uinId.setText(oldValue);
-						uinId.requestFocus();
 					}
 				}
 			});
@@ -1087,10 +1070,8 @@ public class RegistrationController extends BaseController {
 				@Override
 				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
 						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.POSTAL_CODE_REGEX_INITIAL)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POSTAL_CODE_WARNING);
+					if (!validation.validateTextField(postalCode, postalCode.getId() + "_ontype")) {
 						postalCode.setText(oldValue);
-						postalCode.requestFocus();
 					}
 				}
 			});
@@ -1177,43 +1158,33 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (ageField.getText().length() > 3) {
+				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype")) {
 					ageField.setText(oldValue);
-					generateAlert(RegistrationConstants.ALERT_ERROR,
-							RegistrationConstants.MAX_AGE_WARNING + " " + AppConfig.getApplicationProperty("max_age"));
 				}
-
+				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
 					if (Integer.parseInt(ageField.getText()) > Integer
 							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
+					} else {
+						age = Integer.parseInt(ageField.getText());
+						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+						LocalDate dob = currentYear.minusYears(age);
+						autoAgeDatePicker.setValue(dob);
+						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
+							childSpecificFields.setVisible(true);
+							isChild = true;
+							documentScanController.documentScan.setLayoutY(134.00);
+						} else {
+							isChild = false;
+							childSpecificFields.setVisible(false);
+							documentScanController.documentScan.setLayoutY(25.00);
+						}
 					}
 				}
-				// to populate date of birth based on age
-				int age = 0;
-				if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
-					age = Integer.parseInt(ageField.getText());
-					LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-					LocalDate dob = currentYear.minusYears(age);
-					autoAgeDatePicker.setValue(dob);
-				}
-				if (!newValue.matches("\\d*")) {
-					ageField.setText(oldValue);
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
 
-				}
-
-				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-					childSpecificFields.setVisible(true);
-					isChild = true;
-					// documentFields.setLayoutY(134.00);
-				} else {
-					isChild = false;
-					childSpecificFields.setVisible(false);
-					// documentFields.setLayoutY(25.00);
-				}
 			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
@@ -1353,89 +1324,16 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
 
-		boolean gotoNext = false;
-		if (validateRegex(fullName, RegistrationConstants.FULL_NAME_REGEX)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
-
-			fullName.requestFocus();
-		} else {
-			if (validateAgeOrDob()) {
-				if (gender.getValue() == null) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.GENDER_EMPTY);
-
-					gender.requestFocus();
-				} else {
-					if (validateRegex(addressLine1, RegistrationConstants.ADDRESS_LINE1_REGEX)) {
-
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY
-								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
-						addressLine1.requestFocus();
-					} else {
-						if (validateRegex(region, "[^$]+")) {
-
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.REGION_EMPTY);
-							region.requestFocus();
-						} else {
-							if (validateRegex(city, "^[^$]+")) {
-
-								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CITY_EMPTY);
-								city.requestFocus();
-							} else {
-								if (validateRegex(province, "[^$]+")) {
-
-									generateAlert(RegistrationConstants.ALERT_ERROR,
-											RegistrationConstants.PROVINCE_EMPTY);
-									province.requestFocus();
-								} else {
-									if (validateRegex(postalCode, RegistrationConstants.POSTAL_CODE_REGEX)) {
-										generateAlert(RegistrationConstants.ALERT_ERROR,
-												RegistrationConstants.POSTAL_CODE_EMPTY);
-										postalCode.requestFocus();
-									} else {
-										if (validateRegex(localAdminAuthority, "[^$]+")) {
-											generateAlert(RegistrationConstants.ALERT_ERROR,
-													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY);
-											localAdminAuthority.requestFocus();
-										} else {
-											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
-
-												generateAlert(RegistrationConstants.ALERT_ERROR,
-														RegistrationConstants.MOBILE_NUMBER_EMPTY + " "
-																+ RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
-												mobileNo.requestFocus();
-											} else {
-												if (validateRegex(emailId, RegistrationConstants.EMAIL_ID_REGEX)) {
-
-													generateAlert(RegistrationConstants.ALERT_ERROR,
-															RegistrationConstants.EMAIL_ID_EMPTY + " "
-																	+ RegistrationConstants.EMAIL_ID_EXAMPLE);
-													emailId.requestFocus();
-												} else {
-													if (validateRegex(cniOrPinNumber,
-															RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
-
-														generateAlert(RegistrationConstants.ALERT_ERROR,
-																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY + " "
-																		+ RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
-														cniOrPinNumber.requestFocus();
-													} else {
-														gotoNext = true;
-													}
-
-												}
-
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-			}
-		}
+		boolean gotoNext = true;
+		List<String> excludedIds = new ArrayList<String>();
+		excludedIds.add("preRegistrationId");
+		excludedIds.add("region");
+		excludedIds.add("city");
+		excludedIds.add("province");
+		excludedIds.add("localAdminAuthority");
+		excludedIds.add("virtualKeyboard");
+		validation.setChild(isChild);
+		gotoNext = validation.validateTheFields(demoGraphicPane1, excludedIds, gotoNext);
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
 		return gotoNext;
@@ -1448,20 +1346,13 @@ public class RegistrationController extends BaseController {
 	 */
 
 	private boolean validateDemographicPaneTwo() {
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
-		boolean gotoNext = false;
+		boolean gotoNext = true;
+		List<String> excludedIds = new ArrayList<String>();
+		gotoNext = validation.validateTheFields(demoGraphicPane2, excludedIds, gotoNext);
 
-		if (isChild && validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
-			parentName.requestFocus();
-		} else if (isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-			uinId.requestFocus();
-		} else {
-			gotoNext = documentScanController.validateDocuments();
-		}
 		return gotoNext;
 	}
 
@@ -1501,32 +1392,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
-	}
-
-	private boolean validateAgeOrDob() {
-		boolean gotoNext = false;
-		if (toggleAgeOrDobField) {
-			if (validateRegex(ageField, RegistrationConstants.AGE_REGEX)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
-
-				ageField.requestFocus();
-			} else {
-				if (Integer.parseInt(ageField.getText()) < Integer
-						.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-					childSpecificFields.setVisible(true);
-				}
-				gotoNext = true;
-			}
-		} else if (!toggleAgeOrDobField) {
-			if (ageDatePicker.getValue() == null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DATE_OF_BIRTH_EMPTY);
-
-				ageDatePicker.requestFocus();
-			} else {
-				gotoNext = true;
-			}
-		}
-		return gotoNext;
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {
@@ -1650,7 +1515,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1683,7 +1549,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1755,7 +1622,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1764,7 +1632,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);

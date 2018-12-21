@@ -36,13 +36,15 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * This controller class is to handle the screen of the Demographic document section details
+ * This controller class is to handle the screen of the Demographic document
+ * section details
  * 
  * @author M1045980
  * 
@@ -51,9 +53,9 @@ import javafx.stage.Stage;
  */
 @Controller
 public class DocumentScanController extends BaseController {
-	
+
 	private boolean isChild;
-	
+
 	@FXML
 	private ComboBox<String> poaDocuments;
 
@@ -71,7 +73,7 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private ScrollPane poiScroll;
-	
+
 	private String selectedDocument;
 
 	@Autowired
@@ -79,7 +81,7 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
-	
+
 	@FXML
 	private ComboBox<String> porDocuments;
 
@@ -97,7 +99,7 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private ScrollPane dobScroll;
-	
+
 	@FXML
 	protected Button poaScanBtn;
 	@FXML
@@ -106,13 +108,15 @@ public class DocumentScanController extends BaseController {
 	protected Button porScanBtn;
 	@FXML
 	protected Button dobScanBtn;
-	
+	@FXML
+	protected AnchorPane documentScan;
+
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-	
+
 	@Value("${SCROLL_CHECK}")
 	public int scrollCheck;
-	
+
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -122,7 +126,6 @@ public class DocumentScanController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-
 
 			isChild = true;
 			loadListOfDocuments();
@@ -134,7 +137,6 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	
 	private void setPreviewContent() {
 		poaScanBtn.setVisible(false);
 		poiScanBtn.setVisible(false);
@@ -248,15 +250,19 @@ public class DocumentScanController extends BaseController {
 					switch (selectedDocument) {
 					case RegistrationConstants.POA_DOCUMENT:
 						attachDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
+						SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
 						break;
 					case RegistrationConstants.POI_DOCUMENT:
 						attachDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
+						SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
 						break;
 					case RegistrationConstants.POR_DOCUMENT:
 						attachDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
+						SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
 						break;
 					case RegistrationConstants.DOB_DOCUMENT:
 						attachDocuments(dobDocuments.getValue(), dobBox, dobScroll, byteArray);
+						SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 						break;
 					default:
 					}
@@ -330,7 +336,6 @@ public class DocumentScanController extends BaseController {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
-
 		gridPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
 
@@ -347,7 +352,7 @@ public class DocumentScanController extends BaseController {
 			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		}
 	}
-
+	
 	/**
 	 * This method will set scrollbar policy for scroll pane
 	 */
@@ -474,7 +479,7 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * Loading the the labels of local language fields
@@ -499,7 +504,6 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-
 	public boolean validateDocuments() {
 		if (poaBox.getChildren().isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
@@ -511,20 +515,44 @@ public class DocumentScanController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
 				} else {
 					if (dobBox.getChildren().isEmpty()) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.DOB_DOCUMENT_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
 					} else {
 						return true;
 					}
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
+
+	protected void prepareEditPageContent() {
+		if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
+				&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
+						.getDocumentDetailsDTO() != null) {
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
+					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
+					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
+					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
+			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
+					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
+		}
+		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));
+		poiDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poi"));
+		porDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("por"));
+		dobDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("dob"));
+
+	}
+
 }

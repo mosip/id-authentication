@@ -9,7 +9,7 @@
 <?import javafx.collections.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane layoutX="36.0" layoutY="134.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" prefHeight="123.0" prefWidth="389.0" fx:controller="io.mosip.registration.controller.reg.DocumentScanController">
+<AnchorPane fx:id="documentScan" layoutX="36.0" layoutY="134.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" prefHeight="123.0" prefWidth="389.0" fx:controller="io.mosip.registration.controller.reg.DocumentScanController">
                       <children>
                       <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
                             <ScrollPane fx:id="poaScroll" layoutX="172.0" layoutY="12.0" prefViewportHeight="50.0" prefViewportWidth="150.0" styleClass="scanScrollPane">
