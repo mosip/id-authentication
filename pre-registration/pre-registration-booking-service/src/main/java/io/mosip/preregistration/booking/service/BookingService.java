@@ -1,6 +1,7 @@
 package io.mosip.preregistration.booking.service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
@@ -360,7 +362,7 @@ public class BookingService {
 		try {
 			requestMap.put("id", bookingDTO.getId());
 			requestMap.put("ver", bookingDTO.getVer());
-			requestMap.put("reqTime", bookingDTO.getReqTime());
+			requestMap.put("reqTime", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(bookingDTO.getReqTime()));
 			requestMap.put("request", bookingDTO.getRequest().toString());
 			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 			System.out.println("requestValidatorFlag: " + requestValidatorFlag);
@@ -525,6 +527,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<PreRegResponseDto> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: "+uriBuilder);
 			ResponseEntity<PreRegResponseDto<PreRegistartionStatusDTO>> respEntity = (ResponseEntity) restTemplate
 					.exchange(uriBuilder, HttpMethod.GET, httpEntity, PreRegResponseDto.class);
 
@@ -535,6 +538,7 @@ public class BookingService {
 			statusCode = preRegResponsestatusDto.getStatusCode();
 
 		} catch (RestClientException e) {
+			e.printStackTrace();
 			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.toString(),
 					ErrorMessages.DEMOGRAPHIC_GET_STATUS_FAILED.toString(), e.getCause());
 		}
@@ -564,15 +568,15 @@ public class BookingService {
 				if (!slotExistsFlag) {
 					bookingPK.setPreregistrationId(bookingRequestDTO.getPre_registration_id());
 
-					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-					bookingPK.setBookingDateTime(LocalDateTime.parse(bookingDTO.getReqTime(), format));
+					//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+					bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime()));
 
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
 					entity.setStatus_code(StatusCodes.Booked.toString().trim());
 					entity.setLang_code("12L");
 					entity.setCrBy("987654321");
-					entity.setCrDate(Timestamp.valueOf(LocalDateTime.parse(bookingDTO.getReqTime())));
+					entity.setCrDate(Timestamp.valueOf(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
 					entity.setRegDate(LocalDate.parse(registrationDTO.getReg_date()));
 					entity.setSlotFromTime(LocalTime.parse(registrationDTO.getSlotFromTime()));
 					entity.setSlotToTime(LocalTime.parse(registrationDTO.getSlotToTime()));
@@ -655,6 +659,8 @@ public class BookingService {
 			requestMap.put("ver", requestdto.getVer());
 			requestMap.put("reqTime", requestdto.getReqTime());
 			requestMap.put("request", requestdto.getRequest().toString());
+			System.out.println("requestMap: "+requestMap);
+			System.out.println("requiredRequestMap: "+requiredRequestMap);
 			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 			CancelBookingDTO cancelBookingDTO = requestdto.getRequest();
 			if (requestValidatorFlag) {
