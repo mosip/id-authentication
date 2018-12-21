@@ -6,11 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -18,6 +16,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -32,6 +31,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  * The Class DemoDedupe.
  *
  * @author M1048358 Alok Ranjan
+ * @author M1048860 Kiran Raj
  */
 @Component
 public class DemoDedupe {
@@ -70,13 +70,14 @@ public class DemoDedupe {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The packet info dao. */
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
 	/**
 	 * Perform demodedupe.
-	 * 
-	 * @param refId
+	 *
+	 * @param refId the ref id
 	 * @return duplicate Ids
 	 */
 	public List<DemographicInfoDto> performDedupe(String refId) {
@@ -113,8 +114,10 @@ public class DemoDedupe {
 		boolean isDuplicate = false;
 
 		for (String duplicateUin : duplicateUins) {
-			if (authenticateBiometric(applicantfingerprintImageNames, PacketFiles.FINGER.name(), duplicateUin, regId)
-					|| authenticateBiometric(applicantIrisImageNames, PacketFiles.IRIS.name(), duplicateUin, regId)) {
+			setAuthDto();
+
+			if (authenticateFingerBiometric(applicantfingerprintImageNames, PacketFiles.FINGER.name(), duplicateUin, regId)
+					|| authenticateIrisBiometric(applicantIrisImageNames, PacketFiles.IRIS.name(), duplicateUin, regId)) {
 				isDuplicate = true;
 				break;
 			}
@@ -141,9 +144,81 @@ public class DemoDedupe {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean authenticateBiometric(List<String> biometriclist, String type, String duplicateUin, String regId)
+	private boolean authenticateFingerBiometric(List<String> biometriclist, String type, String duplicateUin, String regId)
 			throws ApisResourceAccessException, IOException {
-		boolean isDuplicate = false;
+
+		for (String biometricName : biometriclist) {
+			String biometric = BIOMETRIC_APPLICANT + biometricName.toUpperCase();
+
+			if (adapter.checkFileExistence(regId, biometric)) {
+				InputStream biometricFileName = adapter.getFile(regId, biometric);
+				byte[] fingerPrintByte = IOUtils.toByteArray(biometricFileName);
+
+				setAuthDto();
+				identityInfoDTO.setValue(new String(fingerPrintByte));
+				List<IdentityInfoDTO> biometricData = new ArrayList<>();
+				biometricData.add(identityInfoDTO);
+
+				//authTypeDTO.setFingerPrint(true);
+				switch (biometricName.toUpperCase()) {
+				case JsonConstant.LEFTTHUMB:
+					identityDTO.setLeftThumb(biometricData);
+					break;
+				case JsonConstant.LEFTINDEX:
+					identityDTO.setLeftIndex(biometricData);
+					break;
+				case JsonConstant.LEFTMIDDLE:
+					identityDTO.setLeftMiddle(biometricData);
+					break;
+				case JsonConstant.LEFTLITTLE:
+					identityDTO.setLeftLittle(biometricData);
+					break;
+				case JsonConstant.LEFTRING:
+					identityDTO.setLeftRing(biometricData);
+					break;
+				case JsonConstant.RIGHTTHUMB:
+					identityDTO.setRightThumb(biometricData);
+					break;
+				case JsonConstant.RIGHTINDEX:
+					identityDTO.setRightIndex(biometricData);
+					break;
+				case JsonConstant.RIGHTMIDDLE:
+					identityDTO.setRightMiddle(biometricData);
+					break;
+				case JsonConstant.RIGHTLITTLE:
+					identityDTO.setRightLittle(biometricData);
+					break;
+				case JsonConstant.RIGHTRING:
+					identityDTO.setRightRing(biometricData);
+					break;
+				default:
+					break;
+				}
+
+			}
+		}
+
+		return validateBiometric(duplicateUin);
+
+
+
+	}
+
+	/**
+	 * Authenticate iris biometric.
+	 *
+	 * @param biometriclist the biometriclist
+	 * @param type the type
+	 * @param duplicateUin the duplicate uin
+	 * @param regId the reg id
+	 * @return true, if successful
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	private boolean authenticateIrisBiometric(List<String> biometriclist, String type, String duplicateUin, String regId)
+			throws ApisResourceAccessException, IOException {
+		// authTypeDTO.setIris(true);
+
 		for (String biometricName : biometriclist) {
 			String biometric = BIOMETRIC_APPLICANT + biometricName.toUpperCase();
 
@@ -151,140 +226,72 @@ public class DemoDedupe {
 				InputStream biometricFileName = adapter.getFile(regId, biometric);
 				byte[] biometricByte = IOUtils.toByteArray(biometricFileName);
 
-				if (validateBiometric(biometricName, biometricByte, type, duplicateUin)) {
-					isDuplicate = true;
-					break;
+				setAuthDto();
+				identityInfoDTO.setValue(new String(biometricByte));
+				List<IdentityInfoDTO> biometricData = new ArrayList<>();
+				biometricData.add(identityInfoDTO);
+
+
+
+				if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(biometricName.toUpperCase())) {
+					identityDTO.setLeftEye(biometricData);
+				} 
+				if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(biometricName.toUpperCase())) {
+					identityDTO.setRightEye(biometricData);
 				}
 			}
 		}
 
-		return isDuplicate;
+
+
+		return validateBiometric( duplicateUin);
 	}
 
 	/**
 	 * Validate biometric.
 	 *
-	 * @param biometricName
-	 *            the biometric name
-	 * @param biometricByte
-	 *            the biometric byte
-	 * @param type
-	 *            the type
-	 * @param duplicateUin
-	 *            the duplicate id
+	 * @param duplicateUin the duplicate uin
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws ApisResourceAccessException             the apis resource access exception
 	 */
-	private boolean validateBiometric(String biometricName, byte[] biometricByte, String type, String duplicateUin)
+	private boolean validateBiometric(String duplicateUin)
 			throws ApisResourceAccessException {
 
-		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String date = simpleDateFormat.format(new Date());
 
-		authRequestDTO.setId("mosip.internal.auth");
 		authRequestDTO.setIdvId(duplicateUin);
-		authRequestDTO.setIdvIdType("D");
-		//authRequestDTO.setVer("1.0");
-		authRequestDTO.setReqTime(date);
 
-		authTypeDTO.setAddress(false);
-		authTypeDTO.setBio(false);
-		//authTypeDTO.setFace(false);
-		//authTypeDTO.setFingerPrint(false);
-		authTypeDTO.setFullAddress(false);
-		//authTypeDTO.setIris(false);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPersonalIdentity(false);
-		authTypeDTO.setPin(false);
 		authRequestDTO.setAuthType(authTypeDTO);
-
-		identityInfoDTO.setValue(new String(biometricByte));
-		List<IdentityInfoDTO> biometricData = new ArrayList<>();
-		biometricData.add(identityInfoDTO);
-
-		setBiometric(biometricName, biometricData, type);
-
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 
 		// sending request to get authentication response
-		/*AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
+		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
-				&& ("y").equalsIgnoreCase(authResponseDTO.getStatus());*/
-		return false;
+				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
 
 	/**
-	 * Sets the biometric.
-	 *
-	 * @param biometricName
-	 *            the biometric name
-	 * @param biometricData
-	 *            the biometric data
-	 * @param type
-	 *            the type
+	 * Sets the auth dto.
 	 */
-	private void setBiometric(String biometricName, List<IdentityInfoDTO> biometricData, String type) {
-		if (type.equalsIgnoreCase(PacketFiles.IRIS.name())) {
-			//authTypeDTO.setIris(true);
-			setIrisBiometric(biometricName, biometricData);
-		} else if (type.equalsIgnoreCase(PacketFiles.FINGER.name())) {
-			//authTypeDTO.setFingerPrint(true);
-			setFingerBiometric(biometricName, biometricData);
-		}
-	}
+	public void setAuthDto() {
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String date = simpleDateFormat.format(new Date());
+		authRequestDTO.setReqTime(date);
+		authRequestDTO.setId("mosip.internal.auth");
+		authRequestDTO.setIdvIdType("D");
+		//authRequestDTO.setVer("1.0");
+		authTypeDTO.setAddress(false);
+		authTypeDTO.setBio(false);
+		authTypeDTO.setFullAddress(false);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPersonalIdentity(false);
+		authTypeDTO.setPin(false);
+		//authTypeDTO.setFace(false);
+		//authTypeDTO.setFingerPrint(false);
+		//authTypeDTO.setIris(false);
 
-	/**
-	 * Sets the iris biometric.
-	 *
-	 * @param biometricName
-	 *            the biometric name
-	 * @param biometricData
-	 *            the biometric data
-	 */
-	private void setIrisBiometric(String biometricName, List<IdentityInfoDTO> biometricData) {
-		if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftEye(biometricData);
-
-		} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightEye(biometricData);
-		}
-	}
-
-	/**
-	 * Sets the finger biometric.
-	 *
-	 * @param biometricName
-	 *            the biometric name
-	 * @param biometricData
-	 *            the biometric data
-	 */
-	private void setFingerBiometric(String biometricName, List<IdentityInfoDTO> biometricData) {
-		if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftThumb(biometricData);
-		} else if (PacketFiles.LEFTINDEX.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftIndex(biometricData);
-		} else if (PacketFiles.LEFTMIDDLE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftMiddle(biometricData);
-		} else if (PacketFiles.LEFTLITTLE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftLittle(biometricData);
-		} else if (PacketFiles.LEFTRING.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setLeftRing(biometricData);
-		} else if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightThumb(biometricData);
-		} else if (PacketFiles.RIGHTINDEX.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightIndex(biometricData);
-		} else if (PacketFiles.RIGHTMIDDLE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightMiddle(biometricData);
-		} else if (PacketFiles.RIGHTLITTLE.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightLittle(biometricData);
-		} else if (PacketFiles.RIGHTRING.name().equalsIgnoreCase(biometricName)) {
-			identityDTO.setRightRing(biometricData);
-		}
 	}
 
 }
