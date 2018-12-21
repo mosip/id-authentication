@@ -119,7 +119,9 @@ public class AuthenticationController extends BaseController {
 
 	private List<String> userAuthenticationTypeList;
 
-	private Stage primaryStage;
+	private int authCount = 0;
+
+	private String userNameField;
 
 	@Autowired
 	BaseController baseController;
@@ -166,6 +168,7 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
+							userNameField = otpUserId.getText();
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ALERT_ERROR,
@@ -195,8 +198,12 @@ public class AuthenticationController extends BaseController {
 	}
 
 	public void validatePwd() {
-		if (validatePwd(username.getText(), password.getText())) {
+		String status=validatePwd(username.getText(), password.getText());
+		if (RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
+			userNameField = username.getText();
 			loadNextScreen();
+		} else if(RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)){
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
 		}
 	}
 
@@ -211,6 +218,7 @@ public class AuthenticationController extends BaseController {
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
+						userNameField = fpUserId.getText();
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
@@ -236,7 +244,6 @@ public class AuthenticationController extends BaseController {
 	private void getAuthenticationModes(String authType) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
-
 		if (ProcessNames.EXCEPTION.getType().equals(authType)) {
 
 			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
@@ -256,7 +263,7 @@ public class AuthenticationController extends BaseController {
 	private void loadNextScreen() {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
-
+		authCount++;
 		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
@@ -277,7 +284,7 @@ public class AuthenticationController extends BaseController {
 			} else {
 				if (isEODAuthentication) {
 
-					baseController.getFingerPrintStatus(primaryStage);
+					baseController.getFingerPrintStatus();
 				} else {
 					submitRegistration();
 				}
@@ -288,7 +295,8 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to enable the respective authentication mode
 	 * 
-	 * @param loginMode - name of authentication mode
+	 * @param loginMode
+	 *            - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -321,12 +329,18 @@ public class AuthenticationController extends BaseController {
 		fingerprintBasedLogin.setVisible(false);
 		otp.clear();
 		otpUserId.clear();
+		otpUserId.setEditable(false);
 		if (isSupervisor) {
 			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			otpUserId.setEditable(true);
-		} else {
+			if (authCount > 1 && !userNameField.isEmpty()) {
+				otpUserId.setText(userNameField);
+			} else {
+				otpUserId.setEditable(true);
+			}
+		} else
+
+		{
 			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
-			otpUserId.setEditable(false);
 		}
 	}
 
@@ -342,12 +356,16 @@ public class AuthenticationController extends BaseController {
 		fingerprintBasedLogin.setVisible(false);
 		username.clear();
 		password.clear();
+		username.setEditable(false);
 		if (isSupervisor) {
 			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-			username.setEditable(true);
+			if (authCount > 1 && !userNameField.isEmpty()) {
+				username.setText(userNameField);
+			} else {
+				username.setEditable(true);
+			}
 		} else {
 			username.setText(SessionContext.getInstance().getUserContext().getUserId());
-			username.setEditable(false);
 		}
 	}
 
@@ -362,20 +380,24 @@ public class AuthenticationController extends BaseController {
 		otpBasedLogin.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
+		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			fpUserId.setEditable(true);
 			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
+			if (authCount > 1 && !userNameField.isEmpty()) {
+				fpUserId.setText(userNameField);
+			} else {
+				fpUserId.setEditable(true);
+			}
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
-			fpUserId.setEditable(false);
 		}
 	}
 
 	/**
 	 * to check the role of supervisor in case of biometric exception
 	 * 
-	 * @param userId - username entered by the supervisor in the authentication
-	 *               screen
+	 * @param userId
+	 *            - username entered by the supervisor in the authentication screen
 	 * @return boolean variable "true", if the person is authenticated as supervisor
 	 *         or "false", if not
 	 */
@@ -394,7 +416,8 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to capture and validate the fingerprint for authentication
 	 * 
-	 * @param userId - username entered in the textfield
+	 * @param userId
+	 *            - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
@@ -473,7 +496,7 @@ public class AuthenticationController extends BaseController {
 	 * @param event
 	 */
 	public void exitWindow(ActionEvent event) {
-		primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		Stage primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		primaryStage.close();
 
 	}
@@ -483,16 +506,17 @@ public class AuthenticationController extends BaseController {
 	 * 
 	 * @param parentControllerObj
 	 */
-	public void init(BaseController parentControllerObj, String authType, Stage stage) {
+	public void init(BaseController parentControllerObj, String authType) {
+		authCount=0;
 		isSupervisor = true;
 		isEODAuthentication = true;
-		primaryStage = stage;
-		getAuthenticationModes(authType);
 		baseController = parentControllerObj;
+		getAuthenticationModes(authType);
 
 	}
 
 	public void initData(String authType) {
+		authCount=0;
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = false;
 		getAuthenticationModes(authType);

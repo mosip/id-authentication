@@ -249,7 +249,7 @@ public class BaseController {
 	 *            the primary stage
 	 * @return the finger print status
 	 */
-	public void getFingerPrintStatus(Stage primaryStage) {
+	public void getFingerPrintStatus() {
 
 	}
 
@@ -343,9 +343,11 @@ public class BaseController {
 	/**
 	 * to validate the password in case of password based authentication
 	 */
-	protected Boolean validatePwd(String username, String password) {
+	protected String validatePwd(String username, String password) {
+		
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
+		String validationStatus="";
 		if (username.isEmpty() && password.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (username.isEmpty()) {
@@ -372,15 +374,15 @@ public class BaseController {
 
 			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
-			} else if (userStatus.equals(RegistrationConstants.BLOCKED_USER_ERROR)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.BLOCKED_USER_ERROR);
 			} else {
 				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
-					return true;
-				} 
+					validationStatus = "Success";
+				} else {
+					validationStatus="Fail";
+				}
 			}
 		}
-		return false;
+		return validationStatus;
 	}
 
 	/**

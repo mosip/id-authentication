@@ -23,7 +23,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
 import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -106,13 +105,13 @@ public class RegistrationPendingActionController extends BaseController implemen
 	/** The image view. */
 	@FXML
 	private ImageView pendingActionImageView;
-	/** 
-	 * The approve registration root sub pane. 
+	/**
+	 * The approve registration root sub pane.
 	 */
 	@FXML
 	private AnchorPane pendingActionRegistrationRootSubPane;
-	/** 
-	 * The image anchor pane. 
+	/**
+	 * The image anchor pane.
 	 */
 	@FXML
 	private AnchorPane pendingActionImageAnchorPane;
@@ -121,9 +120,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	@Autowired
 	private RejectionController rejectionController;
 
-	/** object for finger print Authentication controller. */
-	@Autowired
-	private FingerPrintAuthenticationController fpcontroller;
+	private Stage primaryStage;
 
 	/** The approvalmap list. */
 	private List<Map<String, String>> approvalmapList = null;
@@ -251,7 +248,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * {@code updateStatus} is to update the status of registration.
 	 *
 	 * @param event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -271,12 +269,6 @@ public class RegistrationPendingActionController extends BaseController implemen
 					break;
 				}
 			}
-   
-											
-																																						
-																							 
-												   
-						   
 
 			Map<String, String> map = new HashMap<>();
 			map.put(RegistrationConstants.REGISTRATIONID,
@@ -290,77 +282,23 @@ public class RegistrationPendingActionController extends BaseController implemen
 			authenticateBtn.setVisible(true);
 
 		} else {
-									 
-	
-				
-								   
-	
-																		 
-	   
-																		 
-																			
 
 			try {
-												  
-																				 
-																																				
 
 				Stage primarystage = new Stage();
-					  
-																   
 
 				if (btn.getId().equals(rejectionBtn.getId())) {
-								  
-							  
 
 					rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage,
 							approvalmapList, pendingActionTable, "RegistrationPendingActionController");
-   
-																		
-												
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
 					rejectionBtn.setSelected(true);
 					approvalBtn.setSelected(false);
 					authenticateBtn.setVisible(true);
-	
-		  
-													   
-																		
-																	 
 
 				} else if (btn.getId().equals(authenticateBtn.getId())) {
-																																
-																																																													   
-   
-																																																															   
-					   
-					
-																		
-																   
-  
-
-																   
-																		
-																		   
-				 
-	   
-									
-												  
-										 
-																																				  
-							   
-									
-									
-																	   
-																																																   
-								
-													
-												   
-					   
-																				 
-					fpcontroller.init(this);
 
 					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
 
@@ -379,10 +317,13 @@ public class RegistrationPendingActionController extends BaseController implemen
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
@@ -397,6 +338,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			primarystage.initOwner(fXComponents.getStage());
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
+			this.primaryStage = primarystage;
 
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
@@ -413,7 +355,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * @see io.mosip.registration.controller.BaseController#getFingerPrintStatus()
 	 */
 	@Override
-	public void getFingerPrintStatus(Stage primaryStage) {
+	public void getFingerPrintStatus() {
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been started");
 
@@ -421,7 +363,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
-		generateAlert(RegistrationConstants.ALERT_INFORMATION,RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
 		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,

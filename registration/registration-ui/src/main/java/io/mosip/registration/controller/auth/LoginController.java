@@ -235,9 +235,10 @@ public class LoginController extends BaseController implements Initializable {
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 		if(!serverStatus) {
-			if(validatePwd(userId.getText(), password.getText())) {
+			String status = validatePwd(userId.getText(), password.getText());
+			if(RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, "");
-			} else {
+			} else if(RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)){
 				offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
 			}
 		}
@@ -261,9 +262,7 @@ public class LoginController extends BaseController implements Initializable {
 						RegistrationConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
 
-		} else {
-			
-		}
+		} 
 	}
 
 	/**

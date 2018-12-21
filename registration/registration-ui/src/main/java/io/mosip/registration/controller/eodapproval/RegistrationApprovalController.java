@@ -134,6 +134,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	/** object for finger print authentication controller. */
 	@Autowired
 	private AuthenticationController authenticationController;
+	
+	private Stage primaryStage;
 
 	/*
 	 * (non-Javadoc)
@@ -315,7 +317,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
 
-					authenticationController.init(this,ProcessNames.EOD.getType(),primarystage);
+					authenticationController.init(this,ProcessNames.EOD.getType());
 					
 					authenticateBtn.setSelected(false);
 
@@ -352,6 +354,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			primarystage.initOwner(fXComponents.getStage());
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
+			this.primaryStage = primarystage;
 
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
@@ -369,7 +372,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * @see io.mosip.registration.controller.BaseController#getFingerPrintStatus()
 	 */
 	@Override
-	public void getFingerPrintStatus(Stage primaryStage) {
+	public void getFingerPrintStatus() {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status started");
 

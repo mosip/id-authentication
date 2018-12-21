@@ -18,17 +18,16 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.device.FingerPrintAuthenticationController;
+import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -96,6 +95,11 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private AnchorPane reRegistrationRootPane;
 
 	private Map<String, String> reRegisterStatusMap = new HashMap<>();
+
+	@Autowired
+	private AuthenticationController authenticationController;
+
+	private Stage primaryStage;
 
 	/*
 	 * (non-Javadoc)
@@ -192,28 +196,29 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
 
-		Parent ackRoot;
 		try {
-			Stage primaryStage = new Stage();
-			primaryStage.initStyle(StageStyle.UNDECORATED);
-			FXMLLoader fxmlLoader = BaseController
-					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
-			ackRoot = fxmlLoader.load();
-			primaryStage.setResizable(false);
-			Scene scene = new Scene(ackRoot);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.initModality(Modality.WINDOW_MODAL);
-			primaryStage.initOwner(fXComponents.getStage());
-			primaryStage.show();
-			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
-			fpcontroller.init(this);
+			Stage primarystage = new Stage();
+			showAuthenticatePage(primarystage);
+			authenticationController.init(this, ProcessNames.EOD.getType());
 
 		} catch (IOException e) {
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
 					e.getMessage());
 		}
+	}
+
+	private void showAuthenticatePage(Stage primarystage) throws IOException {
+		AnchorPane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+		Scene scene = new Scene(authRoot);
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		primarystage.initStyle(StageStyle.UNDECORATED);
+		primarystage.setScene(scene);
+		primarystage.initModality(Modality.WINDOW_MODAL);
+		primarystage.initOwner(fXComponents.getStage());
+		primarystage.show();
+		primarystage.resizableProperty().set(false);
+		this.primaryStage = primarystage;
 	}
 
 	/**
@@ -223,7 +228,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 
 	@Override
-	public void getFingerPrintStatus(Stage primaryStage) {
+	public void getFingerPrintStatus() {
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
@@ -240,13 +245,15 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
-		eodController.getReRegisterTitledPane().setText("Re-Register ( "+reRegistrationPacketsList.size()+" )");
+
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
 			ObservableList<PacketStatusDTO> observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
+			eodController.getReRegisterTitledPane().setText("Re-Register ( " + reRegistrationPacketsList.size() + " )");
 		} else {
+			eodController.getReRegisterTitledPane().setText("Re-Register");
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}
