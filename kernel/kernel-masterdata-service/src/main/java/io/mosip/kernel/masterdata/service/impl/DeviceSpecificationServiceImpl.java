@@ -140,8 +140,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification entity = deviceSpecificationRepository.findById(DeviceSpecification.class,
-					deviceSpecification.getRequest().getId());
+			DeviceSpecification entity = deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
 				deviceSpecificationRepository.update(entity);
