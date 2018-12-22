@@ -1,7 +1,7 @@
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import io.mosip.preregistration.core.exceptions.dto.ExceptionJSONInfo;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class BookingResponseDTO<T> implements Serializable{
 
 	private Boolean status;
 
-	private Timestamp resTime;
+	private Date resTime;
 
 	private T response;
 

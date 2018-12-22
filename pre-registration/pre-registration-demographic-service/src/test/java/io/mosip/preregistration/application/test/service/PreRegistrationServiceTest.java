@@ -86,7 +86,7 @@ public class PreRegistrationServiceTest {
 
 	@MockBean
 	private DemographicRepository demographicRepository;
-	
+
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
 
@@ -214,8 +214,7 @@ public class PreRegistrationServiceTest {
 		listOfCreatePreRegistrationDTO.add(createPreRegistrationDTO);
 		responseDTO.setResponse(listOfCreatePreRegistrationDTO);
 
-		ResponseDTO<CreateDemographicDTO> actualRes = preRegistrationService
-				.addPreRegistration(demographicRequestDTO);
+		ResponseDTO<CreateDemographicDTO> actualRes = preRegistrationService.addPreRegistration(demographicRequestDTO);
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
 	}
 
@@ -251,7 +250,7 @@ public class PreRegistrationServiceTest {
 		createPreRegistrationDTO.setUpdatedDateTime(times);
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		ResponseDTO<CreateDemographicDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
-		assertEquals(res.getResponse().get(0).getPreRegistrationId(), "1234");
+		assertEquals("1234",res.getResponse().get(0).getPreRegistrationId());
 	}
 
 	@Test(expected = JsonValidationException.class)
@@ -297,8 +296,7 @@ public class PreRegistrationServiceTest {
 		List<CreateDemographicDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(createPreRegistrationDTO);
 		responseDTO.setResponse(listOfCreatePreRegistrationDTO);
-		ResponseDTO<CreateDemographicDTO> actualRes = preRegistrationService
-				.addPreRegistration(demographicRequestDTO);
+		ResponseDTO<CreateDemographicDTO> actualRes = preRegistrationService.addPreRegistration(demographicRequestDTO);
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
 
 	}
@@ -314,7 +312,7 @@ public class PreRegistrationServiceTest {
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenThrow(exception);
 		ResponseDTO<CreateDemographicDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
-		assertEquals(res.getStatus(), "false");
+		assertEquals("false",res.getStatus());
 	}
 
 	@Test
@@ -340,7 +338,7 @@ public class PreRegistrationServiceTest {
 
 		ResponseEntity<BookingResponseDTO> res = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
 
-		Mockito.when(demographicRepository.findByuserId(userId)).thenReturn(userEntityDetails);
+		Mockito.when(demographicRepository.findByCreatedBy(userId)).thenReturn(userEntityDetails);
 
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(BookingResponseDTO.class))).thenReturn(res);
@@ -353,7 +351,7 @@ public class PreRegistrationServiceTest {
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationDetailsFailureTest() {
 		String userId = "12345";
-		Mockito.when(demographicRepository.findByuserId(Mockito.anyString()))
+		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString()))
 				.thenThrow(RecordNotFoundException.class);
 		preRegistrationService.getAllApplicationDetails(userId);
 
@@ -363,7 +361,7 @@ public class PreRegistrationServiceTest {
 	public void getApplicationDetailsInvalidRequestTest() {
 		InvalidRequestParameterException exception = new InvalidRequestParameterException(
 				ErrorCodes.PRG_PAM_APP_012.name(), ErrorMessages.MISSING_REQUEST_PARAMETER.name());
-		Mockito.when(demographicRepository.findByuserId("")).thenThrow(exception);
+		Mockito.when(demographicRepository.findByCreatedBy("")).thenThrow(exception);
 		preRegistrationService.getAllApplicationDetails("");
 	}
 
@@ -409,7 +407,7 @@ public class PreRegistrationServiceTest {
 		String userId = "9988905444";
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
-		Mockito.when(demographicRepository.findByuserId(ArgumentMatchers.any())).thenThrow(exception);
+		Mockito.when(demographicRepository.findByCreatedBy(ArgumentMatchers.any())).thenThrow(exception);
 		preRegistrationService.getAllApplicationDetails(userId);
 	}
 
