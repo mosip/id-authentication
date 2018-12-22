@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.application.controller.DemographicController;
-import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
@@ -73,9 +73,9 @@ public class DemographicControllerTest {
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
-		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
-		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
+		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
+		CreateDemographicDTO createDto = new CreateDemographicDTO();
 
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
@@ -106,9 +106,9 @@ public class DemographicControllerTest {
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
-		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
-		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
+		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
+		CreateDemographicDTO createDto = new CreateDemographicDTO();
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
@@ -204,9 +204,9 @@ public class DemographicControllerTest {
 	 */
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
-		List<CreatePreRegistrationDTO> saveList = new ArrayList<CreatePreRegistrationDTO>();
-		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
+		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
+		CreateDemographicDTO createDto = new CreateDemographicDTO();
 
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);

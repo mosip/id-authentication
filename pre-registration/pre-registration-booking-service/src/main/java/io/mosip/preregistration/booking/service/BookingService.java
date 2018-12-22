@@ -422,6 +422,7 @@ public class BookingService {
 				responseDTO.setResponse(respList);
 			}
 		} catch (DataAccessLayerException e) {
+			e.printStackTrace();
 			throw new DemographicStatusUpdationException("Table not accessable");
 		} catch (DateTimeException e) {
 			e.printStackTrace();
@@ -570,7 +571,7 @@ public class BookingService {
 
 					//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 					bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime()));
-
+					
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
 					entity.setStatus_code(StatusCodes.Booked.toString().trim());
