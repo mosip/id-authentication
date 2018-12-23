@@ -1,7 +1,7 @@
-package io.mosip.preregistration.core.exceptions;
+package io.mosip.preregistration.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.core.exceptions.util.PreIssuanceExceptionCodes;
+import io.mosip.preregistration.core.exception.util.PreIssuanceExceptionCodes;
 
 /**
  * UserAlreadyExists occurs when the user already registered

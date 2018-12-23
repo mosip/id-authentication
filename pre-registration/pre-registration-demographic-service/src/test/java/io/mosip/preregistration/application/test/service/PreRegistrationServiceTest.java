@@ -65,8 +65,8 @@ import io.mosip.preregistration.application.exception.system.SystemUnsupportedEn
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * Test class to test the PreRegistration Service methods

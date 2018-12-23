@@ -49,7 +49,7 @@ import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
 import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * DataSync Service

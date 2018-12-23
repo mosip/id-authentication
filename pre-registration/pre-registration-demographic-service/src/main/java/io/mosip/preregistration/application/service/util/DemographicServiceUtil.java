@@ -34,7 +34,7 @@ import io.mosip.preregistration.application.exception.OperationNotAllowedExcepti
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
  * @author Ravi C Balaji

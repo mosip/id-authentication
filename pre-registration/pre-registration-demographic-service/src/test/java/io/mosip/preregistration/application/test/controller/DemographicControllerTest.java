@@ -34,7 +34,7 @@ import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 

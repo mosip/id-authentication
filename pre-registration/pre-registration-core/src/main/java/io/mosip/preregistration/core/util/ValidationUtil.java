@@ -5,17 +5,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.mosip.preregistration.core.constants.RequestCodes;
+import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 public class ValidationUtil {
-
-	public ValidationUtil() {
-
+	private ValidationUtil() {
 	}
-
 	public static boolean emailValidator(String loginId) {
 		String emailExpression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 		Pattern pattern = Pattern.compile(emailExpression, Pattern.CASE_INSENSITIVE);
