@@ -82,7 +82,7 @@ import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PreRegistrationServiceTest {
+public class DemographicServiceTest {
 
 	@MockBean
 	private DemographicRepository demographicRepository;
