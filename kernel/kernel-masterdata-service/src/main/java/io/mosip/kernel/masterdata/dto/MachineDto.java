@@ -26,7 +26,7 @@ public class MachineDto {
 	 * Field for machine id
 	 */
 	@NotNull
-	@Size(min = 1, max = 36)
+	@Size(min = 1, max = 10)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 	/**

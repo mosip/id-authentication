@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
@@ -56,6 +57,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -264,8 +266,7 @@ public class MasterdataControllerTest {
 
 		Holiday holiday = new Holiday();
 		holiday.setId(1);
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
-		holiday.setHolidayName("Diwali");
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG","Diwali"));
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
@@ -464,9 +465,8 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
-						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n"
-						+ "  }\n" + "}"))
+						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
+						+ "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 
@@ -728,6 +728,31 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
+	@Test
+	public void testUpdateLocationDetails() throws Exception {
+		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testUpdateLocationDetailsException() throws Exception {
+		Mockito.when(locationService.updateLocationDetails(Mockito.any()))
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+	}
+
+	@Test
+	public void testDeleteLocationDetails() throws Exception {
+		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString()))
+				.thenReturn(new CodeResponseDto());
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/locations/KAR").contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+	
 	/**
 	 * 
 	 * @author M1043226
@@ -765,6 +790,7 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
 	}
+	
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
