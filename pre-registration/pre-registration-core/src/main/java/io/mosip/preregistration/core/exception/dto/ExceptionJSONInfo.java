@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.exceptions.dto;
+package io.mosip.preregistration.core.exception.dto;
 
 import java.io.Serializable;
 
