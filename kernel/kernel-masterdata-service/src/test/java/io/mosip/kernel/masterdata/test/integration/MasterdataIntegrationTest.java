@@ -2236,6 +2236,20 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 
 	}
+	
+	@Test
+	public void deleteMachineSpecificationExceptionTest() throws Exception {
+		List<Machine> machines = new ArrayList<Machine>();
+		Machine machine = new Machine();
+		machines.add(machine);
+		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(machineSpecification);
+		when(machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId()))
+				.thenReturn(machines);
+		when(machineSpecificationRepository.update(Mockito.any())).thenReturn(machineSpecification);
+		mockMvc.perform(delete("/v1.0/machinespecifications/MS001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+	}
 	// -------------------------MachineTest-----------------------------------------
 
 	@Test
@@ -2991,7 +3005,7 @@ public class MasterdataIntegrationTest {
 				.thenReturn(devices);
 		when(deviceSpecificationRepository.update(Mockito.any())).thenReturn(deviceSpecification);
 		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isInternalServerError());
 	}
 	/*------------------------------ template update and delete test-----------------------------*/
 	@Test
