@@ -105,7 +105,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		}
 		for (InternalRegistrationStatusDto entry : registrationStatusDtoList) {
 
-			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString()) + File.separator
+			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator
 					+ getFileName(entry.getRegistrationId());
 			File file = new File(filepath);
 			boolean isClean = false;
@@ -126,7 +126,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 					try {
 
-						fileManager.put(entry.getRegistrationId() + "_dec", decryptedData, DirectoryPathDto.VIRUS_SCAN);
+						fileManager.put(entry.getRegistrationId(), decryptedData, DirectoryPathDto.VIRUS_SCAN_DEC);
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

@@ -115,7 +115,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
-						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN);
+						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN_ENC);
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
 						dto.setRegistrationType(regEntity.getRegistrationType());
@@ -147,8 +147,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 								registrationId);
 					}
 				} else {
-					throw new DuplicateUploadRequestException(
-							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+					throw new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 			}
 		}
