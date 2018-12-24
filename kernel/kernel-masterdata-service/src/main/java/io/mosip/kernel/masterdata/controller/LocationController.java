@@ -42,8 +42,10 @@ public class LocationController {
 
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
-	 * @param langcode language code
-	 * @return  list of location hierarchies
+	 * 
+	 * @param langcode
+	 *            language code
+	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -52,17 +54,19 @@ public class LocationController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(@Valid@RequestBody RequestDto<LocationDto> locationRequestDto) {
-		
-		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),HttpStatus.CREATED);
+	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(
+			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
+
+		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),
+				HttpStatus.CREATED);
 	}
 
 	/**
 	 * 
 	 * @param locationCode
-	 *                location code
+	 *            location code
 	 * @param langCode
-	 *                language code
+	 *            language code
 	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/{locationcode}/{langcode}")
@@ -70,6 +74,20 @@ public class LocationController {
 			@PathVariable("langcode") String langCode) {
 
 		return locationHierarchyService.getLocationHierarchyByLangCode(locationCode, langCode);
+
+	}
+
+	/**
+	 * 
+	 * @author M1043226
+	 * @param hierarchyName
+	 *            hierarchy Name
+	 * @return list of location hierarchies
+	 */
+	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
+	public LocationResponseDto getLocationDataByHierarchyName(@PathVariable(value = "hierarchyname") String hierarchyName) {
+
+		return locationHierarchyService.getLocationDataByHierarchyName(hierarchyName);
 
 	}
 }

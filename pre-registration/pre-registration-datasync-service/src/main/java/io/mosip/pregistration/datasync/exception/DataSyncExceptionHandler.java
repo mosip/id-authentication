@@ -14,7 +14,7 @@ import io.mosip.pregistration.datasync.code.StatusCodes;
 import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
 import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * Exception Handler

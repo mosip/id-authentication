@@ -3,7 +3,6 @@ package io.mosip.kernel.idrepo.service.impl;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -30,7 +29,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,7 +42,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -56,6 +53,7 @@ import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -495,7 +493,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 			// Encrypt session Key using public Key
 			byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(
-					KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(getKey("publicKey"))),
+					KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(getKey("publicKey")))),
 					sessionKey.getEncoded());
 			mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, ENCRYPT_IDENTITY,
 					"encryptedsessionKey - \n" + Base64.getEncoder().encodeToString(encryptedsessionKey) + "\n");
@@ -541,7 +539,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								KeyFactory
 										.getInstance(
 												env.getProperty("mosip.kernel.keygenerator.asymmetric-algorithm-name"))
-										.generatePrivate(new PKCS8EncodedKeySpec(getKey("privateKey"))),
+										.generatePrivate(new PKCS8EncodedKeySpec(CryptoUtil.decodeBase64(getKey("privateKey")))),
 								Base64.getDecoder().decode(encryptedSessionKey));
 				mosipLogger.info(SESSION_ID, ID_REPO_SERVICE_IMPL, DECRYPT_ENTITY,
 						"sessionKey - \n" + Base64.getEncoder().encodeToString(sessionKey) + "\n");
@@ -571,15 +569,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	public byte[] getKey(String keyType) throws IdRepoAppException {
-		try {
-			String path = "classpath:" + keyType;
-			File file = ResourceUtils.getFile(path);
-			return Files.toByteArray(file);
-		} catch (IOException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
-		}
-	}
+	public String getKey(String keyType) throws IdRepoAppException {
+        if (keyType == "publicKey") {
+               return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArYVA3ldCArKvG945Dbk85XweDiAkZGazPBc0Z9jIiW2PSqbFz-z02KeC1lVNF1Yaf-A-ZdrgAQNpLRX04NBvE9gquHCpOk6GdP1n0UFVTcxD6-TWrF3XqWZ4f2UtaflWWqPKRnrkjUMKXFAyU35qe7zrTzNQaX43m8Kxacf9twxQNkShkXuJaV0kpQcvnOBsNwi8iwYtECB5DVGzuIiC7Gqkm-Q-ceGbFrTV_j8CF7IJZvDAmfTn08tSsnb5UokC1tg194Z1t8Px3TM_eV5_EVAee16bOc8XLhJgKnj0PC1FKUxpPhtol1vOLWr2bnJw3HCv82yKvRG0joh0uOEaWwIDAQAB";
+        } else {
+               return "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCthUDeV0ICsq8b3jkNuTzlfB4OICRkZrM8FzRn2MiJbY9KpsXP7PTYp4LWVU0XVhp_4D5l2uABA2ktFfTg0G8T2Cq4cKk6ToZ0_WfRQVVNzEPr5NasXdepZnh_ZS1p-VZao8pGeuSNQwpcUDJTfmp7vOtPM1BpfjebwrFpx_23DFA2RKGRe4lpXSSlBy-c4Gw3CLyLBi0QIHkNUbO4iILsaqSb5D5x4ZsWtNX-PwIXsglm8MCZ9OfTy1KydvlSiQLW2DX3hnW3w_HdMz95Xn8RUB57Xps5zxcuEmAqePQ8LUUpTGk-G2iXW84tavZucnDccK_zbIq9EbSOiHS44RpbAgMBAAECggEAAxu9-72oaw_0XxVuBDbrRlkg2LPusvW8BDmOMMYLYZra1EWEiaL_B9qIV3qTtPVP6DaGJ6DyHlKHUc1w444YT0yyBzfNcEPz2KipcXAwLQKZvOIOjmvn7xrs0atoUtuqllkUyIpvCbDHwLuXCzPaiHjr5jFPIXSnXlzwfKqeeubv_Lsf6JjfrKC3Vm8Rzm3ZmgCBO_r3o7uBMZbG5JCDvwmYGjEV0IIt29wzpIvQimnWeN7ospXoalw4XynwzmzpqEHmMrVnS_5f-b60UBtppNNIVkM9I3YZZotYiIN3HhbnpUFXr9s8H_0-Ij_P67l8rjeFnb_P8k9vYkBh7jn94QKBgQDll_NWPkMYGygDaAURCzrFmIPk9NE6giuT6WfSezowUnUp_pkDM-UwqfYXv2TjpPwnQP4I0wGSdb3TdBpUIYVZhJejl6SXHeK4PFctAxPYL9j1qS5EGZ4MW0BHY_TwaXYkuT0ehZzAHd3boiqI8vLyfcLyS6phrBpRmhLufO1K6QKBgQDBelBIVTsABinMYY2fxL9gAC-Hq_f5YTkpzuCdyP4CdCkg0j214Rg_PaGhvCK2mlCC66S_TSRlcfm2VBl9bNLMZDrNjcLndHIFtFYsBBbO85SP1_NqKYQnB90zaMBHhKVNwkUqL8ocNud17PQR_8UvD7KTEyrlAWaprI0I76YoowKBgFTJOnmc4JYkYTBw134l0XxrCDojFqkurP0gctDN5P03VkE93i_KmFbSTSkT6yQOJ3gvjiCgG7KEfKd79sUe4-ndB0rIk2WjCbjTv7XFryxk7xA5e_Z2J2GUyTYT-b5Wk-SX67Q7z1k7LlUPm_mbDpDyVG2595--OLHt3hPoWpERAoGAKKSQDtHQpg2lZCit_nzvErSXR3HJkppozq6For-hFFTgeuOPURCq7kX9GSOTSzaZaRclMYZ7-c96fGGoRR_CHGuFqr53zfU5Kpeabn6hZ_HlKF5d5NQ5zZUqU21SzvM_YllH_Dezxj-GWdBf6RQIkP1ELv8cyKSFs2jq65CkH-8CgYBbL-Oi9Alz6w4jgNCRjuWRr35VAlowRGxjn2U_b2jhmqjnu2LiIU15BnCopETclOxzNgwxca7A4gSIzJTGIOJGqxWyUDtHcHIuusNd4T21b6lzHDoOS0adVTRlX-K-_2df_C8jx7pem2k9qLy0FgUJ4NjDraZIt4WIS_eXjItVCw";
+        }
+  }
+
+
 
 	/**
 	 * Convert to bytes.
