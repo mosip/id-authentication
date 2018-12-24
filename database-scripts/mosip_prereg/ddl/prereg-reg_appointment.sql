@@ -38,6 +38,10 @@ alter table prereg.reg_appointment add constraint pk_rappmnt_id primary key (id)
 ;
 
 -- indexes section -------------------------------------------------
+create unique index idx_rappmnt_id on prereg.reg_appointment (prereg_id, booking_dtimes)
+;
+
+-- indexes section -------------------------------------------------
 -- create unique index idx_rappmnt_<col> on prereg.reg_appointment ( <colX> )
 -- ;
 
