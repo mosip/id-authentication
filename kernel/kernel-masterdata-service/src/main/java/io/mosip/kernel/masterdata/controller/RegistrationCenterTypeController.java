@@ -57,18 +57,22 @@ public class RegistrationCenterTypeController {
 
 	/**
 	 * Controller method for updating a registration center type.
+	 * 
 	 * @param registrationCenterTypeDto
 	 * @return
 	 */
 	@PutMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		return null;
+		return new ResponseEntity<>(
+				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto),
+				HttpStatus.CREATED);
 
 	}
 
 	/**
 	 * Controller method for deleting a registration center type.
+	 * 
 	 * @param code
 	 * @return
 	 */
@@ -79,7 +83,7 @@ public class RegistrationCenterTypeController {
 			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
 			@ApiResponse(code = 404, message = "When no registration center found."),
 			@ApiResponse(code = 500, message = "Error occured while deleting registration center.") })
-	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
-		return null;
+	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
+		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);
 	}
 }
