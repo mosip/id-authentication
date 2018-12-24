@@ -27,10 +27,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
