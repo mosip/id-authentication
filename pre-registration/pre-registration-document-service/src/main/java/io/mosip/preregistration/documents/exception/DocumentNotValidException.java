@@ -31,4 +31,12 @@ public class DocumentNotValidException extends BaseUncheckedException {
 
 	}
 
+	public DocumentNotValidException(String errorCode, String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
+
+	public DocumentNotValidException(String errorCode, String message) {
+		super(errorCode, message);
+	}
+
 }

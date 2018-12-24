@@ -26,11 +26,11 @@ public class DocumentFailedToDeleteException extends BaseUncheckedException {
 	}
 
 	public DocumentFailedToDeleteException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM_DOC_011.toString(),message, cause);
+		super(ErrorCodes.PRG_PAM_DOC_011.toString(), message, cause);
 	}
-	
+
 	public DocumentFailedToDeleteException(String errorCode, String message, Throwable cause) {
-		super(errorCode,message, cause);
+		super(errorCode, message, cause);
 	}
 
 }

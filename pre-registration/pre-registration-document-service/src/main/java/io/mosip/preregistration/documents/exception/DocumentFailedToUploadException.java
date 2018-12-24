@@ -26,16 +26,15 @@ public class DocumentFailedToUploadException extends BaseUncheckedException {
 	}
 
 	public DocumentFailedToUploadException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM_DOC_009.toString(),message, cause);
-	}
-	
-	public DocumentFailedToUploadException(String errorCode, String message, Throwable cause) {
-		super(errorCode,message, cause);
-	}
-	
-	public DocumentFailedToUploadException(String errorCode, String message) {
-		super(errorCode,message);
+		super(ErrorCodes.PRG_PAM_DOC_009.toString(), message, cause);
 	}
 
+	public DocumentFailedToUploadException(String errorCode, String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
+
+	public DocumentFailedToUploadException(String errorCode, String message) {
+		super(errorCode, message);
+	}
 
 }

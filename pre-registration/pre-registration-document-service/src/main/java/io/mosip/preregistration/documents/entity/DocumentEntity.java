@@ -53,9 +53,6 @@ public class DocumentEntity implements Serializable {
 	@Column(name = "doc_file_format")
 	private String docFileFormat;
 
-	@Column(name = "doc_store")
-	private byte[] docStore;
-
 	@Column(name = "status_code")
 	private String statusCode;
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocumentGetAllDto implements Serializable {
+public class DocumentGetAllDTO implements Serializable {
 
 	/**
 	 * 
