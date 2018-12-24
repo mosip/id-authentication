@@ -146,8 +146,8 @@ public class MachineController {
 	/**
 	 * Post API to deleted a row of Machine data
 	 * 
-	 * @param machine
-	 *            input from user Machine DTO
+	 * @param id
+	 *            input from user Machine id
 	 * 
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}

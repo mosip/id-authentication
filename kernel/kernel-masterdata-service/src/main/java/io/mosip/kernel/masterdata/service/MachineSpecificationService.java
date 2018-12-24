@@ -42,8 +42,8 @@ public interface MachineSpecificationService {
 	/**
 	 * Abstract method to update Machine Specification Details to the Database
 	 * 
-	 * @param machineSpecification
-	 *            machineSpecification DTO
+	 * @param id
+	 *            machineSpecification id
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully deleted
 	 *         {@link IdResponseDto}
