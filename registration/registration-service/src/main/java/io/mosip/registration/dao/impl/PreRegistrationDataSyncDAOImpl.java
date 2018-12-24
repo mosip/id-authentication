@@ -78,4 +78,16 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 		return preRegistrationRepository.update(preReg);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.PreRegistrationDataSyncDAO#updatePreRegistration(io.mosip.registration.entity.PreRegistrationList)
+	 */
+	@Override
+	public PreRegistrationList updatePreRegistration(PreRegistrationList preRegistration) {
+		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating Pre-Registration");
+
+		return preRegistrationRepository.update(preRegistration);
+
+	}
+
 }

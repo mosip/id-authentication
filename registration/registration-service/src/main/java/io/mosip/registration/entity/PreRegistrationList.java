@@ -40,6 +40,9 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	@Column(name = "synctrn_id", length = 36, nullable = true)
 	private String synctrnId;
 	
+	@Column(name = "last_upd_dtimes")
+	private String lastUpdatedPreRegTimeStamp;
+
 	@Column(name = "lang_code", length = 3, nullable = false)
 	private String langCode;
 	@Column(name = "is_deleted", nullable = true)
@@ -131,6 +134,14 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	}
 	public void setDelDtimes(String delDtimes) {
 		this.delDtimes = delDtimes;
+	}
+	
+	public String getLastUpdatedPreRegTimeStamp() {
+		return lastUpdatedPreRegTimeStamp;
+	}
+	
+	public void setLastUpdatedPreRegTimeStamp(String lastUpdatedPreRegTimeStamp) {
+		this.lastUpdatedPreRegTimeStamp = lastUpdatedPreRegTimeStamp;
 	}
 
 }

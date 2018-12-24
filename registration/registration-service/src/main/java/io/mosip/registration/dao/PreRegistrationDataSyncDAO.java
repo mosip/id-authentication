@@ -28,6 +28,14 @@ public interface PreRegistrationDataSyncDAO {
 	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration);
 	
 	/**
+	 * To update new Pre registration
+	 * @param preRegistration is a entity
+	 * @return updated pre registartion
+	 */
+	public PreRegistrationList updatePreRegistration(PreRegistrationList preRegistration);
+
+	
+	/**
 	 * Fetch the Pre-Reg Records that needs to be deleted
 	 * @param startDate
 	 * @return
