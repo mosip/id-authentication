@@ -1,10 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception.system;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * @author M1046129
- *
+ * This class defines the DateParseException
+ * 
+ * @author Jagadishwari S
+ * @since 1.0.0
+ * 
  */
 public class DateParseException extends BaseUncheckedException {
 

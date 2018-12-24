@@ -123,14 +123,14 @@ public class DocumentUploaderTest {
 
 	}
 
-	@Test
-	public void successSave() throws Exception {
-	//	Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-		Mockito.when(service.uploadDoucment(multipartFile, json)).thenReturn(responseCopy);	
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-
-	}
+//	@Test
+//	public void successSave() throws Exception {
+//	//	Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+//		Mockito.when(service.uploadDoucment(multipartFile, json)).thenReturn(responseCopy);	
+//		mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+//				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+//
+//	}
 
 	@Test
 	public void successDelete() throws Exception {

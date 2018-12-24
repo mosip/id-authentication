@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import lombok.Getter;
@@ -8,8 +12,8 @@ import lombok.ToString;
 /**
  * View registration response DTO
  * 
- * @author M1037462
- * 
+ * @author Rupika
+ * @since 1.0.0
  */
 
 @Getter
@@ -19,7 +23,6 @@ import lombok.ToString;
 public class PreRegistrationViewDTO {
 	private String preId;
 	private String fullname;
-	private String appointmentDate;
 	private String statusCode;
 	private BookingRegistrationDTO bookingRegistrationDTO;
 }

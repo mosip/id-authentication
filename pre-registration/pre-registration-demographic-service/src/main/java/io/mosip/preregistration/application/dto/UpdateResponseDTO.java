@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,7 +15,8 @@ import lombok.Setter;
 /**
  * Update Response DTO
  * 
- * @author M1046462
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 @Getter

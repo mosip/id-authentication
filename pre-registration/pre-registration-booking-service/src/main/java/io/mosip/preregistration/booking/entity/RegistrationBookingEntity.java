@@ -3,7 +3,6 @@ package io.mosip.preregistration.booking.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Column;

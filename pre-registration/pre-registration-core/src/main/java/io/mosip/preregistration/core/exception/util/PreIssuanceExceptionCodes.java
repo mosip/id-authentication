@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.exceptions.util;
+package io.mosip.preregistration.core.exception.util;
 
 public final class PreIssuanceExceptionCodes {
 	

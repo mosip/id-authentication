@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.constants;
+package io.mosip.preregistration.core.code;
 
 public enum StatusCodes {
 	USER_ID_INVALID,

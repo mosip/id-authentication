@@ -67,21 +67,19 @@
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
 		
-		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 	<modules>
 		<module>pre-registration-core</module>
-		<module>pre-registration-document-service</module>
+		<module>pre-registration-auth-service</module>
 		<module>pre-registration-demographic-service</module>
-        <module>pre-registration-auth-service</module>
-    	<module>pre-registration-booking-service</module>
+		<module>pre-registration-document-service</module>
+		<module>pre-registration-booking-service</module>
+		<module>pre-registration-datasync-service</module>
 		<module>pre-registration-batchjob</module>
 		<module>pre-registration-batchjob-service</module>
-		<module>pre-registration-translitration-service</module>
- 		<module>pre-registration-datasync-service</module>
-		 
-		
+		<module>pre-registration-translitration-service</module>	
 	</modules>
 
 	<profiles>

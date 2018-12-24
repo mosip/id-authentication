@@ -17,11 +17,15 @@ public class ReverseDataFailedToStoreException extends BaseUncheckedException {
 		super(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(), message);
 	}
 
-/*	public ReverseDataFailedToStoreException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(),message, cause);
+	public ReverseDataFailedToStoreException(String message, Throwable cause) {
+		super(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(), message, cause);
 	}
-*/
-	public ReverseDataFailedToStoreException() {
-		// TODO Auto-generated constructor stub
+
+	public ReverseDataFailedToStoreException(String errorCode, String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
+
+	public ReverseDataFailedToStoreException(String errorCode, String message) {
+		super(errorCode, message);
 	}
 }

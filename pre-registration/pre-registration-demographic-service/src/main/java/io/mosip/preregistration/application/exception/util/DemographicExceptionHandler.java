@@ -22,15 +22,18 @@ import io.mosip.preregistration.application.exception.RecordFailedToDeleteExcept
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
- * Exception Handler
+ * Exception Handler for demographic service
  * 
- * @author M1037717,M1037462, M1044479 - Update, M1043226 - discard, M1046129 &
- *         M104646 for Code refractoring
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
 @RestControllerAdvice
 public class DemographicExceptionHandler {
@@ -39,7 +42,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for TablenotAccessibleException
 	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
@@ -55,7 +58,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for JsonValidationException
 	 */
 	@ExceptionHandler(JsonValidationException.class)
 	public ResponseEntity<ResponseDTO<?>> jsonValidationException(final JsonValidationException e, WebRequest request) {
@@ -71,7 +74,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for RecordNotFoundException
 	 */
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> recException(final RecordNotFoundException e, WebRequest request) {
@@ -86,7 +89,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for SystemIllegalArgumentException
 	 */
 	@ExceptionHandler(SystemIllegalArgumentException.class)
 	public ResponseEntity<ResponseDTO<?>> illegalArgumentException(final SystemIllegalArgumentException e,
@@ -102,7 +105,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for DocumentFailedToDeleteException
 	 */
 	@ExceptionHandler(DocumentFailedToDeleteException.class)
 	public ResponseEntity<ResponseDTO<?>> documentFailedToDeleteException(final DocumentFailedToDeleteException e,
@@ -118,7 +121,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for RecordFailedToDeleteException
 	 */
 	@ExceptionHandler(RecordFailedToDeleteException.class)
 	public ResponseEntity<ResponseDTO<?>> recordFailedToDeleteException(final RecordFailedToDeleteException e,
@@ -131,6 +134,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for OperationNotAllowedException
+	 */
 	@ExceptionHandler(OperationNotAllowedException.class)
 	public ResponseEntity<ResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e,
 			WebRequest request) {
@@ -145,7 +153,7 @@ public class DemographicExceptionHandler {
 	/**
 	 * @param e
 	 * @param request
-	 * @return
+	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<ResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e, WebRequest request) {

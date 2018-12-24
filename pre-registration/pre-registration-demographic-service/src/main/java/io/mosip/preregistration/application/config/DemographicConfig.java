@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.config;
 
 import java.net.MalformedURLException;
@@ -16,18 +20,17 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * @author M1037717
+ * This class is used for Swagger configuration, also to configure Host and
+ * Port.
+ * 
+ * @author Rajath KR
+ * @since 1.0.0
  *
  */
 @Configuration
 @EnableSwagger2
 public class DemographicConfig {
 
-	/**
-	 * Swagger configuration
-	 *
-	 */
-	
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
@@ -41,7 +44,7 @@ public class DemographicConfig {
 	String host = "localhost";
 	int port = -1;
 	String hostWithPort = "localhost:9092";
-	
+
 	/**
 	 * To configure Host and port along with docket.
 	 * 
@@ -49,7 +52,7 @@ public class DemographicConfig {
 	 */
 	@Bean
 	public Docket registrationStatusBean() {
-		
+
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
@@ -60,24 +63,24 @@ public class DemographicConfig {
 					hostWithPort = host;
 				} else {
 					hostWithPort = host + ":" + port;
-				} 
+				}
 				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
 				System.err.println("SwaggerUrlException: " + e);
 			}
 		}
 
-		Docket docket = new  Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
+		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.application.controller"))
 				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
-		
+
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
 		return docket;
 	}
-	
+
 	/**
 	 * @return set or protocols
 	 */

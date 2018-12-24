@@ -16,6 +16,7 @@ public enum ErrorCodes {
 //	PRG_DATA_SYNC_006; //Document Not Found
 	PRG_REVESE_DATA_SYNC_001, //Failed to store Pre-Reg Ids
 	PRG_PAM_APP_002,   //Registration table not accessible
-	
+	PRG_DATA_SYNC_007, // DEMOGRAPHIC_GET_STATUS_FAILED
+	PRG_DATA_SYNC_008 //DOCUMENT_GET_STATUS_FAILED
 	
 }

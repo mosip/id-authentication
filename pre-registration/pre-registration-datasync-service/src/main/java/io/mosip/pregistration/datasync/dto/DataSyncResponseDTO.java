@@ -17,7 +17,7 @@ public class DataSyncResponseDTO<T> implements Serializable{
 	private static final long serialVersionUID = 3384945682672832638L;
 
 	/** The error details. */
-	private List<ExceptionJSONInfo> err;
+	private List<ExceptionJSONInfoDTO> err;
 
 	private String status;
 

@@ -1,12 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * OperationNotAllowedException
+ * This class defines the OperationNotAllowedException
  * 
- * @author M1043226
- *
+ * @author Rajath KR
+ * @since 1.0.0
+ * 
  */
 public class OperationNotAllowedException extends BaseUncheckedException {
 

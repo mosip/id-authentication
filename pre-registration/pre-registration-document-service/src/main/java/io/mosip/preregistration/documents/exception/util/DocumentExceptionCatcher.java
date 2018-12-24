@@ -11,7 +11,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.ConnectionUnavailableException;

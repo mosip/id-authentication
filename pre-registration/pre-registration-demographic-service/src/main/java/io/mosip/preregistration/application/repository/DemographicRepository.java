@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -31,21 +30,35 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 @Transactional
 public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
-	// public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
-//	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where cr_appuser_id=:userId";
+	/**
+	 * @param userId
+	 * @return list of pregistration data
+	 */
+	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
 
-//	@Query("SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
-	@Query
-	public List<DemographicEntity> findByuserId(@Param("userId") String userId);
-
-//	@Query(value = countRec, nativeQuery = true)
+	/**
+	 * @param userId
+	 * @return list of group ids
+	 */
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
-//	@Query("SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
+	/**
+	 * @param preRegId
+	 * @return
+	 */
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
+	/**
+	 * @param preId
+	 * @return the number of rows deleted
+	 */
 	public int deleteByPreRegistrationId(String preId);
 
+	/**
+	 * @param start
+	 * @param end
+	 * @return list of pregistration data
+	 */
 	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 
 }

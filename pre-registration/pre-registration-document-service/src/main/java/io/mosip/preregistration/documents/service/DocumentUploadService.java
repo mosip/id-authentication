@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.comprehend.model.Entity;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.util.ValidationUtil;

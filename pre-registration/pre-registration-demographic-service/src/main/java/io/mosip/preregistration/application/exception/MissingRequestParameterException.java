@@ -1,12 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * OperationNotAllowedException
+ * This class defines the MissingRequestParameterException
  * 
- * @author M1043226
- *
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ * 
  */
 public class MissingRequestParameterException extends BaseUncheckedException {
 

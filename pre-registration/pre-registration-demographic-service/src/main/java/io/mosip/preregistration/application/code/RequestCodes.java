@@ -1,10 +1,15 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.code;
 
 /**
  * 
- * Request codes.
+ * This Enum provides the constant variables to accept input request.
  * 
- * @author M1046462
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 public enum RequestCodes {

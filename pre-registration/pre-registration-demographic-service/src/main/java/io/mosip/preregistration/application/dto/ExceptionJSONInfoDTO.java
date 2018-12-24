@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,8 +15,8 @@ import lombok.ToString;
 /**
  * Exception json Info
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @since 1.0.0
  */
 @Getter
 @Setter
@@ -21,9 +25,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ExceptionJSONInfoDTO implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3999014525078508265L;
 
 	private String errorCode;

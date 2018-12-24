@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,14 +15,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author M1046129
+ * This DTO class defines the variables to accept the input parameter from
+ * request.
+ * 
+ * @author Rajath KR
+ * @since 1.0.0
  *
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class CreatePreRegistrationDTO implements Serializable {
+public class CreateDemographicDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
