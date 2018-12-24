@@ -147,21 +147,23 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Override
 	public IdResponseDto deleteDevice(String id) {
-		Device device = deviceRepository.findById(Device.class, id);
+		Device foundDevice = null;
 		Device entity = null;
-		IdResponseDto idResponseDto = new IdResponseDto();
-		if (device == null) {
-			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
-		} else {
-			try {
-				entity = MetaDataUtils.setDeleteMetaData(device);
+		try {
+			foundDevice = deviceRepository.findById(Device.class, id);
+			if (foundDevice != null) {
+				entity = MetaDataUtils.setDeleteMetaData(foundDevice);
 				deviceRepository.update(entity);
-			} catch (DataAccessLayerException | DataAccessException e) {
-				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
+			} else {
+				throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
 		}
+
+		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(entity.getId());
 		return idResponseDto;
 	}

@@ -27,7 +27,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -293,7 +296,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
-		mapFieldValues(source, destination);// this method simply map values if field name and type are same
+		    mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
@@ -454,13 +457,14 @@ public class MapperUtils {
 			HolidayDto dto = new HolidayDto();
 			dto.setId(holiday.getId());
 			dto.setHolidayDate(date);
-			dto.setHolidayName(holiday.getHolidayName());
+			dto.setHolidayName(holidayId.getHolidayName());
 			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setHolidayDesc(holiday.getHolidayDesc());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
@@ -511,5 +515,6 @@ public class MapperUtils {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-
+	
+	
 }

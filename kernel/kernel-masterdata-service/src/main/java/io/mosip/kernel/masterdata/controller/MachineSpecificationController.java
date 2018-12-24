@@ -59,13 +59,13 @@ public class MachineSpecificationController {
 		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
 				HttpStatus.CREATED);
 	}
+
 	/**
 	 * Put API to update a new row of Machine Specification data
 	 * 
 	 * @param machineSpecification
 	 *            input Machine specification DTO from user
-	 * @return ResponseEntity Machine Specification ID which is successfully
-	 *         updated
+	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
 	@PutMapping("/v1.0/machinespecifications")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
@@ -80,14 +80,13 @@ public class MachineSpecificationController {
 		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
 				HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Put API to delete a new row of Machine Specification data
 	 * 
 	 * @param machineSpecification
 	 *            input Machine specification DTO from user
-	 * @return ResponseEntity Machine Specification ID which is successfully
-	 *         deleted
+	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
 	@DeleteMapping("/v1.0/machinespecifications/{id}")
 	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
@@ -96,10 +95,8 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While deleting Machine Specification any error occured") })
-	public ResponseEntity<IdResponseDto> deleteMachineSpecification(
-			@Valid @PathVariable("id") String id) {
+	public ResponseEntity<IdResponseDto> deleteMachineSpecification(@Valid @PathVariable("id") String id) {
 
-		return new ResponseEntity<>(machineSpecificationService.deleteMachineSpecification(id),
-				HttpStatus.OK);
+		return new ResponseEntity<>(machineSpecificationService.deleteMachineSpecification(id), HttpStatus.OK);
 	}
 }

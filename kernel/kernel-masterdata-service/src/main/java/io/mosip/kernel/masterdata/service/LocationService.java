@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 
 /**
@@ -59,8 +60,8 @@ public interface LocationService {
 	/**
 	 * 
 	 * @param locationCode - location code
-	 * @return {@link PostLocationCodeResponseDto}
+	 * @return {@link CodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto deleteLocationDetials(String locationCode,String langCode);
+	public CodeResponseDto deleteLocationDetials(String locationCode);
 	
 }

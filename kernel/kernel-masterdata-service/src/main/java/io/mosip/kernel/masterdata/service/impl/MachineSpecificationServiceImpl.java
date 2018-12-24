@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -39,9 +41,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
-	
+
 	@Autowired
 	MachineRepository machineRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,20 +73,23 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
+	 * updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
 		MachineSpecification updMachineSpecification = null;
-		
+
 		try {
-			MachineSpecification renmachineSpecification = machineSpecificationRepository
+			MachineSpecification renMachineSpecification = machineSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(machineSpecification.getRequest().getId());
-			if (renmachineSpecification != null) {
-				
-				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renmachineSpecification, false);
-				updMachineSpecification = machineSpecificationRepository.update(renmachineSpecification);
+			if (renMachineSpecification != null) {
+
+				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renMachineSpecification, false);
+				updMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 			} else {
 				throw new DataNotFoundException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -99,26 +105,29 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		MapperUtils.map(updMachineSpecification, idResponseDto);
 		return idResponseDto;
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#deleteMachineSpecification(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
+	 * deleteMachineSpecification(java.lang.String)
 	 */
 	public IdResponseDto deleteMachineSpecification(String id) {
-		MachineSpecification delMachineSpecification = null;	
-		try {	
-			MachineSpecification renmachineSpecification = machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-			if (renmachineSpecification != null) {
-				Machine renmachine = machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renmachineSpecification.getId());
-				if(renmachine == null) {
-					MetaDataUtils.setDeleteMetaData(renmachineSpecification);
-					delMachineSpecification = machineSpecificationRepository.update(renmachineSpecification);
-				}else{
-					throw new DataNotFoundException(
+		MachineSpecification delMachineSpecification = null;
+		try {
+			MachineSpecification renMachineSpecification = machineSpecificationRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (renMachineSpecification != null) {
+				List<Machine> renmachineList = machineRepository
+						.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renMachineSpecification.getId());
+				if (renmachineList.isEmpty()) {
+					MetaDataUtils.setDeleteMetaData(renMachineSpecification);
+					delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
+				} else {
+					throw new MasterDataServiceException(
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage());
-				}			
+				}
 			} else {
 				throw new DataNotFoundException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -130,11 +139,11 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		
+
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(delMachineSpecification, idResponseDto);
 		return idResponseDto;
-	
+
 	}
 
 }

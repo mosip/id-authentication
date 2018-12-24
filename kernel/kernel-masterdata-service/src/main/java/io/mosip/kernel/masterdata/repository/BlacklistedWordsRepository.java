@@ -1,6 +1,11 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
@@ -16,7 +21,8 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	/**
 	 * method to fetch list of blacklisted words by language code
 	 * 
-	 * @param langCode language code
+	 * @param langCode
+	 *            language code
 	 * @return {@link List of BlacklistedWords }
 	 */
 	List<BlacklistedWords> findAllByLangCode(String langCode);
@@ -27,4 +33,20 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * @return {@link List of BlacklistedWords }
 	 */
 	List<BlacklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
+
+	/**
+	 * method to fetch word by word and langCode
+	 * 
+	 * @param word
+	 *            word to fetch
+	 * @param langCode
+	 *            language code of the word
+	 * @return word detail
+	 */
+	BlacklistedWords findByWordAndLangCode(String word, String langCode);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE BlacklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE bw.word = ?1 AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
+	int deleteBlackListedWord(String word,LocalDateTime deletedDateTime);
 }
