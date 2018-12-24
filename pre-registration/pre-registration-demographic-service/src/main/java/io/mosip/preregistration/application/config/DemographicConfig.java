@@ -15,12 +15,16 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * @author M1037717
+ *
+ */
 @Configuration
 @EnableSwagger2
 public class DemographicConfig {
 
 	/**
-	 * Swaager configuration
+	 * Swagger configuration
 	 *
 	 */
 	
@@ -38,6 +42,11 @@ public class DemographicConfig {
 	int port = -1;
 	String hostWithPort = "localhost:9092";
 	
+	/**
+	 * To configure Host and port along with docket.
+	 * 
+	 * @return
+	 */
 	@Bean
 	public Docket registrationStatusBean() {
 		
@@ -69,6 +78,9 @@ public class DemographicConfig {
 		return docket;
 	}
 	
+	/**
+	 * @return set or protocols
+	 */
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);
