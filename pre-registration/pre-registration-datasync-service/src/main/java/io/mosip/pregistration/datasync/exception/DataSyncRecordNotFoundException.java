@@ -12,12 +12,21 @@ import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
 public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public DataSyncRecordNotFoundException(String message) {
 		super(ErrorCodes.PRG_DATA_SYNC_004.toString(), message);
 	}
 
-/*	public DataSyncRecordNotFoundException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_DATA_SYNC_004.toString(),message, cause);
-	}*/
+	public DataSyncRecordNotFoundException(String message, Throwable cause) {
+		super(ErrorCodes.PRG_DATA_SYNC_004.toString(), message, cause);
+	}
+
+	public DataSyncRecordNotFoundException(String errorCode, String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
+
+	public DataSyncRecordNotFoundException(String errorCode, String message) {
+		super(errorCode, message);
+	}
+
 }

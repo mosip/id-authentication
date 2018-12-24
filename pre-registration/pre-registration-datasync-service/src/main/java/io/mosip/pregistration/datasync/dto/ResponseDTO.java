@@ -8,21 +8,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Response DTO
+ * 
+ * @author M1037717
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
-public class DataSyncResponseDTO<T> implements Serializable{
-	
+public class ResponseDTO<T> implements Serializable {
+
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 3384945682672832638L;
+	private static final long serialVersionUID = 6705845720255847210L;
 
 	/** The error details. */
-	private List<ExceptionJSONInfoDTO> err;
+	private ExceptionJSONInfoDTO err;
 
 	private String status;
 
 	private Date resTime;
 
-	private T response;
+	private List<T> response;
 
 }
