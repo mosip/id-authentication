@@ -3,12 +3,15 @@ package io.mosip.registration.service.sync.impl;
 import java.io.File;
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,7 @@ import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 @Service
 @PropertySource(value = "classpath:spring.properties")
@@ -71,6 +75,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
 	 * getPreRegistrationIds(java.lang.String)
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#getPreRegistrationIds(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseDTO getPreRegistrationIds(String syncJobId) {
@@ -87,18 +94,18 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		try {
 
 			/** REST call to get Pre Registartion Id's */
-			PreRegistrationResponseDTO<PreRegistrationResponseDataSyncDTO> preRegistrationResponseDTO = (PreRegistrationResponseDTO<PreRegistrationResponseDataSyncDTO>) serviceDelegateUtil
+			LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
 
-			/** TODO Need to change to DTO response, Once Kernel team changes */
-			ArrayList<?> preRegistrationResponseList = (ArrayList<?>) preRegistrationResponseDTO.getResponse();
-			HashMap<String, Object> map = (HashMap<String, Object>) preRegistrationResponseList.get(0);
-
-			ArrayList<String> preRegIds = (ArrayList<String>) map.get("preRegistrationIds");
-
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) map.get("response");
+			ArrayList<String> preRegIds = (ArrayList<String>) responseMap.get("preRegistrationIds");
+			
+			
 			/** Get Packets Using pre registration ID's */
 			for (String preRegistrationId : preRegIds) {
-				getPreRegistration(responseDTO, preRegistrationId, syncJobId);
+				
+				/** TODO null has to be replaced with last updated time stamp details from api call */
+				getPreRegistration(responseDTO, preRegistrationId, syncJobId,null);
 				if (responseDTO.getErrorResponseDTOs() != null) {
 					break;
 				}
@@ -138,7 +145,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/** Get Pre Registration Packet */
-		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER,null);
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -148,7 +155,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	@SuppressWarnings("unchecked")
-	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId) {
+	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId, Timestamp lastUpdatedTimeStamp) {
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -156,13 +163,22 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		/** Check in Database whether required record already exists or not */
 		PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegistrationId);
+		
+		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
+		
+		boolean isUpdated = false;
+
+		if(preRegistration!=null) {
+			isUpdated = (preRegistration.getLastUpdatedPreRegTimeStamp().equals(lastUpdatedTimeStamp));
+		}
+		
 
 		byte[] decryptedPacket = null;
 
 		boolean isJob = (!RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(syncJobId));
 
 		/** Get Packet From REST call */
-		if (preRegistration == null) {
+		if (!isUpdated || (isOnline && preRegistration == null)) {
 
 			/** prepare request params to pass through URI */
 			Map<String, String> requestParamMap = new HashMap<>();
@@ -179,6 +195,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				if (packet != null && !packet.isEmpty()) {
 
 					decryptedPacket = (byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT);
+					
 					/** Get PreRegistrationDTO by taking packet Information */
 					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService
 							.encryptAndSavePreRegPacket(preRegistrationId, decryptedPacket);
@@ -190,17 +207,25 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 					// save in Pre-Reg List
 					PreRegistrationList preRegistrationList = preparePreRegistration(syncTransaction,
-							preRegistrationDTO);
+							preRegistrationDTO,lastUpdatedTimeStamp);
 					String fileName = (String) packet.get(RegistrationConstants.PRE_REG_FILE_NAME);
 					String appointmentDate = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
 					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate,
 							RegistrationConstants.PRE_REG_APPOINMENT_DATE_FORMAT));
-					preRegistrationDAO.savePreRegistration(preRegistrationList);
+					if(preRegistration == null) {
+						preRegistrationDAO.savePreRegistration(preRegistrationList);
 
+					} else {
+						preRegistrationList.setCrBy(preRegistration.getCrBy());
+						preRegistration.setCrDtime(preRegistration.getCrDtime());
+						preRegistrationList.setUpdBy(getUserIdFromSession());
+						preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+						preRegistrationDAO.updatePreRegistration(preRegistrationList);
+					}
 					/** set success response */
 					setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
 
-				} else if (!isJob) {
+				} else {
 					/*
 					 * set error message if the packet is not available both in db as well as the
 					 * REST service
@@ -215,10 +240,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
 
-				// Transaction
-				syncManager.createSyncTransaction(RegistrationConstants.UNABLE_TO_RETRIEVE_PRE_REG_ID,
-						RegistrationConstants.UNABLE_TO_RETRIEVE_PRE_REG_ID, triggerPoint, syncJobId);
-
+				
 				/** set Error response */
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
@@ -229,7 +251,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		if (!isJob) {
 			try {
 				if (preRegistration != null) {
-					/*
+					
+					/**
 					 * if the packet is already available,read encrypted packet from disk and
 					 * decrypt
 					 */
@@ -294,14 +317,17 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
 
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
-		preRegistrationDataSyncDTO.setReqTime(reqTime);
+		preRegistrationDataSyncDTO.setReqTime(dateFormat.format(reqTime));
 		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER);
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
-		preRegistrationDataSyncRequestDTO.setFromDate(reqTime);
+		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setRegClientId(RegistrationConstants.REGISTRATION_CLIENT_ID);
-		preRegistrationDataSyncRequestDTO.setToDate(getToDate(preRegistrationDataSyncRequestDTO.getFromDate()));
+		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
 		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
@@ -310,19 +336,36 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-	private Timestamp getToDate(Timestamp fromDate) {
+	private String getToDate(Timestamp reqTime) {
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(fromDate);
+		cal.setTime(reqTime);
 		cal.add(Calendar.DATE, noOfDays);
 
 		/** To-Date */
-		return new Timestamp(cal.getTime().getTime());
+		return formatDate(cal);
 
 	}
 
+	private String formatDate(Calendar cal) {
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+		Date toDate = cal.getTime();
+
+		/** To-Date */
+		return sdfDate.format(toDate);
+	}
+
+	private String getFromDate(Timestamp reqTime) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(reqTime);
+
+		/** TODO shouldn't be hard-coded  */
+		// return formatDate(cal);
+		return "2018-12-15 11:52:2";
+	}
 	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction,
-			PreRegistrationDTO preRegistrationDTO) {
+			PreRegistrationDTO preRegistrationDTO, Timestamp lastUpdatedTimeStamp) {
 
 		PreRegistrationList preRegistrationList = new PreRegistrationList();
 
@@ -340,6 +383,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		preRegistrationList.setIsDeleted(false);
 		preRegistrationList.setCrBy(syncTransaction.getCrBy());
 		preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		preRegistrationList.setLastUpdatedPreRegTimeStamp(lastUpdatedTimeStamp);
 
 		return preRegistrationList;
 

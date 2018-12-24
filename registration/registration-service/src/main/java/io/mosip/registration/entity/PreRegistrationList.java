@@ -1,5 +1,6 @@
 package io.mosip.registration.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -41,7 +42,7 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	private String synctrnId;
 	
 	@Column(name = "last_upd_dtimes")
-	private String lastUpdatedPreRegTimeStamp;
+	private Timestamp lastUpdatedPreRegTimeStamp;
 
 	@Column(name = "lang_code", length = 3, nullable = false)
 	private String langCode;
@@ -136,11 +137,11 @@ public class PreRegistrationList extends RegistrationCommonFields{
 		this.delDtimes = delDtimes;
 	}
 	
-	public String getLastUpdatedPreRegTimeStamp() {
+	public Timestamp getLastUpdatedPreRegTimeStamp() {
 		return lastUpdatedPreRegTimeStamp;
 	}
 	
-	public void setLastUpdatedPreRegTimeStamp(String lastUpdatedPreRegTimeStamp) {
+	public void setLastUpdatedPreRegTimeStamp(Timestamp lastUpdatedPreRegTimeStamp) {
 		this.lastUpdatedPreRegTimeStamp = lastUpdatedPreRegTimeStamp;
 	}
 

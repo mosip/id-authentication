@@ -70,7 +70,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 	static Map<String, Object> preRegData = new HashMap<>();
 
-	@BeforeClass
+	//@BeforeClass
 	public static void initialize() throws IOException {
 
 		URL url = PreRegZipHandlingServiceTest.class.getResource("/70694681371453.zip");
@@ -81,7 +81,7 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
 	}
 
-	@Test
+	//@Test
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
@@ -111,7 +111,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 	}
 
-	@Test
+	//@Test
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
@@ -126,7 +126,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 	}
 
-	@Test
+	//@Test
 	public void getPreRegistrationsTestNegative()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		// Test-2
