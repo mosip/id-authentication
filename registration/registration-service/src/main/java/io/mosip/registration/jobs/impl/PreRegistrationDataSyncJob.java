@@ -11,6 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
+import io.mosip.registration.service.packet.RegPacketStatusService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 /**
@@ -44,6 +45,8 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 		try {
 			if(context!=null) {
 				this.jobId = loadContext(context);
+				preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
+
 			}
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {

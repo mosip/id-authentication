@@ -51,6 +51,7 @@ public class KeyPolicySyncJob extends BaseJob {
 		try {
 			if (context != null) {
 				this.jobId = loadContext(context);
+				policySyncService = applicationContext.getBean(PolicySyncService.class);
 
 			}
 

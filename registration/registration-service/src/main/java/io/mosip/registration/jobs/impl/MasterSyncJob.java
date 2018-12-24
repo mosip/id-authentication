@@ -12,6 +12,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.PolicySyncService;
 
 /**
  * @author Sreekar Chukka
@@ -52,8 +53,10 @@ public class MasterSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (null != context) {
+			if (context != null) {
 				this.jobId = loadContext(context);
+				masterSyncService = applicationContext.getBean(MasterSyncService.class);
+
 			}
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
