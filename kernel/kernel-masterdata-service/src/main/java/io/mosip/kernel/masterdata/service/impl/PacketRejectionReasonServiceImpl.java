@@ -132,8 +132,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		} catch (DataAccessLayerException | DataAccessException e) {
 
 			throw new MasterDataServiceException(
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -162,8 +162,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 

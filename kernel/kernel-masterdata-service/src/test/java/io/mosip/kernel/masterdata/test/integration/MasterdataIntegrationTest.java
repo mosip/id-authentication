@@ -110,6 +110,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.entity.id.GenderID;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -679,10 +680,16 @@ public class MasterdataIntegrationTest {
 		rcmdIdH.setDeviceId("101");
 		rcmdIdH.setMachineId("1789");
 		rcmdIdH.setRegCenterId("1");
-		registrationCenterMachineDeviceHistory.setRegistrationCenterMachineDeviceHistoryPk(rcmdIdH);
+		RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID= new RegistrationCenterMachineDeviceHistoryID();
+		registrationCenterMachineDeviceHistoryID.setDeviceId("101");
+		registrationCenterMachineDeviceHistoryID.setMachineId("1789");
+		registrationCenterMachineDeviceHistoryID.setRegCenterId("1");
+		registrationCenterMachineDeviceHistoryID.setEffectivetimes(registrationCenterMachineDevice.getCreatedDateTime());
+		registrationCenterMachineDeviceHistory.setRegistrationCenterMachineDeviceHistoryPk(registrationCenterMachineDeviceHistoryID);
 		registrationCenterMachineDeviceHistory.setCreatedDateTime(registrationCenterMachineDevice.getCreatedDateTime());
 		registrationCenterMachineDeviceHistory.setIsActive(true);
 		registrationCenterMachineDeviceHistory.setCreatedBy("admin");
+		
 
 	}
 
@@ -898,18 +905,16 @@ public class MasterdataIntegrationTest {
 		holiday = new Holiday();
 
 		holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG","Diwali"));
 		holiday.setId(1);
-		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayID("KAH", date, "ENG"));
+		holiday2.setHolidayId(new HolidayID("KAH", date, "ENG","Durga Puja"));
 		holiday2.setId(1);
-		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
 		holiday2.setCreatedDateTime(specificDate);
 		holiday2.setHolidayDesc("Diwali");
@@ -1218,7 +1223,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getHolidayAllHolidaysSuccessTest() throws Exception {
-		when(holidayRepository.findAll(Holiday.class)).thenReturn(holidays);
+		when(holidayRepository.findAllNonDeletedHoliday()).thenReturn(holidays);
 		mockMvc.perform(get("/v1.0/holidays")).andExpect(status().isOk());
 	}
 
@@ -1230,7 +1235,7 @@ public class MasterdataIntegrationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAllHolidaysHolidayFetchExceptionTest() throws Exception {
-		when(holidayRepository.findAll(Mockito.any(Class.class))).thenThrow(DataRetrievalFailureException.class);
+		when(holidayRepository.findAllNonDeletedHoliday()).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/holidays")).andExpect(status().isInternalServerError());
 	}
 
@@ -1912,7 +1917,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeDatabaseConnectionExceptionTest() throws Exception {
-		
+
 		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
@@ -2898,6 +2903,161 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
+	}
+
+	/*------------------------- deviceSecification update and delete ----------------------------*/
+	@Test
+	public void updateDeviceSpecificationTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		requestDto.setRequest(deviceSpecificationDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(deviceSpecification);
+		when(deviceSpecificationRepository.update(Mockito.any())).thenReturn(deviceSpecification);
+		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateDeviceSpecificationNotFoundExceptionTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+
+		requestDto.setRequest(deviceSpecificationDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void updateDeviceSpecificationDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		requestDto.setRequest(deviceSpecificationDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(deviceSpecification);
+		when(deviceSpecificationRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void deleteDeviceSpecificationTest() throws Exception {
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(deviceSpecification);
+		when(deviceRepository.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId()))
+				.thenReturn(new ArrayList<Device>());
+		when(deviceSpecificationRepository.update(Mockito.any())).thenReturn(deviceSpecification);
+		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDeviceSpecificationNotFoundExceptionTest() throws Exception {
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteDeviceSpecificationDatabaseConnectionExceptionTest() throws Exception {
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(deviceSpecification);
+		when(deviceSpecificationRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void deleteDeviceSpecificationExceptionTest() throws Exception {
+		List<Device> devices = new ArrayList<Device>();
+		Device device = new Device();
+		devices.add(device);
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(deviceSpecification);
+		when(deviceRepository.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId()))
+				.thenReturn(devices);
+		when(deviceSpecificationRepository.update(Mockito.any())).thenReturn(deviceSpecification);
+		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
+	/*------------------------------ template update and delete test-----------------------------*/
+	@Test
+	public void updateTemplateTypeTest() throws Exception {
+		RequestDto<TemplateDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		requestDto.setRequest(templateDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(template);
+		when(templateRepository.update(Mockito.any())).thenReturn(template);
+		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void updateTemplateNotFoundExceptionTest() throws Exception {
+		RequestDto<TemplateDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		requestDto.setRequest(templateDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void updateTemplateTypeDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<TemplateDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		requestDto.setRequest(templateDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(template);
+		when(templateRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void deleteTemplateTest() throws Exception {
+		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(template);
+		when(templateRepository.update(Mockito.any())).thenReturn(template);
+		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteTemplateNotFoundExceptionTest() throws Exception {
+		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteTemplateDatabaseConnectionExceptionTest() throws Exception {
+		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(template);
+		when(templateRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 }

@@ -76,6 +76,7 @@
 		<slf4j.version>1.7.19</slf4j.version>
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.version>1.7.4</powermock.version>
+		<powermock.beta.version>2.0.0-beta.5</powermock.beta.version>
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->
@@ -85,7 +86,17 @@
 		
 		<!--QR Code-->
 		<google.zxing.version>3.3.3</google.zxing.version>
-
+		<!-- itext core version-->
+		<itextcore.version>7.1.0</itextcore.version>
+		<!-- itext html2pdf version -->
+		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
+		
+		<!-- Freemarker -->
+		<freemarker.version>2.3.23</freemarker.version>
+		<!-- Velocity -->
+		<velocity.version>1.7</velocity.version>
+		<velocity.tool.version>2.0</velocity.tool.version>
+		
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
@@ -114,7 +125,6 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-keymanager-softhsm</module>
-		<module>kernel-qrcode-generator</module>
 
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
@@ -148,7 +158,7 @@
 	</dependencies>
 
 	<build>
-	<pluginManagement>
+		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

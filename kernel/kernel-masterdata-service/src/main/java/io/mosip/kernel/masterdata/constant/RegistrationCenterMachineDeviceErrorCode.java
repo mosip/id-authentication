@@ -10,8 +10,12 @@ package io.mosip.kernel.masterdata.constant;
 public enum RegistrationCenterMachineDeviceErrorCode {
 
 	REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION("KER-MSD-076",
-			"Error occurred while inserting a mapping of Center, Machine and Device");
-
+			"Error occurred while inserting a mapping of Center, Machine and Device"),
+	
+	REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION("KER-MSD-107",
+			"Error occurred while deleting a mapping of Center, Machine and Device"),
+	REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION("KER-MSD-116","Mapping for Center, Machine and Device not found");
+	
 	private final String errorCode;
 	private final String errorMessage;
 
