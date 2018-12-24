@@ -161,9 +161,6 @@ public class LoginController extends BaseController implements Initializable {
 		String loginMode = null;
 
 		try {
-			applicationContext.setApplicationLanguageBundle();
-			applicationContext.setLocalLanguageProperty();
-			applicationContext.setApplicationMessagesBundle();
 			loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
 
 			if (!loginList.isEmpty()) {

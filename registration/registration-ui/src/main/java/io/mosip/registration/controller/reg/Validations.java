@@ -1,11 +1,17 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
-import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -20,6 +26,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * Class for validation of the Registration Field
+ * 
  * @author Taleev.Aalam
  * @since 1.0.0
  *
@@ -28,18 +35,24 @@ import javafx.scene.layout.VBox;
 @Component
 public class Validations extends BaseController {
 
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(ApplicationContext.class);
 	private boolean isChild;
 	private ResourceBundle validationBundle;
 	private ResourceBundle messageBundle;
 	private ResourceBundle labelBundle;
 
 	public Validations() {
-		validationBundle = ResourceBundle.getBundle("validations", new Locale("en"));
-		messageBundle = ResourceBundle.getBundle("messages", new Locale("en"));
-		labelBundle = ResourceBundle.getBundle("labels", new Locale("en"));
-
+		try {
+			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
+			messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
+			labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+		} catch (NullPointerException | MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		}
 	}
-
 
 	/**
 	 * Iterate the fields to and call the validate method on them
@@ -60,9 +73,9 @@ public class Validations extends BaseController {
 		return isValid;
 	}
 
-
 	/**
-	 * Pass the node to check for the validation, specific validation method will be called for each field
+	 * Pass the node to check for the validation, specific validation method
+	 * will be called for each field
 	 */
 	public boolean validate(Node node, String id) {
 		if (node instanceof ScrollPane && node.getId().matches("porScroll"))
@@ -77,20 +90,25 @@ public class Validations extends BaseController {
 			return validateDob((DatePicker) node, id);
 		if (node instanceof ScrollPane)
 			return validateDocument((ScrollPane) node, id);
-
 		return validateTextField((TextField) node, id);
+
 	}
 
 	/**
 	 * Validate for the document upload
 	 */
 	private boolean validateDocument(ScrollPane node, String id) {
-		if (node.isDisabled())
-			return true;
-		if (!((VBox) node.getContent()).getChildren().isEmpty())
-			return true;
-		generateAlert("", messageBundle.getString(id));
-		node.requestFocus();
+		try {
+			if (node.isDisabled())
+				return true;
+			if (!((VBox) node.getContent()).getChildren().isEmpty())
+				return true;
+			generateAlert("", messageBundle.getString(id));
+			node.requestFocus();
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			return false;
+		}
 		return false;
 	}
 
@@ -98,13 +116,18 @@ public class Validations extends BaseController {
 	 * Validate for the document upload based on the isChild
 	 */
 	private boolean validateDocument(ScrollPane node, boolean isDependent, String id) {
-		if (node.isDisabled())
-			return true;
-		if (isDependent) {
-			if (!((VBox) node.getContent()).getChildren().isEmpty())
+		try {
+			if (node.isDisabled())
 				return true;
-			generateAlert("", messageBundle.getString(id));
-			node.requestFocus();
+			if (isDependent) {
+				if (!((VBox) node.getContent()).getChildren().isEmpty())
+					return true;
+				generateAlert("", messageBundle.getString(id));
+				node.requestFocus();
+				return false;
+			}
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return true;
@@ -114,39 +137,49 @@ public class Validations extends BaseController {
 	 * Validate for the TextField
 	 */
 	public boolean validateTextField(TextField node, String id) {
-		String validationProperty[] = validationBundle.getString(id).split("\\s,");
-		String isMandetory = validationProperty[1];
-		String label = id.replaceAll("_ontype", "");
-		String message = id.replaceAll("ontype", "WARNING");
-		if (isMandetory.equals("false") && node.getText().isEmpty())
-			return true;
-		if (node.isDisabled())
-			return true;
-		if (node.getText().matches(validationProperty[0]))
-			return true;
-		generateAlert(labelBundle.getString(label), messageBundle.getString(message));
-		node.requestFocus();
+		try {
+			String validationProperty[] = validationBundle.getString(id).split("\\s,");
+			String isMandetory = validationProperty[1];
+			String label = id.replaceAll("_ontype", "");
+			String message = id.replaceAll("ontype", "WARNING");
+			if (isMandetory.equals("false") && node.getText().isEmpty())
+				return true;
+			if (node.isDisabled())
+				return true;
+			if (node.getText().matches(validationProperty[0]))
+				return true;
+			generateAlert(labelBundle.getString(label), messageBundle.getString(message));
+			node.requestFocus();
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			return false;
+		}
 		return false;
 	}
-	
+
 	/**
 	 * Validate for the TextField based on the isChild
 	 */
 	private boolean validateTextField(TextField node, boolean dependency, String id) {
-		String validationProperty[] = validationBundle.getString(id).split("\\s,");
-		String isMandetory = validationProperty[1];
-		String label = id.replaceAll("_ontype", "");
-		String message = id.replaceAll("ontype", "WARNING");
-		if (isMandetory.equals("false") && node.getText().isEmpty())
-			return true;
-		if (node.isDisabled())
-			return true;
-		if (dependency) {
-			if (node.getText().matches(validationProperty[0])) {
+		try {
+			String validationProperty[] = validationBundle.getString(id).split("\\s,");
+			String isMandetory = validationProperty[1];
+			String label = id.replaceAll("_ontype", "");
+			String message = id.replaceAll("ontype", "WARNING");
+			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
+			if (node.isDisabled())
+				return true;
+			if (dependency) {
+				if (node.getText().matches(validationProperty[0])) {
+					return true;
+				}
+				generateAlert(labelBundle.getString(label), messageBundle.getString(message));
+				node.requestFocus();
+				return false;
 			}
-			generateAlert(labelBundle.getString(label), messageBundle.getString(message));
-			node.requestFocus();
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return true;
@@ -156,11 +189,16 @@ public class Validations extends BaseController {
 	 * Validate for the AgeDatePicker type of node
 	 */
 	private boolean validateDob(DatePicker node, String id) {
-		if (node.isDisabled())
-			return true;
-		if (node.getValue() == null) {
-			generateAlert(labelBundle.getString(id), messageBundle.getString(id));
-			node.requestFocus();
+		try {
+			if (node.isDisabled())
+				return true;
+			if (node.getValue() == null) {
+				generateAlert(labelBundle.getString(id), messageBundle.getString(id));
+				node.requestFocus();
+				return false;
+			}
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return true;
@@ -170,11 +208,16 @@ public class Validations extends BaseController {
 	 * Validate for the ComboBox type of node
 	 */
 	private boolean validateComboBox(ComboBox<?> node, String id) {
-		if (node.isDisabled())
-			return true;
-		if (node.getValue() == null) {
-			generateAlert(labelBundle.getString(id), messageBundle.getString(id));
-			node.requestFocus();
+		try {
+			if (node.isDisabled())
+				return true;
+			if (node.getValue() == null) {
+				generateAlert(labelBundle.getString(id), messageBundle.getString(id));
+				node.requestFocus();
+				return false;
+			}
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return true;
@@ -184,14 +227,19 @@ public class Validations extends BaseController {
 	 * Validate for the ComboBox type of node based on the isChild
 	 */
 	private boolean validateComboBox(ComboBox<?> node, boolean isDependent, String id) {
-		if (node.isDisabled())
-			return true;
-		if (isDependent) {
-			if (node.getValue() == null) {
-				generateAlert(labelBundle.getString(id), messageBundle.getString(id));
-				node.requestFocus();
-				return false;
+		try {
+			if (node.isDisabled())
+				return true;
+			if (isDependent) {
+				if (node.getValue() == null) {
+					generateAlert(labelBundle.getString(id), messageBundle.getString(id));
+					node.requestFocus();
+					return false;
+				}
 			}
+		} catch (MissingResourceException exception) {
+			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			return false;
 		}
 		return true;
 	}
