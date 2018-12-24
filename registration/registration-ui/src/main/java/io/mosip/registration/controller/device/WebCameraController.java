@@ -56,7 +56,7 @@ public class WebCameraController extends BaseController implements Initializable
 	@FXML
 	private Button close;
 
-	private BaseController parentController = new BaseController();
+	private BaseController parentController = null;
 
 	private BufferedImage capturedImage = null;
 
