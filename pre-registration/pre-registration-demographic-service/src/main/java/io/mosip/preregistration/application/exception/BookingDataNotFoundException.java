@@ -1,17 +1,21 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 
 /**
- * @author M1046129
- *
+ * This class defines the BookingDataNotFoundException
+ * 
+ * @author Jagadishwari S
+ * @since 1.0.0
+ * 
  */
 public class BookingDataNotFoundException extends BaseUncheckedException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5135952690225019228L;
 
 	public BookingDataNotFoundException(String message) {

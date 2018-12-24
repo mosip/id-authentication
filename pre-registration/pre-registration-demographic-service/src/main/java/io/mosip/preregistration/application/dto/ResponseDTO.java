@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,7 +15,8 @@ import lombok.Setter;
 /**
  * Response DTO
  * 
- * @author M1037717
+ * @author Rajath KR
+ * @since 1.0.0
  *
  */
 @Getter

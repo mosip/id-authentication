@@ -31,7 +31,8 @@ import io.mosip.preregistration.core.exception.TablenotAccessibleException;
  * This class is used to handle all the exceptions that occur while creating
  * the pre-registration
  * 
- * @author M1046462
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 public class DemographicExceptionCatcher {

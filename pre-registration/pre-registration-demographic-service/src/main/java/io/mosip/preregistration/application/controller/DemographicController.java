@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +32,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * This class provides the
+ * This class provides different API's to perform operations on
+ * pre-registration.
  * 
  * @author Rajath KR
  * @author Sanober Noor
@@ -37,7 +42,7 @@ import io.swagger.annotations.ApiResponses;
  * @author Ravi C Balaji
  * @since 1.0.0
  */
- 
+
 @RestController
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
@@ -45,14 +50,16 @@ import io.swagger.annotations.ApiResponses;
 public class DemographicController {
 
 	/**
-	 * Field for {@link #ViewRegistrationService}
+	 * Autowired reference for {@link #DemographicService}
 	 */
 	@Autowired
 	private DemographicService preRegistrationService;
 
 	/**
+	 * Post API to create a pre-registation application.
 	 * 
-	 * @param list of application forms
+	 * @param list
+	 *            of application forms
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
@@ -66,8 +73,10 @@ public class DemographicController {
 	}
 
 	/**
+	 * Get API to fetch all the Pre-registration data for a pre-id
+	 * 
 	 * @param preRegId
-	 * @return
+	 * @return the application data for a pre-id
 	 */
 	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
@@ -79,9 +88,11 @@ public class DemographicController {
 	}
 
 	/**
+	 * Put API to update the status of the application
+	 * 
 	 * @param preRegId
 	 * @param status
-	 * @return
+	 * @return the updation status of application for a pre-id
 	 */
 	@PutMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update Pre-Registartion status")
@@ -126,6 +137,8 @@ public class DemographicController {
 	 * Delete API to delete the Individual applicant and documents associated with
 	 * the PreId
 	 * 
+	 * @param preId
+	 * @return the deletion status of application for a pre-id
 	 */
 	@DeleteMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard individual")
@@ -137,9 +150,11 @@ public class DemographicController {
 	}
 
 	/**
+	 * Get API to fetch all the pre-ids within from-date and to-date range
+	 * 
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return the pre-ids for date range
 	 */
 	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")

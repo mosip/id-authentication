@@ -1,10 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception.system;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * @author M1046129
- *
+ * This class defines the SystemIllegalArgumentException
+ * 
+ * @author Rajath KR
+ * @since 1.0.0
+ * 
  */
 public class SystemIllegalArgumentException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;

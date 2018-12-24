@@ -30,14 +30,35 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 @Transactional
 public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
+	/**
+	 * @param userId
+	 * @return list of pregistration data
+	 */
 	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
 
+	/**
+	 * @param userId
+	 * @return list of group ids
+	 */
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
+	/**
+	 * @param preRegId
+	 * @return
+	 */
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
+	/**
+	 * @param preId
+	 * @return the number of rows deleted
+	 */
 	public int deleteByPreRegistrationId(String preId);
 
+	/**
+	 * @param start
+	 * @param end
+	 * @return list of pregistration data
+	 */
 	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 
 }

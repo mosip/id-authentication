@@ -1,11 +1,18 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 
 /**
- * @author M1046129
- *
+ * This class defines the DocumentFailedToDeleteException
+ * 
+ * @author Tapaswini Bahera
+ * @since 1.0.0
+ * 
  */
 public class DocumentFailedToDeleteException extends BaseUncheckedException {
 

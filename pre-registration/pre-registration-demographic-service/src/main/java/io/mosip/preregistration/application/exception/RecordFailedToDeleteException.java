@@ -1,10 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * @author M1046129
- *
+ * This class defines the RecordFailedToDeleteException
+ * 
+ * @author RecordNotFoundException
+ * @since 1.0.0
+ * 
  */
 public class RecordFailedToDeleteException extends BaseUncheckedException {
 

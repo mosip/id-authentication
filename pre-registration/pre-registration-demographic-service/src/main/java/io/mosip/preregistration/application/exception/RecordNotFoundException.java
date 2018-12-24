@@ -1,12 +1,17 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * OperationNotAllowedException
+ * This class defines the RecordNotFoundException
  * 
- * @author M1043226
- *
+ * @author Tapaswini Bahera
+ * @since 1.0.0
+ * 
  */
 public class RecordNotFoundException extends BaseUncheckedException {
 

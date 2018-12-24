@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import lombok.Getter;
@@ -8,8 +12,8 @@ import lombok.ToString;
 /**
  * View registration response DTO
  * 
- * @author M1037462
- * 
+ * @author Rupika
+ * @since 1.0.0
  */
 
 @Getter
