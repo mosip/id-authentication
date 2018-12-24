@@ -3,7 +3,6 @@ package io.mosip.kernel.idrepo.service.impl;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -40,7 +38,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -469,9 +466,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 			// Append Hash | Encrypted session key | Encrypted Data
 			StringBuilder builder = new StringBuilder(Base64.getEncoder().encodeToString(hash));
-			builder.append('|');
 			builder.append(Base64.getEncoder().encodeToString(encryptedsessionKey));
-			builder.append('|');
 			builder.append(Base64.getEncoder().encodeToString(encryptedData));
 			return builder.toString().getBytes();
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException | java.security.NoSuchAlgorithmException e) {
@@ -492,10 +487,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 		try {
 			// Extract Hash & Encrypted session key & Encrypted Data
-			String[] encryptedIdentity = new String(identity).split("\\|");
-			String hash = encryptedIdentity[0];
-			String encryptedSessionKey = encryptedIdentity[1];
-			String encryptedData = encryptedIdentity[2];
+			String encryptedIdentity = new String(identity);
+			String hash = encryptedIdentity.substring(0, 44);
+			String encryptedSessionKey = encryptedIdentity.substring(44, 388);
+			String encryptedData = encryptedIdentity.substring(388, encryptedIdentity.length());
 
 			// HMAC Decrypted Data record
 			// Compare HMAC

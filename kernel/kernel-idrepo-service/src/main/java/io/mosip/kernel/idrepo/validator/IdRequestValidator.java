@@ -316,7 +316,7 @@ public class IdRequestValidator implements Validator {
 		TreeSet<Map<String, String>> identitySet = Sets.newTreeSet((Map<String, String> map1,
 				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
 
-		return requestMap.get(IDENTITY).values().parallelStream().peek(map -> identitySet.clear())
+		return requestMap.get(IDENTITY).values().stream().peek(map -> identitySet.clear())
 				.peek(identitySet::addAll).anyMatch(listOfMap -> listOfMap.size() != identitySet.size());
 	}
 
