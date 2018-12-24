@@ -86,7 +86,7 @@ public class MachineSpecificationTest {
 	}
 
 	@Test
-	public void deleteMachineSpecificationNotFoundExceptionTest() throws Exception {
+	public void deleteMachineSpecificationDataNotFoundExceptionTest() throws Exception {
 		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
 		mockMvc.perform(delete("/v1.0/machinespecifications/1000").contentType(MediaType.APPLICATION_JSON))
