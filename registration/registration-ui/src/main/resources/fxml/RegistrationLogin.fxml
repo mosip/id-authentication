@@ -70,8 +70,8 @@
 						<Font size="23.0" />
 					</font>
 				</Label>
-				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" prefHeight="39.0" prefWidth="221.0" promptText="RO Username" AnchorPane.leftAnchor="106.0" />
-				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" prefHeight="39.0" prefWidth="221.0" promptText="RO Password" AnchorPane.leftAnchor="106.0" />
+				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" prefHeight="39.0" prefWidth="221.0" promptText="Username" AnchorPane.leftAnchor="106.0" />
+				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" prefHeight="39.0" prefWidth="221.0" promptText="Password" AnchorPane.leftAnchor="106.0" />
 				<Button fx:id="submit" alignment="CENTER" layoutX="246.0" layoutY="260.0" mnemonicParsing="false" onAction="#validateCredentials" prefHeight="30.0" prefWidth="81.0" text="Submit" />
 				<Button fx:id="getOTP" layoutX="106.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="89.0" text="Get OTP" />
 				<Button fx:id="resend" layoutX="108.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="105.0" text="Resend OTP" visible="false" />

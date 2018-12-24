@@ -476,7 +476,6 @@ public class LoginController extends BaseController implements Initializable {
 	private void enablePWD() {
 		password.clear();
 		password.setVisible(true);
-		password.setPromptText("RO Password");
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
 		fingerprint.setVisible(false);
