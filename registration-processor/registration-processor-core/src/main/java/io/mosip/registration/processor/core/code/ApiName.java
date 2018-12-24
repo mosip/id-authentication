@@ -16,7 +16,7 @@ public enum ApiName {
 	AUTHINTERNAL,
 	
 	/** The master data. */
-	MASTER_DATA, 
+	MASTER, 
 	
 	/** The iam. */
 	IAM, 
@@ -40,5 +40,12 @@ public enum ApiName {
 	CENTERHISTORY,
 	
 	/** The center-machine-user history. */
-	CENTERUSERMACHINEHISTORY
+	CENTERUSERMACHINEHISTORY,
+	
+	//https://integ.mosip.io/smsnotifier/v1.0/sms/send
+	SMSNOTIFIER,
+	
+	//https://integ.mosip.io/emailnotifier/v1.0/email/send
+	EMAILNOTIFIER
+	
 }

@@ -16,6 +16,6 @@ public class MessageNotificationRequest {
 	private List<String> otherAttribute; 
 	private String mailSubject;
 	private String[] mailCc;
-	private MultipartFile[] attatchments;
+	private MultipartFile[] attachments;
 	
 }

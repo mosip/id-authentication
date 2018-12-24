@@ -44,7 +44,7 @@ public class TemplateGenerator {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER_DATA,
+			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER,
 					pathSegments, "", "", TemplateResponseDto.class);
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

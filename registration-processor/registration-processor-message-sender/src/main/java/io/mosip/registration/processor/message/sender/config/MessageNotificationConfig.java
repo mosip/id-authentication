@@ -18,4 +18,4 @@ public class MessageNotificationConfig {
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.message.sender"))
 				.paths(PathSelectors.ant("/v0.1/registration-processor/message-sender/*")).build();
 	}
-}	
+}

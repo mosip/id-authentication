@@ -629,5 +629,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<String> getApplicantIrisImageNameById(String regId) {
 		return packetInfoDao.getApplicantIrisImageNameById(regId);
 	}
+	
+	@Override
+	public List<String> getRegIdByUIN(String uin) {
+		return packetInfoDao.getRegIdByUIN(uin);
+	}
+	
 
 }
