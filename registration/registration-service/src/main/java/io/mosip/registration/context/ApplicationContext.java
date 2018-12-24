@@ -1,23 +1,51 @@
 package io.mosip.registration.context;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 
 public class ApplicationContext {
+
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(ApplicationContext.class);
 
 	private static ApplicationContext applicationContext;
 
 	private ApplicationContext() {
+		try {
+			applicationLanguageBundle = ResourceBundle.getBundle("labels",
+					new Locale(AppConfig.getApplicationProperty("application_language")));
+			localLanguageBundle = ResourceBundle.getBundle("labels",
+					new Locale(AppConfig.getApplicationProperty("local_language")));
+			applicationMessagesBundle = ResourceBundle.getBundle("messages",
+					new Locale(AppConfig.getApplicationProperty("application_language")));
+			localMessagesBundle = ResourceBundle.getBundle("messages",
+					new Locale(AppConfig.getApplicationProperty("local_language")));
+			applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations",
+					new Locale(AppConfig.getApplicationProperty("application_language")));
 
+			LOGGER.debug("APPLICATION CONTEXT", APPLICATION_NAME, APPLICATION_ID, "Loaded resources successfully");
+		} catch (NullPointerException | MissingResourceException exception  ) {
+			LOGGER.error("APPLICATION CONTEXT", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+
+		}
 	}
 
 	private ResourceBundle applicationLanguageBundle;
 	private ResourceBundle localLanguageBundle;
 	private ResourceBundle applicationMessagesBundle;
 	private ResourceBundle localMessagesBundle;
+	private ResourceBundle applicationLanguagevalidationBundle;
 	private Map<String, Object> applicationMap;
 
 	public static ApplicationContext getInstance() {
@@ -27,6 +55,13 @@ public class ApplicationContext {
 		} else {
 			return applicationContext;
 		}
+	}
+
+	/**
+	 * @return the application language validation bundle
+	 */
+	public ResourceBundle getApplicationLanguagevalidationBundle() {
+		return applicationLanguagevalidationBundle;
 	}
 
 	/**
@@ -44,22 +79,18 @@ public class ApplicationContext {
 		this.applicationMap = applicationMap;
 	}
 
+	/**
+	 * @return the application language label bundle
+	 */
 	public ResourceBundle getApplicationLanguageBundle() {
 		return applicationLanguageBundle;
 	}
 
-	public void setApplicationLanguageBundle() {
-		applicationLanguageBundle = ResourceBundle.getBundle("labels",
-				new Locale(AppConfig.getApplicationProperty("application_language")));
-	}
-
+	/**
+	 * @return the application language label bundle
+	 */
 	public ResourceBundle getLocalLanguageProperty() {
 		return localLanguageBundle;
-	}
-
-	public void setLocalLanguageProperty() {
-		localLanguageBundle = ResourceBundle.getBundle("labels",
-				new Locale(AppConfig.getApplicationProperty("local_language")));
 	}
 
 	/**
@@ -69,21 +100,11 @@ public class ApplicationContext {
 		return applicationMessagesBundle;
 	}
 
-	public void setApplicationMessagesBundle() {
-		applicationMessagesBundle = ResourceBundle.getBundle("messages",
-				new Locale(AppConfig.getApplicationProperty("application_language")));
-	}
-
 	/**
 	 * @return the localMessagesBundle
 	 */
 	public ResourceBundle getLocalMessagesBundle() {
 		return localMessagesBundle;
-	}
-
-	public void setLocalMessagesBundle() {
-		localMessagesBundle = ResourceBundle.getBundle("messages",
-				new Locale(AppConfig.getApplicationProperty("local_language")));
 	}
 
 }
