@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * This class is used to define the start of the demographic API service
+ * This class is used to define the start of the demographic service
  * 
  * @author Rajath KR
  * @since 1.0.0

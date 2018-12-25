@@ -32,32 +32,32 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 
 	/**
 	 * @param userId
-	 * @return list of pregistration data
+	 * @return list of pregistration data for the created date
 	 */
 	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
 
 	/**
 	 * @param userId
-	 * @return list of group ids
+	 * @return list of group ids for a user id
 	 */
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
 	/**
 	 * @param preRegId
-	 * @return
+	 * @return preregistrarion date for a pre-id
 	 */
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
 	/**
 	 * @param preId
-	 * @return the number of rows deleted
+	 * @return the number of rows deleted for a pre id
 	 */
 	public int deleteByPreRegistrationId(String preId);
 
 	/**
 	 * @param start
 	 * @param end
-	 * @return list of pregistration data
+	 * @return list of pregistration data between start and end date
 	 */
 	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 

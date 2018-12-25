@@ -13,5 +13,70 @@ package io.mosip.preregistration.application.code;
  *
  */
 public enum RequestCodes {
-	id, ver, reqTime, request, userId, preRegistrationId, createdBy, createdDatetime, updatedBy, updatedDatetime, statusCode, langCode, demographicDetails, identity, value, language, label, FullName, dateOfBirth, gender;
+
+	/* id */
+	id,
+
+	/* version */
+	ver,
+
+	/* request date time */
+	reqTime,
+
+	/* request object */
+	request,
+
+	/* user id */
+	userId,
+
+	/* preRegistration Id */
+	preRegistrationId,
+
+	/* create by */
+	createdBy,
+
+	/* created Date time */
+	createdDatetime,
+
+	/* updated By */
+	updatedBy,
+
+	/* updated Date time */
+	updatedDatetime,
+
+	/* status Code */
+	statusCode,
+
+	/* language Code */
+	langCode,
+
+	/* demographic json Details */
+	demographicDetails,
+
+	/* identity details */
+	identity,
+
+	/* value */
+	value,
+
+	/* language */
+	language,
+
+	/* label */
+	label,
+
+	/* Full name */
+	FullName,
+
+	/* date of birth */
+	dateOfBirth,
+
+	/* gender */
+	gender,
+
+	/* from date */
+	fromDate,
+
+	/* to date */
+	toDate;
 }

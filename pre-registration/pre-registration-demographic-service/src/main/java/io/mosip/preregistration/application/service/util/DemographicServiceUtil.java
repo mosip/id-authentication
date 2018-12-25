@@ -206,9 +206,11 @@ public class DemographicServiceUtil {
 	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
 		Map<String, Timestamp> timeStampMap = new HashMap<>();
 		try {
-			Date fromDate = DateUtils.parse(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
+			Date fromDate = DateUtils.parse(URLDecoder.decode(dateMap.get(RequestCodes.fromDate.toString()), "UTF-8"),
+					format);
 			Date toDate = null;
-			if (dateMap.get("ToDate") == null || isNull(dateMap.get("ToDate"))) {
+			if (dateMap.get(RequestCodes.toDate.toString()) == null
+					|| isNull(dateMap.get(RequestCodes.toDate.toString()))) {
 				toDate = fromDate;
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(toDate);
@@ -217,10 +219,11 @@ public class DemographicServiceUtil {
 				cal.set(Calendar.SECOND, 59);
 				toDate = cal.getTime();
 			} else {
-				toDate = DateUtils.parse(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
+				toDate = DateUtils.parse(URLDecoder.decode(dateMap.get(RequestCodes.toDate.toString()), "UTF-8"),
+						format);
 			}
-			timeStampMap.put("FromDate", new Timestamp(fromDate.getTime()));
-			timeStampMap.put("ToDate", new Timestamp(toDate.getTime()));
+			timeStampMap.put(RequestCodes.fromDate.toString(), new Timestamp(fromDate.getTime()));
+			timeStampMap.put(RequestCodes.toDate.toString(), new Timestamp(toDate.getTime()));
 
 		} catch (java.text.ParseException e) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),

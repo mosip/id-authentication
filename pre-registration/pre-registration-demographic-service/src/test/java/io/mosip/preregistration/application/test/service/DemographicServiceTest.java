@@ -46,6 +46,7 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
+import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
@@ -84,23 +85,41 @@ import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 @SpringBootTest
 public class DemographicServiceTest {
 
+	/**
+	 * Mocking the DemographicRepository bean
+	 */
 	@MockBean
 	private DemographicRepository demographicRepository;
 
+	/**
+	 * Mocking the RestTemplateBuilder bean
+	 */
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
 
+	/**
+	 * Mocking the PridGenerator bean
+	 */
 	@MockBean
 	private PridGenerator<String> pridGenerator;
 
+	/**
+	 * Mocking the JsonValidatorImpl bean
+	 */
 	@MockBean
 	private JsonValidatorImpl jsonValidator;
 
+	/**
+	 * Autowired reference for $link{DemographicServiceUtil}
+	 */
 	@Autowired
 	DemographicServiceUtil serviceUtil;
 
 	JSONParser parser = new JSONParser();
 
+	/**
+	 * Autowired reference for $link{DemographicService}
+	 */
 	@Autowired
 	private DemographicService preRegistrationService;
 
@@ -128,6 +147,18 @@ public class DemographicServiceTest {
 	@Value("${id}")
 	String idUrl;
 
+	private Map<String, String> reqDateRange = new HashMap<>();
+
+	String fromDate = "";
+	String toDate = "";
+
+	/**
+	 * @throws ParseException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws org.json.simple.parser.ParseException
+	 * @throws URISyntaxException
+	 */
 	@Before
 	public void setup() throws ParseException, FileNotFoundException, IOException,
 			org.json.simple.parser.ParseException, URISyntaxException {
@@ -188,6 +219,12 @@ public class DemographicServiceTest {
 		requestMap.put("reqTime", demographicRequestDTO.getReqTime().toString());
 		requestMap.put("request", demographicRequestDTO.getRequest().toString());
 
+		fromDate = "2018-12-06 09:49:29";
+		toDate = "2018-12-06 12:59:29";
+
+		requestMap.put(RequestCodes.fromDate.toString(), fromDate);
+		requestMap.put(RequestCodes.toDate.toString(), toDate);
+
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
 
@@ -195,8 +232,12 @@ public class DemographicServiceTest {
 		responseDTO.setStatus("true");
 		responseDTO.setResTime(times);
 		responseDTO.setErr(null);
+
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void successSaveImplTest() throws Exception {
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
@@ -218,6 +259,9 @@ public class DemographicServiceTest {
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
@@ -250,7 +294,7 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setUpdatedDateTime(times);
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		ResponseDTO<CreateDemographicDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
-		assertEquals("1234",res.getResponse().get(0).getPreRegistrationId());
+		assertEquals("1234", res.getResponse().get(0).getPreRegistrationId());
 	}
 
 	@Test(expected = JsonValidationException.class)
@@ -312,7 +356,7 @@ public class DemographicServiceTest {
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenThrow(exception);
 		ResponseDTO<CreateDemographicDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
-		assertEquals("false",res.getStatus());
+		assertEquals("false", res.getStatus());
 	}
 
 	@Test
@@ -559,12 +603,10 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = SystemUnsupportedEncodingException.class)
-	public void getBydateFailureCheck() throws Exception {
-		SystemUnsupportedEncodingException exception = new SystemUnsupportedEncodingException(
-				ErrorCodes.PRG_PAM_APP_009.name(), ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.name());
+	@Test
+	public void getApplicationWithoutToDateTest() {
 		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+
 		ResponseDTO<String> response = new ResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -574,12 +616,46 @@ public class DemographicServiceTest {
 
 		preIds.add("1234");
 		response.setResponse(preIds);
+		response.setStatus("true");
+
+		String dateFormat = "yyyy-MM-dd HH:mm:ss";
+		Date myFromDate;
+		try {
+			myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()), null))
+					.thenReturn(details);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (java.io.UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		ResponseDTO<String> actualRes = preRegistrationService.getPreRegistrationByDate(fromDate, null);
+		assertEquals(actualRes.getStatus(), response.getStatus());
+
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test(expected = SystemUnsupportedEncodingException.class)
+	public void getBydateFailureCheck() throws Exception {
+		SystemUnsupportedEncodingException exception = new SystemUnsupportedEncodingException(
+				ErrorCodes.PRG_PAM_APP_009.name(), ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.name());
+
+		ResponseDTO<String> response = new ResponseDTO<>();
+		List<String> preIds = new ArrayList<>();
+		List<DemographicEntity> details = new ArrayList<>();
+		DemographicEntity entity = new DemographicEntity();
+		entity.setPreRegistrationId("1234");
+		details.add(entity);
+		preIds.add("1234");
+		response.setResponse(preIds);
 
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
 		Date myToDate;
 
-		myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
+		myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
 		myToDate = DateUtils.parse(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
@@ -589,6 +665,9 @@ public class DemographicServiceTest {
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
 	public void getBydateFailureParseCheck() throws Exception {
 		DateParseException exception = new DateParseException(ErrorCodes.PRG_PAM_APP_011.name(),

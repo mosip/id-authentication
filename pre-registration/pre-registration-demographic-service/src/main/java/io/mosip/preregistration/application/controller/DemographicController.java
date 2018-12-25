@@ -162,6 +162,7 @@ public class DemographicController {
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
 	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(@RequestParam(value = "fromDate") String fromDate,
 			@RequestParam(value = "toDate") String toDate) {
+		System.out.println("Inside controller");
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getPreRegistrationByDate(fromDate, toDate));
 	}
