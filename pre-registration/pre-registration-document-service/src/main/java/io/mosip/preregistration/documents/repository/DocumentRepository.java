@@ -17,7 +17,7 @@ import io.mosip.preregistration.documents.entity.DocumentEntity;
  * @author M1043008
  *
  */
-@Repository("documentRepositoery")
+@Repository("documentRepository")
 @Transactional
 public interface DocumentRepository extends BaseRepository<DocumentEntity, String> {
 	public boolean existsByPreregId(String preregId);
@@ -31,6 +31,6 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	
 	public int deleteAllBydocumentId(Integer documentId);
 	
-	public List<DocumentEntity> deleteAllBypreregId(String preregId);
+	public int deleteAllBypreregId(String preregId);
 
 }

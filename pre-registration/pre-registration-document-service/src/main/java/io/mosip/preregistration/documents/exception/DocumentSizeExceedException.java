@@ -31,4 +31,12 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	}
 
+	public DocumentSizeExceedException(String errorCode, String message, Throwable cause) {
+		super(errorCode, message, cause);
+	}
+
+	public DocumentSizeExceedException(String errorCode, String message) {
+		super(errorCode, message);
+	}
+
 }

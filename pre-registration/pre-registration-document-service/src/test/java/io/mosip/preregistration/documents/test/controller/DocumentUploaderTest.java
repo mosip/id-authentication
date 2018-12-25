@@ -35,10 +35,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.controller.DocumentUploader;
-import io.mosip.preregistration.documents.dto.DocumentDto;
+import io.mosip.preregistration.documents.dto.DocumentDTO;
 import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(DocumentUploader.class)
@@ -53,24 +54,28 @@ public class DocumentUploaderTest {
 
 	@MockBean
 	private DocumentUploadService service;
+	
+	@MockBean
+	private FilesystemCephAdapterImpl ceph;
 
 	List<DocumentEntity> DocumentList = new ArrayList<>();
 	Map<String, String> response = null;
 
 	String documentId;
 	boolean flag;
+	String json;
 
 	Map<String, String> map = new HashMap<>();
 	ResponseDTO responseCopy = new ResponseDTO<>();
 	ResponseDTO responseDelete = new ResponseDTO<>();
-	DocumentDto documentDto = null;
+	DocumentDTO documentDto = null;
 
 	@Before
 	public void setUp() throws IOException {
 
-		documentDto = new DocumentDto("59276903416082", "address", "POA", "pdf", "Pending-Appoinment",new Timestamp(System.currentTimeMillis()),"Jagadishwari");
+		documentDto = new DocumentDTO("59276903416082", "address", "POA", "pdf", "Pending-Appoinment",new Timestamp(System.currentTimeMillis()),"Jagadishwari");
 
-		String json="{\r\n" + 
+		 json="{\r\n" + 
 				"	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + 
 				"	\"ver\": \"1.0\",\r\n" + 
 				"	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + 
@@ -118,31 +123,32 @@ public class DocumentUploaderTest {
 
 	}
 
+//	@Test
+//	public void successSave() throws Exception {
+//	//	Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+//		Mockito.when(service.uploadDoucment(multipartFile, json)).thenReturn(responseCopy);	
+//		mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+//				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+//
+//	}
+
 	@Test
-	public void successSave() throws Exception {
-		Mockito.when(service.uploadDoucment(multipartFile, documentDto)).thenReturn(responseCopy);
-		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-
-	}
-
-	/*@Test
 	public void successDelete() throws Exception {
 		Mockito.when(service.deleteDocument(documentId)).thenReturn(responseCopy);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.delete("/v0.1/pre-registration/delete_document")
+				.delete("/v0.1/pre-registration/deleteDocument")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("documentId", documentId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	}*/
+	}
 
-	/*@Test
+	@Test
 	public void getAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
-		mockMvc.perform(get("/v0.1/pre-registration/get_document")
+		mockMvc.perform(get("/v0.1/pre-registration/getDocument")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).param("preId", "48690172097498"))
 				.andExpect(status().isOk());
-	}*/
+	}
 
 	@Test
 	public void deletetAllDocumentByPreidTest() throws Exception {
@@ -154,21 +160,21 @@ public class DocumentUploaderTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	/*@Test
+	@Test
 	public void copyDocumentTest() throws Exception {
 		Mockito.when(service.copyDoucment("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
-		mockMvc.perform(post("/v0.1/pre-registration/copy_documents")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).param("cat_code", "POA")
-				.param("source_prId", "48690172097498").param("destination_preId", "1234567891"))
+		mockMvc.perform(post("/v0.1/pre-registration/copyDocuments")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).param("catCode", "POA")
+				.param("sourcePrId", "48690172097498").param("destinationPreId", "1234567891"))
 				.andExpect(status().isOk());
 
-	}*/
+	}
 	
 
 	@Test(expected=Exception.class)
 	public void FailuregetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
-		mockMvc.perform(get("/v0.1/pre-registration/get_document")
+		mockMvc.perform(get("/v0.1/pre-registration/getDocument")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).param("preId", "2"))
 				.andExpect(status().isInternalServerError());
 
@@ -179,8 +185,8 @@ public class DocumentUploaderTest {
 		Mockito.when(service.copyDoucment(Mockito.anyString(),Mockito.anyString(), Mockito.anyString())).thenThrow(Exception.class);
 
 		mockMvc.perform(
-				post("/v0.1/pre-registration/copy_documents").contentType(MediaType.APPLICATION_JSON_VALUE)
-						.param("cat_type", Mockito.anyString()).param("source_prId", Mockito.anyString()).param("destination_preId", Mockito.anyString()))
+				post("/v0.1/pre-registration/copyDocuments").contentType(MediaType.APPLICATION_JSON_VALUE)
+						.param("catCype", Mockito.anyString()).param("sourcePrId", Mockito.anyString()).param("destinationPreId", Mockito.anyString()))
 				.andExpect(status().isBadRequest());
 
 	}

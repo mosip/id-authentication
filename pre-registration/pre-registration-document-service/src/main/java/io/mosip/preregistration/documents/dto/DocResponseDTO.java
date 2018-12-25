@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocResponseDto implements Serializable {
+public class DocResponseDTO implements Serializable {
 
 	/**
 	 * 

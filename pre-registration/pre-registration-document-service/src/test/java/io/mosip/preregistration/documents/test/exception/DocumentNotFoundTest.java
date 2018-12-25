@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.documents.dto.DocumentDto;
+import io.mosip.preregistration.documents.dto.DocumentDTO;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
@@ -32,14 +32,30 @@ public class DocumentNotFoundTest {
 
 	@MockBean
 	private MockMultipartFile multiPartFile;
+	
+	String  json="{\r\n" + 
+			"	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + 
+			"	\"ver\": \"1.0\",\r\n" + 
+			"	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + 
+			"	\"request\": {\r\n" + 
+			"		\"prereg_id\": \"48690172097498\",\r\n" + 
+			"		\"doc_cat_code\": \"POA\",\r\n" + 
+			"		\"doc_typ_code\": \"address\",\r\n" + 
+			"		\"doc_file_format\": \"pdf\",\r\n" + 
+			"		\"status_code\": \"Pending-Appoinment\",\r\n" + 
+			"		\"upload_by\": \"9217148168\",\r\n" + 
+			"		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + 
+			"	}\r\n" + 
+			"}";
+
 
 	@Test
 	public void notFoundException() throws FileNotFoundException, IOException {
 
 		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
 
-		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft",
-				new Timestamp(System.currentTimeMillis()), "Jagadishwari");
+		DocumentDTO documentDto = new DocumentDTO("48690172097498", "address", "POA", "pdf", "Pending-Appoinment",
+				new Timestamp(System.currentTimeMillis()), "9217148168");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -47,11 +63,11 @@ public class DocumentNotFoundTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))
+		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, json))
 				.thenThrow(documentNotFoundException);
 		try {
 
-			documentUploadService.uploadDoucment(multiPartFile, documentDto);
+			documentUploadService.uploadDoucment(multiPartFile, json);
 			fail();
 
 		} catch (DocumentNotFoundException e) {
