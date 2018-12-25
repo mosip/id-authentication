@@ -92,8 +92,8 @@ public interface MachineService {
 	/**
 	 * Abstract method to update Machine Details to the Database
 	 * 
-	 * @param machine
-	 *            machine DTO 
+	 * @param id
+	 *            machine id 
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}

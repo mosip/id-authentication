@@ -67,18 +67,6 @@ public class MetaDataUtils {
 		return destination;
 	}
 
-	public static <S, D extends BaseEntity> D setUpdateMachineMetaData(final S source, D destination) {
-		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-		if (!EmptyCheckUtils.isNullEmpty(authN)) {
-			contextUser = authN.getName();
-		}
-
-		D entity = MapperUtils.map(source, destination);
-
-		setUpdatedDateTime(contextUser, entity);
-		return entity;
-	}
-
 	/**
 	 * This method is used to set meta data used for delete.
 	 * 

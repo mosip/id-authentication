@@ -179,7 +179,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					deviceSpecificationRepository.update(deviceSpecification);
 					idResponseDto.setId(deviceSpecification.getId());
 				} else {
-					throw new DataNotFoundException(
+					throw new MasterDataServiceException(
 							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
 				}
