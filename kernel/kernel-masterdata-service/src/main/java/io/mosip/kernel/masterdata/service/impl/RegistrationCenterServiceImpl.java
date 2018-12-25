@@ -116,7 +116,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		registrationCenterHolidayResponse = new RegistrationCenterHolidayDto();
 		registrationCenterHolidayResponse.setRegistrationCenter(registrationCenterDto);
 		registrationCenterHolidayResponse.setHolidays(holidayDto);
-
+		
 		return registrationCenterHolidayResponse;
 	}
 
