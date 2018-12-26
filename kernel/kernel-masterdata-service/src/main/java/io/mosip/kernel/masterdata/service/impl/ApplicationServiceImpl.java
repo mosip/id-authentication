@@ -38,8 +38,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private DataMapper dataMapper;
 
-	private List<Application> applicationList;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -49,6 +47,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public ApplicationResponseDto getAllApplication() {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
+		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
 		} catch (DataAccessException e) {
@@ -80,6 +79,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
+		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException e) {
