@@ -57,6 +57,7 @@ import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
 import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 
 /**
  * DataSync Service
@@ -340,7 +341,7 @@ public class DataSyncService {
 					preregIds.add(preRegistrationEntity);
 				}
 				preRegistrationIdsDTO.setPreRegistrationIds(preregIds);
-				preRegistrationIdsDTO.setTransactionId("337324416082");
+				preRegistrationIdsDTO.setTransactionId(UUIDGeneratorUtil.generateId());
 				responseDto.setStatus("True");
 				responseDto.setErr(err);
 				responseDto.setResTime(new Timestamp(System.currentTimeMillis()));

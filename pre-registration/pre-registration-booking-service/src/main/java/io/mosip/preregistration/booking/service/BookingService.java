@@ -81,6 +81,7 @@ import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -728,7 +729,7 @@ public class BookingService {
 							availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 							bookingAvailabilityRepository.update(availableEntity);
 
-							cancelBookingResponseDTO.setTransactionId("635655875815618");
+							cancelBookingResponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
 							cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 
 						} else {

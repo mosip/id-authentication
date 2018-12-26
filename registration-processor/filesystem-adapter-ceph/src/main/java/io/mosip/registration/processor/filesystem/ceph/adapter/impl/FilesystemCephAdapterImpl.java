@@ -109,7 +109,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 *            The file to be stored
 	 * @return true if the file is stored successfully
 	 */
-	private boolean storeFile(String enrolmentId, String fileName, InputStream file) {
+	public boolean storeFile(String enrolmentId, String fileName, InputStream file) {
 		try {
 			this.conn.putObject(enrolmentId, fileName, file, null);
 			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, SUCCESS_UPLOAD_MESSAGE);
