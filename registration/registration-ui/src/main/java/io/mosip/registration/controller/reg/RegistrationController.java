@@ -1566,7 +1566,7 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	private void createRegistrationDTOObject() {
+	protected void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
 		// Set the RID
