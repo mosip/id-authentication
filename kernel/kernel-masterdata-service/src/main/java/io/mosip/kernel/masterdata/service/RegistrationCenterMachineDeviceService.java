@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * mapping in database for registration center id, machine id and device id.
  * 
  * @author Bal Vikash Sharma
+ * @author Srinivasan
  * @since 1.0.0
  */
 public interface RegistrationCenterMachineDeviceService {
@@ -36,10 +37,15 @@ public interface RegistrationCenterMachineDeviceService {
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto);
 
 	/**
+	 * This method deletes data from the database. It updates the flag isDeleted to
+	 * true to signify that the data is deleted
 	 * 
-	 * @param regCenterId - Registration center id
-	 * @param machineId - Machine Id
-	 * @param deviceId - Device Id
+	 * @param regCenterId
+	 *            - Registration center id
+	 * @param machineId
+	 *            - Machine Id
+	 * @param deviceId
+	 *            - Device Id
 	 * @return {@link RegistrationCenterMachineDeviceID}
 	 */
 	public RegistrationCenterMachineDeviceID deleteRegistrationCenterMachineAndDevice(String regCenterId,
