@@ -16,7 +16,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 
 /**
- * Registration Repository
+ * This repository interface is used to define the JPA methods for Demoraphic service.
  * 
  * @author Rajath KR
  * @author Sanober Noor
@@ -32,7 +32,7 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 
 	/**
 	 * @param userId
-	 * @return list of pregistration data for the created date
+	 * @return list of preregistration data for the created date
 	 */
 	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
 
@@ -44,20 +44,20 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 
 	/**
 	 * @param preRegId
-	 * @return preregistrarion date for a pre-id
+	 * @return preregistration date for a pre-id
 	 */
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
 	/**
 	 * @param preId
-	 * @return the number of rows deleted for a pre id
+	 * @return the number of rows deleted for a pre-id
 	 */
 	public int deleteByPreRegistrationId(String preId);
 
 	/**
 	 * @param start
 	 * @param end
-	 * @return list of pregistration data between start and end date
+	 * @return list of preregistration data between start and end date
 	 */
 	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 

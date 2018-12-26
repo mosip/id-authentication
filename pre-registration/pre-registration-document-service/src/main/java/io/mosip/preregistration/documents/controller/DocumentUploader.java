@@ -1,4 +1,7 @@
-
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.controller;
 
 import org.json.JSONException;
@@ -28,24 +31,33 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+
 /**
- * Document upload controller
+ * This class provides different API's to perform operations on
+ * Document upload.
  * 
- * @author M1043008
- *
+ * @author Rajath KR
+ * @author Kishan Rathore
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Document Handler")
 @CrossOrigin("*")
 public class DocumentUploader {
-
+	
+	/**
+	 * Autowired reference for {@link #DocumentUploadService}
+	 */
 	@Autowired
 	private DocumentUploadService documentUploadService;
 	
-	
-
 	/**
+	 * Post API to upload the document.
+	 * 
 	 * @param documentString
 	 * @param file
 	 * @return response in a format specified in API document
@@ -66,6 +78,8 @@ public class DocumentUploader {
 	}
 
 	/**
+	 * Post API to copy the document from source to destination by Preregistration Id
+	 * 
 	 * @param cat_type
 	 * @param source_prId
 	 * @param destination_preId
@@ -81,6 +95,8 @@ public class DocumentUploader {
 	}
 	
 	/**
+	 * Get API to fetch all the documents for a Preregistration Id
+	 * 
 	 * @param preId
 	 * @return response in a format specified in API document
 	 */
@@ -93,6 +109,8 @@ public class DocumentUploader {
 	}
 
 	/**
+	 * Delete API to delete the document for a Document Id
+	 * 
 	 * @param documentId
 	 * @return response in a format specified in API document
 	 */
@@ -106,6 +124,8 @@ public class DocumentUploader {
 	}
 
 	/**
+	 * Delete API to delete all the documents for a preregistration id
+	 * 
 	 * @param preId
 	 * @return response in a format specified in API document
 	 */

@@ -37,6 +37,8 @@ import io.mosip.preregistration.application.exception.system.SystemUnsupportedEn
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
+ * This class provides the utility methods for DemographicService
+ *  
  * @author Ravi C Balaji
  * @since 1.0.0
  */

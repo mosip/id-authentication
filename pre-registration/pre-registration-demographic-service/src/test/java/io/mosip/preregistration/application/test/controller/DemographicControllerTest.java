@@ -40,7 +40,7 @@ import net.minidev.json.parser.ParseException;
 
 /**
  * Test class to test the PreRegistration Controller methods
- *  
+ * 
  * @author Rajath KR
  * @author Sanober Noor
  * @author Tapaswini Bahera
@@ -54,7 +54,7 @@ import net.minidev.json.parser.ParseException;
 public class DemographicControllerTest {
 
 	/**
-	 * Mocking MVC
+	 * Autowired reference for {@link #MockMvc}
 	 */
 	@Autowired
 	private MockMvc mockMvc;
@@ -212,7 +212,6 @@ public class DemographicControllerTest {
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("preId", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-
 
 	/**
 	 * @throws Exception

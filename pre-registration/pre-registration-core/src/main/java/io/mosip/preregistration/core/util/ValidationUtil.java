@@ -77,13 +77,13 @@ public class ValidationUtil {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_DATE.toString());
 			}
-			/*
-			 * else if (key.equals(RequestCodes.TO_DATE) &&
-			 * (requestMap.get(RequestCodes.TO_DATE) == null ||
-			 * requestMap.get(RequestCodes.TO_DATE).equals(""))) { throw new
-			 * InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
-			 * ErrorMessages.INVALID_DATE.toString()); }
-			 */
+
+			else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
+					|| requestMap.get(RequestCodes.TO_DATE).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+						ErrorMessages.INVALID_DATE.toString());
+			}
+
 		}
 		return true;
 	}

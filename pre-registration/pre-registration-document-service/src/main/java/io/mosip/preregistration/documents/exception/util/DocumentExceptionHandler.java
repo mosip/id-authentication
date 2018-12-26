@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.exception.util;
 
 import java.sql.Timestamp;
@@ -24,14 +28,22 @@ import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundExcept
 import io.mosip.preregistration.documents.exception.ParsingException;
 
 /**
- * Exception Handler
+ * This class is defines the Exception handler for Document service
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Kishan Rathore
+ * @since 1.0.0
  */
 @RestControllerAdvice
 public class DocumentExceptionHandler {
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_007.toString(),
@@ -43,6 +55,11 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(DocumentNotValidException.class)
 	public ResponseEntity<ResponseDTO<?>> notValidExceptionhadler(final DocumentNotValidException nv,
 			WebRequest webRequest) {
@@ -54,10 +71,14 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(DTOMappigException.class)
-	public ResponseEntity<ResponseDTO<?>> DTOMappigExc(final DocumentNotValidException nv,
-			WebRequest webRequest) {
+	public ResponseEntity<ResponseDTO<?>> DTOMappigExc(final DocumentNotValidException nv, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(nv.getErrorCode(), nv.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
@@ -66,7 +87,12 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(InvalidConnectionParameters.class)
 	public ResponseEntity<ResponseDTO<?>> invalidConnectionParameters(final InvalidConnectionParameters nv,
 			WebRequest webRequest) {
@@ -78,6 +104,12 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(ConnectionUnavailableException.class)
 	public ResponseEntity<ResponseDTO<?>> connectionUnavailableException(final ConnectionUnavailableException nv,
 			WebRequest webRequest) {
@@ -89,9 +121,14 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(FileNotFoundException.class)
-	public ResponseEntity<ResponseDTO<?>> fileNotFoundException(final FileNotFoundException nv,
-			WebRequest webRequest) {
+	public ResponseEntity<ResponseDTO<?>> fileNotFoundException(final FileNotFoundException nv, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(nv.getErrorCode(), nv.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
@@ -100,6 +137,12 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(MandatoryFieldNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> mandatoryFieldNotFoundException(final MandatoryFieldNotFoundException nv,
 			WebRequest webRequest) {
@@ -111,10 +154,14 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
+	/**
+	 * @param nv
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(ParsingException.class)
-	public ResponseEntity<ResponseDTO<?>> parsingException(final ParsingException nv,
-			WebRequest webRequest) {
+	public ResponseEntity<ResponseDTO<?>> parsingException(final ParsingException nv, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(nv.getErrorCode(), nv.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
@@ -124,7 +171,11 @@ public class DocumentExceptionHandler {
 
 	}
 
-
+	/**
+	 * @param me
+	 * @param webRequest
+	 * @return
+	 */
 	@ExceptionHandler(MultipartException.class)
 	public ResponseEntity<ResponseDTO<?>> sizeExceedException(final MultipartException me, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_004.toString(),
@@ -135,7 +186,12 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
-	
+
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
