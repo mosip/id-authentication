@@ -1,6 +1,6 @@
 **Design - Packet Upload**
 
-**Functional Background **
+**Functional Background**
 
 As part of the registrtaion packet created successfully the Supervsisior has to authneticate the pakets using the EOD process. 
 Once done the authneitctaed packets will be uploaded to the registrtaion processor by manually or automatically. If the registrtaion application is in online and based on the EOD process authnetication the packets has to be moved to registrtaion processor.
@@ -112,12 +112,12 @@ Design Detail
  The detailed technical process for Uploading the Packet to the server
   is provided below:
   
-  **Packet Synch:**
+**Packet Sync:**
   
 - Invoke the packet-sync REST service to push status of the list of pacets.
 - Get the result and upload the status 'SYNCHED' to Registrtaion and Transaction tables.
 
-  **Packet Uploading:**
+**Packet Uploading:**
   
 -   Invoke the Upload REST service to push the list of packets to the
     server in a sequential manner \[one by one\]
@@ -134,7 +134,7 @@ Design Detail
     push that packet as well to the server and update the relevant
     status column.
 
--   -   Create the **PacketUploadController** with below methods
+-   Create the **PacketUploadController** with below methods
         **packetUpload**  --  to upload packets one by one.
         **packetSync**    -- to synch the packet status to server
     passing the ***filePath*** as a parameter.
