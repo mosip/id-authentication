@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
@@ -149,6 +150,7 @@ public class MachineServiceImpl implements MachineService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
+	@Transactional
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
@@ -177,6 +179,7 @@ public class MachineServiceImpl implements MachineService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
+	@Transactional
 	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
@@ -214,6 +217,7 @@ public class MachineServiceImpl implements MachineService {
 	 * String)
 	 */
 	@Override
+	@Transactional
 	public IdResponseDto deleteMachine(String id) {
 		Machine delMachine = null;
 		try {

@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -115,7 +114,6 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * deleteMachineSpecification(java.lang.String)
 	 */
 	@Override
-	@Transactional
 	public IdResponseDto deleteMachineSpecification(String id) {
 		MachineSpecification delMachineSpecification = null;
 		try {
