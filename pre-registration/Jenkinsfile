@@ -38,38 +38,37 @@ node {
   buildInfo.env.capture = true
  }
 
- stage('---------- build project ---------------') {
-  // for building java projects
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
-  // For building angular project
-  dir(branch) {
-   // Looking for angular.json file to to find out if the submodule we are building is an angular project
-   echo "Looking for Angular projects to build..."
-   sh "find . -name 'angular.json'> directoryAngularFiles"
-   locationOfAngularFiles = readFile("directoryAngularFiles").split("\\r?\\n");
-   sh "rm -f directoryAngularFiles"
-   print locationOfAngularFiles
-   for (int i = 0; i < locationOfAngularFiles.size(); i++) {
-    if (locationOfAngularFiles[i].equals("")) {
-     break;
-    }
-    def currentModule = locationOfAngularFiles[i]
-    sh "dirname $currentModule > parentDirectoryPath"
-    parentDirectoryPath = readFile('parentDirectoryPath').trim()
-    echo parentDirectoryPath
-    sh "rm -f parentDirectoryPath"
-    // to check if angular.json is present in root of submodule to build, for this purpose checking if
-    // Dockerfile is present in same directory.
-    fileToLookFor = parentDirectoryPath + "/Dockerfile"
-    echo fileToLookFor
-    def file = new File(fileToLookFor)
-    if (file.exists()) {
-     // installing node modules and building the angular project
-     sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --output-path=dist && popd"
-    }
-   }
-  }
- }
+stage ('---------- build ---------------') {
+	// for building java projects
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+ 	// For building angular project
+	dir(branch) {
+		// Looking for angular.json file to to find out if the submodule we are building is an angular project
+		echo "Looking for angular projects to build"
+		sh "find . -name 'angular.json'> directoryAngularFiles"
+		locationOfAngularFiles = readFile( "directoryAngularFiles" ).split( "\\r?\\n" );
+		for (int i=0; i < locationOfAngularFiles.size(); i++) {
+			if(locationOfAngularFiles[i].equals("")){
+			break;
+			}
+			echo locationOfAngularFiles[i]
+			def currentModule = locationOfAngularFiles[i]
+			sh "dirname $currentModule > parentDirectoryPath"
+			parentDirectoryPath = readFile('parentDirectoryPath').trim()
+			echo parentDirectoryPath
+			sh "rm -f parentDirectoryPath"
+			// to check if angular.json is present in root of submodule to build, for this purpose checking if
+			// Dockerfile is present in same directory.
+			fileToLookFor= parentDirectoryPath+"/Dockerfile"
+			sh "pwd"
+			def file= new File(fileToLookFor)
+			if( file.exists()){
+			// installing node modules and building the angular project
+			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --output-path=dist && popd"
+			}
+		}
+	}
+}
 
  stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
