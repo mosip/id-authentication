@@ -3,12 +3,14 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * RegistrationCenterDeviceService interface provide methods used to create
  * mapping between registration center id and device id.
  * 
+ * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
@@ -32,5 +34,7 @@ public interface RegistrationCenterDeviceService {
 	 */
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto);
+
+	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId, String deviceId);
 
 }
