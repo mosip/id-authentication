@@ -147,9 +147,13 @@ export class FileUploadComponent implements OnInit {
 
   handleFileInput(event) {
     console.log('event', event.target.files);
-    this.setJsonString(event);
-    this.sendFile(event);
-    this.browseDisabled = false;
+    if (event.target.files[0].type === 'application/pdf') {
+      this.setJsonString(event);
+      this.sendFile(event);
+      this.browseDisabled = false;
+    } else {
+      alert('Wrong file type, please upload again');
+    }
   }
 
   handleFileDrop(fileList) {}
@@ -220,5 +224,12 @@ export class FileUploadComponent implements OnInit {
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userFiles updaated', this.users);
+  }
+
+  openFile() {
+    console.log('open file called', this.users[0].files[0][0].multipartFile);
+    const file = new Blob(this.users[0].files[0][0].multipartFile, { type: 'application/pdf' });
+    const fileUrl = URL.createObjectURL(file);
+    window.open(fileUrl);
   }
 }
