@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
@@ -28,5 +29,9 @@ public interface TitleRepository extends BaseRepository<Title, CodeAndLanguageCo
 	 */
 	@Query
 	List<Title> getThroughLanguageCode(@Param("lang_code") String languageCode);
+	
+	
+	@Query("FROM Title WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Title> findByCode(String code);
 
 }
