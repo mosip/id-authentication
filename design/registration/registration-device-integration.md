@@ -190,7 +190,7 @@ Facade and Factory pattern should be introduced to invoke the Scanner device ven
 at run time. The device specific code should be encapsulated within the device specific implementation code.
 None of the client classes should invoke the device specific classes directly. 
 
-While capturing the different pages for the docuemnt types [POA/POI/POB/POR], capture all the docuemnts into the in-memoery.
+While capturing the different pages for the docuemnt types [POA/POI/POB/POR], capture all the pages into the in-memoery.
 While saving and creating the single docuemnt, merge all the pages and make it as a single document.
 
 The docuemnt format is a configurable one, we need to fetch from the global_param table
