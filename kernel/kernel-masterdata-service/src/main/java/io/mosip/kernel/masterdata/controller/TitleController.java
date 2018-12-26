@@ -103,16 +103,15 @@ public class TitleController {
 	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
-	@DeleteMapping("/v1.0/title/{code}/{langcode}")
-	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeAndLanguageCodeID.class)
+	@DeleteMapping("/v1.0/title/{code}")
+	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While deleting title any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> deleteTitle(@PathVariable("code") String code,
-			@PathVariable("langcode") String langCode) {
-		return new ResponseEntity<CodeAndLanguageCodeID>(titleService.deleteTitle(code, langCode), HttpStatus.OK);
+	public ResponseEntity<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
+		return new ResponseEntity<CodeResponseDto>(titleService.deleteTitle(code), HttpStatus.OK);
 	}
 
 }
