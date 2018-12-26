@@ -2307,8 +2307,8 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/machinespecification").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isNotFound());
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/machinespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isNotFound()); 
 
 	}
 
