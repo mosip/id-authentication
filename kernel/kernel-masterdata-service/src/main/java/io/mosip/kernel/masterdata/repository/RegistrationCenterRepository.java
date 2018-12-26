@@ -89,4 +89,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * @return the list of list of {@link RegistrationCenter}.
 	 */
 	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
+
+	List<RegistrationCenter> findByCenterTypeCode(String code);
 }
