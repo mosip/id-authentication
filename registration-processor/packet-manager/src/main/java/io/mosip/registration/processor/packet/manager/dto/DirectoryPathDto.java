@@ -53,6 +53,12 @@ public enum DirectoryPathDto {
 		public String toString() {
 			return "registration.processor.ARCHIVE_LOCATION";
 		}
-	}
+	},
+	VIRUS_SCAN_UNPACK {
+		@Override
+		public String toString() {
+			return "registration.processor.VIRUS_SCAN_UNPACK";
+		}
+	},
 
 }
