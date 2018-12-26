@@ -110,7 +110,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 				String unpackedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_UNPACK.toString())
 						+ File.separator + registrationId;
 
-				ZipUtils.unZipFile(decryptedPacketPath, unpackedPacketPath);
+				ZipUtils.unZipDirectory(decryptedPacketPath, unpackedPacketPath);
 				isUnpackedFileCleaned = virusScannerService.scanFolder(unpackedPacketPath);
 
 				if (isUnpackedFileCleaned) {
