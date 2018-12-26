@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
@@ -48,6 +49,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	 * createRegistrationCenterAndMachine(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
+	@Transactional
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
