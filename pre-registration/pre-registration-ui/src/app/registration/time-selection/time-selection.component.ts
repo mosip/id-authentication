@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { SharedService } from 'src/app/shared/shared.service';
 import { NameList } from '../demographic/name-list.modal';
 import { MatDialog } from '@angular/material';
@@ -10,7 +10,7 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit, OnChanges {
+export class TimeSelectionComponent implements OnInit {
 
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
@@ -25,6 +25,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
   cutoff = 1;
   days = 7;
   MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  enableBookButton = false;
 
   constructor(private sharedService: SharedService, private dialog: MatDialog, private dataService: DataStorageService) { }
 
@@ -33,12 +34,6 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
     this.sharedService.resetNameList();
     console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter.id);
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this.availabilityData = [];
-    console.log('On changes triggered');
-    this.getSlotsforCenter(changes.registrationCenter.currentValue.id);
   }
 
   public scrollRight(): void {
@@ -61,6 +56,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
     this.selectedTile = index;
     console.log('selected tile index', this.selectedTile);
     this.placeNamesInSlots();
+    this.enableBookButton = true;
   }
 
   cardSelected(index: number): void {
@@ -76,6 +72,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
     this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
     console.log(index, 'item to be deleted from card', this.deletedNames);
     this.showAddButton = true;
+    this.enableBookButton = false;
   }
 
   openDialog() {
@@ -97,6 +94,7 @@ export class TimeSelectionComponent implements OnInit, OnChanges {
       });
       if (this.deletedNames.length === 0) {
         this.showAddButton = false;
+        this.enableBookButton = true;
       }
     });
   }

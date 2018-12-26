@@ -195,7 +195,10 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.addUser(this.createRequestJSON(this.preRegId)).subscribe(
         response => {
           if (this.regService.getUser(this.step) != null) {
-            this.regService.updateUser(this.step, new UserModel(this.preRegId, identity, []));
+            this.regService.updateUser(
+              this.step,
+              new UserModel(this.preRegId, identity, this.regService.getUserFiles(this.step))
+            );
             this.sharedService.updateNameList(this.step, {
               fullName: this.userForm.controls.fullName.value,
               preRegId: this.preRegId

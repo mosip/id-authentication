@@ -118,7 +118,7 @@ public class TemplateGenerator {
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
-		templateValues.put(RegistrationConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
+		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
 
 		byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
 		String applicantImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));

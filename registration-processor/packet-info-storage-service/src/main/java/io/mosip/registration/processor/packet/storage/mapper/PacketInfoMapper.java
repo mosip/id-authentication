@@ -3,14 +3,24 @@ package io.mosip.registration.processor.packet.storage.mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
+import org.apache.commons.codec.language.Soundex;
+import org.apache.commons.codec.language.bm.Languages;
+import org.apache.commons.codec.language.bm.NameType;
+import org.apache.commons.codec.language.bm.PhoneticEngine;
+import org.apache.commons.codec.language.bm.RuleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
@@ -21,6 +31,7 @@ import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
@@ -273,73 +284,49 @@ public class PacketInfoMapper {
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 
 		RegOsiPkEntity regOsiPkEntity = new RegOsiPkEntity();
+		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+		regOsiPkEntity.setRegId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.REGISTRATIONID));
+		regOsiEntity.setPreregId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.PREREGISTRATIONID));
+		regOsiEntity.setIntroducerRegId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.INTRODUCERRID));
+		regOsiEntity.setIntroducerUin(identityIteratorUtil.getFieldValue(metaData, JsonConstant.INTRODUCERUIN));
+		regOsiEntity.setIntroducerTyp(identityIteratorUtil.getFieldValue(metaData, JsonConstant.INTRODUCERTYPE));
+		regOsiEntity.setSupervisorFingerType(
+				identityIteratorUtil.getFieldValue(metaData, JsonConstant.SUPERVISORFINGERPRINTTYPE));
+		regOsiEntity.setIntroducerFingerpType(
+				identityIteratorUtil.getFieldValue(metaData, JsonConstant.INTRODUCERFINGERPRINTTYPE));
+		regOsiEntity
+				.setIntroducerIrisType(identityIteratorUtil.getFieldValue(metaData, JsonConstant.INTRODUCERIRISTYPE));
+		regOsiEntity.setOfficerfingerType(
+				identityIteratorUtil.getFieldValue(metaData, JsonConstant.OFFICERFINGERPRINTTYPE));
+		regOsiEntity.setOfficerIrisType(identityIteratorUtil.getFieldValue(metaData, JsonConstant.OFFICERIRISTYPE));
+		regOsiEntity.setOfficerHashedPin(identityIteratorUtil.getFieldValue(metaData, JsonConstant.OFFICERPIN));
+		regOsiEntity
+				.setSupervisorIrisType(identityIteratorUtil.getFieldValue(metaData, JsonConstant.SUPERVISORIRISTYPE));
 
-		for (FieldValue field : metaData) {
-			if (field.getLabel().matches(REGISTRATION_ID)) {
-				regOsiPkEntity.setRegId(field.getValue());
-			} else if (field.getLabel().matches(PRE_REGISTRATION_ID)) {
-				regOsiEntity.setPreregId(field.getValue());
-			} else if (field.getLabel().matches("introducerRID")) {
-				regOsiEntity.setIntroducerId(field.getValue());
-			} else if (field.getLabel().matches("introducerUIN")) {
-				regOsiEntity.setIntroducerRegId(field.getValue());
-				regOsiEntity.setIntroducerUin(field.getValue());
-			} else if (field.getLabel().matches("introducerRIDHash")) {
-				regOsiEntity.setIntroducerRegId(field.getValue());
-			} else if (field.getLabel().matches("introducerType")) {
-				regOsiEntity.setIntroducerTyp(field.getValue());
-			} else if (field.getLabel().matches("supervisorFingerprintType")) {
-				regOsiEntity.setSupervisorFingerType(field.getValue());
-			} else if (field.getLabel().matches("introducerFingerprintType")) {
-				regOsiEntity.setIntroducerFingerpType(field.getValue());
-			} else if (field.getLabel().matches("introducerIrisType")) {
-				regOsiEntity.setIntroducerIrisType(field.getValue());
-			} else if (field.getLabel().matches("officerFingerprintType")) {
-				regOsiEntity.setOfficerfingerType(field.getValue());
-			} else if (field.getLabel().matches("officerIrisType")) {
-				regOsiEntity.setOfficerIrisType(field.getValue());
-			} else if (field.getLabel().matches("officerPIN")) {
-				regOsiEntity.setOfficerHashedPin(field.getValue());
-			} else if (field.getLabel().matches("supervisorIrisType")) {
-				regOsiEntity.setSupervisorIrisType(field.getValue());
-			}
+		regOsiEntity.setOfficerFingerpImageName(
+				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERFINGERPRINTIMAGE));
+		regOsiEntity.setOfficerId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERID));
+		regOsiEntity
+				.setOfficerIrisImageName(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERIRISIMAGE));
+		regOsiEntity.setSupervisorFingerpImageName(
+				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORFINGERPRINTIMAGE));
+		regOsiEntity.setSupervisorIrisImageName(
+				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORIRISIMAGE));
+		regOsiEntity.setSupervisorId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORID));
+		regOsiEntity.setOfficerPhotoName(
+				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERAUTHENTICATIONIMAGE));
+		regOsiEntity.setOfficerHashedPwd(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERPWR));
+		regOsiEntity.setSupervisorPhotoName(
+				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORAUTHENTICATIONIMAGE));
+		regOsiEntity.setSupervisorHashedPwd(identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORPWR));
+		regOsiEntity.setSupervisorHashedPin(identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORPIN));
 
-		}
-
-		for (FieldValue field : osiData) {
-			if (field.getLabel().matches("officerFingerprintImage")) {
-				regOsiEntity.setOfficerFingerpImageName(field.getValue());
-			} else if (field.getLabel().matches("officerId")) {
-				regOsiEntity.setOfficerId(field.getValue());
-			} else if (field.getLabel().matches("officerIrisImage")) {
-				regOsiEntity.setOfficerIrisImageName(field.getValue());
-			} else if (field.getLabel().matches("supervisorFingerprintImage")) {
-				regOsiEntity.setSupervisorFingerpImageName(field.getValue());
-			} else if (field.getLabel().matches("supervisorIrisImage")) {
-				regOsiEntity.setSupervisorIrisImageName(field.getValue());
-			} else if (field.getLabel().matches("supervisorId")) {
-				regOsiEntity.setSupervisorId(field.getValue());
-			}
-			// Added
-			else if (field.getLabel().matches("officerAuthenticationImage")) {
-				regOsiEntity.setOfficerPhotoName(field.getValue());
-			} else if (field.getLabel().matches("officerPassword")) {
-				regOsiEntity.setOfficerHashedPwd(field.getValue());
-			} else if (field.getLabel().matches("supervisorAuthenticationImage")) {
-				regOsiEntity.setSupervisorPhotoName(field.getValue());
-			} else if (field.getLabel().matches("supervisorPassword")) {
-				regOsiEntity.setSupervisorHashedPwd(field.getValue());
-			} else if (field.getLabel().matches("supervisorPIN")) {
-				regOsiEntity.setSupervisorHashedPin(field.getValue());
-			}
-		}
 		if (introducer.getIntroducerFingerprint() != null)
 			regOsiEntity.setIntroducerFingerpImageName(introducer.getIntroducerFingerprint().getImageName());
 		if (introducer.getIntroducerIris() != null)
 			regOsiEntity.setIntroducerIrisImageName(introducer.getIntroducerIris().getImageName());
 		if (introducer.getIntroducerImage() != null)
 			regOsiEntity.setIntroducerPhotoName(introducer.getIntroducerImage().getImageName());
-		
 
 		regOsiEntity.setId(regOsiPkEntity);
 
@@ -349,26 +336,23 @@ public class PacketInfoMapper {
 	}
 
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
-
+		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
 
-		for (FieldValue field : metaData) {
-			if (field.getLabel().matches(REGISTRATION_ID)) {
-				regCenterMachinePKEntity.setRegId(field.getValue());
-			} else if (field.getLabel().matches(PRE_REGISTRATION_ID)) {
-				regCenterMachineEntity.setPreregId(field.getValue());
-			} else if (field.getLabel().matches("geoLocLatitude")) {
-				regCenterMachineEntity.setLatitude(field.getValue());
-			} else if (field.getLabel().matches("geoLoclongitude")) {
-				regCenterMachineEntity.setLongitude(field.getValue());
+		regCenterMachinePKEntity.setRegId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.REGISTRATIONID));
+		regCenterMachineEntity
+				.setPreregId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.PREREGISTRATIONID));
+		regCenterMachineEntity.setLatitude(identityIteratorUtil.getFieldValue(metaData, JsonConstant.GEOLOCLATITUDE));
+		regCenterMachineEntity.setLongitude(identityIteratorUtil.getFieldValue(metaData, JsonConstant.GEOLOCLONGITUDE));
+		regCenterMachineEntity.setCntrId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.CENTERID));
+		regCenterMachineEntity.setMachineId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.MACHINEID));
+		String creationTime = identityIteratorUtil.getFieldValue(metaData, JsonConstant.CREATIONDATE);
+		if (creationTime != null)
+			regCenterMachineEntity.setPacketCreationDate(LocalDateTime.parse(creationTime));
 
-			}
-
-		}
-
-		regCenterMachineEntity.setCntrId("Center 1");
-		regCenterMachineEntity.setMachineId("Machine 1");
+		regCenterMachineEntity.setId(regCenterMachinePKEntity);
+		regCenterMachineEntity.setIsActive(true);
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
 
@@ -400,58 +384,73 @@ public class PacketInfoMapper {
 		return languages.toString().split(",");
 	}
 
+	private static String getName(List<JsonValue[]> jsonValueList, String language) {
+		StringBuilder name = new StringBuilder();
+		for (int i = 0; i < jsonValueList.size(); i++) {
+
+			for (int j = 0; j < jsonValueList.get(i).length; j++) {
+				if (language.equals(jsonValueList.get(i)[j].getLanguage())) {
+					name = name.append(jsonValueList.get(i)[j].getValue());
+
+				}
+			}
+
+		}
+		return name.toString();
+	}
+
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
-			IndividualDemographicDedupe demoDto, String regId, String preRegId) {
+			IndividualDemographicDedupe demoDto, String regId) {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
-		getLanguages(demoDto.getFirstName());
-		getLanguages(demoDto.getMiddleName());
-		getLanguages(demoDto.getLastName());
-		getLanguages(demoDto.getFullName());
-		getLanguages(demoDto.getFirstName());
+		if (demoDto.getName() != null) {
+			for (int i = 0; i < demoDto.getName().size(); i++) {
+				getLanguages(demoDto.getName().get(i));
+
+			}
+		}
 		getLanguages(demoDto.getDateOfBirth());
-		getLanguages(demoDto.getGender());
-		getLanguages(demoDto.getAddressLine1());
-		getLanguages(demoDto.getAddressLine2());
-		getLanguages(demoDto.getAddressLine3());
-		getLanguages(demoDto.getAddressLine4());
-		getLanguages(demoDto.getAddressLine5());
-		String[] languageArray = getLanguages(demoDto.getAddressLine6());
+		String[] languageArray = getLanguages(demoDto.getGender());
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
 
-			applicantDemographicPKEntity.setRefId(regId);
-			applicantDemographicPKEntity.setRefIdType(preRegId);
+			applicantDemographicPKEntity.setRegId(regId);
 			applicantDemographicPKEntity.setLangCode(languageArray[i]);
 
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
+			String applicantName = null;
+			if (demoDto.getName() != null)
+				applicantName = getName(demoDto.getName(), languageArray[i]);
+			entity.setName(applicantName);
 
-			entity.setFirstName(getJsonValues(demoDto.getFirstName(), languageArray[i]));
-			entity.setMiddleName(getJsonValues(demoDto.getMiddleName(), languageArray[i]));
-			entity.setLastName(getJsonValues(demoDto.getLastName(), languageArray[i]));
-			entity.setFullName(getJsonValues(demoDto.getFullName(), languageArray[i]));
+			Locale loc = new Locale(languageArray[i]);
+			String languageName = loc.getDisplayLanguage();
+
+			PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
+			Set<String> languageSet = new HashSet<>();
+			languageSet.add(languageName.toLowerCase());
+
+			String encodedInputString = phoneticEngine.encode(applicantName == null ? "" : applicantName,
+					Languages.LanguageSet.from(languageSet));
+			Soundex soundex = new Soundex();
+			entity.setPhoneticName(
+					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);
+
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
 			if (dob != null) {
 				try {
-					Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
+					Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
 					entity.setDob(date);
 				} catch (ParseException e) {
 					LOGGER.error("ErrorWhile Parsing Date");
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
-			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));
-			entity.setAddrLine1(getJsonValues(demoDto.getAddressLine1(), languageArray[i]));
-			entity.setAddrLine2(getJsonValues(demoDto.getAddressLine2(), languageArray[i]));
-			entity.setAddrLine3(getJsonValues(demoDto.getAddressLine3(), languageArray[i]));
-			entity.setAddrLine4(getJsonValues(demoDto.getAddressLine4(), languageArray[i]));
-			entity.setAddrLine5(getJsonValues(demoDto.getAddressLine5(), languageArray[i]));
-			entity.setAddrLine6(getJsonValues(demoDto.getAddressLine6(), languageArray[i]));
-			entity.setZipCode(getJsonValues(demoDto.getZipcode(), languageArray[i]));
+			entity.setGender(getJsonValues(demoDto.getGender(), languageArray[i]));
 			demogrphicDedupeEntities.add(entity);
 
 		}

@@ -13,7 +13,7 @@
               Demographic Details {{ applicant + 1 }}
               <img
                 *ngIf="applicant === 0"
-                src="../../../assets/primary.png"
+                src="assets/primary.png"
                 alt="primary"
                 class="img"
                 height="20"
@@ -188,7 +188,7 @@
 
           <mat-action-row>
             <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button type="button" mat-button color="primary" [disabled]="!dataUploadComplete" (click)="nextStep()">
+            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
               <div *ngIf="dataUploadComplete">Next</div>
               <div *ngIf="!dataUploadComplete"><mat-progress-bar mode="indeterminate"></mat-progress-bar></div>
             </button>

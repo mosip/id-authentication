@@ -190,6 +190,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			getGlobalParams();
 
+			primaryStage.setMaximized(true);
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -226,13 +227,13 @@ public class LoginController extends BaseController implements Initializable {
 		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 		
 		LoginUserDTO userDTO = new LoginUserDTO();
-		userDTO.setUserId(userId.getText());
-		userDTO.setPassword(password.getText());
+		userDTO.setUserId(userId.getText().toLowerCase());
+		userDTO.setPassword(password.getText().toLowerCase());
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 		if(!serverStatus) {
-			String status = validatePwd(userId.getText(), password.getText());
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText().toLowerCase());
 			if(RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, "");
 			} else if(RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)){
@@ -476,7 +477,6 @@ public class LoginController extends BaseController implements Initializable {
 	private void enablePWD() {
 		password.clear();
 		password.setVisible(true);
-		password.setPromptText("RO Password");
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
 		fingerprint.setVisible(false);

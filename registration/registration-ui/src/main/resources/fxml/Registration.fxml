@@ -8,9 +8,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
-  <content>
+<?import javafx.stage.Screen?>
+<AnchorPane fx:id="newRegistrationRoot" maxHeight="300" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController"> 
+<ScrollPane prefHeight="${screen.visualBounds.height+8}" prefWidth="934" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+   <fx:define>
+        <Screen fx:factory="getPrimary" fx:id="screen"/>
+    </fx:define>
+    <content>
     <AnchorPane id="anchor-pane-registration" fx:id="anchorPaneRegistration" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="950.0">
          <children>
             <AnchorPane layoutX="46.0" layoutY="20.0" prefHeight="803.0" prefWidth="848.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
@@ -229,3 +233,4 @@
     </AnchorPane>
   </content>
 </ScrollPane>
+</AnchorPane>

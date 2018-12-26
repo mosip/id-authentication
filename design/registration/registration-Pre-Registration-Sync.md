@@ -140,7 +140,7 @@ The key **non-functional requirements** are
     j.  Deleted
 
 **Class Diagram :**
-![Pre-Registrtaion Sync Class Diagram](_images/PreRegistrationSyncClassDgm.jpg)
+![Pre-Registrtaion Sync Class Diagram](_images/PreRegistrationSyncClassDgm.png)
 
 **Sequence Diagram :**
-![Pre-Registrtaion Sync Seq Diagram](_images/PreRegistrationSeqDgm.jpg)
+![Pre-Registrtaion Sync Seq Diagram](_images/PreRegistrationSeqDgm.png)
