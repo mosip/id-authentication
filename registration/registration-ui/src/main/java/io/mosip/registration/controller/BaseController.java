@@ -38,6 +38,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -46,6 +47,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -102,10 +104,15 @@ public class BaseController {
 	}
 
 	protected Scene getScene(Parent borderPane) {
+		
+		if (!borderPane.getId().equals("loginScreen")) {
+			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+			borderPane.setLayoutX((primScreenBounds.getWidth() - fXComponents.getStage().getWidth() + 350) / 2);
+		}
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
 		if (scene == null) {
-			scene = new Scene(borderPane, 950, 630);
+			scene = new Scene(borderPane);
 			fXComponents.setScene(scene);
 		}
 		scene.setRoot(borderPane);
@@ -141,14 +148,10 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified title, header, and context
 	 * 
-	 * @param title
-	 *            alert title
-	 * @param alertType
-	 *            type of alert
-	 * @param header
-	 *            alert header
-	 * @param context
-	 *            alert context
+	 * @param title     alert title
+	 * @param alertType type of alert
+	 * @param header    alert header
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -167,8 +170,7 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization
 	 * 
-	 * @param screenId
-	 *            the screenId
+	 * @param screenId the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -180,10 +182,8 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern
 	 * 
-	 * @param field
-	 *            concerned field
-	 * @param regexPattern
-	 *            pattern need to checked
+	 * @param field        concerned field
+	 * @param regexPattern pattern need to checked
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
 		if (field instanceof TextField) {
@@ -245,8 +245,7 @@ public class BaseController {
 	/**
 	 * Gets the finger print status.
 	 *
-	 * @param PrimaryStage
-	 *            the primary stage
+	 * @param PrimaryStage the primary stage
 	 * @return the finger print status
 	 */
 	public void getFingerPrintStatus() {
@@ -256,8 +255,7 @@ public class BaseController {
 	/**
 	 * Scans documents
 	 *
-	 * @param popupStage
-	 *            the stage
+	 * @param popupStage the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -267,10 +265,8 @@ public class BaseController {
 	 * This method is for saving the Applicant Image and Exception Image which are
 	 * captured using webcam
 	 * 
-	 * @param capturedImage
-	 *            BufferedImage that is captured using webcam
-	 * @param imageType
-	 *            Type of image that is to be saved
+	 * @param capturedImage BufferedImage that is captured using webcam
+	 * @param imageType     Type of image that is to be saved
 	 */
 	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
@@ -279,8 +275,7 @@ public class BaseController {
 	/**
 	 * This method used to clear the images that are captured using webcam
 	 * 
-	 * @param imageType
-	 *            Type of image that is to be cleared
+	 * @param imageType Type of image that is to be cleared
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
@@ -344,10 +339,10 @@ public class BaseController {
 	 * to validate the password in case of password based authentication
 	 */
 	protected String validatePwd(String username, String password) {
-		
+
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-		String validationStatus="";
+		String validationStatus = "";
 		if (username.isEmpty() && password.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (username.isEmpty()) {
@@ -378,7 +373,7 @@ public class BaseController {
 				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 					validationStatus = "Success";
 				} else {
-					validationStatus="Fail";
+					validationStatus = "Fail";
 				}
 			}
 		}
@@ -388,8 +383,8 @@ public class BaseController {
 	/**
 	 * to validate the password and send appropriate message to display
 	 * 
-	 * @param authenticationValidatorDTO
-	 *            - DTO which contains the username and password entered by the user
+	 * @param authenticationValidatorDTO - DTO which contains the username and
+	 *                                   password entered by the user
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {

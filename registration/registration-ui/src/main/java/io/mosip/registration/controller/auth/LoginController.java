@@ -190,6 +190,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			getGlobalParams();
 
+			primaryStage.setMaximized(true);
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
