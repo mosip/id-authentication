@@ -118,6 +118,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 				} else {
 					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
+					// unpacked file doesn't contain extension
 					fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
 					processVirusScanFailure(registrationStatusDto);
 				}
