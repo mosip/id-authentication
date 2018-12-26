@@ -25,10 +25,10 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.OTPValidator;
+import io.mosip.registration.validator.OTPValidatorImpl;
 
 public class OTPManagerTest {
 
@@ -42,7 +42,7 @@ public class OTPManagerTest {
 	ServiceDelegateUtil serviceDelegateUtil;
 
 	@Mock
-	OTPValidator otpValidator;
+	OTPValidatorImpl otpValidator;
 
 	@Mock
 	AuthenticationService authenticationService;
@@ -82,8 +82,8 @@ public class OTPManagerTest {
 
 	@Test
 	public void validateOTPSuccessTest() {
-		when(authenticationService.getValidator("otp")).thenReturn(otpValidator);
-		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		when(authenticationService.authValidator("otp", authenticationValidatorDTO)).thenReturn(true);
 		authenticationValidatorDTO.setOtp("12345");
 		authenticationValidatorDTO.setUserId("mosip");
 		when(otpValidator.validate(authenticationValidatorDTO)).thenReturn(true);

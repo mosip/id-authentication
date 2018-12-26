@@ -26,10 +26,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.common.OTPManager;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -102,7 +101,7 @@ public class AuthenticationController extends BaseController {
 	private PacketHandlerController packetHandlerController;
 
 	@Autowired
-	private AuthenticationService validator;
+	private AuthenticationService authService;
 
 	@Autowired
 	private OTPManager otpGenerator;
@@ -198,11 +197,11 @@ public class AuthenticationController extends BaseController {
 	}
 
 	public void validatePwd() {
-		String status=validatePwd(username.getText(), password.getText());
+		String status = validatePwd(username.getText(), password.getText());
 		if (RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
 			userNameField = username.getText();
 			loadNextScreen();
-		} else if(RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)){
+		} else if (RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
 		}
 	}
@@ -244,16 +243,14 @@ public class AuthenticationController extends BaseController {
 	private void getAuthenticationModes(String authType) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
-		if (ProcessNames.EXCEPTION.getType().equals(authType)) {
 
-			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EXCEPTION.getType());
-		} else if (ProcessNames.PACKET.getType().equals(authType)) {
-			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.PACKET.getType());
-		} else if (ProcessNames.EOD.getType().equals(authType)) {
-			userAuthenticationTypeList = loginService.getModesOfLogin(ProcessNames.EOD.getType());
+		userAuthenticationTypeList = loginService.getModesOfLogin(authType);
+
+		if (userAuthenticationTypeList.isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTH_ERROR_MSG);
+		} else {
+			loadNextScreen();
 		}
-
-		loadNextScreen();
 	}
 
 	/**
@@ -460,11 +457,9 @@ public class AuthenticationController extends BaseController {
 				}
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
-				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-						.getValidator(RegistrationConstants.VALIDATION_TYPE_FP);
-				authenticationValidatorImplementation
-						.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fpMatchStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
+				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+				fpMatchStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FP,
+						authenticationValidatorDTO);
 
 				if (fpMatchStatus) {
 					if (isSupervisor) {
@@ -507,7 +502,7 @@ public class AuthenticationController extends BaseController {
 	 * @param parentControllerObj
 	 */
 	public void init(BaseController parentControllerObj, String authType) {
-		authCount=0;
+		authCount = 0;
 		isSupervisor = true;
 		isEODAuthentication = true;
 		baseController = parentControllerObj;
@@ -516,7 +511,7 @@ public class AuthenticationController extends BaseController {
 	}
 
 	public void initData(String authType) {
-		authCount=0;
+		authCount = 0;
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = false;
 		getAuthenticationModes(authType);

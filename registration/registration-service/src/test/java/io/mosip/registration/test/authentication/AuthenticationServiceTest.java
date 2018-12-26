@@ -1,7 +1,6 @@
 package io.mosip.registration.test.authentication;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,9 +9,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.FingerprintValidator;
-import io.mosip.registration.validator.OTPValidator;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.service.AuthenticationService;
+import io.mosip.registration.validator.FingerprintValidatorImpl;
+import io.mosip.registration.validator.OTPValidatorImpl;
 
 public class AuthenticationServiceTest {
 
@@ -20,22 +20,24 @@ public class AuthenticationServiceTest {
 	private AuthenticationService authenticationService;
 	
 	@Mock
-	FingerprintValidator fingerprintValidator;
+	FingerprintValidatorImpl fingerprintValidator;
 
 	@Mock
-	OTPValidator otpValidator;
+	OTPValidatorImpl otpValidator;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
 	@Test
 	public void getOtpValidatorTest() {
-		assertThat(authenticationService.getValidator("otp"), is(otpValidator));
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		assertTrue(authenticationService.authValidator("otp", authenticationValidatorDTO));
 	}
 	
 	@Test
 	public void getFPValidatorTest() {
-		assertThat(authenticationService.getValidator("Fingerprint"), is(fingerprintValidator));
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		assertTrue(authenticationService.authValidator("Fingerprint", authenticationValidatorDTO));
 	}
 
 }

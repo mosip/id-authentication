@@ -21,7 +21,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import io.mosip.registration.validator.OTPValidator;
+import io.mosip.registration.validator.OTPValidatorImpl;
 
 public class OTPValidatorTest {
 
@@ -32,7 +32,7 @@ public class OTPValidatorTest {
 	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@InjectMocks
-	private OTPValidator otpValidator;
+	private OTPValidatorImpl otpValidator;
 
 	@SuppressWarnings("unchecked")
 	@Test

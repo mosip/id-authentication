@@ -9,6 +9,7 @@ public class AuthenticationValidatorDTO {
 	private String userId;
 	private String password;
 	private String otp;
+	private String authValidationType;
 
 	public List<FingerprintDetailsDTO> getFingerPrintDetails() {
 		return fingerPrintDetails;
@@ -41,6 +42,14 @@ public class AuthenticationValidatorDTO {
 	public void setOtp(String otp) {
 		this.otp = otp;
 	}
-	
+
+	public String getAuthValidationType() {
+		return authValidationType;
+	}
+
+	public void setAuthValidationType(String authValidationType) {
+		this.authValidationType = authValidationType;
+	}
+
 	
 }
