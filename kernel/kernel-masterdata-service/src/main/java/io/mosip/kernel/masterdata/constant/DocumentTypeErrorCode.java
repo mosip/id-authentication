@@ -1,16 +1,18 @@
 package io.mosip.kernel.masterdata.constant;
 
 /**
- * Constants for Document category
+ * Constants for Document Type.
  * 
- * @author Neha
+ * @author Ritesh Sinha
  * @author Uday Kumar
  * @since 1.0.0
  */
 public enum DocumentTypeErrorCode {
+	
 	DOCUMENT_TYPE_FETCH_EXCEPTION("KER-MSD-015","Error occured while fetching Document Types"),
 	DOCUMENT_TYPE_INSERT_EXCEPTION("KER-MSD-444","Exception during inserting data into db"),
-	DOCUMENT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-016","Document Type not found");
+	DOCUMENT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-118","Document Type not found"),
+	DOCUMENT_TYPE_UPDATE_EXCEPTION("KER-MSD-091","Error occur while updating document type details");
 
 	private final String errorCode;
 	private final String errorMessage;

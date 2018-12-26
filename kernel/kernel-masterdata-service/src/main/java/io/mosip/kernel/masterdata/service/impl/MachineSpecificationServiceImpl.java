@@ -124,7 +124,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MetaDataUtils.setDeleteMetaData(renMachineSpecification);
 					delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 				} else {
-					throw new DataNotFoundException(
+					throw new MasterDataServiceException(
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage());
 				}

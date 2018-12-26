@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,11 +21,12 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Document type controller with api to get list of valid document types based
- * on document category code type and language code and with api to create
- * document types.
+ * on document category code type and language code and with api to
+ * create,update and delete document types.
  * 
  * 
  * @author Uday Kumar
@@ -59,14 +61,30 @@ public class DocumentTypeController {
 	}
 
 	/**
+	 * Api to create document type.
 	 * 
 	 * @param types
-	 *            Input from user DocumentTypeDto
+	 *            the DTO of document type.
+	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
 	@PostMapping("/v1.0/documenttypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.createDocumentTypes(types), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.CREATED);
+	}
+
+	/**
+	 * Api to update document type.
+	 * 
+	 * @param types
+	 *            the DTO of document type.
+	 * @return {@link CodeAndLanguageCodeID}.
+	 */
+	@PutMapping("/v1.0/documenttypes")
+	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
+	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentType(
+			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestDto<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.updateDocumentType(types), HttpStatus.OK);
 	}
 }

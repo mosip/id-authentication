@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,8 +188,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		MapperUtils.mapFieldValues(categoryDto, documentCategoryId);
 		try {
 
-			DocumentCategory documentCategory = documentCategoryRepository.findById(DocumentCategory.class,
-					documentCategoryId);
+			DocumentCategory documentCategory = documentCategoryRepository
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(category.getRequest().getCode(),
+							category.getRequest().getLangCode());
 
 			if (documentCategory != null) {
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
