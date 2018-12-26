@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.constant.TitleErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -157,15 +158,14 @@ public class TitleServiceImpl implements TitleService {
 	 * java.lang.String)
 	 */
 	@Override
-	public CodeAndLanguageCodeID deleteTitle(String code, String langCode) {
-		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
-		titleId.setCode(code);
-		titleId.setLangCode(langCode);
+	public CodeResponseDto deleteTitle(String code) {
 		try {
-			Title title = titleRepository.findById(Title.class, titleId);
-			if (title != null) {
-				MetaDataUtils.setDeleteMetaData(title);
-				titleRepository.update(title);
+
+			final List<Title> titleList = titleRepository.findByCode(code);
+
+			if (!titleList.isEmpty()) {
+				titleList.stream().map(MetaDataUtils::setDeleteMetaData).forEach(titleRepository::update);
+
 			} else {
 				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
@@ -175,8 +175,9 @@ public class TitleServiceImpl implements TitleService {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage());
 		}
-
-		return titleId;
+		CodeResponseDto responseDto = new CodeResponseDto();
+		responseDto.setCode(code);
+		return responseDto;
 	}
 
 }
