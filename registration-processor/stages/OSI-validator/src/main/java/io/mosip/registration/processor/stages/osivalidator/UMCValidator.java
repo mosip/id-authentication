@@ -171,8 +171,7 @@ public class UMCValidator {
 	 */
 	private boolean isValidUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
 			String superviserId, String officerId) throws ApisResourceAccessException {
-		boolean t = false;
-
+		
 		boolean supervisorActive = false;
 		boolean officerActive = false;
 		List<String> pathsegments=new ArrayList<>();
@@ -194,27 +193,33 @@ public class UMCValidator {
 		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos= new ArrayList<>();
 		if(supervisordto !=null)supervisordtos=supervisordto.getRegistrationCenters();
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos= new ArrayList<>();
-		if(officerdto !=null)officerdtos=officerdto.getRegistrationCenters();
+		if(officerdto !=null)
+			officerdtos=officerdto.getRegistrationCenters();
 		
-		if (supervisordtos != null  && !supervisordtos.isEmpty()  ) {
+		if (checkNotNull(supervisordtos)) {
 
 			supervisorActive = supervisordtos.get(0).getIsActive();
 			
 		}
-		if(officerdtos !=null && !officerdtos.isEmpty()) {
+		if(checkNotNull(officerdtos)) {
 			officerActive = officerdtos.get(0).getIsActive();
 		}
-		if((supervisordtos == null || supervisordtos.isEmpty()  ) && (officerdtos ==null ||officerdtos.isEmpty())) {
+		if(checkNull(supervisordtos) && checkNull(officerdtos)) {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
 		}
 
-		if (supervisorActive || officerActive) {
-			t = true;
-			
-		}
-		return t;
+		
+		return supervisorActive || officerActive;
 	}
 
+	boolean checkNotNull(List<RegistrationCenterUserMachineMappingHistoryDto> validatorDtos) {
+		return  (validatorDtos != null  && !validatorDtos.isEmpty() );
+	}
+	
+	boolean checkNull(List<RegistrationCenterUserMachineMappingHistoryDto> validatorDtos) {
+		return  (validatorDtos == null || validatorDtos.isEmpty());
+	}
+	
 	/**
 	 * Checks if is valid UMC.
 	 *

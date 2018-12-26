@@ -1,7 +1,10 @@
 package io.mosip.registration.processor.stages.demodedupe;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,6 +77,7 @@ public class DemoDedupe {
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
+	
 	/**
 	 * Perform demodedupe.
 	 *
@@ -160,41 +164,8 @@ public class DemoDedupe {
 				biometricData.add(identityInfoDTO);
 
 				//authTypeDTO.setFingerPrint(true);
-				switch (biometricName.toUpperCase()) {
-				case JsonConstant.LEFTTHUMB:
-					identityDTO.setLeftThumb(biometricData);
-					break;
-				case JsonConstant.LEFTINDEX:
-					identityDTO.setLeftIndex(biometricData);
-					break;
-				case JsonConstant.LEFTMIDDLE:
-					identityDTO.setLeftMiddle(biometricData);
-					break;
-				case JsonConstant.LEFTLITTLE:
-					identityDTO.setLeftLittle(biometricData);
-					break;
-				case JsonConstant.LEFTRING:
-					identityDTO.setLeftRing(biometricData);
-					break;
-				case JsonConstant.RIGHTTHUMB:
-					identityDTO.setRightThumb(biometricData);
-					break;
-				case JsonConstant.RIGHTINDEX:
-					identityDTO.setRightIndex(biometricData);
-					break;
-				case JsonConstant.RIGHTMIDDLE:
-					identityDTO.setRightMiddle(biometricData);
-					break;
-				case JsonConstant.RIGHTLITTLE:
-					identityDTO.setRightLittle(biometricData);
-					break;
-				case JsonConstant.RIGHTRING:
-					identityDTO.setRightRing(biometricData);
-					break;
-				default:
-					break;
-				}
-
+				setFingerBiometric(biometricData,type);
+				
 			}
 		}
 
@@ -203,7 +174,31 @@ public class DemoDedupe {
 
 
 	}
-
+	
+	private void callSetter(Object obj, String fieldName, Object value){
+		  PropertyDescriptor pd;
+		  try {
+		   pd = new PropertyDescriptor(fieldName, obj.getClass());
+		   pd.getWriteMethod().invoke(obj, value);
+		  } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		   // TODO Auto-generated catch block
+		   e.printStackTrace();
+		  }
+		 }
+	
+	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
+		String finger=null;
+		String[] fingerType= {"leftThumb","leftIndex","leftMiddle","leftLittle","leftRing"
+		,"rightThumb","rightIndex","rightMiddle","rightLittle","rightRing"		
+		};
+				
+		for(String str:fingerType) {
+			if(str.equalsIgnoreCase(type))
+				finger=str;
+				
+		}
+		this.callSetter(identityDTO, finger, biometricData);
+		}
 	/**
 	 * Authenticate iris biometric.
 	 *
