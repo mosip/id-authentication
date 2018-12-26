@@ -91,6 +91,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	public Boolean storePacket(MultipartFile file) {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
+		
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
 
@@ -99,7 +100,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			if (fileOriginalName != null) {
 
 				String registrationId = fileOriginalName.split("\\.")[0];
-
+				messageDTO.setRid(registrationId);
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 				if (regEntity == null) {

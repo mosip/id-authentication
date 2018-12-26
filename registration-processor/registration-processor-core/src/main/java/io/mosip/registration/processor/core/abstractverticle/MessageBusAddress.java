@@ -92,7 +92,7 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant LANDING_ZONE_BUS. */
 	public static final MessageBusAddress LANDING_ZONE_BUS_OUT = new MessageBusAddress("landing-zone-scanner-stage");
 
-	public static final MessageBusAddress PACKET_RECEIVER_OUT = new MessageBusAddress("landing-zone-scanner-stage");
+	public static final MessageBusAddress PACKET_RECEIVER_OUT = new MessageBusAddress("packet-receiver-stage");
 
 	/** The Constant STRUCTURE_BUS_IN. */
 	public static final MessageBusAddress OSI_BUS_IN = new MessageBusAddress("osi-bus-in");
@@ -114,5 +114,7 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant UIN_GENERATION_BUS_OUT */
 	public static final MessageBusAddress UIN_GENERATION_BUS_OUT = new MessageBusAddress("uin-generation-bus-out");
+
+	public static final MessageBusAddress PACKET_UPLOADER_IN = new MessageBusAddress("packet-uploader-in");
 
 }

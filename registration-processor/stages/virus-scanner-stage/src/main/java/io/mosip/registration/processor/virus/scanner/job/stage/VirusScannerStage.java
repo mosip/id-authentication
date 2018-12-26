@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -70,156 +68,111 @@ public class VirusScannerStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
-
-	@Autowired
 	Decryptor decryptor;
 
-	// private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder
-	// set by the System"
-	// + " is not accessible";
-	// private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the
-	// System is not accessible";
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status"
 			+ " table is not accessible";
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
-	private static final String UNABLE_TO_DELETE = "unable to delete after sending to DFS.";
 
 	String description = "";
 	boolean isTransactionSuccessful = false;
-	String registrationId = "";
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
-		this.consume(mosipEventBus, MessageBusAddress.PACKET_RECEIVER_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, MessageBusAddress.PACKET_UPLOADER_IN);
 	}
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		List<InternalRegistrationStatusDto> registrationStatusDtoList = null;
+
+		String registrationId = object.getRid();
+
+		String encryptedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator
+				+ getFileName(registrationId);
+		File encryptedFile = new File(encryptedPacketPath);
+		boolean isEncryptedFileCleaned;
+		boolean isUnpackedFileCleaned;
+		InputStream encryptedPacket = null;
+		InputStream decryptedData = null;
+
 		try {
-			registrationStatusDtoList = registrationStatusService
-					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
-		} catch (TablenotAccessibleException e) {
-			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
-			return object;
-		}
-		for (InternalRegistrationStatusDto entry : registrationStatusDtoList) {
+			encryptedPacket = new FileInputStream(encryptedFile);
 
-			String encryptedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator
-					+ getFileName(entry.getRegistrationId());
-			File encryptedFile = new File(encryptedPacketPath);
-			boolean isClean1;
-			boolean isClean2;
-			InputStream encryptedPacket = null;
-			InputStream decryptedData = null;
+			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+					.getRegistrationStatus(registrationId);
+			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
+			if (isEncryptedFileCleaned) {
+				decryptedData = decryptor.decrypt(encryptedPacket, registrationId);
 
-			try {
-				encryptedPacket = new FileInputStream(encryptedFile);
-			} catch (FileNotFoundException e1) {
+				fileManager.put(registrationId, decryptedData, DirectoryPathDto.VIRUS_SCAN_DEC);
+				String decryptedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())
+						+ File.separator + getFileName(registrationId);
+				String unpackedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_UNPACK.toString())
+						+ File.separator + registrationId;
 
-			}
-			try {
-				isClean1 = virusScannerService.scanFile(encryptedPacketPath);
-				if (isClean1) {
-					decryptedData = decryptor.decrypt(encryptedPacket, entry.getRegistrationId());
+				ZipUtils.unZipFile(decryptedPacketPath, unpackedPacketPath);
+				isUnpackedFileCleaned = virusScannerService.scanFolder(unpackedPacketPath);
 
-					try {
-
-						fileManager.put(entry.getRegistrationId(), decryptedData, DirectoryPathDto.VIRUS_SCAN_DEC);
-						String decryptedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())
-								+ File.separator + getFileName(entry.getRegistrationId());
-						String unpackedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_UNPACK.toString())
-								+ File.separator + entry.getRegistrationId();
-						// unpack using kernel method
-
-						// scan the unpacked file
-						ZipUtils.unZipFile(decryptedPacketPath, unpackedPacketPath);
-						isClean2 = virusScannerService.scanFolder(unpackedPacketPath);
-
-						if (isClean2) {
-							sendToPacketUploaderStage(entry);
-						} else {
-							// delete dec file
-							// delete unpack file
-							// fileManager.delete(DirectoryPathDto.VIRUS_SCAN,
-							// getFileName(entry.getRegistrationId()));
-							// fileManager.delete(DirectoryPathDto.VIRUS_SCAN,
-							// getFileName(entry.getRegistrationId()));
-						}
-
-					} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
-
-					}
-
-					// sendToDFS(file, entry);
-
+				if (isUnpackedFileCleaned) {
+					sendToPacketUploaderStage(registrationStatusDto);
 				} else {
-					// fileManager.delete(DirectoryPathDto.VIRUS_SCAN, entry.getRegistrationId());
+					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
+					fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
+					processVirusScanFailure(registrationStatusDto);
 				}
-			} catch (VirusScanFailedException e) {
-				LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
-			} catch (PacketDecryptionFailureException e) {
-				LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
+
+			} else {
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+				processVirusScanFailure(registrationStatusDto);
 
 			}
-
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		} catch (FileNotFoundException e) {
+			LOGGER.error(LOGDISPLAY, "FILE_NOT_FOUND_EXCEPTION", e);
+		} catch (VirusScanFailedException | PacketDecryptionFailureException | IOException
+				| io.mosip.kernel.core.exception.IOException e) {
+			LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
 		}
+
 		return object;
 	}
 
-	/**
-	 * Send to virus scan retry.
-	 *
-	 * @param entry
-	 *            the entry
-	 *//*
-		 * private void sendToRetry(InternalRegistrationStatusDto entry) {
-		 * registrationId = entry.getRegistrationId(); try { if (entry.getRetryCount()
-		 * == null) entry.setRetryCount(0); fileManager.copy(entry.getRegistrationId(),
-		 * DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY);
-		 * entry.setRetryCount(entry.getRetryCount() + 1);
-		 * entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		 * entry.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_RETRY");
-		 * entry.setUpdatedBy(USER);
-		 * registrationStatusService.updateRegistrationStatus(entry);
-		 * fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN,
-		 * DirectoryPathDto.VIRUS_SCAN_RETRY,entry.getRegistrationId()); description =
-		 * registrationId + " packet is infected. It has been sent" +
-		 * " to RETRY_FOLDER."; LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
-		 * "File is infected. It has been sent" + " to RETRY_FOLDER."); } catch
-		 * (IOException | FilePathNotAccessibleException e) { LOGGER.error(LOGDISPLAY,
-		 * RETRY_FOLDER_NOT_ACCESSIBLE, e); description =
-		 * "RETRY_FOLDER is not accessible for packet  " + registrationId; } catch
-		 * (TablenotAccessibleException e) { LOGGER.error(LOGDISPLAY,
-		 * REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e); description =
-		 * "The Registration Status table is not accessible for packet " +
-		 * registrationId; } finally {
-		 * 
-		 * String eventId = ""; String eventName = ""; String eventType = ""; eventId =
-		 * isTransactionSuccessful ? EventId.RPR_402.toString() :
-		 * EventId.RPR_405.toString(); eventName =
-		 * eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ?
-		 * EventName.UPDATE.toString() : EventName.EXCEPTION.toString(); eventType =
-		 * eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ?
-		 * EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
-		 * 
-		 * auditLogRequestBuilder.createAuditRequestBuilder(description, eventId,
-		 * eventName, eventType, registrationId);
-		 * 
-		 * }
-		 * 
-		 * }
-		 */
+	private void processVirusScanFailure(InternalRegistrationStatusDto registrationStatusDto) {
+		String registrationId = registrationStatusDto.getRegistrationId();
+		try {
+
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_FAILED");
+			registrationStatusDto.setUpdatedBy(USER);
+			description = registrationId + " packet is infected.";
+			LOGGER.info(LOGDISPLAY, registrationStatusDto.getRegistrationId(), "File is infected.");
+		} finally {
+
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
+		}
+	}
 
 	private void sendToPacketUploaderStage(InternalRegistrationStatusDto entry) {
-		registrationId = entry.getRegistrationId();
+		String registrationId = entry.getRegistrationId();
 		try {
 			entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL.toString());
-			registrationStatusService.updateRegistrationStatus(entry);
+			entry.setStatusComment("Packet virus scan is sucessfull");
+			entry.setUpdatedBy(USER);
 			isTransactionSuccessful = true;
 
-			description = registrationId + " packet successfully  scanned for virus. I thas been send to DFS";
+			description = registrationId + " packet successfully  scanned for virus";
 		} catch (TablenotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 			description = "The Registration Status table is not accessible for packet " + registrationId;
