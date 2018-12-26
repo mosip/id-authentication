@@ -4,7 +4,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
- * The Class IdRepoAppException.
+ * The Class IdRepoAppUncheckedException.
  *
  * @author Manoj SP
  */
@@ -26,14 +26,14 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 */
 	public IdRepoAppUncheckedException() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param errorCode the error code
 	 * @param errorMessage the error message
@@ -43,7 +43,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param errorCode the error code
 	 * @param errorMessage the error message
@@ -54,7 +54,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param exceptionConstant the exception constant
 	 */
@@ -63,7 +63,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause the root cause
@@ -73,7 +73,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param id the id
@@ -84,7 +84,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause the root cause
