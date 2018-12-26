@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
+import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -36,8 +37,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#getAllValidDocumentType(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#
+	 * getAllValidDocumentType(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
@@ -69,7 +73,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentTypes(RequestDto<DocumentTypeDto> documentTypeDto) {
+	public CodeAndLanguageCodeID createDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
 		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
 		DocumentType documentType;
 		try {
@@ -84,5 +88,36 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		MapperUtils.map(documentType, codeLangCodeId);
 
 		return codeLangCodeId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DocumentTypeService#updateDocumentType(io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeAndLanguageCodeID updateDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
+		try {
+			DocumentType documentType = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					documentTypeDto.getRequest().getCode(), documentTypeDto.getRequest().getLangCode());
+			if (documentType != null) {
+				MetaDataUtils.setUpdateMetaData(documentTypeDto.getRequest(), documentType, false);
+			} else {
+				throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			documentTypeRepository.update(documentType);
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage());
+		}
+		CodeAndLanguageCodeID documentTypeId = new CodeAndLanguageCodeID();
+
+		MapperUtils.mapFieldValues(documentTypeDto.getRequest(), documentTypeId);
+
+		return documentTypeId;
 	}
 }
