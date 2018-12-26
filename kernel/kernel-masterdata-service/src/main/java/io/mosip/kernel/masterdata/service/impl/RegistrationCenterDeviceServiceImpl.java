@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -10,20 +9,18 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistoryPk;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -90,20 +87,16 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		}else {
 			RegistrationCenterDevice centerDevice=registrationCenterDevice.get();
 			centerDevice=MetaDataUtils.setDeleteMetaData(centerDevice);
-			RegistrationCenterDeviceHistory rcdh = new RegistrationCenterDeviceHistory();
-			RegistrationCenter
-			
 			RegistrationCenterDeviceHistory history=MapperUtils.map(centerDevice, RegistrationCenterDeviceHistory.class);
-			history.setEffectivetimes(LocalDateTime.now());
+			history.setRegistrationCenterDeviceHistoryPk(MapperUtils.map(registrationCenterDeviceID, RegistrationCenterDeviceHistoryPk.class));
+			history.getRegistrationCenterDeviceHistoryPk().setEffectivetimes(centerDevice.getDeletedDateTime());
 			MapperUtils.setBaseFieldValue(centerDevice, history);
 			registrationCenterDeviceHistoryRepository.create(history);
 			registrationCenterDeviceRepository.update(centerDevice);
-		    
 		}
 		}catch (DataAccessLayerException | DataAccessException e) {
-			e.printStackTrace();
-			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage());
 		}
 		return registrationCenterDeviceID;
 	}
