@@ -112,6 +112,7 @@ import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
@@ -649,7 +650,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 
 		registrationCenterMachineHistory = new RegistrationCenterMachineHistory();
-		RegistrationCenterMachineID rmIdH = new RegistrationCenterMachineID();
+		RegistrationCenterMachineHistoryID rmIdH = new RegistrationCenterMachineHistoryID();
 		rmIdH.setMachineId(rmId.getMachineId());
 		rmIdH.setRegCenterId(rmId.getRegCenterId());
 		registrationCenterMachineHistory.setRegistrationCenterMachineHistoryPk(rmIdH);
