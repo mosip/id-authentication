@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -15,10 +16,12 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -40,6 +43,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 */
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+
+	@Autowired
+	private RegistrationCenterRepository registrationCenterRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -99,9 +105,17 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	@Transactional
 	public CodeResponseDto deleteRegistrationCenterType(String registrationCenterTypeCode) {
 		try {
+			List<RegistrationCenter> mappedRegistrationCenterTypes = registrationCenterRepository
+					.findByCenterTypeCode(registrationCenterTypeCode);
+			if (!mappedRegistrationCenterTypes.isEmpty()) {
+				throw new MasterDataServiceException(
+						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
+								.getErrorCode(),
+						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
+								.getErrorMessage());
+			}
 			if (registrationCenterTypeRepository.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")),
 					registrationCenterTypeCode) < 1) {
-
 				throw new DataNotFoundException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());

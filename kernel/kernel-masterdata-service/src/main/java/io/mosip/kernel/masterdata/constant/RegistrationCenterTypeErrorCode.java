@@ -6,7 +6,7 @@ public enum RegistrationCenterTypeErrorCode {
 	REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-014","RegistrationCenterType not found"),
 	REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION("KER-MSD-089","Error occured while updating RegistrationCenterType details"),
 	REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION("KER-MSD-090","Error occured while deleting RegistrationCenterType details"),
-	REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION("xxx","Cannot delete dependency found");
+	REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-091","Cannot be deleted for dependency isssues.");
 
 	private final String errorCode;
 	private final String errorMessage;
@@ -23,5 +23,4 @@ public enum RegistrationCenterTypeErrorCode {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-
 }
