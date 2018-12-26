@@ -48,6 +48,7 @@ IRIS
 Scanner
 -  Allow the user to scan the applicant [POB, POI, POA, POR] documents and attach it to the application during 
    Registration or other process.
+-  Only one file per document will be supported. Merge multiple pages while scanning and make it is a single docuemnt.
  
 The key **non-functional requirements** are
 
@@ -188,6 +189,11 @@ UI controller should wait for some time to capture the BIO image from device imp
 Facade and Factory pattern should be introduced to invoke the Scanner device vendor specific implementation class
 at run time. The device specific code should be encapsulated within the device specific implementation code.
 None of the client classes should invoke the device specific classes directly. 
+
+While capturing the different pages for the docuemnt types [POA/POI/POB/POR], capture all the docuemnts into the in-memoery.
+While saving and creating the single docuemnt, merge all the pages and make it as a single document.
+
+The docuemnt format is a configurable one, we need to fetch from the global_param table
 
 The sequence flow and class level detail are provided in the respective diagram. 
 
