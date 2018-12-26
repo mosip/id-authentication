@@ -61,8 +61,10 @@ stage ('---------- build ---------------') {
 			// Dockerfile is present in same directory.
 			fileToLookFor= parentDirectoryPath+"/Dockerfile"
 			sh "pwd"
+			echo fileToLookFor
 			def file= new File(fileToLookFor)
-			if( file.exists()){
+			print file.exists()
+			if(file.exists()){
 			// installing node modules and building the angular project
 			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --output-path=dist && popd"
 			}
