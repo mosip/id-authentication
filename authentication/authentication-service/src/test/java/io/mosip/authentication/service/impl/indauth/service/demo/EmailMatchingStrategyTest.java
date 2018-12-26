@@ -5,6 +5,9 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -49,7 +52,8 @@ public class EmailMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
@@ -61,21 +65,31 @@ public class EmailMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.match("abc@mail.com", "abc@email.com", null);
+		Map<String, Object> matchProperties = new HashMap<>();
+		int value = matchFunction.match("abc@mail.com", "abc@email.com", matchProperties);
 		assertEquals(0, value);
+	}
 
-		int value4 = matchFunction.match(1, "2", null);
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidEmail() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		int value4 = matchFunction.match(1, "2", matchProperties);
 		assertEquals(0, value4);
+	}
 
-		int value5 = matchFunction.match(1, "abc@mail.com", null);
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidE_mail() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		int value5 = matchFunction.match(1, "abc@mail.com", matchProperties);
 		assertEquals(0, value5);
-
 	}
 }
