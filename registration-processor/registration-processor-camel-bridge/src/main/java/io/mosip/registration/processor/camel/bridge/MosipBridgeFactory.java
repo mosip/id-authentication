@@ -1,12 +1,10 @@
 package io.mosip.registration.processor.camel.bridge;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
-
-import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.core.util.PropertyFileUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -40,14 +38,15 @@ public class MosipBridgeFactory {
 	 */
 	public static void getEventBus() {
 
-		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
-		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
-		tcpDiscoveryVmIpFinder.setAddresses(BridgeUtil.getIpAddressPortRange());
-		tcpDiscoverySpi.setIpFinder(tcpDiscoveryVmIpFinder);
-		IgniteConfiguration igniteConfiguration = new IgniteConfiguration();
-		igniteConfiguration.setLocalHost(BridgeUtil.getLocalHost());
-		igniteConfiguration.setDiscoverySpi(tcpDiscoverySpi);
-		ClusterManager clusterManager = new IgniteClusterManager(igniteConfiguration);
+		String configServerUri = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "vertx.ignite.configuration");
+		URL url = null;
+		try {
+			url = new URL(configServerUri);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
 				.setClustered(true);
 

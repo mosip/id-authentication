@@ -1,16 +1,14 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
+import io.mosip.registration.processor.core.util.PropertyFileUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -48,7 +46,16 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	public MosipEventBus getEventBus(Class<?> verticleName) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		ClusterManager clusterManager = new IgniteClusterManager();
+		
+		String configServerUri = PropertyFileUtil.getProperty(this.getClass(), "application.properties", "vertx.ignite.configuration");
+		URL url = null;
+		try {
+			url = new URL(configServerUri);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {
