@@ -9,6 +9,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * This DTO class is used to define the response values when document details are fetched.
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class DocumentGetAllDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */

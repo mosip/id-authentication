@@ -114,9 +114,7 @@ public class DocumentUploadService {
 	@Autowired
 	private FilesystemCephAdapterImpl ceph;
 
-	/**
-	 * Logger
-	 */
+	/* Logger */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
@@ -164,19 +162,15 @@ public class DocumentUploadService {
 			// scanFile = virusScan.scanDocument(file.getBytes());
 			if (ValidationUtil.requestValidator(requestParamMap, requiredRequestMap)) {
 				if (scanFile) {
-					if (fileSizeCheck(file.getSize())) {
-						throw new DocumentSizeExceedException(
-								ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
-					} else if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
-						throw new DocumentNotValidException(ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
-					} else {
-						return createDoc(docReqDto.getRequest(), file);
-					}
-				} else {
-					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+					fileSizeCheck(file.getSize());
+					fileExtensionCheck(file);
+					return createDoc(docReqDto.getRequest(), file);
 				}
+			} else {
+				throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
+						ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
 			}
+
 		} catch (Exception ex) {
 			logger.error(" Exception ", Arrays.toString(ex.getStackTrace()));
 			new DocumentExceptionCatcher().handle(ex);
@@ -191,9 +185,21 @@ public class DocumentUploadService {
 	 * @param uploadedFileSize
 	 * @return true if file size is within the limit, else false
 	 */
-	public boolean fileSizeCheck(long uploadedFileSize) {
+	public DocumentSizeExceedException fileSizeCheck(long uploadedFileSize) {
 		long maxAllowedSize = getMaxFileSize();
-		return (uploadedFileSize > maxAllowedSize);
+		if (uploadedFileSize > maxAllowedSize) {
+			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
+					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+		}
+		return null;
+	}
+
+	public DocumentNotValidException fileExtensionCheck(MultipartFile file) {
+		if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
+			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
+					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
+		}
+		return null;
 	}
 
 	/**
@@ -385,11 +391,12 @@ public class DocumentUploadService {
 		try {
 			DocumentEntity documentEntity = documentRepository.findBydocumentId(docId);
 			if (documentEntity == null) {
-				documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-				delResponseDto.setStatus("false");
-				delResponseDto.setErr(documentErr);
-				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				// documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				// ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+				// delResponseDto.setStatus("false");
+				// delResponseDto.setErr(documentErr);
+				// delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int deleteCount = documentRepository.deleteAllBydocumentId(docId);
 				if (deleteCount > 0) {
@@ -429,11 +436,13 @@ public class DocumentUploadService {
 		try {
 			List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 			if (documentEntityList == null || documentEntityList.isEmpty()) {
-				ExceptionJSONInfoDTO documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-				delResponseDto.setStatus("false");
-				delResponseDto.setErr(documentErr);
-				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				// ExceptionJSONInfoDTO documentErr = new
+				// ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				// ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+				// delResponseDto.setStatus("false");
+				// delResponseDto.setErr(documentErr);
+				// delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int documentEntities = documentRepository.deleteAllBypreregId(preregId);
 				System.out.println("All " + documentEntities);
