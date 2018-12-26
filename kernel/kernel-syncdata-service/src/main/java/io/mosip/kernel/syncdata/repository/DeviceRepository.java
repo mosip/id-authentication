@@ -26,7 +26,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 *            id of machine
 	 * @return list of {@link Device}
 	 */
-	@Query(value = "SELECT dm.id, dm.name, dm.mac_address, dm.serial_num, dm.ip_address, dm.dspec_id, dm.lang_code, dm.is_active, dm.cr_by, dm.cr_dtimes, dm.upd_by, dm.upd_dtimes, dm.is_deleted, dm.del_dtimes, dm.validity_end_dtimes FROM master.device_master dm, master.reg_center_machine_device rcmd where dm.id = rcmd.device_id  and rcmd.machine_id = ?1", nativeQuery = true)
+	@Query(value = "SELECT distinct dm.id, dm.name, dm.mac_address, dm.serial_num, dm.ip_address, dm.dspec_id, dm.lang_code, dm.is_active, dm.cr_by, dm.cr_dtimes, dm.upd_by, dm.upd_dtimes, dm.is_deleted, dm.del_dtimes, dm.validity_end_dtimes FROM master.device_master dm, master.reg_center_machine_device rcmd where dm.id = rcmd.device_id  and rcmd.machine_id = ?1", nativeQuery = true)
 	List<Device> findDeviceByMachineId(String machineId);
 
 	/**
@@ -39,6 +39,6 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 *            timeStamp
 	 * @return list of {@link Device}
 	 */
-	@Query(value = "SELECT dm.id, dm.name, dm.mac_address, dm.serial_num, dm.ip_address, dm.dspec_id, dm.lang_code, dm.is_active, dm.cr_by, dm.cr_dtimes, dm.upd_by, dm.upd_dtimes, dm.is_deleted, dm.del_dtimes, dm.validity_end_dtimes FROM master.device_master dm, master.reg_center_machine_device rcmd where dm.id = rcmd.device_id  and rcmd.machine_id = ?1 and (dm.cr_dtimes > ?2 or dm.upd_dtimes > ?2 or dm.del_dtimes > ?2) ", nativeQuery = true)
+	@Query(value = "SELECT distinct dm.id, dm.name, dm.mac_address, dm.serial_num, dm.ip_address, dm.dspec_id, dm.lang_code, dm.is_active, dm.cr_by, dm.cr_dtimes, dm.upd_by, dm.upd_dtimes, dm.is_deleted, dm.del_dtimes, dm.validity_end_dtimes FROM master.device_master dm, master.reg_center_machine_device rcmd where dm.id = rcmd.device_id  and rcmd.machine_id = ?1 and (dm.cr_dtimes > ?2 or dm.upd_dtimes > ?2 or dm.del_dtimes > ?2) ", nativeQuery = true)
 	List<Device> findLatestDevicesByMachineId(String machineId, LocalDateTime lastUpdated);
 }
