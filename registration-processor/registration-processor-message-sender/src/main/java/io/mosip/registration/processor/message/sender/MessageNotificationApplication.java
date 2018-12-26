@@ -8,9 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Shuchita
  * @author Ayush Keer
  */
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client",
-		"io.mosip.registration.processor.manual.verification",
+@SpringBootApplication(scanBasePackages = { 
+		"io.mosip.registration.processor.rest.client",
 		"io.mosip.registration.processor.filesystem.ceph.adapter.impl" })
 public class MessageNotificationApplication {
 

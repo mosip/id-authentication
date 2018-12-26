@@ -1,16 +1,22 @@
 package io.mosip.registration.processor.message.sender.service;
 
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.message.sender.dto.MessageNotificationRequest;
-import io.mosip.registration.processor.message.sender.dto.MessageNotificationResponse;
+import io.mosip.kernel.emailnotification.dto.ResponseDto;
+import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 
 @Service
 public interface MessageNotificationService {
 
-	public MessageNotificationResponse sendSmsNotification(String templateTypeCode, String id, String idType, List<String> attributes );
+	public ResponseEntity<SmsRequestDto> sendSmsNotification(String templateTypeCode, String id, String idType,
+			Map<String, Object> attributes);
 
-	public MessageNotificationResponse sendEmailNotification(MessageNotificationRequest messageNotificationRequest);
+	public CompletableFuture<ResponseEntity<ResponseDto>> sendEmailNotification(String templateTypeCode, String id,
+			String idType, Map<String, Object> attributes, String[] mailCc, String subject,
+			MultipartFile[] attachment);
 }

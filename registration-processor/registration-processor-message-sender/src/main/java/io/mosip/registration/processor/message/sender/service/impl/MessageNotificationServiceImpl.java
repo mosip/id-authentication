@@ -12,20 +12,21 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.notification.spi.EmailNotification;
-import io.mosip.kernel.core.notification.spi.SmsNotification;
+import io.mosip.kernel.emailnotification.dto.ResponseDto;
 import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.notification.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.core.notification.template.generator.TemplateResponseDto;
 import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
 import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -33,8 +34,6 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.dto.MessageNotificationResponse;
-import io.mosip.registration.processor.message.sender.dto.ResponseDto;
 import io.mosip.registration.processor.message.sender.service.MessageNotificationService;
 import io.mosip.registration.processor.message.sender.utility.Utilities;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -44,6 +43,16 @@ import io.mosip.registration.processor.packet.storage.exception.InstantanceCreat
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 
+/**
+ * ServiceImpl class for sending notification.
+ * 
+ * @author 	Alok
+ * 			Shuchita
+ * 			Ayush
+ * 		
+ * @since 1.0.0
+ *
+ */
 public class MessageNotificationServiceImpl implements MessageNotificationService {
 
 	private JSONObject demographicIdentity = null;
@@ -51,20 +60,19 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	private static final String LABEL = "label";
 	private static final String VALUE = "value";
 	
+	private static final String UIN = "UIN";
+
 	@Value("${registration.processor.primary.language.code}")
 	private String langCode;
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageNotificationServiceImpl.class);
 
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	@Autowired
 	private TemplateGenerator templateGenerator;
-
-	@Autowired
-	private EmailNotification<MultipartFile[], CompletableFuture<ResponseDto>> emailNotificationService;
-
-	@Autowired
-	private SmsNotification<?> smsNotifierService;
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -74,10 +82,10 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 
 	@Autowired
 	private RegistrationProcessorNotificationTemplate regProcessorTemplateJson;
-	
+
 	@Autowired
 	private SmsRequestDto smsDto;
-	
+
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
@@ -85,79 +93,78 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	public MessageNotificationResponse sendSmsNotification(String templateTypeCode, String id, String idType,
+	@SuppressWarnings("unchecked")
+	public ResponseEntity<SmsRequestDto> sendSmsNotification(String templateTypeCode, String id, String idType,
 			Map<String, Object> attributes) {
-		InputStream demographicInfoStream = null;
+		
+		ResponseEntity<SmsRequestDto> response = null;
 		try {
-			if (idType.equalsIgnoreCase("RID")) {
-				demographicInfoStream = adapter.getFile(id,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-			} else {
-				String rid = packetInfoManager.getRegIdByUIN(id).get(0);
-				demographicInfoStream = adapter.getFile(rid,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-			}
-
-			String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
-
-			NotificationTemplate template = getKeysandValues(demographicInfo);
-
-			attributes.put("FirstName", template.getFirstName());
-
-			String langCode = "eng";
+			
+			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
 
 			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
-			
-			smsDto.setMessage(artifact);
-			smsDto.setNumber(template.getPhoneNumber()[0].getValue());
-			
-			ResponseEntity response = (ResponseEntity) restClientService.(ApiName.MASTER_DATA,
-					pathSegments, "", "", TemplateResponseDto.class);
 
-			//smsNotifierService.sendSmsNotification(template.getPhoneNumber().toString(), artifact);
+			smsDto.setMessage(artifact);
+			smsDto.setNumber(templatejson.getPhoneNumber()[0].getValue());
+
+			response = (ResponseEntity<SmsRequestDto>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
+					ResponseEntity.class);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return response;
 	}
-	
-	public MessageNotificationResponse sendEmailNotification(String templateTypeCode, String id, String idType,
-			Map<String, Object> attributes, String[] CCEmailList, String subject, MultipartFile[] attachment) {
+
+	@SuppressWarnings("unchecked")
+	public CompletableFuture<ResponseEntity<ResponseDto>> sendEmailNotification(String templateTypeCode, String id,
+			String idType, Map<String, Object> attributes, String[] mailCc, String subject,
+			MultipartFile[] attachment) {
+
+		CompletableFuture<ResponseEntity<ResponseDto>> response = null;
 		
-		InputStream demographicInfoStream = null;
 		try {
-			if (idType.equalsIgnoreCase("RID")) {
-				demographicInfoStream = adapter.getFile(id,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-			} else {
-				String rid = packetInfoManager.getRegIdByUIN(id).get(0);
-				demographicInfoStream = adapter.getFile(rid,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-			}
-
-			String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
-
-			NotificationTemplate template = getKeysandValues(demographicInfo);
-
-			attributes.put("FirstName", template.getFirstName());
+			NotificationTemplate template = getTemplateJson(id, idType, attributes);
 
 			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
-			
+
 			String[] mailTo = new String[template.getEmailID().length];
-			for(int i=0; i<mailTo.length;i++) {
+			for (int i = 0; i < mailTo.length; i++) {
 				mailTo[i] = template.getEmailID()[i].getValue();
 			}
-			
-			
-			emailNotificationService.sendEmail(mailTo, CCEmailList,
-					subject, artifact,attachment);
+
+			String queryparam = "mailTo,mailCc,mailSubject,mailContent,attachments";
+			String queryParamValue = "mailTo, mailCc, subject, artifact, attachment";
+
+			response = (CompletableFuture<ResponseEntity<ResponseDto>>) restClientService.postApi(ApiName.EMAILNOTIFIER,
+					queryparam, queryParamValue, "", ResponseEntity.class);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return response;
+	}
+	
+	private NotificationTemplate getTemplateJson(String id, String idType, Map<String, Object> attributes)
+			throws IOException {
+		InputStream demographicInfoStream;
+		if (idType.equalsIgnoreCase( UIN )) {
+			//get registration id using UIN
+			id = packetInfoManager.getRegIdByUIN(id).get(0);
+		}
+
+		demographicInfoStream = adapter.getFile(id,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+
+		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
+
+		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
+
+		attributes.put("FirstName", templatejson.getFirstName());
 		
-		
-		return null;
+		return templatejson;
 	}
 
 	private NotificationTemplate getKeysandValues(String demographicJsonString) {
@@ -185,12 +192,12 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 			template.setPhoneNumber(getJsonValues(regProcessorTemplateJson.getPhoneNumber()));
 
 		} catch (IOException e) {
-			// LOGGER.error("Error while mapping Identity Json ", e);
+			LOGGER.error("Error while mapping Identity Json ", e);
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
 					e);
 
 		} catch (ParseException e) {
-			// LOGGER.error("Error while parsing Json file", e);
+			LOGGER.error("Error while parsing Json file", e);
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
 
@@ -239,12 +246,12 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 				javaObject[i] = jsonNodeElement;
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
-			// LOGGER.error("Error while Creating Instance of generic type", e);
+			LOGGER.error("Error while Creating Instance of generic type", e);
 			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
 					e);
 
 		} catch (NoSuchFieldException | SecurityException e) {
-			// LOGGER.error("no such field exception", e);
+			LOGGER.error("no such field exception", e);
 			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
 
 		}
@@ -252,5 +259,4 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 		return javaObject;
 
 	}
-
 }
