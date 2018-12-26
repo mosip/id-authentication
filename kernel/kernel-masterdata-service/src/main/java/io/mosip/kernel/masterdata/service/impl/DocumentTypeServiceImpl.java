@@ -40,6 +40,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
+@Transactional
 public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	/**
@@ -146,7 +147,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * java.lang.String)
 	 */
 	@Override
-	@Transactional
 	public CodeResponseDto deleteDocumentType(String code) {
 
 		try {
