@@ -8,4 +8,4 @@ COPY ./target/kernel-masterdata-service-*.jar kernel-masterdata-service.jar
 
 EXPOSE 8086
 
-CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-masterdata-service.jar"]
+CMD ["java","-Xmx2048m","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-masterdata-service.jar"]
