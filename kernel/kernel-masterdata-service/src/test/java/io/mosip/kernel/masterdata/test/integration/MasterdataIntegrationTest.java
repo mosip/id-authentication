@@ -159,6 +159,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
  * @author Bal Vikash Sharma
  * @author Uday Kumar
  * @author Megha Tanga
+ * @author Srinivasan
  * @since 1.0.0
  */
 @SpringBootTest
@@ -297,6 +298,9 @@ public class MasterdataIntegrationTest {
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
+	RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID=null;
+	
+	RegistrationCenterMachineDeviceID rcmdIdH=null;
 	@MockBean
 	private TitleRepository titleRepository;
 
@@ -677,11 +681,11 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachineDevice.setCreatedBy("admin");
 
 		registrationCenterMachineDeviceHistory = new RegistrationCenterMachineDeviceHistory();
-		RegistrationCenterMachineDeviceID rcmdIdH = new RegistrationCenterMachineDeviceID();
+		rcmdIdH = new RegistrationCenterMachineDeviceID();
 		rcmdIdH.setDeviceId("101");
 		rcmdIdH.setMachineId("1789");
 		rcmdIdH.setRegCenterId("1");
-		RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
+	 registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
 		registrationCenterMachineDeviceHistoryID.setDeviceId("101");
 		registrationCenterMachineDeviceHistoryID.setMachineId("1789");
 		registrationCenterMachineDeviceHistoryID.setRegCenterId("1");
@@ -1092,6 +1096,33 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(
 				post("/v1.0/registrationcentermachinedevice").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void deleteRegCenterMachineDeviceTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteRegCenterMachineDeviceDataNotFoundTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void deleteRegCenterMachineDeviceDataAccessExcpetionTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------LanguageImplementationTest----------------------------------
@@ -1927,13 +1958,12 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void deleteTitleTest() throws Exception {
 		when(titleRepository.findByCode(Mockito.any())).thenReturn(titleList);
 		when(titleRepository.update(Mockito.any())).thenReturn(title);
-		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
