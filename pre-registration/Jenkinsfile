@@ -55,6 +55,7 @@ stage ('---------- build ---------------') {
 			sh "dirname $currentModule > parentDirectoryPath"
 			parentDirectoryPath = readFile('parentDirectoryPath').trim()
 			sh "rm -f parentDirectoryPath"
+			parentDirectoryPathFormatted = parentDirectoryPath.substring(1);
 			// to check if angular.json is present in root of submodule to build, for this purpose checking if
 			// Dockerfile is present in same directory.
 			currentWorkingPath = pwd()
