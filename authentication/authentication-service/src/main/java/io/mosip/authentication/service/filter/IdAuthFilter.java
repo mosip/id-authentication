@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
  * The Class IdAuthFilter.
@@ -52,7 +53,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				requestBody.replace(REQUEST, request);				
 			}
 			return requestBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException  e) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorCode(),

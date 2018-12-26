@@ -1,20 +1,19 @@
 package io.mosip.authentication.service.integration;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.text.MessageFormat;
-import java.util.Base64;
+import java.time.LocalDateTime;
+//import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.crypto.spec.SecretKeySpec;
-
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.integration.dto.CryptomanagerRequestDto;
+import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**
@@ -56,6 +67,26 @@ public class KeyManager {
 	
 	/** The Constant FILEPATH. */
 	private static final String FILEPATH = "sample.privatekey.filepath";
+	
+	/** KeySplitter */
+	
+	@Value("${mosip.kernel.data-key-splitter}")
+	private String keySplitter;
+	
+	/** The Constant FILEPATH. */
+	private static final String referenceID = "REF01";
+	
+	@Value("${application.id}")
+	private String appId;
+	
+	
+	@Autowired
+	private RestHelper restHelper;
+
+	@Autowired
+	private RestRequestFactory restRequestFactory;
+	
+	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
 
 	/**
 	 * Request data.
@@ -66,30 +97,59 @@ public class KeyManager {
 	 * @param mapper the mapper
 	 * @return the map
 	 * @throws IdAuthenticationAppException 
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, Environment env, DecryptorImpl decryptor, ObjectMapper mapper) throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
-			String tspId = (String) requestBody.get(TSP_ID);
-//			byte[] privateKey = fileReader(tspId, env);
-			byte[] privateKey = getPrivateKey();
-			byte[] reqBoby = (byte[]) requestBody.get(REQUEST);
-			KeyFactory kf = KeyFactory.getInstance(RSA);
-			PrivateKey priKey = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKey));
+			/*String tspId = (String) requestBody.get(TSP_ID);
+			byte[] privateKey = fileReader(tspId, env);
+			byte[] privateKey = getPrivateKey();*/
+	    /*KeyFactory kf = KeyFactory.getInstance(RSA);
+			PrivateKey priKey = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKey));*/
+			byte[] reqBody = (byte[]) requestBody.get(REQUEST);
 			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(KEY))
 					.filter(obj -> obj instanceof Map)
 					.map(obj -> String.valueOf(((Map<String, Object>)obj).get(SESSION_KEY)));
 			if(encryptedSessionKey.isPresent()) {
-				byte[] encyptedSessionkey = Base64.getDecoder().decode(encryptedSessionKey.get());
-				byte[] decryptedKey = decryptor.asymmetricPrivateDecrypt(priKey, encyptedSessionkey);
+				byte[] encyptedSessionkey = Base64.decodeBase64(encryptedSessionKey.get());
+				
+				/*byte[] decryptedKey = decryptor.asymmetricPrivateDecrypt(priKey, encyptedSessionkey);
 				byte[] finalDecryptedData = decryptor
-						.symmetricDecrypt(new SecretKeySpec(decryptedKey, 0, decryptedKey.length, AES), reqBoby);
+						.symmetricDecrypt(new SecretKeySpec(decryptedKey, 0, decryptedKey.length, AES), reqBody);*/
+				
+				
+				RestRequestDTO restRequestDTO = null;
+				CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
+				CryptomanagerResponseDto cryptomanagerResponseDto=null;
+				String reqData = null;
+				
+	          try {
+					cryptoManagerRequestDto.setApplicationId(appId);
+					cryptoManagerRequestDto.setReferenceId(referenceID);
+					cryptoManagerRequestDto.setTimeStamp(LocalDateTime.now());
+					cryptoManagerRequestDto.setData(CryptoUtil
+							.encodeBase64(CryptoUtil.combineByteArray(reqBody, encyptedSessionkey, keySplitter)));
+					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
+							cryptoManagerRequestDto, CryptomanagerResponseDto.class);
+					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
+					reqData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()));
+					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + reqData);
+				} catch (RestServiceException e) {
+					e.printStackTrace();
+					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
+				} catch (IDDataValidationException e) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+				}
+				
 				request = mapper.readValue(
-						finalDecryptedData,
+						reqData,
 						new TypeReference<Map<String, Object>>() {
 						});				
 			}
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (IOException  e) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorCode(),
@@ -99,9 +159,9 @@ public class KeyManager {
 		return request;
 	}
 
-	private byte[] getPrivateKey() {
+	/*private byte[] getPrivateKey() {
 		return TEMP_PRIVATE_KEY_BYTES;
-	}
+	}*/
 
 //	/**
 //	 * File reader.

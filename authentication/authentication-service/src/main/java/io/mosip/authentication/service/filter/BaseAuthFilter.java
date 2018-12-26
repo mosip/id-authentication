@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
+//import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jose4j.jws.JsonWebSignature;
@@ -223,7 +224,7 @@ public abstract class BaseAuthFilter implements Filter {
 	protected String encode(String stringToEncode) throws IdAuthenticationAppException {
 		try {
 			if (stringToEncode != null) {
-				return Base64.getEncoder().encodeToString(stringToEncode.getBytes());
+				return Base64.encodeBase64String(stringToEncode.getBytes());
 			} else {
 				return stringToEncode;
 			}
@@ -243,11 +244,13 @@ public abstract class BaseAuthFilter implements Filter {
 	protected Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
 			if (stringToDecode != null) {
-				return Base64.getDecoder().decode(stringToDecode);
+//				return Base64.getDecoder().decode(stringToDecode);
+				return Base64.decodeBase64(stringToDecode);
 			} else {
 				return stringToDecode;
 			}
 		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}

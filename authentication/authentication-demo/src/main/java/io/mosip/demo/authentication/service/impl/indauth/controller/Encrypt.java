@@ -23,6 +23,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Arrays;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -78,6 +79,14 @@ public class Encrypt {
 
 	@Autowired
 	private EncryptorImpl encryptor;
+	
+	@Autowired
+	private ObjectMapper objMapper;
+	
+	/** KeySplitter */
+	
+	@Value("${mosip.kernel.data-key-splitter}")
+	private String keySplitter;
 
 	private static final Provider provider = new BouncyCastleProvider();
 
@@ -100,13 +109,14 @@ public class Encrypt {
 //		PublicKey publicKey = asymmetricKey.getPublic();
 //		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
 //		storePrivateKey(privateKey, encryptionRequestDto.getTspID());
-		String encryptedResponse = getEncryptedValue(encryptionRequestDto.getIdentityRequest().toString());
-
+		String encryptedResponse = getEncryptedValue(objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()));
+		System.err.println("Demo"+encryptedResponse);
 		KernalEncryptedData value = split(encryptedResponse);
 
 //		// Encrypt session Key with public Key
 //		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey.getEncoded());
 //		encryptionResponseDto.setEncryptedSessionKey(Base64.getEncoder().encodeToString(encryptedsessionKey));
+		//System.err.println("Demo"+value);
 		return value;
 //		return encryptionResponseDto;
 	}
@@ -116,14 +126,13 @@ public class Encrypt {
 		// byte[] encryptedHybridData = CryptoUtil.decodeBase64(value);
 		byte[] encryptedHybridData = Base64.decodeBase64(value);
 		int keyDemiliterIndex = 0;
-		String keySplitter = "#KEY_SPLITTER#";
 		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex, keySplitter);
 		byte[] encryptedKey = Arrays.copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
 		byte[] encryptedData = Arrays.copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
 				encryptedHybridData.length);
 
-		kernalencryptedData.setKey(Base64.encodeBase64String(encryptedKey));
-		kernalencryptedData.setData(Base64.encodeBase64String(encryptedData));
+		kernalencryptedData.setKey(Base64.encodeBase64URLSafeString(encryptedKey));
+		kernalencryptedData.setData(Base64.encodeBase64URLSafeString(encryptedData));
 		return kernalencryptedData;
 	}
 
@@ -156,7 +165,7 @@ public class Encrypt {
 		String fooResourceUrl = "https://integ.mosip.io/cryptomanager/v1.0/encrypt";
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId("IDA");
-		request.setData(Base64.encodeBase64String(data.getBytes()));
+		request.setData(Base64.encodeBase64URLSafeString(data.getBytes()));
 		request.setReferenceId("REF01");
 		request.setTimeStamp(LocalDateTime.now().toString());
 

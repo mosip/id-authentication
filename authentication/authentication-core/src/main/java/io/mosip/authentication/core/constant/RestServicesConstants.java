@@ -22,7 +22,9 @@ public enum RestServicesConstants {
 	/** SMS notification service. */
 	SMS_NOTIFICATION_SERVICE("sms-notification"),
 	
-	ID_REPO_SERVICE("id-repo-service");
+	ID_REPO_SERVICE("id-repo-service"),
+	
+	DECRYPTION_SERVICE("decrypt-service");
 
 	/** The service name. */
 	private final String serviceName;
