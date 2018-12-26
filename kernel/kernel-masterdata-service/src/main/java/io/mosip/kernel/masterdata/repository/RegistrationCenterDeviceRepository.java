@@ -9,6 +9,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 /**
  * Repository to perform CRUD operations on RegistrationCenterDevice.
  * 
+ * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
  * @since 1.0.0
  * @see RegistrationCenterDevice
@@ -18,4 +19,5 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 @Repository
 public interface RegistrationCenterDeviceRepository
 		extends BaseRepository<RegistrationCenterDevice, RegistrationCenterDeviceID> {
+	
 }
