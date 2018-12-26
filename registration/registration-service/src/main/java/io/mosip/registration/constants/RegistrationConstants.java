@@ -851,4 +851,9 @@ public class RegistrationConstants {
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
 	public static final String PRE_REG_DELETE_FAILURE = "Error While Deleting the records";
+
+
+	//Connection Error
+	public static final String CONNECTION_ERROR = "Unable to establish the connection";
+
 }
