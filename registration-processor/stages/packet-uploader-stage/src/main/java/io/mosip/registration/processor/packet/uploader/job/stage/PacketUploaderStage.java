@@ -191,10 +191,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		
 		registrationId=entry.getRegistrationId();
 		try {
-			
-			adapter.storePacket(registrationId, decryptedData);
-			adapter.unpackPacket(registrationId);
-
 			if (adapter.isPacketPresent(registrationId)) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
@@ -202,8 +198,12 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 				LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
 			} else {
-				LOGGER.info(LOGDISPLAY, registrationId,
-						"File has been sent to DFS.");
+				adapter.storePacket(registrationId, decryptedData);
+				adapter.unpackPacket(registrationId);
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
+				LOGGER.info(LOGDISPLAY, registrationId,"File Stored in File System and same has been deleted from virus scanner job.");
 			}
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			entry.setStatusComment("Packet is uploaded in file system.");
