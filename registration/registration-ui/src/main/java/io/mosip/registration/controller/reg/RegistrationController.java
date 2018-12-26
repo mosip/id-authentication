@@ -299,7 +299,7 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private Validations validation;
-	
+
 	@Autowired
 	private FXComponents fxComponents;
 
@@ -349,18 +349,17 @@ public class RegistrationController extends BaseController {
 			toggleAgeOrDobField = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
-			ageField.setDisable(true);
-			accord.setExpandedPane(demoGraphicTitlePane);
-			fxComponents.disableFutureDays(ageDatePicker);
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
 			ageValidationInDatePicker();
-			fxComponents.dateFormatter(ageDatePicker);
 			listenerOnFields();
-			loadLanguageSpecificKeyboard();
 			loadLocalLanguageFields();
 			loadKeyboard();
+			ageField.setDisable(true);
+			accord.setExpandedPane(demoGraphicTitlePane);
+			fxComponents.dateFormatter(ageDatePicker);
+			fxComponents.disableFutureDays(ageDatePicker);
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
@@ -595,8 +594,8 @@ public class RegistrationController extends BaseController {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(120.00);
 			}
-
-			keyboardNode.setVisible(true);
+			keyboardNode.setVisible(!keyboardNode.isVisible());
+			
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -966,66 +965,6 @@ public class RegistrationController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * To restrict the user not to enter any values other than integer values.
-	 */
-	private void loadLanguageSpecificKeyboard() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loading the local language keyboard");
-			addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - KEYBOARD LOADING FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}

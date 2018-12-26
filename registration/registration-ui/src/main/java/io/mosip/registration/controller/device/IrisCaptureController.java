@@ -272,7 +272,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Photo capture page for user registration");
 
-			if (!validateIris() && validateIrisLocalDedup()) {
+			if (validateIris() && validateIrisLocalDedup()) {
 				registrationController.toggleIrisCaptureVisibility(false);
 				registrationController.togglePhotoCaptureVisibility(true);
 			}
