@@ -148,7 +148,7 @@
 }
 
 #mainBox{
-	-fx-border-width: 1.0;
+	-fx-border-width: 0;
 	-fx-border-color: black;
 }
 
