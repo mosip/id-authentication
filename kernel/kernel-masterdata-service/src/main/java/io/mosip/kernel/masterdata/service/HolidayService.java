@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 public interface HolidayService {
 
 	/**
-	 * to fetch all the holidays
+	 * To fetch all the holidays
 	 * 
 	 * @return {@linkplain HolidayResponseDto}
 	 * @throws MasterDataServiceException
@@ -30,7 +30,7 @@ public interface HolidayService {
 	HolidayResponseDto getAllHolidays();
 
 	/**
-	 * to fetch specific holiday using holiday id
+	 * To fetch specific holiday using holiday id
 	 * 
 	 * @param holidayId
 	 *            input from user
@@ -43,7 +43,7 @@ public interface HolidayService {
 	HolidayResponseDto getHolidayById(int holidayId);
 
 	/**
-	 * to fetch specific holiday using holiday id and language code
+	 * To fetch specific holiday using holiday id and language code
 	 * 
 	 * @param holidayId
 	 *            input from user
@@ -58,7 +58,7 @@ public interface HolidayService {
 	HolidayResponseDto getHolidayByIdAndLanguageCode(int holidayId, String langCode);
 
 	/**
-	 * to add a new holiday data
+	 * To add a new holiday data
 	 * 
 	 * @param holidayDto
 	 *            input values for holiday
@@ -80,13 +80,11 @@ public interface HolidayService {
 	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto);
 
 	/**
-	 * Method to delete a holiday
+	 * Method to delete the holidays
 	 * 
-	 * @param holidayID
-	 *            id of the holiday
-	 * @return primary key of entered row of holiday data
-	 * @throws MasterDataServiceException
-	 *             when entered data not deleted
+	 * @param holidayId
+	 *            input holiday id
+	 * @return id of the holiday which been deleted
 	 */
 	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> holidayId);
 }

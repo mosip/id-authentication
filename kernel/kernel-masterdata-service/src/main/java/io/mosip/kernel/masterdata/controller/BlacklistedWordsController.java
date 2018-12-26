@@ -90,10 +90,10 @@ public class BlacklistedWordsController {
 	}
 
 	/**
-	 * Method to update the blacklisted word.
+	 * Method to update the blacklisted word
 	 * 
 	 * @param blackListedWordsRequestDto
-	 *            the request dto that holds the blacklisted word to be updated.
+	 *            the request dto that holds the blacklisted word to be updated .
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
@@ -108,11 +108,8 @@ public class BlacklistedWordsController {
 	 * Method to deleted blacklisted word.
 	 * 
 	 * @param word
-	 *            input blacklisted word to be deleted
-	 * @param langCode
-	 *            language code of the word
-	 * @return the response entity i.e. the word and language code of the word
-	 *         deleted.
+	 *            input blacklisted word to be deleted.
+	 * @return deleted word.
 	 */
 	@DeleteMapping("/{word}")
 	@ApiOperation(value = "delete the blacklisted word", response = WordAndLanguageCodeID.class)

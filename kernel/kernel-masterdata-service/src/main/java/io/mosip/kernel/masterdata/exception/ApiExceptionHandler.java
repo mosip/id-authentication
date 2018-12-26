@@ -12,8 +12,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;

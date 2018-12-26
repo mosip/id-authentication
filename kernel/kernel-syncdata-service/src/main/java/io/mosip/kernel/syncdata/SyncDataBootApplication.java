@@ -28,7 +28,7 @@ public class SyncDataBootApplication {
 	}
 
 	/**
-	 * Creating bean of TaskExecutor to run async tasks
+	 * Creating bean of TaskExecutor to run Async tasks
 	 * 
 	 * @return {@link Executor}
 	 */

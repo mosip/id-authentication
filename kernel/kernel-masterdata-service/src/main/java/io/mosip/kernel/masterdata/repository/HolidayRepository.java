@@ -23,7 +23,7 @@ import io.mosip.kernel.masterdata.entity.Holiday;
 public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 
 	/**
-	 * get all the holidays for a specific id
+	 * Get all the holidays for a specific id
 	 * 
 	 * @param id
 	 *            holiday id input from user
@@ -32,7 +32,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	List<Holiday> findAllById(int id);
 
 	/**
-	 * fetch all the non deleted holidays
+	 * Fetch all the non deleted holidays
 	 * 
 	 * @return list of {@link Holiday}
 	 */
@@ -40,7 +40,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	List<Holiday> findAllNonDeletedHoliday();
 
 	/**
-	 * get all the holidays for a specific location code
+	 * Get all the holidays for a specific location code
 	 * 
 	 * @param locationCode
 	 *            - location code Eg: IND
@@ -55,7 +55,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	List<Holiday> findAllByLocationCodeYearAndLangCode(String locationCode, String langCode, int year);
 
 	/**
-	 * get specific holiday by holiday id and language code
+	 * Get specific holiday by holiday id and language code
 	 * 
 	 * @param holidayId
 	 *            input from user
@@ -66,17 +66,22 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	List<Holiday> findHolidayByIdAndHolidayIdLangCode(int holidayId, String langCode);
 
 	/**
+	 * Method to get the list of holiday by name,date and location code
 	 * 
-	 * @param holidayId
-	 *            id of the holiday
-	 * @return list of holidays for the particular holiday id
+	 * @param holidayName
+	 *            name of the holiday to be search
+	 * @param holidayDate
+	 *            date of the holiday to be search
+	 * @param locationCode
+	 *            location code of the holiday to be search
+	 * @return list of holidays
 	 */
 	@Query("FROM Holiday WHERE holidayId.holidayName = ?1 AND holidayId.holidayDate = ?2 AND holidayId.locationCode = ?3 AND (isDeleted is null or isDeleted=false)")
 	List<Holiday> findHolidayByHolidayIdAndByIsDeletedFalseOrIsDeletedNull(String holidayName, LocalDate holidayDate,
 			String locationCode);
 
 	/**
-	 * fetch the holiday by id and location code
+	 * Fetch the holiday by id and location code
 	 * 
 	 * @param id
 	 *            id of the holiday
@@ -86,6 +91,19 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 */
 	Holiday findHolidayByIdAndHolidayIdLocationCode(int id, String locationCode);
 
+	/**
+	 * Method to delete the holiday
+	 * 
+	 * @param deletedTime
+	 *            input for deleted timeStamp
+	 * @param holidayName
+	 *            name of the holiday to be deleted
+	 * @param holidayDate
+	 *            date of the holiday to be deleted
+	 * @param locationCode
+	 *            location of the holiday to be deleted
+	 * @return no. of rows deleted
+	 */
 	@Modifying
 	@Transactional
 	@Query("UPDATE Holiday h SET h.isDeleted=true ,h.deletedDateTime =?1 WHERE h.holidayId.holidayName = ?2 AND h.holidayId.holidayDate = ?3 AND h.holidayId.locationCode = ?4 AND (isDeleted is null OR isDeleted = false)")
