@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.mosip.registration.processor.packet.uploader.job.stage.PacketUploaderStage;
 
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet",
-		"io.mosip.registration.processor.core", "io.mosip.registration.processor.status",
+@SpringBootApplication(scanBasePackages = {"io.mosip.registration.processor.packet.uploader","io.mosip.registration.processor.core","io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.status",
 		"io.mosip.registration.processor.filesystem.ceph.adapter.impl", "io.mosip.registration.processor.rest.client" })
 public class PacketUploaderJobApplication {
 	@Autowired
