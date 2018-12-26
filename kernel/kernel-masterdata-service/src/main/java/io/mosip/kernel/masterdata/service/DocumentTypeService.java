@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -47,4 +48,13 @@ public interface DocumentTypeService {
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	public CodeAndLanguageCodeID updateDocumentType(RequestDto<DocumentTypeDto> documentTypeDto);
+
+	/**
+	 * Method to delete document type.
+	 * 
+	 * @param code
+	 *            the document type code.
+	 * @return {@link CodeResponseDto}.
+	 */
+	public CodeResponseDto deleteDocumentType(String code);
 }
