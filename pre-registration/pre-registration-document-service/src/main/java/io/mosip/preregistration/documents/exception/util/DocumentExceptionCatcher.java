@@ -42,7 +42,7 @@ import io.mosip.preregistration.documents.exception.ParsingException;
  */
 public class DocumentExceptionCatcher {
 	public void handle(Exception ex) {
-		if (ex instanceof DataAccessLayerException) {
+		if (ex instanceof DataAccessLayerException || ex instanceof DocumentFailedToUploadException) {
 			throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString(), ex.getCause());
 
@@ -87,10 +87,10 @@ public class DocumentExceptionCatcher {
 		} else if (ex instanceof DocumentVirusScanException) {
 			throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
 					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
-		} else if(ex instanceof DocumentNotFoundException) {
+		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 					StatusCodes.DOCUMENT_IS_MISSING.toString());
-		} else if(ex instanceof DocumentFailedToCopyException) {
+		} else if (ex instanceof DocumentFailedToCopyException) {
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
 		}
