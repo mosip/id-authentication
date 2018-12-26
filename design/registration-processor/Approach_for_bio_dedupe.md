@@ -84,4 +84,4 @@ The solution is divided into 3 parts :
 
 **Sequence Diagram**
 
-![Bio dedupe sequence diagram](_images/123456789.png)
+![Bio dedupe sequence diagram](_images/bio_dedupe_seq_diagram.png)
