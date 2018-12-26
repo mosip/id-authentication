@@ -7,7 +7,7 @@ node {
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
- 
+
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
   dir(branch) {
@@ -20,9 +20,9 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/' + projectToBuild + '/']
      ]]
 
     ],
@@ -37,60 +37,74 @@ node {
   buildInfo = Artifactory.newBuildInfo()
   buildInfo.env.capture = true
  }
- 
-stage ('---------- mvn-clean-install ---------------') {
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
-}
 
-stage('---------- SonarQube Analysis --------------') {
+ stage('---------- build project ---------------') {
+  // for building java projects
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+  // For building angular project
+  dir(branch) {
+   // Looking for angular.json file to to find out if the submodule we are building is an angular project
+   echo "Looking for Angular projects to build..."
+   sh "find . -name 'angular.json'> directoryAngularFiles"
+   locationOfAngularFiles = readFile("directoryAngularFiles").split("\\r?\\n");
+   sh "rm -f directoryAngularFiles"
+   for (int i = 0; i < locationOfAngularFiles.size(); i++) {
+    if (locationOfAngularFiles[i].equals("")) {
+     break;
+    }
+    def currentModule = locationOfAngularFiles[i]
+    sh "dirname $currentModule > parentDirectoryPath"
+    parentDirectoryPath = readFile('parentDirectoryPath').trim()
+    sh "rm -f parentDirectoryPath"
+    // to check if angular.json is present in root of submodule to build, for this purpose checking if
+    // Dockerfile is present in same directory.
+    fileToLookFor = parentDirectoryPath + "/Dockerfile"
+    def file = new File(fileToLookFor)
+    if (file.exists()) {
+     // installing node modules and building the angular project
+     sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --output-path=dist && popd"
+    }
+   }
+  }
+ }
+
+ stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
 
-stage('----------- Publish build info -------------') {
+ stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
- 
-stage('-----------Docker image push and cleanup-----------') {
-	dir(branch) {
-			sh "find . -name 'Dockerfile'> directoryDockerFiles"
-			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
-			sh "rm -f directoryDockerFiles"
-			echo locationOfDockerFiles.size()+""
-			echo "&&&&&&&&&&&&&&&&&&&&&"+locationOfDockerFiles[0]+"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-			for (int i=0; i < locationOfDockerFiles.size(); i++) {
-			if(locationOfDockerFiles[i].equals("")){
-			break;
-			}
-			echo locationOfDockerFiles[i]
-			def currentModule = locationOfDockerFiles[i]
-			sh "basename `dirname $currentModule` > parentDirectoryName"
-			parentDirectoryName = readFile('parentDirectoryName').trim()
-			sh "rm -f parentDirectoryName"
-			sh "dirname $currentModule > parentDirectoryPath"
-			parentDirectoryPath = readFile('parentDirectoryPath').trim()
-			sh "rm -f parentDirectoryPath"
-			docker.withRegistry(registryUrl,registryCredentials) {
-			echo "$currentModule"
-			echo "$parentDirectoryName"
-			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
-			    newApp.push()
-			    newApp.push 'latest'
-			 }
-			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName"
 
-			}
-
-	}
-
-
-}
- 
-
+ stage('-----------Docker image push and cleanup-----------') {
+  dir(branch) {
+   sh "find . -name 'Dockerfile'> directoryDockerFiles"
+   locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
+   sh "rm -f directoryDockerFiles"
+   for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+    if (locationOfDockerFiles[i].equals("")) {
+     break;
+    }
+    def currentModule = locationOfDockerFiles[i]
+    sh "basename `dirname $currentModule` > parentDirectoryName"
+    parentDirectoryName = readFile('parentDirectoryName').trim()
+    sh "rm -f parentDirectoryName"
+    sh "dirname $currentModule > parentDirectoryPath"
+    parentDirectoryPath = readFile('parentDirectoryPath').trim()
+    sh "rm -f parentDirectoryPath"
+    docker.withRegistry(registryUrl, registryCredentials) {
+     def buildName = "$parentDirectoryName:$BUILD_NUMBER"
+     newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+     newApp.push()
+     newApp.push 'latest'
+    }
+    sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
+    sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+    sh "docker rmi $registryName/$parentDirectoryName"
+   }
+  }
+ }
 }
