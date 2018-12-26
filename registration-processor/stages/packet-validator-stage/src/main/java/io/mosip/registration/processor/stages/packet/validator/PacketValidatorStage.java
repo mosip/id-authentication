@@ -5,6 +5,7 @@ package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,7 @@ import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -82,12 +84,31 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	MosipEventBus mosipEventBus = null;
+
+	private String registrationId = "";
+	String description;
+	boolean isTransactionSuccessful;
+	private long secs = 30;
+
 	/**
 	 * Deploy verticle.
 	 */
+	/*
+	 * public void deployVerticle() { MosipEventBus mosipEventBus =
+	 * this.getEventBus(this.getClass(), clusterAddress, localhost);
+	 * this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT); }
+	 */
+
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
+
+		process(new MessageDTO()));
+	}
+
+	private void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
+		this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT, message);
 	}
 
 	/*
@@ -99,98 +120,127 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
-		object.setIsValid(Boolean.FALSE);
-		object.setInternalError(Boolean.FALSE);
-		String registrationId = object.getRid();
-		String description = "";
-		boolean isTransactionSuccessful = false;
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
+
+		List<InternalRegistrationStatusDto> dtolist = null;
+
 		try {
 
-			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-					PacketMetaInfo.class);
+			object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+			object.setIsValid(Boolean.FALSE);
+			object.setInternalError(Boolean.FALSE);
 
-			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
-					.getRegistrationStatus(registrationId);
-			FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
-			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
-			boolean isCheckSumValidated = false;
-			boolean isApplicantDocumentValidation = false;
-			if (isFilesValidated) {
+			dtolist = registrationStatusService
+					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+			if (!(dtolist.isEmpty())) {
+				dtolist.forEach(dto -> {
+					this.registrationId = dto.getRegistrationId();
+					description = "";
+					isTransactionSuccessful = false;
+					try {
+						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
+								PacketFiles.PACKETMETAINFO.name());
+						PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
+								.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 
-				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
-				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-						packetMetaInfo.getIdentity());
+						InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+								.getRegistrationStatus(registrationId);
+						FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
+						boolean isFilesValidated = filesValidation.filesValidation(registrationId,
+								packetMetaInfo.getIdentity());
+						boolean isCheckSumValidated = false;
+						boolean isApplicantDocumentValidation = false;
+						if (isFilesValidated) {
 
-				if (isCheckSumValidated) {
-					ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-							registrationStatusDto);
-					isApplicantDocumentValidation = applicantDocumentValidation
-							.validateDocument(packetMetaInfo.getIdentity(), registrationId);
+							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
+									registrationStatusDto);
+							isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+									packetMetaInfo.getIdentity());
 
-				}
+							if (isCheckSumValidated) {
+								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+										registrationStatusDto);
+								isApplicantDocumentValidation = applicantDocumentValidation
+										.validateDocument(packetMetaInfo.getIdentity(), registrationId);
 
+							}
+
+						}
+
+						if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
+							object.setIsValid(Boolean.TRUE);
+							registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
+							InputStream demographicInfoStream = adapter.getFile(registrationId,
+									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
+											+ PacketFiles.DEMOGRAPHICINFO.name());
+							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
+									packetMetaInfo.getIdentity().getMetaData());
+							MessageDTO message = new MessageDTO();
+							message.setRid(dto.getRegistrationId());
+
+							sendMessage(mosipEventBus, message);
+
+						} else {
+							object.setIsValid(Boolean.FALSE);
+
+							int retryCount = registrationStatusDto.getRetryCount() != null
+									? registrationStatusDto.getRetryCount() + 1
+									: 1;
+							description = registrationStatusDto.getStatusComment() + registrationId;
+							registrationStatusDto.setRetryCount(retryCount);
+
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+
+						}
+
+						registrationStatusDto.setUpdatedBy(USER);
+
+						setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
+
+						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+						isTransactionSuccessful = true;
+					} catch (DataAccessException e) {
+						log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
+						object.setInternalError(Boolean.TRUE);
+						description = "Data voilation in reg packet : " + registrationId;
+
+					} catch (IOException exc) {
+						log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), exc);
+						object.setInternalError(Boolean.TRUE);
+						description = "Internal error occured while processing registration  id : " + registrationId;
+
+					} catch (Exception ex) {
+						log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), ex);
+						object.setInternalError(Boolean.TRUE);
+						description = "Internal error occured while processing registration  id : " + registrationId;
+					}
+				});
 			}
 
-			if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
-				object.setIsValid(Boolean.TRUE);
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
-				packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
-				InputStream demographicInfoStream = adapter.getFile(registrationId,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-				packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
-						packetMetaInfo.getIdentity().getMetaData());
+		} catch (TablenotAccessibleException e) {
 
-			} else {
-				object.setIsValid(Boolean.FALSE);
-
-				int retryCount = registrationStatusDto.getRetryCount() != null
-						? registrationStatusDto.getRetryCount() + 1
-						: 1;
-				description = registrationStatusDto.getStatusComment() + registrationId;
-				registrationStatusDto.setRetryCount(retryCount);
-
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-
-			}
-
-			registrationStatusDto.setUpdatedBy(USER);
-
-			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
-
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			isTransactionSuccessful = true;
-		} catch (DataAccessException e) {
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
-			description = "Data voilation in reg packet : " + registrationId;
+			description = "Registration status table is not accessible for packet " + registrationId;
 
-		} catch (IOException exc) {
-			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), exc);
-			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
-
-		} catch (Exception ex) {
-			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), ex);
-			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
 
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
 
-			if(isTransactionSuccessful) {
+			if (isTransactionSuccessful) {
 				description = "Packet uploaded to file system";
-				eventId=EventId.RPR_402.toString();
+				eventId = EventId.RPR_402.toString();
 				eventName = EventName.UPDATE.toString();
 				eventType = EventType.BUSINESS.toString();
-			}else {
+			} else {
 
 				description = "Packet uploading to file system is unsuccessful";
-				eventId=EventId.RPR_405.toString();
+				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
