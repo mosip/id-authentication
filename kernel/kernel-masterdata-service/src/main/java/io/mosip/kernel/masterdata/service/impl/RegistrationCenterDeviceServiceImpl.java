@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -41,10 +42,6 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
-    @Autowired
-	private RegistrationCenterRepository registrationCenterRepository;
-    @Autowired
-    private DeviceRepository deviceRepository;
 	
 	/**
 	 * (non-Javadoc)
@@ -90,14 +87,20 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			throw new DataNotFoundException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
 		}else {
-			Optional<RegistrationCenterDevice> registrationCenterDeviceHistory=registrationCenterDeviceRepository.findById(registrationCenterDeviceID);
 			RegistrationCenterDevice centerDevice=registrationCenterDevice.get();
 			centerDevice=MetaDataUtils.setDeleteMetaData(centerDevice);
-			registrationCenterDeviceHistoryRepository.update(MapperUtils.map(centerDevice, RegistrationCenterDeviceHistory.class));
+			RegistrationCenterDeviceHistory rcdh = new RegistrationCenterDeviceHistory();
+			RegistrationCenter
+			
+			RegistrationCenterDeviceHistory history=MapperUtils.map(centerDevice, RegistrationCenterDeviceHistory.class);
+			history.setEffectivetimes(LocalDateTime.now());
+			MapperUtils.setBaseFieldValue(centerDevice, history);
+			registrationCenterDeviceHistoryRepository.create(history);
 			registrationCenterDeviceRepository.update(centerDevice);
+		    
 		}
 		}catch (DataAccessLayerException | DataAccessException e) {
-			
+			e.printStackTrace();
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
 		}
