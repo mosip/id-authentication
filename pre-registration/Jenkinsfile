@@ -48,6 +48,7 @@ node {
    sh "find . -name 'angular.json'> directoryAngularFiles"
    locationOfAngularFiles = readFile("directoryAngularFiles").split("\\r?\\n");
    sh "rm -f directoryAngularFiles"
+   echo locationOfAngularFiles
    for (int i = 0; i < locationOfAngularFiles.size(); i++) {
     if (locationOfAngularFiles[i].equals("")) {
      break;
