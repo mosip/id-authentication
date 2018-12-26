@@ -114,7 +114,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHisto
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
@@ -293,7 +293,7 @@ public class MasterdataIntegrationTest {
 
 	RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory;
 
-	RegistrationCenterMachineUserID registrationCenterUserMachineHistoryId;
+	RegistrationCenterMachineUserHistoryID registrationCenterUserMachineHistoryId;
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
@@ -792,10 +792,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void registrationCenterUserMachineSetup() {
-		registrationCenterUserMachineHistoryId = new RegistrationCenterMachineUserID("1", "1", "1");
-		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory();
-		registrationCenterUserMachineHistory.setId(registrationCenterUserMachineHistoryId);
-		registrationCenterUserMachineHistory.setEffectivetimes(LocalDateTime.now().minusDays(1));
+		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",LocalDateTime.now().minusDays(1));
 	}
 
 	private void registrationCenterSetup() {
@@ -1757,8 +1754,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersMachineUserMappingNotFoundExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository
-				.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						registrationCenterUserMachineHistoryId, localDateTimeUTCFormat))
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						"1","1","1", localDateTimeUTCFormat))
 								.thenReturn(registrationCenterUserMachineHistories);
 		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
 				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
@@ -1768,8 +1765,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersMachineUserMappingFetchExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository
-				.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						registrationCenterUserMachineHistoryId, localDateTimeUTCFormat))
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						"1","1","1", localDateTimeUTCFormat))
 								.thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
 				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
@@ -1782,12 +1779,11 @@ public class MasterdataIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andReturn();
 	}
 
-	// @Test
+	//@Test
 	public void getRegistrationCentersMachineUserMappingTest() throws Exception {
 		registrationCenterUserMachineHistories.add(registrationCenterUserMachineHistory);
 		when(registrationCenterUserMachineHistoryRepository
-				.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						registrationCenterUserMachineHistoryId, LocalDateTime.parse("2018-10-30T19:20:30.45")))
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull("1","1","1",MapperUtils.parseToLocalDateTime("2018-10-30T19:20:30.45")))
 								.thenReturn(registrationCenterUserMachineHistories);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
