@@ -1,9 +1,12 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
@@ -12,6 +15,9 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistoryPk;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
@@ -22,6 +28,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * 
+ * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
@@ -32,7 +39,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
-
+	
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -66,6 +73,33 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		}
 
 		return registrationCenterDeviceDto;
+	}
+
+	@Transactional
+	@Override
+	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId,String deviceId) {
+		RegistrationCenterDeviceID registrationCenterDeviceID=null;
+		try {
+		registrationCenterDeviceID= new RegistrationCenterDeviceID(regCenterId, deviceId);
+		Optional<RegistrationCenterDevice> registrationCenterDevice=registrationCenterDeviceRepository.findById(registrationCenterDeviceID);
+		if(!registrationCenterDevice.isPresent()) {
+			throw new DataNotFoundException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
+		}else {
+			RegistrationCenterDevice centerDevice=registrationCenterDevice.get();
+			centerDevice=MetaDataUtils.setDeleteMetaData(centerDevice);
+			RegistrationCenterDeviceHistory history=MapperUtils.map(centerDevice, RegistrationCenterDeviceHistory.class);
+			history.setRegistrationCenterDeviceHistoryPk(MapperUtils.map(registrationCenterDeviceID, RegistrationCenterDeviceHistoryPk.class));
+			history.getRegistrationCenterDeviceHistoryPk().setEffectivetimes(centerDevice.getDeletedDateTime());
+			MapperUtils.setBaseFieldValue(centerDevice, history);
+			registrationCenterDeviceHistoryRepository.create(history);
+			registrationCenterDeviceRepository.update(centerDevice);
+		}
+		}catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage());
+		}
+		return registrationCenterDeviceID;
 	}
 
 }

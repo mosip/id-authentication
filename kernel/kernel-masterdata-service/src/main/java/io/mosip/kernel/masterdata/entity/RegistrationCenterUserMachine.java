@@ -1,18 +1,18 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,13 +27,13 @@ import lombok.NoArgsConstructor;
  *
  */
 @EqualsAndHashCode(callSuper = true)
-@IdClass(RegistrationCenterMachineUserHistoryID.class)
+@IdClass(RegistrationCenterMachineUserID.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reg_center_user_machine_h", schema = "master")
-public class RegistrationCenterUserMachineHistory extends BaseEntity implements Serializable {
+@Table(name = "reg_center_user_machine", schema = "master")
+public class RegistrationCenterUserMachine extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated Serial Id
@@ -47,9 +47,8 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 	@AttributeOverrides({
 			@AttributeOverride(name = "cntrId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
-			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)),
-			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false)),})
-	
+			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)) })
+
 	/**
 	 * Center Id
 	 */
@@ -64,9 +63,18 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 	 * Machine Id
 	 */
 	private String machineId;
+
 	
-	/**
-	 * Effective TimeStamp
-	 */
-	private LocalDateTime effectivetimes;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cntrId", referencedColumnName = "id", insertable = false, updatable = false)
+	private RegistrationCenter registrationCenter;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "usrId", referencedColumnName = "id", insertable = false, updatable = false)
+	private UserDetails userDetails;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "machineId", referencedColumnName = "id", insertable = false, updatable = false)
+	private Machine machine;
 }
