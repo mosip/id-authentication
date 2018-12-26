@@ -51,15 +51,15 @@ stage ('---------- build ---------------') {
 			if(locationOfAngularFiles[i].equals("")){
 			break;
 			}
-			echo locationOfAngularFiles[i]
 			def currentModule = locationOfAngularFiles[i]
 			sh "dirname $currentModule > parentDirectoryPath"
 			parentDirectoryPath = readFile('parentDirectoryPath').trim()
-			echo parentDirectoryPath
 			sh "rm -f parentDirectoryPath"
 			// to check if angular.json is present in root of submodule to build, for this purpose checking if
 			// Dockerfile is present in same directory.
-			fileToLookFor= parentDirectoryPath+"/Dockerfile"
+			currentWorkingPath = pwd()
+			// creating absolute path to the Dockerfile
+			fileToLookFor= currentWorkingPath+parentDirectoryPathFormatted+"/Dockerfile"
 			sh "pwd"
 			echo fileToLookFor
 			def file= new File(fileToLookFor)
