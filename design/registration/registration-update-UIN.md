@@ -82,11 +82,11 @@ The key **non-functional requirements** are
 
 Note:
 
-	Write a Controller **RegistrtaionEditController** class for UpdateUIN which would associate all the controller classes created for 
-New Registration to reuse the functionality.
+    Write a Controller **RegistrtaionEditController** class for UpdateUIN which would associate all the controller classes created for 
+    New Registration to reuse the functionality.
 
-	As part of the packet Meta we need to provide which packet it is and the
-UIN number also we need to provide.
+    As part of the packet Meta we need to provide which packet it is and the
+    UIN number also we need to provide.
 
 **Class Diagram :**
 
