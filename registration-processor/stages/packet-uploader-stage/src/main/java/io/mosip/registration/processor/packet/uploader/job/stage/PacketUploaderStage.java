@@ -170,20 +170,11 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		} catch (PacketNotFoundException ex) {
 			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
 		}
-
-		
 		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator	+ dto.getRegistrationId()+".zip";
 		File file = new File(filepath);	
 		InputStream decryptedData = new FileInputStream(file);
 		sendToDFS(dto,decryptedData);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-		dto.setStatusComment("packet is in status packet for decryption successful");
-		dto.setUpdatedBy(USER);
-		registrationStatusService.updateRegistrationStatus(dto);
-
-		
-
-	}
+		}
 
 	
 	
@@ -207,7 +198,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			if (adapter.isPacketPresent(registrationId)) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC,registrationId);
+				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
 
 				LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
 			} else {
@@ -215,16 +206,16 @@ public class PacketUploaderStage extends MosipVerticleManager {
 						"File has been sent to DFS.");
 			}
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			entry.setStatusComment("packet is uploaded in file Syatem and deleted from");
+			entry.setStatusComment("Packet is uploaded in file system.");
 			entry.setUpdatedBy(USER);
 			
 			registrationStatusService.updateRegistrationStatus(entry);
 			isTransactionSuccessful = true;
-			description =  registrationId + " packet successfully  scanned for virus. I thas been send to DFS";
+			description =  registrationId + " packet successfully has been send to DFS";
 		} catch (DFSNotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
 			description =  "FileSytem is not accessible for packet " +registrationId ;
-		} catch (IOException | FilePathNotAccessibleException e) {
+		} catch (IOException e) {
 			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() + UNABLE_TO_DELETE, e);
 			description =  "Virus scan path is not accessible for packet " +registrationId ;
 		}
@@ -257,7 +248,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
-		this.consume(mosipEventBus, MessageBusAddress.PACKET_RECEIVER_OUT);
+		this.consume(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN);
 	
 	}
 
