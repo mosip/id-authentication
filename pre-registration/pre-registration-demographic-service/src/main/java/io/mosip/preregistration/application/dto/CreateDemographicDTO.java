@@ -46,11 +46,18 @@ public class CreateDemographicDTO implements Serializable {
 	/** The update date time. */
 	private Date updatedDateTime;
 
+	/**
+	 * status code
+	 */
 	private String statusCode;
 
-	private String langCode;
 	/**
-	 * Demographic details
+	 * language code
+	 */
+	private String langCode;
+
+	/**
+	 * Demographic Json details
 	 */
 	private JSONObject demographicDetails;
 

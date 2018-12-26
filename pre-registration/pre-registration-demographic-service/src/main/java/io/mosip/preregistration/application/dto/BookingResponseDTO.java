@@ -14,7 +14,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * This DTO class is used to accept the response during Rest call to Booking service
+ * This DTO class is used to accept the response during Rest call to Booking
+ * service
  * 
  * @author Jagadishwari S
  * @since 1.0.0
@@ -32,10 +33,19 @@ public class BookingResponseDTO<T> implements Serializable {
 	/** The error details. */
 	private ExceptionJSONInfo err;
 
+	/**
+	 * Response status
+	 */
 	private Boolean status;
 
+	/**
+	 * Response Date Time
+	 */
 	private Date resTime;
 
+	/**
+	 * Repsonse object
+	 */
 	private T response;
 
 }

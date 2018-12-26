@@ -15,25 +15,44 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
  * 
  */
 public class DocumentFailedToDeleteException extends BaseUncheckedException {
-
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Default constructore
+	 */
 	public DocumentFailedToDeleteException() {
 		super();
 	}
 
+	/**
+	 * @param errorMessage
+	 */
 	public DocumentFailedToDeleteException(String errorMessage) {
 		super(ErrorCodes.PRG_PAM_DOC_015.toString(), errorMessage);
 	}
 
+	/**
+	 * @param errorCode
+	 * @param errorMessage
+	 */
 	public DocumentFailedToDeleteException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
+	/**
+	 * @param errorMessage
+	 * @param rootCause
+	 */
 	public DocumentFailedToDeleteException(String errorMessage, Throwable rootCause) {
 		super(ErrorCodes.PRG_PAM_DOC_015.toString(), errorMessage, rootCause);
 	}
 
+	/**
+	 * @param errorCode
+	 * @param errorMessage
+	 * @param rootCause
+	 */
 	public DocumentFailedToDeleteException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}

@@ -77,7 +77,7 @@ public class DocumentUploadService {
 
 	@Autowired
 	private FilesystemCephAdapterImpl ceph;
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -103,51 +103,59 @@ public class DocumentUploadService {
 			// scanFile = virusScan.scanDocument(file.getBytes());
 			if (ValidationUtil.requestValidator(requestParamMap, requiredRequestMap)) {
 				if (scanFile) {
-					if (fileSizeCheck(file.getSize())) {
-						throw new DocumentSizeExceedException(
-								ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
-					} else if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
-						throw new DocumentNotValidException(ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
-					} else {
-						return createDoc(docReqDto.getRequest(), file);
-					}
-				} else {
-					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+					fileSizeCheck(file.getSize());
+					fileExtensionCheck(file);
+					return createDoc(docReqDto.getRequest(), file);
 				}
+			} else {
+				throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
+						ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
 			}
+
 		} catch (Exception ex) {
-			logger.error(" Exception ",Arrays.toString(ex.getStackTrace()));
+			logger.error(" Exception ", Arrays.toString(ex.getStackTrace()));
 			new DocumentExceptionCatcher().handle(ex);
 		}
 
 		return null;
 	}
 
-	public boolean fileSizeCheck(long uploadedFileSize) {
+	public DocumentSizeExceedException fileSizeCheck(long uploadedFileSize) {
 		long maxAllowedSize = getMaxFileSize();
-		return (uploadedFileSize > maxAllowedSize);
+		if (uploadedFileSize > maxAllowedSize) {
+			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
+					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+		}
+		return null;
+	}
+
+	public DocumentNotValidException fileExtensionCheck(MultipartFile file) {
+		if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
+			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
+					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
+		}
+		return null;
 	}
 
 	private ResponseDTO<DocResponseDTO> createDoc(DocumentDTO document, MultipartFile file) throws IOException {
 		ResponseDTO<DocResponseDTO> responseDto = new ResponseDTO<>();
 		DocResponseDTO docResponseDto;
 		List<DocResponseDTO> docResponseDtos = new LinkedList<>();
-		if (!isNull(document.getPrereg_id()) && !isNull(document.getStatus_code())&&!isNull(document.getDoc_cat_code())) {
-			DocumentEntity getentity = documentRepository.findSingleDocument(document.getPrereg_id(), document.getDoc_cat_code());
+		if (!isNull(document.getPrereg_id()) && !isNull(document.getStatus_code())
+				&& !isNull(document.getDoc_cat_code())) {
+			DocumentEntity getentity = documentRepository.findSingleDocument(document.getPrereg_id(),
+					document.getDoc_cat_code());
 			DocumentEntity documentEntity = serviceUtil.dtoToEntity(document);
-			if(getentity!=null) {
+			if (getentity != null) {
 				documentEntity.setDocumentId(getentity.getDocumentId());
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
-			
+
 			documentEntity = documentRepository.save(documentEntity);
 
 			if (documentEntity != null) {
-				String key=documentEntity.getDocCatCode()+"_"+Integer.toString(documentEntity.getDocumentId());
-				System.out.println("Key   "+key);
-				ceph.storeFile(documentEntity.getPreregId(),key,
-						file.getInputStream());
+				String key = documentEntity.getDocCatCode() + "_" + Integer.toString(documentEntity.getDocumentId());
+				ceph.storeFile(documentEntity.getPreregId(), key, file.getInputStream());
 				docResponseDto = new DocResponseDTO();
 				docResponseDto.setPreRegsitrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
@@ -201,12 +209,12 @@ public class DocumentUploadService {
 				copyDocumentEntity.setStatusCode(StatusCodes.Pending_Appointment.toString());
 
 				copyDocumentEntity = documentRepository.save(copyDocumentEntity);
-				String key1=documentEntity.getDocCatCode()+"_"+Integer.toString(documentEntity.getDocumentId());
-				InputStream sourcefile = ceph.getFile(documentEntity.getPreregId(),key1);
+				String key1 = documentEntity.getDocCatCode() + "_" + Integer.toString(documentEntity.getDocumentId());
+				InputStream sourcefile = ceph.getFile(documentEntity.getPreregId(), key1);
 				if (copyDocumentEntity != null) {
-					String key2=copyDocumentEntity.getDocCatCode()+"_"+Integer.toString(copyDocumentEntity.getDocumentId());
-					ceph.storeFile(copyDocumentEntity.getPreregId(),key2,
-							sourcefile);
+					String key2 = copyDocumentEntity.getDocCatCode() + "_"
+							+ Integer.toString(copyDocumentEntity.getDocumentId());
+					ceph.storeFile(copyDocumentEntity.getPreregId(), key2, sourcefile);
 					DocumentCopyDTO copyDcoResDto = new DocumentCopyDTO();
 					copyDcoResDto.setSourcePreRegId(sourcePreId);
 					copyDcoResDto.setSourceDocumnetId(String.valueOf(documentEntity.getDocumentId()));
@@ -223,11 +231,10 @@ public class DocumentUploadService {
 				}
 			}
 		} catch (DataAccessLayerException e) {
-//			new DocumentExceptionCatcher().handle(DocumentFailedToCopyException.class);
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString(), e.getCause());
-		}catch (Exception ex) {
-			logger.error(" Exception ",Arrays.toString(ex.getStackTrace()));
+		} catch (Exception ex) {
+			logger.error(" Exception ", Arrays.toString(ex.getStackTrace()));
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return responseDto;
@@ -248,8 +255,8 @@ public class DocumentUploadService {
 					allDocDto.setDoc_name(doc.getDocName());
 					allDocDto.setDoc_id(Integer.toString(doc.getDocumentId()));
 					allDocDto.setDoc_typ_code(doc.getDocTypeCode());
-					String key=doc.getDocCatCode()+"_"+Integer.toString(doc.getDocumentId());
-					InputStream file = ceph.getFile(doc.getPreregId(),key);
+					String key = doc.getDocCatCode() + "_" + Integer.toString(doc.getDocumentId());
+					InputStream file = ceph.getFile(doc.getPreregId(), key);
 					allDocDto.setMultipartFile(IOUtils.toByteArray(file));
 					allDocDto.setPrereg_id(doc.getPreregId());
 					allDocRes.add(allDocDto);
@@ -261,7 +268,7 @@ public class DocumentUploadService {
 		} catch (Exception e) {
 			new DocumentExceptionCatcher().handle(e);
 
-		} 
+		}
 		return responseDto;
 	}
 
@@ -289,16 +296,18 @@ public class DocumentUploadService {
 		try {
 			DocumentEntity documentEntity = documentRepository.findBydocumentId(docId);
 			if (documentEntity == null) {
-				documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-				delResponseDto.setStatus("false");
-				delResponseDto.setErr(documentErr);
-				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+//				documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+//						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+//				delResponseDto.setStatus("false");
+//				delResponseDto.setErr(documentErr);
+//				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int deleteCount = documentRepository.deleteAllBydocumentId(docId);
 				if (deleteCount > 0) {
-					String key=documentEntity.getDocCatCode()+"_"+Integer.toString(documentEntity.getDocumentId());
-					ceph.deleteFile(documentEntity.getPreregId(),key);
+					String key = documentEntity.getDocCatCode() + "_"
+							+ Integer.toString(documentEntity.getDocumentId());
+					ceph.deleteFile(documentEntity.getPreregId(), key);
 					DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
 					deleteDTO.setDocumnet_Id(documentId);
 					deleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
@@ -312,8 +321,8 @@ public class DocumentUploadService {
 		} catch (DataAccessLayerException e) {
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), e.getCause());
-		}catch (Exception ex) {
-			logger.error(" Exception ",Arrays.toString(ex.getStackTrace()));
+		} catch (Exception ex) {
+			logger.error(" Exception ", Arrays.toString(ex.getStackTrace()));
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return delResponseDto;
@@ -326,18 +335,20 @@ public class DocumentUploadService {
 		try {
 			List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 			if (documentEntityList == null || documentEntityList.isEmpty()) {
-				ExceptionJSONInfoDTO documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-				delResponseDto.setStatus("false");
-				delResponseDto.setErr(documentErr);
-				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+//				ExceptionJSONInfoDTO documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+//						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+//				delResponseDto.setStatus("false");
+//				delResponseDto.setErr(documentErr);
+//				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int documentEntities = documentRepository.deleteAllBypreregId(preregId);
-				System.out.println("All "+documentEntities);
-				if (documentEntities>0) {
+				System.out.println("All " + documentEntities);
+				if (documentEntities > 0) {
 					for (DocumentEntity documentEntity : documentEntityList) {
-						String key=documentEntity.getDocCatCode()+"_"+Integer.toString(documentEntity.getDocumentId());
-						ceph.deleteFile(documentEntity.getPreregId(),key);
+						String key = documentEntity.getDocCatCode() + "_"
+								+ Integer.toString(documentEntity.getDocumentId());
+						ceph.deleteFile(documentEntity.getPreregId(), key);
 						DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
 						deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
 						deleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
@@ -352,8 +363,8 @@ public class DocumentUploadService {
 		} catch (DataAccessLayerException e) {
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), e.getCause());
-		}catch (Exception ex) {
-			logger.error(" Exception ",Arrays.toString(ex.getStackTrace()));
+		} catch (Exception ex) {
+			logger.error(" Exception ", Arrays.toString(ex.getStackTrace()));
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return delResponseDto;

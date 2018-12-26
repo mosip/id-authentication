@@ -95,20 +95,39 @@ public class DemographicService {
 	@Autowired
 	private RestTemplateBuilder restTemplateBuilder;
 
+	/**
+	 * Reference for ${resource.url} from property file
+	 */
 	@Value("${resource.url}")
 	private String resourceUrl;
 
+	/**
+	 * Reference for ${id} from property file
+	 */
 	@Value("${id}")
 	private String id;
 
+	/**
+	 * Reference for ${ver} from property file
+	 */
 	@Value("${ver}")
 	private String ver;
 
+	/**
+	 * Reference for ${appointmentResourse.url} from property file
+	 */
 	@Value("${appointmentResourse.url}")
 	private String appointmentResourseUrl;
 
+	/**
+	 * Response status
+	 */
 	protected String trueStatus = "true";
 
+	/**
+	 * Request map to store the id and version and this is to be passed to request
+	 * validator method.
+	 */
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
 	/**
@@ -136,7 +155,8 @@ public class DemographicService {
 	public ResponseDTO<CreateDemographicDTO> addPreRegistration(
 			DemographicRequestDTO<CreateDemographicDTO> demographicRequest) {
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest), requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
+					requiredRequestMap)) {
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
 						"mosip-prereg-identity-json-schema.json");
 				return createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
@@ -344,12 +364,13 @@ public class DemographicService {
 		List<String> preIds = new ArrayList<>();
 		Map<String, String> reqDateRange = new HashMap<>();
 		try {
-			reqDateRange.put("FromDate", fromDate);
-			reqDateRange.put("ToDate", toDate);
+			reqDateRange.put(RequestCodes.fromDate.toString(), fromDate);
+			reqDateRange.put(RequestCodes.toDate.toString(), toDate);
 			if (ValidationUtil.requstParamValidator(reqDateRange)) {
 				Map<String, Timestamp> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, "yyyy-MM-dd HH:mm:ss");
-				List<DemographicEntity> details = demographicRepository
-						.findBycreateDateTimeBetween(reqTimeStamp.get("FromDate"), reqTimeStamp.get("ToDate"));
+				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
+						reqTimeStamp.get(RequestCodes.fromDate.toString()),
+						reqTimeStamp.get(RequestCodes.toDate.toString()));
 				for (DemographicEntity entity : details) {
 					preIds.add(entity.getPreRegistrationId());
 				}
@@ -385,9 +406,9 @@ public class DemographicService {
 					BookingResponseDTO.class);
 			if (respEntity.getStatusCode() == HttpStatus.OK) {
 				resultDto = (BookingResponseDTO<?>) respEntity.getBody();
-				if(!serviceUtil.isNull(resultDto)) {
+				if (!serviceUtil.isNull(resultDto)) {
 					ObjectMapper mapper = new ObjectMapper();
-				    bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
+					bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
 				}
 			}
 		} catch (RestClientException e) {

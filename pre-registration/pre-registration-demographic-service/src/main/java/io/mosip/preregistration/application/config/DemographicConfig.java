@@ -31,18 +31,42 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class DemographicConfig {
 
+	/**
+	 * Reference for ${application.env.local:false} from property file.
+	 */
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
+	/**
+	 * Reference for ${swagger.base-url:#{null}} from property file.
+	 */
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerBaseUrl;
 
+	/**
+	 * Reference for ${server.port:9092} from property file.
+	 */
 	@Value("${server.port:9092}")
 	private int serverPort;
 
+	/**
+	 * To define Protocol
+	 */
 	String proto = "http";
+
+	/**
+	 * To define Host
+	 */
 	String host = "localhost";
+
+	/**
+	 * To define port
+	 */
 	int port = -1;
+
+	/**
+	 * To define host along with the port
+	 */
 	String hostWithPort = "localhost:9092";
 
 	/**

@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.application.exception.util;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
 import org.json.simple.parser.ParseException;
 import org.springframework.web.client.RestClientException;
 
@@ -28,8 +30,8 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
- * This class is used to handle all the exceptions that occur while creating
- * the pre-registration
+ * This class is used to handle all the exceptions that occur while creating the
+ * pre-registration
  * 
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -85,6 +87,9 @@ public class DemographicExceptionCatcher {
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
 		} else if (ex instanceof DateParseException) {
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+		} else if (ex instanceof java.text.ParseException) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
 					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
 		}

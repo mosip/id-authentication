@@ -30,10 +30,19 @@ public class ResponseDTO<T> implements Serializable {
 	/** The error details. */
 	private ExceptionJSONInfoDTO err;
 
+	/**
+	 * Repsonse Status
+	 */
 	private String status;
 
+	/**
+	 * Repsonse Date Time
+	 */
 	private Date resTime;
 
+	/**
+	 * List of Repsonse
+	 */
 	private List<T> response;
 
 }

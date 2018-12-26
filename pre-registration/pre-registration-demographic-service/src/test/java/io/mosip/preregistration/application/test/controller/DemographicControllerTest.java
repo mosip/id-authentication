@@ -39,16 +39,29 @@ import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
 /**
- * @author M1046129
- *
+ * Test class to test the PreRegistration Controller methods
+ *  
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ * 
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(DemographicController.class)
 public class DemographicControllerTest {
 
+	/**
+	 * Mocking MVC
+	 */
 	@Autowired
 	private MockMvc mockMvc;
 
+	/**
+	 * Creating Mock Bean for DemographicService
+	 */
 	@MockBean
 	private DemographicService preRegistrationService;
 
@@ -70,6 +83,9 @@ public class DemographicControllerTest {
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
@@ -90,6 +106,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
@@ -102,6 +121,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
@@ -122,6 +144,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void getAllApplicationTest() throws Exception {
 
@@ -144,6 +169,9 @@ public class DemographicControllerTest {
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
@@ -163,6 +191,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
@@ -182,22 +213,6 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	// @Test
-	// public void discardGroupTest() throws Exception {
-	// String groupId= "33";
-	// ResponseDto response= new ResponseDto();
-	// response.setPrId("3");
-	// response.setGroupId("33");
-	// List<ResponseDto> resList= new ArrayList<>();
-	// resList.add(response);
-	// Mockito.when(registrationService.deleteGroup(ArgumentMatchers.any())).thenReturn(resList);
-	//
-	// RequestBuilder requestBuilder =
-	// MockMvcRequestBuilders.delete("/v0.1/pre-registration/discardGroup")
-	// .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-	// .param("groupId", groupId);
-	// mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	// }
 
 	/**
 	 * @throws Exception
@@ -221,6 +236,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
 		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
@@ -238,6 +256,9 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {
 

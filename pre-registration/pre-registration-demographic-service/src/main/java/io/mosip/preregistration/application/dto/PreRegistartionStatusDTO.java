@@ -23,11 +23,17 @@ import lombok.ToString;
 @ToString
 public class PreRegistartionStatusDTO implements Serializable {
 
-
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1088172470058130997L;
 
+	/**
+	 * PreRegistartion Id
+	 */
 	private String PreRegistartionId;
 
+	/**
+	 * Status Code
+	 */
 	private String StatusCode;
 
 }

@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.application.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Getter;
@@ -21,9 +22,28 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DemographicRequestDTO<T> {
+public class DemographicRequestDTO<T> implements Serializable {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -4966448852014107698L;
+
+	/**
+	 * Id
+	 */
 	String id;
+
+	/**
+	 * version
+	 */
 	String ver;
+
+	/**
+	 * Request Date Time
+	 */
 	Date reqTime;
+
+	/**
+	 * Request Object
+	 */
 	T request;
 }

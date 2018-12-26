@@ -14,17 +14,29 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * 
  */
 public class RecordNotFoundException extends BaseUncheckedException {
-
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @param msg
+	 */
 	public RecordNotFoundException(String msg) {
 		super("", msg);
 	}
 
+	/**
+	 * @param errCode
+	 * @param msg
+	 */
 	public RecordNotFoundException(String errCode, String msg) {
 		super(errCode, msg);
 	}
 
+	/**
+	 * @param errCode
+	 * @param msg
+	 * @param cause
+	 */
 	public RecordNotFoundException(String errCode, String msg, Throwable cause) {
 		super(errCode, msg, cause);
 	}
