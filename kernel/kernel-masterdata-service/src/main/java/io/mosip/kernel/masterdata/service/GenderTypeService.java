@@ -59,7 +59,7 @@ public interface GenderTypeService {
 	 *            {@link RequestDto} the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender);
+	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender);
 
 	/**
 	 * Method to delete Gender Type based on code provided.

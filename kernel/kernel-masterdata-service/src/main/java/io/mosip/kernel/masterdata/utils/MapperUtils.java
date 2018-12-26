@@ -512,5 +512,6 @@ public class MapperUtils {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-
+	
+	
 }

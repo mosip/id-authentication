@@ -113,8 +113,8 @@ public class TemplateController {
 	/**
 	 * This method delete template based on provided details.
 	 * 
-	 * @param template
-	 *            the template detail
+	 * @param id
+	 *            the template id
 	 * @return {@link IdResponseDto}
 	 */
 
@@ -125,7 +125,7 @@ public class TemplateController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No template found"),
 			@ApiResponse(code = 500, message = "While deleting template  error occured") })
-	public ResponseEntity<IdResponseDto> deleteLanguage(@PathVariable("id") String id) {
+	public ResponseEntity<IdResponseDto> deleteTemplate(@PathVariable("id") String id) {
 		return new ResponseEntity<>(templateService.deleteTemplates(id), HttpStatus.OK);
 	}
 }

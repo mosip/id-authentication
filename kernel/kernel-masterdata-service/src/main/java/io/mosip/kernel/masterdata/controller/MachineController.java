@@ -146,13 +146,13 @@ public class MachineController {
 	/**
 	 * Post API to deleted a row of Machine data
 	 * 
-	 * @param machine
-	 *            input from user Machine DTO
+	 * @param id
+	 *            input from user Machine id
 	 * 
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@DeleteMapping("/v1.0/machine/{id}")
+	@DeleteMapping("/v1.0/machines/{id}")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine successfully deleted", response = IdResponseDto.class),

@@ -29,4 +29,14 @@ public interface TitleRepository extends BaseRepository<Title, CodeAndLanguageCo
 	@Query
 	List<Title> getThroughLanguageCode(@Param("lang_code") String languageCode);
 
+	/**
+	 * method to find title data by input code
+	 * 
+	 * @param code
+	 *            input from user
+	 * @return title data for the corresponding code entered
+	 */
+	@Query("FROM Title WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Title> findByCode(String code);
+
 }

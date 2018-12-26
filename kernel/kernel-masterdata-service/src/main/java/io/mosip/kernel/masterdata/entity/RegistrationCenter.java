@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -185,4 +187,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
+	
+    @OneToMany(mappedBy="cntrId",fetch = FetchType.LAZY)
+	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;
 }

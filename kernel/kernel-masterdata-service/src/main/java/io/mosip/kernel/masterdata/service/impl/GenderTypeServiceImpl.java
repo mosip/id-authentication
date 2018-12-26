@@ -132,7 +132,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender) {
+	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
 
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();

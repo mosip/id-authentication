@@ -84,8 +84,8 @@ public class MachineSpecificationController {
 	/**
 	 * Put API to delete a new row of Machine Specification data
 	 * 
-	 * @param machineSpecification
-	 *            input Machine specification DTO from user
+	 * @param id
+	 *            input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
 	@DeleteMapping("/v1.0/machinespecifications/{id}")

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -112,6 +113,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
 	 * deleteMachineSpecification(java.lang.String)
 	 */
+	@Override
 	public IdResponseDto deleteMachineSpecification(String id) {
 		MachineSpecification delMachineSpecification = null;
 		try {
@@ -124,7 +126,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MetaDataUtils.setDeleteMetaData(renMachineSpecification);
 					delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 				} else {
-					throw new DataNotFoundException(
+					throw new MasterDataServiceException(
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage());
 				}
