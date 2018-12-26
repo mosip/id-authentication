@@ -10,12 +10,8 @@ respective technical design is covered below.
 The **target users** are
 
 -   Individual
-
 -   Registration officer
-
 -   Registration Supervisor
-
--   Registration Processor
 
 The key **requirements** are
 
@@ -32,22 +28,15 @@ The key **requirements** are
 -   The individual can choose the below option to Update for UIN.
 
     -   Name
-
     -   Age/DOB
-
     -   Gender
-
     -   Address
-
     -   Contact Details \[Email/Mobile Number\...\]
-
     -   Biometric-Exception \[Finger Print/Iris/Face ...\]
-
     -   Biometric-Iris
-
     -   Biometric-Fingerprint
 
--   Based on the selection the required fields should be editable.
+-   Based on the selection the required fields should only be editable.
 
 -   The capture of bio-metric should be a configurable form the admin
     configuration. Based on the configuration the capture should be done
@@ -59,28 +48,8 @@ The key **requirements** are
 The key **non-functional requirements** are
 
 -   Security:
-
     -   We should not store the RO/RS plain text credentials or any
         sensitive information.
-
-    -   The password should be not stored as raw data. It should be
-        stored in hashed format.
-
-    -   The data resided in the database should be encrypted.
-
--   Network
-
-    -   URL should be communicated using the SSL mode.
-
--   Log the each state of the packet Yet To Receive/Received/RID
-    Generated/Deleted:
-
-    -   As a security measures the UIN or any sensitive individual
-        information should not be logged.
-
--   Other standard NFR, need to be taken care:
-
-    -   Logging, audit, exception handling.
 
 **Solution**
 
@@ -100,23 +69,23 @@ The key **non-functional requirements** are
 
 5.  The same procedure for this follows the registration procedure only
     the specific fields which are editable should be captured along the
-    packet data.
+    packet data and mention the 'applicationType' as 'UpdateUIN'.
 
-6.  The **RegsitrationValdiiator** should validate the fields against
+6.  The **RegsitrationValidator** should validate the fields against
     the selection.
 
 7.  The **RegistrtaionController** also should displays based on the
     editable sections.
 
 8.  Finally the desired data will be persisted as part of the
-    Registration /Registration Transaction tables.
+    Registration and Registration Transaction tables.
 
 Note:
 
-The similar code which we are using the registration should be used for
-this, with the name as Update UIN.
+	Write a Controller **RegistrtaionEditController** class for UpdateUIN which would associate all the controller classes created for 
+New Registration to reuse the functionality.
 
-As part of the packet Meta we need to provide which packet it is and the
+	As part of the packet Meta we need to provide which packet it is and the
 UIN number also we need to provide.
 
 **Class Diagram :**
