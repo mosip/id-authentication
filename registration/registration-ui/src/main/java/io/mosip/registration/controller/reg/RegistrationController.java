@@ -1413,6 +1413,7 @@ public class RegistrationController extends BaseController {
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
 		int age = 45;
+		switchedOn.set(true);
 		ageField.setText("" + age);
 		toggleAgeOrDobField = true;
 		gender.setValue("MALE");

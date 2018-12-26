@@ -161,6 +161,22 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.showAndWait();
 	}
+	
+	/**
+	 * 
+	 * /* Alert creation with specified title, header, and context
+	 * 
+	 * @param alertType type of alert
+	 * @param header    alert header
+	 * @param context   alert context
+	 */
+	protected void generateAlert( String context) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setHeaderText(null);
+		alert.setContentText(context);
+		alert.setGraphic(null);
+		alert.showAndWait();
+	}
 
 	protected ResponseDTO validateSyncStatus() {
 
