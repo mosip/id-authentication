@@ -5,10 +5,10 @@ ARG active_profile
 ENV active_profile_env=${active_profile}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+VOLUME /home/ftp1/LANDING_ZONE /home/ftp1/VIRUS_SCAN
 
-copy ./target/pre-registration-datasync-service-*.jar pre-registration-datasync-service.jar
+copy ./target/virus-scanner-stage-1.0.0-SNAPSHOT-exec.jar virus-scanner-stage.jar
 
-EXPOSE 9094
+EXPOSE 8081
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-datasync-service.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","virus-scanner-stage.jar"]
