@@ -213,6 +213,7 @@ public class MachineServiceImpl implements MachineService {
 	 * io.mosip.kernel.masterdata.service.MachineService#deleteMachine(java.lang.
 	 * String)
 	 */
+	@Override
 	public IdResponseDto deleteMachine(String id) {
 		Machine delMachine = null;
 		try {
