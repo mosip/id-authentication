@@ -32,9 +32,11 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	@Autowired
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#createRegistrationCenterAndMachine(io.mosip.kernel.masterdata.dto.RequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#
+	 * createRegistrationCenterAndMachine(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
@@ -49,13 +51,14 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 
 			RegistrationCenterMachineHistory registrationCenterMachineHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineHistory.class);
-			registrationCenterMachineHistory.setEffectivetimes(savedRegistrationCenterMachine.getCreatedDateTime());
+			registrationCenterMachineHistory.getRegistrationCenterMachineHistoryPk()
+					.setEffectivetimes(savedRegistrationCenterMachine.getCreatedDateTime());
 			registrationCenterMachineHistoryRepository.create(registrationCenterMachineHistory);
 
 			responseRrgistrationCenterMachineDto = MapperUtils.map(
 					savedRegistrationCenterMachine.getRegistrationCenterMachinePk(),
 					ResponseRrgistrationCenterMachineDto.class);
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
