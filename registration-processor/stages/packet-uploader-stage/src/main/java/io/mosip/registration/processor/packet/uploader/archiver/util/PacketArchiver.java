@@ -63,7 +63,6 @@ public class PacketArchiver {
 			throws IOException, UnableToAccessPathException, PacketNotFoundException {
 		 description = "failure";
 
-		//InputStream encryptedpacket = filesystemCephAdapter.getPacket(registrationId);
 		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator	+ registrationId+".zip";
 		File file = new File(filepath);
 			
