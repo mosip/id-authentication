@@ -1,4 +1,4 @@
-Design - Registration Screen
+**Design - Registration Screen**
 
 
 **Functional Background**
@@ -33,6 +33,8 @@ The key **requirements** are
 -   Provide the preview features for the captured detail before submitting the application.
 -   Application should be authenticated by the officer before submitting the application.
 -   Supervisor should authenticate the application if any exception applicable to the user.
+-  ProofOfBirth should be captured, if the verified is enabled while capturing the DateOfBirth.
+-  Foreigner/Non-foreigner should be displayed displayed in the UI screen.  
 
 The key **non-functional requirements** are
 -   Security:
