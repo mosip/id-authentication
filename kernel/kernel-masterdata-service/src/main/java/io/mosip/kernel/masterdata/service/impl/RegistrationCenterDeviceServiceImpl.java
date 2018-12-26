@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
@@ -38,6 +39,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestDto)
 	 */
 	@Override
+	@Transactional
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
@@ -49,7 +51,8 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
 					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
-			registrationCenterDeviceHistory.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
+			registrationCenterDeviceHistory.getRegistrationCenterDeviceHistoryPk()
+					.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
 
 			registrationCenterDeviceDto = MapperUtils.map(savedRegistrationCenterDevice.getRegistrationCenterDevicePk(),

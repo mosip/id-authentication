@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -42,4 +44,17 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	 */
 	@Query("FROM DocumentType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	DocumentType findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
+
+	/**
+	 * Delete Document Type based on code provided.
+	 * 
+	 * @param deletedDateTime
+	 *            the Date and time of deletion.
+	 * @param code
+	 *            the document type code.
+	 * @return the Integer.
+	 */
+	@Modifying
+	@Query("UPDATE DocumentType d SET d.isDeleted =true , d.deletedDateTime = ?1 WHERE d.code =?2 and (d.isDeleted is null or d.isDeleted =false)")
+	int deleteDocumentType(LocalDateTime deletedDateTime, String code);
 }
