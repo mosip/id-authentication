@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -30,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("/v1.0/registrationcenterdevice")
-@Api(tags = { "RegistrationCenterDevice" })
+@Api(value = "Operation related to mapping of registration center and devices",tags = { "RegistrationCenterDevice" })
 public class RegistrationCenterDeviceController {
 
 	@Autowired
@@ -48,9 +49,22 @@ public class RegistrationCenterDeviceController {
 				HttpStatus.CREATED);
 	}
 	
+	/**
+	 * Delete the mapping of registration center and device
+	 * 
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param deviceId
+	 *            DeviceId id to be deleted
+	 * @return {@link RegistrationCenterDeviceID}
+	 */
+	@ApiOperation(value = "Delete the mapping of registration center and device", response = RegistrationCenterDeviceID.class)
 	@DeleteMapping("/{regCenterId}/{deviceId}")
-	public ResponseEntity<RegistrationCenterDeviceID> deleteRegistrationCenterDeviceMapping(@PathVariable String regCenterId,@PathVariable  String deviceId){
-		return new ResponseEntity<>(registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId,deviceId),
+	public ResponseEntity<RegistrationCenterDeviceID> deleteRegistrationCenterDeviceMapping(
+			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
+			@ApiParam("DeviceId id to be deleted") @PathVariable String deviceId) {
+		return new ResponseEntity<>(
+				registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId, deviceId),
 				HttpStatus.OK);
 	}
 }

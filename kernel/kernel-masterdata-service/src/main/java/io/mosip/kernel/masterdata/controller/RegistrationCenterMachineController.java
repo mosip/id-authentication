@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -48,9 +50,22 @@ public class RegistrationCenterMachineController {
 				HttpStatus.CREATED);
 	}
 
+	/**
+	 * Delete the mapping of registration center and machine
+	 * 
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param machineId
+	 *            MachineId id to be deleted
+	 * @return {@link RegistrationCenterMachineID}
+	 */
+	@ApiOperation(value = "Delete the mapping of registration center and machine", response = RegistrationCenterMachineID.class)
 	@DeleteMapping("/{regCenterId}/{machineId}")
-	public ResponseEntity<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(@PathVariable String regCenterId,@PathVariable  String machineId){
-		return new ResponseEntity<>(registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId,machineId),
+	public ResponseEntity<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(
+			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
+			@ApiParam("MachineId id to be deleted") @PathVariable String machineId) {
+		return new ResponseEntity<>(registrationCenterMachineService
+				.deleteRegistrationCenterMachineMapping(regCenterId, machineId),
 				HttpStatus.OK);
 	}
 }

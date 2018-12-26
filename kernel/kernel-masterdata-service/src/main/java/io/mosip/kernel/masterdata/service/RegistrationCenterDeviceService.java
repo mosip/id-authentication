@@ -35,6 +35,15 @@ public interface RegistrationCenterDeviceService {
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RequestDto<RegistrationCenterDeviceDto> requestDto);
 
+	/**
+	 * Delete the mapping of registration center and device
+	 * 
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param deviceId
+	 *            DeviceId id to be deleted
+	 * @return {@link RegistrationCenterDeviceID}
+	 */
 	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId, String deviceId);
 
 }

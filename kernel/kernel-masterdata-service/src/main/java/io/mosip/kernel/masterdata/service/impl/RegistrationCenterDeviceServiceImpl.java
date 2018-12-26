@@ -27,6 +27,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
+ * Service Implementation for {@link RegistrationCenterDeviceService}
  * 
  * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
@@ -35,8 +36,14 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDeviceService {
 
+	/**
+	 * {@link RegistrationCenterDeviceRepository} instance
+	 */
 	@Autowired
 	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+	/**
+	 * {@link RegistrationCenterDeviceHistoryRepository} instance
+	 */
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 	
@@ -75,6 +82,9 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		return registrationCenterDeviceDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#deleteRegistrationCenterDeviceMapping(java.lang.String, java.lang.String)
+	 */
 	@Transactional
 	@Override
 	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId,String deviceId) {

@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
  * @since 1.0.0
  */
 @Data
-@RequiredArgsConstructor
 @ApiModel(description = "Model representing a Registration-Center-User-Machine-Mapping Request")
 public class RegistrationCenterUserMachineMappingDto {
 
@@ -23,7 +21,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	 */
 	@NotNull
 	@Size(min = 1, max = 10)
-	@ApiModelProperty(notes = "Center Id for request", example = "RC001", required = true)
+	@ApiModelProperty(notes = "Registration Center Id for request", example = "RC001", required = true)
 	private String cntrId;
 
 	/**

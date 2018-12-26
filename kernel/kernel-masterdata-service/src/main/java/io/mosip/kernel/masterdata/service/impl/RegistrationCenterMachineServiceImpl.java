@@ -8,13 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistoryPk;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
@@ -29,6 +26,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
+ * Service Implementation for {@link RegistrationCenterMachineService}
  * 
  * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
@@ -37,8 +35,14 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class RegistrationCenterMachineServiceImpl implements RegistrationCenterMachineService {
 
+	/**
+	 * {@link RegistrationCenterMachineRepository} instance
+	 */
 	@Autowired
 	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
+	/**
+	 * {@link RegistrationCenterMachineHistoryRepository} instance
+	 */
 	@Autowired
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
@@ -79,6 +83,9 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		return responseRrgistrationCenterMachineDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#deleteRegistrationCenterMachineMapping(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId) {
 		RegistrationCenterMachineID registrationCenterMachineID=null;
