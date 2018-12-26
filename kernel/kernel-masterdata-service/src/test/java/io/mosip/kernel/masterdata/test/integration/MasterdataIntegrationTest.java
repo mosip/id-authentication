@@ -112,6 +112,7 @@ import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
@@ -649,7 +650,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 
 		registrationCenterMachineHistory = new RegistrationCenterMachineHistory();
-		RegistrationCenterMachineID rmIdH = new RegistrationCenterMachineID();
+		RegistrationCenterMachineHistoryID rmIdH = new RegistrationCenterMachineHistoryID();
 		rmIdH.setMachineId(rmId.getMachineId());
 		rmIdH.setRegCenterId(rmId.getRegCenterId());
 		registrationCenterMachineHistory.setRegistrationCenterMachineHistoryPk(rmIdH);
@@ -1335,7 +1336,6 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/v1.0/holidays")).andExpect(status().isNotFound());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void getAllHolidaysHolidayFetchExceptionTest() throws Exception {
 		when(holidayRepository.findAllNonDeletedHoliday()).thenThrow(DataRetrievalFailureException.class);
@@ -1927,7 +1927,32 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
+	
+	@Test
+	public void deleteTitleTest() throws Exception {
+		when(titleRepository.findByCode(Mockito.any())).thenReturn(titleList);
+		when(titleRepository.update(Mockito.any())).thenReturn(title);
+		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
 
+	@Test
+	public void deleteTitleNotFoundExceptionTest() throws Exception {
+		when(titleRepository.getThroughLanguageCode(Mockito.any())).thenReturn(null);
+		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteTitleDatabaseConnectionExceptionTest() throws Exception {
+		when(titleRepository.findByCode(Mockito.any())).thenReturn(titleList);
+		when(titleRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
 	// -----------------------------------gender-type----------------------------------------
 
 	@Test
@@ -2437,6 +2462,28 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 		mockMvc.perform(post("/v1.0/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createMachineTestInvalid() throws Exception {
+		RequestDto<MachineDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineid");
+		requestDto.setVer("1.0.0");
+		MachineDto mDto = new MachineDto();
+		mDto.setId("1000ddfagsdgfadsfdgdsagdsagdsagdagagagdsgagadgagdf");
+		mDto.setLangCode("ENG");
+		mDto.setName("HP");
+		mDto.setIpAddress("129.0.0.0");
+		mDto.setMacAddress("178.0.0.0");
+		mDto.setMachineSpecId("1010");
+		mDto.setSerialNum("123");
+		mDto.setIsActive(true);
+		requestDto.setRequest(mDto);
+		machineJson = mapper.writeValueAsString(requestDto);
+
+		mockMvc.perform(post("/v1.0/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3008,17 +3055,7 @@ public class MasterdataIntegrationTest {
 		RequestDto<RegistrationCenterDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
-		registrationCenterDto.setIsActive(true);
-		registrationCenterDto.setName("testname");
-		registrationCenterDto.setAddressLine1("test");
-		registrationCenterDto.setAddressLine2("test");
-		registrationCenterDto.setAddressLine3("test");
-		registrationCenterDto.setLanguageCode("ENG");
-		registrationCenterDto.setId("ID");
-		registrationCenterDto.setLocationCode("LOC01");
-		registrationCenterDto.setLatitude("12.9135636");
-		registrationCenterDto.setLongitude("77.5950804");
+		RegistrationCenterDto registrationCenterDto = getRegCenterDto();
 
 		requestDto.setRequest(registrationCenterDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3026,6 +3063,35 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void registrationCenterInvalidTest() throws Exception {
+		RequestDto<RegistrationCenterDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterDto invalidRegCntrDto = getRegCenterDto();
+		invalidRegCntrDto.setId("ID3456789102787");// more than 10 to check for invalid
+		requestDto.setRequest(invalidRegCntrDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isBadRequest());
+	}
+
+	private RegistrationCenterDto getRegCenterDto() {
+
+		RegistrationCenterDto dto = new RegistrationCenterDto();
+		dto.setIsActive(true);
+		dto.setId("ID");
+		dto.setName("testname");
+		dto.setAddressLine1("test");
+		dto.setAddressLine2("test");
+		dto.setAddressLine3("test");
+		dto.setLanguageCode("ENG");
+		dto.setLocationCode("LOC01");
+		dto.setLatitude("12.9135636");
+		dto.setLongitude("77.5950804");
+		return dto;
 	}
 
 	/*------------------------- deviceSecification update and delete ----------------------------*/
