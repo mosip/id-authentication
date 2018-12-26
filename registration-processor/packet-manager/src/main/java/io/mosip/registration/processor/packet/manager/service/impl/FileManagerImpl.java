@@ -121,7 +121,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @return the object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
+	public void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 
 		File filePath = new File(
 				env.getProperty(destinationDirectory.toString()) + File.separator + getFileName(fileName));
