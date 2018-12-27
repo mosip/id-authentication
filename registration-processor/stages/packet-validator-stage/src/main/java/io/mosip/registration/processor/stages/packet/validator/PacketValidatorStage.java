@@ -107,7 +107,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		process(new MessageDTO()));
 	}
 
-	private void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
+	public void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
 		this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT, message);
 	}
 
