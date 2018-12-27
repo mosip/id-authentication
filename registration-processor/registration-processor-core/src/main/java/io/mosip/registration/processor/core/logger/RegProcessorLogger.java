@@ -18,8 +18,8 @@ public final class RegProcessorLogger {
 		mosipRollingFileAppender = new RollingFileAppender();
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setAppenderName("fileappender");
-		mosipRollingFileAppender.setFileName("logs/registrationProcessor.log");
-		mosipRollingFileAppender.setFileNamePattern("logs/registrationProcessor-%d{yyyy-MM-dd}-%i.log");
+		mosipRollingFileAppender.setFileName("/home/logs/registrationProcessor.log");
+		mosipRollingFileAppender.setFileNamePattern("/home/logs/registrationProcessor-%d{yyyy-MM-dd}-%i.log");
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setMaxFileSize("1mb");
 		mosipRollingFileAppender.setMaxHistory(3);
