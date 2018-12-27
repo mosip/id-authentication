@@ -858,4 +858,8 @@ public class RegistrationConstants {
 	//Connection Error
 	public static final String CONNECTION_ERROR = "Unable to establish the connection";
 
+	// Exceptions - Template Generator
+	public static final String TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION = PACKET_CREATION_EXP_CODE + "TGE-002";
+	public static final String TEMPLATE_GENERATOR_SMS_EXCEPTION = PACKET_CREATION_EXP_CODE + "TGE-002";
+
 }

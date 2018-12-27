@@ -55,5 +55,6 @@ public class LoggerConstants {
 	public static final String LOG_REG_IRIS_FACADE = USER_REGISTRATION + "IRIS_FACADE";
 	public static final String LOG_REG_MASTER_SYNC = MASTER_SYNC + "MASTER_SYNC_CONTROLLER";
 	public static final String LOG_REG_UIN_UPDATE = UIN_UPDATE + "UIN_UPDATE_CONTROLLER";
+	public static final String LOG_TEMPLATE_GENERATOR = PKT_CREATION + "TEMPLATE_GENERATOR";
 
 }

@@ -101,13 +101,13 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 					if (zipEntry.getName().contains("_")) {
 						documentDetailsDTO
-								.setDocumentCategory(zipEntry.getName().substring(0, zipEntry.getName().indexOf("_")));
+								.setCategory(zipEntry.getName().substring(0, zipEntry.getName().indexOf("_")));
 					}
 					if (zipEntry.getName().contains(".")) {
 						documentDetailsDTO
-								.setDocumentType(zipEntry.getName().substring(zipEntry.getName().lastIndexOf(".") + 1));
+								.setFormat(zipEntry.getName().substring(zipEntry.getName().lastIndexOf(".") + 1));
 					}
-					documentDetailsDTO.setDocumentName("");
+					documentDetailsDTO.setValue("");
 					documentDetailsDTOs.add(documentDetailsDTO);
 				}
 			}
@@ -143,7 +143,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 */
 	private static RegistrationDTO parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry,
 			RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		DemographicInfoDTO demographicInfoDTO = registrationDTO.getDemographicDTO().getDemoInUserLang();
+		/*DemographicInfoDTO demographicInfoDTO = registrationDTO.getDemographicDTO().getDemoInUserLang();
 		AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
 		LocationDTO locationDTO = addressDTO.getLocationDTO();
 		OSIDataDTO osiDataDTO = new OSIDataDTO();
@@ -234,7 +234,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		}
-		return registrationDTO;
+		return registrationDTO;*/
+		return null;
 	}
 
 	/**

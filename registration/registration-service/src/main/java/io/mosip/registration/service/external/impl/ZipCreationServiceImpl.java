@@ -184,7 +184,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		// Add Proofs
 		if (checkNotNull(applicantDocumentDTO.getDocumentDetailsDTO())) {
 			for (DocumentDetailsDTO documentDetailsDTO : applicantDocumentDTO.getDocumentDetailsDTO()) {
-				writeFileToZip(folderName + documentDetailsDTO.getDocumentName(), documentDetailsDTO.getDocument(),
+				writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
 						zipOutputStream);
 			}
 		}

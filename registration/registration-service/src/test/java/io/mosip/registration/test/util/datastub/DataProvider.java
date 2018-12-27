@@ -171,14 +171,13 @@ public class DataProvider {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
 		demographicDTO.setIntroducerRID("2018234500321157812");
-		demographicDTO.setDemoInLocalLang(DataProvider.getDemoInLocalLang());
-		demographicDTO.setDemoInUserLang(DataProvider.getDemoInLocalLang());
+		demographicDTO.setDemographicInfoDTO(DataProvider.getDemoInLocalLang());
 		return demographicDTO;
 	}
 
 	private static DemographicInfoDTO getDemoInLocalLang() {
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		demographicInfoDTO.setFullName("John Lawernce Jr");
+		/*demographicInfoDTO.setFullName("John Lawernce Jr");
 		//demographicInfoDTO.setDateOfBirth(new Date());
 		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
 		demographicInfoDTO.setGender("Male");
@@ -193,7 +192,7 @@ public class DataProvider {
 		locationDTO.setCity("Chennai");
 		locationDTO.setProvince("TN");
 		addressDTO.setLocationDTO(locationDTO);
-		demographicInfoDTO.setAddressDTO(addressDTO);
+		demographicInfoDTO.setAddressDTO(addressDTO);*/
 
 		return demographicInfoDTO;
 	}
@@ -219,17 +218,17 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentCategory("PoI");
-		documentDetailsDTO.setDocumentType("PAN");
-		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
-		documentDetailsDTO.setDocumentOwner("Self");
+		documentDetailsDTO.setCategory("PoI");
+		documentDetailsDTO.setFormat("PAN");
+		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
+		documentDetailsDTO.setOwner("Self");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentCategory("PoA");
-		documentDetailsResidenceDTO.setDocumentType("passport");
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
-		documentDetailsResidenceDTO.setDocumentOwner("hof");
+		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setFormat("passport");
+		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
+		documentDetailsResidenceDTO.setOwner("hof");
 
 		docdetailsList.add(documentDetailsDTO);
 		docdetailsList.add(documentDetailsResidenceDTO);

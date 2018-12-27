@@ -27,6 +27,7 @@ import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -34,6 +35,8 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -129,7 +132,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 						Writer writeNotificationTemplate = templateGenerator.generateNotificationTemplate(
 								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
-						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
+						String number = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.getPhone().getValue();
 						String rid = getRegistrationData() == null ? "RID"
 								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
 										RegistrationConstants.MACHINE_ID_GEN);
@@ -145,7 +149,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 							}
 						}
 
-						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
+						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
 
 						if (!emailId.isEmpty() && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
@@ -212,7 +216,21 @@ public class AckReceiptController extends BaseController implements Initializabl
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
-			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInUserLang().getAddressDTO();
+			Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+			AddressDTO addressDTO = Builder.build(AddressDTO.class)
+					.with(address -> address
+							.setAddressLine1(identity.getAddressLine1().getValues().getFirst().getValue()))
+					.with(address -> address
+							.setAddressLine2(identity.getAddressLine2().getValues().getFirst().getValue()))
+					.with(address -> address.setLine3(identity.getAddressLine3().getValues().getFirst().getValue()))
+					.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+							.with(location -> location.setCity(identity.getCity().getValues().getFirst().getValue()))
+							.with(location -> location
+									.setProvince(identity.getProvince().getValues().getFirst().getValue()))
+							.with(location -> location
+									.setRegion(identity.getRegion().getValues().getFirst().getValue()))
+							.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
+					.get();
 			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
 			addr.put("PrevAddress", addressDTO);
 			SessionContext.getInstance().setMapObject(addr);

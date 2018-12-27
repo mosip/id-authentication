@@ -1,8 +1,5 @@
 package io.mosip.registration.util.acktemplate;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,14 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,14 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.ValuesDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
+
+import static io.mosip.registration.constants.LoggerConstants.LOG_TEMPLATE_GENERATOR;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * Generates Velocity Template for the creation of acknowledgement
@@ -63,253 +71,272 @@ public class TemplateGenerator {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
+	 * @throws RegBaseCheckedException 
 	 */
 	public Writer generateTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder) {
+			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
-		LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"generateTemplate had been called for preparing Acknowledgement Template.");
-
-		ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
-		InputStream is = new ByteArrayInputStream(templateText.getBytes());
-		Map<String, Object> templateValues = new HashMap<>();
-
-		templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
-
-		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
-		String currentDate = sdf.format(new Date());
-
-		// map the respective fields with the values in the registrationDTO
-		templateValues.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
-		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-				registration.getDemographicDTO().getDemoInUserLang().getFullName());
-		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
-		if (dob == null) {
-			templateValues.put(RegistrationConstants.TEMPLATE_DOB,
-					registration.getDemographicDTO().getDemoInUserLang().getAge());
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_DOB, DateUtils.formatDate(dob, "dd-MM-YYYY"));
-		}
-		templateValues.put(RegistrationConstants.TEMPLATE_GENDER,
-				registration.getDemographicDTO().getDemoInUserLang().getGender());
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine3());
-		templateValues.put(RegistrationConstants.TEMPLATE_CITY,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
-		templateValues.put(RegistrationConstants.TEMPLATE_STATE,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
-		templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
-		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getPostalCode());
-		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE,
-				registration.getDemographicDTO().getDemoInUserLang().getMobile());
-		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-				registration.getDemographicDTO().getDemoInUserLang().getLocalAdministrativeAuthority());
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
-				registration.getDemographicDTO().getDemoInUserLang().getCneOrPINNumber());
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
-				localProperties.getString("cnie_number"));
-		boolean isChild = registration.getDemographicDTO().getDemoInUserLang().isChild();
-
-		if (isChild) {
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
-					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianName());
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
-					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianRIDOrUIN());
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("parent_name"));
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-					localProperties.getString("parent_uin"));
-			// value have to be replaced
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
-					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianName());
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT_DETAILS,
-					RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
-		}
-
-		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
-		if (email == null || email == RegistrationConstants.EMPTY) {
-			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
-		}
-
-		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
-				.getDocumentDetailsDTO();
-		List<String> documentNames = documents.stream().map(document -> document.getDocumentName())
-				.collect(Collectors.toList());
-
-		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
-		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
-		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
-
-		byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
-		String applicantImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
-		templateValues.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE,
-				RegistrationConstants.TEMPLATE_IMAGE_ENCODING + applicantImageEncodedBytes);
-
-		if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
-			templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE, null);
-			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE,
-					RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
-			byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto();
-			String exceptionImageEncodedBytes = StringUtils
-					.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
-			templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
-					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + exceptionImageEncodedBytes);
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE, null);
-			templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE,
-					RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
-		}
-		/*
-		 * get the quality ranking for fingerprints of the applicant HashMap<String,
-		 * Integer> fingersQuality = getFingerPrintQualityRanking(registration); int
-		 * count=1; for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
-		 * if (entry.getValue() != 0) { // display rank of quality for the captured
-		 * fingerprints velocityContext.put(entry.getKey(), count++); } else { //
-		 * display cross mark for missing fingerprints
-		 * velocityContext.put(entry.getKey(),
-		 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
-		 */
 		try {
-			BufferedImage handsImage = ImageIO
-					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(handsImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
-			byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
-			String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
-			templateValues.put(RegistrationConstants.TEMPLATE_HANDS_IMAGE_SOURCE,
-					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
-		} catch (IOException ioException) {
-			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			LOGGER.debug(LOG_TEMPLATE_GENERATOR, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"generateTemplate had been called for preparing Acknowledgement Template.");
+
+			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
+			InputStream is = new ByteArrayInputStream(templateText.getBytes());
+			Map<String, Object> templateValues = new HashMap<>();
+
+			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
+
+			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
+			String currentDate = sdf.format(new Date());
+
+			// map the respective fields with the values in the registrationDTO
+			templateValues.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME, getDemographicValueInPlatformLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues()));
+			String dob = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth()
+					.getValue();
+			if (dob == null) {
+				templateValues.put(RegistrationConstants.TEMPLATE_DOB,
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_DOB,
+						DateUtils.formatDate(DateUtils.parse(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+			}
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER, getDemographicValueInPlatformLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
+					getDemographicValueInPlatformLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine1().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
+					getDemographicValueInPlatformLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine2().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
+					getDemographicValueInPlatformLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine3().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_CITY, getDemographicValueInPlatformLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_STATE, getDemographicValueInPlatformLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY, getDemographicValueInPlatformLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPostalCode());
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone().getValue());
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
+					getDemographicValueInPlatformLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getLocalAdministrativeAuthority().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber());
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
+					localProperties.getString("cnie_number"));
+
+			boolean isChild = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getParentOrGuardianRIDOrUIN() != null
+					&& !registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.getParentOrGuardianRIDOrUIN().isEmpty();
+
+			if (isChild) {
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
+						getDemographicValueInPlatformLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+								.getIdentity().getParentOrGuardianName().getValues()));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, registration.getDemographicDTO()
+						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN());
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
+						localProperties.getString("parent_name"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("parent_uin"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
+						getDemographicValueInLocalLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+								.getIdentity().getParentOrGuardianName().getValues()));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT_DETAILS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
+			}
+
+			String email = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
+			if (email == null || email == RegistrationConstants.EMPTY) {
+				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
+			}
+
+			List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
+					.getDocumentDetailsDTO();
+			List<String> documentNames = documents.stream().map(document -> document.getValue())
+					.collect(Collectors.toList());
+
+			String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
+
+			byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+			String applicantImageEncodedBytes = StringUtils
+					.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
+			templateValues.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE,
+					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + applicantImageEncodedBytes);
+
+			if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE, null);
+				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE,
+						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
+				byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto();
+				String exceptionImageEncodedBytes = StringUtils
+						.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
+				templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
+						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + exceptionImageEncodedBytes);
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE, null);
+				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE,
+						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
+			}
+			/*
+			 * get the quality ranking for fingerprints of the applicant HashMap<String,
+			 * Integer> fingersQuality = getFingerPrintQualityRanking(registration); int
+			 * count=1; for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
+			 * if (entry.getValue() != 0) { // display rank of quality for the captured
+			 * fingerprints velocityContext.put(entry.getKey(), count++); } else { //
+			 * display cross mark for missing fingerprints
+			 * velocityContext.put(entry.getKey(),
+			 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
+			 */
+			try {
+				BufferedImage handsImage = ImageIO
+						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ImageIO.write(handsImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
+				byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
+				String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
+				templateValues.put(RegistrationConstants.TEMPLATE_HANDS_IMAGE_SOURCE,
+						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			}
+			try {
+				BufferedImage qrCodeImage = ImageIO
+						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_QRCODE_IMAGE_PATH));
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ImageIO.write(qrCodeImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
+				byte[] qrCodeImageBytes = byteArrayOutputStream.toByteArray();
+				String qrCodeImageEncodedBytes = StringUtils
+						.newStringUtf8(Base64.encodeBase64(qrCodeImageBytes, false));
+				templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
+						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + qrCodeImageEncodedBytes);
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			}
+
+			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("full_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
+					localProperties.getString("date_of_birth"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
+					localProperties.getString("gender"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
+					localProperties.getString("address_line1"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
+					getDemographicValueInLocalLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine1().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
+					localProperties.getString("address_line2"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
+					getDemographicValueInLocalLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine2().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL,
+					localProperties.getString("address_line3"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG,
+					getDemographicValueInLocalLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getAddressLine3().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG_LABEL, localProperties.getString("city"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
+					localProperties.getString("province"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG_LABEL,
+					localProperties.getString("region"));
+			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
+					localProperties.getString("local_authority"));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
+					getDemographicValueInLocalLanguage(registration.getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getLocalAdministrativeAuthority().getValues()));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
+					localProperties.getString("postal_code"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL,
+					localProperties.getString("email"));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
+					localProperties.getString("mobile"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
+					localProperties.getString("documents"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList);
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("ro_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
+					registration.getOsiDataDTO().getOperatorID());
+
+			templateValues.put("rightIndexFinger", "1");
+			templateValues.put("rightMiddleFinger", "4");
+			templateValues.put("rightRingFinger", "2");
+			templateValues.put("rightLittleFinger", "5");
+			templateValues.put("rightThumb", "3");
+			templateValues.put("leftIndexFinger", "6");
+			templateValues.put("leftMiddleFinger", "2");
+			templateValues.put("leftRingFinger", "2");
+			templateValues.put("leftLittleFinger", "4");
+			templateValues.put("leftThumb", "5");
+
+			// get the total count of fingerprints captured and irises captured
+			List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
+					.getFingerprintDetailsDTO();
+
+			List<IrisDetailsDTO> capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO()
+					.getIrisDetailsDTO();
+
+			int[] fingersAndIrises = {
+					capturedFingers.stream()
+							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
+					capturedIris.size() };
+
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
+					localProperties.getString("biometrics_captured"));
+
+			Writer writer = new StringWriter();
+			try {
+				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
+
+				TemplateManager templateManager = templateManagerBuilder.build();
+				InputStream inputStream = templateManager.merge(is, templateValues);
+				String defaultEncoding = null;
+				IOUtils.copy(inputStream, writer, defaultEncoding);
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			}
+			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+					"generateTemplate method has been ended for preparing Acknowledgement Template.");
+
+			return writer;
+		} catch (ParseException parseException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorMessage(), parseException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+					runtimeException.getMessage(), runtimeException);
 		}
-		try {
-			BufferedImage qrCodeImage = ImageIO
-					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_QRCODE_IMAGE_PATH));
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(qrCodeImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
-			byte[] qrCodeImageBytes = byteArrayOutputStream.toByteArray();
-			String qrCodeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(qrCodeImageBytes, false));
-			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
-					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + qrCodeImageEncodedBytes);
-		} catch (IOException ioException) {
-			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-		}
-
-		templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
-		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-				localProperties.getString("full_name"));
-		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInLocalLang().getFullName());
-		templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
-				localProperties.getString("date_of_birth"));
-		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL, localProperties.getString("gender"));
-		// value have to be replaced
-		String gender = registration.getDemographicDTO().getDemoInUserLang().getGender();
-		if (gender.equalsIgnoreCase("MALE")) {
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG, localProperties.getString("male"));
-		} else if (gender.equalsIgnoreCase("FEMALE")) {
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG, localProperties.getString("female"));
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
-					localProperties.getString("un_identified"));
-		}
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
-				localProperties.getString("address_line1"));
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine1());
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
-				localProperties.getString("address_line2"));
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine2());
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL,
-				localProperties.getString("address_line3"));
-		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine3());
-		templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG_LABEL, localProperties.getString("city"));
-		// value have to be replaced
-		templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
-		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
-				localProperties.getString("province"));
-		// value have to be replaced
-		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
-		templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG_LABEL,
-				localProperties.getString("region"));
-		// value have to be replaced
-		templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
-		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
-				localProperties.getString("local_authority"));
-		// value have to be replaced
-		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-				registration.getDemographicDTO().getDemoInUserLang().getLocalAdministrativeAuthority());
-		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
-				localProperties.getString("postal_code"));
-		templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL, localProperties.getString("email"));
-		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL, localProperties.getString("mobile"));
-		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
-				localProperties.getString("documents"));
-		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList);
-		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
-				localProperties.getString("ro_name"));
-		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
-				registration.getOsiDataDTO().getOperatorID());
-
-		templateValues.put("rightIndexFinger", "1");
-		templateValues.put("rightMiddleFinger", "4");
-		templateValues.put("rightRingFinger", "2");
-		templateValues.put("rightLittleFinger", "5");
-		templateValues.put("rightThumb", "3");
-		templateValues.put("leftIndexFinger", "6");
-		templateValues.put("leftMiddleFinger", "2");
-		templateValues.put("leftRingFinger", "2");
-		templateValues.put("leftLittleFinger", "4");
-		templateValues.put("leftThumb", "5");
-
-		// get the total count of fingerprints captured and irises captured
-		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getFingerprintDetailsDTO();
-
-		List<IrisDetailsDTO> capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getIrisDetailsDTO();
-
-		int[] fingersAndIrises = { capturedFingers.stream()
-				.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
-				capturedIris.size() };
-
-		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-				"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
-		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
-				"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
-		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
-				localProperties.getString("biometrics_captured"));
-
-		Writer writer = new StringWriter();
-		try {
-			LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID,
-					"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
-
-			TemplateManager templateManager = templateManagerBuilder.build();
-			InputStream inputStream = templateManager.merge(is, templateValues);
-			String defaultEncoding = null;
-			IOUtils.copy(inputStream, writer, defaultEncoding);
-		} catch (IOException ioException) {
-			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-		}
-		LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID,
-				"generateTemplate method has been ended for preparing Acknowledgement Template.");
-
-		return writer;
 	}
 
 	/**
@@ -320,65 +347,76 @@ public class TemplateGenerator {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
+	 * @throws RegBaseCheckedException 
 	 */
 	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder) {
+			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
-		InputStream is = new ByteArrayInputStream(templateText.getBytes());
-		Map<String, Object> values = new LinkedHashMap<>();
-
-		values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
-				registration.getDemographicDTO().getDemoInUserLang().getFullName());
-		values.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
-
-		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
-		String currentDate = sdf.format(new Date());
-
-		values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
-		values.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-				registration.getDemographicDTO().getDemoInUserLang().getFullName());
-		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
-		if (dob == null) {
-			values.put(RegistrationConstants.TEMPLATE_DOB,
-					registration.getDemographicDTO().getDemoInUserLang().getAge());
-		} else {
-			values.put(RegistrationConstants.TEMPLATE_DOB, DateUtils.formatDate(dob, "dd-MM-YYYY"));
-		}
-		values.put(RegistrationConstants.TEMPLATE_GENDER,
-				registration.getDemographicDTO().getDemoInUserLang().getGender());
-		values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
-		values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
-		values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine3());
-		values.put(RegistrationConstants.TEMPLATE_CITY,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
-		values.put(RegistrationConstants.TEMPLATE_STATE,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
-		values.put(RegistrationConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
-		values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getPostalCode());
-		values.put(RegistrationConstants.TEMPLATE_MOBILE,
-				registration.getDemographicDTO().getDemoInUserLang().getMobile());
-		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
-		if (email == null || email == RegistrationConstants.EMPTY) {
-			values.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
-		} else {
-			values.put(RegistrationConstants.TEMPLATE_EMAIL, email);
-		}
-		Writer writer = new StringWriter();
 		try {
-			TemplateManager templateManager = templateManagerBuilder.build();
-			String defaultEncoding = null;
-			InputStream inputStream = templateManager.merge(is, values);
-			IOUtils.copy(inputStream, writer, defaultEncoding);
-		} catch (IOException exception) {
-			LOGGER.debug("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID,
-					"generateNotificationTemplate method has been ended for preparing Notification Template.");
+			InputStream is = new ByteArrayInputStream(templateText.getBytes());
+			Map<String, Object> values = new LinkedHashMap<>();
+
+			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName());
+			values.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
+
+			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
+			String currentDate = sdf.format(new Date());
+
+			values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
+			values.put(RegistrationConstants.TEMPLATE_FULL_NAME, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues()));
+			String dob = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth()
+					.getValue();
+			if (dob == null) {
+				values.put(RegistrationConstants.TEMPLATE_DOB,
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
+			} else {
+				values.put(RegistrationConstants.TEMPLATE_DOB,
+						DateUtils.formatDate(DateUtils.parse(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+			}
+			values.put(RegistrationConstants.TEMPLATE_GENDER, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1, getDemographicValueInLocalLanguage(registration
+					.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2, getDemographicValueInLocalLanguage(registration
+					.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3, getDemographicValueInLocalLanguage(registration
+					.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_CITY, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_STATE, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_COUNTRY, getDemographicValueInLocalLanguage(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion().getValues()));
+			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPostalCode());
+			values.put(RegistrationConstants.TEMPLATE_MOBILE,
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone().getValue());
+			String email = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
+			if (email == null || email == RegistrationConstants.EMPTY) {
+				values.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
+			} else {
+				values.put(RegistrationConstants.TEMPLATE_EMAIL, email);
+			}
+			Writer writer = new StringWriter();
+			try {
+				TemplateManager templateManager = templateManagerBuilder.build();
+				String defaultEncoding = null;
+				InputStream inputStream = templateManager.merge(is, values);
+				IOUtils.copy(inputStream, writer, defaultEncoding);
+			} catch (IOException exception) {
+				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+						"generateNotificationTemplate method has been ended for preparing Notification Template.");
+			}
+			return writer;
+		} catch (ParseException parseException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorMessage(), parseException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.TEMPLATE_GENERATOR_SMS_EXCEPTION,
+					runtimeException.getMessage(), runtimeException);
 		}
-		return writer;
 	}
 
 	/**
@@ -387,7 +425,7 @@ public class TemplateGenerator {
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private HashMap<String, Integer> getFingerPrintQualityRanking(RegistrationDTO registration) {
 		// for storing the fingerprints captured and their respective quality scores
 		HashMap<String, Double> fingersQuality = new HashMap<>();
@@ -445,4 +483,33 @@ public class TemplateGenerator {
 
 		return fingersQualityRanking;
 	}
+
+	private String getDemographicValueInPlatformLanguage(LinkedList<ValuesDTO> demographicValues) {
+		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Getting values of demographic fields in platform language");
+		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
+
+		Optional<ValuesDTO> demographicValue = demographicValues.stream()
+				.filter(value -> value.getLanguage().equals(platformLanguageCode)).findFirst();
+
+		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Getting values of demographic fields in platform language has been completed");
+
+		return demographicValue.isPresent() ? demographicValue.get().getValue() : RegistrationConstants.EMPTY;
+	}
+
+	private String getDemographicValueInLocalLanguage(LinkedList<ValuesDTO> demographicValues) {
+		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Getting values of demographic fields in local language");
+		String localLanguageCode = AppConfig.getApplicationProperty("application_language");
+
+		Optional<ValuesDTO> demographicValue = demographicValues.stream()
+				.filter(value -> value.getLanguage().equals(localLanguageCode)).findFirst();
+
+		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Getting values of demographic fields in platform language has been completed");
+
+		return demographicValue.isPresent() ? demographicValue.get().getValue() : RegistrationConstants.EMPTY;
+	}
+
 }
