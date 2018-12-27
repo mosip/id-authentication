@@ -11,4 +11,4 @@ copy ./target/pre-registration-document-service-*.jar pre-registration-document-
 
 EXPOSE 9093
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-document-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-document-service.jar"] 

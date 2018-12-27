@@ -24,8 +24,8 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * This class is used to handle all the exceptions that occur while creating

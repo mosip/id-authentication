@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -60,8 +60,8 @@ public class DemographicController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
-	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> register(
-			@RequestBody(required = true) DemographicRequestDTO<CreatePreRegistrationDTO> jsonObject) {
+	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> register(
+			@RequestBody(required = true) DemographicRequestDTO<CreateDemographicDTO> jsonObject) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
@@ -73,7 +73,7 @@ public class DemographicController {
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the demographic data") })
-	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> getApplication(
+	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> getApplication(
 			@RequestParam(value = "preRegId", required = true) String preRegId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegId));
 	}

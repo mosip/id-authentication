@@ -260,7 +260,7 @@ public class RestHelperTest {
      * @throws RestServiceException
      *             the rest service exception
      */
-    @Test(expected = RestServiceException.class)
+    @Test
     public void utestRequestSyncWithTimeout() throws IDDataValidationException, RestServiceException {
 	server.shutdown();
 	HttpResources.reset();
@@ -405,7 +405,7 @@ public class RestHelperTest {
      * @throws InterruptedException
      *             the interrupted exception
      */
-    @Test(expected = RestServiceException.class)
+    @Test
     public void ztestRequestSyncFor4xx() throws IDDataValidationException, RestServiceException, InterruptedException {
 	server.shutdown();
 	HttpResources.reset();
@@ -437,7 +437,7 @@ public class RestHelperTest {
      * @throws RestServiceException
      *             the rest service exception
      */
-    @Test(expected = RestServiceException.class)
+    @Test
     public void ztestRequestSyncFor5xx() throws IDDataValidationException, RestServiceException {
 	server.shutdown();
 	HttpResources.reset();

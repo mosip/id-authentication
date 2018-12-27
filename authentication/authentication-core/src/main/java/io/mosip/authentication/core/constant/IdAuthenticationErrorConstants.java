@@ -16,19 +16,23 @@ public enum IdAuthenticationErrorConstants {
 			"A0106"),
 	OTP_REQUEST_FLOODED("IDA-OTA-003", "Innumerous OTP requests received"),
 	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"),
-	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"), INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
+	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"), 
+	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request", "A0109"),
 	OTP_NOT_PRESENT("IDA-OTA-008", "Missing OTP value", "A0110"),
-	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
-	BLOCKED_OTP("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
+	//REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
+	BLOCKED_OTP_TO_GENERATE("IDA-OTA-010", "Could not generate OTP as UIN is locked "),
+	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
 
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
 																											// referenced
-	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
+	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 
+	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
 	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),

@@ -25,4 +25,14 @@ public class OtpGeneratorResponseDto {
 
 	@NotEmpty
 	private String otp;
+	
+	/**
+	 * Variable to hold the otp response status.
+	 */
+	private String status;
+
+	/**
+	 * Variable to hold the otp response message.
+	 */
+	private String message;
 }
