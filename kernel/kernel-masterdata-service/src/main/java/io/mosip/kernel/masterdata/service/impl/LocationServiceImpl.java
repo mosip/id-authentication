@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
@@ -157,7 +158,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches child hierachy details of the location based on location
+	 * This method fetches child hierarchy details of the location based on location
 	 * code
 	 * 
 	 * @param locCode
@@ -179,7 +180,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches parent hierachy details of the location based on parent
+	 * This method fetches parent hierarchy details of the location based on parent
 	 * Location code
 	 * 
 	 * @param locCode
@@ -207,6 +208,7 @@ public class LocationServiceImpl implements LocationService {
 	 * parameter sent {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
@@ -227,6 +229,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
+	@Transactional
 	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
 		LocationDto locationDto = locationRequestDto.getRequest();
 		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
@@ -253,6 +256,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
+	@Transactional
 	public CodeResponseDto deleteLocationDetials(String locationCode) {
 		List<Location> locations = null;
         CodeResponseDto codeResponseDto=new CodeResponseDto();

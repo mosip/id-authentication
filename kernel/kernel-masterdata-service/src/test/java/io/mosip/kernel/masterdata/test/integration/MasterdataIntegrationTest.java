@@ -805,13 +805,12 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void registrationCenterUserMachineSetup() {
-	    registrationCenterUserMachine= new RegistrationCenterUserMachine();
+	 registrationCenterUserMachine= new RegistrationCenterUserMachine();
 	    registrationCenterUserMachine.setCntrId("REG001");
 	    registrationCenterUserMachine.setUsrId("QC001");
 		registrationCenterUserMachine.setMachineId("MAC001");
 		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",
 				LocalDateTime.now().minusDays(1));
-		
 	}
 
 	private void registrationCenterSetup() {
