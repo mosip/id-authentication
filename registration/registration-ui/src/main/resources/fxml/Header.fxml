@@ -82,7 +82,7 @@
 								<MenuItem mnemonicParsing="false" text="Virus Scan" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#syncData"
-									text="Sync Data">
+									text="Sync Data" />
 									<SeparatorMenuItem />
 									<MenuItem mnemonicParsing="false"
 										onAction="#downloadPreRegData"
