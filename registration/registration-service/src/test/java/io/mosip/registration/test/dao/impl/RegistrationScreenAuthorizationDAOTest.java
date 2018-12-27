@@ -3,7 +3,9 @@ package io.mosip.registration.test.dao.impl;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class RegistrationScreenAuthorizationDAOTest {
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
 
-		List<ScreenAuthorizationDetails> authorizationList = new ArrayList<>();
+		Set<ScreenAuthorizationDetails> authorizationList = new HashSet<>();
 		List<String> roleList = new ArrayList<>();
 		Mockito.when(registrationScreenAuthorizationRepository
 				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))

@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
@@ -128,7 +130,7 @@ public class LoginServiceTest {
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
 
-		List<ScreenAuthorizationDetails> authorizationList = new ArrayList<>();
+		Set<ScreenAuthorizationDetails> authorizationList = new HashSet<>();
 		List<String> roleList = new ArrayList<>();
 		Mockito.when(registrationScreenAuthorizationRepository
 				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
