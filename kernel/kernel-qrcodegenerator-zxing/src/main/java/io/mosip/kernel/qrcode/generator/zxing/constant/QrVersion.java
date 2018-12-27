@@ -1,4 +1,4 @@
-package io.mosip.kernel.qrcode.generator.constant;
+package io.mosip.kernel.qrcode.generator.zxing.constant;
 
 /**
  * QrCode Version and Module mapping contains {@link #V25} {@link #V26}

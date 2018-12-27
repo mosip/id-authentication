@@ -1,4 +1,4 @@
-package io.mosip.kernel.qrcode.generator.constant;
+package io.mosip.kernel.qrcode.generator.zxing.constant;
 
 /**
  * Exception constants for QR Code generator
