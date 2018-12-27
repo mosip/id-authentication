@@ -1,4 +1,4 @@
-package io.mosip.preregistration.translitration.exception;
+package io.mosip.preregistration.translitration.exception.util;
 
 import java.sql.Timestamp;
 
@@ -9,6 +9,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.preregistration.translitration.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.translitration.dto.ResponseDTO;
+import io.mosip.preregistration.translitration.exception.FailedToTranslitrateException;
+import io.mosip.preregistration.translitration.exception.MandatoryFieldRequiredException;
 
 public class TranslitrationExceptionHandler {
 	
