@@ -48,7 +48,7 @@ public class LanguageServiceImpl implements LanguageService {
 
 		try {
 			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException), dataAccessException);
 		}

@@ -60,7 +60,7 @@ public class LocationServiceImpl implements LocationService {
 		try {
 
 			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() 
 							+ ExceptionUtils.parseException(e));
@@ -116,7 +116,7 @@ public class LocationServiceImpl implements LocationService {
 			}
 		}
 
-		catch (DataAccessException e) {
+		catch (DataAccessException | DataAccessLayerException e) {
 
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
@@ -291,7 +291,7 @@ public class LocationServiceImpl implements LocationService {
 		try {
 			locationlist = locationRepository.findAllByHierarchyNameIgnoreCase(hierarchyName);
 
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));

@@ -90,7 +90,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWords> blackListedWordsList = null;
 		try {
 			blackListedWordsList = blacklistedWordsRepository.findAllByIsDeletedFalseOrIsDeletedNull();
-		} catch (DataAccessException|DataAccessLayerException accessException) {
+		} catch (DataAccessException | DataAccessLayerException accessException) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()+

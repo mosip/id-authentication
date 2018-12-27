@@ -49,7 +49,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplate() {
 		try {
 			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
 					ExceptionUtils.parseException(exception));
@@ -74,7 +74,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
 					ExceptionUtils.parseException(exception));
@@ -102,7 +102,7 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 					languageCode, templateTypeCode);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
 					ExceptionUtils.parseException(exception));

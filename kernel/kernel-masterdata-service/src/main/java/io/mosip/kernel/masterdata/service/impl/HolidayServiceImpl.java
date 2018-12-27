@@ -55,7 +55,7 @@ public class HolidayServiceImpl implements HolidayService {
 		List<Holiday> holidays = null;
 		try {
 			holidays = holidayRepository.findAllNonDeletedHoliday();
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -85,7 +85,7 @@ public class HolidayServiceImpl implements HolidayService {
 		List<Holiday> holidays = null;
 		try {
 			holidays = holidayRepository.findAllById(id);
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -115,7 +115,7 @@ public class HolidayServiceImpl implements HolidayService {
 		List<Holiday> holidays = null;
 		try {
 			holidays = holidayRepository.findHolidayByIdAndHolidayIdLangCode(id, langCode);
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
