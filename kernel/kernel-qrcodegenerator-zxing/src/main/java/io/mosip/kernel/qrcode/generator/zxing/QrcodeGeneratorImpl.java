@@ -1,9 +1,11 @@
-package io.mosip.kernel.qrcode.generator;
+package io.mosip.kernel.qrcode.generator.zxing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -14,10 +16,11 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
-import io.mosip.kernel.qrcode.generator.constant.QrVersion;
-import io.mosip.kernel.qrcode.generator.constant.QrcodeConstants;
-import io.mosip.kernel.qrcode.generator.constant.QrcodeExceptionConstants;
-import io.mosip.kernel.qrcode.generator.util.QrcodegeneratorUtils;
+import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrcodeConstants;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrcodeExceptionConstants;
+import io.mosip.kernel.qrcode.generator.zxing.util.QrcodegeneratorUtils;
 
 /**
  * Class which provides functionality to generate QR Code
@@ -26,8 +29,8 @@ import io.mosip.kernel.qrcode.generator.util.QrcodegeneratorUtils;
  *
  * @since 1.0.0
  */
-
-public class QrcodeGenerator {
+@Component
+public class QrcodeGeneratorImpl implements QrCodeGenerator<QrVersion> {
 
 	/**
 	 * {@link QRCodeWriter} instance
@@ -44,32 +47,17 @@ public class QrcodeGenerator {
 		configMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 	}
 
-	/**
-	 * Constructor for this class
-	 */
-	private QrcodeGenerator() {
-
-	}
-
-	/**
-	 * Method to generate QR Code
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param data
-	 *            data to encode in the QR code
-	 * @param version
-	 *            {@link QrVersion} class for QR Code version
-	 * @return array of byte containing QR Code in PNG format
-	 * @throws QrcodeGenerationException
-	 *             exceptions which may occur when encoding a QRcode using the
-	 *             Writer framework.
-	 * @throws IOException
-	 *             exceptions which may occur when write to the byte stream fail
+	 * @see io.mosip.kernel.qrcode.generator.zxing.QrCode#generateQrCode(java.lang.
+	 * String, io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion)
 	 */
-	public static byte[] generateQrCode(String data, QrVersion version)
-			throws QrcodeGenerationException,  IOException {
+	@Override
+	public byte[] generateQrCode(String data, QrVersion version) throws QrcodeGenerationException, IOException {
 		QrcodegeneratorUtils.verifyInput(data, version);
 		configMap.put(EncodeHintType.QR_VERSION, version.getVersion());
-	    BitMatrix byteMatrix = null;
+		BitMatrix byteMatrix = null;
 		try {
 			byteMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, version.getSize(), version.getSize(),
 					configMap);

@@ -1,9 +1,9 @@
-package io.mosip.kernel.qrcode.generator.util;
+package io.mosip.kernel.qrcode.generator.zxing.util;
 
 import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.qrcodegenerator.exception.InvalidInputException;
-import io.mosip.kernel.qrcode.generator.constant.QrVersion;
-import io.mosip.kernel.qrcode.generator.constant.QrcodeExceptionConstants;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrcodeExceptionConstants;
 
 /**
  * Utils class for QR code generator
