@@ -41,7 +41,7 @@ public class FingerPrintCaptureServiceTest {
 		authenticationValidatorDTO.setUserId("abcd");
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		AuthenticationBaseValidator authenticationValidatorImplementation = fingerprintValidator;
-		Mockito.when(authenticationValidatorFactory.authValidator("Fingerprint", authenticationValidatorDTO))
+		Mockito.when(authenticationValidatorFactory.authValidator(Mockito.anyString(), Mockito.anyObject()))
 				.thenReturn(true);
 		authenticationValidatorImplementation.setFingerPrintType("multiple");
 		Mockito.when(authenticationValidatorImplementation.validate(Mockito.any(AuthenticationValidatorDTO.class)))
