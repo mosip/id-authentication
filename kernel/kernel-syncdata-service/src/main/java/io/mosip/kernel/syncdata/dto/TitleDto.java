@@ -17,9 +17,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TitleDto extends BaseDto {
-	private String titleCode;
+	private String code;
 	private String titleName;
 	private String titleDescription;
 	private Boolean isActive;
+	private String langCode;
 
 }
