@@ -3,24 +3,25 @@ package io.mosip.kernel.qrcode.generator.test;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.qrcodegenerator.exception.InvalidInputException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
-import io.mosip.kernel.qrcode.generator.zxing.QrcodeGeneratorImpl;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 
-
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class QrcodeGeneratorTest {
 
+	@Autowired
 	private QrCodeGenerator<QrVersion> generatorImpl;
-	@Before
-	public void setUp() {
-		generatorImpl= new QrcodeGeneratorImpl();
-	}
+	
 	
 	@Test
 	public void testGenerateQrCode() throws Exception {

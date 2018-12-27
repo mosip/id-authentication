@@ -42,7 +42,24 @@ mvn javadoc:javadoc
 @Autowired
 QrCodeGenerator<QrVersion> generator;
 	
-byte[] qrCodeData = generator.generateQrCode(dataToEncode,qrCodeVersion);
+    String name = "N : Mosip User";
+	
+	String dob = "D : 17-05-1996";
+	
+	String address = "A :  Mindtree LTD  "Global village Tech Park Rd, RV Vidyaniketan,RR Nagar,Bengaluru, Karnataka 560098";
+	
+	String uin = "uin : 927391028372";
+	
+	String gender = "G : Male";
+	
+	byte[] fileBytes=FileUtils.readFileToByteArray(new File("ImageFilePath"));
+	
+	byte [] QrCodeInBytes=generator.generateQrCode("I:"+CryptoUtil.encodeBase64(fileBytes)+"\n"+name+"\n"+dob+"\n"+address+"\n"+uin+"\n"+gender, QrVersion.V25);
+	
+	String filePath = "File.png";
+	
+	FileUtils.writeByteArrayToFile(new File(filePath), QrCodeInBytes);
+	
 ```
  
  *Output*
