@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.message.sender.service.MessageNotificationService;
+import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 
 @RefreshScope
 @Component

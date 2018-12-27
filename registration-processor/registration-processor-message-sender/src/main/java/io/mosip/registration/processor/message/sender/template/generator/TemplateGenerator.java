@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.notification.template.generator;
+package io.mosip.registration.processor.message.sender.template.generator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
@@ -26,9 +27,9 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+@Component
 public class TemplateGenerator {
 
-	
 	private static Logger log = LoggerFactory.getLogger(TemplateGenerator.class);
 
 	@Autowired

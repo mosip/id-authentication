@@ -17,25 +17,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.emailnotification.dto.ResponseDto;
-import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.notification.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
+import io.mosip.registration.processor.core.notification.template.generator.dto.SmsRequestDto;
+import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
 import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.service.MessageNotificationService;
-import io.mosip.registration.processor.message.sender.utility.Utilities;
+import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.message.sender.utility.Util;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
@@ -53,6 +55,7 @@ import io.mosip.registration.processor.packet.storage.exception.ParsingException
  * @since 1.0.0
  *
  */
+@Service
 public class MessageNotificationServiceImpl implements MessageNotificationService {
 
 	private JSONObject demographicIdentity = null;
@@ -71,20 +74,18 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	@Autowired
-	private TemplateGenerator templateGenerator;
+	private static TemplateGenerator templateGenerator = new TemplateGenerator();
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
 	@Autowired
-	private Utilities utility;
+	private Util utility;
 
 	@Autowired
 	private RegistrationProcessorNotificationTemplate regProcessorTemplateJson;
 
-	@Autowired
-	private SmsRequestDto smsDto;
+	private SmsRequestDto smsDto = new SmsRequestDto();
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -94,10 +95,10 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@SuppressWarnings("unchecked")
-	public ResponseEntity<SmsRequestDto> sendSmsNotification(String templateTypeCode, String id, String idType,
+	public ResponseEntity<SmsResponseDto> sendSmsNotification(String templateTypeCode, String id, String idType,
 			Map<String, Object> attributes) {
 		
-		ResponseEntity<SmsRequestDto> response = null;
+		ResponseEntity<SmsResponseDto> response = null;
 		try {
 			
 			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
@@ -107,7 +108,7 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 			smsDto.setMessage(artifact);
 			smsDto.setNumber(templatejson.getPhoneNumber()[0].getValue());
 
-			response = (ResponseEntity<SmsRequestDto>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
+			response = (ResponseEntity<SmsResponseDto>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
 					ResponseEntity.class);
 
 		} catch (Exception e) {
@@ -154,15 +155,14 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 			//get registration id using UIN
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
 		}
-
-		demographicInfoStream = adapter.getFile(id,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-
+		
+		demographicInfoStream = adapter.getFile(id, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+		
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
 
-		attributes.put("FirstName", templatejson.getFirstName());
+		attributes.put("FirstName", templatejson.getFirstName()[0].getValue());
 		
 		return templatejson;
 	}
@@ -172,7 +172,7 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String templateJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+			String templateJsonString = Util.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorTemplateJson());
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();
