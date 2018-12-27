@@ -54,7 +54,7 @@ QrCodeGenerator<QrVersion> generator;
 	
 	byte[] fileBytes=FileUtils.readFileToByteArray(new File("ImageFilePath"));
 	
-	byte [] QrCodeInBytes=generator.generateQrCode("I:"+CryptoUtil.encodeBase64(fileBytes)+"\n"+name+"\n"+dob+"\n"+address+"\n"+uin+"\n"+gender, QrVersion.V30);
+	byte [] QrCodeInBytes=generator.generateQrCode(name+"\n"+dob+"\n"+address+"\n"+uin+"\n"+gender+"\n"+"I:"+CryptoUtil.encodeBase64(fileBytes), QrVersion.V30);
 	
 	String filePath = "File.png";
 	
