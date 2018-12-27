@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.helper;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,10 +25,10 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
-import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -37,6 +38,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -45,6 +47,12 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 
 @Component
 public class IdInfoHelper implements IdInfoFetcher {
+
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
+
+	/** The Constant DEFAULT_SESSION_ID. */
+	private static final String SESSION_ID = "sessionId";
 
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
@@ -85,22 +93,18 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity) {
 		String language = getLanguageCode(matchType.getLanguageType());
-		return  getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
+		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
 	}
 
 	private Map<String, String> getInfo(Map<String, List<IdentityInfoDTO>> idInfosMap, String languageForMatchType) {
 		if (idInfosMap != null && !idInfosMap.isEmpty()) {
-			 return idInfosMap.entrySet()
-					.parallelStream()
-					.collect(Collectors.toMap(Entry::getKey, 
-							entry -> Optional.ofNullable(entry.getValue())
-								.flatMap(value -> value
-									.stream()
+			return idInfosMap.entrySet().parallelStream()
+					.map(entry -> new SimpleEntry<String, String>(entry.getKey(),
+							Optional.ofNullable(entry.getValue()).flatMap(value -> value.stream()
 									.filter(idInfo -> checkLanguageType(languageForMatchType, idInfo.getLanguage()))
-									.map(IdentityInfoDTO::getValue)
-							.findAny())
-							.orElse("")
-							));
+									.map(IdentityInfoDTO::getValue).findAny()).orElse("")))
+					.filter(entry -> entry.getValue().length() > 0)
+					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		}
 		return Collections.emptyMap();
 	}
@@ -144,17 +148,15 @@ public class IdInfoHelper implements IdInfoFetcher {
 		Map<String, String> entityInfoMap = getEntityInfoMap(matchType, demoEntity);
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
-	
-	private Map<String,String> getIdentityValuesMap(List<String> propertyNames, String languageCode,
+
+	private Map<String, String> getIdentityValuesMap(List<String> propertyNames, String languageCode,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
 		return propertyNames.stream()
-				.collect(Collectors.toMap(Function.identity(),  
+				.collect(Collectors.toMap(Function.identity(),
 						propName -> getIdentityValue(propName, languageCode, demoEntity).findAny().orElse(""),
-						(p1, p2) -> p1, 
-						() -> new LinkedHashMap<String, String>()
-						));
+						(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
-	
+
 	public Map<String, String> getEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
@@ -211,12 +213,16 @@ public class IdInfoHelper implements IdInfoFetcher {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Map<String, String> reqInfo = getIdentityInfo(matchType, identityDTO);
 				if (reqInfo.size() > 0) {
-					Map<String, String>  entityInfo = getEntityInfoMap(matchType, demoEntity);
+					Map<String, String> entityInfo = getEntityInfoMap(matchType, demoEntity);
 					Map<String, Object> matchProperties = input.getMatchProperties();
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
 				}
+			} else {
+				// FIXME Log that matching strategy is not allowed for the match type.
+				logger.info(SESSION_ID, "Matching strategy >>>>>: " + strategyType, " is not allowed for - ",
+						matchType + " MatchType");
 			}
 
 		}
