@@ -28,7 +28,7 @@ The Registration client module needs to generate a RID and assign it to an indiv
 
 
 
-![Module Diagram]("https://raw.githubusercontent.com/mosip/mosip/DEV/design/kernel/_images/kernel-RIDGenerator.jpg?token=ApNuIEJlTzvtrjC6vImJ8gcy9Ajg_ykQks5cLegPwA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM")
+![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/kernel/_images/kernel-RIDGenerator.jpg?token=ApNuIEJlTzvtrjC6vImJ8gcy9Ajg_ykQks5cLegPwA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM)
 
 
 
