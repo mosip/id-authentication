@@ -149,6 +149,17 @@ public class NameMatchingStrategyTest {
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchingStrategyFunction1() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidPartialMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -298,4 +309,13 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match(5, "arabic", matchProperties);
 		assertEquals(0, value);
 	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategy() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match(5, 1, matchProperties);
+		assertEquals(0, value);
+	}
+
 }

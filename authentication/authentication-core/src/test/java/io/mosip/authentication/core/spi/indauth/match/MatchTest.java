@@ -1,7 +1,9 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,9 +83,11 @@ public class MatchTest {
 		};
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdInfoFetcher languageInfoFetcher=null;
+		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
+		assertFalse(authTypeInfoAvailable);
+		IdInfoFetcher languageInfoFetcher = null;
 		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher);
-
+		System.err.println(matchProperties);
 		System.err.println(authType.getLangType());
 		System.err.println(authType.getDisplayName());
 		System.err.println(authType.getAssociatedMatchTypes());
@@ -102,7 +106,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public  Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -153,7 +157,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -182,7 +186,14 @@ public class MatchTest {
 				return null;
 			}
 		};
-
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("dinesh");
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
+		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(identity);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);
@@ -213,23 +224,23 @@ public class MatchTest {
 		IdMapping.getIdMapping(name, authTypes);
 
 	}
-	
+
 	@Test
 	public void testMatchingStrategy() throws IdAuthenticationBusinessException {
 		MatchingStrategy matchingStrategy = new MatchingStrategy() {
-			
+
 			@Override
 			public MatchingStrategyType getType() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public MatchFunction getMatchFunction() {
 				return (reqInfo, entityInfo, matchProperties) -> 50;
 			}
 		};
-		
+
 		int match = matchingStrategy.match(new HashMap<>(), new HashMap<>(), new HashMap<>());
 		assertThat(match).isEqualTo(50);
 	}
