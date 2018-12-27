@@ -653,8 +653,10 @@ public class RegistrationController extends BaseController {
 				if (isChild) {
 					if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
 						demographicDTO.setIntroducerRID(uinId.getText());
+						demographicInfoDTO.setParentOrGuardianRIDOrUIN(uinId.getText());
 					} else {
 						demographicDTO.setIntroducerUIN(uinId.getText());
+						demographicInfoDTO.setParentOrGuardianRIDOrUIN(uinId.getText());
 					}
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 					demographicInfoDTO.setParentOrGuardianName(parentName.getText());

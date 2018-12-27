@@ -44,7 +44,7 @@ public class StorageServiceImpl implements StorageService {
 	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
 	 */
 	@Override
-	public String storeToDisk(String registrationId, byte[] packet, byte[] ackReceipt) throws RegBaseCheckedException {
+	public String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
@@ -56,13 +56,6 @@ public class StorageServiceImpl implements StorageService {
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 
 			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
-
-			// Storing the Registration Acknowledge Receipt Image
-			FileUtils.copyToFile(new ByteArrayInputStream(ackReceipt),
-					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
-
-			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
-					"Registration's Acknowledgement Receipt saved");
 
 			return filePath;
 		} catch (IOException ioException) {

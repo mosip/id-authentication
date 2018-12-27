@@ -1,25 +1,32 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.File;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -29,12 +36,12 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.animation.PauseTransition;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,6 +49,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.util.Duration;
 
 /**
  * Class for showing the Acknowledgement Receipt
@@ -58,6 +66,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private PacketHandlerController packetController;
 	@Autowired
 	private PacketHandlerService packetHandlerService;
+
 	@Autowired
 	private TemplateService templateService;
 	@Autowired
@@ -67,17 +76,25 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-	
+
 	@Autowired
-	private RidGenerator <String> ridGeneratorImpl;
+	private RidGenerator<String> ridGeneratorImpl;
 
 	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
+	
+	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
+	private String saveAck;
 
 	@FXML
 	private WebView webView;
+
+	@Autowired
+	private Environment environment;
+
+	private byte[] acknowledgement = null;
 
 	public RegistrationDTO getRegistrationData() {
 		return registrationData;
@@ -113,8 +130,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
-						String rid = getRegistrationData() == null ? "RID" : ridGeneratorImpl.
-								generateId(RegistrationConstants.CENTER_ID, RegistrationConstants.MACHINE_ID_GEN);
+						String rid = getRegistrationData() == null ? "RID"
+								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
+										RegistrationConstants.MACHINE_ID_GEN);
 
 						if (!number.isEmpty()
 								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
@@ -161,28 +179,37 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
 		WebEngine engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
+		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		pause.setOnFinished(e -> {
+			try {
+				saveRegistrationData();
+			} catch (RegBaseCheckedException regBaseUncheckedException) {
+				LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
+						regBaseUncheckedException.getMessage());
+			}
+		});
+		pause.play();
 	}
 
-	@FXML
-	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
+	private void saveRegistrationData() throws RegBaseCheckedException {
 		WritableImage ackImage = webView.snapshot(null, null);
-		byte[] acknowledgement;
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegistrationConstants.IMAGE_FORMAT,
 					byteArrayOutputStream);
 			acknowledgement = byteArrayOutputStream.toByteArray();
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
-					RegistrationExceptionConstants.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
+		} catch (java.io.IOException ioException) {
+			LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
 		}
-		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
-		registrationData.getDemographicDTO().getApplicantDocumentDTO()
-				.setAcknowledgeReceiptName("RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
+
+		if(saveAck.equalsIgnoreCase("Y")) {
+			registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
+			registrationData.getDemographicDTO().getApplicantDocumentDTO()
+					.setAcknowledgeReceiptName("RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
+		}
+
 		ResponseDTO response = packetHandlerService.handle(registrationData);
-		generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);
-		// Adding individual address to session context
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
 			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInUserLang().getAddressDTO();
@@ -190,7 +217,30 @@ public class AckReceiptController extends BaseController implements Initializabl
 			addr.put("PrevAddress", addressDTO);
 			SessionContext.getInstance().setMapObject(addr);
 		}
-		registrationController.goToHomePage();
+	}
+
+	@FXML
+	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
+		try {
+			// Generate the file path for storing the Encrypted Packet and Acknowledgement
+			// Receipt
+			String seperator = "/";
+			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
+							.concat(seperator).concat(registrationData.getRegistrationId());
+
+			// Storing the Registration Acknowledge Receipt Image
+			FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
+					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
+
+			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+					"Registration's Acknowledgement Receipt saved");
+
+			generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);
+			registrationController.goToHomePage();
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+		}
 	}
 
 	private void generateNotificationAlert(String alertMessage) {

@@ -76,6 +76,25 @@
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
 }	
+#anchor-pane-acknowledgement {
+	-fx-border-style: solid inside;
+	-fx-border-width: 1;
+	-fx-border-insets: 5;
+	-fx-border-radius: 5;
+	-fx-border-color: #A9A9A9;
+}
+
+#ackScreen > .viewport {
+	-fx-background-color: white;
+}
+
+#ackScreen-anchor-pane{
+	-fx-border-style: solid inside;
+	-fx-border-width: 1;
+	-fx-border-insets: 5;
+	-fx-border-radius: 5;
+	-fx-border-color: #A9A9A9;
+}
 
 #anchor-pane-registration{
 	-fx-background-color: white;
@@ -87,10 +106,23 @@
   	
 }
 
-#anchor-pane-registration .button{
+#anchor-pane-registration .button {
 	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 10, 0, 0, 0);
 }
 
+#anchor-pane-acknowledgement .button{
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-weight: bold
+}
+
+#anchor-pane-acknowledgement .button:pressed {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
 
 #homeReg{
 	-fx-font-size:15px;
