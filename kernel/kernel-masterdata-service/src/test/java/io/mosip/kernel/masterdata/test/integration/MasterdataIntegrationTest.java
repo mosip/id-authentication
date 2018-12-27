@@ -20,6 +20,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +65,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
@@ -100,6 +103,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateType;
@@ -139,6 +143,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHist
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -289,9 +294,13 @@ public class MasterdataIntegrationTest {
 
 	List<RegistrationCenter> registrationCenters = new ArrayList<>();
 
+	private RegistrationCenterUserMachine  registrationCenterUserMachine;
 	@MockBean
-	RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
+	private RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
 
+	@MockBean
+	private RegistrationCenterMachineUserRepository registrationCenterMachineUserRepository;
+	
 	RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory;
 
 	RegistrationCenterMachineUserHistoryID registrationCenterUserMachineHistoryId;
@@ -796,8 +805,13 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void registrationCenterUserMachineSetup() {
+	    registrationCenterUserMachine= new RegistrationCenterUserMachine();
+	    registrationCenterUserMachine.setCntrId("REG001");
+	    registrationCenterUserMachine.setUsrId("QC001");
+		registrationCenterUserMachine.setMachineId("MAC001");
 		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",
 				LocalDateTime.now().minusDays(1));
+		
 	}
 
 	private void registrationCenterSetup() {
@@ -1010,6 +1024,29 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isBadRequest());
 
 	}
+	
+	@Test
+	public void deleteRegistrationCenterAndDeviceMappingTest() throws Exception {
+		when(registrationCenterDeviceRepository.findById(Mockito.any())).thenReturn(Optional.of(registrationCenterDevice));
+		when(registrationCenterDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterDeviceHistory);
+		when(registrationCenterDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterDevice);
+		mockMvc.perform(delete("/v1.0/registrationcenterdevice/RC001/DC001")).andExpect(status().isOk());
+    }
+	
+	@Test
+	public void deleteRegistrationCenterAndDeviceMappingDataNotFoundExceptionTest() throws Exception {
+		when(registrationCenterDeviceRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+		mockMvc.perform(delete("/v1.0/registrationcenterdevice/RC001/DC001")).andExpect(status().isNotFound());
+    }
+	
+	@Test
+	public void deleteRegistrationCenterAndDeviceMappingDataAccessLayerExceptionTest() throws Exception {
+		when(registrationCenterDeviceRepository.findById(Mockito.any())).thenReturn(Optional.of(registrationCenterDevice));
+		when(registrationCenterDeviceHistoryRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("errorCode","errorMessage",null));
+		mockMvc.perform(delete("/v1.0/registrationcenterdevice/RC001/DC001")).andExpect(status().isInternalServerError());
+    }
+	
+	
 	// -------RegistrationCenterMachine mapping-------------------------
 
 	@Test
@@ -1052,6 +1089,28 @@ public class MasterdataIntegrationTest {
 				post("/v1.0/registrationcentermachine").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
 	}
+	
+	@Test
+	public void deleteRegistrationCenterAndMachineMappingTest() throws Exception {
+		when(registrationCenterMachineRepository.findById(Mockito.any())).thenReturn(Optional.of(registrationCenterMachine));
+		when(registrationCenterMachineHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineHistory);
+		when(registrationCenterMachineRepository.update(Mockito.any())).thenReturn(registrationCenterMachine);
+		mockMvc.perform(delete("/v1.0/registrationcentermachine/RC001/MC001")).andExpect(status().isOk());
+    }
+	
+	@Test
+	public void deleteRegistrationCenterAndMachineMappingDataNotFoundExceptionTest() throws Exception {
+		when(registrationCenterMachineRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+		mockMvc.perform(delete("/v1.0/registrationcentermachine/RC001/MC001")).andExpect(status().isNotFound());
+    }
+	
+	@Test
+	public void deleteRegistrationCenterAndMachineMappingDataAccessLayerExceptionTest() throws Exception {
+		when(registrationCenterMachineRepository.findById(Mockito.any())).thenReturn(Optional.of(registrationCenterMachine));
+		when(registrationCenterMachineHistoryRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("errorCode","errorMessage",null));
+		mockMvc.perform(delete("/v1.0/registrationcentermachine/RC001/MC001")).andExpect(status().isInternalServerError());
+    }
+	
 	// -------RegistrationCentermachineDevice mapping-------------------------
 
 	@Test
@@ -1834,6 +1893,41 @@ public class MasterdataIntegrationTest {
 		assertThat(returnResponse.getRegistrationCenters().get(0).getCntrId(), is("1"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getUsrId(), is("1"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getMachineId(), is("1"));
+	}
+	
+	@Test
+	public void createRegistrationCentersMachineUserMappingTest() throws Exception {
+		RequestDto<RegistrationCenterUserMachineMappingDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterUserMachineMappingDto centerUserMachineMappingDto= new RegistrationCenterUserMachineMappingDto();
+		centerUserMachineMappingDto.setCntrId("REG001");
+		centerUserMachineMappingDto.setUsrId("QC001");
+		centerUserMachineMappingDto.setIsActive(true);
+		centerUserMachineMappingDto.setMachineId("MAC001");
+		requestDto.setRequest(centerUserMachineMappingDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterMachineUserRepository.create(Mockito.any())).thenReturn(registrationCenterUserMachine);
+		when(registrationCenterUserMachineHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterUserMachineHistory);
+		mockMvc.perform(post("/v1.0/registrationmachineusermappings").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createRegistrationCentersMachineUserMappingDataAccessLayerExceptionTest() throws Exception {
+		RequestDto<RegistrationCenterUserMachineMappingDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		RegistrationCenterUserMachineMappingDto centerUserMachineMappingDto= new RegistrationCenterUserMachineMappingDto();
+		centerUserMachineMappingDto.setCntrId("REG001");
+		centerUserMachineMappingDto.setUsrId("QC001");
+		centerUserMachineMappingDto.setIsActive(true);
+		centerUserMachineMappingDto.setMachineId("MAC001");
+		requestDto.setRequest(centerUserMachineMappingDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(registrationCenterMachineUserRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("errorCode","errorMessage",null));
+		mockMvc.perform(post("/v1.0/registrationmachineusermappings").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------TitleIntegrationTest----------------------------------

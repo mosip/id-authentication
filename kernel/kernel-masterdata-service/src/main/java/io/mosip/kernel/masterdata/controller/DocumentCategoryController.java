@@ -136,6 +136,6 @@ public class DocumentCategoryController {
 			@ApiResponse(code = 404, message = "When No document category found"),
 			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
 	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
-		return new ResponseEntity<CodeResponseDto>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);
+		return new ResponseEntity<>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);
 	}
 }
