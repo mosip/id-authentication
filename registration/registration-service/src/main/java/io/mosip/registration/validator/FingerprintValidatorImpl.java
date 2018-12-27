@@ -3,7 +3,7 @@ package io.mosip.registration.validator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -17,8 +17,8 @@ import io.mosip.registration.entity.UserBiometric;
  * @author SaravanaKumar G
  *
  */
-@Component
-public class FingerprintValidator extends AuthenticationValidatorImplementation {
+@Service("fingerprintValidator")
+public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 
 	@Autowired
 	private RegistrationUserDetailDAO registrationUserDetailDAO;

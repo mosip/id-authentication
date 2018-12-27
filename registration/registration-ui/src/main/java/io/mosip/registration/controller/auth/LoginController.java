@@ -41,11 +41,10 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.AuthenticationValidatorImplementation;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -127,8 +126,8 @@ public class LoginController extends BaseController implements Initializable {
 	private LoginService loginService;
 	
 	@Autowired
-	private AuthenticationService validator;
-	
+	private AuthenticationService authService;
+
 	@Autowired
 	private OTPManager otpGenerator;
 
@@ -765,12 +764,9 @@ public class LoginController extends BaseController implements Initializable {
 				
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId.getText());
-				AuthenticationValidatorImplementation authenticationValidatorImplementation = validator
-						.getValidator(RegistrationConstants.VALIDATION_TYPE_FP);
-				authenticationValidatorImplementation
-						.setFingerPrintType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-
-				fingerPrintStatus = authenticationValidatorImplementation.validate(authenticationValidatorDTO);
+				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+				fingerPrintStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FP,
+						authenticationValidatorDTO);
 
 			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
 				if (fingerprintFacade.getErrorMessage().equals("Timeout")) {

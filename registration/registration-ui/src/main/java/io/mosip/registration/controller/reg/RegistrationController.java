@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +34,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.FXComponents;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.WebCameraController;
@@ -68,7 +68,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -79,7 +78,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 /**
  * Class for Registration Page Controller
@@ -302,6 +300,9 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private Validations validation;
 
+	@Autowired
+	private FXComponents fxComponents;
+
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -348,20 +349,17 @@ public class RegistrationController extends BaseController {
 			toggleAgeOrDobField = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
-			ageField.setDisable(true);
-			accord.setExpandedPane(demoGraphicTitlePane);
-			disableFutureDays();
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
 			ageValidationInDatePicker();
-			dateFormatter();
-			populateTheLocalLangFields();
-			loadLanguageSpecificKeyboard();
+			listenerOnFields();
 			loadLocalLanguageFields();
-			// loadListOfDocuments();
-			// setScrollFalse();
 			loadKeyboard();
+			ageField.setDisable(true);
+			accord.setExpandedPane(demoGraphicTitlePane);
+			fxComponents.dateFormatter(ageDatePicker);
+			fxComponents.disableFutureDays(ageDatePicker);
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
@@ -596,8 +594,8 @@ public class RegistrationController extends BaseController {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(120.00);
 			}
-
-			keyboardNode.setVisible(true);
+			keyboardNode.setVisible(!keyboardNode.isVisible());
+			
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -655,8 +653,10 @@ public class RegistrationController extends BaseController {
 				if (isChild) {
 					if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
 						demographicDTO.setIntroducerRID(uinId.getText());
+						demographicInfoDTO.setParentOrGuardianRIDOrUIN(uinId.getText());
 					} else {
 						demographicDTO.setIntroducerUIN(uinId.getText());
+						demographicInfoDTO.setParentOrGuardianRIDOrUIN(uinId.getText());
 					}
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 					demographicInfoDTO.setParentOrGuardianName(parentName.getText());
@@ -944,208 +944,29 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * Disabling the future days in the date picker calendar.
+	 * Listening on the fields for any operation
 	 */
-	private void disableFutureDays() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Disabling future dates");
-
-			ageDatePicker.setDayCellFactory(picker -> new DateCell() {
-				@Override
-				public void updateItem(LocalDate date, boolean empty) {
-					super.updateItem(date, empty);
-					LocalDate today = LocalDate.now();
-
-					setDisable(empty || date.compareTo(today) > 0);
-				}
-			});
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Future dates disabled");
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * Populating the user language fields to local language fields
-	 */
-	private void populateTheLocalLangFields() {
+	private void listenerOnFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
-			fullName.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(fullName, fullName.getId() + "_ontype")) {
-						fullName.setText(oldValue);
-					} else {
-						fullNameLocalLanguage.setText(fullName.getText());
-					}
-				}
-			});
-
-			addressLine1.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(addressLine1, addressLine1.getId() + "_ontype")) {
-						addressLine1.setText(oldValue);
-					} else {
-						addressLine1LocalLanguage.setText(addressLine1.getText());
-					}
-				}
-			});
-
-			addressLine2.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					addressLine2LocalLanguage.setText(addressLine2.getText());
-				}
-			});
-
-			addressLine3.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					addressLine3LocalLanguage.setText(addressLine3.getText());
-				}
-			});
-
-			mobileNo.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(mobileNo, mobileNo.getId() + "_ontype")) {
-						mobileNo.setText(oldValue);
-					}
-				}
-			});
-
-			emailId.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(emailId, emailId.getId() + "_ontype")) {
-						emailId.setText(oldValue);
-					}
-				}
-			});
-
-			cniOrPinNumber.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(cniOrPinNumber, cniOrPinNumber.getId() + "_ontype")) {
-						cniOrPinNumber.setText(oldValue);
-					}
-				}
-			});
-
-			parentName.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(parentName, parentName.getId() + "_ontype")) {
-						parentName.setText(oldValue);
-					}
-				}
-			});
-
-			uinId.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(uinId, uinId.getId() + "_ontype")) {
-						uinId.setText(oldValue);
-					}
-				}
-			});
-
-			postalCode.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (!validation.validateTextField(postalCode, postalCode.getId() + "_ontype")) {
-						postalCode.setText(oldValue);
-					}
-				}
-			});
-
+			fxComponents.validateOnType(fullName, validation, fullNameLocalLanguage);
+			fxComponents.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
+			fxComponents.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
+			fxComponents.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
+			fxComponents.validateOnType(mobileNo, validation);
+			fxComponents.validateOnType(postalCode, validation);
+			fxComponents.validateOnType(emailId, validation);
+			fxComponents.validateOnType(cniOrPinNumber, validation);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
-
 			copyAddressImage.setOnMouseExited((e) -> {
 				copyAddressLabel.setVisible(false);
 			});
 
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * To restrict the user not to enter any values other than integer values.
-	 */
-	private void loadLanguageSpecificKeyboard() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loading the local language keyboard");
-			addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - KEYBOARD LOADING FAILED ", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
@@ -1247,44 +1068,6 @@ public class RegistrationController extends BaseController {
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * To dispaly the selected date in the date picker in specific
-	 * format("dd-mm-yyyy").
-	 */
-	private void dateFormatter() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validating the date format");
-
-			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
-				String pattern = "dd-MM-yyyy";
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
-				{
-					ageDatePicker.setPromptText(pattern.toLowerCase());
-				}
-
-				@Override
-				public String toString(LocalDate date) {
-					return date != null ? dateFormatter.format(date) : "";
-
-				}
-
-				@Override
-				public LocalDate fromString(String string) {
-					if (string != null && !string.isEmpty()) {
-						return LocalDate.parse(string, dateFormatter);
-					} else {
-						return null;
-					}
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - DATE FORMAT VALIDATION FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
@@ -1413,6 +1196,7 @@ public class RegistrationController extends BaseController {
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
 		int age = 45;
+		switchedOn.set(true);
 		ageField.setText("" + age);
 		toggleAgeOrDobField = true;
 		gender.setValue("MALE");
@@ -1565,7 +1349,7 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	private void createRegistrationDTOObject() {
+	protected void createRegistrationDTOObject() {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
 		// Set the RID

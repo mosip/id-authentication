@@ -9,7 +9,7 @@ import io.mosip.registration.entity.RegistrationUserDetail;
  * @author Saravanakumar G
  *
  */
-public abstract class AuthenticationValidatorImplementation {
+public abstract class AuthenticationBaseValidator {
 	/**
 	 * It will hold the value of either single or multiple fingers
 	 */
@@ -18,7 +18,7 @@ public abstract class AuthenticationValidatorImplementation {
 	protected RegistrationUserDetail registrationUserDetail;
 
 	@Autowired
-	protected FingerprintValidator fingerprintValidator;
+	protected FingerprintValidatorImpl fingerprintValidator;
 
 	/**
 	 * Validate the fingerprint with the Database

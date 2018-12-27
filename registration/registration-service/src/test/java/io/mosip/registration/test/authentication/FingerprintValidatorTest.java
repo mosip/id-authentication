@@ -21,12 +21,12 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.validator.FingerprintValidator;
+import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 public class FingerprintValidatorTest {
 
 	@InjectMocks
-	FingerprintValidator fingerprintValidator;
+	FingerprintValidatorImpl fingerprintValidator;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();

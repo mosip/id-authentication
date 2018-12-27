@@ -43,7 +43,6 @@ public class Validations extends BaseController {
 	private ResourceBundle validationBundle;
 	private ResourceBundle messageBundle;
 	private ResourceBundle labelBundle;
-
 	public Validations() {
 		try {
 			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
@@ -139,22 +138,52 @@ public class Validations extends BaseController {
 	public boolean validateTextField(TextField node, String id) {
 		try {
 			String validationProperty[] = validationBundle.getString(id).split("\\s,");
-			String isMandetory = validationProperty[1];
 			String label = id.replaceAll("_ontype", "");
-			String message = id.replaceAll("ontype", "WARNING");
+			String message = id.replaceAll("_ontype", "");
+			String regex = validationProperty[0];
+			int length = Integer.parseInt(validationProperty[1]);
+			String isMandetory = validationProperty[2];
+			String isFixed = validationProperty[3];
 			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
 			if (node.isDisabled())
 				return true;
-			if (node.getText().matches(validationProperty[0]))
-				return true;
-			generateAlert(labelBundle.getString(label), messageBundle.getString(message));
+			if (!id.contains("ontype") && isMandetory.equals("true") && node.getText().isEmpty()) {
+				generateAlert(labelBundle.getString(label) + " is required");
+				node.requestFocus();
+				return false;
+			}
+			if (node.getText().matches(regex)) {
+				if (isFixed.equals("false")) {
+					if (node.getText().length() <= length) {
+						return true;
+					} else {
+						generateAlert(labelBundle.getString(label) + " should be a maximum of " + length
+								+ " characters long");
+						node.requestFocus();
+						return false;
+					}
+
+				} else {
+					if (node.getText().length() == length) {
+						return true;
+					} else {
+						generateAlert(
+								labelBundle.getString(label) + " should be exactly " + length + " characters long");
+						node.requestFocus();
+						return false;
+					}
+				}
+
+			}
+			generateAlert(labelBundle.getString(label) + " should contain " + messageBundle.getString(message)
+					+ " characters only");
 			node.requestFocus();
+			return false;
 		} catch (MissingResourceException exception) {
 			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -162,21 +191,8 @@ public class Validations extends BaseController {
 	 */
 	private boolean validateTextField(TextField node, boolean dependency, String id) {
 		try {
-			String validationProperty[] = validationBundle.getString(id).split("\\s,");
-			String isMandetory = validationProperty[1];
-			String label = id.replaceAll("_ontype", "");
-			String message = id.replaceAll("ontype", "WARNING");
-			if (isMandetory.equals("false") && node.getText().isEmpty())
-				return true;
-			if (node.isDisabled())
-				return true;
 			if (dependency) {
-				if (node.getText().matches(validationProperty[0])) {
-					return true;
-				}
-				generateAlert(labelBundle.getString(label), messageBundle.getString(message));
-				node.requestFocus();
-				return false;
+				return validateTextField(node, id);
 			}
 		} catch (MissingResourceException exception) {
 			LOGGER.error("VALIDATIONS", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
@@ -245,7 +261,7 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Check for child
+	 * Check for childd
 	 */
 	public boolean isChild() {
 		return isChild;

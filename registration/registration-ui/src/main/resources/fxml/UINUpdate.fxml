@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.updateuin.UINUpdateController">
+<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UINUpdateController">
 	<children>
       <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -28,7 +28,7 @@
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="UIN">
+      <TextField fx:id="uinId" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="UIN">
          <font>
             <Font size="12.0" />
          </font>
@@ -38,52 +38,52 @@
             <Font size="12.0" />
          </font>
       </Label>
-      <CheckBox layoutX="374.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Fingerprint">
+      <CheckBox fx:id="biometricFingerprint" layoutX="382.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Fingerprint">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="216.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Iris">
+      <CheckBox fx:id="biometricIris" layoutX="216.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Iris">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="32.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Exception">
+      <CheckBox fx:id="biometricException" layoutX="32.0" layoutY="232.0" mnemonicParsing="false" text="Biometrics-Exception">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="335.0" layoutY="166.0" mnemonicParsing="false" text="Age / DOB">
+      <CheckBox fx:id="age" layoutX="335.0" layoutY="166.0" mnemonicParsing="false" text="Age / DOB">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="216.0" layoutY="166.0" mnemonicParsing="false" text="Name">
+      <CheckBox fx:id="name" layoutX="216.0" layoutY="166.0" mnemonicParsing="false" text="Name">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="483.0" layoutY="166.0" mnemonicParsing="false" text="Gender">
+      <CheckBox fx:id="gender" layoutX="483.0" layoutY="166.0" mnemonicParsing="false" text="Gender">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="580.0" layoutY="232.0" mnemonicParsing="false" text="CNIE/PIN/Residence Card Number">
+      <CheckBox fx:id="cnieNumber" layoutX="580.0" layoutY="232.0" mnemonicParsing="false" text="CNIE/PIN/Residence Card Number">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="32.0" layoutY="295.0" mnemonicParsing="false" text="Parent/Guardian details">
+      <CheckBox fx:id="parentOrGuardianDetails" layoutX="32.0" layoutY="295.0" mnemonicParsing="false" text="Parent/Guardian details">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="618.0" layoutY="166.0" mnemonicParsing="false" text="Address">
+      <CheckBox fx:id="address" layoutX="618.0" layoutY="166.0" mnemonicParsing="false" text="Address">
          <font>
             <Font size="12.0" />
          </font>
       </CheckBox>
-      <CheckBox layoutX="764.0" layoutY="166.0" mnemonicParsing="false" text="Contact Details">
+      <CheckBox fx:id="contactDetails" layoutX="764.0" layoutY="166.0" mnemonicParsing="false" text="Contact Details">
          <font>
             <Font size="12.0" />
          </font>
@@ -98,7 +98,7 @@
             <Font size="12.0" />
          </font>
       </Label>
-      <Button layoutX="858.0" layoutY="447.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="78.0" text="Submit">
+      <Button layoutX="858.0" layoutY="447.0" mnemonicParsing="false" onAction="#submitUINUpdate" styleClass="RegbuttonStyle" text="Submit">
          <font>
             <Font size="14.0" />
          </font>
