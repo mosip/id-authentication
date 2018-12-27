@@ -1,12 +1,14 @@
 package io.mosip.registration.dto.demographic;
 
+import io.mosip.registration.dto.BaseDTO;
+
 /**
  * This class contains the properties required for the CBEFF file.
  *
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class CBEFFFilePropertiesDTO {
+public class CBEFFFilePropertiesDTO extends BaseDTO {
 
 	/** The format. */
 	private String format;

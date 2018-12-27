@@ -3,6 +3,8 @@ package io.mosip.registration.jobs.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.LinkedList;
+
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
@@ -80,8 +83,21 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 		}
 		
-		// Run the Parent JOB always first
-		this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
+		
+		try {
+			// Run the Parent JOB always first
+			this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
+			
+		}
+		catch(Exception exception) {
+			LOGGER.error("PRE_REGISTRATION_PACKET_DELETION_JOB", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
+			list.add(errorResponseDTO);
+			responseDTO.setErrorResponseDTOs(list);
+
+		}
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {

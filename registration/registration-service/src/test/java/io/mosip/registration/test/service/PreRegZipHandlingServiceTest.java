@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -83,6 +84,7 @@ public class PreRegZipHandlingServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void extractPreRegZipFileTest() throws RegBaseCheckedException, IOException {
 
