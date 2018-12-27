@@ -299,7 +299,7 @@ public class BioAuthServiceTest {
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
 		String refId = "274390482564";
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
