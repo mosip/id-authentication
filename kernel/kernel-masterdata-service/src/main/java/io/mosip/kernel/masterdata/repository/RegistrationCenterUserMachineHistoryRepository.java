@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 
 /**
  * Repository class for user machine mapping

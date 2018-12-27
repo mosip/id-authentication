@@ -31,5 +31,14 @@ public interface RegistrationCenterMachineService {
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto);
 
+	/**
+	 * Delete the mapping of registration center and machine
+	 * 
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param machineId
+	 *            MachineId id to be deleted
+	 * @return {@link RegistrationCenterMachineID}
+	 */
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId);
 }

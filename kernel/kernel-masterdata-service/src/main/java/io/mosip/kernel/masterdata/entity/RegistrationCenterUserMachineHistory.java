@@ -6,14 +6,12 @@ import java.time.LocalDateTime;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

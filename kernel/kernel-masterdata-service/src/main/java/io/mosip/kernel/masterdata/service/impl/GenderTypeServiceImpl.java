@@ -1,10 +1,10 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -131,22 +131,20 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@Transactional
 	@Override
 	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
-
-		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
-
-		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
+        CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
+        MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
-			Gender genderType = genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					genderTypeDto.getCode(), genderTypeDto.getLangCode());
-			if (genderType == null) {
+			int updatedRows= genderTypeRepository.updateGenderType(genderTypeDto.getCode(), genderTypeDto.getLangCode(),
+					genderTypeDto.getGenderName(), genderTypeDto.getIsActive(), MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
+			if (updatedRows < 1) {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
-			MetaDataUtils.setUpdateMetaData(genderTypeDto, genderType, false);
-			genderTypeRepository.update(genderType);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
@@ -165,7 +163,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeResponseDto deleteGenderType(String code) {
 		try {
-			int updatedRows = genderTypeRepository.deleteGenderType(code, LocalDateTime.now());
+			int updatedRows = genderTypeRepository.deleteGenderType(code, LocalDateTime.now(ZoneId.of("UTC")));
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
