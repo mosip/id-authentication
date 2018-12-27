@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
-import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
@@ -34,7 +34,7 @@ import io.mosip.preregistration.application.exception.OperationNotAllowedExcepti
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
  * @author Ravi C Balaji
@@ -50,9 +50,9 @@ public class DemographicServiceUtil {
 	 * @param demographicEntity
 	 * @return createDTO with the values
 	 */
-	public CreatePreRegistrationDTO setterForCreateDTO(DemographicEntity demographicEntity) {
+	public CreateDemographicDTO setterForCreateDTO(DemographicEntity demographicEntity) {
 		JSONParser jsonParser = new JSONParser();
-		CreatePreRegistrationDTO createDto = new CreatePreRegistrationDTO();
+		CreateDemographicDTO createDto = new CreateDemographicDTO();
 		try {
 			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 			createDto.setDemographicDetails((JSONObject) jsonParser
@@ -79,7 +79,7 @@ public class DemographicServiceUtil {
 	 * @param entityType
 	 * @return demographic entity with values
 	 */
-	public DemographicEntity prepareDemographicEntity(CreatePreRegistrationDTO demographicRequest, String requestId,
+	public DemographicEntity prepareDemographicEntity(CreateDemographicDTO demographicRequest, String requestId,
 			String entityType) {
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
@@ -133,7 +133,7 @@ public class DemographicServiceUtil {
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(
-			DemographicRequestDTO<CreatePreRegistrationDTO> demographicRequestDTO) {
+			DemographicRequestDTO<CreateDemographicDTO> demographicRequestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.toString(), demographicRequestDTO.getId());
 		inputValidation.put(RequestCodes.ver.toString(), demographicRequestDTO.getVer());

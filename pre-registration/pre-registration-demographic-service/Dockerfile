@@ -11,4 +11,4 @@ copy ./target/pre-registration-demographic-service-*.jar pre-registration-demogr
 
 EXPOSE 9092
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-demographic-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-demographic-service.jar"] 
