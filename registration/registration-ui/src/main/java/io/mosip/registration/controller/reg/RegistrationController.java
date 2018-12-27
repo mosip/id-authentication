@@ -1356,7 +1356,7 @@ public class RegistrationController extends BaseController {
 		province.setText("Tamilnadu");
 		postalCode.setText("60011");
 		localAdminAuthority.setText("MindTree");
-		mobileNo.setText("8667693837");
+		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
