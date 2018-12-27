@@ -89,7 +89,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					"Encrypted Packet and Acknowledgement Receipt saved successfully");
 
 			// Insert the Registration Details into DB
-			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemoInUserLang().getFullName());
+			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues().getFirst().getValue());
 			
 			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Encrypted Packet persisted");

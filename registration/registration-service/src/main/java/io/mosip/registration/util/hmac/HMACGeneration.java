@@ -119,7 +119,7 @@ public class HMACGeneration {
 		if (documentDetailsDTOList != null) {
 			documentDetailsDTOList.forEach(document -> {
 				if (document != null)
-					generateHash(document.getDocument(), document.getDocumentName(), hashOrder);
+					generateHash(document.getDocument(), document.getValue(), hashOrder);
 			});
 		}
 

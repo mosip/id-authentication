@@ -310,9 +310,9 @@ public class DocumentScanController extends BaseController {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setDocumentCategory(selectedDocument);
-		documentDetailsDTO.setDocumentType(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
-		documentDetailsDTO.setDocumentName(documentName);
+		documentDetailsDTO.setCategory(selectedDocument);
+		documentDetailsDTO.setFormat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
+		documentDetailsDTO.setValue(documentName);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
@@ -323,7 +323,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 
-		addDocumentsToScreen(documentDetailsDTO.getDocumentName(), vboxElement, scrollPane);
+		addDocumentsToScreen(documentDetailsDTO.getValue(), vboxElement, scrollPane);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
 
@@ -410,7 +410,7 @@ public class DocumentScanController extends BaseController {
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
 				vboxElement.getChildren().remove(gridpane);
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.removeIf(document -> document.getDocumentName().equals(gridpane.getId()));
+						.removeIf(document -> document.getValue().equals(gridpane.getId()));
 				if (vboxElement.getChildren().isEmpty()) {
 					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
@@ -446,8 +446,8 @@ public class DocumentScanController extends BaseController {
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
-						.ifPresent(doc -> displayDocument(doc.getDocument(), doc.getDocumentName()));
+						.stream().filter(detail -> detail.getValue().equals(pane.getId())).findFirst()
+						.ifPresent(doc -> displayDocument(doc.getDocument(), doc.getValue()));
 
 			}
 		});
@@ -464,17 +464,17 @@ public class DocumentScanController extends BaseController {
 				&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
 						.getDocumentDetailsDTO() != null) {
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poaBox, poaScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poiBox, poiScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), porBox, porScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), dobBox, dobScroll));
 
 		}
 
@@ -536,17 +536,17 @@ public class DocumentScanController extends BaseController {
 				&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
 						.getDocumentDetailsDTO() != null) {
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poaBox, poaScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poiBox, poiScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), porBox, porScroll));
 			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
+					.filter(doc -> doc.getCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
+					.ifPresent(document -> addDocumentsToScreen(document.getValue(), dobBox, dobScroll));
 		}
 		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));
 		poiDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poi"));

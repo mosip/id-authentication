@@ -157,18 +157,10 @@ public class PreRegZipHandlingServiceTest {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
 		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
-		DemographicInfoDTO demographicInfoDTOUser = new DemographicInfoDTO();
-		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOUser.setAddressDTO(addressDTO);
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
-		AddressDTO addressDTOLocal = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
 
-		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
-		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTOLocal);
 		registrationDTO.setDemographicDTO(demographicDTO);
 
 		// Create object for OSIData DTO

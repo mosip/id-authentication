@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -185,10 +186,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		if (documentDTO.getDocumentDetailsDTO() != null) {
 			for (DocumentDetailsDTO documentDetailsDTO : documentDTO.getDocumentDetailsDTO()) {
 				Document document = new Document();
-				document.setDocumentCategory(documentDetailsDTO.getDocumentCategory());
-				document.setDocumentName(removeFileExt(documentDetailsDTO.getDocumentName()));
-				document.setDocumentOwner(documentDetailsDTO.getDocumentOwner());
-				document.setDocumentType(documentDetailsDTO.getDocumentType());
+				document.setDocumentCategory(documentDetailsDTO.getCategory());
+				document.setDocumentName(removeFileExt(documentDetailsDTO.getValue()));
+				document.setDocumentOwner(documentDetailsDTO.getOwner());
+				document.setDocumentType(documentDetailsDTO.getFormat());
 				
 				documents.add(document);
 			}
@@ -298,14 +299,29 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("previousRID", metaDataDTO.getPreviousRID()));
 		// Add Introducer Type
 		metaData.add(buildFieldValue("introducerType", registrationDTO.getOsiDataDTO().getIntroducerType()));
+		
+		// Validate whether Introducer has provided UIN or RID
+		String introducerRID = null;
+		String introducerUIN = null;
+		String introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+				.getParentOrGuardianRIDOrUIN();
+		if (introducerRIDorUIN != null && !introducerRIDorUIN.isEmpty()) {
+			if (introducerRIDorUIN.length() == Integer
+					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+				introducerRID = introducerRIDorUIN;
+			} else {
+				introducerUIN = introducerRIDorUIN;
+			}
+		}
+		
 		// Add Introducer RID
-		metaData.add(buildFieldValue("introducerRID", registrationDTO.getDemographicDTO().getIntroducerRID()));
+		metaData.add(buildFieldValue("introducerRID", introducerRID));
 		// Add Hash of Introducer RID
-		metaData.add(buildFieldValue("introducerRIDHash", getHash(registrationDTO.getDemographicDTO().getIntroducerRID())));
+		metaData.add(buildFieldValue("introducerRIDHash", getHash(introducerRID)));
 		// Add Introducer UIN
-		metaData.add(buildFieldValue("introducerUIN", registrationDTO.getDemographicDTO().getIntroducerUIN()));
+		metaData.add(buildFieldValue("introducerUIN", introducerUIN));
 		// Add Hash of Introducer UIN
-		metaData.add(buildFieldValue("introducerUINHash", getHash(registrationDTO.getDemographicDTO().getIntroducerUIN())));
+		metaData.add(buildFieldValue("introducerUINHash", getHash(introducerUIN)));
 		// Add Officer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
 				"officer", RegistrationConstants.BIOMETRIC_TYPE));
