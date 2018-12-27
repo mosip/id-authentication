@@ -22,13 +22,17 @@ The Registration client module needs to generate a RID and assign it to an indiv
 
 - The RID generator is included in the Registration client module as Java Jar file. 
 
+- The Registration client application can go offline sometimes. During this time, the properties have to be injected to the RID generator. 
+
+- When the Registration client comes online, all the configurations will be synced and downloaded to the client machine. 
+
 
 
 **Module diagram**
 
 
 
-![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/kernel/_images/kernel-RIDGenerator.jpg?token=ApNuIEJlTzvtrjC6vImJ8gcy9Ajg_ykQks5cLegPwA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM)
+![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/_images/kernel-RIDGenerator.jpg?token=ApNuICQAnK9vKeiXNSNWyaYMhmJyGxqxks5cLezUwA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM)
 
 
 
