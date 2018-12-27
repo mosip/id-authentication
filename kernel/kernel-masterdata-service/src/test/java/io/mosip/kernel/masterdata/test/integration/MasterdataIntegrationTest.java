@@ -2109,8 +2109,8 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any()))
-				.thenReturn(genderType);
+		when(genderTypeRepository.updateGenderType(Mockito.any(), Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any()))
+		.thenReturn(1);
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 
@@ -2124,8 +2124,8 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any()))
-				.thenReturn(null);
+		when(genderTypeRepository.updateGenderType(Mockito.any(), Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any()))
+				.thenReturn(0);
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isNotFound());
 
@@ -2139,9 +2139,7 @@ public class MasterdataIntegrationTest {
 		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		when(genderTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any()))
-				.thenReturn(genderType);
-		when(genderTypeRepository.update(Mockito.any()))
+		when(genderTypeRepository.updateGenderType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(put("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());

@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * Controller class for fetching gender data from DB
  * 
+ * @author Urvil Joshi
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
