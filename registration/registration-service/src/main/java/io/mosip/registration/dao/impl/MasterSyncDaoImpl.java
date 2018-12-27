@@ -9,7 +9,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -80,15 +79,12 @@ import io.mosip.registration.repositories.mastersync.MasterSyncDocumentTypeRepos
 import io.mosip.registration.repositories.mastersync.MasterSyncGenderRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncHolidayRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncIdTypeRepository;
-import io.mosip.registration.repositories.mastersync.MasterSyncLanguageRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncLocationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncMachineRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncMachineSpecificationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncMachineTypeRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncReasonCategoryRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncReasonListRepository;
-import io.mosip.registration.repositories.mastersync.MasterSyncRegistrationCenterRepository;
-import io.mosip.registration.repositories.mastersync.MasterSyncRegistrationCenterTypeRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncTemplateFileFormatRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncTemplateRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncTemplateTypeRepository;
@@ -111,107 +107,95 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 	/** Object for Sync Application Repository. */
 	@Autowired
-	MasterSyncApplicationRepository masterSyncApplicationRepository;
+	private MasterSyncApplicationRepository masterSyncApplicationRepository;
 
 	/** Object for Sync Biometric Attribute Repository. */
 	@Autowired
-	MasterSyncBiometricAttributeRepository masterSyncBiometricAttributeRepository;
+	private MasterSyncBiometricAttributeRepository masterSyncBiometricAttributeRepository;
 
 	/** Object for Sync Biometric Type Repository. */
 	@Autowired
-	MasterSyncBiometricTypeRepository masterSyncBiometricTypeRepository;
+	private MasterSyncBiometricTypeRepository masterSyncBiometricTypeRepository;
 
 	/** Object for Sync Blacklisted Words Repository. */
 	@Autowired
-	MasterSyncBlacklistedWordsRepository masterSyncBlacklistedWordsRepository;
+	private MasterSyncBlacklistedWordsRepository masterSyncBlacklistedWordsRepository;
 
 	/** Object for Sync Device Repository. */
 	@Autowired
-	MasterSyncDeviceRepository masterSyncDeviceRepository;
+	private MasterSyncDeviceRepository masterSyncDeviceRepository;
 
 	/** Object for Sync Device Specification Repository. */
 	@Autowired
-	MasterSyncDeviceSpecificationRepository masterSyncDeviceSpecificationRepository;
+	private MasterSyncDeviceSpecificationRepository masterSyncDeviceSpecificationRepository;
 
 	/** Object for Sync Device Type Repository. */
 	@Autowired
-	MasterSyncDeviceTypeRepository masterSyncDeviceTypeRepository;
+	private MasterSyncDeviceTypeRepository masterSyncDeviceTypeRepository;
 
 	/** Object for Sync Document Category Repository. */
 	@Autowired
-	MasterSyncDocumentCategoryRepository masterSyncDocumentCategoryRepository;
+	private MasterSyncDocumentCategoryRepository masterSyncDocumentCategoryRepository;
 
 	/** Object for Sync Document Type Repository. */
 	@Autowired
-	MasterSyncDocumentTypeRepository masterSyncDocumentTypeRepository;
+	private MasterSyncDocumentTypeRepository masterSyncDocumentTypeRepository;
 
 	/** Object for Sync Gender Type Repository. */
 	@Autowired
-	MasterSyncGenderRepository masterSyncGenderRepository;
+	private MasterSyncGenderRepository masterSyncGenderRepository;
 
 	/** Object for Sync Holiday Repository. */
 	@Autowired
-	MasterSyncHolidayRepository masterSyncHolidayRepository;
+	private MasterSyncHolidayRepository masterSyncHolidayRepository;
 
 	/** Object for Sync Id Type Repository. */
 	@Autowired
-	MasterSyncIdTypeRepository masterSyncIdTypeRepository;
-
-	/** Object for Sync Language Repository. */
-	@Autowired
-	MasterSyncLanguageRepository masterSyncLanguageRepository;
+	private MasterSyncIdTypeRepository masterSyncIdTypeRepository;
 
 	/** Object for Sync Location Repository. */
 	@Autowired
-	MasterSyncLocationRepository masterSyncLocationRepository;
+	private MasterSyncLocationRepository masterSyncLocationRepository;
 
 	/** Object for Sync Machine Repository. */
 	@Autowired
-	MasterSyncMachineRepository masterSyncMachineRepository;
+	private MasterSyncMachineRepository masterSyncMachineRepository;
 
 	/** Object for Sync Machine Specification Repository. */
 	@Autowired
-	MasterSyncMachineSpecificationRepository masterSyncMachineSpecificationRepository;
+	private MasterSyncMachineSpecificationRepository masterSyncMachineSpecificationRepository;
 
 	/** Object for Sync Machine Type Repository. */
 	@Autowired
-	MasterSyncMachineTypeRepository masterSyncMachineTypeRepository;
+	private MasterSyncMachineTypeRepository masterSyncMachineTypeRepository;
 
 	/** Object for Sync Reason Category Repository. */
 	@Autowired
-	MasterSyncReasonCategoryRepository masterSyncReasonCategoryRepository;
+	private MasterSyncReasonCategoryRepository masterSyncReasonCategoryRepository;
 
 	/** Object for Sync Reason List Repository. */
 	@Autowired
-	MasterSyncReasonListRepository masterSyncReasonListRepository;
-
-	/** Object for Sync Registration Center Repository. */
-	@Autowired
-	MasterSyncRegistrationCenterRepository masterSyncRegistrationCenterRepository;
-
-	/** Object for Sync Registration Center Type Repository. */
-	@Autowired
-	MasterSyncRegistrationCenterTypeRepository masterSyncRegistrationCenterTypeRepository;
+	private MasterSyncReasonListRepository masterSyncReasonListRepository;
 
 	/** Object for Sync Template File Format Repository. */
 	@Autowired
-	MasterSyncTemplateFileFormatRepository masterSyncTemplateFileFormatRepository;
+	private MasterSyncTemplateFileFormatRepository masterSyncTemplateFileFormatRepository;
 
 	/** Object for Sync Template Repository. */
 	@Autowired
-	MasterSyncTemplateRepository masterSyncTemplateRepository;
+	private MasterSyncTemplateRepository masterSyncTemplateRepository;
 
 	/** Object for Sync Template Type Repository. */
 	@Autowired
-	MasterSyncTemplateTypeRepository masterSyncTemplateTypeRepository;
+	private MasterSyncTemplateTypeRepository masterSyncTemplateTypeRepository;
 
 	/** Object for Sync Title Repository. */
 	@Autowired
-	MasterSyncTitleRepository masterSyncTitleRepository;
+	private MasterSyncTitleRepository masterSyncTitleRepository;
 
 	/** Object for Sync Valid Document Repository. */
 	@Autowired
-	MasterSyncValidDocumentRepository masterSyncValidDocumentRepository;
+	private MasterSyncValidDocumentRepository masterSyncValidDocumentRepository;
 
 	/**
 	 * logger for logging
@@ -224,7 +208,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * @see io.mosip.registration.dao.MasterSyncDao#getMasterSyncStatus()
 	 */
 	@Override
-	public SyncControl getMasterSyncStatus(String synccontrol) {
+	public SyncControl syncJobDetails(String synccontrol) {
 
 		SyncControl syncControlResonse = null;
 
@@ -254,7 +238,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto) {
+	public String save(MasterDataResponseDto masterSyncDto) {
 
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into Insert Master Sync Data..");
@@ -284,7 +268,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<TitleDto> masterTitleDto = masterSyncDto.getTitles();
 		List<GenderDto> masterGenderDto = masterSyncDto.getGenders();
 
-		String sucessResponse = "";
+		String sucessResponse = null;
 
 		try {
 
@@ -379,9 +363,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterSyncReasonListRepository.saveAll(masterReasonListDtoEntity);
 			}
 			if (null != regCenter) {
-				List<MasterRegistrationCenter> registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenter,
+				MetaDataUtils.setCreateMetaData(regCenter,
 						MasterRegistrationCenter.class);
-				// masterSyncRegistrationCenterRepository.saveAll(registrationCenterEntity);
 			}
 			if (null != masterTemplateFileDto) {
 				List<MasterTemplateFileFormat> masterTemplateFileDtoEntity = MetaDataUtils
@@ -409,22 +392,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterSyncValidDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
 			}
 
-		} catch (DataAccessException dataAccessException) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, dataAccessException.getMessage());
-			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
-			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
-					dataAccessException.getMessage());
-		} catch (NullPointerException nullPointerException) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, nullPointerException.getMessage());
-			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
-			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
-					nullPointerException.getMessage());
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
-			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
-			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
-					regBaseUncheckedException.getMessage());
 		} catch (RuntimeException runtimeException) {
+			
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
@@ -435,6 +404,31 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				"Leaving Insert Master Sync Data..");
 
 		return sucessResponse;
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#findLocationByLangCode(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public List<MasterLocation> findLocationByLangCode(String hierarchyCode, String langCode) {
+		return masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLanguageCode(hierarchyCode, langCode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#findLocationByParentLocCode(java.lang
+	 * .String)
+	 */
+	@Override
+	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode) {
+		return masterSyncLocationRepository.findMasterLocationByParentLocCode(parentLocCode);
 	}
 
 }

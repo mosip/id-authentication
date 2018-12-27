@@ -1,5 +1,8 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -222,7 +225,7 @@ public class MasterSyncDaoImplTest {
 
 		Mockito.when(syncStatusRepository.findBySyncJobId(Mockito.anyString())).thenReturn(masterSyncDetails);
 
-		masterSyncDaoImpl.getMasterSyncStatus("MDS_J00001");
+		masterSyncDaoImpl.syncJobDetails("MDS_J00001");
 
 	}
 
@@ -231,9 +234,9 @@ public class MasterSyncDaoImplTest {
 	public void testMasterSyncExceptionThrown() throws RegBaseUncheckedException {
 
 		try {
-			Mockito.when(masterSyncDaoImpl.getMasterSyncStatus(Mockito.anyString()))
+			Mockito.when(masterSyncDaoImpl.syncJobDetails(Mockito.anyString()))
 					.thenThrow(RegBaseUncheckedException.class);
-			masterSyncDaoImpl.getMasterSyncStatus("MDS_J00001");
+			masterSyncDaoImpl.syncJobDetails("MDS_J00001");
 		} catch (Exception exception) {
 
 		}
@@ -244,52 +247,51 @@ public class MasterSyncDaoImplTest {
 
 		PowerMockito.mockStatic(MetaDataUtils.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
-		
+
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
-		
-		
-		List<DeviceTypeDto> masterDeviceTypeDto=new ArrayList<>();
-		
+
+		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
+
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
-		
-		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity=new ArrayList<>();
+
+		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity = new ArrayList<>();
 		masterSyncDto.setDeviceSpecifications(masterDeviceSpecificDtoEntity);
-		
+
 		List<DeviceDto> masterDeviceDto = new ArrayList<>();
-		
+
 		masterSyncDto.setDevices(masterDeviceDto);
-		
+
 		List<HolidayDto> masterHolidaysDto = new ArrayList<>();
 		masterSyncDto.setHolidays(masterHolidaysDto);
-		
+
 		List<MachineDto> masterMachineDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
+
 		List<MachineSpecificationDto> masterMachineSpecDto = new ArrayList<>();
 		masterSyncDto.setMachineSpecification(masterMachineSpecDto);
-		
+
 		List<MachineTypeDto> masterMachineTypeDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
-		List<ValidDocumentDto> masterValidDocumnetsDto=new ArrayList<>();
+
+		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
-		
+
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
-		
+
 		List<TemplateTypeDto> masterTemplateTypeDto = new ArrayList<>();
 		masterSyncDto.setTemplatesTypes(masterTemplateTypeDto);
-		
+
 		List<TemplateFileFormatDto> masterTemplateFileDto = new ArrayList<>();
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
-		
-		List<RegistrationCenterDto> regCenter=new ArrayList<>();
+
+		List<RegistrationCenterDto> regCenter = new ArrayList<>();
 		masterSyncDto.setRegistrationCenter(regCenter);
-		
-		List<MachineTypeDto> masterMachineType=new ArrayList<>();
+
+		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
-		
+
 		List<MasterSyncBaseEntity> baseEnity = new ArrayList<>();
 		// Language
 		List<LanguageDto> language = new ArrayList<>();
@@ -675,7 +677,7 @@ public class MasterSyncDaoImplTest {
 		 * thenReturn(validDocuments);
 		 */
 
-		masterSyncDaoImpl.insertMasterSyncData(masterSyncDto);
+		masterSyncDaoImpl.save(masterSyncDto);
 
 	}
 
@@ -687,49 +689,48 @@ public class MasterSyncDaoImplTest {
 
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
-		
-		
-		List<DeviceTypeDto> masterDeviceTypeDto=new ArrayList<>();
-		
+
+		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
+
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
-		
-		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity=new ArrayList<>();
+
+		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity = new ArrayList<>();
 		masterSyncDto.setDeviceSpecifications(masterDeviceSpecificDtoEntity);
-		
+
 		List<DeviceDto> masterDeviceDto = new ArrayList<>();
-		
+
 		masterSyncDto.setDevices(masterDeviceDto);
-		
+
 		List<HolidayDto> masterHolidaysDto = new ArrayList<>();
 		masterSyncDto.setHolidays(masterHolidaysDto);
-		
+
 		List<MachineDto> masterMachineDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
+
 		List<MachineSpecificationDto> masterMachineSpecDto = new ArrayList<>();
 		masterSyncDto.setMachineSpecification(masterMachineSpecDto);
-		
+
 		List<MachineTypeDto> masterMachineTypeDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
-		List<ValidDocumentDto> masterValidDocumnetsDto=new ArrayList<>();
+
+		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
-		
+
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
-		
+
 		List<TemplateTypeDto> masterTemplateTypeDto = new ArrayList<>();
 		masterSyncDto.setTemplatesTypes(masterTemplateTypeDto);
-		
+
 		List<TemplateFileFormatDto> masterTemplateFileDto = new ArrayList<>();
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
-		
-		List<RegistrationCenterDto> regCenter=new ArrayList<>();
+
+		List<RegistrationCenterDto> regCenter = new ArrayList<>();
 		masterSyncDto.setRegistrationCenter(regCenter);
-		
-		List<MachineTypeDto> masterMachineType=new ArrayList<>();
+
+		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
-		
+
 		List<MasterSyncBaseEntity> baseEnity = new ArrayList<>();
 		// Language
 		List<LanguageDto> language = new ArrayList<>();
@@ -838,7 +839,7 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
-		
+
 		// Machine
 		List<MasterMachine> machines = new ArrayList<>();
 		MasterMachine machine = new MasterMachine();
@@ -850,68 +851,67 @@ public class MasterSyncDaoImplTest {
 		machine.setName("Laptop");
 		machine.setLangCode("ENG");
 		machines.add(machine);
-		List<MasterApplication> masterApplicationDtoEntity=new ArrayList<>();
+		List<MasterApplication> masterApplicationDtoEntity = new ArrayList<>();
 		try {
 			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
-			.thenThrow(new RuntimeException().getClass());
-			masterSyncDaoImpl.insertMasterSyncData(masterSyncDto);
-			
+					.thenThrow(new RuntimeException().getClass());
+			masterSyncDaoImpl.save(masterSyncDto);
+
 		} catch (Exception exception) {
 
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMasterSyncNullException(){
+	public void testMasterSyncNullException() {
 		PowerMockito.mockStatic(RegBaseUncheckedException.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
 
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
-		
-		
-		List<DeviceTypeDto> masterDeviceTypeDto=new ArrayList<>();
-		
+
+		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
+
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
-		
-		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity=new ArrayList<>();
+
+		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity = new ArrayList<>();
 		masterSyncDto.setDeviceSpecifications(masterDeviceSpecificDtoEntity);
-		
+
 		List<DeviceDto> masterDeviceDto = new ArrayList<>();
-		
+
 		masterSyncDto.setDevices(masterDeviceDto);
-		
+
 		List<HolidayDto> masterHolidaysDto = new ArrayList<>();
 		masterSyncDto.setHolidays(masterHolidaysDto);
-		
+
 		List<MachineDto> masterMachineDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
+
 		List<MachineSpecificationDto> masterMachineSpecDto = new ArrayList<>();
 		masterSyncDto.setMachineSpecification(masterMachineSpecDto);
-		
+
 		List<MachineTypeDto> masterMachineTypeDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
-		List<ValidDocumentDto> masterValidDocumnetsDto=new ArrayList<>();
+
+		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
-		
+
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
-		
+
 		List<TemplateTypeDto> masterTemplateTypeDto = new ArrayList<>();
 		masterSyncDto.setTemplatesTypes(masterTemplateTypeDto);
-		
+
 		List<TemplateFileFormatDto> masterTemplateFileDto = new ArrayList<>();
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
-		
-		List<RegistrationCenterDto> regCenter=new ArrayList<>();
+
+		List<RegistrationCenterDto> regCenter = new ArrayList<>();
 		masterSyncDto.setRegistrationCenter(regCenter);
-		
-		List<MachineTypeDto> masterMachineType=new ArrayList<>();
+
+		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
-		
+
 		List<MasterSyncBaseEntity> baseEnity = new ArrayList<>();
 		// Language
 		List<LanguageDto> language = new ArrayList<>();
@@ -1020,7 +1020,7 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
-		
+
 		// Machine
 		List<MasterMachine> machines = new ArrayList<>();
 		MasterMachine machine = new MasterMachine();
@@ -1032,68 +1032,68 @@ public class MasterSyncDaoImplTest {
 		machine.setName("Laptop");
 		machine.setLangCode("ENG");
 		machines.add(machine);
-		List<MasterApplication> masterApplicationDtoEntity=new ArrayList<>();
+		List<MasterApplication> masterApplicationDtoEntity = new ArrayList<>();
 		try {
 			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
-			.thenThrow(new DataAccessException("..."){ });
-			masterSyncDaoImpl.insertMasterSyncData(masterSyncDto);
-			
+					.thenThrow(new DataAccessException("...") {
+					});
+			masterSyncDaoImpl.save(masterSyncDto);
+
 		} catch (Exception exception) {
 
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMasterSyncDataException(){
+	public void testMasterSyncDataException() {
 		PowerMockito.mockStatic(RegBaseUncheckedException.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
 
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
-		
-		
-		List<DeviceTypeDto> masterDeviceTypeDto=new ArrayList<>();
-		
+
+		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
+
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
-		
-		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity=new ArrayList<>();
+
+		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity = new ArrayList<>();
 		masterSyncDto.setDeviceSpecifications(masterDeviceSpecificDtoEntity);
-		
+
 		List<DeviceDto> masterDeviceDto = new ArrayList<>();
-		
+
 		masterSyncDto.setDevices(masterDeviceDto);
-		
+
 		List<HolidayDto> masterHolidaysDto = new ArrayList<>();
 		masterSyncDto.setHolidays(masterHolidaysDto);
-		
+
 		List<MachineDto> masterMachineDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
+
 		List<MachineSpecificationDto> masterMachineSpecDto = new ArrayList<>();
 		masterSyncDto.setMachineSpecification(masterMachineSpecDto);
-		
+
 		List<MachineTypeDto> masterMachineTypeDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
-		List<ValidDocumentDto> masterValidDocumnetsDto=new ArrayList<>();
+
+		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
-		
+
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
-		
+
 		List<TemplateTypeDto> masterTemplateTypeDto = new ArrayList<>();
 		masterSyncDto.setTemplatesTypes(masterTemplateTypeDto);
-		
+
 		List<TemplateFileFormatDto> masterTemplateFileDto = new ArrayList<>();
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
-		
-		List<RegistrationCenterDto> regCenter=new ArrayList<>();
+
+		List<RegistrationCenterDto> regCenter = new ArrayList<>();
 		masterSyncDto.setRegistrationCenter(regCenter);
-		
-		List<MachineTypeDto> masterMachineType=new ArrayList<>();
+
+		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
-		
+
 		List<MasterSyncBaseEntity> baseEnity = new ArrayList<>();
 		// Language
 		List<LanguageDto> language = new ArrayList<>();
@@ -1202,7 +1202,7 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
-		
+
 		// Machine
 		List<MasterMachine> machines = new ArrayList<>();
 		MasterMachine machine = new MasterMachine();
@@ -1214,67 +1214,68 @@ public class MasterSyncDaoImplTest {
 		machine.setName("Laptop");
 		machine.setLangCode("ENG");
 		machines.add(machine);
-		List<MasterApplication> masterApplicationDtoEntity=new ArrayList<>();
+		List<MasterApplication> masterApplicationDtoEntity = new ArrayList<>();
 		try {
 			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
-			.thenThrow(new NullPointerException("..."){ });
-			masterSyncDaoImpl.insertMasterSyncData(masterSyncDto);
-			
+					.thenThrow(new NullPointerException("...") {
+					});
+			masterSyncDaoImpl.save(masterSyncDto);
+
 		} catch (Exception exception) {
 
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMasterSyncRegException(){
+	public void testMasterSyncRegException() {
 		PowerMockito.mockStatic(RegBaseUncheckedException.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
 
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
-		
-		
-		List<DeviceTypeDto> masterDeviceTypeDto=new ArrayList<>();
-		
+
+		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
+
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
-		
-		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity=new ArrayList<>();
+
+		List<DeviceSpecificationDto> masterDeviceSpecificDtoEntity = new ArrayList<>();
 		masterSyncDto.setDeviceSpecifications(masterDeviceSpecificDtoEntity);
-		
+
 		List<DeviceDto> masterDeviceDto = new ArrayList<>();
-		
+
 		masterSyncDto.setDevices(masterDeviceDto);
-		
+
 		List<HolidayDto> masterHolidaysDto = new ArrayList<>();
 		masterSyncDto.setHolidays(masterHolidaysDto);
-		
+
 		List<MachineDto> masterMachineDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
+
 		List<MachineSpecificationDto> masterMachineSpecDto = new ArrayList<>();
 		masterSyncDto.setMachineSpecification(masterMachineSpecDto);
-		
+
 		List<MachineTypeDto> masterMachineTypeDto = new ArrayList<>();
 		masterSyncDto.setMachineDetails(masterMachineDto);
-		
-		List<ValidDocumentDto> masterValidDocumnetsDto=new ArrayList<>();
+
+		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
-		
+
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
-		
+
 		List<TemplateTypeDto> masterTemplateTypeDto = new ArrayList<>();
 		masterSyncDto.setTemplatesTypes(masterTemplateTypeDto);
-		
+
 		List<TemplateFileFormatDto> masterTemplateFileDto = new ArrayList<>();
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
-		
-		List<RegistrationCenterDto> regCenter=new ArrayList<>();
+
+		List<RegistrationCenterDto> regCenter = new ArrayList<>();
 		masterSyncDto.setRegistrationCenter(regCenter);
-		
-		List<MachineTypeDto> masterMachineType=new ArrayList<>();
+
+		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
-		
+
 		List<MasterSyncBaseEntity> baseEnity = new ArrayList<>();
 		// Language
 		List<LanguageDto> language = new ArrayList<>();
@@ -1383,7 +1384,7 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
-		
+
 		// Machine
 		List<MasterMachine> machines = new ArrayList<>();
 		MasterMachine machine = new MasterMachine();
@@ -1395,16 +1396,56 @@ public class MasterSyncDaoImplTest {
 		machine.setName("Laptop");
 		machine.setLangCode("ENG");
 		machines.add(machine);
-		List<MasterApplication> masterApplicationDtoEntity=new ArrayList<>();
+		List<MasterApplication> masterApplicationDtoEntity = new ArrayList<>();
 		try {
 			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
-			.thenThrow(RegBaseUncheckedException.class);
-			masterSyncDaoImpl.insertMasterSyncData(masterSyncDto);
-			
+					.thenThrow(RegBaseUncheckedException.class);
+			masterSyncDaoImpl.save(masterSyncDto);
+
 		} catch (Exception exception) {
 
 		}
 	}
+
+	@Test
+	public void findLocationByLangCode() throws RegBaseCheckedException {
+
+		List<MasterLocation> locations = new ArrayList<>();
+		MasterLocation locattion = new MasterLocation();
+		locattion.setCode("LOC01");
+		locattion.setName("english");
+		locattion.setLanguageCode("ENG");
+		locattion.setHierarchyLevel(1);
+		locattion.setHierarchyName("english");
+		locattion.setParentLocCode("english");
+		locations.add(locattion);
+
+		Mockito.when(masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLanguageCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(locations);
+		
+		masterSyncDaoImpl.findLocationByLangCode("Region", "ENG");
+
+		assertTrue(locations != null);
+	}
 	
+	@Test
+	public void findLocationByParentLocCode() throws RegBaseCheckedException {
+
+		List<MasterLocation> locations = new ArrayList<>();
+		MasterLocation locattion = new MasterLocation();
+		locattion.setCode("LOC01");
+		locattion.setName("english");
+		locattion.setLanguageCode("ENG");
+		locattion.setHierarchyLevel(1);
+		locattion.setHierarchyName("english");
+		locattion.setParentLocCode("english");
+		locations.add(locattion);
+
+		Mockito.when(masterSyncLocationRepository.findMasterLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
+		
+		masterSyncDaoImpl.findLocationByParentLocCode("TPT");
+
+		assertTrue(locations != null);
+	}
 
 }

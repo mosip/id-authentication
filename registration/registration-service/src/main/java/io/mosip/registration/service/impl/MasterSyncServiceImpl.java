@@ -9,13 +9,16 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,8 +30,10 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -55,14 +60,17 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.
+	 * String)
 	 */
 	@Override
 	public ResponseDTO getMasterSync(String masterSyncDtls) {
 
 		ResponseDTO responseDTO = null;
+		String resoponse = null;
 
 		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 
@@ -85,7 +93,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		try {
 
 			// getting Last Sync date from Data from sync table
-			masterSyncDetails = masterSyncDao.getMasterSyncStatus(masterSyncDtls);
+			masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
 
 			Timestamp lastSyncTime = masterSyncDetails.getLastSyncDtimes();
 
@@ -112,7 +120,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				MasterDataResponseDto masterSyncDto = objectMapper.readValue(masterSyncJson.toString(),
 						MasterDataResponseDto.class);
 
-				masterSyncDao.insertMasterSyncData(masterSyncDto);
+				resoponse = masterSyncDao.save(masterSyncDto);
 
 				LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-ENDS");
 
@@ -128,49 +136,31 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 			}
 
-		} catch (IOException ioException) {
+		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-
-		} catch (NullPointerException nullPointerException) {
-
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, nullPointerException.getMessage());
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + resoponse);
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+		} catch (RuntimeException | IOException runtimeException) {
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseCheckedException.getMessage());
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + resoponse);
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-		} catch (RuntimeException runtimeException) {
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-		}
+		} 
+		
 		return responseDTO;
 	}
-
-	
 
 	/**
 	 * Gets the master sync json.
 	 *
-	 * @param machineId the machine id
+	 * @param machineId    the machine id
 	 * @param lastSyncTime the last sync time
 	 * @return the master sync json
 	 * @throws RegBaseCheckedException the reg base checked exception
@@ -206,7 +196,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * Builds the error respone.
 	 *
 	 * @param errorCode the error code
-	 * @param message the message
+	 * @param message   the message
 	 * @return the response DTO
 	 */
 	private ResponseDTO buildErrorRespone(final String errorCode, final String message) {
@@ -229,4 +219,55 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		return response;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#findLocationByHierarchyCode(
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode) {
+
+		List<LocationDto> locationDto = new ArrayList<>();
+
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
+
+		for (MasterLocation masLocation : masterLocation) {
+			LocationDto location = new LocationDto();
+			location.setCode(masLocation.getCode());
+			location.setHierarchyName(masLocation.getHierarchyName());
+			location.setName(masLocation.getName());
+			location.setLanguageCode(masLocation.getLanguageCode());
+			locationDto.add(location);
+		}
+
+		return locationDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#findProvianceByHierarchyCode(
+	 * java.lang.String)
+	 */
+	@Override
+	public List<LocationDto> findProvianceByHierarchyCode(String code) {
+
+		List<LocationDto> locationDto = new ArrayList<>();
+
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code);
+
+		for (MasterLocation masLocation : masterLocation) {
+			LocationDto location = new LocationDto();
+			location.setCode(masLocation.getCode());
+			location.setHierarchyName(masLocation.getHierarchyName());
+			location.setName(masLocation.getName());
+			location.setLanguageCode(masLocation.getLanguageCode());
+			locationDto.add(location);
+		}
+
+		return locationDto;
+	}
 }
