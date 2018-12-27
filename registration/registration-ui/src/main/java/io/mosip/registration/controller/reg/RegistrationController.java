@@ -1,5 +1,9 @@
 package io.mosip.registration.controller.reg;
 
+																																						
+
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,31 +19,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,8 +66,58 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import io.mosip.registration.util.kernal.RIDGenerator;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+			
+		   
+			
+	  
+		 
+	   
+		 
+		
+		   
+		   
+		  
+			
+		  
+			
+		   
+			
+		
+		 
+		  
+		   
+		
+		 
+		 
+		
 
 /**
  * Class for Registration Page Controller
@@ -145,6 +174,12 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane childSpecificFields;
+
+	 @FXML
+	private ScrollPane demoScrollPane;
+	   
+								   
+	 
 
 	private SimpleBooleanProperty switchedOn;
 
@@ -315,11 +350,22 @@ public class RegistrationController extends BaseController {
 	private FXComponents fxComponents;
 
 	@FXML
+	private Text paneLabel;
+	@FXML
+	private AnchorPane dateAnchorPane;
+	@FXML
+	private AnchorPane addressAnchorPane;
+	@FXML
+	private Label preRegistrationLabel;
+
+	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
+			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight() - 5);
+					
+		auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -371,9 +417,42 @@ public class RegistrationController extends BaseController {
 			accord.setExpandedPane(demoGraphicTitlePane);
 			fxComponents.dateFormatter(ageDatePicker);
 			fxComponents.disableFutureDays(ageDatePicker);
+
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
+if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+
+				ObservableList<Node> nodes = demoGraphicPane1.getChildren();
+
+				for (Node node : nodes) {
+					node.setDisable(true);
+				}
+				paneLabel.setText("/ UIN Update");
+				fetchBtn.setVisible(false);
+				headerImage.setVisible(false);
+				nextBtn.setDisable(false);
+				preRegistrationLabel.setText("UIN");
+
+				preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
+
+				childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
+
+				fullName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
+				fullNameLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
+
+				dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
+
+				gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+
+				addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+
+				mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+				emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+
+				cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			}																 
+		  
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -426,6 +505,7 @@ public class RegistrationController extends BaseController {
 			mobileNo.setText(demo.getIdentity().getPhone().getValue());
 			emailId.setText(demo.getIdentity().getEmail().getValue());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
+   
 			populateFieldValue(localAdminAuthority, null,
 					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
 
@@ -654,6 +734,7 @@ public class RegistrationController extends BaseController {
 
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			DemographicInfoDTO demographicInfoDTO;
+
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 
@@ -684,6 +765,14 @@ public class RegistrationController extends BaseController {
 														.toInstant()),
 												"yyyy/MM/dd")))
 										.get()))
+	
+																																													   
+															   
+																				 
+																				 
+																	 
+																	 
+  
 								.with(identity -> identity.setAge(ageField.getText()))
 								.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder
 										.build(ArrayPropertiesDTO.class)
@@ -706,6 +795,7 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine1.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
+																						  
 														.with(value -> value
 																.setValue(addressLine1LocalLanguage.getText()))
 														.get()))
@@ -720,6 +810,7 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine2.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
+																						  
 														.with(value -> value
 																.setValue(addressLine2LocalLanguage.getText()))
 														.get()))
@@ -734,6 +825,7 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine3.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
+																						  
 														.with(value -> value
 																.setValue(addressLine3LocalLanguage.getText()))
 														.get()))
@@ -775,6 +867,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 								.with(identity -> identity.setPostalCode(postalCode.getText()))
+																						  
 								.with(identity -> identity.setPhone(Builder.build(SimplePropertiesDTO.class)
 										.with(value -> value.setLabel("Land Line"))
 										.with(value -> value.setValue(mobileNo.getText())).get()))
@@ -816,11 +909,14 @@ public class RegistrationController extends BaseController {
 				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
 
 				if (isChild) {
+
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+
 					registrationMetaDataDTO.setApplicationType("Child");
 				} else {
 					registrationMetaDataDTO.setApplicationType("Adult");
 				}
+
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
 				registrationDTO.setPreRegistrationId(preRegistrationId.getText());

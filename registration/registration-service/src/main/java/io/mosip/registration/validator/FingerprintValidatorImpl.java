@@ -31,10 +31,10 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		if (RegistrationConstants.FINGER_PRINT_SINGLE.equals(fingerPrintType)) {
+		if (RegistrationConstants.FINGER_PRINT_SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));
-		} else if (RegistrationConstants.FINGER_PRINT_MULTIPLE.equals(fingerPrintType)) {
+		} else if (RegistrationConstants.FINGER_PRINT_MULTIPLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateManyToManyFP(authenticationValidatorDTO.getFingerPrintDetails());
 		}
 		return false;

@@ -189,6 +189,7 @@ public class UINUpdateController extends BaseController implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 		registrationController.createRegistrationDTOObject();
 		switchedOn = new SimpleBooleanProperty(false);
+		isChild=switchedOn.get();
 		toggleFunction();
 	}
 
