@@ -1,17 +1,19 @@
 package io.mosip.demo.authentication.service.impl.indauth.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 
-import java.util.Map;
-
-import javax.crypto.SecretKey;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -229,9 +231,37 @@ public class Encrypt {
 
 		}
 
-		public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
+		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String arg1)
 				throws CertificateException {
 			// TODO Auto-generated method stub
+						InputStream inStream = null;
+						
+						// String filename = System.getProperty("JAVA_HOME")
+						//	        + "/jre/lib/security/cacerts".replace('/', File.separatorChar);
+						 try {
+							 // Loading the CA cert
+							 URL url = getClass().getResource("tcp/cacert.pem");
+							inStream = new FileInputStream(url.getFile());
+							//inStream = new FileInputStream(filename);
+							CertificateFactory  cf= CertificateFactory.getInstance("X.509");
+							X509Certificate  caCertificate = (X509Certificate) cf.generateCertificate(inStream);
+							
+							inStream.close();
+							
+							// Verifing  CA Certificate by public key
+							for(X509Certificate cert : certs) {
+								
+								if (cert.equals(caCertificate)) {
+									cert.verify(caCertificate.getPublicKey());
+									//If we end here certificate is trusted. Check if it has expired.
+									cert.checkValidity();
+								}
+								
+							}
+							
+						} catch (Exception  e) {
+							
+						}
 
 		}
 	} };
