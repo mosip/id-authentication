@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -158,6 +160,7 @@ public class TitleServiceImpl implements TitleService {
 	 * java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public CodeResponseDto deleteTitle(String code) {
 		try {
 
