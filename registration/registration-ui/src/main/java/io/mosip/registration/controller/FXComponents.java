@@ -12,6 +12,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.Validations;
 import javafx.scene.Scene;
 import javafx.scene.control.DateCell;
@@ -56,7 +57,7 @@ public class FXComponents {
 	 */
 	public void validateOnType(TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue,oldValue,newValue)-> {
-				if (!validation.validateTextField(field, field.getId() + "_ontype")) {
+				if (!validation.validateTextField(field, field.getId() + "_ontype" ,(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
 					field.setText(oldValue);
 				}
 		});
@@ -67,7 +68,7 @@ public class FXComponents {
 	 */
 	public void validateOnType(TextField field, Validations validation, TextField localField) {
 		field.textProperty().addListener((obsValue,oldValue,newValue)-> {
-				if (!validation.validateTextField(field, field.getId() + "_ontype")) {
+				if (!validation.validateTextField(field, field.getId() + "_ontype", (String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
 					field.setText(oldValue);
 				} else {
 					localField.setText(field.getText());

@@ -82,6 +82,16 @@ public class BaseController {
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
+	
+	protected StringBuilder validationMessage;
+
+	public StringBuilder getValidationMessage() {
+		return validationMessage;
+	}
+
+	public void setValidationMessage() {
+		this.validationMessage = new StringBuilder();
+	}
 
 	/**
 	 * Instance of {@link MosipLogger}
@@ -178,6 +188,32 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.showAndWait();
 	}
+	
+	
+	/**
+	 * 
+	 * /* Alert creation with specified title, header, and context
+	 * 
+	 * @param alertType
+	 *            type of alert
+	 * @param header
+	 *            alert header
+	 * @param context
+	 *            alert context
+	 */
+	protected void generateValidationAlert(String context, String isConsolidated) {
+		if (isConsolidated.equals("N")) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setHeaderText(null);
+			alert.setContentText(context);
+			alert.setGraphic(null);
+			alert.showAndWait();
+		} else {
+			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));
+		}
+	}
+	
+	
 
 	protected ResponseDTO validateSyncStatus() {
 

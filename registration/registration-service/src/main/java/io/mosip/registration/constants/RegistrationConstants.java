@@ -658,6 +658,7 @@ public class RegistrationConstants {
 
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
+	public static final String IS_CONSOLIDATED = "isConsolidated";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";

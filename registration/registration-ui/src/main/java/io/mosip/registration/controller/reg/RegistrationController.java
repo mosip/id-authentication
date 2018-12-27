@@ -30,12 +30,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -352,7 +354,7 @@ public class RegistrationController extends BaseController {
 							headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 						}
 					});
-
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "N");
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleAgeOrDobField = false;
@@ -405,14 +407,17 @@ public class RegistrationController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
-			
+
 			DemographicInfoDTO demo = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO();
-			
+
 			populateFieldValue(fullName, fullNameLocalLanguage, demo.getIdentity().getFullName().getValues());
 			populateFieldValue(gender, null, demo.getIdentity().getGender().getValues());
-			populateFieldValue(addressLine1, addressLine1LocalLanguage, demo.getIdentity().getAddressLine1().getValues());
-			populateFieldValue(addressLine2, addressLine2LocalLanguage, demo.getIdentity().getAddressLine2().getValues());
-			populateFieldValue(addressLine3, addressLine3LocalLanguage, demo.getIdentity().getAddressLine3().getValues());
+			populateFieldValue(addressLine1, addressLine1LocalLanguage,
+					demo.getIdentity().getAddressLine1().getValues());
+			populateFieldValue(addressLine2, addressLine2LocalLanguage,
+					demo.getIdentity().getAddressLine2().getValues());
+			populateFieldValue(addressLine3, addressLine3LocalLanguage,
+					demo.getIdentity().getAddressLine3().getValues());
 			populateFieldValue(region, null, demo.getIdentity().getRegion().getValues());
 			populateFieldValue(province, null, demo.getIdentity().getProvince().getValues());
 			populateFieldValue(city, null, demo.getIdentity().getCity().getValues());
@@ -421,13 +426,15 @@ public class RegistrationController extends BaseController {
 			mobileNo.setText(demo.getIdentity().getPhone().getValue());
 			emailId.setText(demo.getIdentity().getEmail().getValue());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
-			populateFieldValue(localAdminAuthority, null, demo.getIdentity().getLocalAdministrativeAuthority().getValues());
-			
-			if (demo.getIdentity().getParentOrGuardianRIDOrUIN() != null && !demo.getIdentity().getParentOrGuardianRIDOrUIN().isEmpty()) {
+			populateFieldValue(localAdminAuthority, null,
+					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
+
+			if (demo.getIdentity().getParentOrGuardianRIDOrUIN() != null
+					&& !demo.getIdentity().getParentOrGuardianRIDOrUIN().isEmpty()) {
 				populateFieldValue(parentName, null, demo.getIdentity().getParentOrGuardianName().getValues());
 				uinId.setText(demo.getIdentity().getParentOrGuardianRIDOrUIN());
 			}
-			
+
 			if (demo.getIdentity().getDateOfBirth().getValue() != null && getAgeDatePickerContent() != null
 					&& dobSelectionFromCalendar) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
@@ -623,7 +630,7 @@ public class RegistrationController extends BaseController {
 				keyboardNode.setLayoutY(120.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
-			
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -644,7 +651,7 @@ public class RegistrationController extends BaseController {
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			
+
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			DemographicInfoDTO demographicInfoDTO;
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
@@ -652,13 +659,13 @@ public class RegistrationController extends BaseController {
 
 			String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
 			String localLanguageCode = AppConfig.getApplicationProperty("local_language");
-			
+
 			if (validateDemographicPaneTwo()) {
-				
+
 				demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
 						.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
-								.with(identity -> identity.setFullName((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-										.with(name -> name.setLabel("First Name"))
+								.with(identity -> identity.setFullName((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class).with(name -> name.setLabel("First Name"))
 										.with(name -> name.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(platformLanguageCode))
@@ -678,7 +685,8 @@ public class RegistrationController extends BaseController {
 												"yyyy/MM/dd")))
 										.get()))
 								.with(identity -> identity.setAge(ageField.getText()))
-								.with(identity -> identity.setGender((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(genderValue -> genderValue.setLabel("Gender"))
 										.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -689,7 +697,8 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(gender.getValue())).get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(addressValue -> addressValue.setLabel("Address Line 1"))
 										.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -697,11 +706,13 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine1.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(addressLine1LocalLanguage.getText()))
+														.with(value -> value
+																.setValue(addressLine1LocalLanguage.getText()))
 														.get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(addressValue -> addressValue.setLabel("Address Line 2"))
 										.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -709,11 +720,13 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine2.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(addressLine2LocalLanguage.getText()))
+														.with(value -> value
+																.setValue(addressLine2LocalLanguage.getText()))
 														.get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(addressValue -> addressValue.setLabel("Address Line 3"))
 										.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -721,11 +734,13 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(addressLine3.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(addressLine3LocalLanguage.getText()))
+														.with(value -> value
+																.setValue(addressLine3LocalLanguage.getText()))
 														.get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setRegion((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setRegion((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(regionValue -> regionValue.setLabel("Region"))
 										.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -736,7 +751,8 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(region.getText())).get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setProvince((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setProvince((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(provinceValue -> provinceValue.setLabel("Province"))
 										.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -747,8 +763,8 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(province.getText())).get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setCity((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-										.with(cityValue -> cityValue.setLabel("City"))
+								.with(identity -> identity.setCity((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class).with(cityValue -> cityValue.setLabel("City"))
 										.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(platformLanguageCode))
@@ -759,25 +775,31 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 								.with(identity -> identity.setPostalCode(postalCode.getText()))
-								.with(identity -> identity.setPhone(
-										Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
-												.with(value -> value.setValue(mobileNo.getText())).get()))
+								.with(identity -> identity.setPhone(Builder.build(SimplePropertiesDTO.class)
+										.with(value -> value.setLabel("Land Line"))
+										.with(value -> value.setValue(mobileNo.getText())).get()))
 								.with(identity -> identity.setEmail(Builder.build(SimplePropertiesDTO.class)
 										.with(value -> value.setLabel("Business Email"))
 										.with(value -> value.setValue(emailId.getText())).get()))
 								.with(identity -> identity.setCnieNumber(cniOrPinNumber.getText()))
-								.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-										.with(localAdminAuthValue -> localAdminAuthValue.setLabel("Local Administrative Authority"))
-										.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
+								.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
+										.with(localAdminAuthValue -> localAdminAuthValue
+												.setLabel("Local Administrative Authority"))
+										.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder
+												.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(platformLanguageCode))
-														.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+														.with(value -> value.setValue(localAdminAuthority.getText()))
+														.get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+														.with(value -> value.setValue(localAdminAuthority.getText()))
+														.get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
+								.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO) Builder
+										.build(ArrayPropertiesDTO.class)
 										.with(parentValue -> parentValue.setLabel("Parent/Guardian"))
 										.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -790,7 +812,7 @@ public class RegistrationController extends BaseController {
 										.get()))
 								.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText())).get()))
 						.get();
-				
+
 				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
 
 				if (isChild) {
@@ -1099,7 +1121,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype")) {
+				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype", "N")) {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
@@ -1236,7 +1258,10 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("localAdminAuthority");
 		excludedIds.add("virtualKeyboard");
 		validation.setChild(isChild);
-		gotoNext = validation.validateTheFields(demoGraphicPane1, excludedIds, gotoNext);
+		validation.setValidationMessage();
+		gotoNext = validation.validate(demoGraphicPane1, excludedIds, gotoNext);
+		displayValidationMessage(validation.getValidationMessage().toString());
+
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
 		return gotoNext;
@@ -1254,8 +1279,9 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
 		boolean gotoNext = true;
 		List<String> excludedIds = new ArrayList<String>();
-		gotoNext = validation.validateTheFields(demoGraphicPane2, excludedIds, gotoNext);
-
+		validation.setValidationMessage();
+		gotoNext = validation.validate(demoGraphicPane2, excludedIds, gotoNext);
+		displayValidationMessage(validation.getValidationMessage().toString());
 		return gotoNext;
 	}
 
@@ -1314,6 +1340,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	public void clickMe() {
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "Y");
+		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
 		switchedOn.set(true);
@@ -1328,11 +1356,34 @@ public class RegistrationController extends BaseController {
 		province.setText("Tamilnadu");
 		postalCode.setText("60011");
 		localAdminAuthority.setText("MindTree");
-		mobileNo.setText("866769383");
+		mobileNo.setText("8667693837");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
+		displayValidationMessage(validation.getValidationMessage().toString());
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "N");
+	}
+
+	/**
+	 * Display the validation failure messages
+	 */
+	private void displayValidationMessage(String validationMessage) {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
+		if (validationMessage.length() > 0) {
+			TextArea view = new TextArea(validationMessage);
+			view.setEditable(false);
+			Scene scene = new Scene(new StackPane(view), 300, 200);
+			Stage primaryStage = new Stage();
+			primaryStage.setTitle("Invalid input");
+			primaryStage.setScene(scene);
+			primaryStage.sizeToScene();
+			primaryStage.show();
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
+		}
 	}
 
 	@FXML
