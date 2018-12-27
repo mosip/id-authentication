@@ -20,8 +20,9 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request", "A0109"),
 	OTP_NOT_PRESENT("IDA-OTA-008", "Missing OTP value", "A0110"),
-	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
-	BLOCKED_OTP("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
+	//REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
+	BLOCKED_OTP_TO_GENERATE("IDA-OTA-010", "Could not generate OTP as UIN is locked "),
+	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
 
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),

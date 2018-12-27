@@ -74,14 +74,31 @@ public class OTPManager {
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
 		try {
+
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
 			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+
 		} catch (RestServiceException e) {
+
+			Optional<Object> responseBody = e.getResponseBody();
+			if (responseBody.isPresent()) {
+				otpGeneratorResponsetDto = (OtpGeneratorResponseDto) responseBody.get();
+				String status = otpGeneratorResponsetDto.getStatus();
+				String message = otpGeneratorResponsetDto.getMessage();
+				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
+						&& message.equalsIgnoreCase(USER_BLOCKED)) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_GENERATE);
+
+				}
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			}
+
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
@@ -120,7 +137,8 @@ public class OTPManager {
 				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
 						if (message.equalsIgnoreCase(USER_BLOCKED)) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP);
+							throw new IdAuthenticationBusinessException(
+									IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
 						} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
