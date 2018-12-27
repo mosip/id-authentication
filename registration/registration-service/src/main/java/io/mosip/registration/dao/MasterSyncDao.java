@@ -1,8 +1,9 @@
 package io.mosip.registration.dao;
 
-import io.mosip.registration.dto.mastersync.MasterSyncDto;
+import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * The Interface MasterSyncDao.
@@ -25,6 +26,6 @@ public interface MasterSyncDao {
 	 * @param masterSyncDto the master sync dto
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public String insertMasterSyncData(MasterSyncDto masterSyncDto);
+	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto) throws RegBaseUncheckedException;
 
 }
