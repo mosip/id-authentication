@@ -120,8 +120,11 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(demoHelper, "environment", env);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(otpFacadeImpl, "notificationService", notificationService);
-
+		ReflectionTestUtils.setField(otpFacadeImpl, "notificationService", notificationService); 
+		ReflectionTestUtils.setField(otpFacadeImpl, "otpService", otpService);
+		//ReflectionTestUtils.setField(otpService, "otpManager", otpManager);
+		//ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
+		//ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		
 	}
 
@@ -139,10 +142,10 @@ public class OTPFacadeImplTest {
 		String unqueId = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
-		String refId = "8765";
+		String uin = "8765";
 		String otp = "987654";
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -171,7 +174,7 @@ public class OTPFacadeImplTest {
 		otpFacadeImpl.generateOtp(otpRequestDto);
 	}
 	
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testOTPGeneration() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "74834738743");
@@ -185,6 +188,7 @@ public class OTPFacadeImplTest {
 		Mockito.when(idAuthService.processIdType(otpRequestDto.getIdvIdType(), otpRequestDto.getIdvId()))
 		.thenReturn(idRepo);
 		String otpKey = "IDA_MTIzNDU2Nzg5MA==_2345678901234_2345678901234";
+		
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn("123456");
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn("123456");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -209,11 +213,11 @@ public class OTPFacadeImplTest {
 		String unqueId = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
-		String refId = "8765";
+		String uin = "8765";
 		String otp = null;
 
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
@@ -236,14 +240,6 @@ public class OTPFacadeImplTest {
 		otpRequestDto.getReqTime();
 	}
 
-	@Test
-	public void testSaveAutnTxn() {
-		String refId = "8765";
-		String status = "Y";
-		String comment = "OTP_GENERATED";
-		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto, status, comment, refId);
-	}
 
 	
 	@Test

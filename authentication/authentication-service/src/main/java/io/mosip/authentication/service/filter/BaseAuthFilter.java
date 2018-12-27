@@ -99,7 +99,7 @@ public abstract class BaseAuthFilter implements Filter {
 	private DateTimeFormatter timeFormatter;
 
 	/** The Constant MOSIP_TSP_ORGANIZATION. */
-	private static final String MOSIP_TSP_ORGANIZATION = "mosip.tsp.organization";
+	private static final String MOSIP_TSP_ORGANIZATION = "mosip.jws.certificate.organization";
 
 	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
 	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";

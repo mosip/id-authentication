@@ -70,8 +70,8 @@ public class BioAuthServiceTest {
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Map<String, List<IdentityInfoDTO>> bioIdentity = null;
-		String refId = null;
-		bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		
+		bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 	}
 
 	@Test
@@ -126,8 +126,8 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("sample", identityList);
-		String refId = "274390482564";
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertFalse(validateBioDetails.isStatus());
 	}
 
@@ -183,8 +183,8 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		String refId = "274390482564";
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
@@ -241,8 +241,8 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		String refId = "274390482564";
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}

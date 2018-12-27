@@ -11,4 +11,4 @@ copy ./target/pre-registration-auth-service-*.jar pre-registration-auth-service.
 
 EXPOSE 9090
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-auth-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-auth-service.jar"] 

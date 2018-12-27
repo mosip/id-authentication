@@ -12,4 +12,4 @@ copy ./target/pre-registration-booking-service-*.jar pre-registration-booking-se
 
 EXPOSE 9095
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-booking-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-booking-service.jar"] 

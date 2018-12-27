@@ -1,5 +1,8 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +17,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 public class MatchTest {
 
@@ -208,6 +212,26 @@ public class MatchTest {
 		IdMapping[] authTypes = new IdMapping[] { idMapping };
 		IdMapping.getIdMapping(name, authTypes);
 
+	}
+	
+	@Test
+	public void testMatchingStrategy() throws IdAuthenticationBusinessException {
+		MatchingStrategy matchingStrategy = new MatchingStrategy() {
+			
+			@Override
+			public MatchingStrategyType getType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public MatchFunction getMatchFunction() {
+				return (reqInfo, entityInfo, matchProperties) -> 50;
+			}
+		};
+		
+		int match = matchingStrategy.match(new HashMap<>(), new HashMap<>(), new HashMap<>());
+		assertThat(match).isEqualTo(50);
 	}
 
 }
