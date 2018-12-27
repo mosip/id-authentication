@@ -42,7 +42,7 @@ mvn javadoc:javadoc
 @Autowired
 QrCodeGenerator<QrVersion> generator;
 	
-    String name = "N : Mosip User";
+    String name = "N : UserName";
 	
 	String dob = "D : 17-05-1996";
 	
