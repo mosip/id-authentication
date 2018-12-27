@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -53,8 +52,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 		try {
 			idList = idRepository.findByLangCode(languageCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()
+			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (idList != null && !idList.isEmpty()) {
@@ -81,8 +80,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 		try {
 			idType = idRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
+			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
