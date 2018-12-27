@@ -81,6 +81,12 @@ public enum ErrorCodes {
 	/**
 	 * ErrorCode for CONNECTION_UNAVAILABLE
 	 */
-	PRG_PAM_DOC_017;
+	PRG_PAM_DOC_017,
+	/**
+	 * ErrorCode for INVALID_REQUEST_PARAMETER
+	 */
+	PRG_PAM_DOC_018;
+	
+	
 
 }

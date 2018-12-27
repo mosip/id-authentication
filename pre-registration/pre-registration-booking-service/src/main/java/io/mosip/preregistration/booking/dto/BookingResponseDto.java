@@ -19,13 +19,13 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class ResponseDto<T> implements Serializable {
+public class BookingResponseDto<T> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
 	
 	/** The error details. */
-	private ExceptionJSONInfo err;
+	private ExceptionJSONInfoDTO err;
 	
 	private Boolean status;
 	

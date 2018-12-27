@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author M1037717
  *
  */
-public class ExceptionJSONInfo implements Serializable {
+public class ExceptionJSONInfoDTO implements Serializable {
 
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class ExceptionJSONInfo implements Serializable {
 	private String errorCode;
 	private String message;
 
-	public ExceptionJSONInfo(String errorcode, String message) {
+	public ExceptionJSONInfoDTO(String errorcode, String message) {
 		super();
 		errorCode = errorcode;
 		this.message = message;

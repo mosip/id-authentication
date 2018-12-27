@@ -81,6 +81,11 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_017
 	 */
-	CONNECTION_UNAVAILABLE;
+	CONNECTION_UNAVAILABLE,
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	
+	INVALID_REQUEST_PARAMETER;
 
 }

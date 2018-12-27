@@ -54,7 +54,7 @@ import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.dto.RequestDto;
-import io.mosip.preregistration.booking.dto.ResponseDto;
+import io.mosip.preregistration.booking.dto.BookingResponseDto;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
@@ -124,7 +124,7 @@ public class BookingServiceTest {
 	BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
 	BookingRegistrationDTO oldBooking_success = new BookingRegistrationDTO();
 	BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-	ResponseDto<List<BookingStatusDTO>> responseDto = new ResponseDto<>();
+	BookingResponseDto<List<BookingStatusDTO>> responseDto = new BookingResponseDto<>();
 
 	BookingStatusDTO statusDTOA = new BookingStatusDTO();
 	BookingStatusDTO statusDTOB = new BookingStatusDTO();
@@ -287,10 +287,10 @@ public class BookingServiceTest {
 		date.add(java.sql.Date.valueOf("2018-12-04"));
 		entityList.add(entity);
 		logger.info("Availability entity " + entity);
-		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(), Mockito.any())).thenReturn(date);
+		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(),Mockito.any(), Mockito.any())).thenReturn(date);
 		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(Mockito.anyString(),
 				Mockito.any())).thenReturn(entityList);
-		ResponseDto<AvailabilityDto> responseDto = service.getAvailability("1");
+		BookingResponseDto<AvailabilityDto> responseDto = service.getAvailability("1");
 		logger.info("Response " + responseDto);
 		assertEquals(responseDto.getResponse().getRegCenterId(), "1");
 
@@ -439,7 +439,7 @@ public class BookingServiceTest {
 		List<java.sql.Date> date = new ArrayList<>();
 		List<AvailibityEntity> entityList = new ArrayList<>();
 		entityList.add(entity);
-		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(), Mockito.any())).thenReturn(date);
+		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(),Mockito.any(), Mockito.any())).thenReturn(date);
 		Mockito.when(bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(Mockito.anyString(),
 				Mockito.any())).thenReturn(entityList);
 		service.getAvailability("1");
@@ -452,7 +452,7 @@ public class BookingServiceTest {
 		List<java.sql.Date> date = new ArrayList<>();
 		List<AvailibityEntity> entityList = new ArrayList<>();
 		entityList.add(entity);
-		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(), Mockito.any())).thenThrow(exception);
+		Mockito.when(bookingAvailabilityRepository.findDate(Mockito.anyString(), Mockito.any(),Mockito.any())).thenThrow(exception);
 		service.getAvailability("1");
 	}
 
@@ -491,7 +491,7 @@ public class BookingServiceTest {
 		holidayList.add(holiday);
 		CenholidayDto.setHolidays(holidayList);
 
-		ResponseDto<String> response = new ResponseDto<>();
+		BookingResponseDto<String> response = new BookingResponseDto<>();
 
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -755,7 +755,7 @@ public class BookingServiceTest {
 	@Test
 	public void getAppointmentDetailsTest() {
 		Mockito.when(registrationBookingRepository.findByPreId("23587986034785")).thenReturn(bookingEntity);
-		ResponseDto<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
+		BookingResponseDto<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 		assertEquals(responseDto.getResponse().getRegistration_center_id(), "1");
 	}
 

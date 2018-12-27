@@ -13,15 +13,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
+import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.ConnectionUnavailableException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
+import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
+import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
+import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
+import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FileNotFoundException;
 import io.mosip.preregistration.documents.exception.InvalidConnectionParameters;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
@@ -202,5 +208,85 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
 	}
-
+	
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(DocumentSizeExceedException.class)
+	public ResponseEntity<ResponseDTO<?>> documentSizeExceedException(final DocumentSizeExceedException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_007.toString(),
+				ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setStatus("false");
+		errorRes.setErr(errorDetails);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+	}
+	
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(DocumentFailedToUploadException.class)
+	public ResponseEntity<ResponseDTO<?>> documentFailedToUploadException(final DocumentFailedToUploadException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_009.toString(),
+				ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setStatus("false");
+		errorRes.setErr(errorDetails);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
+	}
+	
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(InvalidRequestParameterException.class)
+	public ResponseEntity<ResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_018.toString(),
+				ErrorMessages.INVALID_REQUEST_PARAMETER.toString());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setStatus("false");
+		errorRes.setErr(errorDetails);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+	}
+	
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(DocumentVirusScanException.class)
+	public ResponseEntity<ResponseDTO<?>> documentVirusScanException(final DocumentVirusScanException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_010.toString(),
+				ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setStatus("false");
+		errorRes.setErr(errorDetails);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(DocumentFailedToCopyException.class)
+	public ResponseEntity<ResponseDTO<?>> documentFailedToCopyException(final DocumentFailedToCopyException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_011.toString(),
+				ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
+		ResponseDTO<?> errorRes = new ResponseDTO<>();
+		errorRes.setStatus("false");
+		errorRes.setErr(errorDetails);
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

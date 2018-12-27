@@ -40,10 +40,12 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.BookingResponseDto;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.DocumentGetAllDTO;
 import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.PreRegResponseDto;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
@@ -51,7 +53,7 @@ import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.dto.RequestDto;
-import io.mosip.preregistration.booking.dto.ResponseDto;
+import io.mosip.preregistration.booking.dto.ResponseDTO;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
@@ -77,6 +79,7 @@ import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
+import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -115,6 +118,9 @@ public class BookingService {
 	@Value("${version}")
 	String versionUrl;
 
+	@Value("${documentUrl}")
+	String documentUrl;
+
 	@Value("${id}")
 	String idUrl;
 
@@ -137,8 +143,8 @@ public class BookingService {
 	 * @return ResponseDto<String>
 	 */
 
-	public ResponseDto<String> addAvailability() {
-		ResponseDto<String> response = new ResponseDto<>();
+	public BookingResponseDto<String> addAvailability() {
+		BookingResponseDto<String> response = new BookingResponseDto<>();
 
 		try {
 			restTemplate = restTemplateBuilder.build();
@@ -270,12 +276,12 @@ public class BookingService {
 	 * @param regID
 	 * @return ResponseDto<AvailabilityDto>
 	 */
-	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
-		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
-		LocalDate endDate = LocalDate.now().plusDays(noOfDays);
-		System.out.println("date " + endDate);
+	public BookingResponseDto<AvailabilityDto> getAvailability(String regID) {
+		BookingResponseDto<AvailabilityDto> response = new BookingResponseDto<>();
+		LocalDate endDate = LocalDate.now().plusDays(noOfDays + 2);
+		LocalDate fromDate = LocalDate.now().plusDays(2);
 		try {
-			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, endDate);
+			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, fromDate, endDate);
 			if (!dateList.isEmpty()) {
 				AvailabilityDto availability = new AvailabilityDto();
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
@@ -320,6 +326,9 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		} catch (Exception ex) {
+
+			new BookingExceptionCatcher().handle(ex);
 		}
 		return response;
 	}
@@ -354,65 +363,89 @@ public class BookingService {
 	@Transactional(rollbackFor = { DataAccessException.class, AppointmentBookingFailedException.class,
 			BookingTimeSlotAlreadyBooked.class, AvailablityNotFoundException.class,
 			AppointmentCannotBeBookedException.class })
-	public ResponseDto<List<BookingStatusDTO>> bookAppointment(BookingDTO bookingDTO) {
+	public BookingResponseDto<List<BookingStatusDTO>> bookAppointment(BookingDTO bookingDTO) {
 		Map<String, String> requestMap = new HashMap<>();
-		ResponseDto<List<BookingStatusDTO>> responseDTO = new ResponseDto<>();
+		BookingResponseDto<List<BookingStatusDTO>> responseDTO = new BookingResponseDto<>();
 		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 		Boolean requestValidatorFlag = false;
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		try {
 			requestMap.put("id", bookingDTO.getId());
 			requestMap.put("ver", bookingDTO.getVer());
-			requestMap.put("reqTime", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(bookingDTO.getReqTime()));
+			requestMap.put("reqTime",
+					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(bookingDTO.getReqTime()));
 			requestMap.put("request", bookingDTO.getRequest().toString());
 			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 			System.out.println("requestValidatorFlag: " + requestValidatorFlag);
 			if (requestValidatorFlag) {
 				for (BookingRequestDTO bookingRequestDTO : bookingDTO.getRequest()) {
 					if (mandatoryParameterCheck(bookingRequestDTO)) {
-						if (bookingRequestDTO.getOldBookingDetails() == null) {
-							/* booking of new Appointment */
-							synchronized (bookingRequestDTO) {
-								BookingStatusDTO statusDTO = bookingAPI(bookingDTO, bookingRequestDTO, bookingPK);
-								respList.add(statusDTO);
-							}
-						} else {
-							/* Re-Booking */
-							BookingRegistrationDTO oldBookingRegistrationDTO = bookingRequestDTO.getOldBookingDetails();
-							BookingRegistrationDTO newBookingRegistrationDTO = bookingRequestDTO.getNewBookingDetails();
-							if (oldBookingRegistrationDTO.getReg_date().equals(newBookingRegistrationDTO.getReg_date())
-									&& oldBookingRegistrationDTO.getRegistration_center_id()
-											.equals(newBookingRegistrationDTO.getRegistration_center_id())
-									&& oldBookingRegistrationDTO.getSlotFromTime()
-											.equals(newBookingRegistrationDTO.getSlotFromTime())
-									&& oldBookingRegistrationDTO.getSlotToTime()
-											.equals(newBookingRegistrationDTO.getSlotToTime())) {
-								throw new AppointmentReBookingFailedException(ErrorCodes.PRG_BOOK_RCI_021.toString(),
-										ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
-							} else {
-								CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
-								cancelBookingDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
-								cancelBookingDTO.setRegistration_center_id(
-										oldBookingRegistrationDTO.getRegistration_center_id());
-								cancelBookingDTO.setReg_date(oldBookingRegistrationDTO.getReg_date());
-								cancelBookingDTO.setSlotFromTime(oldBookingRegistrationDTO.getSlotFromTime());
-								cancelBookingDTO.setSlotToTime(oldBookingRegistrationDTO.getSlotToTime());
-								synchronized (cancelBookingDTO) {
-									CancelBookingResponseDTO cancelBookingResponseDTO = cancelBookingAPI(
-											cancelBookingDTO);
-									if (cancelBookingResponseDTO != null && cancelBookingResponseDTO.getMessage()
-											.equals("APPOINTMENT_SUCCESSFULLY_CANCELED")) {
-										BookingStatusDTO statusDTO = bookingAPI(bookingDTO, bookingRequestDTO,
-												bookingPK);
-										respList.add(statusDTO);
-									} else {
-										throw new CancelAppointmentFailedException(
-												ErrorCodes.PRG_BOOK_RCI_019.toString(),
-												ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
-									}
+						restTemplate = restTemplateBuilder.build();
+						UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentUrl).queryParam("preId",
+								bookingRequestDTO.getPre_registration_id());
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+						HttpEntity<ResponseDTO<DocumentGetAllDTO>> httpEntity = new HttpEntity<>(headers);
+						String uriBuilder = builder.build().encode().toUriString();
+						System.out.println("Url " + uriBuilder);
+						ResponseEntity<ResponseDTO> docresp = restTemplate.exchange(uriBuilder, HttpMethod.GET,
+								httpEntity, ResponseDTO.class);
+						if (!docresp.getBody().getResponse().isEmpty()) {
+							if (bookingRequestDTO.getOldBookingDetails() == null) {
+								/* booking of new Appointment */
+								synchronized (bookingRequestDTO) {
+									BookingStatusDTO statusDTO = bookingAPI(bookingDTO, bookingRequestDTO, bookingPK);
+									respList.add(statusDTO);
 								}
+							} else {
+								/* Re-Booking */
+								BookingRegistrationDTO oldBookingRegistrationDTO = bookingRequestDTO
+										.getOldBookingDetails();
+								BookingRegistrationDTO newBookingRegistrationDTO = bookingRequestDTO
+										.getNewBookingDetails();
+								if (oldBookingRegistrationDTO.getReg_date()
+										.equals(newBookingRegistrationDTO.getReg_date())
+										&& oldBookingRegistrationDTO.getRegistration_center_id()
+												.equals(newBookingRegistrationDTO.getRegistration_center_id())
+										&& oldBookingRegistrationDTO.getSlotFromTime()
+												.equals(newBookingRegistrationDTO.getSlotFromTime())
+										&& oldBookingRegistrationDTO.getSlotToTime()
+												.equals(newBookingRegistrationDTO.getSlotToTime())) {
+									throw new AppointmentReBookingFailedException(
+											ErrorCodes.PRG_BOOK_RCI_021.toString(),
+											ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
+								} else {
+									CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
+									cancelBookingDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
+									cancelBookingDTO.setRegistration_center_id(
+											oldBookingRegistrationDTO.getRegistration_center_id());
+									cancelBookingDTO.setReg_date(oldBookingRegistrationDTO.getReg_date());
+									cancelBookingDTO.setSlotFromTime(oldBookingRegistrationDTO.getSlotFromTime());
+									cancelBookingDTO.setSlotToTime(oldBookingRegistrationDTO.getSlotToTime());
+									synchronized (cancelBookingDTO) {
+										CancelBookingResponseDTO cancelBookingResponseDTO = cancelBookingAPI(
+												cancelBookingDTO);
+										if (cancelBookingResponseDTO != null && cancelBookingResponseDTO.getMessage()
+												.equals("APPOINTMENT_SUCCESSFULLY_CANCELED")) {
+											BookingStatusDTO statusDTO = bookingAPI(bookingDTO, bookingRequestDTO,
+													bookingPK);
+											respList.add(statusDTO);
+										} else {
+											throw new CancelAppointmentFailedException(
+													ErrorCodes.PRG_BOOK_RCI_019.toString(),
+													ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
+										}
+									}
 
+								}
 							}
+
+						} else {
+							BookingStatusDTO noDocumentDTO= new BookingStatusDTO();
+							noDocumentDTO.setPre_registration_id(bookingRequestDTO.getPre_registration_id());
+							noDocumentDTO.setBooking_status("Failed");
+							noDocumentDTO.setBooking_message("BOOKING_FAILED_DUE_TO_NO_DOCUMENT");
+							respList.add(noDocumentDTO);
 						}
 					}
 
@@ -425,15 +458,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			e.printStackTrace();
 			throw new DemographicStatusUpdationException("Table not accessable");
-		} catch (DateTimeException e) {
-			e.printStackTrace();
-			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
-					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
-		} catch (InvalidRequestParameterException e) {
-			// throw new InvalidRequestParameterException(
-			// io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
-			// io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_ID.toString());
-			e.printStackTrace();
+		}catch(Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 		return responseDTO;
 	}
@@ -493,8 +519,8 @@ public class BookingService {
 	 * @return response entity
 	 */
 	@SuppressWarnings("rawtypes")
-	public ResponseEntity<ResponseDto> callUpdateStatusRestService(String preId, String status) {
-		ResponseEntity<ResponseDto> resp = null;
+	public ResponseEntity<BookingResponseDto> callUpdateStatusRestService(String preId, String status) {
+		ResponseEntity<BookingResponseDto> resp = null;
 		try {
 			restTemplate = restTemplateBuilder.build();
 
@@ -502,9 +528,9 @@ public class BookingService {
 					.queryParam("preRegId", preId).queryParam("status", status);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<ResponseDto<String>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<BookingResponseDto<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			resp = restTemplate.exchange(uriBuilder, HttpMethod.PUT, httpEntity, ResponseDto.class);
+			resp = restTemplate.exchange(uriBuilder, HttpMethod.PUT, httpEntity, BookingResponseDto.class);
 		} catch (RestClientException e) {
 			throw new DemographicStatusUpdationException(ErrorCodes.PRG_BOOK_RCI_011.toString(),
 					ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.toString(), e.getCause());
@@ -529,7 +555,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<PreRegResponseDto> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			System.out.println("uriBuilder: "+uriBuilder);
+			System.out.println("uriBuilder: " + uriBuilder);
 			ResponseEntity<PreRegResponseDto<PreRegistartionStatusDTO>> respEntity = (ResponseEntity) restTemplate
 					.exchange(uriBuilder, HttpMethod.GET, httpEntity, PreRegResponseDto.class);
 
@@ -570,9 +596,10 @@ public class BookingService {
 				if (!slotExistsFlag) {
 					bookingPK.setPreregistrationId(bookingRequestDTO.getPre_registration_id());
 
-					//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+					// DateTimeFormatter format =
+					// DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 					bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime()));
-					
+
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
 					entity.setStatus_code(StatusCodes.Booked.toString().trim());
@@ -620,9 +647,9 @@ public class BookingService {
 
 	}
 
-	public ResponseDto<BookingRegistrationDTO> getAppointmentDetails(String preRegID) {
+	public BookingResponseDto<BookingRegistrationDTO> getAppointmentDetails(String preRegID) {
 		BookingRegistrationDTO bookingRegistrationDTO = new BookingRegistrationDTO();
-		ResponseDto<BookingRegistrationDTO> responseDto = new ResponseDto<>();
+		BookingResponseDto<BookingRegistrationDTO> responseDto = new BookingResponseDto<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
 			entity = registrationBookingRepository.findByPreId(preRegID);
@@ -650,19 +677,19 @@ public class BookingService {
 	@Transactional(rollbackFor = { DataAccessException.class, CancelAppointmentFailedException.class,
 			AppointmentAlreadyCanceledException.class, AvailablityNotFoundException.class,
 			AppointmentCannotBeCanceledException.class })
-	public ResponseDto<CancelBookingResponseDTO> cancelAppointment(RequestDto<CancelBookingDTO> requestdto) {
+	public BookingResponseDto<CancelBookingResponseDTO> cancelAppointment(RequestDto<CancelBookingDTO> requestdto) {
 
 		// InvalidRequestParameterException parameterException = null;
 		Boolean requestValidatorFlag = false;
-		ResponseDto<CancelBookingResponseDTO> dto = new ResponseDto<>();
+		BookingResponseDto<CancelBookingResponseDTO> dto = new BookingResponseDto<>();
 		Map<String, String> requestMap = new HashMap<>();
 		try {
 			requestMap.put("id", requestdto.getId());
 			requestMap.put("ver", requestdto.getVer());
 			requestMap.put("reqTime", requestdto.getReqTime());
 			requestMap.put("request", requestdto.getRequest().toString());
-			System.out.println("requestMap: "+requestMap);
-			System.out.println("requiredRequestMap: "+requiredRequestMap);
+			System.out.println("requestMap: " + requestMap);
+			System.out.println("requiredRequestMap: " + requiredRequestMap);
 			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 			CancelBookingDTO cancelBookingDTO = requestdto.getRequest();
 			if (requestValidatorFlag) {
