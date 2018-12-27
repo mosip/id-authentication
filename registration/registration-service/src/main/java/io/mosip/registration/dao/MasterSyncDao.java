@@ -26,6 +26,6 @@ public interface MasterSyncDao {
 	 * @param masterSyncDto the master sync dto
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto) throws RegBaseUncheckedException;
+	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto);
 
 }

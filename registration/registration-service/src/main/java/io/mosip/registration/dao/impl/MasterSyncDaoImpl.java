@@ -1,5 +1,6 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -253,7 +254,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto) throws RegBaseUncheckedException{
+	public String insertMasterSyncData(MasterDataResponseDto masterSyncDto) {
+
+		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Entering into Insert Master Sync Data..");
 
 		List<RegistrationCenterDto> regCenter = masterSyncDto.getRegistrationCenter();
 		List<MachineDto> masterMachineDto = masterSyncDto.getMachineDetails();
@@ -406,26 +410,30 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			}
 
 		} catch (DataAccessException dataAccessException) {
-
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, dataAccessException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
 					dataAccessException.getMessage());
 		} catch (NullPointerException nullPointerException) {
-
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, nullPointerException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
 					nullPointerException.getMessage());
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
 					regBaseUncheckedException.getMessage());
 		} catch (RuntimeException runtimeException) {
-
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
 					runtimeException.getMessage());
 		}
+
+		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Leaving Insert Master Sync Data..");
+
 		return sucessResponse;
 	}
 
