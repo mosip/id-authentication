@@ -40,6 +40,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
+@Transactional
 public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	@Autowired
@@ -216,7 +217,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * deleteDocumentCategory(java.lang.String)
 	 */
 	@Override
-	@Transactional
 	public CodeResponseDto deleteDocumentCategory(String code) {
 
 		try {

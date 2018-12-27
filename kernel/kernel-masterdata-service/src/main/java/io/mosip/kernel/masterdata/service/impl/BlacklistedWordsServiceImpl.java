@@ -168,7 +168,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
-	 * deleteBlackListedWord(java.lang.String, java.lang.String)
+	 * deleteBlackListedWord(java.lang.String)
 	 */
 	@Override
 	public String deleteBlackListedWord(String blackListedWord) {
@@ -178,7 +178,6 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					LocalDateTime.now(ZoneId.of("UTC")));
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			e.printStackTrace();
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());

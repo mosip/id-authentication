@@ -30,7 +30,8 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	
 	/**
 	 * @author M1043226
-	 *
+	 * @param hierarchyName - hierarchy name
+	 * @return List
 	 */
 	List<Location> findAllByHierarchyNameIgnoreCase(String hierarchyName);
 

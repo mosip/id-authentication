@@ -163,6 +163,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
  * @author Bal Vikash Sharma
  * @author Uday Kumar
  * @author Megha Tanga
+ * @author Srinivasan
  * @since 1.0.0
  */
 @SpringBootTest
@@ -305,6 +306,9 @@ public class MasterdataIntegrationTest {
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
+	RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID=null;
+	
+	RegistrationCenterMachineDeviceID rcmdIdH=null;
 	@MockBean
 	private TitleRepository titleRepository;
 
@@ -685,11 +689,11 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachineDevice.setCreatedBy("admin");
 
 		registrationCenterMachineDeviceHistory = new RegistrationCenterMachineDeviceHistory();
-		RegistrationCenterMachineDeviceID rcmdIdH = new RegistrationCenterMachineDeviceID();
+		rcmdIdH = new RegistrationCenterMachineDeviceID();
 		rcmdIdH.setDeviceId("101");
 		rcmdIdH.setMachineId("1789");
 		rcmdIdH.setRegCenterId("1");
-		RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
+	 registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
 		registrationCenterMachineDeviceHistoryID.setDeviceId("101");
 		registrationCenterMachineDeviceHistoryID.setMachineId("1789");
 		registrationCenterMachineDeviceHistoryID.setRegCenterId("1");
@@ -1147,6 +1151,33 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(
 				post("/v1.0/registrationcentermachinedevice").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void deleteRegCenterMachineDeviceTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteRegCenterMachineDeviceDataNotFoundTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void deleteRegCenterMachineDeviceDataAccessExcpetionTest() throws Exception {
+		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------LanguageImplementationTest----------------------------------
@@ -2016,13 +2047,12 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void deleteTitleTest() throws Exception {
 		when(titleRepository.findByCode(Mockito.any())).thenReturn(titleList);
 		when(titleRepository.update(Mockito.any())).thenReturn(title);
-		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -3339,4 +3369,122 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	/*------------------------------------Holiday Update/delete -------------------------------------*/
+
+	@Test
+	public void deleteHolidaySuccess() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"locationCode\":\"LOC01\",\"holidayDate\":\"2019-01-01\",\"holidayName\":\"New Year\"},\"timestamp\": \"2018-12-24T06:15:12.494Z\",\"ver\": \"string\"}";
+		when(holidayRepository.deleteHolidays(any(), anyString(), any(), anyString())).thenReturn(1);
+		mockMvc.perform(delete("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteHolidayNoHolidayFound() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"locationCode\":\"LOC01\",\"holidayDate\":\"2019-01-01\",\"holidayName\":\"New Year\"},\"timestamp\": \"2018-12-24T06:15:12.494Z\",\"ver\": \"string\"}";
+		when(holidayRepository.deleteHolidays(any(), anyString(), any(), anyString())).thenReturn(0);
+		mockMvc.perform(delete("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isBadRequest());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void deleteHolidayFailure() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"locationCode\":\"LOC01\",\"holidayDate\":\"2019-01-01\",\"holidayName\":\"New Year\"},\"timestamp\": \"2018-12-24T06:15:12.494Z\",\"ver\": \"string\"}";
+		when(holidayRepository.deleteHolidays(any(), anyString(), any(), anyString()))
+				.thenThrow(DataRetrievalFailureException.class, DataAccessLayerException.class);
+		mockMvc.perform(delete("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void updateHolidaySuccess() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateHolidaySuccessNewNameAndDate() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\",\"newHolidayDate\": \"2019-01-01\",\"newHolidayDesc\": \"New Year Desc\",\"newHolidayName\": \"New Year\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateHolidaySuccessNewData() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\",\"newHolidayDate\": null,\"newHolidayDesc\": \" \",\"newHolidayName\": \" \"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateHolidayNoHolidayUpdated() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(0);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isBadRequest());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void updateHolidayNoHolidayFailure() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenThrow(DataRetrievalFailureException.class,
+				DataAccessLayerException.class);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isInternalServerError());
+	}
+
+	/*------------------------------------Blacklisted Word Update/delete -------------------------------------*/
+
+	@Test
+	public void deleteBlacklistedWordSuccess() throws Exception {
+		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenReturn(1);
+		mockMvc.perform(delete("/v1.0/blacklistedwords/{word}", "abc")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteBlacklistedWordNoWordDeleted() throws Exception {
+		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenReturn(0);
+		mockMvc.perform(delete("/v1.0/blacklistedwords/{word}", "abc")).andExpect(status().isBadRequest());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void deleteBlacklistedWordFailure() throws Exception {
+		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenThrow(DataRetrievalFailureException.class,
+				DataAccessLayerException.class);
+		mockMvc.perform(delete("/v1.0/blacklistedwords/{word}", "abc")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void updateBadWordSuccess() throws Exception {
+		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
+		when(wordsRepository.findByWordAndLangCode(anyString(), anyString())).thenReturn(words.get(0));
+		when(wordsRepository.update(any())).thenReturn(words.get(0));
+		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateBadWordNoWordFound() throws Exception {
+		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
+		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isBadRequest());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void updateBadWordFailure() throws Exception {
+		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
+		when(wordsRepository.findByWordAndLangCode(anyString(), anyString())).thenReturn(words.get(0));
+		when(wordsRepository.update(any())).thenThrow(DataRetrievalFailureException.class,
+				DataAccessLayerException.class);
+		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isInternalServerError());
+	}
 }

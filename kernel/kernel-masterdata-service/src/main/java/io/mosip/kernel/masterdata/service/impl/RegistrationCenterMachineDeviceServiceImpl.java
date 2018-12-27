@@ -26,6 +26,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * 
  * @author Bal Vikash Sharma
+ * @author Srinivasan
  * @since 1.0.0
  */
 @Service
@@ -132,7 +133,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			}
 
 		} catch (DataAccessLayerException | DataAccessException ex) {
-			ex.printStackTrace();
+			
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
 							.getErrorCode(),
