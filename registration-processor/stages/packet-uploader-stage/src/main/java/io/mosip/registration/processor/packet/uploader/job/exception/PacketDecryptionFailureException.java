@@ -4,7 +4,7 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 
 /**
  * PacketDecryptionFailureException class
- * @author Jyoti Prakash Nayak
+ * @author M1049387
  *
  */
 public class PacketDecryptionFailureException extends BaseCheckedException{

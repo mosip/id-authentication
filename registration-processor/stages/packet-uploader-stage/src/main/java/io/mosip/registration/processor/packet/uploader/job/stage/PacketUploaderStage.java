@@ -22,7 +22,6 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.job.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -81,6 +80,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	private PacketArchiver packetArchiver;
 
+	/** The Constant UNABLE_TO_DELETE. */
 	private static final String UNABLE_TO_DELETE = "unable to delete after sending to DFS.";
 
 	/** The env. */
@@ -103,6 +103,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	/** The registration id. */
 	private String registrationId = "";
 	
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
@@ -115,20 +116,21 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					this.registrationId = object.getRid();
 					InternalRegistrationStatusDto dto=registrationStatusService.getRegistrationStatus(registrationId);
 					try {
+						
 						uploadpacket(dto);
 
 					} catch (TablenotAccessibleException e) {
 
 						LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e.getMessage(), e);
-
 						this.isTransactionSuccessful = false;
-						this.description = "Registration status table is not accessible for packet "
-								+ this.registrationId;
+						this.description = "Registration status table is not accessible for packet "+ this.registrationId;
+						
 					} catch (IOException e) {
 
 						LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
 						this.isTransactionSuccessful = false;
 						this.description = "File System is not accessible for packet " + this.registrationId;
+						
 					} finally {
 
 						String eventId = "";
@@ -182,31 +184,31 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	/**
 	 * Send to DFS.
 	 *
-	 * @param file
-	 *            the file
-	 * @param entry
-	 *            the entry
+	 * @param entry            the entry
+	 * @param decryptedData the decrypted data
 	 */
 	private void sendToDFS(InternalRegistrationStatusDto entry,InputStream decryptedData) {
 		
 		registrationId=entry.getRegistrationId();
 		try {
 			if (adapter.isPacketPresent(registrationId)) {
-				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
-				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
-
+	
 				LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
+			
 			} else {
+				
 				adapter.storePacket(registrationId, decryptedData);
 				adapter.unpackPacket(registrationId);
-				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
-				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
 				LOGGER.info(LOGDISPLAY, registrationId,"File Stored in File System and same has been deleted from virus scanner job.");
+			
 			}
+			
+			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
+			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+			fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
+			
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			entry.setStatusComment("Packet is uploaded in file system.");
+			entry.setStatusComment("Packet "+registrationId+" is uploaded in file system.");
 			entry.setUpdatedBy(USER);
 			
 			registrationStatusService.updateRegistrationStatus(entry);
@@ -247,19 +249,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consume(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN);
 	
-	}
-
-	/**
-	 * Send message.
-	 *
-	 * @param mosipEventBus the mosip event bus
-	 * @param message the message
-	 */
-	private void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
-		this.send(mosipEventBus, MessageBusAddress.BATCH_BUS, message);
 	}
 
 }
