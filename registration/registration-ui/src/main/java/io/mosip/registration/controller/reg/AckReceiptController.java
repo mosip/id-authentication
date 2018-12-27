@@ -88,7 +88,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
-	
+
 	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
 	private String saveAck;
 
@@ -150,7 +150,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 							}
 						}
 
-						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
+						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.getEmail().getValue();
 
 						if (!emailId.isEmpty() && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
@@ -186,17 +187,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 		engine.loadContent(stringWriter.toString());
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(e -> {
-			try {
-				saveRegistrationData();
-			} catch (RegBaseCheckedException regBaseUncheckedException) {
-				LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
-						regBaseUncheckedException.getMessage());
-			}
+			saveRegistrationData();
 		});
 		pause.play();
 	}
 
-	private void saveRegistrationData() throws RegBaseCheckedException {
+	private void saveRegistrationData() {
 		WritableImage ackImage = webView.snapshot(null, null);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
@@ -208,7 +204,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 					ioException.getMessage());
 		}
 
-		if(saveAck.equalsIgnoreCase("Y")) {
+		if (saveAck.equalsIgnoreCase("Y")) {
 			registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
 			registrationData.getDemographicDTO().getApplicantDocumentDTO()
 					.setAcknowledgeReceiptName("RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
