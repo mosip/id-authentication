@@ -1,6 +1,7 @@
 package io.mosip.registration.test.authentication;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,12 +32,14 @@ public class AuthenticationServiceTest {
 	@Test
 	public void getOtpValidatorTest() {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		when(otpValidator.validate(authenticationValidatorDTO)).thenReturn(true);
 		assertTrue(authenticationService.authValidator("otp", authenticationValidatorDTO));
 	}
 	
 	@Test
 	public void getFPValidatorTest() {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(true);
 		assertTrue(authenticationService.authValidator("Fingerprint", authenticationValidatorDTO));
 	}
 

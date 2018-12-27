@@ -194,15 +194,17 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 		}
 		
-		// Create Document object for Applicant Acknowledgement Receipt
-		Document document = new Document();
-		document.setDocumentCategory(RegistrationConstants.ACK_RECEIPT);
-		document.setDocumentName(removeFileExt(documentDTO.getAcknowledgeReceiptName()));
-		document.setDocumentOwner("Self");
-		document.setDocumentType(RegistrationConstants.ACK_RECEIPT);
-		
-		// Add the Acknowledgement Receipt
-		documents.add(document);
+		if(documentDTO.getAcknowledgeReceipt() != null) {
+			// Create Document object for Applicant Acknowledgement Receipt
+			Document document = new Document();
+			document.setDocumentCategory(RegistrationConstants.ACK_RECEIPT);
+			document.setDocumentName(removeFileExt(documentDTO.getAcknowledgeReceiptName()));
+			document.setDocumentOwner("Self");
+			document.setDocumentType(RegistrationConstants.ACK_RECEIPT);
+			
+			// Add the Acknowledgement Receipt
+			documents.add(document);
+		}
 		
 		return documents;
 	}

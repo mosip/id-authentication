@@ -90,4 +90,34 @@ public class OTPManagerTest {
 		assertThat(otpManager.validateOTP("mosip", "12345"), is(false));
 	}
 
+	@Test
+	public void getOTPFailureHTTPTest()
+			throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("mo");
+		HashMap<String, String> responseMap = new HashMap<>();
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenThrow(HttpClientErrorException.class);
+
+		otpManager.getOTP(otpGeneratorRequestDTO.getKey());
+
+		
+	} 
+	
+	@Test
+	public void getOTPFailureIllegalTest()
+			throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("mo");
+		HashMap<String, String> responseMap = new HashMap<>();
+
+		
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenThrow(IllegalStateException.class);
+		
+		otpManager.getOTP(otpGeneratorRequestDTO.getKey());
+
+	}
+
 }

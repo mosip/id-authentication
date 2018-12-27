@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -32,6 +33,7 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -51,6 +53,8 @@ public class TemplateGenerator {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
+	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
+
 	/**
 	 * @param templateText
 	 *            - string which contains the data of template that is used to
@@ -67,6 +71,7 @@ public class TemplateGenerator {
 				RegistrationConstants.APPLICATION_ID,
 				"generateTemplate had been called for preparing Acknowledgement Template.");
 
+		ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 		InputStream is = new ByteArrayInputStream(templateText.getBytes());
 		Map<String, Object> templateValues = new HashMap<>();
 
@@ -104,6 +109,31 @@ public class TemplateGenerator {
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getPostalCode());
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE,
 				registration.getDemographicDTO().getDemoInUserLang().getMobile());
+		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
+				registration.getDemographicDTO().getDemoInUserLang().getLocalAdministrativeAuthority());
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
+				registration.getDemographicDTO().getDemoInUserLang().getCneOrPINNumber());
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
+				localProperties.getString("cnie_number"));
+		boolean isChild = registration.getDemographicDTO().getDemoInUserLang().isChild();
+
+		if (isChild) {
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
+					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianName());
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
+					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianRIDOrUIN());
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("parent_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+					localProperties.getString("parent_uin"));
+			// value have to be replaced
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
+					registration.getDemographicDTO().getDemoInUserLang().getParentOrGuardianName());
+		} else {
+			templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT_DETAILS,
+					RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
+		}
+
 		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
 		if (email == null || email == RegistrationConstants.EMPTY) {
 			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
@@ -150,17 +180,91 @@ public class TemplateGenerator {
 		 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
 		 */
 		try {
-			BufferedImage bufferedImage = ImageIO
+			BufferedImage handsImage = ImageIO
 					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(bufferedImage, "jpeg", byteArrayOutputStream);
+			ImageIO.write(handsImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
 			byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
 			String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
-			templateValues.put("handsImageSource",
+			templateValues.put(RegistrationConstants.TEMPLATE_HANDS_IMAGE_SOURCE,
 					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
 		} catch (IOException ioException) {
 			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
+		try {
+			BufferedImage qrCodeImage = ImageIO
+					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_QRCODE_IMAGE_PATH));
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(qrCodeImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
+			byte[] qrCodeImageBytes = byteArrayOutputStream.toByteArray();
+			String qrCodeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(qrCodeImageBytes, false));
+			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
+					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + qrCodeImageEncodedBytes);
+		} catch (IOException ioException) {
+			LOGGER.error("VELOCITY_TEMPLATE_GENERATOR", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
+
+		templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
+		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
+				localProperties.getString("full_name"));
+		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInLocalLang().getFullName());
+		templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
+				localProperties.getString("date_of_birth"));
+		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL, localProperties.getString("gender"));
+		// value have to be replaced
+		String gender = registration.getDemographicDTO().getDemoInUserLang().getGender();
+		if (gender.equalsIgnoreCase("MALE")) {
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG, localProperties.getString("male"));
+		} else if (gender.equalsIgnoreCase("FEMALE")) {
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG, localProperties.getString("female"));
+		} else {
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
+					localProperties.getString("un_identified"));
+		}
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
+				localProperties.getString("address_line1"));
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine1());
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
+				localProperties.getString("address_line2"));
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine2());
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL,
+				localProperties.getString("address_line3"));
+		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getAddressLine3());
+		templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG_LABEL, localProperties.getString("city"));
+		// value have to be replaced
+		templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
+		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
+				localProperties.getString("province"));
+		// value have to be replaced
+		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
+		templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG_LABEL,
+				localProperties.getString("region"));
+		// value have to be replaced
+		templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
+		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
+				localProperties.getString("local_authority"));
+		// value have to be replaced
+		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
+				registration.getDemographicDTO().getDemoInUserLang().getLocalAdministrativeAuthority());
+		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
+				localProperties.getString("postal_code"));
+		templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL, localProperties.getString("email"));
+		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL, localProperties.getString("mobile"));
+		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
+				localProperties.getString("documents"));
+		templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList);
+		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
+				localProperties.getString("ro_name"));
+		templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
+				registration.getOsiDataDTO().getOperatorID());
+
 		templateValues.put("rightIndexFinger", "1");
 		templateValues.put("rightMiddleFinger", "4");
 		templateValues.put("rightRingFinger", "2");
@@ -171,6 +275,7 @@ public class TemplateGenerator {
 		templateValues.put("leftRingFinger", "2");
 		templateValues.put("leftLittleFinger", "4");
 		templateValues.put("leftThumb", "5");
+
 		// get the total count of fingerprints captured and irises captured
 		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getFingerprintDetailsDTO();
@@ -178,10 +283,16 @@ public class TemplateGenerator {
 		List<IrisDetailsDTO> capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getIrisDetailsDTO();
 
-		int[] fingersAndIrises = { capturedFingers.stream().mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(), capturedIris.size() };
+		int[] fingersAndIrises = { capturedFingers.stream()
+				.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
+				capturedIris.size() };
 
 		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
+				"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+				"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+		templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
+				localProperties.getString("biometrics_captured"));
 
 		Writer writer = new StringWriter();
 		try {

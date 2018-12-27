@@ -273,24 +273,5 @@ public class Validations extends BaseController {
 	public void setChild(boolean isChild) {
 		this.isChild = isChild;
 	}
-	
-	private class validationMessage{
-		private boolean isValid;
-		private String message;
-		
-		public validationMessage(boolean isValid, String message) {
-			this.isValid=isValid;
-			this.message=message;
-		}
-
-		public boolean isValid() {
-			return isValid;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-	}
 
 }

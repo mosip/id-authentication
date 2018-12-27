@@ -193,8 +193,10 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 				zipOutputStream);
 		addToZip(applicantDocumentDTO.getExceptionPhoto(), folderName + applicantDocumentDTO.getExceptionPhotoName(),
 				zipOutputStream);
-		addToZip(applicantDocumentDTO.getAcknowledgeReceipt(),
-				folderName + applicantDocumentDTO.getAcknowledgeReceiptName(), zipOutputStream);
+		if(applicantDocumentDTO.getAcknowledgeReceipt()!=null) {
+			addToZip(applicantDocumentDTO.getAcknowledgeReceipt(),
+					folderName + applicantDocumentDTO.getAcknowledgeReceiptName(), zipOutputStream);
+		}
 	}
 
 	/**

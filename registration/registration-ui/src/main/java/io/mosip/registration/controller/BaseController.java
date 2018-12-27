@@ -105,7 +105,7 @@ public class BaseController {
 
 	protected Scene getScene(Parent borderPane) {
 		
-		if (!borderPane.getId().equals("loginScreen") && !borderPane.getId().equals("ackScreen")) {
+		if (!borderPane.getId().equals("loginScreen")) {
 			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 			borderPane.setLayoutX((primScreenBounds.getWidth() - fXComponents.getStage().getWidth() + 350) / 2);
 		}

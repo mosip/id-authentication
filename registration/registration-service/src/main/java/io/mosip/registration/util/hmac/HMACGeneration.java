@@ -110,7 +110,10 @@ public class HMACGeneration {
 		List<DocumentDetailsDTO> documentDetailsDTOList = applicantDocument.getDocumentDetailsDTO();
 		byte[] applicantPhotoBytes = applicantDocument.getPhoto();
 		byte[] applicantExceptionPhotoBytes = applicantDocument.getExceptionPhoto();
-		byte[] registrationAck = applicantDocument.getAcknowledgeReceipt();
+		byte[] registrationAck = null;
+		if(applicantDocument.getAcknowledgeReceipt()!=null) {
+			registrationAck = applicantDocument.getAcknowledgeReceipt();
+		}
 
 		// for documents hash
 		if (documentDetailsDTOList != null) {

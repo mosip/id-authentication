@@ -178,40 +178,20 @@ public class HeaderController extends BaseController {
 	}
 
 	/**
-	 * Sync master data.
+	 * Sync  data through batch jobs.
 	 *
 	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
+	public void syncData(ActionEvent event)  {
 
-		ResponseDTO masterResponse = null;
+		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
 
-		String errorMessage = "";
-
-		try {
-
-			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Syncing master data");
-
-			masterResponse = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getSuccessResponseDTO().getMessage());
-
-		} catch (RuntimeException exception) {
-
-			LOGGER.error("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, exception.getMessage());
-
-			if (null != masterResponse) {
-				List<ErrorResponseDTO> errorMsgList = masterResponse.getErrorResponseDTOs();
-
-				for (ErrorResponseDTO errorResponseDTO : errorMsgList) {
-					errorMessage = errorResponseDTO.getMessage();
-				}
-			}
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
+		if (responseDTO.getErrorResponseDTOs() != null) {
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+		} else if (responseDTO.getSuccessResponseDTO() != null) {
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}
 	}
 
@@ -278,19 +258,7 @@ public class HeaderController extends BaseController {
 		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
 	}
 
-	@FXML
-	public void syncInitializer(ActionEvent event) {
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
-
-		if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		} else if (responseDTO.getSuccessResponseDTO() != null) {
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
-		}
-
-	}
+	
 	
 	public void eodProcess() {
 		packetHandlerController.approvePacket();
