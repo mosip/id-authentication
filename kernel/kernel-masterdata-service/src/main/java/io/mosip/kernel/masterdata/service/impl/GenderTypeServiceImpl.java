@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -131,8 +130,9 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@Transactional
 	@Override
-	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender) {
+	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
 
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();

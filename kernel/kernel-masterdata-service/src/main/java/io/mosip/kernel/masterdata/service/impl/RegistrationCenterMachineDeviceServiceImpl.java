@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceErrorCode;
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * 
  * @author Bal Vikash Sharma
+ * @author Srinivasan
  * @since 1.0.0
  */
 @Service
@@ -45,6 +47,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	 * RequestDto)
 	 */
 	@Override
+	@Transactional
 	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
@@ -130,7 +133,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			}
 
 		} catch (DataAccessLayerException | DataAccessException ex) {
-			ex.printStackTrace();
+			
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
 							.getErrorCode(),

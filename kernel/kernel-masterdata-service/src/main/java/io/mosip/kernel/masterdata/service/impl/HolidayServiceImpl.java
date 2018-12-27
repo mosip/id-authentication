@@ -166,10 +166,6 @@ public class HolidayServiceImpl implements HolidayService {
 		HolidayUpdateDto dto = holidayDto.getRequest();
 		Map<String, Object> params = bindDtoToMap(dto);
 		try {
-			/*int noOfRowAffected =
-			 holidayRepository.createNamedQueryUpdateOrDelete("Holiday.updateHoliday",Holiday.class,
-			 params);
-			 */
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);
 			if (noOfRowAffected != 0)
 				idDto = mapToHolidayIdDto(dto);
@@ -178,7 +174,6 @@ public class HolidayServiceImpl implements HolidayService {
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			e.printStackTrace();
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage());
 		}
@@ -209,24 +204,31 @@ public class HolidayServiceImpl implements HolidayService {
 		return idDto;
 	}
 
+	/**
+	 * Bind {@link HolidayUpdateDto} dto to {@link Map}
+	 * 
+	 * @param dto
+	 *            input {@link HolidayUpdateDto}
+	 * @return {@link Map} with the named parameter and value
+	 */
 	private Map<String, Object> bindDtoToMap(HolidayUpdateDto dto) {
 		Map<String, Object> params = new HashMap<>();
 		if (dto.getNewHolidayName() != null && !dto.getNewHolidayName().isEmpty())
 			params.put("newHolidayName", dto.getNewHolidayName());
 		else
-			params.put("newHolidayName", dto.getCurrentHolidayName());
+			params.put("newHolidayName", dto.getHolidayName());
 		if (dto.getNewHolidayDate() != null)
 			params.put("newHolidayDate", dto.getNewHolidayDate());
 		else
-			params.put("newHolidayDate", dto.getCurrentHolidayDate());
+			params.put("newHolidayDate", dto.getHolidayDate());
 		if (dto.getNewHolidayDesc() != null && !dto.getNewHolidayDesc().isEmpty())
 			params.put("holidayDesc", dto.getNewHolidayDesc());
 		else
-			params.put("holidayDesc", dto.getCurrentHolidayDesc());
+			params.put("holidayDesc", dto.getHolidayDesc());
 
 		params.put("isActive", dto.getIsActive());
-		params.put("holidayDate", dto.getCurrentHolidayDate());
-		params.put("holidayName", dto.getCurrentHolidayName());
+		params.put("holidayDate", dto.getHolidayDate());
+		params.put("holidayName", dto.getHolidayName());
 		params.put("updatedBy", SecurityContextHolder.getContext().getAuthentication().getName());
 		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
 		params.put("locationCode", dto.getLocationCode());
@@ -234,17 +236,24 @@ public class HolidayServiceImpl implements HolidayService {
 		return params;
 	}
 
+	/**
+	 * Bind the {@link HolidayUpdateDto} to {@link HolidayIDDto}
+	 * 
+	 * @param dto
+	 *            input {@link HolidayUpdateDto} to be bind
+	 * @return {@link HolidayIDDto} holiday id
+	 */
 	private HolidayIDDto mapToHolidayIdDto(HolidayUpdateDto dto) {
 		HolidayIDDto idDto;
 		idDto = new HolidayIDDto();
 		if (dto.getNewHolidayName() != null)
 			idDto.setHolidayName(dto.getNewHolidayName());
 		else
-			idDto.setHolidayName(dto.getCurrentHolidayName());
+			idDto.setHolidayName(dto.getHolidayName());
 		if (dto.getNewHolidayDate() != null)
 			idDto.setHolidayDate(dto.getNewHolidayDate());
 		else
-			idDto.setHolidayDate(dto.getCurrentHolidayDate());
+			idDto.setHolidayDate(dto.getHolidayDate());
 		idDto.setLocationCode(dto.getLocationCode());
 		idDto.setLangCode(dto.getLangCode());
 		return idDto;

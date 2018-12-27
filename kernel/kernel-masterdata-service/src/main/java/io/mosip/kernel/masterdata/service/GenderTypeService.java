@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-import javax.validation.Valid;
-
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
@@ -59,7 +57,7 @@ public interface GenderTypeService {
 	 *            {@link RequestDto} the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID updateGenderType(@Valid RequestDto<GenderTypeDto> gender);
+	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender);
 
 	/**
 	 * Method to delete Gender Type based on code provided.
