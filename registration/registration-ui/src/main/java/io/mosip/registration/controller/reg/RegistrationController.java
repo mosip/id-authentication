@@ -669,20 +669,14 @@ public class RegistrationController extends BaseController {
 														.get()))
 												.get()))
 										.get()))
-								.with(identity -> identity
-										.setDateOfBirth(
-												Builder.build(SimplePropertiesDTO.class)
-														.with(value -> value.setLabel("Date Of Birth")).with(
-																value -> value
-																		.setValue(
-																				DateUtils.formatDate(
-																						Date.from(ageDatePicker.getValue()
-																								.atStartOfDay()
-																								.atZone(ZoneId
-																										.systemDefault())
-																								.toInstant()),
-																						"yyyy/MM/dd")))
-														.get()))
+								.with(identity -> identity.setDateOfBirth(Builder.build(SimplePropertiesDTO.class)
+										.with(value -> value.setLabel("Date Of Birth"))
+										.with(value -> value.setValue(DateUtils.formatDate(Date.from(
+												(ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
+														.getValue().atStartOfDay().atZone(ZoneId.systemDefault())
+														.toInstant()),
+												"yyyy/MM/dd")))
+										.get()))
 								.with(identity -> identity.setAge(ageField.getText()))
 								.with(identity -> identity.setGender((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
 										.with(genderValue -> genderValue.setLabel("Gender"))
