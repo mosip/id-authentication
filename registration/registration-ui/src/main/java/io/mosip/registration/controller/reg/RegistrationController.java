@@ -1,7 +1,5 @@
 package io.mosip.registration.controller.reg;
 
-																																						
-
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
@@ -41,6 +39,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXComponents;
+import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.WebCameraController;
@@ -94,30 +93,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-			
-		   
-			
-	  
-		 
-	   
-		 
-		
-		   
-		   
-		  
-			
-		  
-			
-		   
-			
-		
-		 
-		  
-		   
-		
-		 
-		 
-		
 
 /**
  * Class for Registration Page Controller
@@ -175,11 +150,8 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane childSpecificFields;
 
-	 @FXML
+	@FXML
 	private ScrollPane demoScrollPane;
-	   
-								   
-	 
 
 	private SimpleBooleanProperty switchedOn;
 
@@ -281,8 +253,6 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private ImageView copyAddressImage;
 
-	private boolean toggleAgeOrDobField;
-
 	private boolean isChild;
 
 	private Node keyboardNode;
@@ -342,13 +312,8 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private IdValidator<String> pridValidatorImpl;
-
 	@Autowired
 	private Validations validation;
-
-	@Autowired
-	private FXComponents fxComponents;
-
 	@FXML
 	private Text paneLabel;
 	@FXML
@@ -357,6 +322,8 @@ public class RegistrationController extends BaseController {
 	private AnchorPane addressAnchorPane;
 	@FXML
 	private Label preRegistrationLabel;
+	
+	FXUtils fxUtils;
 
 	@FXML
 	private void initialize() {
@@ -364,8 +331,8 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight() - 5);
-					
-		auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
+
+			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -400,10 +367,10 @@ public class RegistrationController extends BaseController {
 							headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 						}
 					});
+			fxUtils = FXUtils.getInstance();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "N");
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
-			toggleAgeOrDobField = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
 			toggleFunction();
@@ -415,13 +382,13 @@ public class RegistrationController extends BaseController {
 			loadKeyboard();
 			ageField.setDisable(true);
 			accord.setExpandedPane(demoGraphicTitlePane);
-			fxComponents.dateFormatter(ageDatePicker);
-			fxComponents.disableFutureDays(ageDatePicker);
+			fxUtils.dateFormatter(ageDatePicker);
+			fxUtils.disableFutureDays(ageDatePicker);
 
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
-if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+			if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 
 				ObservableList<Node> nodes = demoGraphicPane1.getChildren();
 
@@ -451,8 +418,8 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 				emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 
 				cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			}																 
-		  
+			}
+
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -505,7 +472,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 			mobileNo.setText(demo.getIdentity().getPhone().getValue());
 			emailId.setText(demo.getIdentity().getEmail().getValue());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
-   
+
 			populateFieldValue(localAdminAuthority, null,
 					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
 
@@ -765,14 +732,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 														.toInstant()),
 												"yyyy/MM/dd")))
 										.get()))
-	
-																																													   
-															   
-																				 
-																				 
-																	 
-																	 
-  
+
 								.with(identity -> identity.setAge(ageField.getText()))
 								.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder
 										.build(ArrayPropertiesDTO.class)
@@ -795,7 +755,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 														.with(value -> value.setValue(addressLine1.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-																						  
+
 														.with(value -> value
 																.setValue(addressLine1LocalLanguage.getText()))
 														.get()))
@@ -810,7 +770,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 														.with(value -> value.setValue(addressLine2.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-																						  
+
 														.with(value -> value
 																.setValue(addressLine2LocalLanguage.getText()))
 														.get()))
@@ -825,7 +785,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 														.with(value -> value.setValue(addressLine3.getText())).get()))
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
-																						  
+
 														.with(value -> value
 																.setValue(addressLine3LocalLanguage.getText()))
 														.get()))
@@ -867,7 +827,7 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 												.get()))
 										.get()))
 								.with(identity -> identity.setPostalCode(postalCode.getText()))
-																						  
+
 								.with(identity -> identity.setPhone(Builder.build(SimplePropertiesDTO.class)
 										.with(value -> value.setLabel("Land Line"))
 										.with(value -> value.setValue(mobileNo.getText())).get()))
@@ -1188,14 +1148,14 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
-			fxComponents.validateOnType(fullName, validation, fullNameLocalLanguage);
-			fxComponents.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
-			fxComponents.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
-			fxComponents.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
-			fxComponents.validateOnType(mobileNo, validation);
-			fxComponents.validateOnType(postalCode, validation);
-			fxComponents.validateOnType(emailId, validation);
-			fxComponents.validateOnType(cniOrPinNumber, validation);
+			fxUtils.validateOnType(fullName, validation, fullNameLocalLanguage);
+			fxUtils.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
+			fxUtils.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
+			fxUtils.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
+			fxUtils.validateOnType(mobileNo, validation);
+			fxUtils.validateOnType(postalCode, validation);
+			fxUtils.validateOnType(emailId, validation);
+			fxUtils.validateOnType(cniOrPinNumber, validation);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
@@ -1277,7 +1237,6 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 						childSpecificFields.setVisible(false);
 						ageDatePicker.setDisable(true);
 						ageField.setDisable(false);
-						toggleAgeOrDobField = true;
 
 					} else {
 						toggleLabel1.setId("toggleLabel1");
@@ -1289,7 +1248,6 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 						childSpecificFields.setVisible(false);
 						ageDatePicker.setDisable(false);
 						ageField.setDisable(true);
-						toggleAgeOrDobField = false;
 
 					}
 				}
@@ -1442,7 +1400,6 @@ if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 		int age = 45;
 		switchedOn.set(true);
 		ageField.setText("" + age);
-		toggleAgeOrDobField = true;
 		gender.setValue("MALE");
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
