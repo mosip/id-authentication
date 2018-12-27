@@ -24,6 +24,7 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -83,7 +84,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 				if (checkNotNull(registrationDTO.getDemographicDTO())) {
 					if (checkNotNull(registrationDTO.getDemographicDTO().getApplicantDocumentDTO())) {
 						String folderName = "Demographic".concat(separator).concat("Applicant").concat(separator);
-						addDemogrpahicData(registrationDTO.getDemographicDTO().getApplicantDocumentDTO(), folderName,
+						addDemogrpahicData(registrationDTO.getDemographicDTO(), folderName,
 								zipOutputStream);
 
 						LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -170,7 +171,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	/**
 	 * Adds the demogrpahic data.
 	 *
-	 * @param applicantDocumentDTO
+	 * @param demographicDTO
 	 *            the applicant document DTO
 	 * @param folderName
 	 *            the folder name
@@ -179,23 +180,45 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	private static void addDemogrpahicData(final ApplicantDocumentDTO applicantDocumentDTO, final String folderName,
+	private static void addDemogrpahicData(final DemographicDTO demographicDTO, final String folderName,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		// Add Proofs
-		if (checkNotNull(applicantDocumentDTO.getDocumentDetailsDTO())) {
-			for (DocumentDetailsDTO documentDetailsDTO : applicantDocumentDTO.getDocumentDetailsDTO()) {
-				writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
-						zipOutputStream);
-			}
+		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
+				.getProofOfIdentity();
+
+		if (documentDetailsDTO != null) {
+			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+					zipOutputStream);
 		}
 
-		addToZip(applicantDocumentDTO.getPhoto(), folderName + applicantDocumentDTO.getPhotographName(),
-				zipOutputStream);
-		addToZip(applicantDocumentDTO.getExceptionPhoto(), folderName + applicantDocumentDTO.getExceptionPhotoName(),
-				zipOutputStream);
-		if(applicantDocumentDTO.getAcknowledgeReceipt()!=null) {
-			addToZip(applicantDocumentDTO.getAcknowledgeReceipt(),
-					folderName + applicantDocumentDTO.getAcknowledgeReceiptName(), zipOutputStream);
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+
+		if (documentDetailsDTO != null) {
+			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+					zipOutputStream);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+
+		if (documentDetailsDTO != null) {
+			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+					zipOutputStream);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+
+		if (documentDetailsDTO != null) {
+			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+					zipOutputStream);
+		}
+
+		addToZip(demographicDTO.getApplicantDocumentDTO().getPhoto(),
+				folderName + demographicDTO.getApplicantDocumentDTO().getPhotographName(), zipOutputStream);
+		addToZip(demographicDTO.getApplicantDocumentDTO().getExceptionPhoto(),
+				folderName + demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(), zipOutputStream);
+		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
+			addToZip(demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt(),
+					folderName + demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(), zipOutputStream);
 		}
 	}
 

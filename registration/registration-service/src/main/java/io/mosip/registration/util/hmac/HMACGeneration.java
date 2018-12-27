@@ -6,7 +6,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
@@ -100,41 +99,54 @@ public class HMACGeneration {
 	private static void generateDemographicHash(final DemographicDTO demographicDTO,
 			final DemographicSequence demographicSequence) {
 		// generates applicant document hash
-		if (demographicDTO.getApplicantDocumentDTO() != null) {
-			generateApplicantDocumentHash(demographicDTO.getApplicantDocumentDTO(), demographicSequence.getApplicant());
-		}
+		generateApplicantDocumentHash(demographicDTO, demographicSequence.getApplicant());
 	}
 
-	private static void generateApplicantDocumentHash(final ApplicantDocumentDTO applicantDocument,
+	private static void generateApplicantDocumentHash(final DemographicDTO demographicDTO,
 			List<String> hashOrder) {
-		List<DocumentDetailsDTO> documentDetailsDTOList = applicantDocument.getDocumentDetailsDTO();
-		byte[] applicantPhotoBytes = applicantDocument.getPhoto();
-		byte[] applicantExceptionPhotoBytes = applicantDocument.getExceptionPhoto();
-		byte[] registrationAck = null;
-		if(applicantDocument.getAcknowledgeReceipt()!=null) {
-			registrationAck = applicantDocument.getAcknowledgeReceipt();
+		byte[] applicantPhotoBytes = demographicDTO.getApplicantDocumentDTO().getPhoto();
+		byte[] applicantExceptionPhotoBytes = demographicDTO.getApplicantDocumentDTO().getExceptionPhoto();
+		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
+
+		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
+				.getProofOfIdentity();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
 		}
 
-		// for documents hash
-		if (documentDetailsDTOList != null) {
-			documentDetailsDTOList.forEach(document -> {
-				if (document != null)
-					generateHash(document.getDocument(), document.getValue(), hashOrder);
-			});
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
 		}
 
 		// hash for applicant photo
 		if (applicantPhotoBytes != null) {
-			generateHash(applicantPhotoBytes, applicantDocument.getPhotographName(), hashOrder);
+			generateHash(applicantPhotoBytes, demographicDTO.getApplicantDocumentDTO().getPhotographName(), hashOrder);
 		}
 		// hash for exception Photo
 		if (applicantExceptionPhotoBytes != null) {
-			generateHash(applicantExceptionPhotoBytes, applicantDocument.getExceptionPhotoName(), hashOrder);
+			generateHash(applicantExceptionPhotoBytes, demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(),
+					hashOrder);
 		}
 
 		// Hash for Acknowledgement Receipt
 		if (registrationAck != null) {
-			generateHash(registrationAck, applicantDocument.getAcknowledgeReceiptName(), hashOrder);
+			generateHash(registrationAck, demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(),
+					hashOrder);
 		}
 
 	}

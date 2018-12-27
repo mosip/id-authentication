@@ -112,12 +112,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				}
 			}
 
-			if (!documentDetailsDTOs.isEmpty()) {
+			/*if (!documentDetailsDTOs.isEmpty()) {
 				applicantDocumentDTO.setDocumentDetailsDTO(documentDetailsDTOs);
 				if (registrationDTO.getDemographicDTO() != null) {
 					registrationDTO.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
 				}
-			}
+			}*/
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());

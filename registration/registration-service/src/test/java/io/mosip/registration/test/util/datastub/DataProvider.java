@@ -174,6 +174,7 @@ public class DataProvider {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
 		demographicDTO.setDemographicInfoDTO(DataProvider.getDemoInLocalLang());
+		getDocumentDetailsDTO(demographicDTO.getDemographicInfoDTO().getIdentity());
 		return demographicDTO;
 	}
 
@@ -322,7 +323,7 @@ public class DataProvider {
 
 	private static ApplicantDocumentDTO setApplicantDocumentDTO() throws RegBaseCheckedException {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
+		//applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
 		applicantDocumentDTO.setHasExceptionPhoto(true);
@@ -335,9 +336,7 @@ public class DataProvider {
 		return applicantDocumentDTO;
 	}
 
-	private static List<DocumentDetailsDTO> getDocumentDetailsDTO() throws RegBaseCheckedException {
-
-		List<DocumentDetailsDTO> docdetailsList = new ArrayList<>();
+	private static void getDocumentDetailsDTO(Identity identity) throws RegBaseCheckedException {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
@@ -345,6 +344,8 @@ public class DataProvider {
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
 		documentDetailsDTO.setOwner("Self");
+		
+		identity.setProofOfIdentity(documentDetailsDTO);
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
@@ -352,11 +353,8 @@ public class DataProvider {
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");
-
-		docdetailsList.add(documentDetailsDTO);
-		docdetailsList.add(documentDetailsResidenceDTO);
-
-		return docdetailsList;
+		
+		identity.setProofOfAddress(documentDetailsResidenceDTO);
 	}
 
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {

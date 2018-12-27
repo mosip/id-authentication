@@ -162,13 +162,26 @@ public class TemplateGenerator {
 				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
 			}
 
-			List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
-					.getDocumentDetailsDTO();
-			List<String> documentNames = documents.stream().map(document -> document.getValue())
-					.collect(Collectors.toList());
-
-			String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
+			StringBuffer documentsList = new StringBuffer();
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfIdentity() != null) {
+				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getProofOfIdentity().getValue()).append(", ");
+			}
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfAddress() != null) {
+				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getProofOfAddress().getValue()).append(", ");
+			}
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getProofOfRelationship() != null) {
+				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getProofOfRelationship().getValue()).append(", ");
+			}
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirthProof() != null) {
+				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getDateOfBirthProof().getValue());
+			}
+			
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
 
 			byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
@@ -278,7 +291,7 @@ public class TemplateGenerator {
 					localProperties.getString("mobile"));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
 					localProperties.getString("documents"));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList);
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList.toString());
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
 					localProperties.getString("ro_name"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,

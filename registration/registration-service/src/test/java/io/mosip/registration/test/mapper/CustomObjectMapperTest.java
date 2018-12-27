@@ -1,7 +1,6 @@
 package io.mosip.registration.test.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.time.OffsetDateTime;
 import org.junit.BeforeClass;
@@ -33,7 +32,7 @@ public class CustomObjectMapperTest {
 		demographicDTO = registrationDTO.getDemographicDTO();
 
 		// DemographicInfoDTO
-		//demographicInfoDTO = demographicDTO.getDemoInLocalLang();
+		demographicInfoDTO = demographicDTO.getDemographicInfoDTO();
 
 	}
 
@@ -54,27 +53,31 @@ public class CustomObjectMapperTest {
 	@Test
 	public void testDemographicConversion() {
 		Demographic demographic = mapperFacade.map(demographicDTO, Demographic.class);
-		assertDemographicInfo(demographic.getDemoInLocalLang());
-		assertDemographicInfo(demographic.getDemoInUserLang());
+		//assertDemographicInfo(demographic.getDemoInLocalLang());
+		//assertDemographicInfo(demographic.getDemoInUserLang());
 	}
 
 	private void assertDemographicInfo(DemographicInfo demographicInfo) {
-		/*assertEquals(demographicInfoDTO.getDateOfBirth(), demographicInfo.getDateOfBirth());
-		assertEquals(demographicInfoDTO.getGender(), demographicInfo.getGender());
-		assertEquals(demographicInfoDTO.getAddressDTO().getAddressLine1(),
-				demographicInfo.getAddressDTO().getAddressLine1());
-		assertEquals(demographicInfoDTO.getAddressDTO().getAddressLine2(),
-				demographicInfo.getAddressDTO().getAddressLine2());
-		assertNull(demographicInfo.getAddressDTO().getAddressLine3());
-		assertEquals(demographicInfoDTO.getAddressDTO().getLocationDTO().getRegion(),
-				demographicInfo.getAddressDTO().getLocationDTO().getRegion());
-		assertEquals(demographicInfoDTO.getAddressDTO().getLocationDTO().getProvince(),
-				demographicInfo.getAddressDTO().getLocationDTO().getProvince());
-		assertEquals(demographicInfoDTO.getAddressDTO().getLocationDTO().getCity(),
-				demographicInfo.getAddressDTO().getLocationDTO().getCity());
-		assertEquals(demographicInfoDTO.getEmailId(), demographicInfo.getEmailId());
-		assertEquals(demographicInfoDTO.getMobile(), demographicInfo.getMobile());
-		assertEquals(demographicInfoDTO.isChild(), demographicInfo.isChild());*/
+		assertEquals(demographicInfoDTO.getIdentity().getDateOfBirth().getValue(),
+				demographicInfo.getIdentity().getDateOfBirth().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getGender().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getGender().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getAddressLine1().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getAddressLine1().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getAddressLine2().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getAddressLine2().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getAddressLine3().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getAddressLine3().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getRegion().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getRegion().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getProvince().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getProvince().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getCity().getValues().getFirst().getValue(),
+				demographicInfo.getIdentity().getCity().getValues().getFirst().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getEmail().getValue(),
+				demographicInfo.getIdentity().getEmail().getValue());
+		assertEquals(demographicInfoDTO.getIdentity().getPhone().getValue(),
+				demographicInfo.getIdentity().getPhone().getValue());
 	}
 
 }

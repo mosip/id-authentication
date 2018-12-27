@@ -699,15 +699,15 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
-			DemographicInfoDTO demographicInfoDTO;
-
+			Identity demographicIdentity = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+			DemographicInfoDTO demographicInfoDTO ;
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 
 			String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
 			String localLanguageCode = AppConfig.getApplicationProperty("local_language");
 
-			if (validateDemographicPane(demoGraphicPane2)) {
+			if (true) {//validateDemographicPane(demoGraphicPane2)) {
 
 				demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
 						.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
@@ -862,15 +862,20 @@ public class RegistrationController extends BaseController {
 														.with(value -> value.setValue(parentName.getText())).get()))
 												.get()))
 										.get()))
-								.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText())).get()))
+								.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText()))
+								.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
+								.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
+								.with(identity -> identity
+										.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
+								.with(identity -> identity
+										.setDateOfBirthProof(demographicIdentity.getDateOfBirthProof()))
+								.get()))
 						.get();
 
 				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
 
 				if (isChild) {
-
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-
 					registrationMetaDataDTO.setApplicationType("Child");
 				} else {
 					registrationMetaDataDTO.setApplicationType("Adult");
@@ -1004,7 +1009,7 @@ public class RegistrationController extends BaseController {
 		boolean isValid = true;
 		isValid = validateDemographicPane(demoGraphicPane1);
 		if (isValid) {
-			isValid = validateDemographicPane(demoGraphicPane2);
+			isValid = true;//validateDemographicPane(demoGraphicPane2);
 		}
 		if (!isValid) {
 			demoGraphicTitlePane.setExpanded(true);
@@ -1583,8 +1588,11 @@ public class RegistrationController extends BaseController {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
+		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+		Identity identity = new Identity();
+		demographicInfoDTO.setIdentity(identity);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 
 		registrationDTO.setDemographicDTO(demographicDTO);
 

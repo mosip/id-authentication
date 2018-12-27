@@ -47,7 +47,7 @@ public class DocumentDetailsDTO extends BaseDTO {
 	 *            the name of the document to set
 	 */
 	public void setValue(String value) {
-		this.value = category.concat("_").concat(value).concat(".").concat(format);
+		this.value = value;
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -21,6 +22,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,16 +66,10 @@ public class DocumentScanController extends BaseController {
 	private VBox poaBox;
 
 	@FXML
-	private ScrollPane poaScroll;
-
-	@FXML
 	private ComboBox<String> poiDocuments;
 
 	@FXML
 	private VBox poiBox;
-
-	@FXML
-	private ScrollPane poiScroll;
 
 	private String selectedDocument;
 
@@ -94,12 +90,6 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private VBox dobBox;
-
-	@FXML
-	private ScrollPane porScroll;
-
-	@FXML
-	private ScrollPane dobScroll;
 
 	@FXML
 	protected Button poaScanBtn;
@@ -130,7 +120,6 @@ public class DocumentScanController extends BaseController {
 
 			isChild = true;
 			loadListOfDocuments();
-			setScrollFalse();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -201,6 +190,11 @@ public class DocumentScanController extends BaseController {
 
 			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
 			documents.requestFocus();
+		} else if (!vboxElement.getChildren().isEmpty()) {
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
 				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -248,21 +242,31 @@ public class DocumentScanController extends BaseController {
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
+					DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+
 					switch (selectedDocument) {
 					case RegistrationConstants.POA_DOCUMENT:
-						attachDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.setProofOfAddress(documentDetailsDTO);
+						attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
 						SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
 						break;
 					case RegistrationConstants.POI_DOCUMENT:
-						attachDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.setProofOfIdentity(documentDetailsDTO);
+						attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
 						SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
 						break;
 					case RegistrationConstants.POR_DOCUMENT:
-						attachDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.setProofOfRelationship(documentDetailsDTO);
+						attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
 						SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
 						break;
 					case RegistrationConstants.DOB_DOCUMENT:
-						attachDocuments(dobDocuments.getValue(), dobBox, dobScroll, byteArray);
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.setDateOfBirthProof(documentDetailsDTO);
+						attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 						SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 						break;
 					default:
@@ -295,36 +299,25 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will add Hyperlink and Image for scanned documents
 	 */
-	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
+	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, String document, VBox vboxElement, byte[] byteArray) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
 
-		String documentName = document;
-
-		ObservableList<Node> nodes = vboxElement.getChildren();
-		if (!nodes.isEmpty() && nodes.stream().anyMatch(index -> index.getId().contains(document))) {
-			documentName = document.concat("_").concat(String.valueOf(nodes.size()));
-		}
-
-		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setCategory(selectedDocument);
+		documentDetailsDTO.setCategory(document);
 		documentDetailsDTO.setFormat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
-		documentDetailsDTO.setValue(documentName);
+		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
-		getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-				.add(documentDetailsDTO);
-
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 
-		addDocumentsToScreen(documentDetailsDTO.getValue(), vboxElement, scrollPane);
+		addDocumentsToScreen(documentDetailsDTO.getValue(), vboxElement);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
@@ -333,41 +326,20 @@ public class DocumentScanController extends BaseController {
 
 	}
 
-	private void addDocumentsToScreen(String document, VBox vboxElement, ScrollPane scrollPane) {
+	private void addDocumentsToScreen(String document, VBox vboxElement) {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
 		gridPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
-		gridPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
+		gridPane.add(createImageView(vboxElement), 1, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
-		if (vboxElement.getChildren().size() >= scrollCheck) {
-			scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		} else {
-			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-		}
 	}
 	
-	/**
-	 * This method will set scrollbar policy for scroll pane
-	 */
-	private void setScrollFalse() {
-		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		poiScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		dobScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		dobScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-	}
-
 	/**
 	 * This method will display the scanned document
 	 */
@@ -392,7 +364,7 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will create Image to delete scanned document
 	 */
-	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
+	private ImageView createImageView(VBox vboxElement) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
@@ -409,14 +381,30 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(MouseEvent event) {
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
-				vboxElement.getChildren().remove(gridpane);
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.removeIf(document -> document.getValue().equals(gridpane.getId()));
-				if (vboxElement.getChildren().isEmpty()) {
-					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+				
+				switch (((VBox) gridpane.getParent()).getId()) {
+				case "poaBox":
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfAddress(null);
+					break;
+				case "poiBox":
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfIdentity(null);
+					break;
+				case "porBox":
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfRelationship(null);
+					break;
+				case "dobBox":
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setDateOfBirthProof(null);
+					break;
+				default:
 				}
+
+				vboxElement.getChildren().remove(gridpane);
 			}
+
 
 		});
 
@@ -446,9 +434,32 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(detail -> detail.getValue().equals(pane.getId())).findFirst()
-						.ifPresent(doc -> displayDocument(doc.getDocument(), doc.getValue()));
+				
+				DocumentDetailsDTO selectedDocumentToDisplay = null;
+				
+				switch (((VBox) pane.getParent()).getId()) {
+				case "poaBox":
+					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getProofOfAddress();
+					break;
+				case "poiBox":
+					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getProofOfIdentity();
+					break;
+				case "porBox":
+					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getProofOfRelationship();
+					break;
+				case "dobBox":
+					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+							.getIdentity().getDateOfBirthProof();
+					break;
+				default:
+				}
+
+				if (selectedDocumentToDisplay != null) {
+					displayDocument(selectedDocumentToDisplay.getDocument(), selectedDocumentToDisplay.getValue());
+				}
 
 			}
 		});
@@ -461,21 +472,22 @@ public class DocumentScanController extends BaseController {
 
 	private void docScanEdit() {
 		// for Document scan
-		if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
-				&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
-						.getDocumentDetailsDTO() != null) {
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poaBox, poaScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poiBox, poiScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), porBox, porScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), dobBox, dobScroll));
+		if (getRegistrationDtoContent().getDemographicDTO() != null) {
+
+			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
+
+			if (identity.getProofOfAddress() != null) {
+				addDocumentsToScreen(identity.getProofOfAddress().getValue(), poaBox);
+			}
+			if (identity.getProofOfIdentity() != null) {
+				addDocumentsToScreen(identity.getProofOfIdentity().getValue(), poiBox);
+			}
+			if (identity.getProofOfRelationship() != null) {
+				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
+			}
+			if (identity.getDateOfBirthProof() != null) {
+				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			}
 
 		}
 
@@ -533,21 +545,22 @@ public class DocumentScanController extends BaseController {
 	}
 
 	protected void prepareEditPageContent() {
-		if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
-				&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
-						.getDocumentDetailsDTO() != null) {
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POA_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poaBox, poaScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POI_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), poiBox, poiScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.POR_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), porBox, porScroll));
-			getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO().stream()
-					.filter(doc -> doc.getCategory().equals(RegistrationConstants.DOB_DOCUMENT)).findFirst()
-					.ifPresent(document -> addDocumentsToScreen(document.getValue(), dobBox, dobScroll));
+		if (getRegistrationDtoContent().getDemographicDTO() != null) {
+			
+			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
+
+			if (identity.getProofOfAddress() != null) {
+				addDocumentsToScreen(identity.getProofOfAddress().getValue(), poaBox);
+			}
+			if (identity.getProofOfIdentity() != null) {
+				addDocumentsToScreen(identity.getProofOfIdentity().getValue(), poiBox);
+			}
+			if (identity.getProofOfRelationship() != null) {
+				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
+			}
+			if (identity.getDateOfBirthProof() != null) {
+				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			}
 		}
 		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));
 		poiDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poi"));
