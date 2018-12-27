@@ -94,6 +94,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	 */
 
 	@Override
+	@Transactional
 	public RegistrationCenterMachineDeviceID deleteRegistrationCenterMachineAndDevice(String regCenterId,
 			String machineId, String deviceId) {
 		RegistrationCenterMachineDeviceID regCenterMachineId = new RegistrationCenterMachineDeviceID();

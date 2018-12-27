@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
@@ -118,6 +119,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * Method creates Reason Category data based on the request sent. {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto) {
 		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
 				ReasonCategory.class);
@@ -150,6 +152,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
 		ReasonList reasonList = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
 
