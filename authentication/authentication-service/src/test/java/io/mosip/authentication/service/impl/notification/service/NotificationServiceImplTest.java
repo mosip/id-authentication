@@ -142,7 +142,7 @@ public class NotificationServiceImplTest {
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		String refId = "274390482564";
+		String uin = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -171,7 +171,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.auth.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		notificationService.sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, false);
+		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -185,7 +185,7 @@ public class NotificationServiceImplTest {
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		String refId = "4667732";
+		String uin = "4667732";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -219,7 +219,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		notificationService.sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, true);
+		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
 
 	private Map<String, Object> repoDetails() {
@@ -234,7 +234,7 @@ public class NotificationServiceImplTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setIdvId("8765");
 		String otp = "987654";
-		String refId = "274390482564";
+		String uin = "274390482564";
 		String date = "";
 		String time = "";
 		String email = "abc@gmail.cpm";
@@ -273,7 +273,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		ReflectionTestUtils.invokeMethod(notificationService, "sendOtpNotification", otpRequestDto, otp, refId, email,
+		ReflectionTestUtils.invokeMethod(notificationService, "sendOtpNotification", otpRequestDto, otp, uin, email,
 				mobileNumber, idInfo);
 	}
 

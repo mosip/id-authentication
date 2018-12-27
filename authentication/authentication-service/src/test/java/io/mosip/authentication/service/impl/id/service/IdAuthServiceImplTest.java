@@ -2,6 +2,8 @@ package io.mosip.authentication.service.impl.id.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +15,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,13 +25,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 
 /**
@@ -59,6 +69,16 @@ public class IdAuthServiceImplTest {
 
 	@Mock
 	IdAuthService idAuthService;
+	@Mock
+	AutnTxnRepository autntxnrepository;
+	@Mock
+	AutnTxn autnTxn;
+
+	@InjectMocks
+	DateHelper dateHelper;
+
+	@Autowired
+	Environment env;
 
 	@Before
 	public void before() {
@@ -66,6 +86,9 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
+		ReflectionTestUtils.setField(idAuthServiceImpl, "env", env);
+		ReflectionTestUtils.setField(idAuthServiceImpl, "dateHelper", dateHelper);
+		ReflectionTestUtils.setField(dateHelper, "env", env);
 
 		/*
 		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "idRepoService",
@@ -156,5 +179,39 @@ public class IdAuthServiceImplTest {
 		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString())).thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId)).thenThrow(idBusinessException);
 
+	}
+
+	@Test
+	public void testSaveAutnTxn() {
+		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
+		String idvId = otpRequestDto.getIdvId();
+		String idvIdType = otpRequestDto.getIdvIdType();
+		String reqTime = otpRequestDto.getReqTime();
+		String txnId = otpRequestDto.getTxnID();
+
+		RequestType requestType = RequestType.OTP_AUTH;
+
+		String uin = "8765";
+		String status = "Y";
+		String comment = "OTP_GENERATED";
+		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, reqTime, txnId, status,
+				comment, requestType);
+	}
+
+	// =========================================================
+	// ************ Helping Method *****************************
+	// =========================================================
+	private OtpRequestDTO getOtpRequestDTO() {
+		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
+		otpRequestDto.setId("id");
+		otpRequestDto.setMuaCode("2345678901234");
+		otpRequestDto.setIdvIdType(IdType.UIN.getType());
+		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDto.setTxnID("2345678901234");
+		otpRequestDto.setIdvId("2345678901234");
+		// otpRequestDto.setVer("1.0");
+
+		return otpRequestDto;
 	}
 }

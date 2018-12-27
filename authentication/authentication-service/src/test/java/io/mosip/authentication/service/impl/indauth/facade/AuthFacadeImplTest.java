@@ -193,7 +193,6 @@ public class AuthFacadeImplTest {
 	public void authenticateApplicantTest()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String refId = "1234567890";
 
 		boolean authStatus = true;
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -218,9 +217,10 @@ public class AuthFacadeImplTest {
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		Map<String, Object> idRepo = new HashMap<>();
-		idRepo.put("uin", "74834738743");
-		idRepo.put("registrationId", "1234567890");
 		String uin = "274390482564";
+		idRepo.put("uin",uin);
+		idRepo.put("registrationId", "1234567890");
+		
 		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
 		authStatusInfo.setStatus(true);
 		authStatusInfo.setErr(Collections.emptyList());
@@ -232,7 +232,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId)).thenReturn(authStatusInfo);
+		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO,uin)).thenReturn(authStatusInfo);
 		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId()))
 				.thenReturn(idRepo);

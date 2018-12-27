@@ -490,9 +490,9 @@ public class DemoAuthServiceTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = null;
-		String refId = "";
+		String uin = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoEntity);
+		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
 	}
 
 	@Test
@@ -538,13 +538,13 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		demoIdentity.put("firstName", identityList);
-		String refId = "274390482564";
+		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.primary.lang-code", "FR");
 		mockenv.setProperty("mosip.secondary.lang-code", "AR");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoIdentity);
+		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
 
 	}
