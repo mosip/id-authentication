@@ -313,7 +313,7 @@ public class MapperUtils {
 			}
 		} catch (IllegalAccessException e) {
 
-			throw new DataAccessLayerException("KER-MSD-993", "Exception raised while mapping values form "
+			throw new DataAccessLayerException("MapperUtils", "Exception raised while mapping values form "
 					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
 		}
 	}
