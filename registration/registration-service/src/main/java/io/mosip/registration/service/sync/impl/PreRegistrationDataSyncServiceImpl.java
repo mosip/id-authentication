@@ -438,7 +438,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return responseDTO;
 	}
 
-	public ResponseDTO updateDeletedRecords(List<PreRegistrationList> preRegList) {
+	private ResponseDTO updateDeletedRecords(List<PreRegistrationList> preRegList) {
 		
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

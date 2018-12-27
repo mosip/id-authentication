@@ -60,7 +60,7 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 	 * quartz.JobExecutionContext)
 	 */
 	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+	public void executeInternal(JobExecutionContext context) {
 		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED - PRE_REGISTRATION_PACKET_DELETION_JOB", APPLICATION_NAME,
 				APPLICATION_ID, "Pre-Registration Packet Deletion job started");
 		this.responseDTO = new ResponseDTO();

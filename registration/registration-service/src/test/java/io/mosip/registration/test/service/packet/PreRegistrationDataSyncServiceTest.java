@@ -1,5 +1,6 @@
 package io.mosip.registration.test.service.packet;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -7,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -150,6 +152,17 @@ public class PreRegistrationDataSyncServiceTest {
 
 		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(preRegPacket)).thenReturn(new RegistrationDTO());
 
+	}
+	
+	@Test
+	public void fetchAndDeleteRecordsTest() {
+		List<PreRegistrationList> preRegList=new ArrayList<>();
+		PreRegistrationList preRegistrationList=new PreRegistrationList();
+		preRegistrationList.setPacketPath("");
+		preRegList.add(preRegistrationList);
+		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
+		Mockito.when(preRegistrationDAO.updateDeletedRecord(Mockito.anyObject())).thenReturn(preRegistrationList);
+		assertEquals(null,preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
 	}
 
 }

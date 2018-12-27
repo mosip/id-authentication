@@ -38,7 +38,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.FXComponents;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.AuthenticationController;
@@ -322,7 +321,7 @@ public class RegistrationController extends BaseController {
 	private AnchorPane addressAnchorPane;
 	@FXML
 	private Label preRegistrationLabel;
-	
+
 	FXUtils fxUtils;
 
 	@FXML
@@ -633,7 +632,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading the second demographic pane");
 
-			if (validateDemographicPaneOne()) {
+			if (validateDemographicPane(demoGraphicPane1)) {
 				demoGraphicTitlePane.setContent(null);
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
@@ -708,7 +707,7 @@ public class RegistrationController extends BaseController {
 			String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
 			String localLanguageCode = AppConfig.getApplicationProperty("local_language");
 
-			if (validateDemographicPaneTwo()) {
+			if (validateDemographicPane(demoGraphicPane2)) {
 
 				demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
 						.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
@@ -1002,56 +1001,68 @@ public class RegistrationController extends BaseController {
 	private void saveBiometricDetails() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
+		boolean isValid = true;
+		isValid = validateDemographicPane(demoGraphicPane1);
+		if (isValid) {
+			isValid = validateDemographicPane(demoGraphicPane2);
+		}
+		if (!isValid) {
+			demoGraphicTitlePane.setExpanded(true);
+			toggleIrisCaptureVisibility(true);
+		}
+		if (isValid) {
 
-		if (capturePhotoUsingDevice.equals("Y")) {
-			if (validateApplicantImage()) {
-				try {
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-							byteArrayOutputStream);
-					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
-							.getApplicantDocumentDTO();
-					applicantDocumentDTO.setPhoto(photoInBytes);
-					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-					byteArrayOutputStream.close();
-					if (exceptionBufferedImage != null) {
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-								outputStream);
-						byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-						applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-						applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-						applicantDocumentDTO.setHasExceptionPhoto(true);
-						outputStream.close();
-					} else {
-						applicantDocumentDTO.setHasExceptionPhoto(false);
+			if (capturePhotoUsingDevice.equals("Y")) {
+				if (validateApplicantImage()) {
+					try {
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+								byteArrayOutputStream);
+						byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+								.getApplicantDocumentDTO();
+						applicantDocumentDTO.setPhoto(photoInBytes);
+						applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+						byteArrayOutputStream.close();
+						if (exceptionBufferedImage != null) {
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+									outputStream);
+							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+							applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+							applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+							applicantDocumentDTO.setHasExceptionPhoto(true);
+							outputStream.close();
+						} else {
+							applicantDocumentDTO.setHasExceptionPhoto(false);
+						}
+
+						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
+								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								"showing demographic preview");
+
+						setPreviewContent();
+						loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+					} catch (IOException ioException) {
+						LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+								RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 					}
+				}
 
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-
+			} else {
+				try {
+					DataProvider.setApplicantDocumentDTO(
+							getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
+							toggleBiometricException);
 					setPreviewContent();
 					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} catch (IOException ioException) {
 					LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 				}
-			}
-
-		} else {
-			try {
-				DataProvider.setApplicantDocumentDTO(
-						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
-						toggleBiometricException);
-				setPreviewContent();
-				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-			} catch (IOException ioException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-			} catch (RegBaseCheckedException regBaseCheckedException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 			}
 		}
 
@@ -1299,9 +1310,9 @@ public class RegistrationController extends BaseController {
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
-	private boolean validateDemographicPaneOne() {
+	private boolean validateDemographicPane(AnchorPane paneToValidate) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
+				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
 
 		boolean gotoNext = true;
 		List<String> excludedIds = new ArrayList<String>();
@@ -1313,29 +1324,11 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("virtualKeyboard");
 		validation.setChild(isChild);
 		validation.setValidationMessage();
-		gotoNext = validation.validate(demoGraphicPane1, excludedIds, gotoNext);
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext);
 		displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
-		return gotoNext;
-	}
-
-	/**
-	 * 
-	 * Validate the fields of demographic pane 2
-	 * 
-	 */
-
-	private boolean validateDemographicPaneTwo() {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
-		boolean gotoNext = true;
-		List<String> excludedIds = new ArrayList<String>();
-		validation.setValidationMessage();
-		gotoNext = validation.validate(demoGraphicPane2, excludedIds, gotoNext);
-		displayValidationMessage(validation.getValidationMessage().toString());
 		return gotoNext;
 	}
 

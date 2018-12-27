@@ -34,12 +34,5 @@ public interface PreRegistrationDataSyncService {
 	 */
 	public ResponseDTO fetchAndDeleteRecords();
 	
-	/**
-	 * Update the deleted Pre-Reg Records in the Table
-	 * @param preRegList
-	 * @return
-	 */
-	public ResponseDTO updateDeletedRecords(List<PreRegistrationList> preRegList);
-
 	
 }
