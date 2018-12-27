@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +47,12 @@ public class RegistrationScreenAuthorizationDAOImpl implements RegistrationScree
 				APPLICATION_NAME, APPLICATION_ID, "Fetching List of Screens to be authorized");
 
 		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
-		List<ScreenAuthorizationDetails> authorizationList = registrationScreenAuthorizationRepository
+		Set<ScreenAuthorizationDetails> authorizationList = registrationScreenAuthorizationRepository
 				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleCode);
 
 		authorizationDTO.setAuthorizationScreenId(
 				authorizationList.stream().map(auth -> auth.getRegistrationScreenAuthorizationId().getScreenId())
-						.collect(Collectors.toList()).stream().distinct().collect(Collectors.toList()));
+						.collect(Collectors.toSet()));
 		authorizationDTO.setAuthorizationRoleCode(roleCode);
 		authorizationDTO.setAuthorizationIsPermitted(true);
 

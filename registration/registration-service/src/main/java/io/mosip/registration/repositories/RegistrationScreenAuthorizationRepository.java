@@ -1,6 +1,7 @@
 package io.mosip.registration.repositories;
 
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.dao.ScreenAuthorizationDetails;
@@ -26,6 +27,6 @@ public interface RegistrationScreenAuthorizationRepository
 	 *            the roleCode
 	 * @return the list of {@link ScreenAuthorizationDetails}
 	 */
-	List<ScreenAuthorizationDetails> findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(List<String> roleCode);
+	Set<ScreenAuthorizationDetails> findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(List<String> roleCode);
 
 }

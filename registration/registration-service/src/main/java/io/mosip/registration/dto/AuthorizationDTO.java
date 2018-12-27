@@ -1,6 +1,7 @@
 package io.mosip.registration.dto;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class contains the Registration screen Authorization details.
@@ -11,14 +12,14 @@ import java.util.List;
  */
 public class AuthorizationDTO {
 
-	private List<String> authorizationScreenId;
+	private Set<String> authorizationScreenId;
 	private List<String> authorizationRoleCode;
 	private boolean authorizationIsPermitted;
 
 	/**
 	 * @return the authorizationScreenId
 	 */
-	public List<String> getAuthorizationScreenId() {
+	public Set<String> getAuthorizationScreenId() {
 		return authorizationScreenId;
 	}
 
@@ -26,7 +27,7 @@ public class AuthorizationDTO {
 	 * @param authorizationScreenId
 	 *            the authorizationScreenId to set
 	 */
-	public void setAuthorizationScreenId(List<String> authorizationScreenId) {
+	public void setAuthorizationScreenId(Set<String> authorizationScreenId) {
 		this.authorizationScreenId = authorizationScreenId;
 	}
 
