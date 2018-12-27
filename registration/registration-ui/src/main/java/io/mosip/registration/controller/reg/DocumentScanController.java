@@ -15,6 +15,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
@@ -133,7 +134,7 @@ public class DocumentScanController extends BaseController {
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -156,7 +157,7 @@ public class DocumentScanController extends BaseController {
 	private void scanPoaDocument() {
 
 		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT,
-				RegistrationConstants.POA_DOCUMENT_EMPTY);
+				RegistrationUIConstants.POA_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -166,7 +167,7 @@ public class DocumentScanController extends BaseController {
 	private void scanPoiDocument() {
 
 		scanDocument(poiDocuments, poiBox, RegistrationConstants.POI_DOCUMENT,
-				RegistrationConstants.POI_DOCUMENT_EMPTY);
+				RegistrationUIConstants.POI_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -176,7 +177,7 @@ public class DocumentScanController extends BaseController {
 	private void scanPorDocument() {
 
 		scanDocument(porDocuments, porBox, RegistrationConstants.POR_DOCUMENT,
-				RegistrationConstants.POR_DOCUMENT_EMPTY);
+				RegistrationUIConstants.POR_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -186,7 +187,7 @@ public class DocumentScanController extends BaseController {
 	private void scanDobDocument() {
 
 		scanDocument(dobDocuments, dobBox, RegistrationConstants.DOB_DOCUMENT,
-				RegistrationConstants.DOB_DOCUMENT_EMPTY);
+				RegistrationUIConstants.DOB_DOCUMENT_EMPTY);
 	}
 
 	/**
@@ -205,7 +206,7 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
@@ -221,7 +222,7 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void scanWindow() {
 
-		scanPopUpViewController.init(this, RegistrationConstants.SCAN_DOC_TITLE);
+		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
@@ -241,7 +242,7 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 			if (byteArray.length > documentSize) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_SIZE);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 			} else {
 				if (selectedDocument != null) {
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -280,13 +281,13 @@ public class DocumentScanController extends BaseController {
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
 							ioException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
 
 	}
@@ -325,7 +326,7 @@ public class DocumentScanController extends BaseController {
 
 		addDocumentsToScreen(documentDetailsDTO.getValue(), vboxElement, scrollPane);
 
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
@@ -506,16 +507,16 @@ public class DocumentScanController extends BaseController {
 
 	public boolean validateDocuments() {
 		if (poaBox.getChildren().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POA_DOCUMENT_EMPTY);
 		} else {
 			if (poiBox.getChildren().isEmpty()) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POI_DOCUMENT_EMPTY);
 			} else {
 				if (isChild && porBox.getChildren().isEmpty()) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POR_DOCUMENT_EMPTY);
 				} else {
 					if (dobBox.getChildren().isEmpty()) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DOB_DOCUMENT_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DOB_DOCUMENT_EMPTY);
 					} else {
 						return true;
 					}

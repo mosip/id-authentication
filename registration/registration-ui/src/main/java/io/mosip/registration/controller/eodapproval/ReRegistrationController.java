@@ -20,6 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.dto.PacketStatusDTO;
@@ -232,7 +233,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.REREGISTRATION_APPROVE_SUCCESS);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REREGISTRATION_APPROVE_SUCCESS);
 		primaryStage.close();
 		reloadTableView();
 	}

@@ -55,6 +55,7 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -374,7 +375,7 @@ public class RegistrationController extends BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -508,7 +509,7 @@ public class RegistrationController extends BaseController {
 		String preRegId = preRegistrationId.getText();
 
 		if (StringUtils.isEmpty(preRegId)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PRE_REG_ID_EMPTY);
 			return;
 		} else {
 			try {
@@ -1009,21 +1010,21 @@ public class RegistrationController extends BaseController {
 						imageCaptured = true;
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+								RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 				}
 			} else {
 				if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
 					imageCaptured = true;
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
-							RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+							RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 				}
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 		}
 		return imageCaptured;
 	}
@@ -1112,7 +1113,7 @@ public class RegistrationController extends BaseController {
 					if (Integer.parseInt(ageField.getText()) > Integer
 							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
 					} else {
 						age = Integer.parseInt(ageField.getText());

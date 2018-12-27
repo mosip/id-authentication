@@ -20,6 +20,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -360,15 +361,15 @@ public class BaseController {
 
 		String validationStatus = "";
 		if (username.isEmpty() && password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CREDENTIALS_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
 		} else if (username.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		} else if (password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PWORD_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 		} else if (username.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
 		} else if (password.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USRNAME_PWORD_LENGTH);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
 		} else {
 			String hashPassword = null;
 
@@ -383,8 +384,8 @@ public class BaseController {
 			authenticationValidatorDTO.setPassword(hashPassword);
 			String userStatus = validatePassword(authenticationValidatorDTO);
 
-			if (userStatus.equals(RegistrationConstants.USER_NOT_ONBOARDED)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_ONBOARDED);
+			if (userStatus.equals(RegistrationUIConstants.USER_NOT_ONBOARDED)) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
 			} else {
 				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
 					validationStatus = "Success";
@@ -409,9 +410,9 @@ public class BaseController {
 
 		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
 		if (userDetail == null) {
-			return RegistrationConstants.USER_NOT_ONBOARDED;
+			return RegistrationUIConstants.USER_NOT_ONBOARDED;
 		} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-			return RegistrationConstants.BLOCKED_USER_ERROR;
+			return RegistrationUIConstants.BLOCKED_USER_ERROR;
 		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {

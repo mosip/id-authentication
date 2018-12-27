@@ -1,16 +1,12 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +15,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -28,10 +25,13 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * This is the {@link Controller} class for capturing the Iris image
@@ -165,7 +165,7 @@ public class IrisCaptureController extends BaseController {
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage(),
 							runtimeException.getStackTrace()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class IrisCaptureController extends BaseController {
 					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)))) {
 				scanPopUpViewController.init(this, "Iris");
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCAN_RETRIES_EXCEEDED);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCAN_RETRIES_EXCEEDED);
 			}
 
 			// Disable the scan button
@@ -199,7 +199,7 @@ public class IrisCaptureController extends BaseController {
 							"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
 
@@ -244,14 +244,14 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 					runtimeException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		} finally {
 			selectedIris.requestFocus();
 		}
@@ -285,7 +285,7 @@ public class IrisCaptureController extends BaseController {
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP,
 							runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_NAVIGATE_NEXT_SECTION_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_NAVIGATE_NEXT_SECTION_ERROR);
 		}
 	}
 
@@ -312,7 +312,7 @@ public class IrisCaptureController extends BaseController {
 					RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP, runtimeException.getMessage()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR);
+					RegistrationUIConstants.IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR);
 		}
 	}
 
@@ -345,7 +345,7 @@ public class IrisCaptureController extends BaseController {
 						isRightEyeCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_QUALITY_SCORE_ERROR);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -353,7 +353,7 @@ public class IrisCaptureController extends BaseController {
 			if (isLeftEyeCaptured && isRightEyeCaptured) {
 				isValid = true;
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_VALIDATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_VALIDATION_ERROR);
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

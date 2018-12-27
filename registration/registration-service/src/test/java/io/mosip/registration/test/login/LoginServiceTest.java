@@ -24,7 +24,6 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AppAuthenticationDetails;
 import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
@@ -76,13 +75,10 @@ public class LoginServiceTest {
 	@Mock
 	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
 	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-	
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		applicationContext.setApplicationMessagesBundle();
 	}
 	
 	@Test

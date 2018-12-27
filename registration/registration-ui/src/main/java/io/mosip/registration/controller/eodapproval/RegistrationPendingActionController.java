@@ -22,6 +22,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
@@ -363,7 +364,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
 					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
 		primaryStage.close();
 		reloadTableView();
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,

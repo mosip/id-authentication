@@ -30,6 +30,7 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -163,11 +164,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 						// generate alert
 						if (!alert.equals("")) {
-							String data = RegistrationConstants.NOTIFICATION_FAIL;
+							String data = RegistrationUIConstants.NOTIFICATION_FAIL;
 							if (alert.equals("SMS")) {
-								data = RegistrationConstants.NOTIFICATION_SMS_FAIL;
+								data = RegistrationUIConstants.NOTIFICATION_SMS_FAIL;
 							} else if (alert.equals("EMAIL")) {
-								data = RegistrationConstants.NOTIFICATION_EMAIL_FAIL;
+								data = RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL;
 							}
 							generateNotificationAlert(data);
 						}
@@ -254,7 +255,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 
-			generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationConstants.PACKET_CREATED_SUCCESS);
+			generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
 			registrationController.goToHomePage();
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());

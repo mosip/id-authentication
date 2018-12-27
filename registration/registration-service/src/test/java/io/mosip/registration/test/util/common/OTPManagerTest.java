@@ -5,12 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +18,6 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -46,13 +42,6 @@ public class OTPManagerTest {
 
 	@Mock
 	AuthenticationService authenticationService;
-
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-
-	@Before
-	public void initialize() throws IOException, URISyntaxException {
-		applicationContext.setApplicationMessagesBundle();
-	}
 
 	@Test
 	public void getOTPSuccessResponseTest()

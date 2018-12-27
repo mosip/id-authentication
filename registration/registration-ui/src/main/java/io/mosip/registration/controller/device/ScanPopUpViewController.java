@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -83,7 +84,7 @@ public class ScanPopUpViewController extends BaseController {
 					RegistrationConstants.USER_REG_SCAN_EXP, ioException.getMessage(),
 					ioException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
 		}
 		
 	}

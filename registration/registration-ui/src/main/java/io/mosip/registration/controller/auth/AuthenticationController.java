@@ -14,6 +14,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
@@ -151,7 +152,7 @@ public class AuthenticationController extends BaseController {
 
 		} else {
 			// Generate Alert to show username field was empty
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		}
 	}
 
@@ -171,16 +172,16 @@ public class AuthenticationController extends BaseController {
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ALERT_ERROR,
-									RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+									RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 						}
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (otp.getText() != null) {
@@ -188,10 +189,10 @@ public class AuthenticationController extends BaseController {
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
-							RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
+							RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.OTP_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
 			}
 		}
 	}
@@ -202,7 +203,7 @@ public class AuthenticationController extends BaseController {
 			userNameField = username.getText();
 			loadNextScreen();
 		} else if (RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.INCORRECT_PWORD);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 	}
 
@@ -220,19 +221,19 @@ public class AuthenticationController extends BaseController {
 						userNameField = fpUserId.getText();
 						loadNextScreen();
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (captureAndValidateFP(fpUserId.getText())) {
 				loadNextScreen();
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGER_PRINT_MATCH);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 			}
 		}
 	}
@@ -247,7 +248,7 @@ public class AuthenticationController extends BaseController {
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType);
 
 		if (userAuthenticationTypeList.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTH_ERROR_MSG);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTH_ERROR_MSG);
 		} else {
 			loadNextScreen();
 		}
@@ -425,7 +426,7 @@ public class AuthenticationController extends BaseController {
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
 		int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
 		if (statusCode != 0) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_FP_NOT_FOUND);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 		} else {
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
 			// error code or success code the respective action will be taken care.
