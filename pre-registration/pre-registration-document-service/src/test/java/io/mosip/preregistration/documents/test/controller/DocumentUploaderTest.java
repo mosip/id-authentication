@@ -83,6 +83,7 @@ public class DocumentUploaderTest {
 	String documentId;
 	boolean flag;
 	String json;
+	String jsonDTO="";
 
 	Map<String, String> map = new HashMap<>();
 	ResponseDTO responseCopy = new ResponseDTO<>();
@@ -98,12 +99,20 @@ public class DocumentUploaderTest {
 		documentDto = new DocumentDTO("59276903416082", "address", "POA", "pdf", "Pending-Appoinment",
 				new Timestamp(System.currentTimeMillis()), "Jagadishwari");
 
-		json = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
-				+ "	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + "	\"request\": {\r\n"
-				+ "		\"prereg_id\": \"59276903416082\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
-				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
-				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upload_by\": \"9217148168\",\r\n"
-				+ "		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + "	}\r\n" + "}";
+		json = "{\r\n" + 
+				"	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + 
+				"	\"ver\": \"1.0\",\r\n" + 
+				"	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + 
+				"	\"request\": {\r\n" + 
+				"		\"prereg_id\": \"59276903416082\",\r\n" + 
+				"		\"doc_cat_code\": \"POA\",\r\n" + 
+				"		\"doc_typ_code\": \"address\",\r\n" + 
+				"		\"doc_file_format\": \"pdf\",\r\n" + 
+				"		\"status_code\": \"Pending-Appoinment\",\r\n" + 
+				"		\"upload_by\": \"9217148168\",\r\n" + 
+				"		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + 
+				"	}\r\n" + 
+				"}";
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 		try {
@@ -137,16 +146,14 @@ public class DocumentUploaderTest {
 
 	}
 
-	// @Test
-	// public void successSave() throws Exception {
-	// // Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(),
-	// Mockito.any());
-	// Mockito.when(service.uploadDoucment(multipartFile,
-	// json)).thenReturn(responseCopy);
-	// mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-	// .file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-	//
-	// }
+	@Test
+	public void successSave() throws Exception {
+		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(service.uploadDoucment(multipartFile, jsonDTO)).thenReturn(responseCopy);
+		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+
+	}
 
 	/**
 	 * @throws Exception

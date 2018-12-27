@@ -18,8 +18,17 @@ public class CreateTranslitrationRequest implements Serializable{
 	 */
 	private static final long serialVersionUID = 6675771212299312546L;
 	
-	String key;
+	String fromFieldName;
 	
-	String langCode;
+	String fromFieldValue;
+	
+	String fromFieldLang;
+	
+	String toFieldName;
+	
+	String toFieldValue;
+	
+	String toFieldLang;
+	
 
 }
