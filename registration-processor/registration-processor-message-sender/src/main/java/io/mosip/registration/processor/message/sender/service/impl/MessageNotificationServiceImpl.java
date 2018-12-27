@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.message.sender.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -36,6 +39,7 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.message.sender.exception.ConfigurationNotFoundException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.Util;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -56,7 +60,7 @@ import io.mosip.registration.processor.packet.storage.exception.ParsingException
  *
  */
 @Service
-public class MessageNotificationServiceImpl implements MessageNotificationService {
+public class MessageNotificationServiceImpl implements MessageNotificationService<ResponseEntity<SmsResponseDto>,CompletableFuture<ResponseEntity<ResponseDto>>,MultipartFile[]> {
 
 	private JSONObject demographicIdentity = null;
 	private static final String LANGUAGE = "language";
@@ -74,7 +78,8 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	private static TemplateGenerator templateGenerator = new TemplateGenerator();
+	@Autowired
+	private TemplateGenerator templateGenerator;
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -102,7 +107,11 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 		try {
 			
 			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
-
+			
+			if(langCode == null) {
+				throw new ConfigurationNotFoundException(PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+			}
+			
 			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
 
 			smsDto.setMessage(artifact);
@@ -127,16 +136,21 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 		
 		try {
 			NotificationTemplate template = getTemplateJson(id, idType, attributes);
-
+			
+			if(langCode == null) {
+				throw new ConfigurationNotFoundException(PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+			}
+			
 			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
-
+			
 			String[] mailTo = new String[template.getEmailID().length];
 			for (int i = 0; i < mailTo.length; i++) {
 				mailTo[i] = template.getEmailID()[i].getValue();
 			}
-
+			
+			
 			String queryparam = "mailTo,mailCc,mailSubject,mailContent,attachments";
-			String queryParamValue = "mailTo, mailCc, subject, artifact, attachment";
+			String queryParamValue = "alokranjan1106@gmail.com,alokranjan1106@gmail.com,Hello,Alok,null";
 
 			response = (CompletableFuture<ResponseEntity<ResponseDto>>) restClientService.postApi(ApiName.EMAILNOTIFIER,
 					queryparam, queryParamValue, "", ResponseEntity.class);
@@ -202,17 +216,16 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 		}
 
 		return template;
-
 	}
 
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
 			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+		
 		return (demographicJsonNode != null)
 				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
 				: null;
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -259,4 +272,5 @@ public class MessageNotificationServiceImpl implements MessageNotificationServic
 		return javaObject;
 
 	}
+	
 }

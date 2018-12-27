@@ -4,15 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 
+ * @author Alok
  * @author Shuchita
  * @author Ayush Keer
  */
 @SpringBootApplication(scanBasePackages = {"io.mosip.registration.processor.message.sender",
 		"io.mosip.registration.processor.core","io.mosip.registration.processor.packet.storage",
 		"io.mosip.registration.processor.rest.client",
-		"io.mosip.registration.processor.filesystem.ceph.adapter.impl",
-		"io.mosip.kernel.core.templatemanager.spi.TemplateManager"})
+		"io.mosip.registration.processor.filesystem.ceph.adapter.impl"})
 public class MessageNotificationApplication {
 	
 	/**

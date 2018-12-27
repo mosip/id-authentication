@@ -42,10 +42,10 @@ public enum ApiName {
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
 	
-	//https://integ.mosip.io/smsnotifier/v1.0/sms/send
+	/** The sms notifier. */
 	SMSNOTIFIER,
 	
-	//https://integ.mosip.io/emailnotifier/v1.0/email/send
+	/** The email notifier. */ 
 	EMAILNOTIFIER
 	
 }

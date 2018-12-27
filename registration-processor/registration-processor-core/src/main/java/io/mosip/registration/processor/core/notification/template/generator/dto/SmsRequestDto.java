@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.notification.template.generator.dto;
 
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 import lombok.Data;
 
@@ -12,20 +12,21 @@ import lombok.Data;
  *
  */
 @Data
-public class SmsRequestDto {
+public class SmsRequestDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Contact number of recipient.
 	 */
-	
-	@NotBlank
 	private String number;
 	
 	/**
 	 * Message need to send.
 	 */
-	
-	@NotBlank
 	private String message;
 
 }
