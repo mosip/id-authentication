@@ -397,7 +397,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			if (null != masterTitleDto) {
 				List<MasterTitle> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto,
 						MasterTitle.class);
-				//masterSyncTitleRepository.saveAll(masterTitleDtoEntity);
+				masterSyncTitleRepository.saveAll(masterTitleDtoEntity);
 			}
 			if (null != masterValidDocumnetsDto) {
 				List<MasterValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils

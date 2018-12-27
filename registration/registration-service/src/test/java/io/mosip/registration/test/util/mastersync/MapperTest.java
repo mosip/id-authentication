@@ -40,7 +40,7 @@ public class MapperTest {
 		rcdDto = new TitleDto();
 		rcdDto.setTitleName("Admin");
 		rcdDto.setLangCode("ENG");
-		rcdDto.setTitleCode("T1001");
+		rcdDto.setCode("T1001");
 		rcdDto.setIsActive(true);
 		rcdDtos.add(rcdDto);
 

@@ -10,24 +10,24 @@ package io.mosip.registration.dto.mastersync;
 
 public class TitleDto extends MasterSyncBaseDto {
 
-	private String titleCode;
+	private String code;
 	private String titleName;
 	private String titleDescription;
 	private String langCode;
 	private Boolean isActive;
 
 	/**
-	 * @return the titleCode
+	 * @return the code
 	 */
-	public String getTitleCode() {
-		return titleCode;
+	public String getCode() {
+		return code;
 	}
 
 	/**
-	 * @param titleCode the titleCode to set
+	 * @param code the code to set
 	 */
-	public void setTitleCode(String titleCode) {
-		this.titleCode = titleCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	/**
