@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
@@ -79,9 +80,13 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	PacketReceiverStage packetReceiverStage;
+	
+	@Mock
+	private Environment env;
+
 
 	@InjectMocks
-	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
+	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl(); /*{
 
 		@Override
 		public String getFileExtension() {
@@ -93,7 +98,7 @@ public class PacketReceiverServiceTest {
 			// max file size 5 mb
 			return (5 * 1024 * 1024);
 		}
-	};
+	};*/
 
 	SyncRegistrationEntity regEntity;
 
@@ -104,7 +109,8 @@ public class PacketReceiverServiceTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
+		when(env.getProperty("registration.processor.packet.ext")).thenReturn(".zip");
+		when(env.getProperty("registration.processor.max.file.size")).thenReturn("5");
 		regEntity = new SyncRegistrationEntity();
 		regEntity.setCreateDateTime(LocalDateTime.now());
 		regEntity.setCreatedBy("Mosip");

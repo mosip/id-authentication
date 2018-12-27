@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,6 +81,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	PacketReceiverStage packetReceiverStage;
 
+	@Autowired
+	private Environment env;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,7 +95,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	public Boolean storePacket(MultipartFile file) {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
-		
+
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
 
@@ -148,7 +152,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 								registrationId);
 					}
 				} else {
-					throw new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+					throw new DuplicateUploadRequestException(
+							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 			}
 		}
@@ -167,7 +172,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 * @return the file extension
 	 */
 	public String getFileExtension() {
-		return this.fileExtension;
+		String fileExtension = env.getProperty("registration.processor.packet.ext");
+		return fileExtension;
 	}
 
 	/**
@@ -176,7 +182,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 * @return the max file size
 	 */
 	public long getMaxFileSize() {
-		return this.maxFileSize * 1024L * 1024;
+		int maxFileSize = Integer.parseInt(env.getProperty("registration.processor.max.file.size"));
+		return maxFileSize * 1024L * 1024;
 	}
 
 	/**
