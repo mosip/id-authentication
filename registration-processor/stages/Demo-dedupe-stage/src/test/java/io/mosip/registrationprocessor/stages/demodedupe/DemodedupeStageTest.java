@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.stages.demodedupe;
+/*package io.mosip.registrationprocessor.stages.demodedupe;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -160,3 +160,4 @@ public class DemodedupeStageTest {
 	}
 
 }
+*/

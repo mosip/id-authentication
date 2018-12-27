@@ -6,6 +6,7 @@ package io.mosip.registration.processor.stages.quality.check.assignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
@@ -32,13 +33,16 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
 	@Autowired
 	QualityCheckManager<String, QCUserDto> qualityCheckManager;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Method to consume quality check address bus and receive the packet details
 	 * that needs to be checked for quality
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.QUALITY_CHECK_BUS);
 	}
 

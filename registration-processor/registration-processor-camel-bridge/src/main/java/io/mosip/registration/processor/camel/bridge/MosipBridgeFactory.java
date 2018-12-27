@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-import io.mosip.registration.processor.core.util.PropertyFileUtil;
+import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;

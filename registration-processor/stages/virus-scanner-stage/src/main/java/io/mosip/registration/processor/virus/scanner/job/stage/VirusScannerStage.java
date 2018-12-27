@@ -62,6 +62,9 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";
@@ -76,7 +79,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	String registrationId ="";
 	
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT);
 	}
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -43,6 +44,9 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	@Autowired
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -51,7 +55,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
 			process(new MessageDTO());
 			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO());

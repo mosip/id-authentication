@@ -65,6 +65,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -79,7 +82,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMODEDUPE_BUS_IN, MessageBusAddress.DEMODEDUPE_BUS_OUT);
 	}
 

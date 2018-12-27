@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
-import io.mosip.registration.processor.core.util.PropertyFileUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -43,14 +42,12 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName) {
+	public MosipEventBus getEventBus(Class<?> verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		
-		String configServerUri = PropertyFileUtil.getProperty(this.getClass(), "application.properties", "vertx.ignite.configuration");
 		URL url = null;
 		try {
-			url = new URL(configServerUri);
+			url = new URL(clusterManagerUrl);
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

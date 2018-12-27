@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -56,6 +57,9 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	@Autowired
 	private PacketArchiver packetArchiver;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 
@@ -192,7 +196,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	}
 
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass());
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
 		// sendMessage(mosipEventBus, new MessageDTO())
 		process(new MessageDTO()));
