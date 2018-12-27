@@ -96,7 +96,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			registrationCenterDeviceID = new RegistrationCenterDeviceID(regCenterId, deviceId);
 			Optional<RegistrationCenterDevice> registrationCenterDevice = registrationCenterDeviceRepository
 					.findById(registrationCenterDeviceID);
-			if (!registrationCenterDevice.isPresent()) {
+			if (!registrationCenterDevice.isPresent()|| registrationCenterDevice.get().getIsDeleted()) {
 				throw new DataNotFoundException(
 						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
 						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
