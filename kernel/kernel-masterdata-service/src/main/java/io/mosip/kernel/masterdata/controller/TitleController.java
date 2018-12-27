@@ -111,7 +111,7 @@ public class TitleController {
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While deleting title any error occured") })
 	public ResponseEntity<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
-		return new ResponseEntity<CodeResponseDto>(titleService.deleteTitle(code), HttpStatus.OK);
+		return new ResponseEntity<>(titleService.deleteTitle(code), HttpStatus.OK);
 	}
 
 }
