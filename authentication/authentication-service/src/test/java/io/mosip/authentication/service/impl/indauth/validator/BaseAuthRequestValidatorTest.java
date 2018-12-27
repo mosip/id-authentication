@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -58,7 +59,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,IdTemplateManager.class,TemplateManagerBuilderImpl.class  })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
+		TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
 
 	@Mock
@@ -78,10 +80,10 @@ public class BaseAuthRequestValidatorTest {
 
 	@Mock
 	PhoneValidatorImpl phoneValidatorImpl;
-	
+
 	@InjectMocks
 	IdInfoHelper idInfoHelper;
-	
+
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
@@ -96,14 +98,14 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		
+
 	}
 
 	@Test
 	public void testValidateVersionAndId() {
 		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
 		baseAuthRequestDTO.setId("123456");
-		//baseAuthRequestDTO.setVer("1.0");
+		// baseAuthRequestDTO.setVer("1.0");
 		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
@@ -630,6 +632,36 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	@Test
+	public void testMultiFingersValueisExist() {
+		authRequestDTO = getAuthRequestDTO();
+
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("fingerImage");
+		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		finger.add(identityInfoDTO);
+		IdentityDTO identity = new IdentityDTO();
+		identity.setLeftThumb(finger);
+		identity.setRightThumb(finger);
+		RequestDTO request = new RequestDTO();
+		request.setIdentity(identity);
+		authRequestDTO.setRequest(request);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiFingersValue", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
 	public void testIdInfoCount() {
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		identityInfoDTO.setValue("fingerImage");
@@ -837,7 +869,7 @@ public class BaseAuthRequestValidatorTest {
 	private AuthRequestDTO getAuthRequestDTO() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))

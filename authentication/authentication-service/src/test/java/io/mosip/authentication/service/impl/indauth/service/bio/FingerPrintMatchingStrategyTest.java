@@ -61,4 +61,15 @@ public class FingerPrintMatchingStrategyTest {
 		assertEquals(0, value3);
 	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestvalidFingerPrint() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
+		matchProperties.put(FingerprintProvider.class.getSimpleName(), "Test");
+		int value3 = matchFunction.match(value, value, matchProperties);
+		System.err.println(value3);
+
+	}
+
 }

@@ -97,7 +97,7 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrMin");
@@ -154,7 +154,7 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrMin");
@@ -212,10 +212,67 @@ public class BioAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrImg");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("Test1");
+		deviceInfo.setMake("mantra");
+		deviceInfo.setModel("1.0");
+		bioInfo.setDeviceInfo(deviceInfo);
+		bioInfoList.add(bioInfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setValue(value);
+		leftIndexList.add(identityInfoDTO);
+		identity.setLeftIndex(leftIndexList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("leftIndex", identityList);
+		String refId = "274390482564";
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity, refId);
+		System.err.println(validateBioDetails.isStatus());
+		System.err.println(validateBioDetails.getErr());
+	}
+
+	@Test
+	public void TestMatchFingerPrint() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("516283648960");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("bio");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setMuaCode("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		List<BioInfo> bioInfoList = new ArrayList<>();
+		BioInfo bioInfo = new BioInfo();
+		bioInfo.setBioType("fgrMin");
 		DeviceInfo deviceInfo = new DeviceInfo();
 		deviceInfo.setDeviceId("Test1");
 		deviceInfo.setMake("mantra");

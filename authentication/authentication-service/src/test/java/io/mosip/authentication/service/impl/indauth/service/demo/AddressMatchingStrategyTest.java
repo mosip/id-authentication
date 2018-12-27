@@ -67,6 +67,25 @@ public class AddressMatchingStrategyTest {
 		assertEquals(100, value);
 	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		int value = matchFunction.match("no 1 second street chennai", 2, matchProperties);
+		assertEquals(100, value);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPrimaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+
+		matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value = matchFunction.match(2, 2, matchProperties);
+		assertEquals(0, value);
+	}
+
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
