@@ -14,7 +14,7 @@ public enum RegistrationCenterMachineErrorCode {
 			"Error occurred while inserting a mapping of Machine and Center"),
 	REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND("KER-MSD-114",
 			"Mapping for Machine and Center not found"),
-	REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting a mapping of Machine and Center ");
+	REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting a mapping of Machine and Center");
 
 	private final String errorCode;
 	private final String errorMessage;

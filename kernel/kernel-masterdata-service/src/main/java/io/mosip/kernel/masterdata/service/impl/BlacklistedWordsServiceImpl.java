@@ -60,10 +60,11 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWords> words = null;
 		try {
 			words = blacklistedWordsRepository.findAllByLangCode(langCode);
-		} catch (DataAccessException accessException) {
+		} catch (DataAccessException accessException ) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(accessException));
 		}
 		if (words != null && !words.isEmpty()) {
 			wordsDto = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
@@ -89,10 +90,11 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWords> blackListedWordsList = null;
 		try {
 			blackListedWordsList = blacklistedWordsRepository.findAllByIsDeletedFalseOrIsDeletedNull();
-		} catch (DataAccessException accessException) {
+		} catch (DataAccessException|DataAccessLayerException accessException) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage());
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(accessException));
 		}
 		for (BlacklistedWords blackListedWords : blackListedWordsList) {
 			wordList.add(blackListedWords.getWord());

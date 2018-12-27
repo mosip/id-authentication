@@ -75,6 +75,7 @@ public class MetaDataUtils {
 	 * @return entity having isDeleted value as true and deleted times
 	 */
 	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		entity.setUpdatedBy(contextUser);
 		entity.setIsDeleted(true);
 		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return entity;

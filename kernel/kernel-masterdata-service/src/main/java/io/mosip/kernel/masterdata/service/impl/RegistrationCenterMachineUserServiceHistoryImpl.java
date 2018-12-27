@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -64,7 +65,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
-							.getErrorMessage());
+							.getErrorMessage()+ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (registrationCenterUserMachines == null || registrationCenterUserMachines.isEmpty()) {
 			throw new DataNotFoundException(

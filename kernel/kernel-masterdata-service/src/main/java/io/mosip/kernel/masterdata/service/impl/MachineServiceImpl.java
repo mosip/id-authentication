@@ -66,9 +66,9 @@ public class MachineServiceImpl implements MachineService {
 		MachineResponseDto machineResponseIdDto = new MachineResponseDto();
 		try {
 			machineList = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -97,9 +97,9 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			machineList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -128,7 +128,7 @@ public class MachineServiceImpl implements MachineService {
 			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -162,7 +162,7 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " "
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -200,7 +200,7 @@ public class MachineServiceImpl implements MachineService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + " "
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -240,7 +240,7 @@ public class MachineServiceImpl implements MachineService {
 				
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + " "
+					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

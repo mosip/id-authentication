@@ -77,7 +77,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
-							+ " " + ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(e));
 		}
 
 		return responseRrgistrationCenterMachineDto;
@@ -113,7 +113,8 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage());
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineID;
 	}

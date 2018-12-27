@@ -53,7 +53,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		} catch (DateTimeParseException e) {
 			throw new RequestException(
 					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage() + "  "
+					MachineHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -66,7 +66,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 							langCode, lDateAndTime);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (macHistoryList != null && !macHistoryList.isEmpty()) {

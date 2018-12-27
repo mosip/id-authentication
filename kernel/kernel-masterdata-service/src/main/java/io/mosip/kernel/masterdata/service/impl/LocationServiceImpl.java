@@ -62,7 +62,7 @@ public class LocationServiceImpl implements LocationService {
 			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() 
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!locations.isEmpty()) {
@@ -119,7 +119,7 @@ public class LocationServiceImpl implements LocationService {
 		catch (DataAccessException e) {
 
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 
 		}
@@ -220,7 +220,7 @@ public class LocationServiceImpl implements LocationService {
 			locationResultantEntity = locationRepository.create(location);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() 
 							+ ExceptionUtils.parseException(ex));
 		}
 
@@ -249,7 +249,7 @@ public class LocationServiceImpl implements LocationService {
 
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(ex));
 		}
 
 		return postLocationCodeResponseDto;
@@ -274,7 +274,7 @@ public class LocationServiceImpl implements LocationService {
 
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(ex));
 		}
          codeResponseDto.setCode(locationCode);
 		return codeResponseDto;
@@ -293,7 +293,7 @@ public class LocationServiceImpl implements LocationService {
 
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

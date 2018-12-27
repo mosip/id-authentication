@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -2154,14 +2153,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any())).thenReturn(1);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(1);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteGenderTypeNotFoundExceptionTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
@@ -2170,7 +2169,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteGenderTypeDatabaseConnectionExceptionTest() throws Exception {
 
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any()))
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());

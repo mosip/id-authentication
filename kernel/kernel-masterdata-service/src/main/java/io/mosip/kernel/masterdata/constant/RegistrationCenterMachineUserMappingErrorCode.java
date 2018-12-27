@@ -10,7 +10,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum RegistrationCenterMachineUserMappingErrorCode {
 
 	REGISTRATION_CENTER_USER_MACHINE_MAPPING_INSERT_EXCEPTION("KER-MSD-078",
-			"Error occurred while inserting mapping of Center, User and Machine details ");
+			"Error occurred while inserting mapping of Center, User and Machine details");
 	
 
 	/**

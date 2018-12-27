@@ -50,7 +50,7 @@ public class LanguageServiceImpl implements LanguageService {
 			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage(), dataAccessException);
+					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException), dataAccessException);
 		}
 
 		if (languages != null && !languages.isEmpty()) {
@@ -77,7 +77,7 @@ public class LanguageServiceImpl implements LanguageService {
 			return MapperUtils.map(savedLanguage, CodeResponseDto.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 	}
@@ -105,7 +105,7 @@ public class LanguageServiceImpl implements LanguageService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage() + ": "
+					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		return code;
@@ -133,7 +133,7 @@ public class LanguageServiceImpl implements LanguageService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorMessage() + ": "
+					LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -147,7 +145,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
+					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		return genderTypeId;
 	}
@@ -163,14 +161,14 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeResponseDto deleteGenderType(String code) {
 		try {
-			int updatedRows = genderTypeRepository.deleteGenderType(code, LocalDateTime.now(ZoneId.of("UTC")));
+			int updatedRows = genderTypeRepository.deleteGenderType(code, MetaDataUtils.getCurrentDateTime(),MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage());
+					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto codeResponseDto = new CodeResponseDto();
 		codeResponseDto.setCode(code);

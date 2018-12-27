@@ -67,10 +67,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<DocumentType> documents = null;
 		try {
 			documents = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		if (documents != null && !documents.isEmpty()) {
 			listOfDocumentTypeDto = MapperUtils.mapAll(documents, DocumentTypeDto.class);
@@ -130,7 +130,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage());
+					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID documentTypeId = new CodeAndLanguageCodeID();
 
@@ -167,7 +167,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					DocumentTypeErrorCode.DOCUMENT_TYPE_DELETE_EXCEPTION.getErrorMessage());
+					DocumentTypeErrorCode.DOCUMENT_TYPE_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 
 		CodeResponseDto responseDto = new CodeResponseDto();

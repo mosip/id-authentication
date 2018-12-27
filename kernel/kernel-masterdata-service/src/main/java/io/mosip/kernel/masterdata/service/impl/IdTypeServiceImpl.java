@@ -54,7 +54,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 			idList = idRepository.findByLangCode(languageCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (idList != null && !idList.isEmpty()) {
@@ -82,7 +82,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 			idType = idRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();

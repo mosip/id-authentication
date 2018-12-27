@@ -64,7 +64,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
@@ -96,7 +96,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage());
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		return registrationCenterTypeId;
 	}
@@ -123,7 +124,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorMessage());
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(registrationCenterTypeCode);

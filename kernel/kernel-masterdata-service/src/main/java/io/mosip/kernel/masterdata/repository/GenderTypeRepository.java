@@ -36,8 +36,8 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 * @return rows modified
 	 */
 	@Modifying
-	@Query("UPDATE Gender g SET g.isDeleted =true , g.deletedDateTime = ?2 WHERE g.code =?1 and (g.isDeleted is null or g.isDeleted =false)")
-	int deleteGenderType(String code, LocalDateTime deletedDateTime);
+	@Query("UPDATE Gender g SET g.updatedBy=?2 , g.isDeleted =true , g.deletedDateTime = ?2 WHERE g.code =?1 and (g.isDeleted is null or g.isDeleted =false)")
+	int deleteGenderType(String code, LocalDateTime deletedDateTime,String updatedBy);
 
 	
 

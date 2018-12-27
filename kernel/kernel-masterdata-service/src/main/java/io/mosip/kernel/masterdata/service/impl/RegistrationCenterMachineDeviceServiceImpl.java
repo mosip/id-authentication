@@ -78,7 +78,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
-							.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		return responseRrgistrationCenterMachineDeviceDto;
@@ -138,7 +138,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
-							.getErrorMessage());
+							.getErrorMessage()+ExceptionUtils.parseException(ex));
 		}
 
 		return regCenterMachineId;

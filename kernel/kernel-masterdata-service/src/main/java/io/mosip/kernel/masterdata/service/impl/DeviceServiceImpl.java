@@ -53,9 +53,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
 			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() +  ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
 			deviceDtoList = MapperUtils.mapAll(deviceList, DeviceDto.class);
@@ -82,9 +82,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
 		try {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (objectList != null && !objectList.isEmpty()) {
 			deviceLangCodeDtypeDtoList = MapperUtils.mapDeviceDto(objectList);
@@ -112,7 +112,7 @@ public class DeviceServiceImpl implements DeviceService {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() +  ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(device, idResponseDto);
@@ -136,8 +136,7 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceRepository.update(entity);
 			} catch (DataAccessLayerException | DataAccessException e) {
 				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
-								+ ExceptionUtils.parseException(e));
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 			}
 		}
 		MapperUtils.map(entity, idResponseDto);
