@@ -1,12 +1,14 @@
 package io.mosip.registration.dto.demographic;
 
+import io.mosip.registration.dto.BaseDTO;
+
 /**
  * This class contains the label and value of the UI field
  *
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class SimplePropertiesDTO {
+public class SimplePropertiesDTO extends BaseDTO {
 
 	/** The label. */
 	private String label;

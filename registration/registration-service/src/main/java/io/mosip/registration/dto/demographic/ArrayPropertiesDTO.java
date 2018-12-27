@@ -2,6 +2,8 @@ package io.mosip.registration.dto.demographic;
 
 import java.util.LinkedList;
 
+import io.mosip.registration.dto.BaseDTO;
+
 /**
  * This class contains the label of the field and its values in configured
  * languages.
@@ -9,7 +11,7 @@ import java.util.LinkedList;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class ArrayPropertiesDTO {
+public class ArrayPropertiesDTO extends BaseDTO {
 
 	/** The label. */
 	private String label;

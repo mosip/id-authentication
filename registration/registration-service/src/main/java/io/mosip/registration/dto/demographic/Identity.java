@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.demographic;
 
+import io.mosip.registration.dto.BaseDTO;
+
 /**
  * This class contains the applicant demographic, biometric, proofs and parent
  * or guardian biometric details.
@@ -7,7 +9,7 @@ package io.mosip.registration.dto.demographic;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class Identity {
+public class Identity extends BaseDTO {
 
 	/** The ID schema version. */
 	private String idSchemaVersion;
@@ -74,6 +76,9 @@ public class Identity {
 
 	/** The proof of relationship. */
 	private DocumentDetailsDTO proofOfRelationship;
+
+	/** The date of birth proof. */
+	private DocumentDetailsDTO dateOfBirthProof;
 
 	/** The individual biometrics. */
 	private CBEFFFilePropertiesDTO individualBiometrics;
@@ -409,6 +414,21 @@ public class Identity {
 	 */
 	public void setProofOfRelationship(DocumentDetailsDTO proofOfRelationship) {
 		this.proofOfRelationship = proofOfRelationship;
+	}
+
+	/**
+	 * @return the dateOfBirthProof
+	 */
+	public DocumentDetailsDTO getDateOfBirthProof() {
+		return dateOfBirthProof;
+	}
+
+	/**
+	 * @param dateOfBirthProof
+	 *            the dateOfBirthProof to set
+	 */
+	public void setDateOfBirthProof(DocumentDetailsDTO dateOfBirthProof) {
+		this.dateOfBirthProof = dateOfBirthProof;
 	}
 
 	/**

@@ -78,7 +78,15 @@ public class ZipCreationServiceTest {
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsResidenceDTO.setCategory("PoA");
 		documentDetailsResidenceDTO.setFormat("passport");
-		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
+		documentDetailsResidenceDTO.setValue("");
+		documentDetailsResidenceDTO.setOwner("hof");
+		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
+				.add(documentDetailsResidenceDTO);
+		documentDetailsResidenceDTO = new DocumentDetailsDTO();
+		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
+		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setFormat("passport");
+		documentDetailsResidenceDTO.setValue("");
 		documentDetailsResidenceDTO.setOwner("hof");
 		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
 				.add(documentDetailsResidenceDTO);
