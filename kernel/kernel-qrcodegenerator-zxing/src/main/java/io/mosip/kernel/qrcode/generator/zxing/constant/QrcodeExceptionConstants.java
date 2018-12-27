@@ -1,4 +1,4 @@
-package io.mosip.kernel.qrcode.generator.constant;
+package io.mosip.kernel.qrcode.generator.zxing.constant;
 
 /**
  * Exception constants for QR Code generator
@@ -10,10 +10,9 @@ package io.mosip.kernel.qrcode.generator.constant;
 public enum QrcodeExceptionConstants {
 
 	QRCODE_GENERATION_EXCEPTION("KER-QRG-001", "exception occured while writing QR code "),
-	IO_EXCEPTION("KER-QRG-002", "write to the byte stream failed"),
-	INVALID_INPUT_DATA_NULL("KER-QRG-003", "data can't be null"),
-	INVALID_INPUT_DATA_EMPTY("KER-QRG-004", "data can't be empty"),
-	INVALID_INPUT_VERSION("KER-QRG-005", "version can't be null");
+	INVALID_INPUT_DATA_NULL("KER-QRG-002", "data can't be null"),
+	INVALID_INPUT_DATA_EMPTY("KER-QRG-003", "data can't be empty"),
+	INVALID_INPUT_VERSION("KER-QRG-004", "version can't be null");
 
 	/**
 	 * Constant {@link Enum} errorCode

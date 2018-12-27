@@ -125,6 +125,7 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-keymanager-softhsm</module>
+		<module>kernel-qrcodegenerator-zxing</module>
 
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>

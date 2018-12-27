@@ -810,7 +810,6 @@ public class MasterdataIntegrationTest {
 		registrationCenterUserMachine.setMachineId("MAC001");
 		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",
 				LocalDateTime.now().minusDays(1));
-
 	}
 
 	private void registrationCenterSetup() {

@@ -9,11 +9,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kernel-qrcode-generator</artifactId>
+	<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 
 	<packaging>jar</packaging>
 
-	<name>kernel-qrcode-generator</name>
+	<name>kernel-qrcodegenerator-zxing</name>
 
 	<dependencies>
 		<dependency>
