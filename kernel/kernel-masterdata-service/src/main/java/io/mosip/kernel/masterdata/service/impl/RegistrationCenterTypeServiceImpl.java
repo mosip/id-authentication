@@ -36,6 +36,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
+@Transactional
 public class RegistrationCenterTypeServiceImpl implements RegistrationCenterTypeService {
 
 	/**
@@ -44,6 +45,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
+	/**
+	 * Autowired reference for {@link RegistrationCenteRepository}.
+	 */
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
 
@@ -76,14 +80,13 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	public CodeAndLanguageCodeID updateRegistrationCenterType(
 			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		RegistrationCenterTypeDto registrationCenterType = registrationCenterTypeDto.getRequest();
-
 		CodeAndLanguageCodeID registrationCenterTypeId = new CodeAndLanguageCodeID();
-
 		MapperUtils.mapFieldValues(registrationCenterType, registrationCenterTypeId);
 		try {
-
 			RegistrationCenterType registrationCenterTypeEntity = registrationCenterTypeRepository
-					.findById(RegistrationCenterType.class, registrationCenterTypeId);
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+							registrationCenterTypeDto.getRequest().getCode(),
+							registrationCenterTypeDto.getRequest().getLangCode());
 			if (registrationCenterTypeEntity != null) {
 				MetaDataUtils.setUpdateMetaData(registrationCenterType, registrationCenterTypeEntity, false);
 				registrationCenterTypeRepository.update(registrationCenterTypeEntity);
@@ -92,7 +95,6 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
@@ -102,7 +104,6 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	}
 
 	@Override
-	@Transactional
 	public CodeResponseDto deleteRegistrationCenterType(String registrationCenterTypeCode) {
 		try {
 			List<RegistrationCenter> mappedRegistrationCenterTypes = registrationCenterRepository
@@ -114,8 +115,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
 								.getErrorMessage());
 			}
-			if (registrationCenterTypeRepository.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")),
-					registrationCenterTypeCode) < 1) {
+			int updatedRegistrationCenterTypes = registrationCenterTypeRepository
+					.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode);
+			if (updatedRegistrationCenterTypes < 1) {
 				throw new DataNotFoundException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
