@@ -298,9 +298,9 @@ public class MasterdataIntegrationTest {
 
 	List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistories = new ArrayList<>();
 
-	RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID=null;
-	
-	RegistrationCenterMachineDeviceID rcmdIdH=null;
+	RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryID = null;
+
+	RegistrationCenterMachineDeviceID rcmdIdH = null;
 	@MockBean
 	private TitleRepository titleRepository;
 
@@ -685,7 +685,7 @@ public class MasterdataIntegrationTest {
 		rcmdIdH.setDeviceId("101");
 		rcmdIdH.setMachineId("1789");
 		rcmdIdH.setRegCenterId("1");
-	 registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
+		registrationCenterMachineDeviceHistoryID = new RegistrationCenterMachineDeviceHistoryID();
 		registrationCenterMachineDeviceHistoryID.setDeviceId("101");
 		registrationCenterMachineDeviceHistoryID.setMachineId("1789");
 		registrationCenterMachineDeviceHistoryID.setRegCenterId("1");
@@ -796,7 +796,8 @@ public class MasterdataIntegrationTest {
 	}
 
 	private void registrationCenterUserMachineSetup() {
-		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",LocalDateTime.now().minusDays(1));
+		registrationCenterUserMachineHistory = new RegistrationCenterUserMachineHistory("1", "1", "1",
+				LocalDateTime.now().minusDays(1));
 	}
 
 	private void registrationCenterSetup() {
@@ -1099,27 +1100,34 @@ public class MasterdataIntegrationTest {
 	public void deleteRegCenterMachineDeviceTest() throws Exception {
 		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString())).thenReturn(registrationCenterMachineDevice);
-		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
-		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any()))
+				.thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
+				.thenReturn(registrationCenterMachineDeviceHistory);
 		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void deleteRegCenterMachineDeviceDataNotFoundTest() throws Exception {
 		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
-		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any()))
+				.thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
+				.thenReturn(registrationCenterMachineDeviceHistory);
 		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void deleteRegCenterMachineDeviceDataAccessExcpetionTest() throws Exception {
 		when(registrationCenterMachineDeviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
-		when(registrationCenterMachineDeviceRepository.update(Mockito.any())).thenReturn(registrationCenterMachineDevice);
-		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
-		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isInternalServerError());
+		when(registrationCenterMachineDeviceRepository.update(Mockito.any()))
+				.thenReturn(registrationCenterMachineDevice);
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
+				.thenReturn(registrationCenterMachineDeviceHistory);
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000"))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------LanguageImplementationTest----------------------------------
@@ -1785,9 +1793,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersMachineUserMappingNotFoundExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository
-				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						"1","1","1", localDateTimeUTCFormat))
-								.thenReturn(registrationCenterUserMachineHistories);
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull("1",
+						"1", "1", localDateTimeUTCFormat)).thenReturn(registrationCenterUserMachineHistories);
 		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
 				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
 				.andReturn();
@@ -1796,9 +1803,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getRegistrationCentersMachineUserMappingFetchExceptionTest() throws Exception {
 		when(registrationCenterUserMachineHistoryRepository
-				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						"1","1","1", localDateTimeUTCFormat))
-								.thenThrow(DataAccessLayerException.class);
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull("1",
+						"1", "1", localDateTimeUTCFormat)).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/v1.0/getregistrationmachineusermappinghistory/".concat(UTC_DATE_TIME_FORMAT_DATE_STRING)
 				.concat("/1/1/1")).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
 				.andReturn();
@@ -1810,11 +1816,12 @@ public class MasterdataIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andReturn();
 	}
 
-	//@Test
+	// @Test
 	public void getRegistrationCentersMachineUserMappingTest() throws Exception {
 		registrationCenterUserMachineHistories.add(registrationCenterUserMachineHistory);
 		when(registrationCenterUserMachineHistoryRepository
-				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull("1","1","1",MapperUtils.parseToLocalDateTime("2018-10-30T19:20:30.45")))
+				.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull("1",
+						"1", "1", MapperUtils.parseToLocalDateTime("2018-10-30T19:20:30.45")))
 								.thenReturn(registrationCenterUserMachineHistories);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/getregistrationmachineusermappinghistory/2018-10-30T19:20:30.45/1/1/1")
@@ -2337,8 +2344,8 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/machinespecifications").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isNotFound()); 
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/machinespecifications")
+				.contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isNotFound());
 
 	}
 
@@ -2896,6 +2903,109 @@ public class MasterdataIntegrationTest {
 		when(documentTypeRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void updateDocumentTypeTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
+				Mockito.any())).thenReturn(type);
+		when(documentTypeRepository.update(Mockito.any())).thenReturn(type);
+		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateDocumentTypeNotFoundExceptionTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
+				Mockito.any())).thenReturn(null);
+		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void updateDocumentTypeDatabaseConnectionExceptionTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
+				Mockito.any())).thenReturn(type);
+		when(documentTypeRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void deleteDocumentTypeTest() throws Exception {
+
+		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any())).thenReturn(2);
+		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void deleteDocumentTypeNotFoundExceptionTest() throws Exception {
+		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
+
+		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void deleteDocumentTypeDatabaseConnectionExceptionTest() throws Exception {
+		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
+				.thenReturn(new ArrayList<ValidDocument>());
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void deleteDocumentTypeDependencyExceptionTest() throws Exception {
+		ValidDocument document = new ValidDocument();
+		List<ValidDocument> validDocumentList = new ArrayList<>();
+		validDocumentList.add(document);
+		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(validDocumentList);
+		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
 
