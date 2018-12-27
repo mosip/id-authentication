@@ -1,4 +1,4 @@
-package io.mosip.kernel.qrcode.generator.test;
+package io.mosip.kernel.qrcode.generator.zxing.test;
 
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
