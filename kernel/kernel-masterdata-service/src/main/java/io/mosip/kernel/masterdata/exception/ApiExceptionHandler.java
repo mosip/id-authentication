@@ -61,6 +61,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private ResponseEntity<Object> getErrorResponseEntity(MethodArgumentNotValidException ex, HttpStatus httpStatus) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		errorResponse.setStatus(httpStatus.value());
 		ex.getBindingResult().getFieldErrors().stream().forEach(e -> {
 			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 					e.getField() + ": " + e.getDefaultMessage());
