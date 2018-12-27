@@ -82,31 +82,39 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		return registrationCenterDeviceDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#deleteRegistrationCenterDeviceMapping(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#
+	 * deleteRegistrationCenterDeviceMapping(java.lang.String, java.lang.String)
 	 */
 	@Transactional
 	@Override
-	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId,String deviceId) {
-		RegistrationCenterDeviceID registrationCenterDeviceID=null;
+	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId, String deviceId) {
+		RegistrationCenterDeviceID registrationCenterDeviceID = null;
 		try {
-		registrationCenterDeviceID= new RegistrationCenterDeviceID(regCenterId, deviceId);
-		Optional<RegistrationCenterDevice> registrationCenterDevice=registrationCenterDeviceRepository.findById(registrationCenterDeviceID);
-		if(!registrationCenterDevice.isPresent()) {
-			throw new DataNotFoundException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
-					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
-		}else {
-			RegistrationCenterDevice centerDevice=registrationCenterDevice.get();
-			centerDevice=MetaDataUtils.setDeleteMetaData(centerDevice);
-			RegistrationCenterDeviceHistory history=MapperUtils.map(centerDevice, RegistrationCenterDeviceHistory.class);
-			history.setRegistrationCenterDeviceHistoryPk(MapperUtils.map(registrationCenterDeviceID, RegistrationCenterDeviceHistoryPk.class));
-			history.getRegistrationCenterDeviceHistoryPk().setEffectivetimes(centerDevice.getDeletedDateTime());
-			MapperUtils.setBaseFieldValue(centerDevice, history);
-			registrationCenterDeviceHistoryRepository.create(history);
-			registrationCenterDeviceRepository.update(centerDevice);
-		}
-		}catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
+			registrationCenterDeviceID = new RegistrationCenterDeviceID(regCenterId, deviceId);
+			Optional<RegistrationCenterDevice> registrationCenterDevice = registrationCenterDeviceRepository
+					.findById(registrationCenterDeviceID);
+			if (!registrationCenterDevice.isPresent()) {
+				throw new DataNotFoundException(
+						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
+						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
+			} else {
+				RegistrationCenterDevice centerDevice = registrationCenterDevice.get();
+				centerDevice = MetaDataUtils.setDeleteMetaData(centerDevice);
+				RegistrationCenterDeviceHistory history = MapperUtils.map(centerDevice,
+						RegistrationCenterDeviceHistory.class);
+				history.setRegistrationCenterDeviceHistoryPk(
+						MapperUtils.map(registrationCenterDeviceID, RegistrationCenterDeviceHistoryPk.class));
+				history.getRegistrationCenterDeviceHistoryPk().setEffectivetimes(centerDevice.getDeletedDateTime());
+				MapperUtils.setBaseFieldValue(centerDevice, history);
+				registrationCenterDeviceHistoryRepository.create(history);
+				registrationCenterDeviceRepository.update(centerDevice);
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage());
 		}
 		return registrationCenterDeviceID;
