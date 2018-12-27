@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateNotFoundException;
@@ -33,7 +34,6 @@ public class TemplateGenerator {
 	@Autowired
 	private TemplateManager templateManager;
 
-	
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 

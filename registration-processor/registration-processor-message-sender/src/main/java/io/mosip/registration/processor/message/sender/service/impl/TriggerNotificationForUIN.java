@@ -5,9 +5,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.message.sender.service.MessageNotificationService;
 
+@RefreshScope
+@Component
 public class TriggerNotificationForUIN {
 	
 	@Value("${registration.processor.notification.type}")
@@ -20,7 +24,7 @@ public class TriggerNotificationForUIN {
 	private String notificationEmailSubject;
 	
 	@Autowired
-	MessageNotificationService service;
+	private MessageNotificationService service;
 	
 	private static final String SMS_TEMPLATE_CODE = "SMS_TEMP_FOR_UIN_GEN";
 	private static final String EMAIL_TEMPLATE_CODE = "EMAIL_TEMP_FOR_UIN_GEN";
@@ -29,9 +33,9 @@ public class TriggerNotificationForUIN {
 
 		Map<String, Object> attributes = new HashMap<>();
 
-		String[] ccEMailList = notificationEmails.split("|");
+		String[] ccEMailList = notificationEmails.split("\\|");
 
-		String[] allNotificationTypes = notificationTypes.split("|");
+		String[] allNotificationTypes = notificationTypes.split("\\|");
 		
 		for (String notificationType : allNotificationTypes) {
 			

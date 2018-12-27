@@ -24,9 +24,7 @@ public class Utilities {
 
 	@Value("${registration.processor.demographic.identity}")
 	private String getRegProcessorDemographicIdentity;
-	@Value("${registration.processor.threshold}")
-	private int threshold;
-
+	
 	public static String getJson(String configServerFileStorageURL,String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL+uri, String.class);
