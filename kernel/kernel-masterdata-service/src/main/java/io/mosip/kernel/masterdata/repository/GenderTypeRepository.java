@@ -56,6 +56,7 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 *            upated timestamp
 	 * @param updatedBy
 	 *            updating user
+	 * @return no of updated rows           
 	 */
 	@Modifying
 	@Query("UPDATE Gender g SET g.genderName=?3, g.isActive=?4 ,g.updatedDateTime=?5, g.updatedBy=?6 WHERE g.code =?1 and g.langCode=?2 and (g.isDeleted is null or g.isDeleted =false)")
