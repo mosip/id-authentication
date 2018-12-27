@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-import javax.validation.Valid;
-
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;

@@ -92,7 +92,7 @@ public class HolidayController {
 	}
 
 	/**
-	 * This method to update a holiday
+	 * Method to update a holiday
 	 * 
 	 * @param holiday
 	 *            input values to update the data
@@ -105,10 +105,10 @@ public class HolidayController {
 	}
 
 	/**
-	 * This method to delete a holiday
+	 * Method to delete holidays
 	 * 
-	 * @param holiday
-	 *            input values to update the data
+	 * @param request
+	 *            input values to delete 
 	 * @return id of the deleted Holiday data
 	 */
 	@DeleteMapping

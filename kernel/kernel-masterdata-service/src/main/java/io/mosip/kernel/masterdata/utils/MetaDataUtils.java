@@ -140,5 +140,13 @@ public class MetaDataUtils {
 		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setUpdatedBy(contextUser);
 	}
+	
+	public static String getContextUser() {
+		return contextUser;
+	}
+	
+	public static LocalDateTime getCurrentDateTime() {
+		return LocalDateTime.now(ZoneId.of("UTC"));
+	}
 
 }

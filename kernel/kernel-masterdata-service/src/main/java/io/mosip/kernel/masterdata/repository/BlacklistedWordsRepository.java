@@ -19,23 +19,25 @@ import io.mosip.kernel.masterdata.entity.BlacklistedWords;
  */
 public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWords, String> {
 	/**
-	 * method to fetch list of blacklisted words by language code
+	 * Method to fetch list of blacklisted words by language code
 	 * 
 	 * @param langCode
 	 *            language code
 	 * @return {@link List of BlacklistedWords }
 	 */
+
+	@Query("FROM BlacklistedWords blw WHERE blw.langCode = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
 	List<BlacklistedWords> findAllByLangCode(String langCode);
 
 	/**
-	 * method to fetch all the blacklisted words
+	 * Method to fetch all the blacklisted words
 	 * 
 	 * @return {@link List of BlacklistedWords }
 	 */
 	List<BlacklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
 
 	/**
-	 * method to fetch word by word and langCode
+	 * Method to fetch word by word and langCode
 	 * 
 	 * @param word
 	 *            word to fetch
@@ -43,10 +45,21 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 *            language code of the word
 	 * @return word detail
 	 */
+
+	@Query("FROM BlacklistedWords blw WHERE blw.word = ?1 AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
 	BlacklistedWords findByWordAndLangCode(String word, String langCode);
-	
+
+	/**
+	 * Method to delete the blacklisted word
+	 * 
+	 * @param word
+	 *            input word to be deleted
+	 * @param deletedDateTime
+	 *            input deleted timeStamp
+	 * @return no of rows deleted
+	 */
 	@Modifying
 	@Transactional
 	@Query("UPDATE BlacklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE bw.word = ?1 AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
-	int deleteBlackListedWord(String word,LocalDateTime deletedDateTime);
+	int deleteBlackListedWord(String word, LocalDateTime deletedDateTime);
 }

@@ -1366,8 +1366,7 @@ public class MasterDataServiceTest {
 
 	}
 
-	// ----------------------------------------------- Blacklisted word
-	// validator----------------------//
+	/*---------------------- Blacklisted word validator----------------------*/
 
 	@Test
 	public void validateWordNegativeTest() {

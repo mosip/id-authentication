@@ -112,6 +112,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
 	 * deleteMachineSpecification(java.lang.String)
 	 */
+	@Override
 	public IdResponseDto deleteMachineSpecification(String id) {
 		MachineSpecification delMachineSpecification = null;
 		try {

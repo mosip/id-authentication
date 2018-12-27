@@ -9,7 +9,11 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,14 +26,14 @@ public class HolidayUpdateDto {
 	private String locationCode;
 
 	@NotNull
-	private LocalDate currentHolidayDate;
+	private LocalDate holidayDate;
 	@NotBlank
 	@Size(min = 1, max = 64)
-	private String currentHolidayName;
+	private String holidayName;
 
 	@Size(min = 1, max = 128)
 	@NotBlank
-	private String currentHolidayDesc;
+	private String holidayDesc;
 
 	@Size(min = 1, max = 3)
 	@NotBlank

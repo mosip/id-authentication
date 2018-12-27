@@ -38,7 +38,5 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	@Query(value = "Select 	m.eff_dtimes, m.id,m.cr_by, m.cr_dtimes, m.del_dtimes, m.is_active, m.is_deleted, m.upd_by, m.upd_dtimes, m.ip_address, m.lang_code, m.mac_address, m.mspec_id, m.name,  m.serial_num, m.validity_end_dtimes from master.machine_master_h m where m.id = ?1 and m.lang_code = ?2 and m.eff_dtimes <= ?3 and ( m.is_deleted = false or m.is_deleted is null) order by m.eff_dtimes desc limit 1", nativeQuery = true)
 	List<MachineHistory> findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String id, String langCode, LocalDateTime effectDtimes);
-	
-	/*@Query("From MachineHistory where id=?1 and effectDateTime=?2")
-	MachineHistory findByIdAndEffectDTimes(String id , LocalDateTime effectDateTime);*/
+
 }
