@@ -17,6 +17,7 @@ import { DialougComponent } from '../shared/dialoug/dialoug.component';
 import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { StepperComponent } from './stepper/stepper.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     DashBoardComponent,
     ParentComponent,
     DraggableDirective,
-    ConfirmationComponent
+    ConfirmationComponent,
+    StepperComponent
   ]
 })
 export class RegistrationModule {}

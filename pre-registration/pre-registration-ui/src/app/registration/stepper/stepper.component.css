@@ -1,0 +1,46 @@
+.inline-placer{
+    display: inline-block;
+    width: 25%;
+}
+
+.test{
+  display: inline-block;
+  width : 150px;
+  position: relative;
+  top:-2px;
+  border-top: 1px solid black;
+}
+
+.container {
+  justify-content: center;
+  align-items: center;
+  vertical-align: center;
+  align-content: center;
+  display: flex;
+}
+
+.inline-icon {
+  vertical-align: bottom;
+  font-size: 18px !important;
+}
+
+.active {
+  color: blue;
+}
+
+.complete {
+  color: green;
+}
+
+.incomplete {
+  color: grey;
+}
+
+@media(max-width: 500px) {
+  .container {
+    margin-left: 3%;
+  }
+  .inline-placer {
+    margin: 5px 0 0 0;
+  }
+}
