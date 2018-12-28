@@ -12,7 +12,8 @@ public enum TemplateErrorCode {
 			"KER-MSD-145", "Exception during inserting data into db"), TEMPLATE_NOT_FOUND("KER-MSD-046",
 					"Template not found."), TEMPLATE_UPDATE_EXCEPTION("KER-MSD-XXX",
 							"Error occured while updating Template"), TEMPLATE_DELETE_EXCEPTION("KER-MSD-XXX",
-									"Error occured while deleting Template");
+									"Error occured while deleting Template"), TEMPLATE_DELETE_DEPENDENCY_EXCEPTION(
+											"KER-MSD-125", "Cannot delete dependency found.");
 
 	private final String errorCode;
 	private final String errorMessage;
