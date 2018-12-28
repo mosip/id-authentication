@@ -13,7 +13,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -148,8 +150,8 @@ public class DataSyncControllerTest {
 		dataSyncDTO.setVer("1.0");
 
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
-		ArrayList<String> list = new ArrayList<>();
-		list.add("1");
+		Map<String,String> list = new HashMap<>();
+		list.put("1","2018-12-28T13:04:53.117Z");
 
 		preRegistrationIdsDTO.setPreRegistrationIds(list);
 		preRegistrationIdsDTO.getTransactionId();
@@ -158,10 +160,10 @@ public class DataSyncControllerTest {
 		
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
 		responseDto.setResponse(preRegistrationIdsDTO);
 
-		Mockito.when(dataSyncService.retrieveAllPreRegid(Mockito.any())).thenReturn(responseDto);
+		Mockito.when(dataSyncService.retrieveAllPreRegIds(Mockito.any())).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/data-sync/datasync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
@@ -178,7 +180,7 @@ public class DataSyncControllerTest {
 		responseList.add(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
 		responseDto.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		Mockito.when(dataSyncService.storeConsumedPreRegistrations(Mockito.any())).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/data-sync/reverseDataSync")
