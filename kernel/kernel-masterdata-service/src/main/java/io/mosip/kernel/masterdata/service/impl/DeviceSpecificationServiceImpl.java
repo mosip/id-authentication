@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
@@ -146,7 +147,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				deviceSpecificationRepository.update(entity);
 				idResponseDto.setId(entity.getId());
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -186,7 +187,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				}
 
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
