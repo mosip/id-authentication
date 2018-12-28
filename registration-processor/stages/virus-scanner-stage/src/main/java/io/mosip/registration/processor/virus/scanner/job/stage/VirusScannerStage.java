@@ -31,53 +31,83 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
+import io.mosip.registration.processor.virus.scanner.job.util.StatusMessage;
 
+/**
+ * The Class VirusScannerStage.
+ */
 @Service
 public class VirusScannerStage extends MosipVerticleManager {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerStage.class);
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The extention. */
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The virus scanner service. */
 	@Autowired
 	VirusScanner<Boolean, String> virusScannerService;
 
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The decryptor. */
 	@Autowired
 	Decryptor decryptor;
 
+	/** The Constant VIRUS_SCAN_FAILED. */
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
 
+	/** The description. */
 	String description = "";
+
+	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, MessageBusAddress.PACKET_UPLOADER_IN);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
@@ -90,11 +120,11 @@ public class VirusScannerStage extends MosipVerticleManager {
 		File encryptedFile = new File(encryptedPacketPath);
 		boolean isEncryptedFileCleaned;
 		boolean isUnpackedFileCleaned;
-		InputStream encryptedPacket = null;
+
 		InputStream decryptedData = null;
 
-		try {
-			encryptedPacket = new FileInputStream(encryptedFile);
+		// To avoid sonar issue
+		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
 
 			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
 			if (isEncryptedFileCleaned) {
@@ -130,7 +160,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		} catch (PacketDecryptionFailureException e) {
 			LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
-			registrationStatusDto.setStatusComment("packet is in status packet for decryption failed");
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILURE);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = false;
@@ -154,11 +184,17 @@ public class VirusScannerStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Process virus scan failure.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 */
 	private void processVirusScanFailure(InternalRegistrationStatusDto registrationStatusDto) {
 		String registrationId = registrationStatusDto.getRegistrationId();
 
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_FAILED");
+		registrationStatusDto.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_FAILURE);
 		registrationStatusDto.setUpdatedBy(USER);
 		isTransactionSuccessful = false;
 		description = registrationId + " packet is infected.";
@@ -166,11 +202,17 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	}
 
+	/**
+	 * Send to packet uploader stage.
+	 *
+	 * @param entry
+	 *            the entry
+	 */
 	private void sendToPacketUploaderStage(InternalRegistrationStatusDto entry) {
 		String registrationId = entry.getRegistrationId();
 
 		entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL.toString());
-		entry.setStatusComment("Packet virus scan is sucessfull");
+		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESS);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;
 		LOGGER.info(LOGDISPLAY, entry.getRegistrationId(), "File is successfully scanned.");
