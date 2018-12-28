@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NamedQuery;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "reg_appointment", schema = "prereg")
+@NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode", query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.status_code = ?2")
+@NamedQuery(name="RegistrationBookingEntity.findByPreIdAndStatusCode",query="SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1 and r.status_code=?2")
 public class RegistrationBookingEntity implements Serializable {
 
 	private static final long serialVersionUID = 7886669943207769620L;
@@ -34,7 +38,7 @@ public class RegistrationBookingEntity implements Serializable {
 
 	@Column(name = "slot_to_time")
 	private LocalTime slotToTime;
-	
+
 	@Column(name = "appointment_date")
 	private LocalDate regDate;
 
