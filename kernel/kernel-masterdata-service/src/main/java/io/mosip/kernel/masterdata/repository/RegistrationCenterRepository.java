@@ -112,5 +112,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the code against which registration centers need to be found.
 	 * @return the list of registration centers.
 	 */
+	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
 }
