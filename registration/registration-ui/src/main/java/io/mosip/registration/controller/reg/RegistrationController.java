@@ -47,6 +47,7 @@ import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -321,6 +322,16 @@ public class RegistrationController extends BaseController {
 	private AnchorPane addressAnchorPane;
 	@FXML
 	private Label preRegistrationLabel;
+	@FXML
+	private Label fullNameLabel;
+	@FXML
+	private Label genderLabel;
+	@FXML
+	private Label mobileNoLabel;
+	@FXML
+	private Label emailIdLabel;
+	@FXML
+	private Label cnieLabel;			 
 
 	FXUtils fxUtils;
 
@@ -330,6 +341,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
@@ -400,22 +412,26 @@ public class RegistrationController extends BaseController {
 				preRegistrationLabel.setText("UIN");
 
 				preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
-
+				preRegistrationId.setDisable(false);
 				childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
 
 				fullName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
 				fullNameLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
-
+fullNameLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
 				dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
 
 				gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+				genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());						
 
 				addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
 
 				mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+				mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 				emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-
+emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 				cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+																			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+
 			}
 
 		} catch (IOException | RuntimeException exception) {
@@ -425,6 +441,10 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+		public void init(SelectionListDTO selectionListDTO) {
+		createRegistrationDTOObject();
+		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
+	}
 	/**
 	 * Loading the virtual keyboard
 	 */
@@ -700,6 +720,7 @@ public class RegistrationController extends BaseController {
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
 			Identity demographicIdentity = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
 			DemographicInfoDTO demographicInfoDTO ;
+
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 
@@ -874,7 +895,9 @@ public class RegistrationController extends BaseController {
 				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
 
 				if (isChild) {
+
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+
 					registrationMetaDataDTO.setApplicationType("Child");
 				} else {
 					registrationMetaDataDTO.setApplicationType("Adult");
@@ -1587,6 +1610,7 @@ public class RegistrationController extends BaseController {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		Identity identity = new Identity();

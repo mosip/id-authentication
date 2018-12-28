@@ -16,10 +16,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -74,48 +72,47 @@ public class UINUpdateController extends BaseController implements Initializable
 	public void submitUINUpdate(ActionEvent event) {
 
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.REGISTRATION_DATA);
 			SelectionListDTO selectionListDTO = new SelectionListDTO();
-			if (registrationDTO != null) {
-				if (name.isSelected()) {
-					selectionListDTO.setName(true);
-				}
-				if (age.isSelected()) {
-					selectionListDTO.setAge(true);
-				}
-				if (gender.isSelected()) {
-					selectionListDTO.setGender(true);
-				}
-				if (address.isSelected()) {
-					selectionListDTO.setAddress(true);
-				}
-				if (contactDetails.isSelected()) {
-					selectionListDTO.setContactDetails(true);
-				}
-				if (biometricException.isSelected()) {
-					selectionListDTO.setBiometricException(true);
-				}
-				if (biometricIris.isSelected()) {
-					selectionListDTO.setBiometricIris(true);
-				}
-				if (biometricFingerprint.isSelected()) {
-					selectionListDTO.setBiometricFingerprint(true);
-				}
-				if (cnieNumber.isSelected()) {
-					selectionListDTO.setCnieNumber(true);
-				}
-				if (parentOrGuardianDetails.isSelected()) {
-					selectionListDTO.setParentOrGuardianDetails(true);
-				}
-				selectionListDTO.setChild(isChild);
-				selectionListDTO.setUinId(uinId.getText());
-				registrationDTO.setSelectionListDTO(selectionListDTO);
+
+			if (name.isSelected()) {
+				selectionListDTO.setName(true);
 			}
+			if (age.isSelected()) {
+				selectionListDTO.setAge(true);
+			}
+			if (gender.isSelected()) {
+				selectionListDTO.setGender(true);
+			}
+			if (address.isSelected()) {
+				selectionListDTO.setAddress(true);
+			}
+			if (contactDetails.isSelected()) {
+				selectionListDTO.setContactDetails(true);
+			}
+			if (biometricException.isSelected()) {
+				selectionListDTO.setBiometricException(true);
+			}
+			if (biometricIris.isSelected()) {
+				selectionListDTO.setBiometricIris(true);
+			}
+			if (biometricFingerprint.isSelected()) {
+				selectionListDTO.setBiometricFingerprint(true);
+			}
+			if (cnieNumber.isSelected()) {
+				selectionListDTO.setCnieNumber(true);
+			}
+			if (parentOrGuardianDetails.isSelected()) {
+				selectionListDTO.setParentOrGuardianDetails(true);
+			}
+			selectionListDTO.setChild(isChild);
+			selectionListDTO.setUinId(uinId.getText());
+
+			registrationController.init(selectionListDTO);
+
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 					applicationContext.getApplicationLanguageBundle());
 			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN detailsmosip");
-
+			
 			if (!validateScreenAuthorization(createRoot.getId())) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
@@ -159,12 +156,12 @@ public class UINUpdateController extends BaseController implements Initializable
 					if (newValue) {
 						toggleLabel1.setId("toggleLabel2");
 						toggleLabel2.setId("toggleLabel1");
-						isChild=newValue;
+						isChild = newValue;
 
 					} else {
 						toggleLabel1.setId("toggleLabel1");
 						toggleLabel2.setId("toggleLabel2");
-						isChild=newValue;
+						isChild = newValue;
 
 					}
 				}
@@ -187,9 +184,8 @@ public class UINUpdateController extends BaseController implements Initializable
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		registrationController.createRegistrationDTOObject();
 		switchedOn = new SimpleBooleanProperty(false);
-		isChild=switchedOn.get();
+		isChild = switchedOn.get();
 		toggleFunction();
 	}
 

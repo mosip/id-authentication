@@ -63,7 +63,7 @@
                                  <Label fx:id="preRegistrationLabel" layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                                  <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
                                  <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" styleClass="RegbuttonStyle" text="%fetch" />
-                                 <Label layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
+                                 <Label fx:id="fullNameLabel" layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
                                  <TextField id="fullName" fx:id="fullName" layoutX="44.0" layoutY="90.0" prefHeight="10.0" prefWidth="320.0" />
                                  <AnchorPane fx:id="dateAnchorPane" layoutX="40.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
                                     <children>
@@ -75,7 +75,7 @@
                                        <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                     </children>
                                  </AnchorPane>
-                                 <Label layoutX="47.0" layoutY="175.0" text="%gender" />
+                                 <Label fx:id="genderLabel" layoutX="47.0" layoutY="175.0" text="%gender" />
                                  <ComboBox fx:id="gender" layoutX="45.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="Select">
                                     <items>
                                        <FXCollections fx:factory="observableArrayList">
@@ -145,11 +145,11 @@
                                  <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                                     <Button fx:id="nextBtn" layoutX="668.0" layoutY="652.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
                                     <TextField fx:id="cniOrPinNumber" layoutX="46.0" layoutY="652.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="46.0" layoutY="637.0" text="%cniOrPinNumber" />
+                                    <Label fx:id="cnieLabel" layoutX="46.0" layoutY="637.0" text="%cniOrPinNumber" />
                                     <TextField fx:id="emailId" layoutX="46.0" layoutY="602.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="46.0" layoutY="587.0" text="%emailId" />
+                                    <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
                                     <TextField fx:id="mobileNo" layoutX="43.0" layoutY="552.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label layoutX="46.0" layoutY="537.0" text="%mobileNo" />
+                                    <Label fx:id="mobileNoLabel" layoutX="46.0" layoutY="537.0" text="%mobileNo" />
                               </children>
                            </AnchorPane>
                         </content>
