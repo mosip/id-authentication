@@ -635,7 +635,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterDevice.setIsActive(true);
 		registrationCenterDevice.setCreatedBy("admin");
 		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-        registrationCenterDevice.setIsDeleted(false);
+		registrationCenterDevice.setIsDeleted(false);
 		registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
 		RegistrationCenterDeviceHistoryPk rcIdH = new RegistrationCenterDeviceHistoryPk();
 		rcIdH.setDeviceId(rcId.getDeviceId());
@@ -2166,14 +2166,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(1);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteGenderTypeNotFoundExceptionTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(0);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
@@ -2182,7 +2182,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteGenderTypeDatabaseConnectionExceptionTest() throws Exception {
 
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any()))
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -3504,7 +3504,7 @@ public class MasterdataIntegrationTest {
 		String input = "{\"id\": \"string\",\"request\":{\"locationCode\":\"LOC01\",\"holidayDate\":\"2019-01-01\",\"holidayName\":\"New Year\"},\"timestamp\": \"2018-12-24T06:15:12.494Z\",\"ver\": \"string\"}";
 		when(holidayRepository.deleteHolidays(any(), anyString(), any(), anyString())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isNotFound());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -3546,7 +3546,7 @@ public class MasterdataIntegrationTest {
 		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(0);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isNotFound());
 	}
 
 	@SuppressWarnings("unchecked")
