@@ -22,7 +22,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -170,12 +169,12 @@ public class HolidayServiceImpl implements HolidayService {
 			if (noOfRowAffected != 0)
 				idDto = mapToHolidayIdDto(dto);
 			else
-				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+				throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return idDto;
 	}
@@ -194,12 +193,12 @@ public class HolidayServiceImpl implements HolidayService {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),
 					idDto.getHolidayName(), idDto.getHolidayDate(), idDto.getLocationCode());
 			if (affectedRows == 0)
-				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+				throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return idDto;
 	}
