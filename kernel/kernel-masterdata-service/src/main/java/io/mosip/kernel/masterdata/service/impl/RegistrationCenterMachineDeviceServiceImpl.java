@@ -14,8 +14,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService;
@@ -126,7 +126,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 
 				registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
 								.getErrorCode(),
 						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION

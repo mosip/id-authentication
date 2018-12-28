@@ -109,6 +109,11 @@ public class LocationController {
 		return locationHierarchyService.updateLocationDetails(locationRequestDto);
 	}
 
+	/**
+	 * 
+	 * @param locationCode
+	 * @return PostOcationCodeResponseDto
+	 */
 	@DeleteMapping(value = "/{locationcode}")
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
 		return locationHierarchyService.deleteLocationDetials(locationCode);
