@@ -329,8 +329,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight() - 5);
-
+			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
