@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -140,7 +141,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 					genderTypeDto.getGenderName(), genderTypeDto.getIsActive(), MetaDataUtils.getCurrentDateTime(),
 					MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
-				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -163,7 +164,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		try {
 			int updatedRows = genderTypeRepository.deleteGenderType(code, MetaDataUtils.getCurrentDateTime(),MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
-				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {

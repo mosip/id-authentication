@@ -23,7 +23,7 @@ public interface QrCodeGenerator<T> {
 	 * @param data
 	 *            data to encode in the QR code
 	 * @param version
-	 *            {@link QrVersion} class for QR Code version
+	 *             QR Code version
 	 * @return array of byte containing QR Code in PNG format
 	 * @throws QrcodeGenerationException
 	 *             exceptions which may occur when encoding a QRcode using the
