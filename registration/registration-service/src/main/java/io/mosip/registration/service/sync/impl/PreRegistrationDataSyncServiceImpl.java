@@ -31,8 +31,6 @@ import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncRequestDTO;
-import io.mosip.registration.dto.PreRegistrationResponseDTO;
-import io.mosip.registration.dto.PreRegistrationResponseDataSyncDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
@@ -162,7 +160,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching Pre-Registration started");
 
 		/** Check in Database whether required record already exists or not */
-		PreRegistrationList preRegistration = preRegistrationDAO.getPreRegistration(preRegistrationId);
+		PreRegistrationList preRegistration = preRegistrationDAO.get(preRegistrationId);
 		
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 		
@@ -213,14 +211,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate,
 							RegistrationConstants.PRE_REG_APPOINMENT_DATE_FORMAT));
 					if(preRegistration == null) {
-						preRegistrationDAO.savePreRegistration(preRegistrationList);
+						preRegistrationDAO.save(preRegistrationList);
 
 					} else {
 						preRegistrationList.setCrBy(preRegistration.getCrBy());
 						preRegistration.setCrDtime(preRegistration.getCrDtime());
 						preRegistrationList.setUpdBy(getUserIdFromSession());
 						preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
-						preRegistrationDAO.updatePreRegistration(preRegistrationList);
+						preRegistrationDAO.update(preRegistrationList);
 					}
 					/** set success response */
 					setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
@@ -447,7 +445,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			preRegList.forEach(preRegRecord -> {
-				preRegistrationDAO.updateDeletedRecord(preRegRecord);
+				preRegistrationDAO.update(preRegRecord);
 			});
 			setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_SUCCESS, null);
 		} catch (RuntimeException runtimeException) {

@@ -234,9 +234,9 @@ public class LoginController extends BaseController implements Initializable {
 		boolean offlineStatus = false;
 		if(!serverStatus) {
 			String status = validatePwd(userId.getText().toLowerCase(), password.getText().toLowerCase());
-			if(RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
+			if(RegistrationConstants.SUCCESS.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, "");
-			} else if(RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)){
+			} else if(RegistrationConstants.FAILURE.equals(status)){
 				offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 			}
 		}

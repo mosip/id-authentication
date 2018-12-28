@@ -66,8 +66,8 @@ public class RegistrationConstants {
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
 	public static final String OTP_VALIDATION_SUCCESS = "success";
-	public static final String PASSWORD_VALIDATION_SUCCESS = "Success";
-	public static final String PASSWORD_VALIDATION_FAILURE = "Fail";
+	public static final String SUCCESS = "Success";
+	public static final String FAILURE = "Fail";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";

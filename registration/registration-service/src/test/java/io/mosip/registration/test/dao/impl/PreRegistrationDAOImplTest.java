@@ -34,13 +34,13 @@ public class PreRegistrationDAOImplTest {
 	public void savetest() {
 		
 		Mockito.when(registrationRepository.save(preRegistrationList)).thenReturn(preRegistrationList);
-		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.savePreRegistration(preRegistrationList));
+		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.save(preRegistrationList));
 	}
 	
 	@Test
 	public void findByPreRegIdTest() {
 		Mockito.when(registrationRepository.findByPreRegId(Mockito.anyString())).thenReturn(preRegistrationList);
-		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.getPreRegistration(Mockito.anyString()));
+		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.get(Mockito.anyString()));
 	}
 	
 
