@@ -137,8 +137,7 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(registrationStatusService)
-				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
 		virusScannerStage.process(dto);

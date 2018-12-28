@@ -25,7 +25,6 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
-import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -138,7 +137,7 @@ public class PacketArchiverTest {
 	 */
 	@Test
 	public void archivePacketSuccessCheck() throws IOException, IllegalArgumentException, IllegalAccessException,
-			NoSuchFieldException, SecurityException, UnableToAccessPathException, PacketNotFoundException {
+			NoSuchFieldException, SecurityException, PacketNotFoundException {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId)).thenReturn(auditResponseDto);
@@ -161,7 +160,7 @@ public class PacketArchiverTest {
 	 */
 	@Test(expected = PacketNotFoundException.class)
 	public void archivePacketAdaptedFailureCheck()
-			throws UnableToAccessPathException, PacketNotFoundException, IOException {
+			throws PacketNotFoundException, IOException {
 		registrationId = "1000";
 		packetArchiver.archivePacket(registrationId);
 
