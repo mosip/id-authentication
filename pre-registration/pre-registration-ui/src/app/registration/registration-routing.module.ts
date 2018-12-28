@@ -6,7 +6,7 @@ import { DemographicComponent } from './demographic/demographic.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { CenterSelectionComponent } from './center-selection/center-selection.component';
 import { ParentComponent } from './parent/parent.component';
-import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { AcknowledgementComponent } from '../acknowledgement/acknowledgement.component';
 
 const registrationRoutes: Routes = [
   {
@@ -17,7 +17,7 @@ const registrationRoutes: Routes = [
       { path: 'demographic/:id', component: DemographicComponent },
       { path: 'file-upload', component: FileUploadComponent },
       { path: 'pick-center', component: CenterSelectionComponent },
-      { path: 'confirmation', component: ConfirmationComponent }
+      { path: 'acknowledgement', component: AcknowledgementComponent },
     ]
   },
   { path: '**', redirectTo: '/' }

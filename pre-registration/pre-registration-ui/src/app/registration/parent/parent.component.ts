@@ -16,7 +16,7 @@ export class ParentComponent implements OnInit {
 
   onActivate($event) {
     console.log($event);
-    this.componentName = $event.route.component.name;
+    this.componentName = $event.route === undefined ? 'AcknowledgementComponent' : $event.route.component.name;
   }
 
 }

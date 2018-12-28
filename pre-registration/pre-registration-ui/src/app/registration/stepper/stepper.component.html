@@ -3,13 +3,13 @@
   <div class="inline-placer complete"><p><i class="inline-icon material-icons">home</i>&nbsp; File Upload -----------------------------------------------</p></div>
   <div class="inline-placer active"><p><i class="inline-icon material-icons">home</i>&nbsp; Book Appointment ------------------------------------</p></div>
   <div class="inline-placer incomplete"><p><i class="inline-icon material-icons">home</i>&nbsp; Confirmation</p></div> -->
-  <div><p class="complete"><i class="inline-icon material-icons">home</i>&nbsp; Demographic Details</p></div>
-  <div><hr class="test complete"/></div>
-  <div><p class="complete"><i class="inline-icon material-icons">home</i>&nbsp; Upload Document</p></div>
-  <div><hr class="test complete"/></div>
-  <div><p class="active"><i class="inline-icon material-icons">home</i>&nbsp; Book Appointment</p></div>
-  <div><hr class="test active"/></div>
-  <div><p class="incomplete"><i class="inline-icon material-icons">home</i>&nbsp; Confirmation</p></div>
+  <div><p [ngClass]="componentName === 'DemographicComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Demographic Details</p></div>
+  <div><hr class="test"/></div>
+  <div><p [ngClass]="componentName === 'FileUploadComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Upload Document</p></div>
+  <div><hr class="test"/></div>
+  <div><p [ngClass]="componentName === 'CenterSelectionComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Book Appointment</p></div>
+  <div><hr class="test"/></div>
+  <div><p [ngClass]="componentName === 'AcknowledgementComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Confirmation</p></div>
 
 
 </div>
