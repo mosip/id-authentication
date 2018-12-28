@@ -3046,7 +3046,7 @@ public class MasterdataIntegrationTest {
 		when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3087,7 +3087,7 @@ public class MasterdataIntegrationTest {
 		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3205,7 +3205,7 @@ public class MasterdataIntegrationTest {
 		when(documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3246,7 +3246,7 @@ public class MasterdataIntegrationTest {
 		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
