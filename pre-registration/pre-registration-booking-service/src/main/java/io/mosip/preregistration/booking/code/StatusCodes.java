@@ -2,7 +2,7 @@ package io.mosip.preregistration.booking.code;
 
 /**
  * 
- * Various Status codes for Data Sync
+ * Various Status codes for Booking
  * 
  * @author M1046129
  *

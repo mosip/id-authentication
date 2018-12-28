@@ -38,6 +38,7 @@ import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
+import io.mosip.pregistration.datasync.errorcodes.ErrorMessages;
 import io.mosip.pregistration.datasync.service.DataSyncService;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -174,11 +175,11 @@ public class DataSyncControllerTest {
 	public void reverseDatasyncSuccessTest() throws Exception {
 		DataSyncResponseDTO<String> responseDto = new DataSyncResponseDTO<>();	
 		List responseList = new ArrayList<>();
-		responseList.add(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
+		responseList.add(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-		responseDto.setResponse(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
+		responseDto.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		Mockito.when(dataSyncService.storeConsumedPreRegistrations(Mockito.any())).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/data-sync/reverseDataSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
