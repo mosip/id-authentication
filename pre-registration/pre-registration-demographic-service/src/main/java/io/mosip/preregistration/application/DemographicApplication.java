@@ -19,7 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class DemographicApplication {
 	/**
 	 * 
-	 * @param args
+	 * @param args Unused
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(DemographicApplication.class, args);

@@ -70,9 +70,9 @@ public class DemographicControllerTest {
 	private Object jsonObject = null;
 
 	/**
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
+	 * @throws FileNotFoundException when file not found
+	 * @throws IOException on input error
+	 * @throws ParseException on json parsing error
 	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
@@ -84,7 +84,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void successSave() throws Exception {
@@ -107,7 +107,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void failureSave() throws Exception {
@@ -122,7 +122,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void successUpdate() throws Exception {
@@ -145,7 +145,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void getAllApplicationTest() throws Exception {
@@ -170,7 +170,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void getApplicationStatusTest() throws Exception {
@@ -192,7 +192,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void discardIndividualTest() throws Exception {
@@ -214,7 +214,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
@@ -236,7 +236,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
@@ -256,7 +256,7 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on error
 	 */
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {

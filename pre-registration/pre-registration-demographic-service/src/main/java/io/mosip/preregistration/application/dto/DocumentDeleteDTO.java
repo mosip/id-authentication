@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * This DTO class is used to define Document Id and message.
  * 
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @since 1.0.0
  */
 @Getter

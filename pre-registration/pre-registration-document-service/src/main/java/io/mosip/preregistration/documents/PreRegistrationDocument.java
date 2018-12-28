@@ -18,7 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "io.mosip.*")
 public class PreRegistrationDocument {
 	/**
-	 * @param args
+	 * @param args noUsed
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(PreRegistrationDocument.class, args);

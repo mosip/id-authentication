@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 /**
  * This class defines the RecordNotFoundException
  * 
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @since 1.0.0
  * 
  */
@@ -18,24 +18,24 @@ public class RecordNotFoundException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg
+	 * @param msg pass the error message
 	 */
 	public RecordNotFoundException(String msg) {
 		super("", msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
+	 * @param errCode pass the error code
+	 * @param msg pass the error message
 	 */
 	public RecordNotFoundException(String errCode, String msg) {
 		super(errCode, msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
-	 * @param cause
+	 * @param errCode pass the error code
+	 * @param msg pass the error message
+	 * @param cause pass the cause
 	 */
 	public RecordNotFoundException(String errCode, String msg, Throwable cause) {
 		super(errCode, msg, cause);

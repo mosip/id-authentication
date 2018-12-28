@@ -19,7 +19,7 @@ import lombok.ToString;
  * 
  * @author Jagadishwari S
  * @since 1.0.0
- * @param <T>
+ * @param <T> generic type
  */
 @Getter
 @Setter

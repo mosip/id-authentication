@@ -57,22 +57,10 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
  * This class provides the service implementation for Document
  * 
  * @author Rajath KR
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Kishan Rathore
  * @since 1.0.0
- */
-/**
- * @author M1046129
- *
- */
-/**
- * @author M1046129
- *
- */
-/**
- * @author M1046129
- *
  */
 @Component
 public class DocumentUploadService {
@@ -146,12 +134,12 @@ public class DocumentUploadService {
 	}
 
 	/**
-	 * This method is used to upload the document by accepting the JsonString &
+	 * This method is used to upload the document by accepting the JsonString and
 	 * MultipartFile
 	 * 
-	 * @param file
-	 * @param documentJsonString
-	 * @return ResponseDTO
+	 * @param file pass the file
+	 * @param documentJsonString pass document json
+	 * @return ResponseDTO 
 	 */
 	public ResponseDTO<DocResponseDTO> uploadDoucment(MultipartFile file, String documentJsonString) {
 		Map<String, String> requestParamMap = new HashMap<>();
@@ -182,7 +170,7 @@ public class DocumentUploadService {
 	/**
 	 * This method checks the size of uploaded file
 	 * 
-	 * @param uploadedFileSize
+	 * @param uploadedFileSize pass uploaded file
 	 * @return true if file size is within the limit, else false
 	 */
 	public DocumentSizeExceedException fileSizeCheck(long uploadedFileSize) {
@@ -194,6 +182,12 @@ public class DocumentUploadService {
 		return null;
 	}
 
+	/**
+	 * This method checks the file extension
+	 * 
+	 * @param file pass uploaded file
+	 * @throws DocumentNotValidException if uploaded document is not valid
+	 */
 	public DocumentNotValidException fileExtensionCheck(MultipartFile file) {
 		if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
@@ -205,10 +199,10 @@ public class DocumentUploadService {
 	/**
 	 * This method is used to store the uploaded document into table
 	 * 
-	 * @param document
-	 * @param file
+	 * @param document pass the document
+	 * @param file pass file
 	 * @return ResponseDTO
-	 * @throws IOException
+	 * @throws IOException on input errors
 	 */
 	private ResponseDTO<DocResponseDTO> createDoc(DocumentDTO document, MultipartFile file) throws IOException {
 		ResponseDTO<DocResponseDTO> responseDto = new ResponseDTO<>();
@@ -258,10 +252,10 @@ public class DocumentUploadService {
 	 * This method is used to copy the document from source preId to destination
 	 * preId
 	 * 
-	 * @param catCode
-	 * @param sourcePreId
-	 * @param destinationPreId
-	 * @return ResponseDTO
+	 * @param catCode pass category code
+	 * @param sourcePreId pass source preRegistrationId
+	 * @param destinationPreId pass destination preRegistrationId
+	 * @return ResponseDTO 
 	 */
 	public ResponseDTO<DocumentCopyDTO> copyDoucment(String catCode, String sourcePreId, String destinationPreId) {
 		ResponseDTO<DocumentCopyDTO> responseDto = new ResponseDTO<>();
@@ -320,7 +314,7 @@ public class DocumentUploadService {
 	/**
 	 * This method is used to get all the documents for a preId
 	 * 
-	 * @param preId
+	 * @param preId pass preRegistrationId
 	 * @return ResponseDTO
 	 */
 	public ResponseDTO<DocumentGetAllDTO> getAllDocumentForPreId(String preId) {
@@ -358,7 +352,7 @@ public class DocumentUploadService {
 	/**
 	 * This method is used to check whether the key is null
 	 * 
-	 * @param key
+	 * @param key pass the key 
 	 * @return true if key is null, else false
 	 */
 	public boolean isNull(Object key) {
@@ -379,7 +373,7 @@ public class DocumentUploadService {
 	/**
 	 * This method is used to delete the document for document Id
 	 * 
-	 * @param documentId
+	 * @param documentId pass documentID
 	 * @return ResponseDTO
 	 */
 	public ResponseDTO<DocumentDeleteDTO> deleteDocument(String documentId) {
@@ -426,7 +420,7 @@ public class DocumentUploadService {
 	/**
 	 * This method is used to delete all the documents for a preId
 	 * 
-	 * @param preregId
+	 * @param preregId pass preRegistrationId
 	 * @return ResponseDTO
 	 */
 	public ResponseDTO<DocumentDeleteDTO> deleteAllByPreId(String preregId) {

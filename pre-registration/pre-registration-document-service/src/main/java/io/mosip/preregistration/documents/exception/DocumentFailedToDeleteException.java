@@ -8,7 +8,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 
 /**
- * This class defines the DocumentFailedToDeleteException that occurs when the document deletion fails
+ * This class defines the DocumentFailedToDeleteException that occurs when the
+ * document deletion fails
  * 
  * @author Kishan Rathore
  * @since 1.0.0
@@ -28,6 +29,7 @@ public class DocumentFailedToDeleteException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentFailedToDeleteException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_011.toString(), message);
@@ -35,7 +37,9 @@ public class DocumentFailedToDeleteException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentFailedToDeleteException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_011.toString(), message, cause);
@@ -43,8 +47,11 @@ public class DocumentFailedToDeleteException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentFailedToDeleteException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);

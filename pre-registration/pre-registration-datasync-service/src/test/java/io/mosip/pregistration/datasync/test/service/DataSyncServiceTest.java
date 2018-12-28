@@ -14,7 +14,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -40,6 +42,7 @@ import io.mosip.pregistration.datasync.dto.DataSyncDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfoDTO;
+import io.mosip.pregistration.datasync.dto.MainRequestDTO;
 import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.pregistration.datasync.dto.ResponseDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
@@ -82,7 +85,7 @@ public class DataSyncServiceTest {
 	ExceptionJSONInfoDTO exceptionJSONInfo = new ExceptionJSONInfoDTO("", "");
 	DataSyncResponseDTO<PreRegistrationIdsDTO> dataSyncResponseDTO = new DataSyncResponseDTO<>();
 	DataSyncResponseDTO<String> storeResponseDTO = new DataSyncResponseDTO<>();
-	Timestamp resTime = new Timestamp(System.currentTimeMillis());
+	String resTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
 	DataSyncDTO requestDto = new DataSyncDTO();
 	PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 	DataSyncRequestDTO dataSyncRequestDTO = new DataSyncRequestDTO();
@@ -137,12 +140,11 @@ public class DataSyncServiceTest {
 
 		List<Object> responseList = new ArrayList<>();
 		dataSyncResponseDTO.setStatus("true");
-		errlist.add(exceptionJSONInfo);
-		dataSyncResponseDTO.setErr(errlist);
+		dataSyncResponseDTO.setErr(exceptionJSONInfo);
 		dataSyncResponseDTO.setResTime(resTime);
 
-		ArrayList<String> list = new ArrayList<>();
-		list.add("23587986034785");
+		Map<String,String> list = new HashMap<>();
+		list.put("1","2018-12-28T13:04:53.117Z");
 		preRegistrationIdsDTO.setPreRegistrationIds(list);
 		preRegistrationIdsDTO.setTransactionId("1111");
 		dataSyncResponseDTO.setResponse(preRegistrationIdsDTO);
@@ -165,16 +167,16 @@ public class DataSyncServiceTest {
 		dataSyncRequestDTO.setUserId("256752365832");
 		// ex.add(exceptionJSONInfo);
 		dataSyncResponseDTO.setResponse(preRegistrationIdsDTO);
-		dataSyncResponseDTO.setErr(errlist);
+		dataSyncResponseDTO.setErr(null);
 		dataSyncResponseDTO.setStatus("True");
-		dataSyncResponseDTO.setResTime(new Timestamp(System.currentTimeMillis()));
+		dataSyncResponseDTO.setResTime(resTime);
 
 		List<String> preRegIds = new ArrayList<String>();
 		preRegIds.add("23587986034785");
 		ReverseDataSyncRequestDTO request = new ReverseDataSyncRequestDTO();
 		request.setPre_registration_ids(preRegIds);
 
-		reverseDto.setReqTime(resTime);
+		reverseDto.setReqTime(new Date());
 		reverseDto.setRequest(request);
 
 		MockitoAnnotations.initMocks(this);
@@ -234,7 +236,7 @@ public class DataSyncServiceTest {
 		storeResponseDTO.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		storeResponseDTO.setStatus("true");
 		storeResponseDTO.setResTime(resTime);
-		storeResponseDTO.setErr(errlist);
+		storeResponseDTO.setErr(null);
 
 		reverseDataSyncEntity.setLangCode("AR");
 		reverseDataSyncEntity.setCrBy("5766477466");
@@ -265,7 +267,7 @@ public class DataSyncServiceTest {
 
 		InterfaceDataSyncTablePK ipprlst_PK = new InterfaceDataSyncTablePK();
 		ipprlst_PK.setPreregId("23587986034785");
-		ipprlst_PK.setReceivedDtimes(resTime);
+		ipprlst_PK.setReceivedDtimes(new Timestamp(System.currentTimeMillis()));
 
 		reverseDataSyncEntity.setIpprlst_PK(ipprlst_PK);
 
@@ -278,7 +280,7 @@ public class DataSyncServiceTest {
 		ReverseDataSyncRequestDTO request = new ReverseDataSyncRequestDTO();
 		request.setPre_registration_ids(preRegIds);
 
-		reverseDto.setReqTime(resTime);
+		reverseDto.setReqTime(new Date());
 		reverseDto.setRequest(request);
 
 		Mockito.when(dataSyncRepository.saveAll(null)).thenThrow(exception);
@@ -308,12 +310,18 @@ public class DataSyncServiceTest {
 				ArgumentMatchers.any(), ArgumentMatchers.<Class<ResponseDTO>>any())).thenReturn(resp);
 
 		PreRegistrationIdsDTO preRegResponse = new PreRegistrationIdsDTO();
-		List<String> listOfPreIds = new ArrayList<>();
-		listOfPreIds.add("23587986034785");
+		Map<String,String> listOfPreIds = new HashMap<>();
+		listOfPreIds.put("23587986034785","2018-12-28T13:04:53.117Z");
+		
 		preRegResponse.setPreRegistrationIds(listOfPreIds);
 		preRegResponse.setTransactionId("09876543");
-
-		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegid(dataSyncRequestDTO);
+		
+		MainRequestDTO<DataSyncRequestDTO> mainReq = new MainRequestDTO<>();
+		mainReq.setId("mosip.pre-registration.datasync");
+		mainReq.setVer("1.0");
+		mainReq.setReqTime(new Date());
+		mainReq.setRequest(dataSyncRequestDTO);
+		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
 		assertEquals(actualRes.getResponse().getPreRegistrationIds().get(0),
 				dataSyncResponseDTO.getResponse().getPreRegistrationIds().get(0));
 	}
@@ -338,12 +346,19 @@ public class DataSyncServiceTest {
 				ArgumentMatchers.any(), ArgumentMatchers.<Class<ResponseDTO>>any())).thenReturn(resp);
 
 		PreRegistrationIdsDTO preRegResponse = new PreRegistrationIdsDTO();
-		List<String> listOfPreIds = new ArrayList<>();
-		listOfPreIds.add("23587986034785");
+		Map<String,String> listOfPreIds = new HashMap<>();
+		listOfPreIds.put("23587986034785","2018-12-28T13:04:53.117Z");
+		
 		preRegResponse.setPreRegistrationIds(listOfPreIds);
 		preRegResponse.setTransactionId("09876543");
-
-		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegid(dataSyncRequestDTO);
+		
+		MainRequestDTO<DataSyncRequestDTO> mainReq = new MainRequestDTO<>();
+		mainReq.setId("mosip.pre-registration.datasync");
+		mainReq.setVer("1.0");
+		mainReq.setReqTime(new Date());
+		mainReq.setRequest(dataSyncRequestDTO);
+		
+		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
 		assertEquals(actualRes.getResponse().getPreRegistrationIds().get(0),
 				dataSyncResponseDTO.getResponse().getPreRegistrationIds().get(0));
 	}

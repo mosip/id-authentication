@@ -16,7 +16,7 @@ import lombok.ToString;
  * This DTO class is used to define the values for request parameters when
  * performing deletion operarion.
  * 
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @since 1.0.0
  */
 @Getter
