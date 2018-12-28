@@ -57,7 +57,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		try {
 			deviceSpecificationList = deviceSpecificationRepository
 					.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage()
@@ -87,7 +87,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		try {
 			deviceSpecificationList = deviceSpecificationRepository
 					.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode, deviceTypeCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage()
@@ -139,7 +139,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification entity = deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId());
+			DeviceSpecification entity = deviceSpecificationRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
 				deviceSpecificationRepository.update(entity);
@@ -180,8 +181,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					idResponseDto.setId(deviceSpecification.getId());
 				} else {
 					throw new MasterDataServiceException(
-							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
-							DeviceSpecificationErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
+							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 				}
 
 			} else {
