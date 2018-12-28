@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -229,6 +230,9 @@ public class LocationServiceImpl implements LocationService {
 		return locationCodeDto;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
@@ -241,7 +245,7 @@ public class LocationServiceImpl implements LocationService {
 			Location location = locationRepository.findById(Location.class, locationId);
 
 			if (location == null) {
-				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			location = MetaDataUtils.setUpdateMetaData(locationDto, location, true);
@@ -256,6 +260,9 @@ public class LocationServiceImpl implements LocationService {
 		return postLocationCodeResponseDto;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public CodeResponseDto deleteLocationDetials(String locationCode) {
@@ -269,7 +276,7 @@ public class LocationServiceImpl implements LocationService {
 						.forEach(location -> locationRepository.update(location));
 
 			} else {
-				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
@@ -282,7 +289,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * @author M1043226 Method creates location hierarchy data into the table based
+	 *  Method creates location hierarchy data into the table based
 	 *         on the request parameter sent {@inheritDoc}
 	 */
 	@Override

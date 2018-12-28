@@ -90,6 +90,10 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * @author Bal Vikash Sharma
  * @author Neha Sinha
+ * @author M1043226
+ * @since 1.0.0
+ *
+ * 
  * @since 1.0.0
  *
  */
@@ -1155,7 +1159,7 @@ public class MasterDataServiceTest {
 		locationHierarchyService.updateLocationDetails(requestLocationDto);
 	}
 
-	@Test(expected = DataNotFoundException.class)
+	@Test(expected = RequestException.class)
 	public void updateLocationDetailsDataNotFoundTest() {
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
 		locationHierarchyService.updateLocationDetails(requestLocationDto);
@@ -1179,21 +1183,14 @@ public class MasterDataServiceTest {
 
 	}
 
-	@Test(expected = DataNotFoundException.class)
+	@Test(expected = RequestException.class)
 	public void deleteLocationDetailDataNotFoundExceptionTest() {
-		
+
 		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(new ArrayList<Location>());
 
 		locationHierarchyService.deleteLocationDetials("KAR");
 
 	}
-
-	/**
-	 * 
-	 * @author M1043226
-	 * @since 1.0.0
-	 *
-	 */
 
 	@Test()
 	public void getLocationHierachyBasedOnHierarchyNameTest() {
