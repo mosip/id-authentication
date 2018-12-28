@@ -1275,7 +1275,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -1297,7 +1297,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteNotFoundLanguagesTest() throws Exception {
 		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(null);
-		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3688,7 +3688,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterTypeRepository.update(Mockito.any())).thenReturn(registrationCenterType);
 		mockMvc.perform(
 				put("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3738,7 +3738,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(0);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
