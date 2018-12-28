@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -142,7 +143,7 @@ public class TitleServiceImpl implements TitleService {
 				MetaDataUtils.setUpdateMetaData(titleDto, title, false);
 				titleRepository.update(title);
 			} else {
-				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 			}
 
@@ -171,7 +172,7 @@ public class TitleServiceImpl implements TitleService {
 				titleList.stream().map(MetaDataUtils::setDeleteMetaData).forEach(titleRepository::update);
 
 			} else {
-				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 			}
 
