@@ -1,15 +1,9 @@
 <div class="container">
-  <!-- <div class="inline-placer complete"><p><i class="inline-icon material-icons">home</i>&nbsp; Demographic Details</p></div><hr class="test"/>
-  <div class="inline-placer complete"><p><i class="inline-icon material-icons">home</i>&nbsp; File Upload -----------------------------------------------</p></div>
-  <div class="inline-placer active"><p><i class="inline-icon material-icons">home</i>&nbsp; Book Appointment ------------------------------------</p></div>
-  <div class="inline-placer incomplete"><p><i class="inline-icon material-icons">home</i>&nbsp; Confirmation</p></div> -->
-  <div><p [ngClass]="componentName === 'DemographicComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Demographic Details</p></div>
-  <div><hr class="test"/></div>
-  <div><p [ngClass]="componentName === 'FileUploadComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Upload Document</p></div>
-  <div><hr class="test"/></div>
-  <div><p [ngClass]="componentName === 'CenterSelectionComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Book Appointment</p></div>
-  <div><hr class="test"/></div>
-  <div><p [ngClass]="componentName === 'AcknowledgementComponent' ? 'active' : 'complete'"><i class="inline-icon material-icons">home</i>&nbsp; Confirmation</p></div>
-
-
+  <div><p [ngClass]="classes.step1.p"><img src="assets/demographic_details.png" [ngClass]="classes.step1.icon"/>&nbsp; Demographic Details</p></div>
+  <div><hr [ngClass]="classes.step1.line"/></div>
+  <div><p [ngClass]="classes.step2.p"><img src="assets/upload_document.png" [ngClass]="classes.step2.icon" />&nbsp; Upload Document</p></div>
+  <div><hr [ngClass]="classes.step2.line"/></div>
+  <div><p [ngClass]="classes.step3.p"><img src="assets/book_appointment.png" [ngClass]="classes.step3.icon"/>&nbsp; Book Appointment</p></div>
+  <div><hr [ngClass]="classes.step3.line"/></div>
+  <div><p [ngClass]="classes.step4.p"><img src="assets/confirmation.png" [ngClass]="classes.step4.icon" />&nbsp; Confirmation</p></div>
 </div>

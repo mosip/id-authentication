@@ -1,14 +1,23 @@
-.inline-placer{
-    display: inline-block;
-    width: 25%;
-}
-
-.test{
+.progress{
   display: inline-block;
   width : 150px;
+  height: 0;
   position: relative;
   top:-2px;
-  border-top: 3px solid black;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.progress-active {
+  border-top: 3px solid blue;
+}
+
+.progress-complete {
+  border-top: 3px solid green;
+}
+
+.progress-incomplete {
+  border-top: 3px solid grey;
 }
 
 .container {
@@ -22,6 +31,19 @@
 .inline-icon {
   vertical-align: bottom;
   font-size: 18px !important;
+  border-radius: 100%;
+}
+
+.inline-icon-background-active {
+  background: blue;
+}
+
+.inline-icon-background-complete {
+  background: green;
+}
+
+.inline-icon-background-incomplete {
+  background: grey;
 }
 
 .active {
@@ -40,7 +62,13 @@
   .container {
     margin-left: 3%;
   }
-  .inline-placer {
-    margin: 5px 0 0 0;
+  .progress {
+    width: 0;
+  }
+}
+
+@media (max-width:850px) and (min-width:501px) {
+  .progress {
+    width: 60px;
   }
 }
