@@ -16,7 +16,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterHistoryID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
