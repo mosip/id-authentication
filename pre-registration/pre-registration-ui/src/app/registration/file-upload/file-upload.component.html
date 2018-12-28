@@ -1,4 +1,4 @@
-<mat-accordion class="example-headers-align" *ngFor="let applicant of users; let applicantIndex = index">
+<!--<mat-accordion class="example-headers-align" *ngFor="let applicant of users; let applicantIndex = index">
   <mat-expansion-panel [expanded]="step === applicantIndex" (opened)="setStep(applicant, applicantIndex)">
     <mat-expansion-panel-header>
       <mat-panel-title> Document upload </mat-panel-title>
@@ -6,9 +6,9 @@
     </mat-expansion-panel-header>
 
     <mat-grid-list cols="4" rowHeight="4em">
-      <!--<mat-grid-tile [colspan]="1" [rowspan]="4"--
+      <!--<mat-grid-tile [colspan]="1" [rowspan]="4"
         
-      </mat-grid-tile>-->
+      </mat-grid-tile>--
       <mat-grid-tile [colspan]="1" [rowspan]="4">
         <div class="docsContainer">
           <mat-form-field *ngFor="let docs of LOD; let i = index">
@@ -30,7 +30,7 @@
       </mat-grid-tile>
       <mat-grid-tile [colspan]="2" [rowspan]="4">
         <div class="docsContainer">
-          <!--<p class="fileName" id="file.doc_id" *ngFor="let file of users.files[0]; let fileIndex = index ">-->
+          <!--<p class="fileName" id="file.doc_id" *ngFor="let file of users.files[0]; let fileIndex = index ">--
           <p class="fileName" *ngFor="let file of applicant.files[0]; let fileIndex = index">
             <span>{{ file.doc_name }}</span>
             <mat-icon
@@ -42,7 +42,7 @@
             >
             <br />
             <span (click)="openFile()">view</span>
-            <!--<span *ngIf="file.doc_name" class="cross" (click)="removeFile(applicantIndex,fileIndex)"> X</span></p>-->
+            <!--<span *ngIf="file.doc_name" class="cross" (click)="removeFile(applicantIndex,fileIndex)"> X</span></p>--
           </p>
         </div>
       </mat-grid-tile>
@@ -63,22 +63,25 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+-->
 
-<!-- <div class="file-upload">
+<div class="file-upload">
   <div class="file-uploaad__header">Upload Documents</div>
   <div class="file-upload__body">
     <div>Allowed file type Pdf, Word and Max 5MB</div>
-    <div class="file-upload__document-type">
+    <div class="file-upload__document-type" *ngFor="let document of LOD; let i = index">
       <mat-form-field>
-        <mat-select placeholder="POA">
-          <mat-option value="passport">passport</mat-option>
-          <mat-option value="DL">Driving license</mat-option>
-          <mat-option value="PC">PAN Card</mat-option>
+        <mat-select placeholder="{{ document.document_name }}">
+          <mat-option *ngFor="let ValidDocument of document.valid_docs" value="{{ ValidDocument.value }}">
+            {{ ValidDocument.name }}
+          </mat-option>
+          <!-- <mat-option value="DL">Driving license</mat-option>
+          <mat-option value="PC">PAN Card</mat-option> -->
         </mat-select>
       </mat-form-field>
+      <div class="file-upload__document-name" *ngIf="users[0].files[0][i]">{{ users[0].files[0][i].doc_name }}</div>
     </div>
-    <div class="file-upload__document-name">document name</div>
-    <div class="file-upload__document-type">
+    <!-- <div class="file-upload__document-type">
       <mat-form-field>
         <mat-select placeholder="POI">
           <mat-option value="Pass">passport</mat-option>
@@ -102,6 +105,6 @@
         </mat-select>
       </mat-form-field>
       <!-- <input type="file" class="file-upload__document-type__input"> --
-    </div>
+    </div> -->
   </div>
-</div> -->
+</div>

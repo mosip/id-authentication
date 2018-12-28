@@ -1,0 +1,52 @@
+.ack-userInfo-container{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.ack-userInfo_row{
+    display:flex;
+   
+    display:flex;
+}
+
+.ack-userInfo_label{
+
+    
+    /*
+    flex : 3;
+    */
+    flex-basis:45%;
+    min-width: 200px;
+}
+
+.ack-userInfo_separator{
+    
+     /*
+    flex : 1;
+    */
+    flex-basis:05%;
+}
+
+.ack-userInfo_data{
+ 
+  /*
+ flex : 3;
+ */
+ flex-basis:55%;
+ min-width: 200px;
+}
+
+.ack-userInfo{
+    flex : 1;
+    
+    flex-basis:60%
+   
+}
+
+
+
+.ack-userInfo_qr-code{
+    flex : 1;
+    max-width: 500px;
+    flex-basis:40%
+}

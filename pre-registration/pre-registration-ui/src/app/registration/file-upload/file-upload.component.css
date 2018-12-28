@@ -101,4 +101,5 @@ mat-select:focus {
   background: #e0e0e0;
   width: fit-content;
   padding: 0.6em;
+  font-size: 0.7em;
 }

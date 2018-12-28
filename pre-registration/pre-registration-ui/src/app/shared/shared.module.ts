@@ -16,7 +16,12 @@ import { ErrorComponent } from './error/error.component';
     BrowserAnimationsModule,
     MaterialModule,
   ],
+<<<<<<< HEAD
+  declarations: [MapComponent, DialougComponent],
+  exports: [MapComponent, DialougComponent,MaterialModule]
+=======
   declarations: [MapComponent, DialougComponent, ErrorComponent],
   exports: [MapComponent, DialougComponent]
+>>>>>>> 5c0fc594fbf3ef1cad35d35a6afd3bfcd7bf5dd5
 })
 export class SharedModule { }

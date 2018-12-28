@@ -1,0 +1,58 @@
+<mat-grid-list cols="4" rowHeight="50px">
+    <mat-grid-tile
+        colspan=4
+        rowspan=1>
+        <mat-card>{{message1}}</mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile
+      colspan=4
+      rowspan=1>
+       <mat-card>{{message2}}</mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile
+      colspan=2
+      rowspan=5>
+      <mat-card> 
+        <mat-card-content> 
+            <table>    
+                <tr>    
+                    <td><label>Name</label> </td>
+                    <td>: </td>
+                    <td> {{userInfo.name}}</td>
+                 </tr>
+                 <tr>    
+                    <td><label>Pre Registration ID</label> </td>
+                    <td>:</td>
+                    <td> {{userInfo.preRegId}} </td>
+                 </tr>
+                 <tr>    
+                    <td>Registration Center </td>
+                    <td>: </td>
+                    <td> {{userInfo.regCenter}} </td>
+                 </tr>
+                 <tr>    
+                    <td> Center Contact Number</td>
+                    <td>: </td>
+                    <td> {{userInfo.centreContactNumber}} </td>
+                 </tr>
+                 <tr>    
+                    <td> <label>Appointment Date & Time</label></td>
+                    <td>: </td>
+                    <td> {{userInfo.appointmentDTime}} </td>
+                 </tr>
+            </table> 
+        </mat-card-content>
+      </mat-card>
+       
+    </mat-grid-tile>
+    <mat-grid-tile
+      colspan=2
+      rowspan=5>
+       
+    </mat-grid-tile>
+    <mat-grid-tile
+      colspan=4
+      rowspan=5>
+       
+    </mat-grid-tile>
+  </mat-grid-list>

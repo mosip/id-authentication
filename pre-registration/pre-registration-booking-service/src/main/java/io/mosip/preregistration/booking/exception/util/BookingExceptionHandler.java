@@ -234,7 +234,7 @@ public class BookingExceptionHandler {
 
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentAlreadyCanceledException.class)
-	public ResponseEntity<BookingResponseDto<?>> AppointmentAlreadyCanceledException(final AppointmentAlreadyCanceledException e,
+	public ResponseEntity<BookingResponseDto<?>> appointmentAlreadyCanceledException(final AppointmentAlreadyCanceledException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_017.toString(),
 				ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_CANCELED.toString());
@@ -249,7 +249,7 @@ public class BookingExceptionHandler {
 
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentCannotBeCanceledException.class)
-	public ResponseEntity<BookingResponseDto<?>> AppointmentCanNotCanceledException(final AppointmentCannotBeCanceledException e,
+	public ResponseEntity<BookingResponseDto<?>> appointmentCanNotCanceledException(final AppointmentCannotBeCanceledException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_018.toString(),
 				ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
@@ -263,7 +263,7 @@ public class BookingExceptionHandler {
 
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(CancelAppointmentFailedException.class)
-	public ResponseEntity<BookingResponseDto<?>> AppointmentCancelFailedException(final CancelAppointmentFailedException e,
+	public ResponseEntity<BookingResponseDto<?>> appointmentCancelFailedException(final CancelAppointmentFailedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_019.toString(),
 				ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
@@ -277,7 +277,7 @@ public class BookingExceptionHandler {
 	
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentReBookingFailedException.class)
-	public ResponseEntity<BookingResponseDto<?>> AppointmentReBookingFailedException(final AppointmentReBookingFailedException e,
+	public ResponseEntity<BookingResponseDto<?>> appointmentReBookingFailedException(final AppointmentReBookingFailedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_021.toString(),
 				ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
