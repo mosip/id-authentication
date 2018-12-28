@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
@@ -100,7 +101,7 @@ public class LanguageServiceImpl implements LanguageService {
 				languageRepository.update(language);
 				code.setCode(language.getCode());
 			} else {
-				throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 						LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -128,7 +129,7 @@ public class LanguageServiceImpl implements LanguageService {
 				languageRepository.update(language);
 				response.setCode(language.getCode());
 			} else {
-				throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 						LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
