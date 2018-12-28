@@ -15,9 +15,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
-
 
 /**
  * @author Jyoti Prakash Nayak M1030448
@@ -35,19 +33,16 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
 	@Autowired
 	QualityCheckManager<String, QCUserDto> qualityCheckManager;
-
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Method to consume quality check address bus and receive the packet details
 	 * that needs to be checked for quality
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.QUALITY_CHECK_BUS);
 	}
 
@@ -61,9 +56,9 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		QCUserDto qcUserDto=qualityCheckManager.assignQCUser(object.getRid());
+		QCUserDto qcUserDto = qualityCheckManager.assignQCUser(object.getRid());
 
-		LOGGER.info(LOGDISPLAY, qcUserDto.getQcUserId(),object.getRid()+"  packet assigned to qcuser successfully");
+		LOGGER.info(LOGDISPLAY, qcUserDto.getQcUserId(), object.getRid() + "  packet assigned to qcuser successfully");
 		return null;
 	}
 
