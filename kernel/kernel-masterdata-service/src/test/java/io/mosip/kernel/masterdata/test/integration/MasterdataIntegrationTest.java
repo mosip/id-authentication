@@ -3659,7 +3659,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterTypeRepository.update(Mockito.any())).thenReturn(registrationCenterType);
 		mockMvc.perform(
 				put("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3709,7 +3709,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(0);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
