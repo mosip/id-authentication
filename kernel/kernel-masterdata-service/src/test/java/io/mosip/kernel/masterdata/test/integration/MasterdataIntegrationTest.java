@@ -635,7 +635,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterDevice.setIsActive(true);
 		registrationCenterDevice.setCreatedBy("admin");
 		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-
+        registrationCenterDevice.setIsDeleted(false);
 		registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
 		RegistrationCenterDeviceHistoryPk rcIdH = new RegistrationCenterDeviceHistoryPk();
 		rcIdH.setDeviceId(rcId.getDeviceId());
@@ -660,6 +660,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachine.setIsActive(true);
 		registrationCenterMachine.setCreatedBy("admin");
 		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterMachine.setIsDeleted(false);
 
 		registrationCenterMachineHistory = new RegistrationCenterMachineHistory();
 		RegistrationCenterMachineHistoryID rmIdH = new RegistrationCenterMachineHistoryID();
