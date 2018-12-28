@@ -3075,7 +3075,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentTypeTest() throws Exception {
 
 		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
-		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any())).thenReturn(2);
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(2);
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
@@ -3084,7 +3084,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteDocumentTypeNotFoundExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -3095,7 +3095,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentTypeDatabaseConnectionExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any()))
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -3234,7 +3234,8 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(2);
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(2);
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -3243,7 +3244,8 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryNotFoundExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -3254,7 +3256,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any()))
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());

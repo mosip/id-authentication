@@ -234,7 +234,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			}
 
 			int updatedRows = documentCategoryRepository.deleteDocumentCategory(LocalDateTime.now(ZoneId.of("UTC")),
-					code);
+					code, MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 
 				throw new RequestException(
