@@ -160,7 +160,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 						DocumentTypeErrorCode.DOCUMENT_TYPE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 			}
 
-			int updatedRows = documentTypeRepository.deleteDocumentType(LocalDateTime.now(ZoneId.of("UTC")), code);
+			int updatedRows = documentTypeRepository.deleteDocumentType(LocalDateTime.now(ZoneId.of("UTC")), code,
+					MetaDataUtils.getContextUser());
 
 			if (updatedRows < 1) {
 
