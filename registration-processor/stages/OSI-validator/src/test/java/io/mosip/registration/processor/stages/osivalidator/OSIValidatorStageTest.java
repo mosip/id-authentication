@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.stages.osivalidator;
+package io.mosip.registration.processor.stages.osivalidator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,19 +34,19 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-*//**
+/**
  * The Class OSIValidatorStageTest.
- *//*
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class OSIValidatorStageTest {
 
-	*//** The osi validator stage. *//*
+	/** The osi validator stage. */
 	@InjectMocks
 	private OSIValidatorStage osiValidatorStage = new OSIValidatorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterConfigAddress) {
 			return null;
 		}
 
@@ -56,42 +56,42 @@ public class OSIValidatorStageTest {
 		}
 	};
 
-	*//**
+	/**
 	 * Test deploy verticle.
-	 *//*
+	 */
 	@Test
 	public void testDeployVerticle() {
 		osiValidatorStage.deployVerticle();
 	}
 
-	*//** The registration status service. *//*
+	/** The registration status service. */
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	*//** The audit log request builder. *//*
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	*//** The o SI validator. *//*
+	/** The o SI validator. */
 	@Mock
 	private OSIValidator oSIValidator;
 
-	*//** The umc validator. *//*
+	/** The umc validator. */
 	@Mock
 	UMCValidator umcValidator;
 
-	*//** The dto. *//*
+	/** The dto. */
 	MessageDTO dto = new MessageDTO();
 
-	*//** The registration status dto. *//*
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
-	*//**
+	/**
 	 * Sets the up.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -113,12 +113,12 @@ public class OSIValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Testis valid OSI success.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testisValidOSISuccess() throws Exception {
 
@@ -130,12 +130,12 @@ public class OSIValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Testis valid OSI failure.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testisValidOSIFailure() throws Exception {
 		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenReturn(Boolean.FALSE);
@@ -146,12 +146,12 @@ public class OSIValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
-	*//**
+	/**
 	 * IO exception test.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void IOExceptionTest() throws Exception {
 		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
@@ -161,12 +161,12 @@ public class OSIValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Data access exception test.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void dataAccessExceptionTest() throws Exception {
 		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
@@ -177,12 +177,12 @@ public class OSIValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Exception test.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void exceptionTest() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(null);
@@ -192,12 +192,12 @@ public class OSIValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Testis valid OSI failure.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testisValidOSIFailureWithRetryCount() throws Exception {
 
@@ -210,4 +210,3 @@ public class OSIValidatorStageTest {
 	}
 
 }
-*/

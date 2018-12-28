@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.stages;
+package io.mosip.registration.processor.stages;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import org.assertj.core.api.Assertions;
@@ -33,7 +33,7 @@ public class QualittyMatchnesCheckerStageTest {
 	@InjectMocks
 	QualityCheckerAssignmentStage stage = new QualityCheckerAssignmentStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterConfigAddress) {
 			return new MosipEventBus(vertx);
 		}
 
@@ -85,4 +85,3 @@ public class QualittyMatchnesCheckerStageTest {
 	}
 
 }
-*/

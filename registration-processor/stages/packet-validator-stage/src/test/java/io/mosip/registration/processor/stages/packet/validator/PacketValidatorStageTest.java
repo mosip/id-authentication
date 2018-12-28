@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.stages.packet.validator;
+package io.mosip.registration.processor.stages.packet.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,38 +48,38 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-*//**
+/**
  * The Class PacketValidatorStageTest.
- *//*
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidatorStageTest {
 
-	*//** The input stream. *//*
+	/** The input stream. */
 	@Mock
 	private InputStream inputStream;
 
-	*//** The filesystem ceph adapter impl. *//*
+	/** The filesystem ceph adapter impl. */
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
-	*//** The registration status service. *//*
+	/** The registration status service. */
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	*//** The packet info manager. *//*
+	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	*//** The dto. *//*
+	/** The dto. */
 	MessageDTO dto = new MessageDTO();
 
-	*//** The packet validator stage. *//*
+	/** The packet validator stage. */
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterConfigAddress) {
 			return null;
 		}
 
@@ -89,30 +89,30 @@ public class PacketValidatorStageTest {
 		}
 	};
 
-	*//**
+	/**
 	 * Test deploy verticle.
-	 *//*
+	 */
 	@Test
 	public void testDeployVerticle() {
 		packetValidatorStage.deployVerticle();
 	}
 
-	*//** The audit log request builder. *//*
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
-	*//** The packet meta info. *//*
+	/** The packet meta info. */
 	private PacketMetaInfo packetMetaInfo;
 
-	*//** The identity. *//*
+	/** The identity. */
 	Identity identity = new Identity();
 
-	*//**
+	/**
 	 * Sets the up.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -205,12 +205,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test structural validation success.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testStructuralValidationSuccess() throws Exception {
 
@@ -219,12 +219,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test structural document validation failure.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testStructuralDocumentValidationFailure() throws Exception {
 		packetMetaInfo = new PacketMetaInfo();
@@ -290,12 +290,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test structural validation success for adult.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testStructuralValidationSuccessForAdult() throws Exception {
 
@@ -366,12 +366,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test check sum validation failure.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testCheckSumValidationFailure() throws Exception {
 		String test = "123456789";
@@ -399,12 +399,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test files validation failure.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testFilesValidationFailure() throws Exception {
 
@@ -423,12 +423,12 @@ public class PacketValidatorStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
-	*//**
+	/**
 	 * Test exceptions.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testExceptions() throws Exception {
 
@@ -450,12 +450,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test IO exceptions.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testIOExceptions() throws Exception {
 
@@ -478,12 +478,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Test check sum validation failure with retry count.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void testCheckSumValidationFailureWithRetryCount() throws Exception {
 		String test = "123456789";
@@ -512,12 +512,12 @@ public class PacketValidatorStageTest {
 
 	}
 
-	*//**
+	/**
 	 * Data access exception test.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 *//*
+	 */
 	@Test
 	public void dataAccessExceptionTest() throws Exception {
 
@@ -530,4 +530,4 @@ public class PacketValidatorStageTest {
 
 	}
 
-}*/
+}
