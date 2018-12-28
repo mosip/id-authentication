@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -29,9 +28,8 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 * @param langCode
 	 *            language code provided by user
 	 * @param effectDtimes
-	 *            effective Date and time provided by user in the
-	 *            {@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} format
-	 * 
+	 *            effective Date and time provided by user in the format
+	 *            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 * @return List Machine History Details fetched from database
 	 */
 

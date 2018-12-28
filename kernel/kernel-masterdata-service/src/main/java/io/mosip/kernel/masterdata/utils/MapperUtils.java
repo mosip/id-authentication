@@ -46,6 +46,7 @@ public class MapperUtils {
 		super();
 	}
 
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
@@ -63,7 +64,7 @@ public class MapperUtils {
 	 * @return a {@link LocalDateTime} of given pattern
 	 */
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		return LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 	/*
