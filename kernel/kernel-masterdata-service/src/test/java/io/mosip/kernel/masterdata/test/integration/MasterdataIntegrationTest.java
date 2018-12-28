@@ -635,7 +635,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterDevice.setIsActive(true);
 		registrationCenterDevice.setCreatedBy("admin");
 		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-
+        registrationCenterDevice.setIsDeleted(false);
 		registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
 		RegistrationCenterDeviceHistoryPk rcIdH = new RegistrationCenterDeviceHistoryPk();
 		rcIdH.setDeviceId(rcId.getDeviceId());
@@ -660,6 +660,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterMachine.setIsActive(true);
 		registrationCenterMachine.setCreatedBy("admin");
 		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterMachine.setIsDeleted(false);
 
 		registrationCenterMachineHistory = new RegistrationCenterMachineHistory();
 		RegistrationCenterMachineHistoryID rmIdH = new RegistrationCenterMachineHistoryID();
@@ -1025,7 +1026,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteRegistrationCenterAndDeviceMappingTest() throws Exception {
-		when(registrationCenterDeviceRepository.findById(Mockito.any()))
+		when(registrationCenterDeviceRepository.findAllNondeletedMappings(Mockito.any()))
 				.thenReturn(Optional.of(registrationCenterDevice));
 		when(registrationCenterDeviceHistoryRepository.create(Mockito.any()))
 				.thenReturn(registrationCenterDeviceHistory);
@@ -1035,13 +1036,13 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteRegistrationCenterAndDeviceMappingDataNotFoundExceptionTest() throws Exception {
-		when(registrationCenterDeviceRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+		when(registrationCenterDeviceRepository.findAllNondeletedMappings(Mockito.any())).thenReturn(Optional.empty());
 		mockMvc.perform(delete("/v1.0/registrationcenterdevice/RC001/DC001")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void deleteRegistrationCenterAndDeviceMappingDataAccessLayerExceptionTest() throws Exception {
-		when(registrationCenterDeviceRepository.findById(Mockito.any()))
+		when(registrationCenterDeviceRepository.findAllNondeletedMappings(Mockito.any()))
 				.thenReturn(Optional.of(registrationCenterDevice));
 		when(registrationCenterDeviceHistoryRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
@@ -1094,7 +1095,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteRegistrationCenterAndMachineMappingTest() throws Exception {
-		when(registrationCenterMachineRepository.findById(Mockito.any()))
+		when(registrationCenterMachineRepository.findAllNondeletedMappings(Mockito.any()))
 				.thenReturn(Optional.of(registrationCenterMachine));
 		when(registrationCenterMachineHistoryRepository.create(Mockito.any()))
 				.thenReturn(registrationCenterMachineHistory);
@@ -1104,13 +1105,13 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteRegistrationCenterAndMachineMappingDataNotFoundExceptionTest() throws Exception {
-		when(registrationCenterMachineRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+		when(registrationCenterMachineRepository.findAllNondeletedMappings(Mockito.any())).thenReturn(Optional.empty());
 		mockMvc.perform(delete("/v1.0/registrationcentermachine/RC001/MC001")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void deleteRegistrationCenterAndMachineMappingDataAccessLayerExceptionTest() throws Exception {
-		when(registrationCenterMachineRepository.findById(Mockito.any()))
+		when(registrationCenterMachineRepository.findAllNondeletedMappings(Mockito.any()))
 				.thenReturn(Optional.of(registrationCenterMachine));
 		when(registrationCenterMachineHistoryRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));

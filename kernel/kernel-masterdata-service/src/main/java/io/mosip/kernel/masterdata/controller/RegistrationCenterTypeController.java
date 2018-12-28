@@ -18,9 +18,6 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class for RegistrationCenterType operations.
@@ -59,14 +56,15 @@ public class RegistrationCenterTypeController {
 	 * Controller method for updating a registration center type.
 	 * 
 	 * @param registrationCenterTypeDto
-	 * @return
+	 *            the request dto containing the data of registration center type to
+	 *            be updated.
+	 * @return the response dto.
 	 */
 	@PutMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
-				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto),
-				HttpStatus.OK);
+				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto), HttpStatus.OK);
 
 	}
 
@@ -74,15 +72,10 @@ public class RegistrationCenterTypeController {
 	 * Controller method for deleting a registration center type.
 	 * 
 	 * @param code
-	 * @return
+	 *            the code of the registration center type that needs to be deleted.
+	 * @return the response.
 	 */
 	@DeleteMapping("/v1.0/registrationcentertypes/{code}")
-	@ApiOperation(value = "Service to delete registration center type.", notes = "Delete registration center type and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When registration center successfully deleted.", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
-			@ApiResponse(code = 404, message = "When no registration center found."),
-			@ApiResponse(code = 500, message = "Error occured while deleting registration center.") })
 	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);
 	}
