@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class InternalAuthFilterTest {
 		ReflectionTestUtils.setField(internalAuthFilter, "env", env);
 	    }
 
+	@Ignore
 	@Test
 	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
 		Method decodeMethod = InternalAuthFilter.class.getDeclaredMethod("decodedRequest",
