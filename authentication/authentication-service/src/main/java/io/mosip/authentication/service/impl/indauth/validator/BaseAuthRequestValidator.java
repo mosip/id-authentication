@@ -384,14 +384,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				identity::getLeftThumb, identity::getLeftIndex, identity::getLeftMiddle, identity::getLeftRing,
 				identity::getLeftLittle, identity::getRightThumb, identity::getRightIndex, identity::getRightMiddle,
 				identity::getRightRing, identity::getRightLittle).collect(Collectors.toList());
-		System.err.println(listOfFingerprint);
 
-		List<IdentityInfoDTO> idendityInfoList = listOfFingerprint.stream()
-				.map(Supplier::get)
-				.filter(Objects::nonNull)
-				.flatMap(list -> list.stream())
-				.collect(Collectors.toList());
+		List<IdentityInfoDTO> idendityInfoList = listOfFingerprint.stream().map(Supplier::get).filter(Objects::nonNull)
+				.flatMap(list -> list.stream()).collect(Collectors.toList());
+
 		boolean isDuplicateFingerValue = checkIsDuplicate(idendityInfoList);
+
 		if (isDuplicateFingerValue) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Duplicate fingers in request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
@@ -684,6 +682,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				try {
 					DOBMatchingStrategy.getDateFormat().parse(identityInfoDTO.getValue());
 				} catch (ParseException e) {
+					//FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date format or Age in the acceptable range
+
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 							"Demographic data – DOB(pi) did not match");
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
