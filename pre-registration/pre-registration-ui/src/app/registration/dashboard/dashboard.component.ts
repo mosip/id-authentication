@@ -57,6 +57,7 @@ export class DashBoardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    sessionStorage.clear();
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -67,12 +68,16 @@ export class DashBoardComponent implements OnInit {
     this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
-        console.log(applicants);
+        console.log('applicant', applicants);
         if (applicants['response'] !== null) {
+          sessionStorage.setItem('newApplicant', 'false');
           for (let index = 0; index < applicants['response'].length; index++) {
             const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
             let appointmentDateTime = '-';
-            if (bookingRegistrationDTO !== null && applicants['response'][index]['statusCode'].toLowerCase() === 'booked') {
+            if (
+              bookingRegistrationDTO !== null &&
+              applicants['response'][index]['statusCode'].toLowerCase() === 'booked'
+            ) {
               const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
               const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
               const toTime = applicants['response'][index].bookingRegistrationDTO.time_slot_to;
@@ -88,10 +93,22 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         }
-        this.isFetched = true;
       },
       error => {
-        this.isFetched = true;
+        // if (error && error.err.errorCode === 'PRG_PAM_APP_005') {
+        //   console.log('NO applicant');
+
+        //   this.isFetched = true;
+        //   this.onNewApplication();
+        // }
+        console.log('error', error.error.err.errorCode);
+        if ((error.error.err.errorCode = 'PRG_PAM_APP_005')) {
+          sessionStorage.setItem('newApplicant', 'true');
+          this.onNewApplication();
+        } else {
+          this.router.navigate(['error']);
+        }
+        // this.isFetched = true;
       },
       () => {
         this.isFetched = true;
@@ -115,16 +132,18 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    const data = {
-      case: 'APPLICANTS'
-    };
-    const dialogRef = this.openDialog(data, `250px`);
-    dialogRef.afterClosed().subscribe(numberOfApplicant => {
-      if (numberOfApplicant != null) {
-        this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
-        this.isNewApplication = true;
-      }
-    });
+    this.router.navigate([`pre-registration/${this.loginId}/demographic`]);
+    this.isNewApplication = true;
+    //   const data = {
+    //     case: 'APPLICANTS'
+    //   };
+    //   const dialogRef = this.openDialog(data, `250px`);
+    //   dialogRef.afterClosed().subscribe(numberOfApplicant => {
+    //     if (numberOfApplicant != null) {
+    //       this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
+    //       this.isNewApplication = true;
+    //     }
+    //   });
   }
 
   openDialog(data, width) {
@@ -321,7 +340,6 @@ export class DashBoardComponent implements OnInit {
       [new AttributeModel(obj.region[0].language, obj.region[0].label, obj.region[0].value)],
       [new AttributeModel(obj.province[0].language, obj.province[0].label, obj.province[0].value)],
       [new AttributeModel(obj.city[0].language, obj.city[0].label, obj.city[0].value)],
-      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
       [
         new AttributeModel(
           obj.localAdministrativeAuthority[0].language,
@@ -329,10 +347,11 @@ export class DashBoardComponent implements OnInit {
           obj.localAdministrativeAuthority[0].value
         )
       ],
-      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
+      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
       [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
-      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)],
-      [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
+      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
+      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)]
+      // [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
     );
 
     return identity;
