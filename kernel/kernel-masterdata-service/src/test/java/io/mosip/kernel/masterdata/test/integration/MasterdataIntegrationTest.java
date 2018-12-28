@@ -2028,7 +2028,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateTitleNotFoundExceptionTest() throws Exception {
+	public void updateTitleBadRequestTest() throws Exception {
 		RequestDto<TitleDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.title.update");
 		requestDto.setVer("1.0");
@@ -2042,7 +2042,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -2074,10 +2074,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteTitleNotFoundExceptionTest() throws Exception {
+	public void deleteTitleBadRequestTest() throws Exception {
 		when(titleRepository.getThroughLanguageCode(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
