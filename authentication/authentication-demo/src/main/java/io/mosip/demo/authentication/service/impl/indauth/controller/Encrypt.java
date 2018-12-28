@@ -47,7 +47,7 @@ import io.mosip.demo.authentication.service.dto.CryptomanagerRequestDto;
 import io.mosip.demo.authentication.service.dto.CryptomanagerResponseDto;
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
-import io.mosip.demo.authentication.service.dto.KernalEncryptedData;
+import io.mosip.demo.authentication.service.dto.EncryptedRequest;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -85,77 +85,48 @@ public class Encrypt {
 	@Autowired
 	private ObjectMapper objMapper;
 	
-	/** KeySplitter */
+/** KeySplitter */
 	
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
+	
+	@Value("${mosip.kernel.encrypt-url}")
+	private String encryptURL;
+	
+	@Value("${application.id}")
+	private String appID;
 
 	private static final Provider provider = new BouncyCastleProvider();
 
 	@PostMapping(path = "/identity/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
-	public KernalEncryptedData encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
+	public EncryptedRequest encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
 			RestClientException, JSONException {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-
-//		SecretKey sessionKey = keyGenerator.getSymmetricKey();
-//		ObjectMapper objMapper = new ObjectMapper();
-//		// Encrypt data with session key
-//		Map<String, Object> identityRequest = encryptionRequestDto.getIdentityRequest();
-//		byte[] data = objMapper.writeValueAsBytes(identityRequest);
-//		byte[] encryptedData = encryptor.symmetricEncrypt(sessionKey, data);
-//		encryptionResponseDto.setEncryptedIdentity(Base64.getEncoder().encodeToString(encryptedData));
-
-//		KeyPair asymmetricKey = keyGenerator.getAsymmetricKey();
-//		PublicKey publicKey = asymmetricKey.getPublic();
-//		byte[] privateKey = asymmetricKey.getPrivate().getEncoded();
-//		storePrivateKey(privateKey, encryptionRequestDto.getTspID());
-		String encryptedResponse = getEncryptedValue(objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()));
+		String encryptedResponse = getEncryptedValue(objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()), encryptionRequestDto.getTspID());
 		System.err.println("Demo"+encryptedResponse);
-		KernalEncryptedData value = split(encryptedResponse);
+		EncryptedRequest value = split(encryptedResponse);
+        return value;
 
-//		// Encrypt session Key with public Key
-//		byte[] encryptedsessionKey = encryptor.asymmetricPublicEncrypt(publicKey, sessionKey.getEncoded());
-//		encryptionResponseDto.setEncryptedSessionKey(Base64.getEncoder().encodeToString(encryptedsessionKey));
-		//System.err.println("Demo"+value);
-		return value;
-//		return encryptionResponseDto;
 	}
 
-	private KernalEncryptedData split(String value) {
-		KernalEncryptedData kernalencryptedData = new KernalEncryptedData();
-		// byte[] encryptedHybridData = CryptoUtil.decodeBase64(value);
+	private EncryptedRequest split(String value) {
+		EncryptedRequest encryptedEntity = new EncryptedRequest();
 		byte[] encryptedHybridData = Base64.decodeBase64(value);
 		int keyDemiliterIndex = 0;
 		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex, keySplitter);
 		byte[] encryptedKey = Arrays.copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
 		byte[] encryptedData = Arrays.copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
 				encryptedHybridData.length);
-
-		kernalencryptedData.setKey(Base64.encodeBase64URLSafeString(encryptedKey));
-		kernalencryptedData.setData(Base64.encodeBase64URLSafeString(encryptedData));
-		return kernalencryptedData;
+		encryptedEntity.setKey(Base64.encodeBase64URLSafeString(encryptedKey));
+		encryptedEntity.setData(Base64.encodeBase64URLSafeString(encryptedData));
+		return encryptedEntity;
 	}
 
-//	private void storePrivateKey(byte[] encodedvalue, String tspId) {
-//		String localpath = environment.getProperty(FILEPATH);
-//		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
-//		String finalpath = MessageFormat.format(localpath, homedirectory);
-//		BufferedWriter output = null;
-//		try {
-//			File fileInfo = new File(finalpath + File.separator + tspId);
-//			File parentFile = fileInfo.getParentFile();
-//			if (!parentFile.exists()) {
-//				parentFile.mkdirs();
-//			}
-//			Files.write(fileInfo.toPath(), encodedvalue);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 
-	public String getEncryptedValue(String data)
+
+	public String getEncryptedValue(String data, String tspID)
 			throws IOException, KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 
 		byte[] output = null;
@@ -164,57 +135,20 @@ public class Encrypt {
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new TestErrorHandler());
-		String fooResourceUrl = "https://integ.mosip.io/cryptomanager/v1.0/encrypt";
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
-		request.setApplicationId("IDA");
+		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes()));
-		request.setReferenceId("REF01");
+		request.setReferenceId(tspID);
 		request.setTimeStamp(LocalDateTime.now().toString());
 
-		ResponseEntity<CryptomanagerResponseDto> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST,
+		ResponseEntity<CryptomanagerResponseDto> response = restTemplate.exchange(encryptURL, HttpMethod.POST,
 				getHeaders(request), CryptomanagerResponseDto.class);
 		return response.getBody().getData();
 
-//		String url1 = "https://integ.mosip.io/cryptomanager/v1.0/encrypt";
-//		RestTemplate restTemplate = new RestTemplate();
-//		restTemplate.setErrorHandler(new TestErrorHandler());
-//		Map<String, Object> uriVariables = new HashMap<String, Object>();
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-//		HttpEntity<Object> entity = new HttpEntity<Object>(headers);
-//
-//		URI uri = UriComponentsBuilder.fromUriString(url1).buildAndExpand(uriVariables).toUri();
-//		uri = UriComponentsBuilder.fromUri(uri).queryParam("timeStamp", TIMESTAMP)
-//				.queryParam("referenceId", REFERENCEID.toString()).build().toUri();
-//
-//		ResponseEntity<ObjectNode> exchange = restTemplate.exchange(uri, HttpMethod.GET, entity, ObjectNode.class);
-//
-//		if (exchange.getBody().has(PUBLICKEY)) {
-//			String getEncodedValue = exchange.getBody().get(PUBLICKEY).toString();
-//			return getEncodedValue.getBytes();
-////			return Base64.getDecoder().decode((exchange.getBody().get(PUBLICKEY).asText()));
-//		} else {
-//			throw new IOException();
-//		}
 
-		// ObjectMapper mapper = new ObjectMapper();
-		// output = mapper.writeValueAsBytes(jsonNode);
-
-		// String localpath = env.getProperty(FILEPATH);
-		// Object[] homedirectory = new Object[] { System.getProperty("user.home") +
-		// File.separator };
-		// String finalpath = MessageFormat.format(localpath, homedirectory);
-		// File fileInfo = new File(finalpath + File.separator + filename);
-		// byte[] output = null;
-		// if (fileInfo.exists()) {
-		// output = Files.readAllBytes(fileInfo.toPath());
-		// } else {
-		// throw new IOException();
-		// }
 	}
 
-	private HttpEntity getHeaders(CryptomanagerRequestDto req) throws JSONException {
+	private HttpEntity getHeaders(CryptomanagerRequestDto req)  {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 		return new HttpEntity(req, headers);
