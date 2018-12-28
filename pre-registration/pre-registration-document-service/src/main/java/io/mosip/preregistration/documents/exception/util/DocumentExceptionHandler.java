@@ -37,7 +37,7 @@ import io.mosip.preregistration.documents.exception.ParsingException;
  * This class is defines the Exception handler for Document service
  * 
  * @author Rajath KR
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Kishan Rathore
  * @since 1.0.0
@@ -47,8 +47,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for TablenotAccessibleException
 	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
@@ -63,8 +65,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentNotValidException
 	 */
 	@ExceptionHandler(DocumentNotValidException.class)
 	public ResponseEntity<ResponseDTO<?>> notValidExceptionhadler(final DocumentNotValidException nv,
@@ -80,8 +84,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for DTOMappigException
 	 */
 	@ExceptionHandler(DTOMappigException.class)
 	public ResponseEntity<ResponseDTO<?>> DTOMappigExc(final DocumentNotValidException nv, WebRequest webRequest) {
@@ -96,8 +102,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for InvalidConnectionParameters
 	 */
 	@ExceptionHandler(InvalidConnectionParameters.class)
 	public ResponseEntity<ResponseDTO<?>> invalidConnectionParameters(final InvalidConnectionParameters nv,
@@ -113,8 +121,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for ConnectionUnavailableException
 	 */
 	@ExceptionHandler(ConnectionUnavailableException.class)
 	public ResponseEntity<ResponseDTO<?>> connectionUnavailableException(final ConnectionUnavailableException nv,
@@ -130,8 +140,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for FileNotFoundException
 	 */
 	@ExceptionHandler(FileNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> fileNotFoundException(final FileNotFoundException nv, WebRequest webRequest) {
@@ -146,8 +158,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for MandatoryFieldNotFoundException
 	 */
 	@ExceptionHandler(MandatoryFieldNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> mandatoryFieldNotFoundException(final MandatoryFieldNotFoundException nv,
@@ -163,8 +177,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param nv
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for ParsingException
 	 */
 	@ExceptionHandler(ParsingException.class)
 	public ResponseEntity<ResponseDTO<?>> parsingException(final ParsingException nv, WebRequest webRequest) {
@@ -179,8 +195,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param me
+	 *            pass the exception
 	 * @param webRequest
-	 * @return
+	 *            pass the request
+	 * @return response for MultipartException
 	 */
 	@ExceptionHandler(MultipartException.class)
 	public ResponseEntity<ResponseDTO<?>> sizeExceedException(final MultipartException me, WebRequest webRequest) {
@@ -195,8 +213,10 @@ public class DocumentExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentNotFoundException
 	 */
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
@@ -208,14 +228,17 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentSizeExceedException
 	 */
 	@ExceptionHandler(DocumentSizeExceedException.class)
-	public ResponseEntity<ResponseDTO<?>> documentSizeExceedException(final DocumentSizeExceedException e, WebRequest request) {
+	public ResponseEntity<ResponseDTO<?>> documentSizeExceedException(final DocumentSizeExceedException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_007.toString(),
 				ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
@@ -224,14 +247,17 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentFailedToUploadException
 	 */
 	@ExceptionHandler(DocumentFailedToUploadException.class)
-	public ResponseEntity<ResponseDTO<?>> documentFailedToUploadException(final DocumentFailedToUploadException e, WebRequest request) {
+	public ResponseEntity<ResponseDTO<?>> documentFailedToUploadException(final DocumentFailedToUploadException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_009.toString(),
 				ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
@@ -240,14 +266,17 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
-	public ResponseEntity<ResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e, WebRequest request) {
+	public ResponseEntity<ResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_018.toString(),
 				ErrorMessages.INVALID_REQUEST_PARAMETER.toString());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
@@ -256,14 +285,17 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentVirusScanException
 	 */
 	@ExceptionHandler(DocumentVirusScanException.class)
-	public ResponseEntity<ResponseDTO<?>> documentVirusScanException(final DocumentVirusScanException e, WebRequest request) {
+	public ResponseEntity<ResponseDTO<?>> documentVirusScanException(final DocumentVirusScanException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_010.toString(),
 				ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
@@ -272,15 +304,17 @@ public class DocumentExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
-	
+
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
-	 * @return
+	 *            pass the request
+	 * @return response for DocumentFailedToCopyException
 	 */
 	@ExceptionHandler(DocumentFailedToCopyException.class)
-	public ResponseEntity<ResponseDTO<?>> documentFailedToCopyException(final DocumentFailedToCopyException e, WebRequest request) {
+	public ResponseEntity<ResponseDTO<?>> documentFailedToCopyException(final DocumentFailedToCopyException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_011.toString(),
 				ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
