@@ -1274,7 +1274,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -1296,7 +1296,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteNotFoundLanguagesTest() throws Exception {
 		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(null);
-		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isBadRequest());
 	}
 
 	@Test
