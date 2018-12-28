@@ -26,6 +26,7 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncEx
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
+import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -50,12 +51,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant LOG_FORMATTER. */
 	public static final String LOG_FORMATTER = "{} - {}";
 
 	/** The file extension. */
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
 
+	/** The vir enc. */
 	@Value("${registration.processor.VIRUS_SCAN_ENC}")
 	private String vir_enc;
 
@@ -71,6 +74,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -78,9 +82,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The packet receiver stage. */
 	@Autowired
 	PacketReceiverStage packetReceiverStage;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
@@ -127,7 +133,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						dto.setReferenceRegistrationId(null);
 						dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 						dto.setLangCode("eng");
-						dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_VIRUS_SCAN_ZONE status");
+						dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
 						dto.setIsActive(true);
 						dto.setCreatedBy(USER);
 						dto.setIsDeleted(false);

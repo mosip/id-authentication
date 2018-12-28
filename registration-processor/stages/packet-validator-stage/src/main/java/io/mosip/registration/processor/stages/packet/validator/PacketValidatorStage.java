@@ -58,12 +58,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant APPLICANT_TYPE. */
 	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
@@ -74,9 +76,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
@@ -84,22 +88,24 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
+	/** The registration id. */
 	private String registrationId = "";
+
+	/** The description. */
 	String description;
+
+	/** The is transaction successful. */
 	boolean isTransactionSuccessful;
+
+	/** The secs. */
 	private long secs = 30;
 
 	/**
 	 * Deploy verticle.
 	 */
-	/*
-	 * public void deployVerticle() { MosipEventBus mosipEventBus =
-	 * this.getEventBus(this.getClass(), clusterAddress, localhost);
-	 * this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT); }
-	 */
-
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
@@ -107,6 +113,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		process(new MessageDTO()));
 	}
 
+	/**
+	 * Send message.
+	 *
+	 * @param mosipEventBus
+	 *            the mosip event bus
+	 * @param message
+	 *            the message
+	 */
 	public void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
 		this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT, message);
 	}
@@ -252,6 +266,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Sets the applicant.
+	 *
+	 * @param identity
+	 *            the identity
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 */
 	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
 		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		String applicantType = identityIteratorUtil.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);

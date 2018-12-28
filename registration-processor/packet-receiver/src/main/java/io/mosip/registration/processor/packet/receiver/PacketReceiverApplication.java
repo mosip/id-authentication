@@ -17,6 +17,7 @@ import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage
 
 public class PacketReceiverApplication {
 
+	/** The packet receiver stage. */
 	@Autowired
 	PacketReceiverStage packetReceiverStage;
 
@@ -30,6 +31,9 @@ public class PacketReceiverApplication {
 		SpringApplication.run(PacketReceiverApplication.class, args);
 	}
 
+	/**
+	 * Deploy manual verification stage.
+	 */
 	@PostConstruct
 	public void deployManualVerificationStage() {
 		packetReceiverStage.deployStage();
