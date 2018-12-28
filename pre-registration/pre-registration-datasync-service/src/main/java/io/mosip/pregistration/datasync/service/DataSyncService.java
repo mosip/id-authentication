@@ -6,50 +6,58 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.pregistration.datasync.code.StatusCodes;
+import io.mosip.pregistration.datasync.dto.CreatePreRegistrationDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
-import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
+import io.mosip.pregistration.datasync.dto.DocumentGetAllDto;
+import io.mosip.pregistration.datasync.dto.ExceptionJSONInfoDTO;
 import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
+import io.mosip.pregistration.datasync.dto.ResponseDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
-import io.mosip.pregistration.datasync.entity.DocumentEntity;
 import io.mosip.pregistration.datasync.entity.InterfaceDataSyncTablePK;
-import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
+import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
+import io.mosip.pregistration.datasync.errorcodes.ErrorMessages;
 import io.mosip.pregistration.datasync.exception.DataSyncRecordNotFoundException;
+import io.mosip.pregistration.datasync.exception.DemographicGetDetailsException;
 import io.mosip.pregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.pregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
-import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
 import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 
 /**
  * DataSync Service
@@ -67,16 +75,24 @@ public class DataSyncService {
 	private DataSyncRepository dataSyncRepository;
 
 	@Autowired
-	private DataSyncRepo dataSyncRepo;
-
-	@Autowired
 	private ReverseDataSyncRepo reversedataSyncRepo;
 
-	List<ExceptionJSONInfo> errlist = new ArrayList<>();
-	ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo("", "");
+	List<ExceptionJSONInfoDTO> errlist = new ArrayList<>();
+	ExceptionJSONInfoDTO exceptionJSONInfo = new ExceptionJSONInfoDTO("", "");
 	String status = "true";
 
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
+
+	private RestTemplate restTemplate;
+
+	@Autowired
+	RestTemplateBuilder restTemplateBuilder;
+
+	@Value("${preRegResourceUrl}")
+	private String preRegResourceUrl;
+
+	@Value("${docRegResourceUrl}")
+	private String docRegResourceUrl;
 
 	/**
 	 * @param preId
@@ -87,15 +103,20 @@ public class DataSyncService {
 	public DataSyncResponseDTO<PreRegArchiveDTO> getPreRegistration(String preId) throws Exception {
 		DataSyncResponseDTO responseDto = new DataSyncResponseDTO<>();
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
-		PreRegistrationEntity demography = dataSyncRepository.findDemographyByPreId(preId);
-		if (demography != null) {
-			System.out.println("Pre id: " + demography.getPreRegistrationId());
-			List<DocumentEntity> documentlist = dataSyncRepository.findDocumentByPreId(preId);
-			byte[] bytes = DataSyncService.archivingFiles(demography, documentlist);
+		CreatePreRegistrationDTO preRegistrationDTO = callGetPreRegInfoRestService(preId);
+		if (preRegistrationDTO != null) {
+			System.out.println("Pre id: " + preRegistrationDTO.getPrId());
+			List<DocumentGetAllDto> documentlist = callGetDocRestService(preId);
+			for (DocumentGetAllDto doc : documentlist) {
+				System.out.println("doc: " + doc.getPrereg_id());
+			}
+			byte[] bytes = DataSyncService.archivingFiles(preRegistrationDTO, documentlist);
 			preRegArchiveDTO.setZipBytes(bytes);
-			preRegArchiveDTO.setFileName(demography.getPreRegistrationId().toString()+"_"+demography.getCreateDateTime().toString());
+			preRegArchiveDTO.setFileName(
+					preRegistrationDTO.getPrId().toString() + "_" + preRegistrationDTO.getCreateDateTime().toString());
 		} else {
-			throw new DataSyncRecordNotFoundException(StatusCodes.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
+			throw new DataSyncRecordNotFoundException(
+					ErrorMessages.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
 		}
 
 		responseDto.setStatus(status);
@@ -112,8 +133,8 @@ public class DataSyncService {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public static byte[] archivingFiles(PreRegistrationEntity preRegistrationEntity,
-			List<DocumentEntity> documentEntityList) throws IOException {
+	public static byte[] archivingFiles(CreatePreRegistrationDTO preRegistrationEntity,
+			List<DocumentGetAllDto> documentEntityList) throws IOException {
 		FileOutputStream fileOutputStream = null;
 		FileOutputStream demofileOutputStream = null;
 		File jsonFile = null;
@@ -122,21 +143,17 @@ public class DataSyncService {
 		Path pathDoc = null;
 		byte[] inputStream = null;
 		byte[] returnInputStream = null;
-		JSONParser jsonParser = new JSONParser();
 		JSONObject demographicJsonObject = null;
 		if (preRegistrationEntity != null) {
 			try {
 				JSONObject responseJson = new JSONObject();
-				responseJson.put("Pre-registration Id", preRegistrationEntity.getPreRegistrationId());
+				responseJson.put("Pre-registration Id", preRegistrationEntity.getPrId());
 				responseJson.put("Appointment Date", preRegistrationEntity.getCreateDateTime().toString());
 
-				demographicJsonObject = (JSONObject) jsonParser
-						.parse(new String(preRegistrationEntity.getApplicantDetailJson(), StandardCharsets.UTF_8));
-				JSONObject reqObject = (JSONObject) demographicJsonObject.get("request");
-				JSONObject demoObj = (JSONObject) reqObject.get("demographicDetails");
-
+				demographicJsonObject = preRegistrationEntity.getDemographicDetails();
+				JSONObject demoObj = demographicJsonObject;
 				pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-						+ preRegistrationEntity.getPreRegistrationId().toString() + "_Demographic" + ".json");
+						+ preRegistrationEntity.getPrId().toString() + "_Demographic" + ".json");
 
 				responseJson.put("demographic-details", demoObj);
 
@@ -155,12 +172,12 @@ public class DataSyncService {
 				if (documentEntityList != null && documentEntityList.size() > 0) {
 					for (int i = 0; i < documentEntityList.size(); i++) {
 						pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-								+ documentEntityList.get(i).getPreregId().toString() + "_"
+								+ documentEntityList.get(i).getPrereg_id().toString() + "_"
 								+ documentEntityList.get(i).getDoc_cat_code().toString() + "_"
 								+ documentEntityList.get(i).getDoc_name());
 
 						fileDoc = new File(pathDoc.toString());
-						byte[] docBytes = documentEntityList.get(i).getDoc_store();
+						byte[] docBytes = documentEntityList.get(i).getMultipartFile();
 						if (fileDoc.exists()) {
 							fileDoc.delete();
 						}
@@ -177,7 +194,8 @@ public class DataSyncService {
 				inputStream = getCompressed(inputMultiFileList);
 				returnInputStream = inputStream;
 			} catch (Exception e) {
-				throw new ZipFileCreationException(StatusCodes.FAILED_TO_CREATE_A_ZIP_FILE.toString());
+				e.printStackTrace();
+				throw new ZipFileCreationException(ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString());
 			} finally {
 				inputStream = new byte[1024];
 				if (inputMultiFileList != null && !inputMultiFileList.equals(null) && inputMultiFileList.size() > 0) {
@@ -288,10 +306,10 @@ public class DataSyncService {
 			}
 
 			status = "true";
-			responseDto.setResponse(StatusCodes.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
+			responseDto.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 
 		} else {
-			throw new ReverseDataFailedToStoreException(StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
+			throw new ReverseDataFailedToStoreException(ErrorMessages.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 		}
 
 		responseDto.setStatus(status);
@@ -306,40 +324,24 @@ public class DataSyncService {
 			throws ParseException {
 		String fromDate = dataSyncRequestDTO.getFromDate();
 		String toDate = dataSyncRequestDTO.getToDate();
-		String dateFormat = "yyyy-MM-dd HH:mm:ss";
-		Date myDate = DateUtils.parse(fromDate, dateFormat);
-				
-		Date myDate1 = null;
 
-		if (toDate == null) {
-			myDate1 = myDate;
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(myDate1);
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			cal.set(Calendar.SECOND, 59);
-			myDate1 = cal.getTime();
-		} else {
-			myDate1 = DateUtils.parse(toDate,dateFormat); 
-		}
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();
-		List<PreRegistrationEntity> preRegIdEntitylist;
-		List<ExceptionJSONInfo> err = new ArrayList<>();
+		List<String> preRegIdEntitylist;
+		List<ExceptionJSONInfoDTO> err = new ArrayList<>();
 
 		try {
-			preRegIdEntitylist = dataSyncRepo.findBycreateDateTimeBetween(new Timestamp(myDate.getTime()),
-					new Timestamp(myDate1.getTime()));
+			preRegIdEntitylist = callGetPreIdsRestService(fromDate, toDate);
 			if (preRegIdEntitylist == null || preRegIdEntitylist.size() == 0) {
-				throw new RecordNotFoundForDateRange(StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+				throw new RecordNotFoundForDateRange(ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
 			} else {
 
 				List<String> preregIds = new ArrayList<>();
-				for (PreRegistrationEntity preRegistrationEntity : preRegIdEntitylist) {
-					preregIds.add(preRegistrationEntity.getPreRegistrationId());
+				for (String preRegistrationEntity : preRegIdEntitylist) {
+					preregIds.add(preRegistrationEntity);
 				}
 				preRegistrationIdsDTO.setPreRegistrationIds(preregIds);
-				preRegistrationIdsDTO.setTransactionId("337324416082");
+				preRegistrationIdsDTO.setTransactionId(UUIDGeneratorUtil.generateId());
 				responseDto.setStatus("True");
 				responseDto.setErr(err);
 				responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
@@ -347,11 +349,88 @@ public class DataSyncService {
 			}
 		} catch (DataAccessLayerException e) {
 
-			throw new TablenotAccessibleException(StatusCodes.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TablenotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
 
 		}
 
 		return responseDto;
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	public CreatePreRegistrationDTO callGetPreRegInfoRestService(String preId) {
+
+		CreatePreRegistrationDTO responsestatusDto = null;
+		try {
+			restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applicationData")
+					.queryParam("preRegId", preId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<ResponseDTO> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: " + uriBuilder);
+			ResponseEntity<ResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
+					ResponseDTO.class);
+			System.out.println("respEntity: " + respEntity);
+			ObjectMapper mapper = new ObjectMapper();
+			responsestatusDto = mapper.convertValue(respEntity.getBody().getResponse().get(0),
+					CreatePreRegistrationDTO.class);
+		} catch (RestClientException e) {
+			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+		}
+		return responsestatusDto;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<String> callGetPreIdsRestService(String fromDate, String toDate) {
+
+		List<String> responseList = null;
+		try {
+			restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl(preRegResourceUrl + "/applicationDataByDateTime").queryParam("fromDate", fromDate)
+					.queryParam("toDate", toDate);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<ResponseDTO> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: " + uriBuilder);
+			ResponseEntity<ResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
+					ResponseDTO.class);
+			ObjectMapper mapper = new ObjectMapper();
+			responseList = mapper.convertValue(respEntity.getBody().getResponse(), List.class);
+		} catch (RestClientException e) {
+			e.printStackTrace();
+			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+		}
+		return responseList;
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	public List<DocumentGetAllDto> callGetDocRestService(String preId) {
+
+		List<DocumentGetAllDto> responsestatusDto = new ArrayList<>();
+		try {
+			restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(docRegResourceUrl + "/getDocument")
+					.queryParam("preId", preId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<ResponseDTO> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: " + uriBuilder);
+			ResponseEntity<ResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
+					ResponseDTO.class);
+			ObjectMapper mapper = new ObjectMapper();
+			for (Object obj : respEntity.getBody().getResponse()) {
+				responsestatusDto.add(mapper.convertValue(obj, DocumentGetAllDto.class));
+			}
+		} catch (RestClientException e) {
+			return responsestatusDto;
+		}
+		return responsestatusDto;
 	}
 
 }

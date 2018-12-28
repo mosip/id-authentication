@@ -1,83 +1,28 @@
-<!--<mat-accordion class="example-headers-align" *ngFor="let applicant of applicants;let applicantIndex = index">
-  <mat-expansion-panel [expanded]="step === (applicantIndex +1)" (opened)="setStep(applicant,applicantIndex)">
+<mat-accordion class="example-headers-align" *ngFor="let applicant of users; let applicantIndex = index">
+  <mat-expansion-panel [expanded]="step === applicantIndex" (opened)="setStep(applicant, applicantIndex)">
     <mat-expansion-panel-header>
-      <mat-panel-title>
-        Document upload
-      </mat-panel-title>
-      <mat-panel-description>
-        {{applicant.name}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <mat-grid-list cols="3" rowHeight="4em">
-      <mat-grid-tile [colspan]="1" [rowspan]="3">
-        <div class="draggableDiv" appDraggable (filesChangeEmiter)="handleFileDrop($event)">
-          <div class="text-wrapper">
-            <div class="centered">Drop your file here!</div>
-          </div>
-        </div>
-      </mat-grid-tile>
-      <mat-grid-tile [colspan]="1" [rowspan]="4">
-        <div class="docsContainer">
-          <mat-form-field *ngFor="let docs of LOD; let i = index">
-            <mat-select id="{{docs.document_name}}" placeholder="{{docs.document_name}}" (selectionChange)="selectChange($event, i)"
-              (openedChange)="openedChange($event,i)">
-              <mat-option *ngIf="applicantIndex > 0 && docs.document_name == 'POA'" value="Same as Primary">
-                Same as Primary
-              </mat-option>
-              <mat-option *ngFor="let option of docs.valid_docs" value="{{option.value}}">
-                {{option.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-grid-tile>
-      <mat-grid-tile [colspan]="1" [rowspan]="4">
-        <div class="docsContainer">
-          <p class="fileName" id="file.doc_id" *ngFor="let file of applicant.files[0]; let fileIndex = index ">
-            {{file.doc_name}}<span *ngIf="file.doc_name" class="cross" (click)="removeFile(applicantIndex,fileIndex)"> X</span>
-          </p>
-        </div>
-      </mat-grid-tile>
-      <mat-grid-tile [colspan]="1" [rowspan]="1">
-        <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;">
-        <input class="browseInput" value="{{browseDisabled? 'Select Document Type':'Browse'}}" type="button" onclick="document.getElementById('file').click();"
-          [disabled]="browseDisabled" />
-      </mat-grid-tile>
-    </mat-grid-list>
-    <mat-action-row>
-      <button *ngIf="applicantIndex !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
-      <button mat-button color="primary" (click)="nextStep()">Next</button>
-    </mat-action-row>
-  </mat-expansion-panel>
-</mat-accordion>-->
-
-<!--<embed src="{{uploadedFile}}" width="100px" height="100px" />-->
-<mat-accordion class="example-headers-align" *ngFor="let applicant of users;let applicantIndex = index">
-  <mat-expansion-panel [expanded]="step === (applicantIndex)" (opened)="setStep(applicant,applicantIndex)">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Document upload
-      </mat-panel-title>
-      <mat-panel-description>
-        {{applicant.identity.FullName[0].value}}
-      </mat-panel-description>
+      <mat-panel-title> Document upload </mat-panel-title>
+      <mat-panel-description> {{ applicant.identity.FullName[0].value }} </mat-panel-description>
     </mat-expansion-panel-header>
 
     <mat-grid-list cols="4" rowHeight="4em">
-      <!--<mat-grid-tile [colspan]="1" [rowspan]="4">
+      <!--<mat-grid-tile [colspan]="1" [rowspan]="4"--
         
       </mat-grid-tile>-->
       <mat-grid-tile [colspan]="1" [rowspan]="4">
         <div class="docsContainer">
           <mat-form-field *ngFor="let docs of LOD; let i = index">
-            <mat-select id="{{docs.document_name}}" placeholder="{{docs.document_name}}" (selectionChange)="selectChange($event, i)"
-              (openedChange)="openedChange($event,i)">
-              <mat-option *ngIf="applicantIndex > 0 && docs.document_name == 'POA'" value="Same as Primary">
+            <mat-select
+              id="{{ docs.document_name }}"
+              placeholder="{{ docs.document_name }}"
+              (selectionChange)="selectChange($event, i)"
+              (openedChange)="openedChange($event, i)"
+            >
+              <mat-option value="" *ngIf="applicantIndex > 0 && docs.document_name == 'POA'" value="Same as Primary">
                 Same as Primary
               </mat-option>
-              <mat-option *ngFor="let option of docs.valid_docs" value="{{option.value}}">
-                {{option.name}}
+              <mat-option value="" *ngFor="let option of docs.valid_docs" value="{{ option.value }}">
+                {{ option.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -87,22 +32,76 @@
         <div class="docsContainer">
           <!--<p class="fileName" id="file.doc_id" *ngFor="let file of users.files[0]; let fileIndex = index ">-->
           <p class="fileName" *ngFor="let file of applicant.files[0]; let fileIndex = index">
-            <span>{{file.doc_name}}</span>
-            <mat-icon class="icon cross" *ngIf="file.doc_name" style="cursor: pointer;" (click)="removeFile(applicantIndex,fileIndex)">close</mat-icon>
+            <span>{{ file.doc_name }}</span>
+            <mat-icon
+              class="icon cross"
+              *ngIf="file.doc_name"
+              style="cursor: pointer;"
+              (click)="removeFile(applicantIndex, fileIndex)"
+              >close</mat-icon
+            >
+            <br />
+            <span (click)="openFile()">view</span>
             <!--<span *ngIf="file.doc_name" class="cross" (click)="removeFile(applicantIndex,fileIndex)"> X</span></p>-->
-            <br>
           </p>
         </div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="1" [rowspan]="4">
-        <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;">
-        <input class="browseInput" value="{{browseDisabled? 'Select Document Type':'Browse'}}" type="button" onclick="document.getElementById('file').click();"
-          [disabled]="browseDisabled" />
+        <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
+        <input
+          class="browseInput"
+          value="{{ browseDisabled ? 'Select Document Type' : 'Browse' }}"
+          type="button"
+          onclick="document.getElementById('file').click();"
+          [disabled]="browseDisabled"
+        />
       </mat-grid-tile>
     </mat-grid-list>
     <mat-action-row>
-      <button *ngIf="applicantIndex !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
+      <button *ngIf="applicantIndex !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
       <button mat-button color="primary" (click)="nextStep(applicantIndex)">Next</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+
+<!-- <div class="file-upload">
+  <div class="file-uploaad__header">Upload Documents</div>
+  <div class="file-upload__body">
+    <div>Allowed file type Pdf, Word and Max 5MB</div>
+    <div class="file-upload__document-type">
+      <mat-form-field>
+        <mat-select placeholder="POA">
+          <mat-option value="passport">passport</mat-option>
+          <mat-option value="DL">Driving license</mat-option>
+          <mat-option value="PC">PAN Card</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="file-upload__document-name">document name</div>
+    <div class="file-upload__document-type">
+      <mat-form-field>
+        <mat-select placeholder="POI">
+          <mat-option value="Pass">passport</mat-option>
+          <mat-option value="DL">Driving license</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="file-upload__document-type">
+      <mat-form-field>
+        <mat-select placeholder="POB">
+          <mat-option value="Pass">passport</mat-option>
+          <mat-option value="BC">Birth Certificate</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="file-upload__document-type">
+      <mat-form-field>
+        <mat-select placeholder="Select Supporting Documents">
+          <mat-option value="MC">Marrige Certificate</mat-option>
+          <mat-option value="BC">Birth Certificate</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- <input type="file" class="file-upload__document-type__input"> --
+    </div>
+  </div>
+</div> -->

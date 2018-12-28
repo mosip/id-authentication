@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.service;
 
 import java.sql.Timestamp;
@@ -29,10 +33,9 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
-import io.mosip.preregistration.application.dao.DemographicDAO;
 import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
-import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -51,76 +54,109 @@ import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
- * Demographic Service
+ * This class provides the service implementation for Demographic
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
 @Service
 public class DemographicService {
-
 	/**
-	 * Field for {@link #RegistrationDao}
-	 */
-	@Autowired
-	private DemographicDAO preRegistrationDao;
-
-	/**
-	 * Field for {@link #MosipPridGenerator<String>}
+	 * Autowired reference for {@link #MosipPridGenerator<String>}
 	 */
 	@Autowired
 	private PridGenerator<String> pridGenerator;
 
 	/**
-	 * Field for {@link #RegistrationRepositary}
+	 * Autowired reference for {@link #RegistrationRepositary}
 	 */
 	@Autowired
-	private DemographicRepository preRegistrationRepository;
+	private DemographicRepository demographicRepository;
 
+	/**
+	 * Autowired reference for {@link #DemographicServiceUtil}
+	 */
 	@Autowired
 	private DemographicServiceUtil serviceUtil;
 
+	/**
+	 * Autowired reference for {@link #JsonValidatorImpl}
+	 */
 	@Autowired
 	private JsonValidatorImpl jsonValidator;
 
-	@Value("${resource.url}")
-	private String resourceUrl;
-
-	@Value("${id}")
-	private String id;
-
-	@Value("${ver}")
-	private String ver;
-
+	/**
+	 * Autowired reference for {@link #RestTemplateBuilder}
+	 */
 	@Autowired
 	private RestTemplateBuilder restTemplateBuilder;
 
+	/**
+	 * Reference for ${resource.url} from property file
+	 */
+	@Value("${resource.url}")
+	private String resourceUrl;
+
+	/**
+	 * Reference for ${id} from property file
+	 */
+	@Value("${id}")
+	private String id;
+
+	/**
+	 * Reference for ${ver} from property file
+	 */
+	@Value("${ver}")
+	private String ver;
+
+	/**
+	 * Reference for ${appointmentResourse.url} from property file
+	 */
+	@Value("${appointmentResourse.url}")
+	private String appointmentResourseUrl;
+
+	/**
+	 * Response status
+	 */
 	protected String trueStatus = "true";
 
+	/**
+	 * Request map to store the id and version and this is to be passed to request
+	 * validator method.
+	 */
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
+	/**
+	 * This method acts as a post constructor to initialize the required request
+	 * parameters.
+	 */
 	@PostConstruct
 	public void setup() {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
 
-	@Value("${appointmentResourse.url}")
-	private String appointmentResourseUrl;
-
 	/*
-	 * (non-Javadoc)
+	 * This method is used to create the demographic data by generating the unique
+	 * PreId
 	 * 
 	 * @see
 	 * io.mosip.registration.service.RegistrationService#addPreRegistration(java.
-	 * lang. Object, java.lang.String)
+	 * lang.Object, java.lang.String)
+	 * 
+	 * @param demographicRequest
+	 * 
+	 * @return responseDTO
 	 */
-	public ResponseDTO<CreatePreRegistrationDTO> addPreRegistration(
-			DemographicRequestDTO<CreatePreRegistrationDTO> demographicRequest) {
-		Map<String, String> requestParamMap = new HashMap<>();
+	public ResponseDTO<CreateDemographicDTO> addPreRegistration(
+			DemographicRequestDTO<CreateDemographicDTO> demographicRequest) {
 		try {
-			requestParamMap = serviceUtil.prepareRequestParamMap(demographicRequest);
-			if (ValidationUtil.requestValidator(requestParamMap, requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
+					requiredRequestMap)) {
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
 						"mosip-prereg-identity-json-schema.json");
 				return createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
@@ -148,18 +184,18 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.userId.toString(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				List<DemographicEntity> preRegistrationEntityList = preRegistrationRepository.findByuserId(userId);
-				if (!serviceUtil.isNull(preRegistrationEntityList)) {
-					for (DemographicEntity preRegistrationEntity : preRegistrationEntityList) {
+				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId);
+				if (!serviceUtil.isNull(demographicEntityList)) {
+					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(
-								preRegistrationEntity.getApplicantDetailJson(), RequestCodes.FullName.toString());
+								demographicEntity.getApplicantDetailJson(), RequestCodes.FullName.toString());
 						viewDto = new PreRegistrationViewDTO();
-						viewDto.setPreId(preRegistrationEntity.getPreRegistrationId());
+						viewDto.setPreId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
-						viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
+						viewDto.setStatusCode(demographicEntity.getStatusCode());
 
 						BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
-								preRegistrationEntity.getPreRegistrationId());
+								demographicEntity.getPreRegistrationId());
 						if (bookingRegistrationDTO != null) {
 							viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 						}
@@ -173,6 +209,7 @@ public class DemographicService {
 							ErrorMessages.NO_RECORD_FOUND_FOR_USER_ID.name());
 				}
 			}
+
 		} catch (Exception ex) {
 			new DemographicExceptionCatcher().handle(ex);
 		}
@@ -195,7 +232,7 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				DemographicEntity demographicEntity = preRegistrationRepository.findBypreRegistrationId(preRegId);
+				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
@@ -229,13 +266,13 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				DemographicEntity preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(preregId);
-				if (!serviceUtil.isNull(preRegistrationEntity)) {
-					if (serviceUtil.checkStatusForDeletion(preRegistrationEntity.getStatusCode())) {
+				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
+				if (!serviceUtil.isNull(demographicEntity)) {
+					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						callDocumentServiceToDeleteAllByPreId(preregId);
-						int isDeletedDemo = preRegistrationRepository.deleteByPreRegistrationId(preregId);
+						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
-							deleteDto.setPrId(preRegistrationEntity.getPreRegistrationId());
+							deleteDto.setPrId(demographicEntity.getPreRegistrationId());
 							deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 							deleteList.add(deleteDto);
 						} else {
@@ -258,20 +295,20 @@ public class DemographicService {
 	}
 
 	/**
-	 * This Method is used to reterive the demographic
+	 * This Method is used to retrieve the demographic
 	 * 
 	 * @param preregId
 	 * @return ResponseDto<CreatePreRegistrationDTO>
 	 */
-	public ResponseDTO<CreatePreRegistrationDTO> getDemographicData(String preRegId) {
-		List<CreatePreRegistrationDTO> createDtos = new ArrayList<>();
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
+	public ResponseDTO<CreateDemographicDTO> getDemographicData(String preRegId) {
+		List<CreateDemographicDTO> createDtos = new ArrayList<>();
+		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				DemographicEntity demographicEntity = preRegistrationRepository.findBypreRegistrationId(preRegId);
-				CreatePreRegistrationDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
+				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+				CreateDemographicDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 				createDtos.add(createDto);
 				response.setResponse(createDtos);
 			}
@@ -295,15 +332,14 @@ public class DemographicService {
 	 */
 	public UpdateResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status) {
 		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
-		DemographicEntity preRegistrationEntity = new DemographicEntity();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
 			requestParamMap.put(RequestCodes.statusCode.toString(), status);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				preRegistrationEntity = preRegistrationRepository.findBypreRegistrationId(preRegId);
-				preRegistrationEntity.setStatusCode(StatusCodes.valueOf(status).toString());
-				preRegistrationRepository.update(preRegistrationEntity);
+				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+				demographicEntity.setStatusCode(StatusCodes.valueOf(status).toString());
+				demographicRepository.update(demographicEntity);
 				response.setResponse("Status Updated sucessfully");
 				response.setResTime(new Timestamp(System.currentTimeMillis()));
 				response.setStatus("true");
@@ -315,7 +351,7 @@ public class DemographicService {
 	}
 
 	/**
-	 * This Method is used to reterive demographic data by date
+	 * This Method is used to retrieve demographic data by date
 	 * 
 	 * @param fromDate
 	 * @param toDate
@@ -328,12 +364,13 @@ public class DemographicService {
 		List<String> preIds = new ArrayList<>();
 		Map<String, String> reqDateRange = new HashMap<>();
 		try {
-			reqDateRange.put("FromDate", fromDate);
-			reqDateRange.put("ToDate", toDate);
+			reqDateRange.put(RequestCodes.fromDate.toString(), fromDate);
+			reqDateRange.put(RequestCodes.toDate.toString(), toDate);
 			if (ValidationUtil.requstParamValidator(reqDateRange)) {
 				Map<String, Timestamp> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, "yyyy-MM-dd HH:mm:ss");
-				List<DemographicEntity> details = preRegistrationRepository
-						.findBycreateDateTimeBetween(reqTimeStamp.get("FromDate"), reqTimeStamp.get("ToDate"));
+				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
+						reqTimeStamp.get(RequestCodes.fromDate.toString()),
+						reqTimeStamp.get(RequestCodes.toDate.toString()));
 				for (DemographicEntity entity : details) {
 					preIds.add(entity.getPreRegistrationId());
 				}
@@ -349,7 +386,7 @@ public class DemographicService {
 	}
 
 	/**
-	 * This private Method is used to reterive booking data by date
+	 * This private Method is used to retrieve booking data by date
 	 * 
 	 * @param preId
 	 * @return BookingRegistrationDTO
@@ -369,8 +406,10 @@ public class DemographicService {
 					BookingResponseDTO.class);
 			if (respEntity.getStatusCode() == HttpStatus.OK) {
 				resultDto = (BookingResponseDTO<?>) respEntity.getBody();
-				ObjectMapper mapper = new ObjectMapper();
-				bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
+				if (!serviceUtil.isNull(resultDto)) {
+					ObjectMapper mapper = new ObjectMapper();
+					bookingRegistrationDTO = mapper.convertValue(resultDto.getResponse(), BookingRegistrationDTO.class);
+				}
 			}
 		} catch (RestClientException e) {
 			return bookingRegistrationDTO;
@@ -382,27 +421,27 @@ public class DemographicService {
 	/**
 	 * This private Method is used to save and update demographic data
 	 * 
-	 * @param CreatePreRegistrationDTO
+	 * @param CreateDemographicDTO
 	 * @param requestId
 	 * @return ResponseDTO<CreatePreRegistrationDTO>
 	 * 
 	 */
-	private ResponseDTO<CreatePreRegistrationDTO> createOrUpdate(CreatePreRegistrationDTO demographicRequest,
+	private ResponseDTO<CreateDemographicDTO> createOrUpdate(CreateDemographicDTO demographicRequest,
 			String requestId) {
-		ResponseDTO<CreatePreRegistrationDTO> response = new ResponseDTO<>();
-		List<CreatePreRegistrationDTO> saveList = new ArrayList<>();
+		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		List<CreateDemographicDTO> saveList = new ArrayList<>();
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
 			DemographicEntity demographicEntity = serviceUtil.prepareDemographicEntity(demographicRequest, requestId,
 					"save");
-			preRegistrationDao.save(demographicEntity);
+			demographicRepository.save(demographicEntity);
 		} else {
-			DemographicEntity demographicEntity = preRegistrationRepository
+			DemographicEntity demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
 			if (!serviceUtil.isNull(demographicEntity)) {
-				preRegistrationRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
 				demographicEntity = serviceUtil.prepareDemographicEntity(demographicRequest, requestId, "update");
-				preRegistrationDao.save(demographicEntity);
+				demographicRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
+				demographicRepository.save(demographicEntity);
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
