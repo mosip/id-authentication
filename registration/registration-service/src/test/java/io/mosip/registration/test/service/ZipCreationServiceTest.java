@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -15,9 +14,15 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
@@ -73,7 +78,6 @@ public class ZipCreationServiceTest {
 		zipCreationService.createPacket(registrationDTO, new HashMap<String, byte[]>());
 	}
 
-	@Ignore
 	@Test(expected = RegBaseCheckedException.class)
 	public void testIOException() throws RegBaseCheckedException {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -92,9 +96,28 @@ public class ZipCreationServiceTest {
 		documentDetailsResidenceDTO.setValue("aaa");
 		documentDetailsResidenceDTO.setOwner("hof");
 		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-				.setProofOfAddress(documentDetailsResidenceDTO);
+				.setProofOfIdentity(documentDetailsResidenceDTO);
 
 		zipCreationService.createPacket(registrationDTO, jsonMap);
+	}
+	
+	@Test
+	public void emptyDataTest() throws RegBaseCheckedException {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		DemographicDTO demographicDTO = new DemographicDTO();
+		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+		demographicInfoDTO.setIdentity(new Identity());
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
+		registrationDTO.setDemographicDTO(demographicDTO);
+		BiometricDTO biometricDTO = new BiometricDTO();
+		registrationDTO.setBiometricDTO(biometricDTO);
+		registrationDTO.setOsiDataDTO(new OSIDataDTO());
+		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
+		registrationDTO.setRegistrationId("2018782130000128122018103836");
+		
+		zipCreationService.createPacket(registrationDTO, jsonMap);
+		
+		zipCreationService.createPacket(new RegistrationDTO(), jsonMap);
 	}
 
 }

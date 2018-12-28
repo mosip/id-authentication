@@ -9,7 +9,6 @@ import org.junit.Test;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.json.demo.Demographic;
 import io.mosip.registration.dto.json.demo.DemographicInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
@@ -48,13 +47,6 @@ public class CustomObjectMapperTest {
 	@Test
 	public void testDemographicInfoConversion() {
 		assertDemographicInfo(mapperFacade.map(demographicInfoDTO, DemographicInfo.class));
-	}
-
-	@Test
-	public void testDemographicConversion() {
-		Demographic demographic = mapperFacade.map(demographicDTO, Demographic.class);
-		//assertDemographicInfo(demographic.getDemoInLocalLang());
-		//assertDemographicInfo(demographic.getDemoInUserLang());
 	}
 
 	private void assertDemographicInfo(DemographicInfo demographicInfo) {
