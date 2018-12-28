@@ -19,7 +19,7 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInSourceException;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
-
+	
 /**
  * The implementation Class for FileManager.
  *
@@ -86,7 +86,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName) {
-
 		boolean fileExistsInDestination = false;
 		boolean fileExistsInSource = false;
 		try {

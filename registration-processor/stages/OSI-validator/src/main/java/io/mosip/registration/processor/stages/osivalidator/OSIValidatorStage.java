@@ -25,6 +25,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+	
 
 /**
  * The Class OSIValidatorStage.

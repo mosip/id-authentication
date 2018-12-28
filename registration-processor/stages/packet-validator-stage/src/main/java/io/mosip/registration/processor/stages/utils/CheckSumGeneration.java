@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.stages.utils;
-
+	
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -12,6 +12,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+
 
 /**
  * The Class CheckSumGeneration.
@@ -43,10 +44,8 @@ public class CheckSumGeneration {
 	/**
 	 * Generate packet info hash.
 	 *
-	 * @param sequence
-	 *            the sequence
-	 * @param registrationId
-	 *            the registration id
+	 * @param hashSequence the hash sequence
+	 * @param registrationId            the registration id
 	 * @return the byte[]
 	 */
 	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
@@ -100,10 +99,8 @@ public class CheckSumGeneration {
 	/**
 	 * Generate demographic hash.
 	 *
-	 * @param demographicSequence
-	 *            the demographic sequence
-	 * @param registrationId
-	 *            the registration id
+	 * @param fieldValueArray the field value array
+	 * @param registrationId            the registration id
 	 */
 	private void generateDemographicHash(FieldValueArray fieldValueArray, String registrationId) {
 		List<String> hashOrder = fieldValueArray.getValue();

@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.camel.bridge.util;
-
+	
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +15,12 @@ import io.vertx.core.logging.LoggerFactory;
  */
 public class PropertyFileUtil {
 
+	/** The log. */
 	static Logger log = LoggerFactory.getLogger(PropertyFileUtil.class);
 
+	/**
+	 * Instantiates a new property file util.
+	 */
 	private PropertyFileUtil() {
 
 	}

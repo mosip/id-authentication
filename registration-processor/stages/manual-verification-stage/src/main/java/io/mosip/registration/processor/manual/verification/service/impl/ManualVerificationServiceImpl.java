@@ -38,7 +38,10 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-
+	
+/**
+ * The Class ManualVerificationServiceImpl.
+ */
 @Component
 public class ManualVerificationServiceImpl implements ManualVerificationService {
 
@@ -51,15 +54,19 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The filesystem ceph adapter impl. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	/** The base packet repository. */
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 
+	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
@@ -228,6 +235,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.verification.service.ManualVerificationService#getApplicantPacketInfo(java.lang.String)
+	 */
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();

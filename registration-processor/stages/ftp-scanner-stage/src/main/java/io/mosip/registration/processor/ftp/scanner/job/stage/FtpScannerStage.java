@@ -30,35 +30,54 @@ import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDe
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
-@Component
+/**
+ * The Class FtpScannerStage.
+ */
+@Component	
 public class FtpScannerStage extends MosipVerticleManager {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpScannerStage.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 	
+/** The secs. */
 //	@Value("${landingzone.scanner.stage.time.interval}")
 	private int secs = 30;
 
+	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	/** The packet handler service. */
 	@Autowired
 	protected PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 	
+	/** The message dto. */
 	@Autowired
 	private MessageDTO messageDto;
 
+	/** The Constant FTP_NOT_ACCESSIBLE. */
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
+	
+	/** The Constant FILE_NOT_ACCESSIBLE. */
 	private static final String FILE_NOT_ACCESSIBLE = "The File Path is not accessible";
+	
+	/** The Constant DUPLICATE_UPLOAD. */
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 	
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> {
@@ -66,6 +85,9 @@ public class FtpScannerStage extends MosipVerticleManager {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		String filepath = this.filemanager.getCurrentDirectory();
@@ -110,8 +132,8 @@ public class FtpScannerStage extends MosipVerticleManager {
 
 	/**
 	 * Delete empty folder from FTP zone after all the files are copied.
-	 * 
-	 * @param filepath
+	 *
+	 * @param filepath the filepath
 	 */
 	public void deleteFolder(String filepath) {
 		try {

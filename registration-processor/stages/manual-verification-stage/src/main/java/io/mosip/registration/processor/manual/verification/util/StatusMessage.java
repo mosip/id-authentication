@@ -1,7 +1,10 @@
 package io.mosip.registration.processor.manual.verification.util;
 
+/**
+ * The Class StatusMessage.
+ */
 public class StatusMessage {
-
+	
 	/**
 	 * Instantiates a new status message.
 	 */

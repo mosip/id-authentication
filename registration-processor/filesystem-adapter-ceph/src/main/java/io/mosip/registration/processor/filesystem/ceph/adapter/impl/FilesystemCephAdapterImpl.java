@@ -24,24 +24,30 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.ha
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
 /**
- * This class is CEPH implementation for MOSIP Packet Store
- * 
+ * This class is CEPH implementation for MOSIP Packet Store.
+ *
  * @author Pranav Kumar
  * @since 0.0.1
  */
 @Service
 public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream, Boolean> {
 
+	/** The conn. */
 	private AmazonS3 conn;
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {} - {}";
 
+	/** The Constant SUCCESS_UPLOAD_MESSAGE. */
 	private static final String SUCCESS_UPLOAD_MESSAGE = "uploaded to DFS successfully";
 
 	/**
-	 * Constructor to get Connection to CEPH instance
+	 * Constructor to get Connection to CEPH instance.
+	 *
+	 * @param connectionUtil the connection util
 	 */
 	public FilesystemCephAdapterImpl(ConnectionUtil connectionUtil) {
 		if (conn == null) {
@@ -73,12 +79,10 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	}
 
 	/**
-	 * This method stores a packet in DFS
-	 * 
-	 * @param enrolmentId
-	 *            The enrolment ID for the packet
-	 * @param file
-	 *            packet as InputStream
+	 * This method stores a packet in DFS.
+	 *
+	 * @param enrolmentId            The enrolment ID for the packet
+	 * @param file            packet as InputStream
 	 * @return True if packet is stored
 	 */
 	@Override
@@ -99,14 +103,11 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	}
 
 	/**
-	 * This method stores a File to DFS
-	 * 
-	 * @param enrolmentId
-	 *            The enrolment ID
-	 * @param fileName
-	 *            The fileName that is to be stored
-	 * @param file
-	 *            The file to be stored
+	 * This method stores a File to DFS.
+	 *
+	 * @param enrolmentId            The enrolment ID
+	 * @param fileName            The fileName that is to be stored
+	 * @param file            The file to be stored
 	 * @return true if the file is stored successfully
 	 */
 	private boolean storeFile(String enrolmentId, String fileName, InputStream file) {
@@ -122,6 +123,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter#getPacket(java.lang.String)
+	 */
 	/*
 	 * This method fetches the packet corresponding to an enrolment ID and returns
 	 * it
@@ -256,6 +260,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter#isPacketPresent(java.lang.String)
+	 */
 	@Override
 	public Boolean isPacketPresent(String registrationId) {
 		return this.getPacket(registrationId) != null;

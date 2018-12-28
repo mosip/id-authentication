@@ -164,6 +164,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 	
+	/**
+	 * Data exception handler.
+	 *
+	 * @param e the e
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ExceptionJSONInfo> dataExceptionHandler(final DataIntegrityViolationException e, WebRequest request) {
 		ExceptionJSONInfo exe = new ExceptionJSONInfo( "RPR-DBE-001","Data Integrity Violation Exception");

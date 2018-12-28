@@ -30,7 +30,7 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 
-/**
+/**	
  * The Class SyncRegistrationServiceImpl.
  *
  * @author M1048399
@@ -64,6 +64,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Autowired
 	private RidValidator<String> ridValidator;
 
+	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
 
 	/**

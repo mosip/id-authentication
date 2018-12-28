@@ -5,7 +5,7 @@ package io.mosip.registration.processor.stages.demodedupe;
  */
 public final class StatusMessage {
 	
-	/**
+	/**	
 	 * Instantiates a new status message.
 	 */
 	private StatusMessage() {

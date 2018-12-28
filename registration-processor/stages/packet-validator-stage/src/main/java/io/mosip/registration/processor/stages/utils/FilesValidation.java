@@ -8,6 +8,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+	
 
 /**
  * The Class FilesValidation.
@@ -32,13 +33,14 @@ public class FilesValidation {
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
 
 	/**
 	 * Instantiates a new files validation.
 	 *
-	 * @param adapter
-	 *            the adapter
+	 * @param adapter            the adapter
+	 * @param registrationStatusDto the registration status dto
 	 */
 	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter,
 			InternalRegistrationStatusDto registrationStatusDto) {
@@ -49,10 +51,8 @@ public class FilesValidation {
 	/**
 	 * Files validation.
 	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param packetInfo
-	 *            the packet info
+	 * @param registrationId            the registration id
+	 * @param identity the identity
 	 * @return true, if successful
 	 */
 	public boolean filesValidation(String registrationId, Identity identity) {
@@ -96,10 +96,8 @@ public class FilesValidation {
 	/**
 	 * Validate demographic sequence.
 	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param demographicSequence
-	 *            the demographic sequence
+	 * @param registrationId            the registration id
+	 * @param values the values
 	 * @return true, if successful
 	 */
 	private boolean validateDemographicSequence(String registrationId, List<String> values) {

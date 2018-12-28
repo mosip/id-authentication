@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
-// TODO: Auto-generated Javadoc
+	
 /**
  * The Enum ApiName.
  * 

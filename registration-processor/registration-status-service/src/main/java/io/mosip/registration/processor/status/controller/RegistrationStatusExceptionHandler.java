@@ -11,14 +11,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
-import io.netty.handler.codec.http.HttpResponse;
-import javassist.tools.web.BadHttpRequest;
 
 /**
  * The Class RegistrationStatusExceptionHandler.
@@ -32,8 +29,8 @@ public class RegistrationStatusExceptionHandler {
 	/**
 	 * Duplicateentry.
 	 *
-	 * @param Exception as e
-	 * @param WebRequest as request
+	 * @param e the e
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
@@ -43,6 +40,12 @@ public class RegistrationStatusExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Bad request.
+	 *
+	 * @param ex the ex
+	 * @return the response entity
+	 */
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ExceptionJSONInfo> badRequest(JsonMappingException ex) {
@@ -52,6 +55,12 @@ public class RegistrationStatusExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Bad request.
+	 *
+	 * @param ex the ex
+	 * @return the response entity
+	 */
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ExceptionJSONInfo> badRequest(MethodArgumentNotValidException ex) {
@@ -61,6 +70,13 @@ public class RegistrationStatusExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Data exception handler.
+	 *
+	 * @param e the e
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ExceptionJSONInfo> dataExceptionHandler(final DataIntegrityViolationException e, WebRequest request) {
 		ExceptionJSONInfo exe = new ExceptionJSONInfo( "RPR-DBE-001","Data Integrity Violation Exception");

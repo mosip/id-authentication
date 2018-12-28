@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.virus.scanner.job.stage;
-
+	
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,59 +33,94 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.DFSNotAccessibleException;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
 
+/**
+ * The Class VirusScannerStage.
+ */
 @Service
 public class VirusScannerStage extends MosipVerticleManager {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerStage.class);
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The extention. */
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 	
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 	
+	/** The virus scanner service. */
 	@Autowired
 	VirusScanner<Boolean, String> virusScannerService;
 
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The Constant RETRY_FOLDER_NOT_ACCESSIBLE. */
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";
+	
+	/** The Constant DFS_NOT_ACCESSIBLE. */
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
+	
+	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status"
 			+ " table is not accessible";
+	
+	/** The Constant VIRUS_SCAN_FAILED. */
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
+	
+	/** The Constant UNABLE_TO_DELETE. */
 	private static final String UNABLE_TO_DELETE = "unable to delete after sending to DFS.";
 
+	/** The description. */
 	String description = "";
+	
+	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
+	
+	/** The registration id. */
 	String registrationId ="";
 	
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consume(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> registrationStatusDtoList = null;
@@ -220,6 +255,12 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @param fileName the file name
+	 * @return the file name
+	 */
 	private String getFileName(String fileName) {
 		return fileName + extention;
 	}

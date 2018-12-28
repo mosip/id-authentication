@@ -15,13 +15,14 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 
+	
 
 /**
- * @author Jyoti Prakash Nayak M1030448
+ * The Class QualityCheckerAssignmentStage.
  *
+ * @author Jyoti Prakash Nayak M1030448
  */
 @RefreshScope
 @Component
@@ -33,18 +34,21 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The quality check manager. */
 	@Autowired
 	QualityCheckManager<String, QCUserDto> qualityCheckManager;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
 	/**
 	 * Method to consume quality check address bus and receive the packet details
-	 * that needs to be checked for quality
+	 * that needs to be checked for quality.
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);

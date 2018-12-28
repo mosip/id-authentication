@@ -2,7 +2,6 @@ package io.mosip.registration.processor.landingzone.scanner.job.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,37 +26,55 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-
+	
+/**
+ * The Class LandingzoneScannerStage.
+ */
 @Service
 public class LandingzoneScannerStage extends MosipVerticleManager {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandingzoneScannerStage.class);
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
+	/** The secs. */
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	/** The registration status service. */
 	@Autowired
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The Constant VIRUS_SCAN_NOT_ACCESSIBLE. */
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
+	
+	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
@@ -68,6 +85,9 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 		);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		try {

@@ -1,8 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
-
-import java.util.concurrent.ExecutionException;
+	
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
+
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;
@@ -23,12 +23,7 @@ public class MosipCamelBridge extends AbstractVerticle {
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
-	 * @throws InterruptedException
-	 *             the interrupted exception
-	 * @throws ExecutionException
-	 *             the execution exception
+	 * @param args            the arguments
 	 */
 	public static void main(String[] args) {
 		MosipBridgeFactory.getEventBus();

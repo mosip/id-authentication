@@ -12,6 +12,9 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
 
+/**
+ * The Class PacketInfoStorageExceptionHandler.
+ */
 @RestControllerAdvice
 public class PacketInfoStorageExceptionHandler {
 	
@@ -21,8 +24,8 @@ public class PacketInfoStorageExceptionHandler {
 	/**
 	 * Duplicateentry.
 	 *
-	 * @param Exception as e
-	 * @param WebRequest as request
+	 * @param e the e
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
@@ -32,6 +35,13 @@ public class PacketInfoStorageExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 	
+	/**
+	 * Data exception handler.
+	 *
+	 * @param e the e
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ExceptionJSONInfo> dataExceptionHandler(final DataIntegrityViolationException e, WebRequest request) {
 		ExceptionJSONInfo exe = new ExceptionJSONInfo( "RPR-DBE-001","Data Integrity Violation Exception");

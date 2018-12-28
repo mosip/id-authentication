@@ -5,7 +5,7 @@ package io.mosip.registration.processor.packet.manager.dto;
  * 
  * @author M1039303
  *
- */
+ */	
 public enum DirectoryPathDto {
     /** The landing zone. */
 	LANDING_ZONE{

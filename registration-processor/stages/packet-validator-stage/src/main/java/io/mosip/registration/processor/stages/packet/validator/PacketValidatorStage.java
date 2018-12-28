@@ -2,7 +2,7 @@
  * 
  */
 package io.mosip.registration.processor.stages.packet.validator;
-
+	
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,12 +56,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant APPLICANT_TYPE. */
 	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
@@ -72,9 +74,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
@@ -202,6 +206,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Sets the applicant.
+	 *
+	 * @param identity the identity
+	 * @param registrationStatusDto the registration status dto
+	 */
 	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
 		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		String applicantType = identityIteratorUtil.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);

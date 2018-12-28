@@ -16,15 +16,18 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
 /**
- * This class provides
+ * This class provides.
  *
  * @author Mukul Puspam
- *
  */
 public class MosipBridgeFactory {
 
+	/** The log. */
 	static Logger log = LoggerFactory.getLogger(MosipBridgeFactory.class);
 
+	/**
+	 * Instantiates a new mosip bridge factory.
+	 */
 	private MosipBridgeFactory() {
 
 	}
@@ -33,10 +36,6 @@ public class MosipBridgeFactory {
 	 * Gets the event bus.
 	 *
 	 * @return the event bus
-	 * @throws InterruptedException
-	 *             the interrupted exception
-	 * @throws ExecutionException
-	 *             the execution exception
 	 */
 	public static void getEventBus() {
 

@@ -27,7 +27,7 @@
 		<module>packet-decrypter-stage</module>
 		<module>ftp-scanner-stage</module>
 		<module>Demo-dedupe-stage</module>
-		<module>manual-verification-stage</module>
+	    <module>manual-verification-stage</module>
 	</modules>
 
 </project>

@@ -22,7 +22,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -42,7 +41,7 @@ import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
-
+	
 /**
  * The Class OSIValidator.
  */
@@ -316,6 +315,13 @@ public class OSIValidator {
 
 	}
 	
+	/**
+	 * Call setter.
+	 *
+	 * @param obj the obj
+	 * @param fieldName the field name
+	 * @param value the value
+	 */
 	private void callSetter(Object obj, String fieldName, Object value){
 		  PropertyDescriptor pd;
 		  try {
@@ -327,6 +333,12 @@ public class OSIValidator {
 		  }
 		 }
 
+	/**
+	 * Sets the finger biometric.
+	 *
+	 * @param biometricData the biometric data
+	 * @param type the type
+	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
 
 		String finger=null;

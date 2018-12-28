@@ -9,9 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -19,7 +21,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -29,6 +30,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+
 
 /**
  * The Class DemoDedupe.
@@ -175,6 +177,13 @@ public class DemoDedupe {
 
 	}
 	
+	/**
+	 * Call setter.
+	 *
+	 * @param obj the obj
+	 * @param fieldName the field name
+	 * @param value the value
+	 */
 	private void callSetter(Object obj, String fieldName, Object value){
 		  PropertyDescriptor pd;
 		  try {
@@ -186,6 +195,12 @@ public class DemoDedupe {
 		  }
 		 }
 	
+	/**
+	 * Sets the finger biometric.
+	 *
+	 * @param biometricData the biometric data
+	 * @param type the type
+	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
 		String finger=null;
 		String[] fingerType= {"leftThumb","leftIndex","leftMiddle","leftLittle","leftRing"
