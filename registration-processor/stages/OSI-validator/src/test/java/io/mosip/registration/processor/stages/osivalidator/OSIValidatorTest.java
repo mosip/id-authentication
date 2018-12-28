@@ -292,6 +292,7 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerFingerpType("LEFTINDEX");
 		regOsiDto.setOfficerfingerType("LEFTRING");
 		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
+		demographicInfoDto.setUin(null);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -299,7 +300,7 @@ public class OSIValidatorTest {
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
-		assertTrue(isValid);
+		assertFalse(isValid);
 	}
 	
 	/**
