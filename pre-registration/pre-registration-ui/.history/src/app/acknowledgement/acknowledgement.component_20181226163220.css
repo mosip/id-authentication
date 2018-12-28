@@ -1,0 +1,23 @@
+.ack-userInfo-container{
+    display:flex;
+}
+
+.ack-userInfo_row{
+    display:flex;
+    
+}
+
+.ack-userInfo{
+    flex : 1;
+    border : 1px solid black;
+   
+}
+
+.ack-userInfo_data{
+ border : 1px solid red;
+}
+
+.ack-userInfo_qr-code{
+    flex : 1;
+    border : 1px solid black;
+}
