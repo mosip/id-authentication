@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author Rajath KR
  * @author Kishan Rathore
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -58,14 +58,10 @@ public class DocumentUploader {
 	/**
 	 * Post API to upload the document.
 	 * 
-	 * @param documentString
-	 * @param file
+	 * @param reqDto pass documentString 
+	 * @param file pass files
 	 * @return response in a format specified in API document
-	 * @throws IOException 
-	 * @throws JSONException 
-	 * @throws MosipJsonParseException
-	 * @throws MosipJsonMappingException
-	 * @throws MosipIOException
+	 * 
 	 */
 	@PostMapping(path = "/documents", consumes = { "multipart/form-data" })
 	@ApiOperation(value = "Document Upload")
@@ -80,9 +76,9 @@ public class DocumentUploader {
 	/**
 	 * Post API to copy the document from source to destination by Preregistration Id
 	 * 
-	 * @param cat_type
-	 * @param source_prId
-	 * @param destination_preId
+	 * @param catCode pass cat_type
+	 * @param sourcePrId pass source_prId
+	 * @param destinationPreId pass destination_preId
 	 * @return response in a format specified in API document
 	 */
 	@PostMapping(path = "/copyDocuments", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +93,7 @@ public class DocumentUploader {
 	/**
 	 * Get API to fetch all the documents for a Preregistration Id
 	 * 
-	 * @param preId
+	 * @param preId pass preRegistrationId
 	 * @return response in a format specified in API document
 	 */
 	@GetMapping(path = "/getDocument", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +107,7 @@ public class DocumentUploader {
 	/**
 	 * Delete API to delete the document for a Document Id
 	 * 
-	 * @param documentId
+	 * @param documentId pass documentId
 	 * @return response in a format specified in API document
 	 */
 	@DeleteMapping(path = "/deleteDocument", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,9 +120,9 @@ public class DocumentUploader {
 	}
 
 	/**
-	 * Delete API to delete all the documents for a preregistration id
+	 * Delete API to delete all the documents for a preregistrationId 
 	 * 
-	 * @param preId
+	 * @param preId pass preregistrationId
 	 * @return response in a format specified in API document
 	 */
 	@DeleteMapping(path = "/deleteAllByPreRegId", produces = MediaType.APPLICATION_JSON_VALUE)

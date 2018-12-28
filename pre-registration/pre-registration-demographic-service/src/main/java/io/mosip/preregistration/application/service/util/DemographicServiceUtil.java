@@ -49,7 +49,8 @@ public class DemographicServiceUtil {
 	 * This setter method is used to assign the initial demographic entity values to
 	 * the createDTO
 	 * 
-	 * @param demographicEntity
+	 * @param demographicEntity 
+	 * 						pass the demographicEntity
 	 * @return createDTO with the values
 	 */
 	public CreateDemographicDTO setterForCreateDTO(DemographicEntity demographicEntity) {
@@ -76,9 +77,12 @@ public class DemographicServiceUtil {
 	 * This method is used to set the values from the request to the
 	 * demographicEntity entity fields.
 	 * 
-	 * @param demographicRequest
+	 * @param demographicRequest 
+	 * 					pass demographicRequest
 	 * @param requestId
+	 * 				pass requestId
 	 * @param entityType
+	 * 				pass entityType
 	 * @return demographic entity with values
 	 */
 	public DemographicEntity prepareDemographicEntity(CreateDemographicDTO demographicRequest, String requestId,
@@ -131,7 +135,8 @@ public class DemographicServiceUtil {
 	 * This method is used to add the initial request values into a map for input
 	 * validations.
 	 * 
-	 * @param demographicRequestDTO
+	 * @param demographicRequestDTO 
+	 * 						pass demographicRequestDTO
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(
@@ -149,9 +154,13 @@ public class DemographicServiceUtil {
 	 * This method is used to set the JSON values to RequestCodes constants.
 	 * 
 	 * @param demographicData
+	 * 					pass demographicData
 	 * @param identityKey
+	 * 					pass identityKey
 	 * @return values from JSON
-	 * @throws ParseException
+	 * 					
+	 * @throws ParseException On json Parsing Failed
+	 * 					
 	 */
 	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		JSONParser jsonParser = new JSONParser();
@@ -165,7 +174,8 @@ public class DemographicServiceUtil {
 	/**
 	 * This method is used as Null checker for different input keys.
 	 *
-	 * @param key
+	 * @param key 
+	 * 			pass the key
 	 * @return true if key not null and return false if key is null.
 	 */
 	public boolean isNull(Object key) {
@@ -184,9 +194,9 @@ public class DemographicServiceUtil {
 	}
 
 	/**
-	 * This method is used to validate Pending_Appointment & Booked status codes.
+	 * This method is used to validate Pending_Appointment and Booked status codes.
 	 * 
-	 * @param statusCode
+	 * @param statusCode pass statusCode
 	 * @return true or false
 	 */
 	public boolean checkStatusForDeletion(String statusCode) {
@@ -199,10 +209,12 @@ public class DemographicServiceUtil {
 	}
 
 	/**
-	 * This method is used for parsing & formatting the fromDate and toDate.
+	 * This method is used for parsing and formatting the fromDate and toDate
 	 * 
 	 * @param dateMap
+	 * 				pass dateMap
 	 * @param format
+	 * 				pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
 	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {

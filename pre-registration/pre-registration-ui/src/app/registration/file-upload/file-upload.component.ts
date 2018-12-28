@@ -193,7 +193,7 @@ export class FileUploadComponent implements OnInit {
     this.formData.append('JsonString', JSON.stringify(this.JsonString));
     this.formData.append('file', event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(response => {
-      // this.setApplicantsArray(this.fileResponse, event.target.files);
+      console.log('file upload response', response);
       this.updateUsers(response, event);
     });
     this.formData = new FormData();

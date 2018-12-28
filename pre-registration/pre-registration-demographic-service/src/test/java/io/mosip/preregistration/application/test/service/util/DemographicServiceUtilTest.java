@@ -57,7 +57,7 @@ public class DemographicServiceUtilTest {
 	private JSONParser parser = null;
 
 	/**
-	 * @throws Exception
+	 * @throws Exception on Any Exception
 	 */
 	@Before
 	public void setUp() throws Exception {

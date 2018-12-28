@@ -18,24 +18,24 @@ public class JsonParseException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg
+	 * @param msg  pass the error message
 	 */
 	public JsonParseException(String msg) {
 		super("", msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
+	 * @param errCode  pass the error code
+	 * @param msg  pass the error message
 	 */
 	public JsonParseException(String errCode, String msg) {
 		super(errCode, msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
-	 * @param cause
+	 * @param errCode pass the error code
+	 * @param msg pass the error message
+	 * @param cause pass the error cause
 	 */
 	public JsonParseException(String errCode, String msg, Throwable cause) {
 		super(errCode, msg, cause);

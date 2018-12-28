@@ -247,7 +247,7 @@ export class DemographicComponent implements OnInit {
           this.checked = true;
           this.dataUploadComplete = true;
           if (this.step === this.numberOfApplicants) {
-            // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+            this.router.navigate(['../../file-upload'], { relativeTo: this.route });
           }
           return resolve(true);
         }

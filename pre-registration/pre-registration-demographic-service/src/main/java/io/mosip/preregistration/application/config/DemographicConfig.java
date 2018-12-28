@@ -72,7 +72,7 @@ public class DemographicConfig {
 	/**
 	 * To configure Host and port along with docket.
 	 * 
-	 * @return
+	 * @return Docket docket
 	 */
 	@Bean
 	public Docket registrationStatusBean() {

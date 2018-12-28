@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ParentComponent implements OnInit {
 
+  componentName: string;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onActivate($event) {
+    console.log($event);
+    this.componentName = $event.route === undefined ? 'AcknowledgementComponent' : $event.route.component.name;
   }
 
 }

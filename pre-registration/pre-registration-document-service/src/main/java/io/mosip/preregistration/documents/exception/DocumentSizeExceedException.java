@@ -30,7 +30,9 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentSizeExceedException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_007.toString(), message, cause);
@@ -39,6 +41,7 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentSizeExceedException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_007.toString(), message);
@@ -47,8 +50,11 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentSizeExceedException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
@@ -56,7 +62,9 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentSizeExceedException(String errorCode, String message) {
 		super(errorCode, message);

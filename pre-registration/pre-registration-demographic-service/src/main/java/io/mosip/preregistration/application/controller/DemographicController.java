@@ -31,13 +31,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class provides different API's to perform operations on
  * pre-registration.
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -49,17 +50,14 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin("*")
 public class DemographicController {
 
-	/**
-	 * Autowired reference for {@link #DemographicService}
-	 */
+	/** Autowired reference for {@link #DemographicService}. */
 	@Autowired
 	private DemographicService preRegistrationService;
 
 	/**
 	 * Post API to create a pre-registation application.
-	 * 
-	 * @param list
-	 *            of application forms
+	 *
+	 * @param jsonObject the json object
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
@@ -73,9 +71,9 @@ public class DemographicController {
 	}
 
 	/**
-	 * Get API to fetch all the Pre-registration data for a pre-id
-	 * 
-	 * @param preRegId
+	 * Get API to fetch all the Pre-registration data for a pre-id.
+	 *
+	 * @param preRegId the pre reg id
 	 * @return the application data for a pre-id
 	 */
 	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,10 +86,10 @@ public class DemographicController {
 	}
 
 	/**
-	 * Put API to update the status of the application
-	 * 
-	 * @param preRegId
-	 * @param status
+	 * Put API to update the status of the application.
+	 *
+	 * @param preRegId the pre reg id
+	 * @param status the status
 	 * @return the updation status of application for a pre-id
 	 */
 	@PutMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -106,8 +104,9 @@ public class DemographicController {
 	}
 
 	/**
-	 * Post api to fetch all the applications created by user
-	 * 
+	 * Post api to fetch all the applications created by user.
+	 *
+	 * @param userId the user id
 	 * @return List of applications created by User
 	 */
 	@GetMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,8 +119,9 @@ public class DemographicController {
 	}
 
 	/**
-	 * Post API to fetch the status of a application
-	 * 
+	 * Post API to fetch the status of a application.
+	 *
+	 * @param preId the pre id
 	 * @return status of application
 	 */
 	@GetMapping(path = "/applicationStatus", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -135,9 +135,9 @@ public class DemographicController {
 
 	/**
 	 * Delete API to delete the Individual applicant and documents associated with
-	 * the PreId
-	 * 
-	 * @param preId
+	 * the PreId.
+	 *
+	 * @param preId the pre id
 	 * @return the deletion status of application for a pre-id
 	 */
 	@DeleteMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -150,10 +150,10 @@ public class DemographicController {
 	}
 
 	/**
-	 * Get API to fetch all the pre-ids within from-date and to-date range
-	 * 
-	 * @param fromDate
-	 * @param toDate
+	 * Get API to fetch all the pre-ids within from-date and to-date range.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
 	 * @return the pre-ids for date range
 	 */
 	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)

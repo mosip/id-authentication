@@ -19,7 +19,7 @@ import io.mosip.preregistration.documents.entity.DocumentEntity;
  * service.
  * 
  * @author Rajath KR
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Kishan Rathore
  * @since 1.0.0
@@ -30,38 +30,45 @@ import io.mosip.preregistration.documents.entity.DocumentEntity;
 public interface DocumentRepository extends BaseRepository<DocumentEntity, String> {
 	/**
 	 * @param preregId
-	 * @return true or false for a preId
+	 *            pass preRegistrationId
+	 * @return true or false for a preRegistrationId
 	 */
 	public boolean existsByPreregId(String preregId);
 
 	/**
 	 * @param preId
-	 * @return all the documents for a preId
+	 *            pass preRegistrationId
+	 * @return all the documents for a preRegistrationId
 	 */
 	List<DocumentEntity> findBypreregId(String preId);
 
 	/**
 	 * @param documentId
+	 *            pass documentId
 	 * @return the document for a document Id
 	 */
 	DocumentEntity findBydocumentId(int documentId);
 
 	/**
 	 * @param preId
+	 *            pass preRegistrationId
 	 * @param catCode
+	 *            pass category code
 	 * @return the document for a preId and Document category
 	 */
 	DocumentEntity findSingleDocument(@Param("preId") String preId, @Param("catCode") String catCode);
 
 	/**
 	 * @param documentId
+	 *            pass documentId
 	 * @return the number of records deleted for a document Id
 	 */
 	public int deleteAllBydocumentId(Integer documentId);
 
 	/**
 	 * @param preregId
-	 * @return the number of records deleted for a pre Id
+	 *            pass preRegistrationId
+	 * @return the number of records deleted for a preRegistrationId
 	 */
 	public int deleteAllBypreregId(String preregId);
 

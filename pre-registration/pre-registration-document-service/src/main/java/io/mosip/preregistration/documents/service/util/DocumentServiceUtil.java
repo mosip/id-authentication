@@ -36,6 +36,7 @@ public class DocumentServiceUtil {
 	 * This method adds the initial request values to inputValidation map
 	 * 
 	 * @param docReqDto
+	 *            pass the document Request
 	 * @return inputValidation map
 	 */
 	public Map<String, String> prepareRequestParamMap(UploadRequestDTO<DocumentDTO> docReqDto) {
@@ -52,12 +53,18 @@ public class DocumentServiceUtil {
 	 * This method is used to assign the input JSON values to DTO
 	 * 
 	 * @param documentJsonString
+	 *            pass the document json
 	 * @return UploadRequestDTO
 	 * @throws JSONException
+	 *             on json error
 	 * @throws JsonParseException
+	 *             on json parsing error
 	 * @throws JsonMappingException
+	 *             on json mapping error
 	 * @throws IOException
+	 *             on input error
 	 * @throws ParseException
+	 *             on parsing error
 	 */
 	public UploadRequestDTO<DocumentDTO> createUploadDto(String documentJsonString)
 			throws JSONException, JsonParseException, JsonMappingException, IOException, ParseException {
@@ -78,6 +85,7 @@ public class DocumentServiceUtil {
 	 * This method assigns the values from DTO to entity
 	 * 
 	 * @param dto
+	 *            pass the document dto
 	 * @return DocumentEntity
 	 */
 	public DocumentEntity dtoToEntity(DocumentDTO dto) {
@@ -97,6 +105,7 @@ public class DocumentServiceUtil {
 	 * This method assigns the values from entity to DTO
 	 * 
 	 * @param entity
+	 *            pass document entity
 	 * @return DocumentDTO
 	 */
 	public DocumentDTO EntityToDto(DocumentEntity entity) {

@@ -30,7 +30,7 @@ import io.mosip.preregistration.core.exception.TablenotAccessibleException;
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -41,7 +41,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for TablenotAccessibleException
 	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
@@ -57,7 +59,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for JsonValidationException
 	 */
 	@ExceptionHandler(JsonValidationException.class)
@@ -73,7 +77,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for RecordNotFoundException
 	 */
 	@ExceptionHandler(RecordNotFoundException.class)
@@ -88,7 +94,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for SystemIllegalArgumentException
 	 */
 	@ExceptionHandler(SystemIllegalArgumentException.class)
@@ -104,7 +112,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for DocumentFailedToDeleteException
 	 */
 	@ExceptionHandler(DocumentFailedToDeleteException.class)
@@ -120,7 +130,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for RecordFailedToDeleteException
 	 */
 	@ExceptionHandler(RecordFailedToDeleteException.class)
@@ -136,7 +148,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for OperationNotAllowedException
 	 */
 	@ExceptionHandler(OperationNotAllowedException.class)
@@ -152,7 +166,9 @@ public class DemographicExceptionHandler {
 
 	/**
 	 * @param e
+	 *            pass the exception
 	 * @param request
+	 *            pass the request
 	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
