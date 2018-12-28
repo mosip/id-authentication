@@ -143,7 +143,7 @@ public class MetaDataUtils {
 	}
 	
 	public static String getContextUser() {
-		return contextUser;
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 	
 	public static LocalDateTime getCurrentDateTime() {
