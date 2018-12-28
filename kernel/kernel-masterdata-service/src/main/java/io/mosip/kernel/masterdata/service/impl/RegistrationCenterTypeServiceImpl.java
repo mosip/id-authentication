@@ -127,8 +127,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
 								.getErrorMessage());
 			}
-			int deletedRegistrationCenterTypes = registrationCenterTypeRepository
-					.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode);
+			int deletedRegistrationCenterTypes = registrationCenterTypeRepository.deleteRegistrationCenterType(
+					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode, MetaDataUtils.getContextUser());
 			if (deletedRegistrationCenterTypes < 1) {
 				throw new DataNotFoundException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),

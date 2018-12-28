@@ -1182,7 +1182,7 @@ public class MasterdataIntegrationTest {
 				.thenReturn(registrationCenterMachineDevice);
 		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
 				.thenReturn(registrationCenterMachineDeviceHistory);
-		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -1275,7 +1275,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -1297,7 +1297,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteNotFoundLanguagesTest() throws Exception {
 		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(null);
-		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3697,7 +3697,8 @@ public class MasterdataIntegrationTest {
 		ArrayList<RegistrationCenterType> list = new ArrayList<>();
 		list.add(registrationCenterType);
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(list);
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(1);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(1);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -3705,7 +3706,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteRegistrationCenterTypeNotFoundExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
@@ -3714,7 +3716,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteRegistrationCenterTypeDataAccessExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any()))
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))

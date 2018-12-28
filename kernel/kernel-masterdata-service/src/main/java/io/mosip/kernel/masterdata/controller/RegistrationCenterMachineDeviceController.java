@@ -50,7 +50,7 @@ public class RegistrationCenterMachineDeviceController {
 	}
 
 	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")
-	@ApiOperation(value="")
+	@ApiOperation(value="delete mapping if this service is called.")
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRrgistrationCenterMachineDeviceDto.class),
 		@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
