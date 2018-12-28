@@ -56,7 +56,7 @@ public class TranslitrationSwagConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-translitrator").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.translitration.controller"))
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.transliteration.controller"))
 				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
 		
 		if (swaggerBaseUrlSet) {
