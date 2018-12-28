@@ -189,19 +189,16 @@ public class BaseController {
 		alert.showAndWait();
 	}
 	
-	
 	/**
 	 * 
-	 * /* Alert creation with specified title, header, and context
+	 * /* Alert creation with specified context
 	 * 
 	 * @param alertType
 	 *            type of alert
-	 * @param header
-	 *            alert header
 	 * @param context
 	 *            alert context
 	 */
-	protected void generateValidationAlert(String context, String isConsolidated) {
+	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
 		if (isConsolidated.equals("N")) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setHeaderText(null);

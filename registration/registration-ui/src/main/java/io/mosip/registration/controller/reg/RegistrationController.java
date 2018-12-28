@@ -378,7 +378,7 @@ public class RegistrationController extends BaseController {
 						}
 					});
 			fxUtils = FXUtils.getInstance();
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "N");
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.INDIVIDUAL_VALIDATION);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			isChild = true;
@@ -727,7 +727,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 			String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
 			String localLanguageCode = AppConfig.getApplicationProperty("local_language");
 
-			if (true) {//validateDemographicPane(demoGraphicPane2)) {
+			if (validateDemographicPane(demoGraphicPane2)) {
 
 				demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
 						.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
@@ -1031,7 +1031,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 		boolean isValid = true;
 		isValid = validateDemographicPane(demoGraphicPane1);
 		if (isValid) {
-			isValid = true;//validateDemographicPane(demoGraphicPane2);
+			isValid = validateDemographicPane(demoGraphicPane2);
 		}
 		if (!isValid) {
 			demoGraphicTitlePane.setExpanded(true);
@@ -1215,7 +1215,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype", "N")) {
+				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype", RegistrationConstants.INDIVIDUAL_VALIDATION)) {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
@@ -1414,7 +1414,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	}
 
 	public void clickMe() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "Y");
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.CONSOLIDATED_VALIDATION);
 		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
@@ -1435,7 +1435,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 		displayValidationMessage(validation.getValidationMessage().toString());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, "N");
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.INDIVIDUAL_VALIDATION);
 	}
 
 	/**
