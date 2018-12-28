@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.archiver.util.test;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -24,7 +27,6 @@ import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
@@ -54,6 +56,9 @@ public class PacketArchiverTest {
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
+	@Mock
+	private Environment env;
+
 	AuditResponseDto auditResponseDto = null;
 
 	/** The packet archiver. */
@@ -81,6 +86,8 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
+		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn("src/test/resources/");
 
 		AuditLogRequestBuilder auditRequestBuilder = new AuditLogRequestBuilder();
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
@@ -135,7 +142,7 @@ public class PacketArchiverTest {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId)).thenReturn(auditResponseDto);
-		Mockito.when(filesystemCephAdapterImpl.getPacket(registrationId)).thenReturn(in);
+		// Mockito.when(filesystemCephAdapterImpl.getPacket(registrationId)).thenReturn(in);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
 
 		packetArchiver.archivePacket(registrationId);
@@ -155,34 +162,9 @@ public class PacketArchiverTest {
 	@Test(expected = PacketNotFoundException.class)
 	public void archivePacketAdaptedFailureCheck()
 			throws UnableToAccessPathException, PacketNotFoundException, IOException {
-
-		Mockito.when(filesystemCephAdapterImpl.getPacket(registrationId)).thenReturn(null);
-
+		registrationId = "1000";
 		packetArchiver.archivePacket(registrationId);
 
-	}
-
-	/**
-	 * Archive packet filemanger failure check.
-	 *
-	 * @throws UnableToAccessPathException
-	 *             the unable to access path exception
-	 * @throws PacketNotFoundException
-	 *             the packet not found exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	@Test(expected = UnableToAccessPathException.class)
-	public void archivePacketFilemangerFailureCheck()
-			throws UnableToAccessPathException, PacketNotFoundException, IOException {
-
-		InputStream in = IOUtils.toInputStream(source, "UTF-8");
-		FilePathNotAccessibleException exception = new FilePathNotAccessibleException();
-
-		Mockito.when(filesystemCephAdapterImpl.getPacket(registrationId)).thenReturn(in);
-		Mockito.doThrow(exception).when(filemanager).put(any(), any(), any());
-
-		packetArchiver.archivePacket(registrationId);
 	}
 
 }
