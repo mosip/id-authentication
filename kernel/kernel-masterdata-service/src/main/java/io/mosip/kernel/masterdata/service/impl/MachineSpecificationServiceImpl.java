@@ -13,8 +13,8 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
@@ -91,7 +91,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renMachineSpecification, false);
 				updMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -130,7 +130,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 				}
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}

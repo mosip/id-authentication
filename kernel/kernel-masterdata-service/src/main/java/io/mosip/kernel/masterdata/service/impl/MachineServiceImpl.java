@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
@@ -195,7 +196,7 @@ public class MachineServiceImpl implements MachineService {
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
 				machineHistoryRepository.create(machineHistory);
 			} else {
-				throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -234,7 +235,7 @@ public class MachineServiceImpl implements MachineService {
 						machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
 						machineHistoryRepository.create(machineHistory);
 					} else {
-						throw new DataNotFoundException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 					}
 				
