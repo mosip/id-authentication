@@ -16,6 +16,8 @@ import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RSAEncryptionService;
@@ -23,7 +25,7 @@ import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 /**
  * Accepts AES session key as bytes and encrypt it by using RSA algorithm
- * 
+ * @author Brahmananada Reddy
  * @author YASWANTH S
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -34,6 +36,9 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 
 	@Autowired
 	public RSAKeyGenerator rsaKeyGenerator;
+
+	@Autowired
+	private PolicySyncDAO policySyncDAO;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RSAEncryptionServiceImpl.class);
 
@@ -46,12 +51,11 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 			LOGGER.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
 			
-			// TODO: Will be removed upon KeyManager is implemented in Kernel App
-			// Generate key pair public and private key
-			rsaKeyGenerator.generateKey();
-			// Read public key from file
-			final byte[] publicKey = rsaKeyGenerator.getEncodedKey(true);
-
+			
+			 byte[] publicKey=null;
+			KeyStore keyStore=policySyncDAO.findByMaxExpireTime();
+			publicKey=keyStore.getPublicKey();
+			
 			// encrypt AES Session Key using RSA public key
 			return MosipEncryptor.asymmetricPublicEncrypt(publicKey, sessionKey,
 					MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
