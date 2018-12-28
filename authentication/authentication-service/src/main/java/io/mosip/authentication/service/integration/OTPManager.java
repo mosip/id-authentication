@@ -36,8 +36,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
-	private static final String ERR_CODE_OTP_NOT_GENERATED = "KER-OTV-005";
-
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
@@ -94,7 +92,8 @@ public class OTPManager {
 
 				}
 			} else {
-				//FIXME Could not validate OTP -OTP - Request could not be processed. Please try again
+				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
+				// try again
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 			}
 
@@ -152,7 +151,10 @@ public class OTPManager {
 					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 					// Do not throw server error for OTP not generated, throw invalid OTP error
 					// instead
-					if (errorCode.filter(code -> code.equals(ERR_CODE_OTP_NOT_GENERATED)).isPresent()) {
+					if (errorCode
+							.filter(code -> code.equals(
+									IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+							.isPresent()) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 					}
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
