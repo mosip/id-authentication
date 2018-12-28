@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.constant.TemplateFileFormatErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
@@ -99,11 +98,11 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 			List<Template> templates = templateRepository.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
 			if (!templates.isEmpty()) {
 				throw new MasterDataServiceException(
-						TemplateErrorCode.TEMPLATE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
-						TemplateErrorCode.TEMPLATE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 			}
 			int updatedRows = templateFileFormatRepository.deleteTemplateFileFormat(LocalDateTime.now(ZoneId.of("UTC")),
-					code);
+					code, MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
