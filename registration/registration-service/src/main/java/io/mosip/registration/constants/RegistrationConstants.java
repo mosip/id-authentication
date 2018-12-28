@@ -752,4 +752,5 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_INSERT_GPS = "Unable to validate machine location. Please insert the GPS device and try again";
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again";
 
+	public static final String POLICY_SYNC_SERVICE="policysync";
 }
