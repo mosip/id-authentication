@@ -73,31 +73,9 @@
         </a>
       </mat-nav-list>
     </mat-toolbar>
+    <main>
+      <router-outlet></router-outlet>
+      <app-footer></app-footer>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
-<!-- <mat-toolbar>
-  <div class="sidenav-button">
-    <button mat-icon-button (click)="onToggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
-  </div>
-  <a><img  src="assets\logo-final.png" style="max-height: 50px;"></a>
-  <div style="margin-left:5px;"><a routerLink="/" class="logo">logo</a></div> 
-  <mat-nav-list class="list-item">
-    <a mat-list-item routerLink="/about-us">About us</a>
-    <a mat-list-item routerLink="/faq" >FAQ</a>
-    <a mat-list-item routerLink="/contact">Contact</a>
-  </mat-nav-list>
-  <span class="spacer"></span>
-  <mat-nav-list class="list-item">
-    <a mat-list-item routerLink="#">
-      <mat-icon class="icon">help</mat-icon>
-    </a>
-    <a mat-list-item routerLink="#">
-      <mat-icon class="icon">home</mat-icon>
-    </a>
-    <a mat-list-item routerLink="#">
-      <mat-icon class="icon">account_circle</mat-icon>
-    </a>
-  </mat-nav-list>
-</mat-toolbar> -->
