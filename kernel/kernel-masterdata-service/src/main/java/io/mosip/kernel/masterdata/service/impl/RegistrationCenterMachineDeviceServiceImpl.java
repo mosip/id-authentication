@@ -60,7 +60,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 					.create(registrationCenterMachineDevice);
 			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory = new RegistrationCenterMachineDeviceHistory();
 			registrationCenterMachineDeviceHistory
-			.setRegistrationCenterMachineDeviceHistoryPk(new RegistrationCenterMachineDeviceHistoryID());
+					.setRegistrationCenterMachineDeviceHistoryPk(new RegistrationCenterMachineDeviceHistoryID());
 			MapperUtils.setBaseFieldValue(savedRegistrationCenterMachineDevice, registrationCenterMachineDeviceHistory);
 			MapperUtils.mapFieldValues(savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk());
@@ -134,12 +134,12 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			}
 
 		} catch (DataAccessLayerException | DataAccessException ex) {
-			
+
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DELETE_EXCEPTION
-							.getErrorMessage()+ExceptionUtils.parseException(ex));
+							.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
 
 		return regCenterMachineId;
