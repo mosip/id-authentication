@@ -3075,7 +3075,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentTypeTest() throws Exception {
 
 		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
-		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(2);
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(2);
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
@@ -3697,7 +3697,8 @@ public class MasterdataIntegrationTest {
 		ArrayList<RegistrationCenterType> list = new ArrayList<>();
 		list.add(registrationCenterType);
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(list);
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(1);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(1);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -3705,7 +3706,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteRegistrationCenterTypeNotFoundExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
@@ -3714,7 +3716,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteRegistrationCenterTypeDataAccessExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any()))
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
