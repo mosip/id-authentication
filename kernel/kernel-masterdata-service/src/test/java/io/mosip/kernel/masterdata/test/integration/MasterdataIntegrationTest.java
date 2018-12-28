@@ -1182,7 +1182,7 @@ public class MasterdataIntegrationTest {
 				.thenReturn(registrationCenterMachineDevice);
 		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
 				.thenReturn(registrationCenterMachineDeviceHistory);
-		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isBadRequest());
 	}
 
 	@Test
