@@ -1,0 +1,52 @@
+.ack-userInfo-container{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.ack-userInfo_row{
+    display:flex;
+    border : 1px solid yellow;
+    display:flex;
+}
+
+.ack-userInfo_label{
+
+    border : 1px solid red;
+    /*
+    flex : 3;
+    */
+    flex-basis:45%;
+    min-width: 100px;
+}
+
+.ack-userInfo_separator{
+    border : 1px solid red;
+     /*
+    flex : 1;
+    */
+    flex-basis:05%;
+}
+
+.ack-userInfo_data{
+ border : 1px solid red;
+  /*
+ flex : 3;
+ */
+ flex-basis:55%;
+ min-width: 100px;
+}
+
+.ack-userInfo{
+    flex : 1;
+    border : 1px solid black;
+    flex-basis:60%
+   
+}
+
+
+
+.ack-userInfo_qr-code{
+    flex : 1;
+    border : 1px solid black;
+    flex-basis:40%
+}
