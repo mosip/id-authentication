@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { MatButtonToggleChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
 import { RegistrationService } from '../registration.service';
@@ -54,10 +53,14 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   dataUploadComplete = true;
   uppermostLocationHierarchy;
+  isNewApplicant = false;
   @ViewChild('dd') dd;
   @ViewChild('mm') mm;
   @ViewChild('yyyy') yyyy;
   @ViewChild('age') age;
+  @ViewChild('f') transForm;
+  @ViewChild('f1') form;
+  @ViewChild('gen') gender;
 
   constructor(
     private router: Router,
@@ -68,7 +71,9 @@ export class DemographicComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.minDate.setFullYear(this.maxDate.getFullYear() - 150);
+    if (sessionStorage.getItem('newApplicant') === 'true') {
+      this.isNewApplicant = true;
+    }
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -186,12 +191,31 @@ export class DemographicComponent implements OnInit {
     // this.userForm.setValidators([this.oneOfControlRequired(this.userForm.get('dob'), this.userForm.get('age'))]);
   }
 
-  onBack() {}
+  onBack() {
+    this.router.navigate(['../../'], { relativeTo: this.route });
+  }
 
   onSubmit() {
+    // console.log(this.userForm.controls.dob.value);
+    // console.log(
+    //   this.form.nativeElement[1].value + '/' + this.form.nativeElement[2].value + '/' + this.form.nativeElement[3].value
+    // );
+    let i = 0;
+    while (i < this.form.nativeElement.length) {
+      console.log(this.form.nativeElement[i++].value);
+    }
+    console.log('trnsa', this.transForm);
+    console.log(this.gender);
+
+    // console.log('origi', this.form);
+
+    // console.log(this.transForm.nativeElement[0].value);
+    // console.log(this.transForm.nativeElement[0].placeholder);
+    // console.log(this.form.nativeElement[0].value);
+    // console.log(this.form.nativeElement[0].placeholder);
+
     // console.log(this.uppermostLocationHierarchy[0].code);
     // this.dataStorageService.getLocationList('BLR', 'ENG');
-
     let preId = '';
     const identity = this.createIdentityJSON();
     this.dataUploadComplete = false;
@@ -231,18 +255,23 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  onGenderChange(gender: MatButtonToggleChange) {
-    this.userForm.controls.gender.patchValue(gender.value);
+  onGenderChange(gender: string) {
+    this.userForm.controls['gender'].markAsTouched();
+    if (gender) {
+      this.userForm.controls.gender.patchValue(gender);
+    }
   }
 
   onAgeChange() {
     const age = this.age.nativeElement.value;
-    const now = new Date();
-    const calulatedYear = now.getFullYear() - age;
-    this.userForm.controls.date.patchValue('01');
-    this.userForm.controls.month.patchValue('01');
-    this.userForm.controls.year.patchValue(calulatedYear);
-    this.userForm.controls['dob'].setErrors(null);
+    if (age) {
+      const now = new Date();
+      const calulatedYear = now.getFullYear() - age;
+      this.userForm.controls.date.patchValue('01');
+      this.userForm.controls.month.patchValue('01');
+      this.userForm.controls.year.patchValue(calulatedYear);
+      this.userForm.controls['dob'].setErrors(null);
+    }
   }
 
   onDOBChange() {
@@ -286,17 +315,6 @@ export class DemographicComponent implements OnInit {
     }
   }
 
-  // private oneOfControlRequired(...controls: AbstractControl[]): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     for (const aControl of controls) {
-  //       if (!Validators.required(aControl)) {
-  //         return null;
-  //       }
-  //     }
-  //     return { oneOfRequired: true };
-  //   };
-  // }
-
   private noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
@@ -314,7 +332,6 @@ export class DemographicComponent implements OnInit {
       [new AttributeModel('en', this.demo.region, this.userForm.controls.region.value)],
       [new AttributeModel('en', this.demo.province, this.userForm.controls.province.value)],
       [new AttributeModel('en', this.demo.city, this.userForm.controls.city.value)],
-      [new AttributeModel('en', this.demo.postalCode, this.userForm.controls.postalCode.value)],
       [
         new AttributeModel(
           'en',
@@ -322,8 +339,9 @@ export class DemographicComponent implements OnInit {
           this.userForm.controls.localAdministrativeAuthority.value
         )
       ],
-      [new AttributeModel('en', this.demo.emailId, this.userForm.controls.email.value)],
+      [new AttributeModel('en', this.demo.postalCode, this.userForm.controls.postalCode.value)],
       [new AttributeModel('en', this.demo.mobileNumber, this.userForm.controls.mobilePhone.value)],
+      [new AttributeModel('en', this.demo.emailId, this.userForm.controls.email.value)],
       [new AttributeModel('en', this.demo.CNEOrPINNumber, this.userForm.controls.pin.value)]
       // [new AttributeModel('en', this.demo.age, this.userForm.controls.age.value)]
     );

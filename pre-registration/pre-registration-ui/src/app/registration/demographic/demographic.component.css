@@ -9,14 +9,16 @@
 /* STARTING FRESH */
 
 .wrapper {
-  background-color: lightgray;
+  background-color: #f4f4f4;
   z-index: -1;
   /* position: relative; */
   padding: 10px;
   padding-bottom: 0;
+  color: #000000;
 }
 
 .user {
+  background-color: #ffffff;
   z-index: 1;
   margin: auto;
   padding: 3rem;
@@ -30,7 +32,7 @@
 .user header {
   margin: 0;
   font-weight: bold;
-  color: pink;
+  color: #fd518c;
 }
 
 .user hr {
@@ -52,6 +54,7 @@
 
 .user__container h6 {
   font-weight: bold;
+  color: #2f3033;
 }
 
 .user__form {
@@ -62,6 +65,8 @@
 .user__form mat-form-field {
   width: 95%;
   padding: 3px;
+  color: #000000;
+  font-size: 1rem;
 }
 
 .user__age-or-date {
@@ -94,6 +99,15 @@
   width: 32%;
 }
 
+.user__age span {
+  font-size: 1rem;
+}
+
+.user__age--disabled {
+  font-size: 1rem;
+  color: #595f6e;
+}
+
 .user__dob__error {
   left: 3px;
   position: relative;
@@ -107,13 +121,31 @@
 
 .user__gender mat-button-toggle-group {
   box-shadow: none;
+  width: 50%;
 }
 
 .user__gender mat-button-toggle {
+  /* border: 2px 2px 2px 2px solid #36444d; */
+  font-family: Helvetica, Regular;
+  font-size: 1rem;
   margin: 10px 10px 10px 10px;
-  color: lightblue;
-  padding: 0 10px;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+  color: #30badd;
+  width: 40%;
+  height: 65.51%;
+  /* padding: 0 10px; */
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.068);
+}
+
+.user__gender .mat-button-toggle-checked {
+  background-color: #30badd;
+  color: white;
+}
+
+.user__gender__error {
+  left: 3px;
+  position: relative;
+  top: -5px;
+  font-size: 75%;
 }
 
 .user__dropdown {
@@ -130,13 +162,19 @@
 }
 
 .user__btn {
-  padding: 5px 53px;
+  padding: 0px 53px;
   border: 1px solid red;
   margin: 5px;
 }
 
+.user__btn:disabled {
+  padding: 0px 53px;
+  border: 1px solid grey;
+  margin: 5px;
+}
+
 .user__btn__continue {
-  padding: 5px 40px;
+  padding: 0px 40px;
   color: white;
   background-color: red;
   margin: 5px;
@@ -176,8 +214,13 @@
     margin: 6px 4px 1px 1px;
     padding: 0 1px;
   }
+
   user__age-or-date .user__age {
     width: 78px;
     text-align: end;
+  }
+
+  .user__gender__error {
+    top: 0px;
   }
 }

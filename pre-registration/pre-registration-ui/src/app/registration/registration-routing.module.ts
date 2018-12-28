@@ -17,9 +17,10 @@ const registrationRoutes: Routes = [
       { path: 'demographic/:id', component: DemographicComponent },
       { path: 'file-upload', component: FileUploadComponent },
       { path: 'pick-center', component: CenterSelectionComponent },
-      { path: 'confirmation', component: ConfirmationComponent}
+      { path: 'confirmation', component: ConfirmationComponent }
     ]
-  }
+  },
+  { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({
