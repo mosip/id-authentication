@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -158,7 +159,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		}
 
 		if (id == null) {
-			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
 					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
 		}
 
@@ -184,7 +185,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
 		}
 		if (noOfRowAffected == 0) {
-			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
 					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
 		}
 

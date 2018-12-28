@@ -3504,7 +3504,7 @@ public class MasterdataIntegrationTest {
 		String input = "{\"id\": \"string\",\"request\":{\"locationCode\":\"LOC01\",\"holidayDate\":\"2019-01-01\",\"holidayName\":\"New Year\"},\"timestamp\": \"2018-12-24T06:15:12.494Z\",\"ver\": \"string\"}";
 		when(holidayRepository.deleteHolidays(any(), anyString(), any(), anyString())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -3546,7 +3546,7 @@ public class MasterdataIntegrationTest {
 		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(0);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -3570,7 +3570,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteBlacklistedWordNoWordDeleted() throws Exception {
 		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenReturn(0);
-		mockMvc.perform(delete("/v1.0/blacklistedwords/{word}", "abc")).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/blacklistedwords/{word}", "abc")).andExpect(status().isBadRequest());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -3594,7 +3594,7 @@ public class MasterdataIntegrationTest {
 	public void updateBadWordNoWordFound() throws Exception {
 		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
 		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@SuppressWarnings("unchecked")
